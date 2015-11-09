@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Ajax Filter
+ * Plugin Name: WC Ajax Product Filter
  * Description: A plugin to filter woocommerce products with AJAX request.
  * Version: 1.0
  * Author: Shamim Al Mamun
