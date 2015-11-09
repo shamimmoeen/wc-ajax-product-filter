@@ -1,10 +1,17 @@
-# WooCommerce Ajax Filter
+# WC Ajax Product Filter
+Contributors: shamimmoeen
+Tags: woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter
+Requires at least: 4.0
+Tested up to: 4.3.1
+Stable tag: 1.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 WooCommerce Ajax Product Filter - adds advanced prodcuts filtering to your shop.
 
-# Description
+## Description
 
-WooCommerce Ajax Filter - is a plugin that allows you to filter your products easily by categories, attributes, prices. Your can sort products via ajax request. SEO friendly url - url will be changed according to selected filters.
+WooCommerce Ajax Product Filter - is a plugin that allows you to filter your products easily by categories, attributes, prices. Your can sort products, navigate to next and previous pages without reloading the page.
 
 Features:
 
@@ -26,12 +33,12 @@ Features:
 * Minimalist, lightweight, and efficient code means that your users won’t notice any hiccups
 * Developer friendly - Useful filter is included! So you can use it in your themes
 
-# Installation
+## Installation
 
 * Once you have installed the plugin, you just need to activate the plugin in order to enable it.
 * Drop the widgets in the sidebar
 
-# Frequently Asked Questions
+## Frequently Asked Questions
 
 = Can I add custom scripts to load after updating shop loop? =
 
@@ -41,13 +48,13 @@ Yes, you can. Go to settings page. You will see a text field to put your custom 
 
 Yes, you can. Go to settings page. You will see a text field to chage the overlay background color.
 
-# Screenshots
+## Screenshots
 
 1. Plugin frontend
 2. Widget in sidebar
 3. Backend settings
 
-# Changelog
+## Changelog
 
 = 1.0 =
 

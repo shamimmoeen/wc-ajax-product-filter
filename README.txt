@@ -1,6 +1,6 @@
-=== WooCommerce Ajax Filter ===
+=== WC Ajax Product Filter ===
 Contributors: shamimmoeen
-Tags: woocommerce ajax product filter, woocommerce product filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce
+Tags: woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter
 Requires at least: 4.0
 Tested up to: 4.3.1
 Stable tag: 1.0
@@ -11,7 +11,7 @@ WooCommerce Ajax Product Filter - adds advanced prodcuts filtering to your shop.
 
 == Description ==
 
-WooCommerce Ajax Filter - is a plugin that allows you to filter your products easily by categories, attributes, prices. Your can sort products via ajax request. SEO friendly url - url will be changed according to selected filters.
+WooCommerce Ajax Product Filter - is a plugin that allows you to filter your products easily by categories, attributes, prices. Your can sort products, navigate to next and previous pages without reloading the page.
 
 Features:
 
