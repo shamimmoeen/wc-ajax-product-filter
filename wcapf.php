@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WC Ajax Product Filter
+ * Plugin Name: WooCommerce Ajax Filter
  * Description: A plugin to filter woocommerce products with AJAX request.
  * Version: 1.0
  * Author: Shamim Al Mamun
@@ -232,7 +232,7 @@ if (!class_exists('WCAPF')) {
 		 */
 		public function saveDefultSettings()
 		{
-			if (empty(get_option('wcapf_settings'))) {
+			if (!get_option('wcapf_settings')) {
 				// check if filter is applied
 				$settings = apply_filters('wcapf_settings', $this->defaultSettings());
 				update_option('wcapf_settings', $settings);
