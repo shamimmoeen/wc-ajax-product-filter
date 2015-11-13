@@ -1,6 +1,6 @@
 <?php
 /**
- * Necessary functions in WooCommerce Ajax Filter plugin.
+ * Necessary functions in WC Ajax Product Filter plugin.
  */
 
 // Exit if accessed directly

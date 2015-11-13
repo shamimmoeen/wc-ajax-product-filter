@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Ajax Active Filters
+ * WC Ajax Active Filters
  */
 if (!class_exists('WCAPF_Active_Filters_Widget')) {
 	class WCAPF_Active_Filters_Widget extends WP_Widget {
@@ -10,7 +10,7 @@ if (!class_exists('WCAPF_Active_Filters_Widget')) {
 		function __construct() {
 			parent::__construct(
 				'wcapf-active-filters', // Base ID
-				__('WooCommerce Ajax Active Filters', 'wcapf'), // Name
+				__('WC Ajax Active Filters', 'wcapf'), // Name
 				array('description' => __('Shows active filters so users can see and deactivate them.', 'wcapf')) // Args
 			);
 		}

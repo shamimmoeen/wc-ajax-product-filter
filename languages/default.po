@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Ajax Filter\n"
+"Project-Id-Version: WC Ajax Product Filter\n"
 "POT-Creation-Date: 2015-11-07 22:29+0600\n"
 "PO-Revision-Date: 2015-11-07 22:29+0600\n"
 "Last-Translator: Shamim Al Mamun <shamim.moeen@gmail.com>\n"
@@ -13,15 +13,15 @@ msgstr ""
 "X-Generator: Eazy Po 0.9.5.3\n"
 
 #: wcapf.php:192 includes/settings.php:12
-msgid "WooCommerce Ajax Filter"
+msgid "WC Ajax Product Filter"
 msgstr ""
 
 #: wcapf.php:890
-msgid "WooCommerce Ajax Filter needs WooCommerce plguin to work."
+msgid "WC Ajax Product Filter needs WooCommerce plguin to work."
 msgstr ""
 
 #: wcapf.php:900
-msgid "To use WooCommerce Ajax Filter update your WooCommerce plugin."
+msgid "To use WC Ajax Product Filter update your WooCommerce plugin."
 msgstr ""
 
 #: wcapf.php:912
@@ -114,7 +114,7 @@ msgid ""
 msgstr ""
 
 #: widgets/widget-active-filter.php:13
-msgid "WooCommerce Ajax Active Filters"
+msgid "WC Ajax Active Filters"
 msgstr ""
 
 #: widgets/widget-active-filter.php:14
@@ -144,7 +144,7 @@ msgid "Title:"
 msgstr ""
 
 #: widgets/widget-attribute-filter.php:13
-msgid "WooCommerce Ajax Filter by Attribute"
+msgid "WC Ajax Product Filter by Attribute"
 msgstr ""
 
 #: widgets/widget-attribute-filter.php:14
@@ -210,7 +210,7 @@ msgid "Only show children of the current attribute"
 msgstr ""
 
 #: widgets/widget-category-filter.php:13
-msgid "WooCommerce Ajax Filter by Category"
+msgid "WC Ajax Product Filter by Category"
 msgstr ""
 
 #: widgets/widget-category-filter.php:14
@@ -218,7 +218,7 @@ msgid "Filter woocommerce products by category."
 msgstr ""
 
 #: widgets/widget-price-filter.php:13
-msgid "WooCommerce Ajax Filter by Price"
+msgid "WC Ajax Product Filter by Price"
 msgstr ""
 
 #: widgets/widget-price-filter.php:14

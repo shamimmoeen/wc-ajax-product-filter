@@ -1,6 +1,6 @@
 <?php
 /**
- * List of hooks in WooCommerce Ajax Filter plugin.
+ * List of hooks in WC Ajax Product Filter plugin.
  */
 
 // Exit if accessed directly

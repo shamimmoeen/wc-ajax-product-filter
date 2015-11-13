@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Products Filter by Price
+ * WC Ajax Product Filter by Price
  */
 if (!class_exists('WCAPF_Price_Filter_Widget')) {
 	class WCAPF_Price_Filter_Widget extends WP_Widget {
@@ -10,7 +10,7 @@ if (!class_exists('WCAPF_Price_Filter_Widget')) {
 		function __construct() {
 			parent::__construct(
 				'wcapf-price-filter', // Base ID
-				__('WooCommerce Ajax Filter by Price', 'wcapf'), // Name
+				__('WC Ajax Product Filter by Price', 'wcapf'), // Name
 				array('description' => __('Filter woocommerce products by price.', 'wcapf')) // Args
 			);
 		}

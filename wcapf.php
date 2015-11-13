@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Ajax Filter
+ * Plugin Name: WC Ajax Product Filter
  * Description: A plugin to filter woocommerce products with AJAX request.
  * Version: 1.0
  * Author: Shamim Al Mamun
@@ -189,7 +189,7 @@ if (!class_exists('WCAPF')) {
 		 */
 		public function adminMenu()
 		{
-			add_options_page(__('WooCommerce Ajax Filter', $this->plugin_slug), __('WooCommerce Ajax Filter', $this->plugin_slug), 'manage_options', 'wcapf-settings', array($this, 'settingsPage'));
+			add_options_page(__('WC Ajax Product Filter', $this->plugin_slug), __('WC Ajax Product Filter', $this->plugin_slug), 'manage_options', 'wcapf-settings', array($this, 'settingsPage'));
 		}
 
 		/**
@@ -887,7 +887,7 @@ if (!class_exists('WCAPF')) {
 		public function needWoocommerce()
 		{
 			echo '<div class="error">';
-			echo '<p>' . __('WooCommerce Ajax Filter needs WooCommerce plguin to work.', $this->plugin_slug) . '</p>';
+			echo '<p>' . __('WC Ajax Product Filter needs WooCommerce plguin to work.', $this->plugin_slug) . '</p>';
 			echo '</div>';
 		}
 
@@ -897,7 +897,7 @@ if (!class_exists('WCAPF')) {
 		public function updateWoocommerce()
 		{
 			echo '<div class="error">';
-			echo '<p>' . __('To use WooCommerce Ajax Filter update your WooCommerce plugin.', $this->plugin_slug) . '</p>';
+			echo '<p>' . __('To use WC Ajax Product Filter update your WooCommerce plugin.', $this->plugin_slug) . '</p>';
 			echo '</div>';
 		}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Products Filter by Category
+ * WC Ajax Product Filter by Category
  */
 if (!class_exists('WCAPF_Category_Filter_Widget')) {
 	class WCAPF_Category_Filter_Widget extends WP_Widget {
@@ -10,7 +10,7 @@ if (!class_exists('WCAPF_Category_Filter_Widget')) {
 		function __construct() {
 			parent::__construct(
 				'wcapf-category-filter', // Base ID
-				__('WooCommerce Ajax Filter by Category', 'wcapf'), // Name
+				__('WC Ajax Product Filter by Category', 'wcapf'), // Name
 				array('description' => __('Filter woocommerce products by category.', 'wcapf')) // Args
 			);
 		}

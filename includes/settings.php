@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <div class="wrap">
-	<h1><?php _e('WooCommerce Ajax Filter', WCAPF_LOCALE); ?></h1>
+	<h1><?php _e('WC Ajax Product Filter', WCAPF_LOCALE); ?></h1>
 	<form method="post" action="options.php">
 		<?php
 		settings_fields('wcapf_settings');
