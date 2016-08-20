@@ -2,8 +2,8 @@
 Contributors: shamimmoeen
 Tags: woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter
 Requires at least: 4.0
-Tested up to: 4.3.1
-Stable tag: 1.0
+Tested up to: 4.6
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,14 @@ Yes, you can. Go to settings page. You will see a text field to chage the overla
 3. Backend settings
 
 == Changelog ==
+
+= 2.0 =
+
+* Fixed PHP version related issue
+* Fixed translation and localization issue
+* Fixed compatibility issue with WooCommerce Average Rating Filter
+* Added functionality to filter products by price list
+* Added functionality to clear all active filters with one click
 
 = 1.0 =
 

@@ -49,6 +49,14 @@ Yes, you can. Go to settings page. You will see a text field to chage the overla
 
 ## Changelog
 
+= 2.0 =
+
+* Fixed PHP version related issue
+* Fixed translation and localization issue
+* Fixed compatibility issue with WooCommerce Average Rating Filter
+* Added functionality to filter products by price list
+* Added functionality to clear all active filters with one click
+
 = 1.0 =
 
 * Initial release

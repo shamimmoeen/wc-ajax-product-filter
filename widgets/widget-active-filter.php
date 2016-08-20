@@ -34,7 +34,8 @@ if (!class_exists('WCAPF_Active_Filters_Widget')) {
 			wp_enqueue_script('wcapf-script');
 			
 			global $wcapf;
-			$active_filters = $wcapf->getChosenFilters()['active_filters'];
+			$active_filters = $wcapf->getChosenFilters();
+			$active_filters = $active_filters['active_filters'];
 			$found = false;
 			$html = '';
 
@@ -42,31 +43,57 @@ if (!class_exists('WCAPF_Active_Filters_Widget')) {
 				$found = true;
 				$html .= '<div class="wcapf-active-filters">';
 
-				foreach ($active_filters as $key => $active_filter) {
-					if ($key === 'term') {
-						foreach ($active_filter as $data_key => $terms) {
-							foreach ($terms as $term_id => $term_name) {
-								$html .= '<a href="javascript:void(0)" data-key="' . $data_key . '" data-value="' . $term_id . '">' . $term_name . '</a>';
+					foreach ($active_filters as $key => $active_filter) {
+						if ($key === 'term') {
+							foreach ($active_filter as $data_key => $terms) {
+								foreach ($terms as $term_id => $term_name) {
+									$html .= '<a href="javascript:void(0)" data-key="' . $data_key . '" data-value="' . $term_id . '">' . $term_name . '</a>';
+								}
 							}
 						}
+
+						if ($key === 'keyword') {
+							$html .= '<a href="javascript:void(0)" data-key="keyword">' . __('Search For: ', 'wcapf') . $active_filter . '</a>';
+						}
+
+						if ($key === 'orderby') {
+							$html .= '<a href="javascript:void(0)" data-key="orderby">' . __('Orderby: ', 'wcapf') . $active_filter . '</a>';
+						}
+
+						if ($key === 'min_price') {
+							$html .= '<a href="javascript:void(0)" data-key="min-price">' . __('Min Price: ', 'wcapf') . $active_filter . '</a>';
+						}
+
+						if ($key === 'max_price') {
+							$html .= '<a href="javascript:void(0)" data-key="max-price">' . __('Max Price: ', 'wcapf') . $active_filter . '</a>';
+						}
+
 					}
 
-					if ($key === 'keyword') {
-						$html .= '<a href="javascript:void(0)" data-key="keyword">' . __('Search For: ', 'wcapf') . $active_filter . '</a>';
-					}
+					if (!empty($instance['button_text'])) {
+						if ( defined( 'SHOP_IS_ON_FRONT' ) ) {
+							$link = home_url();
+						} elseif ( is_post_type_archive( 'product' ) || is_page( wc_get_page_id('shop') ) ) {
+							$link = get_post_type_archive_link( 'product' );
+						} else {
+							$link = get_term_link( get_query_var('term'), get_query_var('taxonomy') );
+						}
 
-					if ($key === 'orderby') {
-						$html .= '<a href="javascript:void(0)" data-key="orderby">' . __('Orderby: ', 'wcapf') . $active_filter . '</a>';
-					}
+						/**
+						 * Search Arg.
+						 * To support quote characters, first they are decoded from &quot; entities, then URL encoded.
+						 */
+						if ( get_search_query() ) {
+							$link = add_query_arg( 's', rawurlencode( htmlspecialchars_decode( get_search_query() ) ), $link );
+						}
 
-					if ($key === 'min_price') {
-						$html .= '<a href="javascript:void(0)" data-key="min-price">' . __('Min Price: ', 'wcapf') . $active_filter . '</a>';
-					}
+						// Post Type Arg
+						if ( isset( $_GET['post_type'] ) ) {
+							$link = add_query_arg( 'post_type', wc_clean( $_GET['post_type'] ), $link );
+						}
 
-					if ($key === 'max_price') {
-						$html .= '<a href="javascript:void(0)" data-key="max-price">' . __('Max Price: ', 'wcapf') . $active_filter . '</a>';
+						$html .= '<a href="javascript:void(0)" class="reset" data-location="' . $link . '">' . $instance['button_text'] . '</a>';
 					}
-				}
 
 				$html .= '</div>';
 			}
@@ -115,6 +142,10 @@ if (!class_exists('WCAPF_Active_Filters_Widget')) {
 				<label for="<?php echo $this->get_field_id('title'); ?>"><?php printf(__('Title:', 'wcapf')); ?></label>
 				<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo (!empty($instance['title']) ? esc_attr($instance['title']) : ''); ?>">
 			</p>
+			<p>
+				<label for="<?php echo $this->get_field_id('button_text'); ?>"><?php printf(__('Button Text:', 'wcapf')); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id('button_text'); ?>" name="<?php echo $this->get_field_name( 'button_text' ); ?>" type="text" value="<?php echo (!empty($instance['button_text']) ? esc_attr($instance['button_text']) : ''); ?>">
+			</p>
 			<?php
 		}
 
@@ -131,6 +162,7 @@ if (!class_exists('WCAPF_Active_Filters_Widget')) {
 		public function update($new_instance, $old_instance) {
 			$instance = array();
 			$instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+			$instance['button_text'] = (!empty($new_instance['button_text'])) ? strip_tags($new_instance['button_text']) : '';
 			return $instance;
 		}
 	}

@@ -183,9 +183,12 @@ jQuery(document).ready(function($) {
 	}
 
 	// remove parameter from url
-	wcapfRemoveQueryStringParameter = function(filter_key) {
-		var url = wcapfFixPagination(),
-			params = wcapfGetUrlVars(url),
+	wcapfRemoveQueryStringParameter = function(filter_key, url) {
+		if (typeof url === 'undefined') {
+			url = wcapfFixPagination();
+		}
+
+		var params = wcapfGetUrlVars(url),
 			count_params = Object.keys(params).length,
 			start_position = url.indexOf('?'),
 			param_position = url.indexOf(filter_key),
@@ -282,7 +285,7 @@ jQuery(document).ready(function($) {
 	}
 
 	// handle the filter request
-	$('.wcapf-ajax-term-filter').on('click', 'li a', function(event) {
+	$('.wcapf-ajax-term-filter').not('.wcapf-price-filter-widget').on('click', 'li a', function(event) {
 		event.preventDefault();
 		var element = $(this),
 			filter_key = element.attr('data-key'),
@@ -295,6 +298,34 @@ jQuery(document).ready(function($) {
 			wcapfSingleFilter(filter_key, filter_val);
 		}
 
+	});
+
+	// handle the filter request for price filter display type list
+	$('.wcapf-price-filter-widget.wcapf-ajax-term-filter').on('click', 'li a', function(event) {
+		event.preventDefault();
+		var element = $(this),
+			filter_key_min = element.attr('data-key-min'),
+			filter_val_min = element.attr('data-value-min'),
+			filter_key_max = element.attr('data-key-max'),
+			filter_val_max = element.attr('data-value-max'),
+			query;
+
+		if (element.parent().hasClass('chosen')) {
+			query = wcapfRemoveQueryStringParameter(filter_key_min);
+			query = wcapfRemoveQueryStringParameter(filter_key_max, query);
+
+			if (query == '') {
+				query = window.location.href.split('?')[0];
+			}
+
+			history.pushState({}, '', query);
+		} else {
+			query = wcapfUpdateQueryStringParameter(filter_key_min, filter_val_min, false);
+			query = wcapfUpdateQueryStringParameter(filter_key_max, filter_val_max, true, query);
+		}
+
+		// filter products
+		wcapfFilterProducts();
 	});
 
 	// handle the pagination request
@@ -345,7 +376,7 @@ jQuery(document).ready(function($) {
     wcapfInitOrder();
 
     // remove active filters
-    $(document).on('click', '.wcapf-active-filters a', function(event) {
+    $(document).on('click', '.wcapf-active-filters a:not(.reset)', function(event) {
     	event.preventDefault();
     	var element = $(this),
     		filter_key = element.attr('data-key'),
@@ -356,7 +387,7 @@ jQuery(document).ready(function($) {
 	    	history.pushState({}, '', query);
 
 	    	// price slider
-	    	if ($('#wcapf-noui-slider').length) {
+	    	if ($('#wcapf-noui-slider').length && jQuery().noUiSlider) {
 	    		var priceSlider = document.getElementById('wcapf-noui-slider'),
 	    			min_val = parseInt($(priceSlider).attr('data-min')),
 	    			max_val = parseInt($(priceSlider).attr('data-max'));
@@ -375,6 +406,16 @@ jQuery(document).ready(function($) {
     	} else {
     		wcapfMakeParameters(filter_key, filter_val);
     	}
+    });
+
+    // clear all filters
+    $(document).on('click', '.wcapf-active-filters a.reset', function(event) {
+    	event.preventDefault();
+    	var location = $(this).attr('data-location');
+    	history.pushState({}, '', location);
+
+    	// filter products
+    	wcapfFilterProducts();
     });
 
 	// dispaly type dropdown

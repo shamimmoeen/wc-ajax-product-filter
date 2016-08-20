@@ -2,11 +2,11 @@
 /**
  * Plugin Name: WC Ajax Product Filter
  * Description: A plugin to filter woocommerce products with AJAX request.
- * Version: 1.0
+ * Version: 2.0
  * Author: Shamim Al Mamun
  * Author URI: https://github.com/shamimmoeen
  * Text Domain: wcapf
- * Domain Path: /languages/
+ * Domain Path: /languages
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
  * General Public License version 2, as published by the Free Software Foundation.  You may NOT assume 
@@ -334,14 +334,12 @@ if (!class_exists('WCAPF')) {
 
 			// min-price
 			if (isset($_GET['min-price'])) {
-				$min_price = (!empty($_GET['min-price'])) ? $_GET['min-price'] : '';
-				$active_filters['min_price'] = $min_price;
+				$active_filters['min_price'] = $_GET['min-price'];
 			}
 
 			// max-price
 			if (isset($_GET['max-price'])) {
-				$max_price = (!empty($_GET['max-price'])) ? $_GET['max-price'] : '';
-				$active_filters['max_price'] = $max_price;
+				$active_filters['max_price'] = $_GET['max-price'];
 			}
 
 			return array(
@@ -358,7 +356,8 @@ if (!class_exists('WCAPF')) {
 		 */
 		public function filteredProductIdsForTerms()
 		{
-			$chosen_filters = $this->getChosenFilters()['chosen'];
+			$chosen_filters = $this->getChosenFilters();
+			$chosen_filters = $chosen_filters['chosen'];
 			$results = array();
 
 			// 99% copy of WC_Query
@@ -439,6 +438,17 @@ if (!class_exists('WCAPF')) {
 		{
 			$meta_query = array();
 
+			// rating filter
+			if (isset($_GET['min_rating'])) {
+				$meta_query[] = array(
+					'key'           => '_wc_average_rating',
+					'value'         => isset($_GET['min_rating']) ? floatval($_GET['min_rating']) : 0,
+					'compare'       => '>=',
+					'type'          => 'DECIMAL',
+					'rating_filter' => true,
+				);
+			}
+
 			// price range for all published products
 			$unfiltered_price_range = $this->getPriceRange(false);
 
@@ -490,10 +500,11 @@ if (!class_exists('WCAPF')) {
 					}
 
 					$meta_query[] = array(
-						'key'     => '_price',
-						'value'   => array($min, $max),
-						'type'    => 'numeric',
-						'compare' => 'BETWEEN'
+						'key'          => '_price',
+						'value'        => array($min, $max),
+						'type'         => 'numeric',
+						'compare'      => 'BETWEEN',
+						'price_filter' => true,
 					);
 				}
 			}
@@ -854,11 +865,7 @@ if (!class_exists('WCAPF')) {
 		 */
 		public function loadPluginTextdomain()
 		{
-			$domain = $this->plugin_slug;
-			$locale = apply_filters('plugin_locale', get_locale(), $domain);
-
-			load_textdomain($domain, trailingslashit(WP_LANG_DIR) . $domain . '/' . $domain . '-' . $locale . '.mo');
-			load_plugin_textdomain($domain, FALSE, plugin_dir_path(__FILE__) . 'languages/');
+			load_plugin_textdomain('wcapf', FALSE, basename(dirname(__FILE__)) . '/languages/');
 		}
 
 		/**
