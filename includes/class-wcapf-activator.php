@@ -1,0 +1,27 @@
+<?php
+/**
+ * Fired during plugin activation.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan Main
+ */
+
+/**
+ * This class defines all code necessary to run during the plugin's activation.
+ */
+class WCAPF_Activator {
+
+	/**
+	 * Short Description. (use period)
+	 *
+	 * Long Description.
+	 *
+	 * @since    1.0.0
+	 */
+	public static function activate() {
+
+	}
+
+}

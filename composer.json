@@ -1,0 +1,13 @@
+{
+	"name": "shamimmoeen/wc-ajax-product-filter",
+	"description": "Filter WooCommerce products.",
+	"type": "wp-plugin",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Mainul Hassan",
+			"email": "shamim.moeen@gmail.com"
+		}
+	],
+	"require": {}
+}
