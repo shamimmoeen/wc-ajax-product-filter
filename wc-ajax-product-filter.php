@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * TODO: Define the constands inside the loader class.
+ * TODO: Define the constants inside the loader class.
  */
 
 // Defines constant WCAPF_SLUG

@@ -2,7 +2,7 @@
 /**
  * Helper functions.
  *
- * @package WC_Ajax_Product_Filter
+ * @package    WC_Ajax_Product_Filter
  * @subpackage Functions
  */
 
@@ -14,12 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Get current page URL with various filtering props supported by WC.
  *
- * @see   WC_Widget()->get_current_page_url()
  * @since 3.0.0
  *
  * @return string
+ * @see   WC_Widget()->get_current_page_url()
  */
 function wcapf_get_current_page_url() {
+	$queried_object = get_queried_object();
+	$link           = '';
+
 	if ( defined( 'SHOP_IS_ON_FRONT' ) ) {
 		$link = home_url();
 	} elseif ( is_shop() ) {
@@ -28,9 +31,8 @@ function wcapf_get_current_page_url() {
 		$link = get_term_link( get_query_var( 'product_cat' ), 'product_cat' );
 	} elseif ( is_product_tag() ) {
 		$link = get_term_link( get_query_var( 'product_tag' ), 'product_tag' );
-	} else {
-		$queried_object = get_queried_object();
-		$link           = get_term_link( $queried_object->slug, $queried_object->taxonomy );
+	} elseif ( $queried_object ) {
+		$link = get_term_link( $queried_object->slug, $queried_object->taxonomy );
 	}
 
 	// Min/Max.
@@ -87,8 +89,8 @@ function wcapf_get_current_page_url() {
 /**
  * Builds the query string.
  *
- * @param int        $key                        the key identifier
- * @param int|string $value                       the value
+ * @param int        $key             the key identifier
+ * @param int|string $value           the value
  * @param bool       $multiple_filter is multiple filter enabled
  *
  * @return string the query string

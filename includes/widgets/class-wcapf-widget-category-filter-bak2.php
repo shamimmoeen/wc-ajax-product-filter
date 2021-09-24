@@ -73,6 +73,116 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$show_children_only = isset( $instance['show_children_only'] ) ? boolval( $instance['show_children_only'] ) : '';
 		$hide_empty         = isset( $instance['hide_empty'] ) ? boolval( $instance['hide_empty'] ) : '';
 
+		$list_args = array(
+			'taxonomy'     => 'product_cat',
+			'show_count'   => $show_count,
+			'hierarchical' => $hierarchical,
+			'hide_empty'   => $hide_empty,
+		);
+
+		$this->current_cat   = false;
+		$this->cat_ancestors = array();
+
+		if ( is_tax( 'product_cat' ) ) {
+			$this->current_cat   = $wp_query->queried_object;
+			$this->cat_ancestors = get_ancestors( $this->current_cat->term_id, 'product_cat' );
+		}
+
+		// Show Siblings and Children Only.
+		if ( $show_children_only && $this->current_cat ) {
+			if ( $hierarchical ) {
+				$include = array_merge(
+					$this->cat_ancestors,
+					array( $this->current_cat->term_id ),
+					get_terms(
+						'product_cat',
+						array(
+							'fields'       => 'ids',
+							'parent'       => 0,
+							'hierarchical' => true,
+							'hide_empty'   => false,
+						)
+					),
+					get_terms(
+						'product_cat',
+						array(
+							'fields'       => 'ids',
+							'parent'       => $this->current_cat->term_id,
+							'hierarchical' => true,
+							'hide_empty'   => false,
+						)
+					)
+				);
+
+				// Gather siblings of ancestors.
+				if ( $this->cat_ancestors ) {
+					foreach ( $this->cat_ancestors as $ancestor ) {
+						$include = array_merge(
+							$include,
+							get_terms(
+								'product_cat',
+								array(
+									'fields'       => 'ids',
+									'parent'       => $ancestor,
+									'hierarchical' => false,
+									'hide_empty'   => false,
+								)
+							)
+						);
+					}
+				}
+			} else {
+				// Direct children.
+				$include = get_terms(
+					'product_cat',
+					array(
+						'fields'       => 'ids',
+						'parent'       => $this->current_cat->term_id,
+						'hierarchical' => true,
+						'hide_empty'   => false,
+					)
+				);
+			}
+
+			$list_args['include']     = implode( ',', $include );
+			$dropdown_args['include'] = $list_args['include'];
+
+			if ( empty( $include ) ) {
+				return;
+			}
+		} elseif ( $show_children_only ) {
+			$dropdown_args['depth']        = 1;
+			$dropdown_args['child_of']     = 0;
+			$dropdown_args['hierarchical'] = 1;
+			$list_args['depth']            = 1;
+			$list_args['child_of']         = 0;
+			$list_args['hierarchical']     = 1;
+		}
+
+		if ( 'list' === $display_type ) {
+			require_once WC()->plugin_path() . '/includes/walkers/class-wc-product-cat-list-walker.php';
+			require_once WCAPF_PATH . 'includes/class-wcapf-product-cat-list-walker.php';
+
+			$walker_args = array( $query_type, $enable_multiple );
+
+			$list_args['walker']                     = new WCAPF_Product_Cat_List_Walker( $walker_args );
+			$list_args['title_li']                   = '';
+			$list_args['pad_counts']                 = 1;
+			$list_args['show_option_none']           = __( 'No product categories exist', 'wc-ajax-product-filter' );
+			$list_args['current_category']           = $this->current_cat ? $this->current_cat->term_id : '';
+			$list_args['current_category_ancestors'] = $this->cat_ancestors;
+
+			echo '<ul class="product-categories">';
+
+			wp_list_categories( apply_filters( 'wcapf_product_categories_widget_args', $list_args ) );
+
+			echo '</ul>';
+		} else {
+			echo 'preview';
+		}
+
+		echo $args['after_widget'];
+
 		$taxonomy = 'product_cat';
 		$terms    = get_terms( array( 'taxonomy' => $taxonomy ) );
 
@@ -89,9 +199,12 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$walker->show_children_only = $show_children_only;
 		$walker->hide_empty         = $hide_empty;
 
+		echo 'build the menu';
 		$walker->build_menu( $tree );
 
-		echo $args['after_widget'];
+		echo '<pre>';
+		print_r( $tree );
+		echo '</pre>';
 	}
 
 	/**
