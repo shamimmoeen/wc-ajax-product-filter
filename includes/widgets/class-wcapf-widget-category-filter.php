@@ -19,20 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WCAPF_Widget_Category_Filter extends WP_Widget {
 
 	/**
-	 * Category ancestors.
-	 *
-	 * @var        array
-	 */
-	public $cat_ancestors;
-
-	/**
-	 * Current Category.
-	 *
-	 * @var        boolean
-	 */
-	public $current_cat;
-
-	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -89,7 +75,7 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$walker->show_children_only = $show_children_only;
 		$walker->hide_empty         = $hide_empty;
 
-		$walker->build_menu( $tree );
+		echo $walker->build_menu( $tree );
 
 		echo $args['after_widget'];
 	}

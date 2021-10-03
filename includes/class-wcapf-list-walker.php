@@ -2,7 +2,7 @@
 /**
  * A class for displaying various tree-like structures.
  *
- * @package WC_Ajax_Product_Filter
+ * @package    WC_Ajax_Product_Filter
  * @subpackage Class
  */
 
@@ -17,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 3.0.0
  */
 class WCAPF_List_Walker {
+
 	/**
 	 * Display type
 	 *
@@ -67,37 +68,30 @@ class WCAPF_List_Walker {
 	public $hide_empty;
 
 	/**
-	 * Gets the menu item link.
+	 * Build the menu.
 	 *
-	 * @return  string  The url with query strings.
+	 * @param array $tree The tree as multidimensional array.
 	 */
-	public function get_item_link() {
-		return $link;
-	}
+	public function build_menu( $tree ) {
+		$html = '';
 
-	/**
-	 * Build non hierarchical menu.
-	 *
-	 * @param array $tree      The tree as multidimensional array.
-	 * @param bool  $wrap_with Should we wrap with 'ul' or not.
-	 */
-	public function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
-		if ( $wrap_with ) {
-			echo '<ul>';
-		}
+		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
+			$html .= '<div class="wcapf-layered-nav">';
 
-		foreach ( $tree as $item ) {
-			echo '<li><a href="#">' . esc_html( $item['name'] ) . '</a>';
-
-			if ( isset( $item['children'] ) ) {
-				$wrap_with = false;
-				$this->build_non_hierarchical_menu( $item['children'], $wrap_with );
+			if ( isset( $this->hierarchical ) && $this->hierarchical ) {
+				$html .= $this->build_hierarchical_menu( $tree );
+			} else {
+				$html .= $this->build_non_hierarchical_menu( $tree );
 			}
+
+		} else {
+			$html .= '<div class="wcapf-dropdown-nav">';
+			$html .= 'Make the dropdown';
 		}
 
-		if ( $wrap_with ) {
-			echo '</ul>';
-		}
+		$html .= '</div>';
+
+		return apply_filters( 'wcapf_build_menu', $html, $this );
 	}
 
 	/**
@@ -106,46 +100,65 @@ class WCAPF_List_Walker {
 	 * @param array $tree The tree as multidimensional array.
 	 */
 	public function build_hierarchical_menu( $tree ) {
+		$html = '';
+
 		if ( $tree ) {
 			$size      = count( $tree );
 			$increment = 0;
 
 			foreach ( $tree as $item ) {
-				$increment++;
+				$increment ++;
 
 				if ( 1 === $increment ) {
-					echo '<ul>';
+					$html .= '<ul>';
 				}
 
-				echo '<li><a href="#">' . esc_html( $item['name'] ) . '</a>';
+				$html .= '<li><a href="#">' . esc_html( $item['name'] ) . '</a>';
+				$html .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
 
 				if ( isset( $item['children'] ) ) {
-					$this->build_hierarchical_menu( $item['children'] );
+					$html .= $this->build_hierarchical_menu( $item['children'] );
 				}
 
-				echo '</li>';
+				$html .= '</li>';
 
 				if ( $increment === $size ) {
-					echo '</ul>';
+					$html .= '</ul>';
 				}
 			}
 		}
+
+		return $html;
 	}
 
 	/**
-	 * Build the menu.
+	 * Build non-hierarchical menu.
 	 *
-	 * @param array $tree The tree as multidimensional array.
+	 * @param array $tree      The tree as multidimensional array.
+	 * @param bool  $wrap_with Determine if we wrap with 'ul' or not.
 	 */
-	public function build_menu( $tree ) {
-		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
-			if ( isset( $this->hierarchical ) && 1 === $this->hierarchical ) {
-				$this->build_hierarchical_menu( $tree );
-			} else {
-				$this->build_non_hierarchical_menu( $tree );
-			}
-		} else {
-			echo 'Make the dropdown';
+	public function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
+		$html = '';
+
+		if ( $wrap_with ) {
+			$html .= '<ul>';
 		}
+
+		foreach ( $tree as $item ) {
+			$html .= '<li><a href="#">' . esc_html( $item['name'] ) . '</a>';
+
+			if ( isset( $item['children'] ) ) {
+				$wrap_with = false;
+
+				$html .= $this->build_non_hierarchical_menu( $item['children'], $wrap_with );
+			}
+		}
+
+		if ( $wrap_with ) {
+			$html .= '</ul>';
+		}
+
+		return $html;
 	}
+
 }

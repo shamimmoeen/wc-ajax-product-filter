@@ -11,67 +11,51 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since      3.0.0
  */
 class WCAPF_Product_Filter {
+
 	/**
-	 * Builds the taxonomy tree.
+	 * Returns an instance of this class.
 	 *
-	 * @param array   $terms     The terms
-	 * @param integer $parent_id The parent identifier
-	 *
-	 * @return     array    The taxonomy tree
+	 * @return     WCAPF_Product_Filter
 	 */
-	public function build_tree( $terms, $parent_id = 0 ) {
-		$tree = array();
+	public static function instance() {
+		// Store the instance locally to avoid private static replication
+		static $instance = null;
 
-		foreach ( $terms as $term ) {
-			if ( $term['parent_id'] == $parent_id ) {
-				$children = $this->build_tree( $terms, $term['id'] );
-
-				if ( $children ) {
-					$term['children'] = $children;
-				}
-
-				$tree[ $term['id'] ] = $term;
-			}
+		// Only run these methods if they haven't been ran previously
+		if ( null === $instance ) {
+			$instance = new WCAPF_Product_Filter();
+			$instance->run();
 		}
 
-		return $tree;
+		return $instance;
 	}
 
-	public function count_parent_term_items( $tree ) {
-		$array_iterator     = new RecursiveArrayIterator( $tree );
-		$recursive_iterator = new RecursiveIteratorIterator( $array_iterator, RecursiveIteratorIterator::CHILD_FIRST );
+	/**
+	 * Runs the class.
+	 */
+	public function run() {
+		$this->includes();
+		$this->init_hooks();
+	}
 
-		foreach ( $recursive_iterator as $key => $value ) {
-			if ( is_array( $value ) && array_key_exists( 'children', $value ) ) {
-				$array_with_children       = $value;
-				$array_with_children_count = $array_with_children['count'];
+	/**
+	 * Loads the required files.
+	 */
+	public function includes() {
+		require_once WCAPF_PATH . 'includes/wcapf-functions.php';
+	}
 
-				foreach ( $array_with_children['children'] as $children ) {
-					$array_with_children_count = $array_with_children_count + $children['count'];
-				}
-
-				$array_with_children['count'] = $array_with_children_count;
-				$current_depth                = $recursive_iterator->getDepth();
-
-				for ( $sub_depth = $current_depth; $sub_depth >= 0; $sub_depth -- ) {
-					// Get the current level iterator
-					$sub_iterator = $recursive_iterator->getSubIterator( $sub_depth );
-
-					// If we are on the level we want to change, use the replacements
-					// ($array_with_children) otherwise set the key to the parent
-					// iterators value
-					if ( $sub_depth === $current_depth ) {
-						$value = $array_with_children;
-					} else {
-						$value = $recursive_iterator->getSubIterator( ( $sub_depth + 1 ) )->getArrayCopy();
-					}
-
-					$sub_iterator->offsetSet( $sub_iterator->key(), $value );
-				}
-			}
-		}
-
-		return $recursive_iterator->getArrayCopy();
+	/**
+	 * Hook into actions and filters.
+	 */
+	public function init_hooks() {
+		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
+		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
+		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
+		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
+		add_action( 'woocommerce_product_query', array( $this, 'set_filter' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
+		add_action( 'woocommerce_update_product', array( $this, 'update_product' ) );
 	}
 
 	/**
@@ -168,8 +152,6 @@ class WCAPF_Product_Filter {
 
 				$taxonomy_tree = $this->build_tree( $this->prepare_to_make_tree( array_keys( $counts ), $counts, $terms ) );
 
-				return $taxonomy_tree;
-
 				return $this->count_parent_term_items( $taxonomy_tree );
 			}
 
@@ -181,6 +163,102 @@ class WCAPF_Product_Filter {
 		}
 
 		return array_map( 'absint', (array) $cached_counts[ $query_hash ] );
+	}
+
+	/**
+	 * Builds the taxonomy tree.
+	 *
+	 * @param array   $terms     The terms
+	 * @param integer $parent_id The parent identifier
+	 *
+	 * @return     array    The taxonomy tree
+	 */
+	public function build_tree( $terms, $parent_id = 0 ) {
+		$tree = array();
+
+		foreach ( $terms as $term ) {
+			if ( $term['parent_id'] == $parent_id ) {
+				$children = $this->build_tree( $terms, $term['id'] );
+
+				if ( $children ) {
+					$term['children'] = $children;
+				}
+
+				$tree[ $term['id'] ] = $term;
+			}
+		}
+
+		return $tree;
+	}
+
+	/**
+	 * Add the missing parent terms to build taxonomy tree.
+	 *
+	 * @param array $term_ids          The term ids
+	 * @param array $term_items        The term ids and counts
+	 * @param array $terms             List of WP_Term instances and their
+	 *                                 children
+	 * @param array $new_array         The new array to hold the terms
+	 *
+	 * @return     array  All terms including parent terms
+	 */
+	public function prepare_to_make_tree( $term_ids, $term_items, $terms, $new_array = array() ) {
+		foreach ( $term_ids as $term_id ) {
+			$term_data = $terms[ $term_id ];
+			$parent_id = $term_data->parent;
+
+			$term = array(
+				'id'        => $term_id,
+				'name'      => $term_data->name,
+				'count'     => isset( $term_items[ $term_id ] ) ? $term_items[ $term_id ] : 0,
+				'parent_id' => $parent_id,
+			);
+
+			$new_array[ $term_id ] = $term;
+
+			if ( $parent_id > 0 && ! array_key_exists( $parent_id, $new_array ) ) {
+				$new_array = $new_array + $this->prepare_to_make_tree( array( $parent_id ), $term_items, $terms, $new_array );
+			}
+		}
+
+		return $new_array;
+	}
+
+	public function count_parent_term_items( $tree ) {
+		$array_iterator     = new RecursiveArrayIterator( $tree );
+		$recursive_iterator = new RecursiveIteratorIterator( $array_iterator, RecursiveIteratorIterator::CHILD_FIRST );
+
+		foreach ( $recursive_iterator as $key => $value ) {
+			if ( is_array( $value ) && array_key_exists( 'children', $value ) ) {
+				$array_with_children       = $value;
+				$array_with_children_count = $array_with_children['count'];
+
+				foreach ( $array_with_children['children'] as $children ) {
+					$array_with_children_count = $array_with_children_count + $children['count'];
+				}
+
+				$array_with_children['count'] = $array_with_children_count;
+				$current_depth                = $recursive_iterator->getDepth();
+
+				for ( $sub_depth = $current_depth; $sub_depth >= 0; $sub_depth -- ) {
+					// Get the current level iterator
+					$sub_iterator = $recursive_iterator->getSubIterator( $sub_depth );
+
+					// If we are on the level we want to change, use the replacements
+					// ($array_with_children) otherwise set the key to the parent
+					// iterators value
+					if ( $sub_depth === $current_depth ) {
+						$value = $array_with_children;
+					} else {
+						$value = $recursive_iterator->getSubIterator( ( $sub_depth + 1 ) )->getArrayCopy();
+					}
+
+					$sub_iterator->offsetSet( $sub_iterator->key(), $value );
+				}
+			}
+		}
+
+		return $recursive_iterator->getArrayCopy();
 	}
 
 	/**
@@ -220,88 +298,9 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * Loads the required files.
-	 */
-	public function includes() {
-		require_once WCAPF_PATH . 'includes/wcapf-functions.php';
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	public function init_hooks() {
-		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
-		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
-		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
-		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
-		add_action( 'woocommerce_product_query', array( $this, 'set_filter' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
-		add_action( 'woocommerce_update_product', array( $this, 'update_product' ) );
-	}
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return     WCAPF_Product_Filter
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been ran previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Product_Filter();
-			$instance->run();
-		}
-
-		return $instance;
-	}
-
-	/**
 	 * Loads frontend scripts.
 	 */
 	public function load_frontend_scripts() {
-	}
-
-	/**
-	 * Add the missing parent terms to build taxonomy tree.
-	 *
-	 * @param array $term_ids          The term ids
-	 * @param array $term_items        The term ids and counts
-	 * @param array $terms             List of WP_Term instances and their
-	 *                                 children
-	 * @param array $new_array         The new array to hold the terms
-	 *
-	 * @return     array  All terms including parent terms
-	 */
-	public function prepare_to_make_tree( $term_ids, $term_items, $terms, $new_array = array() ) {
-		foreach ( $term_ids as $term_id ) {
-			$term_data = $terms[ $term_id ];
-			$parent_id = $term_data->parent;
-
-			$term = array(
-				'id'        => $term_id,
-				'name'      => $term_data->name,
-				'count'     => isset( $term_items[ $term_id ] ) ? $term_items[ $term_id ] : 0,
-				'parent_id' => $parent_id,
-			);
-
-			$new_array[ $term_id ] = $term;
-
-			if ( $parent_id > 0 && ! array_key_exists( $parent_id, $new_array ) ) {
-				$new_array = $new_array + $this->prepare_to_make_tree( array( $parent_id ), $term_items, $terms, $new_array );
-			}
-		}
-
-		return $new_array;
-	}
-
-	/**
-	 * Runs the class.
-	 */
-	public function run() {
-		$this->includes();
-		$this->init_hooks();
 	}
 
 	/**
