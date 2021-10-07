@@ -14,11 +14,7 @@
 class WCAPF_Activator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
+	 * @since 3.0.0
 	 */
 	public static function activate() {
 

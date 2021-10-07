@@ -29,10 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * TODO: Define the constants inside the loader class.
- */
-
 // Defines constant WCAPF_SLUG
 if ( ! defined( 'WCAPF_SLUG' ) ) {
 	define( 'WCAPF_SLUG', 'wc-ajax-product-filter' );
@@ -48,13 +44,23 @@ if ( ! defined( 'WCAPF_PLUGIN_FILE' ) ) {
 	define( 'WCAPF_PLUGIN_FILE', __FILE__ );
 }
 
+// Defines constant WCAPF_PLUGIN_DIR
+if ( ! defined( 'WCAPF_PLUGIN_DIR' ) ) {
+	define( 'WCAPF_PLUGIN_DIR', __DIR__ );
+}
+
+// Defines constant WCAPF_PLUGIN_URL
+if ( ! defined( 'WCAPF_PLUGIN_URL' ) ) {
+	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
 /**
  * The code that runs during plugin activation.
  *
  * @since 3.0.0
  */
 function wcapf_activate() {
-	require_once plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'includes/class-wcapf-activator.php';
+	require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-activator.php';
 	WCAPF_Activator::activate();
 }
 
@@ -64,7 +70,7 @@ function wcapf_activate() {
  * @since 3.0.0
  */
 function wcapf_deactivate() {
-	require_once plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'includes/class-wcapf-deactivator.php';
+	require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-deactivator.php';
 	WCAPF_Deactivator::deactivate();
 }
 
@@ -72,7 +78,7 @@ register_activation_hook( WCAPF_PLUGIN_FILE, 'wcapf_activate' );
 register_deactivation_hook( WCAPF_PLUGIN_FILE, 'wcapf_deactivate' );
 
 // Include the WCAPF main class
-require_once plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'includes/class-wcapf.php';
+require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf.php';
 
 /**
  * Instantiate the main class.

@@ -6,16 +6,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Product_Filter class.
+ * WCAPF_Filter class.
  *
- * @since      3.0.0
+ * @since 3.0.0
  */
-class WCAPF_Product_Filter {
+class WCAPF_Filter {
 
 	/**
 	 * Returns an instance of this class.
 	 *
-	 * @return     WCAPF_Product_Filter
+	 * @return WCAPF_Filter
 	 */
 	public static function instance() {
 		// Store the instance locally to avoid private static replication
@@ -23,26 +23,11 @@ class WCAPF_Product_Filter {
 
 		// Only run these methods if they haven't been run previously
 		if ( null === $instance ) {
-			$instance = new WCAPF_Product_Filter();
-			$instance->run();
+			$instance = new WCAPF_Filter();
+			$instance->init_hooks();
 		}
 
 		return $instance;
-	}
-
-	/**
-	 * Runs the class.
-	 */
-	public function run() {
-		$this->includes();
-		$this->init_hooks();
-	}
-
-	/**
-	 * Loads the required files.
-	 */
-	public function includes() {
-		require_once WCAPF_PATH . 'includes/wcapf-functions.php';
 	}
 
 	/**
@@ -58,7 +43,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @param WP_Query $query Query instance.
 	 *
-	 * @return     WP_Query  Return modified query instance.
+	 * @return WP_Query Return modified query instance.
 	 */
 	public function set_filter( $query ) {
 		/**
@@ -68,29 +53,40 @@ class WCAPF_Product_Filter {
 			return $query;
 		}
 
-		$tax_query = array();
+		echo '<pre>';
+		print_r( $query );
+		echo '</pre>';
 
-		if ( isset( $_GET['cata'] ) ) {
-			$cata = array_map( 'absint', $_GET['cata'] );
-
-			$tax_query[] = array(
-				'taxonomy'         => 'product_cat',
-				'field'            => 'term_id',
-				'terms'            => $cata,
-				'operator'         => 'AND',
-				'include_children' => 1,
-			);
-		}
-
-		$query->set( 'tax_query', $tax_query );
-
+		// $tax_query  = WC_Query::get_main_tax_query();
+		//
 		// echo '<pre>';
-		// print_r($query);
+		// print_r( $tax_query );
+		// echo '</pre>';
+		//
+		// if ( isset( $_GET['cata'] ) ) {
+		// 	$_cata = explode( ',', $_GET['cata'] );
+		// 	$cata = array_map( 'absint', $_cata );
+		//
+		// 	$tax_query[] = array(
+		// 		'taxonomy'         => 'product_cat',
+		// 		'field'            => 'term_id',
+		// 		'terms'            => $cata,
+		// 		'operator'         => 'AND',
+		// 		'include_children' => 1,
+		// 	);
+		// }
+		//
+		// // $query->set( 'tax_query', $tax_query );
+		//
+		// $query->tax_query = new WP_Tax_Query( $tax_query );
+		//
+		// echo '<pre>';
+		// print_r( $query );
 		// echo '</pre>';
 
-		// return $query;
+		return $query;
 	}
 
 }
 
-add_action( 'plugins_loaded', array( 'WCAPF_Product_Filter', 'instance' ) );
+add_action( 'plugins_loaded', array( 'WCAPF_Filter', 'instance' ) );
