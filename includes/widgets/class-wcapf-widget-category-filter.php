@@ -23,14 +23,14 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description'           => __( 'Filter products by category.', 'wc-ajax-product-filter' ),
-			'show_instance_in_rest' => true,
+				'description'           => __( 'Filter products by category.', 'wc-ajax-product-filter' ),
+				'show_instance_in_rest' => true,
 		);
 
 		parent::__construct(
-			'wcapf-category-filter', // Base ID
-			__( 'WC Ajax Product Filter by Category', 'wc-ajax-product-filter' ), // Name of Widget
-			$widget_ops // args
+				'wcapf-category-filter', // Base ID
+				__( 'WC Ajax Product Filter by Category', 'wc-ajax-product-filter' ), // Name of Widget
+				$widget_ops // args
 		);
 	}
 
@@ -45,12 +45,6 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 			return;
 		}
 
-		echo $args['before_widget']; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-
-		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
-		}
-
 		$display_type       = isset( $instance['display_type'] ) ? $instance['display_type'] : '';
 		$query_type         = isset( $instance['query_type'] ) ? $instance['query_type'] : '';
 		$enable_multiple    = isset( $instance['enable_multiple'] ) ? boolval( $instance['enable_multiple'] ) : '';
@@ -62,8 +56,8 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$taxonomy = 'product_cat';
 		$terms    = get_terms( array( 'taxonomy' => $taxonomy ) );
 
-		$wcapf = WCAPF_Product_Filter::instance();
-		$tree  = $wcapf->get_filtered_term_product_counts( $terms, $taxonomy, 'and' );
+		$term_helper = new WCAPF_Term_Helper();
+		$tree        = $term_helper->get_filtered_term_product_counts( $terms, $taxonomy, 'and' );
 
 		$walker = new WCAPF_List_Walker();
 
@@ -74,6 +68,28 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$walker->hierarchical       = $hierarchical;
 		$walker->show_children_only = $show_children_only;
 		$walker->hide_empty         = $hide_empty;
+
+		if ( ! $tree ) {
+			$widget_class = 'wcapf-widget-hidden woocommerce wcapf-ajax-term-filter';
+		} else {
+			$widget_class = 'woocommerce wcapf-ajax-term-filter';
+		}
+
+		$before_widget = $args['before_widget'];
+
+		// no class found, so add it
+		if ( strpos( $before_widget, 'class' ) === false ) {
+			$before_widget = str_replace( '>', 'class="' . $widget_class . '"', $before_widget );
+		} // class found but not the one that we need, so add it
+		else {
+			$before_widget = str_replace( 'class="', 'class="' . $widget_class . ' ', $before_widget );
+		}
+
+		echo $before_widget; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+
+		if ( ! empty( $instance['title'] ) ) {
+			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
+		}
 
 		echo $walker->build_menu( $tree );
 
@@ -100,11 +116,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 				<?php esc_html_e( 'Title:', 'wc-ajax-product-filter' ); ?>
 			</label>
 			<input
-				class="widefat"
-				id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
-				type="text"
-				value="<?php echo esc_attr( $title ); ?>"
+					class="widefat"
+					id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
+					type="text"
+					value="<?php echo esc_attr( $title ); ?>"
 			>
 		</p>
 		<p>
@@ -112,9 +128,9 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 				<?php esc_html_e( 'Display Type', 'wc-ajax-product-filter' ); ?>
 			</label>
 			<select
-				class="widefat"
-				id="<?php echo esc_attr( $this->get_field_id( 'display_type' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'display_type' ) ); ?>"
+					class="widefat"
+					id="<?php echo esc_attr( $this->get_field_id( 'display_type' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'display_type' ) ); ?>"
 			>
 				<option value="list" <?php selected( $display_type, 'list' ); ?>>
 					<?php esc_html_e( 'List', 'wc-ajax-product-filter' ); ?>
@@ -129,9 +145,9 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 				<?php esc_html_e( 'Query Type', 'wc-ajax-product-filter' ); ?>
 			</label>
 			<select
-				class="widefat"
-				id="<?php echo esc_attr( $this->get_field_id( 'query_type' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'query_type' ) ); ?>"
+					class="widefat"
+					id="<?php echo esc_attr( $this->get_field_id( 'query_type' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'query_type' ) ); ?>"
 			>
 				<option value="and" <?php selected( $query_type, 'and' ); ?>>
 					<?php esc_html_e( 'AND', 'wc-ajax-product-filter' ); ?>
@@ -143,11 +159,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		</p>
 		<p>
 			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'enable_multiple' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'enable_multiple' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $enable_multiple, 1 ); ?>
+					id="<?php echo esc_attr( $this->get_field_id( 'enable_multiple' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'enable_multiple' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $enable_multiple, 1 ); ?>
 			>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'enable_multiple' ) ); ?>">
 				<?php esc_html_e( 'Enable multiple filter', 'wc-ajax-product-filter' ); ?>
@@ -155,11 +171,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		</p>
 		<p>
 			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'show_count' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'show_count' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $show_count, 1 ); ?>
+					id="<?php echo esc_attr( $this->get_field_id( 'show_count' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'show_count' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $show_count, 1 ); ?>
 			>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_count' ) ); ?>">
 				<?php esc_html_e( 'Show count', 'wc-ajax-product-filter' ); ?>
@@ -167,11 +183,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		</p>
 		<p>
 			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $hierarchical, 1 ); ?>
+					id="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $hierarchical, 1 ); ?>
 			>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>">
 				<?php esc_html_e( 'Show hierarchy', 'wc-ajax-product-filter' ); ?>
@@ -179,11 +195,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		</p>
 		<p>
 			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'show_children_only' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $show_children_only, 1 ); ?>
+					id="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'show_children_only' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $show_children_only, 1 ); ?>
 			>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>">
 				<?php esc_html_e( 'Only show children of the current attribute', 'wc-ajax-product-filter' ); ?>
@@ -191,11 +207,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		</p>
 		<p>
 			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'hide_empty' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'hide_empty' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $hide_empty, 1 ); ?>
+					id="<?php echo esc_attr( $this->get_field_id( 'hide_empty' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'hide_empty' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $hide_empty, 1 ); ?>
 			>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'hide_empty' ) ); ?>">
 				<?php esc_html_e( 'Hide empty categories', 'wc-ajax-product-filter' ); ?>

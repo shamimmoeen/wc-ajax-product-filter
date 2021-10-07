@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC Ajax Product Filter main class.
  *
- * @author Mainul Hassan Main
  * @since  3.0.0
+ * @author Mainul Hassan Main
  */
 class WCAPF {
 
@@ -74,8 +74,8 @@ class WCAPF {
 	/**
 	 * Defines constants if not already defined.
 	 *
-	 * @param string      $name   The name.
-	 * @param string|bool $value  The value.
+	 * @param string      $name  The name.
+	 * @param string|bool $value The value.
 	 */
 	public function define( $name, $value ) {
 		if ( ! defined( $name ) ) {
@@ -97,8 +97,9 @@ class WCAPF {
 	 */
 	public function includes() {
 		require_once WCAPF_PATH . 'includes/class-wcapf-admin.php';
-		require_once WCAPF_PATH . 'includes/class-wcapf-product-filter.php';
+		require_once WCAPF_PATH . 'includes/class-wcapf-filter.php';
 		require_once WCAPF_PATH . 'includes/class-wcapf-list-walker.php';
+		require_once WCAPF_PATH . 'includes/class-wcapf-term-helper.php';
 
 		// require_once WCAPF_PATH . 'includes/widgets/class-wcapf-widget-active-filters.php';
 		// require_once WCAPF_PATH . 'includes/widgets/class-wcapf-widget-attribute-filter.php';
@@ -113,6 +114,30 @@ class WCAPF {
 	public function init_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'admin_notices', array( $this, 'check_requirements' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
+	}
+
+	public function default_settings() {
+		return array(
+			'shop_loop_container'  => '.wcapf-before-products',
+			'not_found_container'  => '.wcapf-before-products',
+			'pagination_container' => '.woocommerce-pagination',
+			'overlay_bg_color'     => '#fff',
+			'sorting_control'      => '1',
+			'scroll_to_top'        => '1',
+			'scroll_to_top_offset' => '100',
+			'custom_scripts'       => ''
+		);
+	}
+
+	public function load_frontend_scripts() {
+		wp_enqueue_style( 'wcapf-styles', WCAPF_URL . 'assets/css/wcapf-styles.css', array(), filemtime( WCAPF_PATH . 'assets/css/wcapf-styles.css' ) );
+		wp_enqueue_style( 'wcapf-fontawesome-icons', WCAPF_URL . 'assets/css/font-awesome.min.css', array(), filemtime( WCAPF_PATH . 'assets/css/font-awesome.min.css' ) );
+		wp_enqueue_script( 'wcapf-ui-slider', WCAPF_URL . 'assets/js/nouislider.min.js', array( 'jquery' ), filemtime( WCAPF_PATH . 'assets/js/nouislider.min.js' ), true );
+		wp_enqueue_script( 'wcapf-price-filter', WCAPF_URL . 'assets/js/price-filter.js', array( 'jquery' ), filemtime( WCAPF_PATH . 'assets/js/price-filter.js' ), true );
+		wp_enqueue_script( 'wcapf-scripts', WCAPF_URL . 'assets/js/scripts.js', array( 'jquery' ), filemtime( WCAPF_PATH . 'assets/js/scripts.js' ), true );
+
+		wp_localize_script( 'wcapf-scripts', 'wcapf_params', $this->default_settings() );
 	}
 
 	/**
@@ -124,7 +149,7 @@ class WCAPF {
 		// Store the instance locally to avoid private static replication
 		static $instance = null;
 
-		// Only run these methods if they haven't been ran previously
+		// Only run these methods if they haven't been run previously
 		if ( null === $instance ) {
 			$instance = new WCAPF();
 			$instance->run();

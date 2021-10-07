@@ -73,10 +73,19 @@ class WCAPF_List_Walker {
 	 * @param array $tree The tree as multidimensional array.
 	 */
 	public function build_menu( $tree ) {
-		$html = '';
+		$html  = '';
+		$attrs = '';
+
+		if ( $this->enable_multiple ) {
+			$attrs .= 'data-multiple-filter="1"';
+		} else {
+			$attrs .= 'data-multiple-filter="0"';
+		}
+
+		$attrs .= 'data-filter-key="cata"'; // todo cata or cato
 
 		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
-			$html .= '<div class="wcapf-layered-nav">';
+			$html .= '<div class="wcapf-layered-nav" ' . $attrs . '>';
 
 			if ( isset( $this->hierarchical ) && $this->hierarchical ) {
 				$html .= $this->build_hierarchical_menu( $tree );
@@ -95,6 +104,29 @@ class WCAPF_List_Walker {
 	}
 
 	/**
+	 * Tree/Menu item.
+	 *
+	 * @param array $item  The item array.
+	 * @param int   $depth The item depth.
+	 *
+	 * @return string
+	 */
+	private function tree_item( $item, $depth ) {
+		$html = '';
+
+		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
+		$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+
+		$inner = apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+
+		$html .= '<span class="item" data-filter-id="' . esc_attr( $item['id'] ) . '">';
+		$html .= $inner;
+		$html .= '</span>';
+
+		return $html;
+	}
+
+	/**
 	 * Build the hierarchical menu.
 	 *
 	 * @param array $tree The tree as multidimensional array.
@@ -109,12 +141,16 @@ class WCAPF_List_Walker {
 			foreach ( $tree as $item ) {
 				$increment ++;
 
+				$depth = $item['depth'];
+
 				if ( 1 === $increment ) {
-					$html .= '<ul>';
+					$parent_wrapper_class = apply_filters( 'wcapf_tree_parent_wrapper_class', 'with-children', $depth );
+
+					$html .= '<ul class="' . esc_attr( $parent_wrapper_class ) . '">';
 				}
 
-				$html .= '<li><a href="#">' . esc_html( $item['name'] ) . '</a>';
-				$html .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+				$html .= '<li>';
+				$html .= $this->tree_item( $item, $depth );
 
 				if ( isset( $item['children'] ) ) {
 					$html .= $this->build_hierarchical_menu( $item['children'] );
@@ -138,14 +174,16 @@ class WCAPF_List_Walker {
 	 * @param bool  $wrap_with Determine if we wrap with 'ul' or not.
 	 */
 	public function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
-		$html = '';
+		$html  = '';
+		$depth = 0;
 
 		if ( $wrap_with ) {
 			$html .= '<ul>';
 		}
 
 		foreach ( $tree as $item ) {
-			$html .= '<li><a href="#">' . esc_html( $item['name'] ) . '</a>';
+			$html .= '<li>';
+			$html .= $this->tree_item( $item, $depth );
 
 			if ( isset( $item['children'] ) ) {
 				$wrap_with = false;

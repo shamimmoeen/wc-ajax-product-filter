@@ -1,153 +1,135 @@
-jQuery(document).ready(function($) {
+var wcapf_params = wcapf_params || {
+	'shop_loop_container': '',
+	'not_found_container': '',
+	'pagination_container': '',
+	'overlay_bg_color': '',
+	'sorting_control': '',
+	'scroll_to_top': '',
+	'scroll_to_top_offset': '',
+	'custom_scripts': ''
+};
+
+jQuery( document ).ready( function( $ ) {
+
 	// return false if wcapf_params variable is not found
-	if (typeof wcapf_params === 'undefined') {
+	if ( typeof wcapf_params === 'undefined' ) {
 		return false;
 	}
 
-	// store widget ids those will be replaced with new data
+	// store widgets' id and filter information
 	var widgets = {};
 
-	$('.wcapf-ajax-term-filter').each(function(index) {
-		var widget_id = $(this).attr('id');
-		widgets[index] = widget_id;
-	});
+	var $wcapfTermFilter = $( '.wcapf-ajax-term-filter' );
 
-	// scripts to run before updating shop loop
-	wcapfBeforeUpdate = function() {
-		var overlay_color;
+	$wcapfTermFilter.each( function() {
+		var $widget = $( this ),
+			id = $widget.attr( 'id' ),
+			$wrapper = $widget.children( 'div' ),
+			filterKey = $wrapper.attr( 'data-filter-key' ),
+			multipleFilter = parseInt( $wrapper.attr( 'data-multiple-filter' ) );
 
-		if (wcapf_params.overlay_bg_color.length) {
-			overlay_color = wcapf_params.overlay_bg_color;
-		} else {
-			overlay_color = '#fff';
-		}
+		widgets[ id ] = {
+			filterKey: filterKey,
+			multipleFilter: multipleFilter
+		};
+	} );
 
-		var markup = '<div class="wcapf-before-update" style="background-color: ' + overlay_color + '"></div>',
-			holder,
-			top_scroll_offset = 0;
-
-		if ($(wcapf_params.shop_loop_container.length)) {
-			holder = wcapf_params.shop_loop_container;
-		} else if ($(wcapf_params.not_found_container).length) {
-			holder = wcapf_params.not_found_container;
-		}
-
-		if (holder.length) {
-			// show loading image
-			$(markup).prependTo(holder);
-
-			// scroll to top
-			if (typeof wcapf_params.scroll_to_top !== 'undefined' && wcapf_params.scroll_to_top == true) {
-				var scroll_to_top_offset,
-					top_scroll_offset;
-
-				if (typeof wcapf_params.scroll_to_top_offset !== 'undefined' && wcapf_params.scroll_to_top_offset.length) {
-					scroll_to_top_offset = parseInt(wcapf_params.scroll_to_top_offset);
-				} else {
-					scroll_to_top_offset = 100;
-				}
-
-				top_scroll_offset = $(holder).offset().top - scroll_to_top_offset;
-
-				if (top_scroll_offset < 0) {
-					top_scroll_offset = 0;
-				}
-
-				$('html, body').animate({scrollTop: top_scroll_offset}, 'slow');
-			}
-		}
-
+	// show a loading indicator
+	function wcapfBeforeUpdate() {
 	}
 
-	// scripts to run after updating shop loop
-	wcapfAfterUpdate = function() {}
+	// scroll to top
+	function wcapfAfterUpdate() {
+	}
 
-	// load filtered products
-	wcapfFilterProducts = function() {
-		// run before update function: show a loading image and scroll to top
+	// filter the products
+	function wcapfFilterProducts() {
 		wcapfBeforeUpdate();
 
-		$.get(window.location.href, function(data) {
-			var $data = jQuery(data),
-				shop_loop = $data.find(wcapf_params.shop_loop_container),
-				not_found = $data.find(wcapf_params.not_found_container);
+		$.get( window.location.href, function( data ) {
+			var $data = $( data ),
+				$shopLoopContainer = $data.find( wcapf_params.shop_loop_container ),
+				$notFoundContainer = $data.find( wcapf_params.not_found_container );
 
-			// replace widgets data with new data
-			$.each(widgets, function(index, id) {
-				var single_widget = $data.find('#' + id),
-					single_widget_class = $(single_widget).attr('class');
+			// replace widgets' data with new data
+			$.each( widgets, function( index, widget ) {
+				var $widget = $data.find( '#' + widget.id ),
+					widgetClass = $( $widget ).attr( 'class' );
 
 				// update class
-				$('#' + id).attr('class', single_widget_class);
+				$widget.attr( 'class', widgetClass );
+
 				// update widget
-				$('#' + id).html(single_widget.html());
-			});
+				$widget.html( $widget.html() );
+			} );
 
 			// replace old shop loop with new one
-			if (wcapf_params.shop_loop_container == wcapf_params.not_found_container) {
-				$(wcapf_params.shop_loop_container).html(shop_loop.html());
+			if ( wcapf_params.shop_loop_container === wcapf_params.not_found_container ) {
+				$( wcapf_params.shop_loop_container ).html( $shopLoopContainer.html() );
 			} else {
-				if ($(wcapf_params.not_found_container).length) {
-					if (shop_loop.length) {
-						$(wcapf_params.not_found_container).html(shop_loop.html());
-					} else if (not_found.length) {
-						$(wcapf_params.not_found_container).html(not_found.html());
+				if ( $( wcapf_params.not_found_container ).length ) {
+					if ( $shopLoopContainer.length ) {
+						$( wcapf_params.not_found_container ).html( $shopLoopContainer.html() );
+					} else if ( $notFoundContainer.length ) {
+						$( wcapf_params.not_found_container ).html( $notFoundContainer.html() );
 					}
-				} else if ($(wcapf_params.shop_loop_container).length) {
-					if (shop_loop.length) {
-						$(wcapf_params.shop_loop_container).html(shop_loop.html());
-					} else if (not_found.length) {
-						$(wcapf_params.shop_loop_container).html(not_found.html());
+				} else if ( $( wcapf_params.shop_loop_container ).length ) {
+					if ( $shopLoopContainer.length ) {
+						$( wcapf_params.shop_loop_container ).html( $shopLoopContainer.html() );
+					} else if ( $notFoundContainer.length ) {
+						$( wcapf_params.shop_loop_container ).html( $notFoundContainer.html() );
 					}
 				}
 			}
 
+			wcapfAfterUpdate();
+
 			// reinitialize ordering
-			wcapfInitOrder();
+			// wcapfInitOrder();
 
 			// reinitialize dropdown filter
-			wcapfDropDownFilter();
+			// wcapfDropDownFilter();
 
 			// run scripts after shop loop undated
-			if (typeof wcapf_params.custom_scripts !== 'undefined' && wcapf_params.custom_scripts.length > 0) {
-				eval(wcapf_params.custom_scripts);
+			if ( typeof wcapf_params.custom_scripts !== 'undefined' && wcapf_params.custom_scripts.length > 0 ) {
+				eval( wcapf_params.custom_scripts );
 			}
-		});
+		} );
 	}
 
 	// URL Parser
-	wcapfGetUrlVars = function(url) {
-	    var vars = {}, hash;
+	function wcapfGetUrlVars( url ) {
+		var vars = {}, hash;
 
-	    if (typeof url == 'undefined') {
-	    	url = window.location.href;
-	    } else {
-	    	url = url;
-	    }
+		if ( typeof url === 'undefined' ) {
+			url = window.location.href;
+		}
 
-	    var hashes = url.slice(url.indexOf('?') + 1).split('&');
-	    for (var i = 0; i < hashes.length; i++) {
-	        hash = hashes[i].split('=');
-	        vars[hash[0]] = hash[1];
-	    }
-	    return vars;
+		var hashes = url.slice( url.indexOf( '?' ) + 1 ).split( '&' );
+
+		for ( var i = 0; i < hashes.length; i++ ) {
+			hash = hashes[ i ].split( '=' );
+			vars[ hash[ 0 ] ] = hash[ 1 ];
+		}
+
+		return vars;
 	}
 
-	// if current page is greater than 1 then we should set it to 1
-	// everytime we add new query to url to prevent page not found error.
-	wcapfFixPagination = function() {
+	// everytime we apply the filter we set the current page to 1
+	function wcapfFixPagination() {
 		var url = window.location.href,
-			params = wcapfGetUrlVars(url);
+			params = wcapfGetUrlVars( url ),
+			currentPageInUrl = parseInt( url.replace( /.+\/page\/([0-9]+)+/, '$1' ) );
 
-		if (current_page = parseInt(url.replace(/.+\/page\/([0-9]+)+/, "$1"))) {
-			if (current_page > 1) {
-				url = url.replace(/page\/([0-9]+)/, 'page/1');
+		if ( currentPageInUrl ) {
+			if ( currentPageInUrl > 1 ) {
+				url = url.replace( /page\/([0-9]+)/, 'page/1' );
 			}
-		}
-		else if(typeof params['paged'] != 'undefined') {
-			current_page = parseInt(params['paged']);
-			if (current_page > 1) {
-				url = url.replace('paged=' + current_page, 'paged=1');
+		} else if ( typeof params[ 'paged' ] !== 'undefined' ) {
+			var currentPageInParams = parseInt( params[ 'paged' ] );
+
+			if ( currentPageInParams > 1 ) {
+				url = url.replace( 'paged=' + currentPageInParams, 'paged=1' );
 			}
 		}
 
@@ -155,312 +137,153 @@ jQuery(document).ready(function($) {
 	}
 
 	// update query string for categories, meta etc..
-	wcapfUpdateQueryStringParameter = function(key, value, push_history, url) {
-		if (typeof push_history === 'undefined') {
-			push_history = true;
+	function wcapfUpdateQueryStringParameter( key, value, pushHistory, url ) {
+		if ( typeof pushHistory === 'undefined' ) {
+			pushHistory = true;
 		}
 
-		if (typeof url === 'undefined') {
+		if ( typeof url === 'undefined' ) {
 			url = wcapfFixPagination();
 		}
 
-		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i"),
-			separator = url.indexOf('?') !== -1 ? "&" : "?",
-			url_with_query;
+		var re = new RegExp( '([?&])' + key + '=.*?(&|$)', 'i' ),
+			separator = url.indexOf( '?' ) !== -1 ? '&' : '?',
+			urlWithQuery;
 
-		if (url.match(re)) {
-			url_with_query = url.replace(re, '$1' + key + "=" + value + '$2');
-		}
-		else {
-			url_with_query = url + separator + key + "=" + value;
-		}
-
-		if (push_history === true) {
-			return history.pushState({}, '', url_with_query);
+		if ( url.match( re ) ) {
+			urlWithQuery = url.replace( re, '$1' + key + '=' + value + '$2' );
 		} else {
-			return url_with_query;
+			urlWithQuery = url + separator + key + '=' + value;
+		}
+
+		if ( pushHistory === true ) {
+			return history.pushState( {}, '', urlWithQuery );
+		} else {
+			return urlWithQuery;
 		}
 	}
 
 	// remove parameter from url
-	wcapfRemoveQueryStringParameter = function(filter_key, url) {
-		if (typeof url === 'undefined') {
+	function wcapfRemoveQueryStringParameter( filterKey, url ) {
+		if ( typeof url === 'undefined' ) {
 			url = wcapfFixPagination();
 		}
 
-		var params = wcapfGetUrlVars(url),
-			count_params = Object.keys(params).length,
-			start_position = url.indexOf('?'),
-			param_position = url.indexOf(filter_key),
-			clean_url,
-			clean_query;
+		var oldParams = wcapfGetUrlVars( url ),
+			oldParamsLength = Object.keys( oldParams ).length,
+			startPosition = url.indexOf( '?' ),
+			filterKeyPosition = url.indexOf( filterKey ),
+			cleanUrl,
+			cleanQuery;
 
-		if (count_params > 1) {
-			if ((param_position - start_position) > 1) {
-				clean_url = url.replace('&' + filter_key + '=' + params[filter_key], '');
+		if ( oldParamsLength > 1 ) {
+			if ( ( filterKeyPosition - startPosition ) > 1 ) {
+				cleanUrl = url.replace( '&' + filterKey + '=' + oldParams[ filterKey ], '' );
 			} else {
-				clean_url = url.replace(filter_key + '=' + params[filter_key] + '&', '');
+				cleanUrl = url.replace( filterKey + '=' + oldParams[ filterKey ] + '&', '' );
 			}
 
-			var params = clean_url.split('?');
-			clean_query = '?' + params[1];
+			var newParams = cleanUrl.split( '?' );
+			cleanQuery = '?' + newParams[ 1 ];
 		} else {
-			clean_query = url.replace('?' + filter_key + '=' + params[filter_key], '');
+			cleanQuery = url.replace( '?' + filterKey + '=' + oldParams[ filterKey ], '' );
 		}
 
-		return clean_query;
-	}
-
-	// add filter if not exists else remove filter
-	wcapfSingleFilter = function(filter_key, filter_val) {
-		var params = wcapfGetUrlVars(),
-			query;
-
-		if (typeof params[filter_key] !== 'undefined' && params[filter_key] == filter_val) {
-			query = wcapfRemoveQueryStringParameter(filter_key);
-		} else {
-			query = wcapfUpdateQueryStringParameter(filter_key, filter_val, false);
-		}
-
-		// update url
-		history.pushState({}, '', query);
-
-		// filter products
-		wcapfFilterProducts();
+		return cleanQuery;
 	}
 
 	// take the key and value and make query
-	wcapfMakeParameters = function(filter_key, filter_val, url) {
-		var params,
-			next_vals,
-			empty_val = false;
+	function wcapfMakeParameters( filterKey, filterValue, url ) {
+		var params, nextValues, emptyValue = false;
 
-		if (typeof url !== 'undefined') {
-			params = wcapfGetUrlVars(url);
+		if ( typeof url !== 'undefined' ) {
+			params = wcapfGetUrlVars( url );
 		} else {
 			params = wcapfGetUrlVars();
 		}
 
-		if (typeof params[filter_key] != 'undefined') {
-			var prev_vals = params[filter_key],
-				prev_vals_array = prev_vals.split(',');
+		if ( typeof params[ filterKey ] != 'undefined' ) {
+			var prevValues = params[ filterKey ],
+				prevValuesArray = prevValues.split( ',' );
 
-			if (prev_vals.length > 0) {
-				var found = jQuery.inArray(filter_val, prev_vals_array);
+			if ( prevValues.length > 0 ) {
+				var found = $.inArray( filterValue, prevValuesArray );
 
-				if (found >= 0) {
-				    // Element was found, remove it.
-				    prev_vals_array.splice(found, 1);
+				if ( found >= 0 ) {
+					// Element was found, remove it.
+					prevValuesArray.splice( found, 1 );
 
-				    if (prev_vals_array.length == 0) {
-				    	empty_val = true;
-				    }
+					if ( prevValuesArray.length === 0 ) {
+						emptyValue = true;
+					}
 				} else {
-				    // Element was not found, add it.
-				    prev_vals_array.push(filter_val);
+					// Element was not found, add it.
+					prevValuesArray.push( filterValue );
 				}
 
-				if (prev_vals_array.length > 1) {
-					next_vals = prev_vals_array.join(',');
+				if ( prevValuesArray.length > 1 ) {
+					nextValues = prevValuesArray.join( ',' );
 				} else {
-					next_vals = prev_vals_array;
+					nextValues = prevValuesArray;
 				}
 			} else {
-				next_vals = filter_val;
+				nextValues = filterValue;
 			}
 		} else {
-			next_vals = filter_val;
+			nextValues = filterValue;
 		}
 
 		// update url and query string
-		if (empty_val == false) {
-			wcapfUpdateQueryStringParameter(filter_key, next_vals);
+		if ( ! emptyValue ) {
+			wcapfUpdateQueryStringParameter( filterKey, nextValues );
 		} else {
-			var query = wcapfRemoveQueryStringParameter(filter_key);
-			history.pushState({}, '', query);
+			var query = wcapfRemoveQueryStringParameter( filterKey );
+			history.pushState( {}, '', query );
 		}
 
 		// filter products
 		wcapfFilterProducts();
+	}
+
+	function wcapfSingleFilter( filterKey, filterValue ) {
+		var params = wcapfGetUrlVars(),
+			query;
+
+		if ( typeof params[ filterKey ] !== 'undefined' && params[ filterKey ] === filterValue ) {
+			query = wcapfRemoveQueryStringParameter( filterKey );
+		} else {
+			query = wcapfUpdateQueryStringParameter( filterKey, filterValue, false );
+		}
+
+		// update url
+		history.pushState( {}, '', query );
+
+		// filter products
+		// wcapfFilterProducts();
 	}
 
 	// handle the filter request
-	$('.wcapf-ajax-term-filter').not('.wcapf-price-filter-widget').on('click', 'li a', function(event) {
+	$wcapfTermFilter.on( 'click', '.item', function( event ) {
 		event.preventDefault();
-		var element = $(this),
-			filter_key = element.attr('data-key'),
-			filter_val = element.attr('data-value'),
-			enable_multiple_filter = element.attr('data-multiple-filter');
 
-		if (enable_multiple_filter == true) {
-			wcapfMakeParameters(filter_key, filter_val);
+		var $item = $( this ),
+			filterValue = $item.attr( 'data-filter-id' ),
+			$widget = $item.closest( '.widget' ),
+			widgetId = $widget.attr( 'id' ),
+			widgetData = widgets[ widgetId ];
+
+		if ( ! filterValue || ! widgetData ) {
+			return;
+		}
+
+		var filterKey = widgetData.filterKey,
+			multipleFilter = widgetData.multipleFilter;
+
+		if ( multipleFilter ) {
+			wcapfMakeParameters( filterKey, filterValue );
 		} else {
-			wcapfSingleFilter(filter_key, filter_val);
+			wcapfSingleFilter( filterKey, filterValue );
 		}
+	} );
 
-	});
-
-	// handle the filter request for price filter display type list
-	$('.wcapf-price-filter-widget.wcapf-ajax-term-filter').on('click', 'li a', function(event) {
-		event.preventDefault();
-		var element = $(this),
-			filter_key_min = element.attr('data-key-min'),
-			filter_val_min = element.attr('data-value-min'),
-			filter_key_max = element.attr('data-key-max'),
-			filter_val_max = element.attr('data-value-max'),
-			query;
-
-		if (element.parent().hasClass('chosen')) {
-			query = wcapfRemoveQueryStringParameter(filter_key_min);
-			query = wcapfRemoveQueryStringParameter(filter_key_max, query);
-
-			if (query == '') {
-				query = window.location.href.split('?')[0];
-			}
-
-			history.pushState({}, '', query);
-		} else {
-			query = wcapfUpdateQueryStringParameter(filter_key_min, filter_val_min, false);
-			query = wcapfUpdateQueryStringParameter(filter_key_max, filter_val_max, true, query);
-		}
-
-		// filter products
-		wcapfFilterProducts();
-	});
-
-	// handle the pagination request
-	if (wcapf_params.pagination_container.length > 0) {
-		var holder = wcapf_params.pagination_container + ' a';
-
-		$(document).on('click', holder, function(event) {
-			event.preventDefault();
-			var location = $(this).attr('href');
-			history.pushState({}, '', location);
-
-			// filter products
-			wcapfFilterProducts();
-		});
-	}
-
-	// history back and forward request handling
-	$(window).bind('popstate', function(event) {
-		// filter products
-		wcapfFilterProducts();
-    });
-
-    // ordering
-    wcapfInitOrder = function() {
-    	if (typeof wcapf_params.sorting_control !== 'undefined' && wcapf_params.sorting_control.length && wcapf_params.sorting_control == true) {
-	    	$('.wcapf-before-products').find('.woocommerce-ordering').each(function(index) {
-	    		$(this).on('submit', function(event) {
-	    			event.preventDefault();
-	    		});
-
-	    		$(this).on('change', 'select.orderby', function(event) {
-	    			event.preventDefault();
-
-	    			var order = $(this).val(),
-	    				filter_key = 'orderby';
-
-	    			// change url
-	    			wcapfUpdateQueryStringParameter(filter_key, order);
-
-	    			// filter products
-	    			wcapfFilterProducts();
-	    		});
-	    	});
-    	}
-    }
-
-    // init ordering
-    wcapfInitOrder();
-
-    // remove active filters
-    $(document).on('click', '.wcapf-active-filters a:not(.reset)', function(event) {
-    	event.preventDefault();
-    	var element = $(this),
-    		filter_key = element.attr('data-key'),
-    		filter_val = element.attr('data-value');
-
-    	if (typeof filter_val === 'undefined') {
-	    	var query = wcapfRemoveQueryStringParameter(filter_key);
-	    	history.pushState({}, '', query);
-
-	    	// price slider
-	    	if ($('#wcapf-noui-slider').length && jQuery().noUiSlider) {
-	    		var priceSlider = document.getElementById('wcapf-noui-slider'),
-	    			min_val = parseInt($(priceSlider).attr('data-min')),
-	    			max_val = parseInt($(priceSlider).attr('data-max'));
-
-	    		if (min_val && max_val) {
-			    	if (filter_key === 'min-price') {
-			    		priceSlider.noUiSlider.set([min_val, null]);
-			    	} else if (filter_key === 'max-price') {
-			    		priceSlider.noUiSlider.set([null, max_val]);
-			    	}
-	    		}
-	    	}
-
-	    	// filter products
-	    	wcapfFilterProducts();
-    	} else {
-    		wcapfMakeParameters(filter_key, filter_val);
-    	}
-    });
-
-    // clear all filters
-    $(document).on('click', '.wcapf-active-filters a.reset', function(event) {
-    	event.preventDefault();
-    	var location = $(this).attr('data-location');
-    	history.pushState({}, '', location);
-
-    	// filter products
-    	wcapfFilterProducts();
-    });
-
-	// dispaly type dropdown
-	function formatState(state) {
-	    var depth = $(state.element).attr('data-depth'),
-	    	$state = $('<span class="depth depth-' + depth + '">' + state.text + '</span>');
-
-		return $state;
-	}
-
-	wcapfDropDownFilter = function() {
-		if ($('.wcapf-select2-single').length) {
-			$('.wcapf-select2-single').select2({
-			    templateResult: formatState,
-			    minimumResultsForSearch: Infinity,
-			    allowClear: true
-			});
-		}
-
-		if ($('.wcapf-select2-multiple').length) {
-			$('.wcapf-select2-multiple').select2({
-			    templateResult: formatState,
-			});
-		}
-
-		$('.select2-dropdown').css('display', 'none');
-	}
-
-	// initialize dropdown filter
-	wcapfDropDownFilter();
-
-	$(document).on('change', '.wcapf-select2', function(event) {
-		event.preventDefault();
-		var filter_key = $(this).attr('name'),
-			filter_val = $(this).val();
-
-		if (!filter_val) {
-			var query = wcapfRemoveQueryStringParameter(filter_key);
-			history.pushState({}, '', query);
-		} else {
-			filter_val = filter_val.toString();
-			wcapfUpdateQueryStringParameter(filter_key, filter_val);
-		}
-
-		// filter products
-		wcapfFilterProducts();
-	});
-});
+} )

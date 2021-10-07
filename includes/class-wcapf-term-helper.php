@@ -6,57 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Product_Filter class.
- *
- * @since      3.0.0
+ * WC Ajax Product Filter Term Helper class.
  */
-class WCAPF_Product_Filter {
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return     WCAPF_Product_Filter
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been ran previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Product_Filter();
-			$instance->run();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Runs the class.
-	 */
-	public function run() {
-		$this->includes();
-		$this->init_hooks();
-	}
-
-	/**
-	 * Loads the required files.
-	 */
-	public function includes() {
-		require_once WCAPF_PATH . 'includes/wcapf-functions.php';
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	public function init_hooks() {
-		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
-		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
-		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
-		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
-		add_action( 'woocommerce_product_query', array( $this, 'set_filter' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
-		add_action( 'woocommerce_update_product', array( $this, 'update_product' ) );
-	}
+class WCAPF_Term_Helper {
 
 	/**
 	 * Count products within certain terms, taking the main WP query into
@@ -65,21 +17,16 @@ class WCAPF_Product_Filter {
 	 * This query allows counts to be generated based on the viewed products,
 	 * not all products.
 	 *
-	 * @param array  $terms             List of WP_Term instances and their
-	 *                                  children
-	 * @param string $taxonomy          The taxonomy
-	 * @param string $query_type        The query type
+	 * @param array  $terms      List of WP_Term instances and their children
+	 * @param string $taxonomy   The taxonomy
+	 * @param string $query_type The query type
 	 *
-	 * @return     array   The filtered term product counts.
+	 * @return array The filtered term product counts.
 	 */
 	public function get_filtered_term_product_counts( $terms, $taxonomy, $query_type ) {
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return;
+			return array();
 		}
-
-		// if ( ! wc()->query->get_main_query()->post_count ) {
-		// 	return;
-		// }
 
 		global $wpdb;
 
@@ -144,7 +91,6 @@ class WCAPF_Product_Filter {
 			$results = $wpdb->get_results( $query, ARRAY_A );
 			$counts  = array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
 
-
 			if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 				foreach ( $terms as $term ) {
 					$terms[ $term->term_id ] = $term;
@@ -173,19 +119,28 @@ class WCAPF_Product_Filter {
 	 *
 	 * @return     array    The taxonomy tree
 	 */
-	public function build_tree( $terms, $parent_id = 0 ) {
-		$tree = array();
+	public function build_tree( $terms, $parent_id = 0, $depth = 0 ) {
+		$tree      = array();
+		$increment = 0;
 
 		foreach ( $terms as $term ) {
 			if ( $term['parent_id'] == $parent_id ) {
-				$children = $this->build_tree( $terms, $term['id'] );
+				$children = $this->build_tree( $terms, $term['id'], $depth );
 
 				if ( $children ) {
 					$term['children'] = $children;
 				}
 
+				$term['depth'] = $depth;
+
 				$tree[ $term['id'] ] = $term;
 			}
+
+			if ( 0 === $increment ) {
+				$depth ++;
+			}
+
+			$increment ++;
 		}
 
 		return $tree;
@@ -200,7 +155,7 @@ class WCAPF_Product_Filter {
 	 *                                 children
 	 * @param array $new_array         The new array to hold the terms
 	 *
-	 * @return     array  All terms including parent terms
+	 * @return     array  All terms including parent term
 	 */
 	public function prepare_to_make_tree( $term_ids, $term_items, $terms, $new_array = array() ) {
 		foreach ( $term_ids as $term_id ) {
@@ -213,6 +168,8 @@ class WCAPF_Product_Filter {
 				'count'     => isset( $term_items[ $term_id ] ) ? $term_items[ $term_id ] : 0,
 				'parent_id' => $parent_id,
 			);
+
+			$term = apply_filters( 'wcapf_tree_term_item', $term );
 
 			$new_array[ $term_id ] = $term;
 
@@ -261,90 +218,4 @@ class WCAPF_Product_Filter {
 		return $recursive_iterator->getArrayCopy();
 	}
 
-	/**
-	 * HTML wrapper to insert after the not found product loops.
-	 *
-	 * @param string $template_name The template name
-	 */
-	public function insert_after_no_products( $template_name ) {
-		if ( $template_name == 'loop/no-products-found.php' ) {
-			echo '</div>';
-		}
-	}
-
-	/**
-	 * HTML wrapper to insert after the shop loop.
-	 */
-	public function insert_after_shop_loop() {
-		echo '</div>';
-	}
-
-	/**
-	 * HTML wrapper to insert before the not found product loops.
-	 *
-	 * @param string $template_name The template name
-	 */
-	public function insert_before_no_products( $template_name ) {
-		if ( $template_name == 'loop/no-products-found.php' ) {
-			echo '<div class="wcapf-before-products">';
-		}
-	}
-
-	/**
-	 * HTML wrapper to insert before the shop loop.
-	 */
-	public function insert_before_shop_loop() {
-		echo '<div class="wcapf-before-products">';
-	}
-
-	/**
-	 * Loads frontend scripts.
-	 */
-	public function load_frontend_scripts() {
-	}
-
-	/**
-	 * Query the products, applying sorting/ordering etc. This applies to the
-	 * main WordPress loop.
-	 *
-	 * @param WP_Query $query Query instance.
-	 *
-	 * @return     WP_Query  Return modified query instance.
-	 */
-	public function set_filter( $query ) {
-		/**
-		 * Don't proceed if we are not in main query or this is not product archive page.
-		 */
-		if ( ! is_main_query() && ! is_post_type_archive( 'product' ) && ! is_tax( get_object_taxonomies( 'product' ) ) ) {
-			return $query;
-		}
-
-		$tax_query = array();
-
-		if ( isset( $_GET['cata'] ) ) {
-			$cata = array_map( 'absint', $_GET['cata'] );
-
-			$tax_query[] = array(
-				'taxonomy'         => 'product_cat',
-				'field'            => 'term_id',
-				'terms'            => $cata,
-				'operator'         => 'AND',
-				'include_children' => 1,
-			);
-		}
-
-		$query->set( 'tax_query', $tax_query );
-
-		// echo '<pre>';
-		// print_r($query);
-		// echo '</pre>';
-
-		// return $query;
-	}
-
-	public function update_product( $product_id ) {
-		delete_transient( 'wcapf_term_product_counts_product_cat' );
-	}
 }
-
-add_action( 'plugins_loaded', array( 'WCAPF_Product_Filter', 'instance' ) );
