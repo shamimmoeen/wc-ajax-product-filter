@@ -54,6 +54,11 @@ if ( ! defined( 'WCAPF_PLUGIN_URL' ) ) {
 	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
+// Defines constant WCAPF_CACHE_TIME
+if ( ! defined( 'WCAPF_CACHE_TIME' ) ) {
+	define( 'WCAPF_CACHE_TIME', 60 * 60 * 12 );
+}
+
 /**
  * The code that runs during plugin activation.
  *

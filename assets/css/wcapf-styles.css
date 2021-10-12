@@ -36,7 +36,7 @@
 }
 
 /*todo: load svg*/
-.wcapf-layered-nav ul li::before {
+.wcapf-layered-nav ul li .item::before {
 	opacity: 0.35;
 	content: '\f0c8';
 	display: inline-block;
@@ -44,7 +44,7 @@
 	margin-right: 0.53em;
 }
 
-.wcapf-layered-nav ul li.chosen::before {
+.wcapf-layered-nav ul li .item.chosen::before {
 	content: '\f14a';
 }
 

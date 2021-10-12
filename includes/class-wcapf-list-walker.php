@@ -68,6 +68,21 @@ class WCAPF_List_Walker {
 	public $hide_empty;
 
 	/**
+	 * Filter key
+	 *
+	 * @var bool
+	 */
+	public $filter_key;
+
+	/**
+	 * Filter values
+	 *
+	 * @var string
+	 * @var array
+	 */
+	public $values;
+
+	/**
 	 * Build the menu.
 	 *
 	 * @param array $tree The tree as multidimensional array.
@@ -82,7 +97,18 @@ class WCAPF_List_Walker {
 			$attrs .= 'data-multiple-filter="0"';
 		}
 
-		$attrs .= 'data-filter-key="cata"'; // todo cata or cato
+		$query_type = strtolower( $this->query_type );
+		$filter_key = $this->filter_key;
+
+		if ( 'and' === $query_type ) {
+			$filter_key .= 'a';
+		} elseif ( 'or' === $query_type ) {
+			$filter_key .= 'o';
+		}
+
+		$attrs .= 'data-filter-key="' . $filter_key . '"';
+
+		$this->set_values( $filter_key );
 
 		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
 			$html .= '<div class="wcapf-layered-nav" ' . $attrs . '>';
@@ -104,26 +130,15 @@ class WCAPF_List_Walker {
 	}
 
 	/**
-	 * Tree/Menu item.
+	 * The query values.
 	 *
-	 * @param array $item  The item array.
-	 * @param int   $depth The item depth.
-	 *
-	 * @return string
+	 * @param string $filter_key
 	 */
-	private function tree_item( $item, $depth ) {
-		$html = '';
+	private function set_values( $filter_key ) {
+		$str = isset( $_GET[ $filter_key ] ) ? $_GET[ $filter_key ] : '';
+		$arr = explode( ',', $str );
 
-		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
-		$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
-
-		$inner = apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
-
-		$html .= '<span class="item" data-filter-id="' . esc_attr( $item['id'] ) . '">';
-		$html .= $inner;
-		$html .= '</span>';
-
-		return $html;
+		$this->values = $arr;
 	}
 
 	/**
@@ -165,6 +180,79 @@ class WCAPF_List_Walker {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Tree/Menu item.
+	 *
+	 * @param array $item  The item array.
+	 * @param int   $depth The item depth.
+	 *
+	 * @return string
+	 */
+	private function tree_item( $item, $depth ) {
+		$wcapf = WCAPF_Filter::instance();
+		$filtered_product_ids = $wcapf->filteredProductIds();
+		$unfiltered_product_ids = $wcapf->unfilteredProductIds();
+
+		$html = '';
+
+		$classes = 'item';
+		$classes .= $this->query_found( $item ) ? ' chosen' : '';
+
+		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
+		$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+
+		// // get product ids for this term
+		// $products_in_term = wcapf_get_term_products($parent_term_id, $taxonomy);
+		//
+		// if ( 'and' === $this->query_type ) {
+		// 	// count product ids those are not present in $filtered_product_ids array
+		// 	$count = sizeof(array_intersect($products_in_term, $filtered_product_ids));
+		// } else {
+		// 	// count product ids those are present in $unfiltered_product_ids
+		// 	$count = sizeof(array_intersect($products_in_term, $unfiltered_product_ids));
+		// }
+
+		$inner = apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+
+		$html .= '<span class="' . $classes . '" data-filter-id="' . esc_attr( $item['id'] ) . '">';
+		$html .= $inner;
+		$html .= '</span>';
+
+		return $html;
+	}
+
+	// private function wcapf_get_term_products($term_id, $taxonomy) {
+	// 	$products_in_term = wcapf_get_term_objects($term_id, $taxonomy);
+	// 	$term_childs = wcapf_get_term_childs($term_id, $taxonomy);
+	//
+	// 	if (is_array($term_childs) && sizeof($term_childs) > 0) {
+	// 		foreach ($term_childs as $term_child) {
+	// 			$products_in_term = array_merge($products_in_term, wcapf_get_term_objects($term_child, $taxonomy));
+	// 		}
+	// 	}
+	//
+	// 	return array_unique($products_in_term);
+	// }
+	//
+	// private function wcapf_get_term_childs($term_id, $taxonomy) {
+	// 	$transient_name = 'wcapf_term_childs_' . md5(sanitize_key($taxonomy) . sanitize_key($term_id));
+	//
+	// 	if (false === ($term_childs = get_transient($transient_name))) {
+	// 		$term_childs = get_term_children($term_id, $taxonomy);
+	// 		set_transient($transient_name, $term_childs, wcapf_transient_lifespan());
+	// 	}
+	//
+	// 	return (array)$term_childs;
+	// }
+
+	private function query_found( $item ) {
+		if ( in_array( $item['id'], $this->values ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

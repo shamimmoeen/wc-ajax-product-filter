@@ -53,11 +53,56 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$show_children_only = isset( $instance['show_children_only'] ) ? boolval( $instance['show_children_only'] ) : '';
 		$hide_empty         = isset( $instance['hide_empty'] ) ? boolval( $instance['hide_empty'] ) : '';
 
-		$taxonomy = 'product_cat';
-		$terms    = get_terms( array( 'taxonomy' => $taxonomy ) );
+		$filter_key = 'product-cat';
+		$taxonomy   = 'product_cat';
+		$terms      = get_terms( array( 'taxonomy' => $taxonomy ) );
+		$new_terms  = array();
+
+		foreach ( $terms as $_term ) {
+			$term_id   = $_term->term_id;
+			$count     = $_term->count;
+			$parent_id = $_term->parent;
+			$name      = $_term->name;
+
+			$_term = array(
+				'id'        => $term_id,
+				'name'      => $name,
+				'count'     => $count,
+				'parent_id' => $parent_id,
+			);
+
+			$new_terms[ $term_id ] = $_term;
+		}
+
+		// echo '<pre>';
+		// print_r( $new_terms );
+		// echo '</pre>';
 
 		$term_helper = new WCAPF_Term_Helper();
-		$tree        = $term_helper->get_filtered_term_product_counts( $terms, $taxonomy, 'and' );
+
+		$filtered = $term_helper->new_get_filtered_term_product_counts( $terms, $taxonomy, $query_type );
+
+		$new_tree = $term_helper->build_tree( $new_terms );
+
+		// echo '<pre>';
+		// print_r( $new_tree );
+		// echo '</pre>';
+
+		// // prepare to make tree
+		// $term_ids   = wp_list_pluck( $terms, 'term_id' );
+		// $first_tree = $term_helper->prepare_to_make_tree( $term_ids, array(), $new_terms );
+		//
+		// echo '<pre>';
+		// print_r( $first_tree );
+		// echo '</pre>';
+
+		$term_helper->query_type = $query_type;
+
+		$tree = $term_helper->get_filtered_term_product_counts( $terms, $taxonomy, $query_type );
+
+		// echo '<pre>';
+		// print_r( $tree );
+		// echo '</pre>';
 
 		$walker = new WCAPF_List_Walker();
 
@@ -68,6 +113,7 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$walker->hierarchical       = $hierarchical;
 		$walker->show_children_only = $show_children_only;
 		$walker->hide_empty         = $hide_empty;
+		$walker->filter_key         = $filter_key;
 
 		if ( ! $tree ) {
 			$widget_class = 'wcapf-widget-hidden woocommerce wcapf-ajax-term-filter';

@@ -14,14 +14,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WCAPF_Hooks {
 
 	/**
-	 * Constructor.
+	 * Returns an instance of this class.
+	 *
+	 * @return WCAPF_Hooks
 	 */
-	public function __construct() {
+	public static function instance() {
+		// Store the instance locally to avoid private static replication
+		static $instance = null;
+
+		// Only run these methods if they haven't been run previously
+		if ( null === $instance ) {
+			$instance = new WCAPF_Hooks();
+			$instance->init_hooks();
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Hook into actions and filters.
+	 */
+	public function init_hooks() {
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
 		add_action( 'woocommerce_update_product', array( $this, 'delete_transients' ) );
+		// add_action( 'woocommerce_before_shop_loop', array( $this, 'show_query' ), 80 );
+	}
+
+	public function show_query() {
+		global $wp_query;
+
+		echo '<pre>';
+		print_r( $wp_query->query_vars );
+		echo '</pre>';
 	}
 
 	/**
@@ -70,3 +97,5 @@ class WCAPF_Hooks {
 	}
 
 }
+
+add_action( 'plugins_loaded', array( 'WCAPF_Hooks', 'instance' ) );

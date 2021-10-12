@@ -52,15 +52,17 @@ jQuery( document ).ready( function( $ ) {
 				$notFoundContainer = $data.find( wcapf_params.not_found_container );
 
 			// replace widgets' data with new data
-			$.each( widgets, function( index, widget ) {
-				var $widget = $data.find( '#' + widget.id ),
-					widgetClass = $( $widget ).attr( 'class' );
+			$.each( widgets, function( id ) {
+				var widgetID = '#' + id,
+					$widget = $( widgetID ),
+					_widget = $data.find( widgetID ),
+					widgetClass = $( _widget ).attr( 'class' );
 
 				// update class
 				$widget.attr( 'class', widgetClass );
 
 				// update widget
-				$widget.html( $widget.html() );
+				$widget.html( _widget.html() );
 			} );
 
 			// replace old shop loop with new one
@@ -259,7 +261,7 @@ jQuery( document ).ready( function( $ ) {
 		history.pushState( {}, '', query );
 
 		// filter products
-		// wcapfFilterProducts();
+		wcapfFilterProducts();
 	}
 
 	// handle the filter request
@@ -286,4 +288,4 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 
-} )
+} );
