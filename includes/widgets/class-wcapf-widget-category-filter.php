@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC Ajax Product Filter by Category class.
  *
- * @since      1.0.0
+ * @since 1.0.0
  */
 class WCAPF_Widget_Category_Filter extends WP_Widget {
 
@@ -55,8 +55,11 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 
 		$filter_key = 'product-cat';
 		$taxonomy   = 'product_cat';
-		$terms      = get_terms( array( 'taxonomy' => $taxonomy ) );
-		$new_terms  = array();
+
+		$terms     = get_terms( array( 'taxonomy' => $taxonomy ) );
+		$new_terms = array();
+
+		// TODO: make an array with term_id, count for active terms, include active terms' parents also
 
 		foreach ( $terms as $_term ) {
 			$term_id   = $_term->term_id;
@@ -74,35 +77,9 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 			$new_terms[ $term_id ] = $_term;
 		}
 
-		// echo '<pre>';
-		// print_r( $new_terms );
-		// echo '</pre>';
-
 		$term_helper = new WCAPF_Term_Helper();
 
-		$filtered = $term_helper->new_get_filtered_term_product_counts( $terms, $taxonomy, $query_type );
-
-		$new_tree = $term_helper->build_tree( $new_terms );
-
-		// echo '<pre>';
-		// print_r( $new_tree );
-		// echo '</pre>';
-
-		// // prepare to make tree
-		// $term_ids   = wp_list_pluck( $terms, 'term_id' );
-		// $first_tree = $term_helper->prepare_to_make_tree( $term_ids, array(), $new_terms );
-		//
-		// echo '<pre>';
-		// print_r( $first_tree );
-		// echo '</pre>';
-
-		$term_helper->query_type = $query_type;
-
-		$tree = $term_helper->get_filtered_term_product_counts( $terms, $taxonomy, $query_type );
-
-		// echo '<pre>';
-		// print_r( $tree );
-		// echo '</pre>';
+		$tree = $term_helper->build_tree( $new_terms );
 
 		$walker = new WCAPF_List_Walker();
 

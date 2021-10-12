@@ -191,10 +191,6 @@ class WCAPF_List_Walker {
 	 * @return string
 	 */
 	private function tree_item( $item, $depth ) {
-		$wcapf = WCAPF_Filter::instance();
-		$filtered_product_ids = $wcapf->filteredProductIds();
-		$unfiltered_product_ids = $wcapf->unfilteredProductIds();
-
 		$html = '';
 
 		$classes = 'item';
@@ -202,17 +198,6 @@ class WCAPF_List_Walker {
 
 		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
 		$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
-
-		// // get product ids for this term
-		// $products_in_term = wcapf_get_term_products($parent_term_id, $taxonomy);
-		//
-		// if ( 'and' === $this->query_type ) {
-		// 	// count product ids those are not present in $filtered_product_ids array
-		// 	$count = sizeof(array_intersect($products_in_term, $filtered_product_ids));
-		// } else {
-		// 	// count product ids those are present in $unfiltered_product_ids
-		// 	$count = sizeof(array_intersect($products_in_term, $unfiltered_product_ids));
-		// }
 
 		$inner = apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
 
@@ -222,30 +207,6 @@ class WCAPF_List_Walker {
 
 		return $html;
 	}
-
-	// private function wcapf_get_term_products($term_id, $taxonomy) {
-	// 	$products_in_term = wcapf_get_term_objects($term_id, $taxonomy);
-	// 	$term_childs = wcapf_get_term_childs($term_id, $taxonomy);
-	//
-	// 	if (is_array($term_childs) && sizeof($term_childs) > 0) {
-	// 		foreach ($term_childs as $term_child) {
-	// 			$products_in_term = array_merge($products_in_term, wcapf_get_term_objects($term_child, $taxonomy));
-	// 		}
-	// 	}
-	//
-	// 	return array_unique($products_in_term);
-	// }
-	//
-	// private function wcapf_get_term_childs($term_id, $taxonomy) {
-	// 	$transient_name = 'wcapf_term_childs_' . md5(sanitize_key($taxonomy) . sanitize_key($term_id));
-	//
-	// 	if (false === ($term_childs = get_transient($transient_name))) {
-	// 		$term_childs = get_term_children($term_id, $taxonomy);
-	// 		set_transient($transient_name, $term_childs, wcapf_transient_lifespan());
-	// 	}
-	//
-	// 	return (array)$term_childs;
-	// }
 
 	private function query_found( $item ) {
 		if ( in_array( $item['id'], $this->values ) ) {

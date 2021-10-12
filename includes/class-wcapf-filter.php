@@ -56,40 +56,19 @@ class WCAPF_Filter {
 		$search_results = $this->productIdsForGivenKeyword();
 		$tax_results    = $this->filteredProductIdsForTerms();
 
-		// echo 'search';
-		// echo '<pre>';
-		// print_r( $search_results );
-		// echo '</pre>';
-		//
-		// echo 'tax';
-		// echo '<pre>';
-		// print_r( $tax_results );
-		// echo '</pre>';
-
+		// When both search and tax results found
 		if ( sizeof( $search_results ) > 0 && sizeof( $tax_results ) > 0 ) {
 			$post__in = array_intersect( $search_results, $tax_results );
-		} elseif ( sizeof( $search_results ) > 0 && sizeof( $tax_results ) === 0 ) {
+		}
+		// When only search results found
+		elseif ( sizeof( $search_results ) > 0 && sizeof( $tax_results ) === 0 ) {
 			$post__in = $search_results;
 		} else {
 			$post__in = $tax_results;
 		}
 
-		// echo 'meta';
-		// echo '<pre>';
-		// print_r( $this->queryForMeta() );
-		// echo '</pre>';
-		//
-		// echo 'post in';
-		// echo '<pre>';
-		// print_r( $post__in );
-		// echo '</pre>';
-
 		$query->set( 'meta_query', $this->queryForMeta() );
 		$query->set( 'post__in', $post__in );
-
-		// echo '<pre>';
-		// print_r( $query );
-		// echo '</pre>';
 
 		return $query;
 	}

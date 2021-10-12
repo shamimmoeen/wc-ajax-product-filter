@@ -113,6 +113,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-list-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-term-helper.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
 
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-active-filters.php';
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
