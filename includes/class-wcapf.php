@@ -110,8 +110,8 @@ class WCAPF {
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-list-walker.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-term-helper.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy-walker.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
 

@@ -12,11 +12,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_List_Walker class.
+ * WCAPF_Taxonomy_Walker class.
  *
  * @since 3.0.0
  */
-class WCAPF_List_Walker {
+class WCAPF_Taxonomy_Walker {
+
+	/**
+	 * Taxonomy
+	 */
+	public $taxonomy;
 
 	/**
 	 * Display type
@@ -80,7 +85,7 @@ class WCAPF_List_Walker {
 	 * @var string
 	 * @var array
 	 */
-	public $values;
+	private $values;
 
 	/**
 	 * Build the menu.
@@ -146,7 +151,7 @@ class WCAPF_List_Walker {
 	 *
 	 * @param array $tree The tree as multidimensional array.
 	 */
-	public function build_hierarchical_menu( $tree ) {
+	private function build_hierarchical_menu( $tree ) {
 		$html = '';
 
 		if ( $tree ) {
@@ -222,7 +227,7 @@ class WCAPF_List_Walker {
 	 * @param array $tree      The tree as multidimensional array.
 	 * @param bool  $wrap_with Determine if we wrap with 'ul' or not.
 	 */
-	public function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
+	private function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
 		$html  = '';
 		$depth = 0;
 

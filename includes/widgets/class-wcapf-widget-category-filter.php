@@ -49,7 +49,6 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$query_type         = isset( $instance['query_type'] ) ? $instance['query_type'] : '';
 		$enable_multiple    = isset( $instance['enable_multiple'] ) ? boolval( $instance['enable_multiple'] ) : '';
 		$show_count         = isset( $instance['show_count'] ) ? boolval( $instance['show_count'] ) : '';
-		$update_count       = isset( $instance['update_count'] ) ? boolval( $instance['update_count'] ) : '';
 		$hierarchical       = isset( $instance['hierarchical'] ) ? boolval( $instance['hierarchical'] ) : '';
 		$show_children_only = isset( $instance['show_children_only'] ) ? boolval( $instance['show_children_only'] ) : '';
 		$hide_empty         = isset( $instance['hide_empty'] ) ? boolval( $instance['hide_empty'] ) : '';
@@ -57,13 +56,9 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$filter_key = 'product-cat';
 		$taxonomy   = 'product_cat';
 
-		$tree = $this->get_terms( $taxonomy, $query_type );
+		$walker = new WCAPF_Taxonomy_Walker();
 
-		// $tree = $term_helper->build_tree( $new_terms );
-		// $tree = $term_helper->count_parent_term_items( $tree );
-
-		$walker = new WCAPF_List_Walker();
-
+		$walker->taxonomy           = $taxonomy;
 		$walker->display_type       = $display_type;
 		$walker->query_type         = $query_type;
 		$walker->enable_multiple    = $enable_multiple;
@@ -73,7 +68,10 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$walker->hide_empty         = $hide_empty;
 		$walker->filter_key         = $filter_key;
 
-		if ( ! $tree ) {
+		$taxonomy = new WCAPF_Taxonomy( $walker );
+		$terms    = $taxonomy->get_terms();
+
+		if ( ! $terms ) {
 			$widget_class = 'wcapf-widget-hidden woocommerce wcapf-ajax-term-filter';
 		} else {
 			$widget_class = 'woocommerce wcapf-ajax-term-filter';
@@ -95,86 +93,9 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
 
-		echo $walker->build_menu( $tree );
+		echo $walker->build_menu( $terms );
 
 		echo $args['after_widget'];
-	}
-
-	private function get_terms( $taxonomy, $query_type ) {
-		$terms       = get_terms( array( 'taxonomy' => $taxonomy ) );
-		$term_helper = new WCAPF_Term_Helper();
-		$new_terms   = array();
-
-		foreach ( $terms as $_term ) {
-			$term_id   = $_term->term_id;
-			$count     = $_term->count;
-			$parent_id = $_term->parent;
-			$name      = $_term->name;
-
-			$_term = array(
-				'id'        => $term_id,
-				'name'      => $name,
-				'count'     => $count,
-				'parent_id' => $parent_id,
-			);
-
-			$new_terms[ $term_id ] = $_term;
-		}
-
-		if ( 'or' === $query_type ) {
-			return $term_helper->build_tree( $new_terms );
-		}
-
-		// taxonomy hierarchical
-		// query_type = AND
-		// show count
-		// update count
-		// hide empty
-
-		// TODO: make an array with term_id, count for active terms, include active terms' parents also
-		$active_terms_results = $term_helper->new_get_filtered_term_product_counts( $terms, $taxonomy, $query_type );
-
-		$active_terms    = wp_list_pluck( $active_terms_results, 'term_count', 'term_count_id' );
-		$active_term_ids = wp_list_pluck( $active_terms_results, 'term_count_id' );
-		$ancestors       = array();
-
-		foreach ( $active_term_ids as $active_term_id ) {
-			$term_ancestors = get_ancestors( $active_term_id, $taxonomy );
-			$ancestors      = array_unique( array_merge( $ancestors, $term_ancestors ) );
-		}
-
-		// echo 'ancestors';
-		// echo '<pre>';
-		// print_r( $ancestors );
-		// echo '</pre>';
-		//
-		// echo 'active term ids';
-		// echo '<pre>';
-		// print_r( $active_term_ids );
-		// echo '</pre>';
-		//
-		// echo 'active term results';
-		// echo '<pre>';
-		// print_r( $active_terms_results );
-		// echo '</pre>';
-
-		$updated_count_terms = array();
-
-		foreach ( $new_terms as $term_id => $term ) {
-			$term['count'] = isset( $active_terms[ $term_id ] ) ? $active_terms[ $term_id ] : 0;
-
-			$updated_count_terms[ $term_id ] = $term;
-		}
-
-		$updated_count_terms_tree = $term_helper->build_tree( $updated_count_terms );
-		$updated_count_terms_tree = $term_helper->count_parent_term_items( $updated_count_terms_tree );
-
-		// echo 'updated count';
-		// echo '<pre>';
-		// print_r( $updated_count_terms_tree );
-		// echo '</pre>';
-
-		return $updated_count_terms_tree;
 	}
 
 	/**
@@ -189,7 +110,6 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$query_type         = isset( $instance['query_type'] ) ? $instance['query_type'] : '';
 		$enable_multiple    = isset( $instance['enable_multiple'] ) ? boolval( $instance['enable_multiple'] ) : '';
 		$show_count         = isset( $instance['show_count'] ) ? boolval( $instance['show_count'] ) : '';
-		$update_count       = isset( $instance['update_count'] ) ? boolval( $instance['update_count'] ) : '';
 		$hierarchical       = isset( $instance['hierarchical'] ) ? boolval( $instance['hierarchical'] ) : '';
 		$show_children_only = isset( $instance['show_children_only'] ) ? boolval( $instance['show_children_only'] ) : '';
 		$hide_empty         = isset( $instance['hide_empty'] ) ? boolval( $instance['hide_empty'] ) : '';
@@ -262,18 +182,6 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 			>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'show_count' ) ); ?>">
 				<?php esc_html_e( 'Show count', 'wc-ajax-product-filter' ); ?>
-			</label>
-		</p>
-		<p>
-			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'update_count' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'update_count' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $show_count, 1 ); ?>
-			>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'update_count' ) ); ?>">
-				<?php esc_html_e( 'Update count', 'wc-ajax-product-filter' ); ?>
 			</label>
 		</p>
 		<p>

@@ -189,7 +189,7 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 		$wcapf = WCAPF_Product_Filter::instance();
 		$tree  = $wcapf->get_filtered_term_product_counts( $terms, $taxonomy, 'and' );
 
-		$walker = new WCAPF_List_Walker();
+		$walker = new WCAPF_Taxonomy_Walker();
 
 		$walker->display_type       = $display_type;
 		$walker->query_type         = $query_type;
