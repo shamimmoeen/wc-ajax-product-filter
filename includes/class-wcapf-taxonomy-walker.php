@@ -80,14 +80,6 @@ class WCAPF_Taxonomy_Walker {
 	public $filter_key;
 
 	/**
-	 * Filter values
-	 *
-	 * @var string
-	 * @var array
-	 */
-	private $values;
-
-	/**
 	 * Build the menu.
 	 *
 	 * @param array $tree The tree as multidimensional array.
@@ -102,18 +94,9 @@ class WCAPF_Taxonomy_Walker {
 			$attrs .= 'data-multiple-filter="0"';
 		}
 
-		$query_type = strtolower( $this->query_type );
-		$filter_key = $this->filter_key;
-
-		if ( 'and' === $query_type ) {
-			$filter_key .= 'a';
-		} elseif ( 'or' === $query_type ) {
-			$filter_key .= 'o';
-		}
+		$filter_key = $this->get_filter_key();
 
 		$attrs .= 'data-filter-key="' . $filter_key . '"';
-
-		$this->set_values( $filter_key );
 
 		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
 			$html .= '<div class="wcapf-layered-nav" ' . $attrs . '>';
@@ -134,16 +117,17 @@ class WCAPF_Taxonomy_Walker {
 		return apply_filters( 'wcapf_build_menu', $html, $this );
 	}
 
-	/**
-	 * The query values.
-	 *
-	 * @param string $filter_key
-	 */
-	private function set_values( $filter_key ) {
-		$str = isset( $_GET[ $filter_key ] ) ? $_GET[ $filter_key ] : '';
-		$arr = explode( ',', $str );
+	private function get_filter_key() {
+		$query_type = strtolower( $this->query_type );
+		$filter_key = $this->filter_key;
 
-		$this->values = $arr;
+		if ( 'and' === $query_type ) {
+			$filter_key .= 'a';
+		} elseif ( 'or' === $query_type ) {
+			$filter_key .= 'o';
+		}
+
+		return $filter_key;
 	}
 
 	/**
@@ -199,7 +183,7 @@ class WCAPF_Taxonomy_Walker {
 		$html = '';
 
 		$classes = 'item';
-		$classes .= $this->query_found( $item ) ? ' chosen' : '';
+		$classes .= $this->term_active( $item ) ? ' chosen' : '';
 
 		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
 		$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
@@ -213,12 +197,23 @@ class WCAPF_Taxonomy_Walker {
 		return $html;
 	}
 
-	private function query_found( $item ) {
-		if ( in_array( $item['id'], $this->values ) ) {
+	private function term_active( $item ) {
+		if ( in_array( $item['id'], $this->get_active_filters() ) ) {
 			return true;
 		}
 
 		return false;
+	}
+
+	public function get_active_filters() {
+		$key = $this->get_filter_key();
+		$str = isset( $_GET[ $key ] ) ? $_GET[ $key ] : '';
+
+		if ( $str ) {
+			return explode( ',', $str );
+		}
+
+		return array();
 	}
 
 	/**
