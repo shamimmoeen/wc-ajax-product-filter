@@ -188,6 +188,8 @@ class WCAPF_Taxonomy {
 	/**
 	 * Builds the taxonomy tree.
 	 *
+	 * TODO: We should build the tree when taxonomy is hierarchical and hierarchical is activated in widget settings.
+	 *
 	 * @param array   $terms     The terms
 	 * @param integer $parent_id The parent identifier
 	 *

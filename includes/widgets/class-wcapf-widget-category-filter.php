@@ -104,7 +104,6 @@ class WCAPF_Widget_Category_Filter extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		// TODO: Hide update_count, hide_empty for query_type=or
 		$title              = isset( $instance['title'] ) ? $instance['title'] : '';
 		$display_type       = isset( $instance['display_type'] ) ? $instance['display_type'] : '';
 		$query_type         = isset( $instance['query_type'] ) ? $instance['query_type'] : '';
