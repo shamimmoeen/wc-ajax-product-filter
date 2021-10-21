@@ -251,6 +251,30 @@ class WCAPF_Filter {
 					$active_filters['term'][ $key ][ $term_id ] = $term_data->name;
 				}
 			}
+
+			// category
+			if ( preg_match( '/product-tag/', $key ) && ! empty( $value ) ) {
+				$terms    = explode( ',', $value );
+				$taxonomy = 'product_tag';
+
+				if ( preg_match( '/^product-taga/', $key ) ) {
+					$query_type = 'and';
+				} else {
+					$query_type = 'or';
+				}
+
+				$chosen[ $taxonomy ] = array(
+					'terms'      => $terms,
+					'query_type' => $query_type
+				);
+
+				foreach ( $terms as $term_id ) {
+					// $ancestors = wcapf_get_term_ancestors($term_id, $taxonomy);
+					$term_data = $this->wcapf_get_term_data( $term_id, $taxonomy );
+					// $term_ancestors[$key][] = $ancestors;
+					$active_filters['term'][ $key ][ $term_id ] = $term_data->name;
+				}
+			}
 		}
 
 		// min-price

@@ -109,7 +109,7 @@ class WCAPF_Taxonomy_Walker {
 
 		} else {
 			$html .= '<div class="wcapf-dropdown-nav">';
-			$html .= 'Make the dropdown';
+			$html .= 'Make the dropdown'; // TODO: Build the dropdown
 		}
 
 		$html .= '</div>';
