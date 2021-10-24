@@ -186,7 +186,10 @@ class WCAPF_Taxonomy_Walker {
 		$classes .= $this->term_active( $item ) ? ' chosen' : '';
 
 		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
-		$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+
+		if ( $this->show_count ) {
+			$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+		}
 
 		$inner = apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
 

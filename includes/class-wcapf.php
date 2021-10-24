@@ -120,6 +120,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-category-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
 	}
 

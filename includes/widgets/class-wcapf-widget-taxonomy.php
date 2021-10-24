@@ -18,10 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
 
-	abstract protected function get_filter_key();
-
-	abstract protected function get_taxonomy();
-
 	/**
 	 * Output widget.
 	 *
@@ -47,15 +43,21 @@ abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
 
 		$walker = new WCAPF_Taxonomy_Walker();
 
-		$walker->taxonomy           = $taxonomy;
-		$walker->display_type       = $display_type;
-		$walker->query_type         = $query_type;
-		$walker->enable_multiple    = $enable_multiple;
-		$walker->show_count         = $show_count;
-		$walker->hierarchical       = $hierarchical;
-		$walker->show_children_only = $show_children_only;
-		$walker->hide_empty         = $hide_empty;
-		$walker->filter_key         = $filter_key;
+		$walker->taxonomy        = $taxonomy;
+		$walker->display_type    = $display_type;
+		$walker->query_type      = $query_type;
+		$walker->enable_multiple = $enable_multiple;
+		$walker->show_count      = $show_count;
+		$walker->hide_empty      = $hide_empty;
+		$walker->filter_key      = $filter_key;
+
+		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
+			$walker->hierarchical       = $hierarchical;
+			$walker->show_children_only = $show_children_only;
+		} else {
+			$walker->hierarchical       = false;
+			$walker->show_children_only = false;
+		}
 
 		$taxonomy = new WCAPF_Taxonomy( $walker );
 		$terms    = $taxonomy->get_terms();
@@ -113,6 +115,10 @@ abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
 			$title
 		);
 	}
+
+	abstract protected function get_filter_key();
+
+	abstract protected function get_taxonomy();
 
 	/**
 	 * Output widget form.
@@ -200,30 +206,32 @@ abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
 				<?php esc_html_e( 'Show count', 'wc-ajax-product-filter' ); ?>
 			</label>
 		</p>
-		<p>
-			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $hierarchical, 1 ); ?>
-			>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>">
-				<?php esc_html_e( 'Show hierarchy', 'wc-ajax-product-filter' ); ?>
-			</label>
-		</p>
-		<p>
-			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'show_children_only' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $show_children_only, 1 ); ?>
-			>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>">
-				<?php esc_html_e( 'Only show children of the current', 'wc-ajax-product-filter' ); ?>
-			</label>
-		</p>
+		<?php if ( $this->is_hierarchical() ) : ?>
+			<p>
+				<input
+					id="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $hierarchical, 1 ); ?>
+				>
+				<label for="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>">
+					<?php esc_html_e( 'Show hierarchy', 'wc-ajax-product-filter' ); ?>
+				</label>
+			</p>
+			<p>
+				<input
+					id="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name( 'show_children_only' ) ); ?>"
+					type="checkbox"
+					value="1"
+					<?php checked( $show_children_only, 1 ); ?>
+				>
+				<label for="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>">
+					<?php esc_html_e( 'Only show children of the current', 'wc-ajax-product-filter' ); ?>
+				</label>
+			</p>
+		<?php endif; ?>
 		<p>
 			<input
 				id="<?php echo esc_attr( $this->get_field_id( 'hide_empty' ) ); ?>"
@@ -237,6 +245,15 @@ abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
 			</label>
 		</p>
 		<?php
+	}
+
+	/**
+	 * Checks if the taxonomy is hierarchical.
+	 *
+	 * @return bool
+	 */
+	private function is_hierarchical() {
+		return is_taxonomy_hierarchical( $this->get_taxonomy() );
 	}
 
 }

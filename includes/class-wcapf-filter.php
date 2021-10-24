@@ -228,6 +228,13 @@ class WCAPF_Filter {
 				}
 			}
 
+			// TODO: Taxonomy
+			$default_taxonomies = array( 'product_cat', 'product_tag' );
+
+			foreach ( $default_taxonomies as $default_taxonomy ) {
+
+			}
+
 			// category
 			if ( preg_match( '/product-cat/', $key ) && ! empty( $value ) ) {
 				$terms    = explode( ',', $value );
@@ -252,7 +259,7 @@ class WCAPF_Filter {
 				}
 			}
 
-			// category
+			// tag
 			if ( preg_match( '/product-tag/', $key ) && ! empty( $value ) ) {
 				$terms    = explode( ',', $value );
 				$taxonomy = 'product_tag';
