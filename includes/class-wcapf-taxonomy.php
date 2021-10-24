@@ -230,6 +230,10 @@ class WCAPF_Taxonomy {
 	 * @return array
 	 */
 	private function get_updated_terms_count( $terms ) {
+		if ( ! $terms ) {
+			return array();
+		}
+
 		$term_ids            = wp_list_pluck( $terms, 'id' );
 		$active_terms        = $this->get_filtered_term_product_counts( $term_ids );
 		$updated_terms_count = array();

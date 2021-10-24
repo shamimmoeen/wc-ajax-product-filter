@@ -165,7 +165,7 @@ class WCAPF {
 			'sorting_control'      => '1',
 			'scroll_to_top'        => '1',
 			'scroll_to_top_offset' => '100',
-			'custom_scripts'       => ''
+			'custom_scripts'       => '',
 		);
 	}
 

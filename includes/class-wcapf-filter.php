@@ -59,8 +59,7 @@ class WCAPF_Filter {
 		// When both search and tax results found
 		if ( sizeof( $search_results ) > 0 && sizeof( $tax_results ) > 0 ) {
 			$post__in = array_intersect( $search_results, $tax_results );
-		}
-		// When only search results found
+		} // When only search results found
 		elseif ( sizeof( $search_results ) > 0 && sizeof( $tax_results ) === 0 ) {
 			$post__in = $search_results;
 		} else {
@@ -113,12 +112,12 @@ class WCAPF_Filter {
 		if ( sizeof( $chosen_filters ) > 0 ) {
 			$matched_products = array(
 				'and' => array(),
-				'or'  => array()
+				'or'  => array(),
 			);
 
 			$filtered_attribute = array(
 				'and' => false,
-				'or'  => false
+				'or'  => false,
 			);
 
 			foreach ( $chosen_filters as $attribute => $data ) {
@@ -204,6 +203,18 @@ class WCAPF_Filter {
 			$active_filters['orderby'] = $orderby;
 		}
 
+		// TODO: Use a hook, remove 'brand'
+		// Product's taxonomies
+		$default_taxonomies = array( 'product_cat', 'product_tag', 'brand' );
+
+		foreach ( $default_taxonomies as $default_taxonomy ) {
+			$result = $this->get_chosen_terms( $default_taxonomy, $query );
+
+			if ( $result ) {
+				$chosen[ $default_taxonomy ] = $result;
+			}
+		}
+
 		foreach ( $query as $key => $value ) {
 			// attribute
 			if ( preg_match( '/^attr/', $key ) && ! empty( $value ) ) {
@@ -227,61 +238,6 @@ class WCAPF_Filter {
 					$active_filters['term'][ $key ][ $term_id ] = $term_data->name;
 				}
 			}
-
-			// TODO: Taxonomy
-			$default_taxonomies = array( 'product_cat', 'product_tag' );
-
-			foreach ( $default_taxonomies as $default_taxonomy ) {
-
-			}
-
-			// category
-			if ( preg_match( '/product-cat/', $key ) && ! empty( $value ) ) {
-				$terms    = explode( ',', $value );
-				$taxonomy = 'product_cat';
-
-				if ( preg_match( '/^product-cata/', $key ) ) {
-					$query_type = 'and';
-				} else {
-					$query_type = 'or';
-				}
-
-				$chosen[ $taxonomy ] = array(
-					'terms'      => $terms,
-					'query_type' => $query_type
-				);
-
-				foreach ( $terms as $term_id ) {
-					// $ancestors = wcapf_get_term_ancestors($term_id, $taxonomy);
-					$term_data = $this->wcapf_get_term_data( $term_id, $taxonomy );
-					// $term_ancestors[$key][] = $ancestors;
-					$active_filters['term'][ $key ][ $term_id ] = $term_data->name;
-				}
-			}
-
-			// tag
-			if ( preg_match( '/product-tag/', $key ) && ! empty( $value ) ) {
-				$terms    = explode( ',', $value );
-				$taxonomy = 'product_tag';
-
-				if ( preg_match( '/^product-taga/', $key ) ) {
-					$query_type = 'and';
-				} else {
-					$query_type = 'or';
-				}
-
-				$chosen[ $taxonomy ] = array(
-					'terms'      => $terms,
-					'query_type' => $query_type
-				);
-
-				foreach ( $terms as $term_id ) {
-					// $ancestors = wcapf_get_term_ancestors($term_id, $taxonomy);
-					$term_data = $this->wcapf_get_term_data( $term_id, $taxonomy );
-					// $term_ancestors[$key][] = $ancestors;
-					$active_filters['term'][ $key ][ $term_id ] = $term_data->name;
-				}
-			}
 		}
 
 		// min-price
@@ -298,6 +254,47 @@ class WCAPF_Filter {
 			'chosen'         => $chosen,
 			'term_ancestors' => $term_ancestors,
 			'active_filters' => $active_filters
+		);
+	}
+
+	private function get_chosen_terms( $taxonomy, $query ) {
+		$_taxonomy              = str_replace( '_', '-', $taxonomy );
+		$taxonomy_and_query_key = apply_filters( 'wcapf_query_type_and', $_taxonomy . 'a', $taxonomy, 'and' );
+		$taxonomy_or_query_key  = apply_filters( 'wcapf_query_type_or', $_taxonomy . 'o', $taxonomy, 'or' );
+		$value_separator        = ','; // TODO: Use a filter
+
+		$values         = '';
+		$query_key      = '';
+		$query_type     = '';
+		$active_filters = array();
+
+		if ( isset( $query[ $taxonomy_and_query_key ] ) ) {
+			$query_key  = $taxonomy_and_query_key;
+			$values     = $query[ $taxonomy_and_query_key ];
+			$query_type = 'and';
+		} elseif ( isset( $query[ $taxonomy_or_query_key ] ) ) {
+			$query_key  = $taxonomy_or_query_key;
+			$values     = $query[ $taxonomy_or_query_key ];
+			$query_type = 'or';
+		}
+
+		if ( ! $values ) {
+			return array();
+		}
+
+		$terms = explode( $value_separator, $values );
+
+		foreach ( $terms as $term_id ) {
+			// $ancestors = wcapf_get_term_ancestors($term_id, $taxonomy);
+			$term_data = $this->wcapf_get_term_data( $term_id, $taxonomy );
+			// $term_ancestors[$key][] = $ancestors;
+			$active_filters['term'][ $query_key ][ $term_id ] = $term_data->name;
+		}
+
+		return array(
+			'terms'          => $terms,
+			'query_type'     => $query_type,
+			'active_filters' => $active_filters,
 		);
 	}
 
