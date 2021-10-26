@@ -53,8 +53,8 @@ class WCAPF_Filter {
 			return $query;
 		}
 
-		$search_results = $this->productIdsForGivenKeyword();
-		$tax_results    = $this->filteredProductIdsForTerms();
+		$search_results = $this->product_ids_for_keyword();
+		$tax_results    = $this->filtered_product_ids_for_terms();
 
 		// When both search and tax results found
 		if ( sizeof( $search_results ) > 0 && sizeof( $tax_results ) > 0 ) {
@@ -66,18 +66,18 @@ class WCAPF_Filter {
 			$post__in = $tax_results;
 		}
 
-		$query->set( 'meta_query', $this->queryForMeta() );
+		$query->set( 'meta_query', $this->query_for_meta() );
 		$query->set( 'post__in', $post__in );
 
 		return $query;
 	}
 
 	/**
-	 * Retrieve Product ids for given keyword.
+	 * Retrieve Product ids for keyword.
 	 *
 	 * @return array
 	 */
-	public function productIdsForGivenKeyword() {
+	public function product_ids_for_keyword() {
 		if ( isset( $_GET['keyword'] ) && ! empty( $_GET['keyword'] ) ) {
 			$keyword = $_GET['keyword'];
 
@@ -99,12 +99,12 @@ class WCAPF_Filter {
 	}
 
 	/**
-	 * Filtered product ids for given terms.
+	 * Filtered product ids for terms.
 	 *
 	 * @return array
 	 */
-	public function filteredProductIdsForTerms() {
-		$chosen_filters = $this->getChosenFilters();
+	public function filtered_product_ids_for_terms() {
+		$chosen_filters = $this->get_chosen_filters();
 		$chosen_filters = $chosen_filters['chosen'];
 		$results        = array();
 
@@ -182,7 +182,7 @@ class WCAPF_Filter {
 	 *
 	 * @return array
 	 */
-	public function getChosenFilters() {
+	public function get_chosen_filters() {
 		// parse url
 		$url = $_SERVER['QUERY_STRING'];
 		parse_str( $url, $query );
@@ -203,40 +203,13 @@ class WCAPF_Filter {
 			$active_filters['orderby'] = $orderby;
 		}
 
-		// TODO: Use a hook, remove 'brand'
-		// Product's taxonomies
-		$default_taxonomies = array( 'product_cat', 'product_tag', 'brand' );
+		$taxonomy_filter_keys = $this->get_taxonomy_filter_keys();
 
-		foreach ( $default_taxonomies as $default_taxonomy ) {
-			$result = $this->get_chosen_terms( $default_taxonomy, $query );
+		foreach ( $taxonomy_filter_keys as $taxonomy => $keys ) {
+			$result = $this->get_chosen_terms( $taxonomy, $keys, $query );
 
 			if ( $result ) {
-				$chosen[ $default_taxonomy ] = $result;
-			}
-		}
-
-		foreach ( $query as $key => $value ) {
-			// attribute
-			if ( preg_match( '/^attr/', $key ) && ! empty( $value ) ) {
-				$terms    = explode( ',', $value );
-				$new_key  = str_replace( array( 'attra-', 'attro-' ), '', $key );
-				$taxonomy = 'pa_' . $new_key;
-
-				if ( preg_match( '/^attra/', $key ) ) {
-					$query_type = 'and';
-				} else {
-					$query_type = 'or';
-				}
-
-				$chosen[ $taxonomy ] = array(
-					'terms'      => $terms,
-					'query_type' => $query_type
-				);
-
-				foreach ( $terms as $term_id ) {
-					$term_data                                  = $this->wcapf_get_term_data( $term_id, $taxonomy );
-					$active_filters['term'][ $key ][ $term_id ] = $term_data->name;
-				}
+				$chosen[ $taxonomy ] = $result;
 			}
 		}
 
@@ -257,10 +230,46 @@ class WCAPF_Filter {
 		);
 	}
 
-	private function get_chosen_terms( $taxonomy, $query ) {
-		$_taxonomy              = str_replace( '_', '-', $taxonomy );
-		$taxonomy_and_query_key = apply_filters( 'wcapf_query_type_and', $_taxonomy . 'a', $taxonomy, 'and' );
-		$taxonomy_or_query_key  = apply_filters( 'wcapf_query_type_or', $_taxonomy . 'o', $taxonomy, 'or' );
+	/**
+	 * Gets the filter keys.
+	 *
+	 * @return string[][]
+	 */
+	public function get_taxonomy_filter_keys() {
+		$keys = array(
+			'product_cat' => array(
+				'and' => 'product-cata',
+				'or'  => 'product-cato',
+			),
+			'product_tax' => array(
+				'and' => 'product-taxa',
+				'or'  => 'product-taxo',
+			),
+			// TODO: Remove brand
+			'brand'       => array(
+				'and' => 'branda',
+				'or'  => 'brando',
+			),
+		);
+
+		$attribute_taxonomies = wc_get_attribute_taxonomies();
+
+		foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
+			$name     = $attribute_taxonomy->attribute_name;
+			$taxonomy = wc_attribute_taxonomy_name( $name );
+
+			$keys[ $taxonomy ] = array(
+				'and' => 'attra-' . $name,
+				'or'  => 'attro-' . $name,
+			);
+		}
+
+		return apply_filters( 'wcapf_filter_keys', $keys );
+	}
+
+	private function get_chosen_terms( $taxonomy, $keys, $query ) {
+		$taxonomy_and_query_key = $keys['and'];
+		$taxonomy_or_query_key  = $keys['or'];
 		$value_separator        = ','; // TODO: Use a filter
 
 		$values         = '';
@@ -298,6 +307,7 @@ class WCAPF_Filter {
 		);
 	}
 
+	// TODO: Maybe we don't need this anymore
 	public function wcapf_get_term_data( $term_id, $taxonomy ) {
 		$transient_name = 'wcapf_term_data_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $term_id ) );
 
@@ -314,7 +324,7 @@ class WCAPF_Filter {
 	 *
 	 * @return array
 	 */
-	public function queryForMeta() {
+	public function query_for_meta() {
 		$meta_query = array();
 
 		// rating filter
@@ -402,9 +412,9 @@ class WCAPF_Filter {
 	 */
 	public function getPriceRange( $filtered = true ) {
 		if ( $filtered === true ) {
-			$price_range = $this->filteredProductsPriceRange();
+			$price_range = $this->filtered_products_price_range();
 		} else {
-			$price_range = $this->unfilteredProductsPriceRange();
+			$price_range = $this->unfiltered_products_price_range();
 		}
 
 		if ( sizeof( $price_range ) > 2 ) {
@@ -477,16 +487,14 @@ class WCAPF_Filter {
 	 *
 	 * @return array
 	 */
-	public function filteredProductsPriceRange() {
-		$products = $this->filteredProductIds();
+	public function filtered_products_price_range() {
+		$products = $this->filtered_product_ids();
 
 		if ( sizeof( $products ) < 1 ) {
 			return array();
 		}
 
-		$filtered_products_price_range = $this->findPriceRange( $products );
-
-		return $filtered_products_price_range;
+		return $this->find_price_range( $products );
 	}
 
 	/**
@@ -494,7 +502,7 @@ class WCAPF_Filter {
 	 *
 	 * @return array
 	 */
-	public function filteredProductIds() {
+	public function filtered_product_ids() {
 		global $wp_query;
 		$current_query = $wp_query;
 
@@ -508,7 +516,7 @@ class WCAPF_Filter {
 		$tax_query  = ( key_exists( 'tax_query', $current_query->query_vars ) ) ? $current_query->query_vars['tax_query'] : array();
 		$post__in   = ( key_exists( 'post__in', $current_query->query_vars ) ) ? $current_query->query_vars['post__in'] : array();
 
-		$filtered_product_ids = get_posts(
+		return get_posts(
 			array_merge(
 				$modified_query,
 				array(
@@ -526,8 +534,6 @@ class WCAPF_Filter {
 				)
 			)
 		);
-
-		return $filtered_product_ids;
 	}
 
 	/**
@@ -537,7 +543,7 @@ class WCAPF_Filter {
 	 *
 	 * @return array
 	 */
-	public function findPriceRange( $products ) {
+	public function find_price_range( $products ) {
 		$price_range = array();
 
 		foreach ( $products as $id ) {
@@ -566,9 +572,7 @@ class WCAPF_Filter {
 			}
 		}
 
-		$price_range = array_unique( $price_range );
-
-		return $price_range;
+		return array_unique( $price_range );
 	}
 
 	/**
@@ -576,8 +580,8 @@ class WCAPF_Filter {
 	 *
 	 * @return array
 	 */
-	public function unfilteredProductsPriceRange() {
-		$products = $this->unfilteredProductIds();
+	public function unfiltered_products_price_range() {
+		$products = $this->unfiltered_product_ids();
 
 		if ( sizeof( $products ) < 1 ) {
 			return array();
@@ -587,7 +591,7 @@ class WCAPF_Filter {
 		$transient_name = 'wcapf_unfiltered_product_price_range';
 
 		if ( false === ( $unfiltered_products_price_range = get_transient( $transient_name ) ) ) {
-			$unfiltered_products_price_range = $this->findPriceRange( $products );
+			$unfiltered_products_price_range = $this->find_price_range( $products );
 			set_transient( $transient_name, $unfiltered_products_price_range, WCAPF_CACHE_TIME );
 		}
 
@@ -597,9 +601,11 @@ class WCAPF_Filter {
 	/**
 	 * Get the unfiltered product ids.
 	 *
+	 * TODO: Maybe rename to all_product_ids
+	 *
 	 * @return array
 	 */
-	public function unfilteredProductIds() {
+	public function unfiltered_product_ids() {
 		$args = array(
 			'post_type'   => 'product',
 			'post_status' => 'publish',
