@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 3.0.0
  */
-abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
+abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 
 	/**
 	 * Output widget.
@@ -120,131 +120,80 @@ abstract class WCAPF_Widget_Taxonomy extends WP_Widget {
 
 	abstract protected function get_taxonomy();
 
-	/**
-	 * Output widget form.
-	 *
-	 * @param array $instance Previously saved values from database.
-	 */
-	public function form( $instance ) {
-		list(
-			$query_type,
-			$enable_multiple,
-			$show_count,
-			$hierarchical,
-			$show_children_only,
-			$hide_empty,
-			$display_type,
-			$title ) = $this->widget_settings( $instance );
-		?>
-		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">
-				<?php esc_html_e( 'Title:', 'wc-ajax-product-filter' ); ?>
-			</label>
-			<input
-				class="widefat"
-				id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
-				type="text"
-				value="<?php echo esc_attr( $title ); ?>"
-			>
-		</p>
-		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'display_type' ) ); ?>">
-				<?php esc_html_e( 'Display Type', 'wc-ajax-product-filter' ); ?>
-			</label>
-			<select
-				class="widefat"
-				id="<?php echo esc_attr( $this->get_field_id( 'display_type' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'display_type' ) ); ?>"
-			>
-				<option value="list" <?php selected( $display_type, 'list' ); ?>>
-					<?php esc_html_e( 'List', 'wc-ajax-product-filter' ); ?>
-				</option>
-				<option value="dropdown" <?php selected( $display_type, 'dropdown' ); ?>>
-					<?php esc_html_e( 'Dropdown', 'wc-ajax-product-filter' ); ?>
-				</option>
-			</select>
-		</p>
-		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'query_type' ) ); ?>">
-				<?php esc_html_e( 'Query Type', 'wc-ajax-product-filter' ); ?>
-			</label>
-			<select
-				class="widefat"
-				id="<?php echo esc_attr( $this->get_field_id( 'query_type' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'query_type' ) ); ?>"
-			>
-				<option value="and" <?php selected( $query_type, 'and' ); ?>>
-					<?php esc_html_e( 'AND', 'wc-ajax-product-filter' ); ?>
-				</option>
-				<option value="or" <?php selected( $query_type, 'or' ); ?>>
-					<?php esc_html_e( 'OR', 'wc-ajax-product-filter' ); ?>
-				</option>
-			</select>
-		</p>
-		<p>
-			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'enable_multiple' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'enable_multiple' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $enable_multiple, 1 ); ?>
-			>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'enable_multiple' ) ); ?>">
-				<?php esc_html_e( 'Enable multiple filter', 'wc-ajax-product-filter' ); ?>
-			</label>
-		</p>
-		<p>
-			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'show_count' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'show_count' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $show_count, 1 ); ?>
-			>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'show_count' ) ); ?>">
-				<?php esc_html_e( 'Show count', 'wc-ajax-product-filter' ); ?>
-			</label>
-		</p>
-		<?php if ( $this->is_hierarchical() ) : ?>
-			<p>
-				<input
-					id="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"
-					name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>"
-					type="checkbox"
-					value="1"
-					<?php checked( $hierarchical, 1 ); ?>
-				>
-				<label for="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>">
-					<?php esc_html_e( 'Show hierarchy', 'wc-ajax-product-filter' ); ?>
-				</label>
-			</p>
-			<p>
-				<input
-					id="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>"
-					name="<?php echo esc_attr( $this->get_field_name( 'show_children_only' ) ); ?>"
-					type="checkbox"
-					value="1"
-					<?php checked( $show_children_only, 1 ); ?>
-				>
-				<label for="<?php echo esc_attr( $this->get_field_id( 'show_children_only' ) ); ?>">
-					<?php esc_html_e( 'Only show children of the current', 'wc-ajax-product-filter' ); ?>
-				</label>
-			</p>
-		<?php endif; ?>
-		<p>
-			<input
-				id="<?php echo esc_attr( $this->get_field_id( 'hide_empty' ) ); ?>"
-				name="<?php echo esc_attr( $this->get_field_name( 'hide_empty' ) ); ?>"
-				type="checkbox"
-				value="1"
-				<?php checked( $hide_empty, 1 ); ?>
-			>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'hide_empty' ) ); ?>">
-				<?php esc_html_e( 'Hide empty', 'wc-ajax-product-filter' ); ?>
-			</label>
-		</p>
-		<?php
+	protected function widget_fields() {
+		$fields = array(
+			array(
+				'type'     => 'text',
+				'id'       => 'title',
+				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
+				'name'     => 'title',
+				'position' => 5,
+			),
+			array(
+				'type'     => 'select',
+				'id'       => 'display_type',
+				'label'    => __( 'Display Type', 'wc-ajax-product-filter' ),
+				'name'     => 'display_type',
+				'options'  => array(
+					'list'     => __( 'List', 'wc-ajax-product-filter' ),
+					'dropdown' => __( 'Dropdown', 'wc-ajax-product-filter' ),
+				),
+				'position' => 10,
+			),
+			array(
+				'type'     => 'select',
+				'id'       => 'query_type',
+				'label'    => __( 'Query Type', 'wc-ajax-product-filter' ),
+				'name'     => 'query_type',
+				'options'  => array(
+					'and' => __( 'AND', 'wc-ajax-product-filter' ),
+					'or'  => __( 'OR', 'wc-ajax-product-filter' ),
+				),
+				'position' => 15,
+			),
+			array(
+				'type'     => 'checkbox',
+				'id'       => 'enable_multiple',
+				'label'    => __( 'Enable multiple filter', 'wc-ajax-product-filter' ),
+				'name'     => 'enable_multiple',
+				'position' => 20,
+			),
+			array(
+				'type'     => 'checkbox',
+				'id'       => 'show_count',
+				'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
+				'name'     => 'show_count',
+				'position' => 25,
+			),
+			array(
+				'type'     => 'checkbox',
+				'id'       => 'hide_empty',
+				'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
+				'name'     => 'hide_empty',
+				'position' => 40,
+			),
+		);
+
+		if ( $this->is_hierarchical() ) {
+			$fields = array_merge( $fields, array(
+				array(
+					'type'     => 'checkbox',
+					'id'       => 'hierarchical',
+					'label'    => __( 'Show hierarchy', 'wc-ajax-product-filter' ),
+					'name'     => 'hierarchical',
+					'position' => 30,
+				),
+				array(
+					'type'     => 'checkbox',
+					'id'       => 'show_children_only',
+					'label'    => __( 'Only show children of the current', 'wc-ajax-product-filter' ),
+					'name'     => 'show_children_only',
+					'position' => 35,
+				),
+			) );
+		}
+
+		return $fields;
 	}
 
 	/**

@@ -117,6 +117,7 @@ class WCAPF {
 
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-active-filters.php';
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-category-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
