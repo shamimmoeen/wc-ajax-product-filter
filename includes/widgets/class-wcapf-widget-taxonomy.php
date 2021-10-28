@@ -38,7 +38,7 @@ abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 			$hide_empty,
 			$display_type ) = $this->widget_settings( $instance );
 
-		$filter_key = $this->get_filter_key();
+		$filter_key = $this->get_filter_key( $query_type );
 		$taxonomy   = $this->get_taxonomy();
 
 		$walker = new WCAPF_Taxonomy_Walker();
@@ -116,10 +116,24 @@ abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 		);
 	}
 
-	abstract protected function get_filter_key();
+	protected function get_filter_key( $query_type ) {
+		$utils       = new WCAPF_Utils();
+		$filter_keys = $utils->get_taxonomy_filter_keys();
+		$taxonomy    = $this->get_taxonomy();
 
+		return isset( $filter_keys[ $taxonomy ] ) ? $filter_keys[ $taxonomy ][ $query_type ] : '';
+	}
+
+	/**
+	 * Abstract method to set the taxonomy.
+	 *
+	 * @return string
+	 */
 	abstract protected function get_taxonomy();
 
+	/**
+	 * @return array
+	 */
 	protected function widget_fields() {
 		$fields = array(
 			array(

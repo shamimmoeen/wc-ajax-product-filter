@@ -123,6 +123,9 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
+
+		// TODO: Remove this from free version
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-pro.php';
 	}
 
 	/**

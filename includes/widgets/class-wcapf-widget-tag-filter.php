@@ -34,10 +34,6 @@ class WCAPF_Tag_Filter_Widget extends WCAPF_Widget_Taxonomy {
 		);
 	}
 
-	protected function get_filter_key() {
-		return 'product-tag';
-	}
-
 	protected function get_taxonomy() {
 		return 'product_tag';
 	}

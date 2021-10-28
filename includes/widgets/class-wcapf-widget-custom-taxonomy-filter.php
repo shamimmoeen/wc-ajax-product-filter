@@ -36,6 +36,9 @@ class WCAPF_Custom_Taxonomy_Filter_Widget extends WCAPF_Widget_Taxonomy {
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function widget_fields() {
 		$fields = parent::widget_fields();
 
@@ -67,16 +70,16 @@ class WCAPF_Custom_Taxonomy_Filter_Widget extends WCAPF_Widget_Taxonomy {
 		) );
 	}
 
-	protected function get_filter_key() {
-		return 'brand';
-	}
-
+	/**
+	 * Gets the taxonomy from widget settings.
+	 *
+	 * @return string
+	 */
 	protected function get_taxonomy() {
-		echo '<pre>';
-		print_r( $this->get_settings() );
-		echo '</pre>';
+		$instances = $this->get_settings();
+		$instance  = isset( $instances[ $this->number ] ) ? $instances[ $this->number ] : array();
 
-		return 'brand';
+		return isset( $instance['taxonomy'] ) ? sanitize_text_field( $instance['taxonomy'] ) : '';
 	}
 
 }

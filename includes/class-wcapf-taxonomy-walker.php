@@ -118,16 +118,7 @@ class WCAPF_Taxonomy_Walker {
 	}
 
 	private function get_filter_key() {
-		$query_type = strtolower( $this->query_type );
-		$filter_key = $this->filter_key;
-
-		if ( 'and' === $query_type ) {
-			$filter_key .= 'a';
-		} elseif ( 'or' === $query_type ) {
-			$filter_key .= 'o';
-		}
-
-		return $filter_key;
+		return $this->filter_key;
 	}
 
 	/**

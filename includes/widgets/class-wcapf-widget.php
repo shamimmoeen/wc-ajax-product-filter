@@ -41,7 +41,7 @@ abstract class WCAPF_Widget extends WP_Widget {
 
 		foreach ( $fields as $_data ) {
 			$data          = $this->merge_data( $_data );
-			$value         = isset( $instance[ $data['id'] ] ) ? $instance[ $data['id'] ] : null;
+			$value         = isset( $instance[ $data['instance_id'] ] ) ? $instance[ $data['instance_id'] ] : null;
 			$data['value'] = $value;
 			$this->get_field( $data );
 		}
@@ -57,7 +57,13 @@ abstract class WCAPF_Widget extends WP_Widget {
 			'options' => array(),
 		) );
 
-		return wp_parse_args( $data, $default_data );
+		$data = wp_parse_args( $data, $default_data );
+
+		$data['instance_id'] = $data['id'];
+		$data['id']          = $this->get_field_id( $data['id'] );
+		$data['name']        = $this->get_field_name( $data['name'] );
+
+		return $data;
 	}
 
 	protected function get_field( $data ) {

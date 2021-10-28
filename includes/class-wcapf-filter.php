@@ -203,7 +203,9 @@ class WCAPF_Filter {
 			$active_filters['orderby'] = $orderby;
 		}
 
-		$taxonomy_filter_keys = $this->get_taxonomy_filter_keys();
+		$utils = new WCAPF_Utils();
+
+		$taxonomy_filter_keys = $utils->get_taxonomy_filter_keys();
 
 		foreach ( $taxonomy_filter_keys as $taxonomy => $keys ) {
 			$result = $this->get_chosen_terms( $taxonomy, $keys, $query );
@@ -228,43 +230,6 @@ class WCAPF_Filter {
 			'term_ancestors' => $term_ancestors,
 			'active_filters' => $active_filters
 		);
-	}
-
-	/**
-	 * Gets the filter keys.
-	 *
-	 * @return string[][]
-	 */
-	public function get_taxonomy_filter_keys() {
-		$keys = array(
-			'product_cat' => array(
-				'and' => 'product-cata',
-				'or'  => 'product-cato',
-			),
-			'product_tax' => array(
-				'and' => 'product-taxa',
-				'or'  => 'product-taxo',
-			),
-			// TODO: Remove brand
-			'brand'       => array(
-				'and' => 'branda',
-				'or'  => 'brando',
-			),
-		);
-
-		$attribute_taxonomies = wc_get_attribute_taxonomies();
-
-		foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
-			$name     = $attribute_taxonomy->attribute_name;
-			$taxonomy = wc_attribute_taxonomy_name( $name );
-
-			$keys[ $taxonomy ] = array(
-				'and' => 'attra-' . $name,
-				'or'  => 'attro-' . $name,
-			);
-		}
-
-		return apply_filters( 'wcapf_filter_keys', $keys );
 	}
 
 	private function get_chosen_terms( $taxonomy, $keys, $query ) {
@@ -294,10 +259,11 @@ class WCAPF_Filter {
 		$terms = explode( $value_separator, $values );
 
 		foreach ( $terms as $term_id ) {
-			// $ancestors = wcapf_get_term_ancestors($term_id, $taxonomy);
-			$term_data = $this->wcapf_get_term_data( $term_id, $taxonomy );
-			// $term_ancestors[$key][] = $ancestors;
-			$active_filters['term'][ $query_key ][ $term_id ] = $term_data->name;
+			$term_data = get_term( $term_id, $taxonomy );
+
+			if ( $term_data ) {
+				$active_filters['term'][ $query_key ][ $term_id ] = $term_data->name;
+			}
 		}
 
 		return array(
@@ -305,18 +271,6 @@ class WCAPF_Filter {
 			'query_type'     => $query_type,
 			'active_filters' => $active_filters,
 		);
-	}
-
-	// TODO: Maybe we don't need this anymore
-	public function wcapf_get_term_data( $term_id, $taxonomy ) {
-		$transient_name = 'wcapf_term_data_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $term_id ) );
-
-		if ( false === ( $term_data = get_transient( $transient_name ) ) ) {
-			$term_data = get_term( $term_id, $taxonomy );
-			set_transient( $transient_name, $term_data, WCAPF_CACHE_TIME );
-		}
-
-		return $term_data;
 	}
 
 	/**
