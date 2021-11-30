@@ -219,4 +219,16 @@ abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 		return is_taxonomy_hierarchical( $this->get_taxonomy() );
 	}
 
+	protected function get_select_options( $taxonomies ) {
+		$options = array( '' => __( '-- Choose --', 'wc-ajax-product-filter' ) );
+
+		foreach ( $taxonomies as $_taxonomy ) {
+			$name                  = get_taxonomy( $_taxonomy )->labels->name;
+			$taxonomy_label        = $name . ' (' . $_taxonomy . ')';
+			$options[ $_taxonomy ] = $taxonomy_label;
+		}
+
+		return $options;
+	}
+
 }

@@ -40,23 +40,11 @@ class WCAPF_Custom_Taxonomy_Filter_Widget extends WCAPF_Widget_Taxonomy {
 	 * @return array
 	 */
 	protected function widget_fields() {
-		$fields = parent::widget_fields();
-
+		$fields     = parent::widget_fields();
 		$taxonomies = get_object_taxonomies( 'product' );
-
-		$excluded = array_merge( wc_get_attribute_taxonomy_names(), array(
-			'product_cat',
-			'product_tag',
-		) );
-
-		$allowed = array_diff( $taxonomies, $excluded );
-		$options = array( '' => __( '-- Choose --', 'wc-ajax-product-filter' ) );
-
-		foreach ( $allowed as $_taxonomy ) {
-			$name                  = get_taxonomy( $_taxonomy )->labels->name;
-			$taxonomy_label        = $name . ' (' . $_taxonomy . ')';
-			$options[ $_taxonomy ] = $taxonomy_label;
-		}
+		$excluded   = array_merge( wc_get_attribute_taxonomy_names(), array( 'product_cat', 'product_tag', ) );
+		$allowed    = array_diff( $taxonomies, $excluded );
+		$options    = $this->get_select_options( $allowed );
 
 		return array_merge( $fields, array(
 			array(
