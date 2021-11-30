@@ -55,11 +55,13 @@ class WCAPF_Attribute_Filter_Widget extends WCAPF_Widget_Taxonomy {
 
 }
 
-// register widget
-if ( ! function_exists( 'wcapf_register_attribute_filter_widget' ) ) {
-	function wcapf_register_attribute_filter_widget() {
-		register_widget( 'WCAPF_Attribute_Filter_Widget' );
-	}
-
-	add_action( 'widgets_init', 'wcapf_register_attribute_filter_widget' );
+/**
+ * Register the widget.
+ *
+ * @return void
+ */
+function wcapf_register_attribute_filter_widget() {
+	register_widget( 'WCAPF_Attribute_Filter_Widget' );
 }
+
+add_action( 'widgets_init', 'wcapf_register_attribute_filter_widget' );
