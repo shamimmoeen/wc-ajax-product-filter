@@ -160,4 +160,26 @@ abstract class WCAPF_Widget extends WP_Widget {
 		<?php
 	}
 
+	protected function before_widget( $args, $instance, $widget_class ) {
+		$before_widget = $args['before_widget'];
+
+		// no class found, so add it
+		if ( strpos( $before_widget, 'class' ) === false ) {
+			$before_widget = str_replace( '>', 'class="' . $widget_class . '"', $before_widget );
+		} // class found but not the one that we need, so add it
+		else {
+			$before_widget = str_replace( 'class="', 'class="' . $widget_class . ' ', $before_widget );
+		}
+
+		echo $before_widget; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+
+		if ( ! empty( $instance['title'] ) ) {
+			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
+		}
+	}
+
+	protected function after_widget( $args ) {
+		echo $args['after_widget'];
+	}
+
 }

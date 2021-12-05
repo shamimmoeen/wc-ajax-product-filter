@@ -27,7 +27,7 @@ class WCAPF_Attribute_Filter_Widget extends WCAPF_Widget_Taxonomy {
 	protected function widget_fields() {
 		$fields     = parent::widget_fields();
 		$attributes = wc_get_attribute_taxonomy_names();
-		$options    = $this->get_select_options( $attributes );
+		$options    = $this->get_taxonomy_options( $attributes );
 
 		return array_merge( $fields, array(
 			array(

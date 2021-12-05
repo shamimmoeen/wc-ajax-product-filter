@@ -68,25 +68,9 @@ abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 			$widget_class = 'woocommerce wcapf-ajax-term-filter';
 		}
 
-		$before_widget = $args['before_widget'];
-
-		// no class found, so add it
-		if ( strpos( $before_widget, 'class' ) === false ) {
-			$before_widget = str_replace( '>', 'class="' . $widget_class . '"', $before_widget );
-		} // class found but not the one that we need, so add it
-		else {
-			$before_widget = str_replace( 'class="', 'class="' . $widget_class . ' ', $before_widget );
-		}
-
-		echo $before_widget; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-
-		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
-		}
-
+		$this->before_widget( $args, $instance, $widget_class );
 		echo $walker->build_menu( $terms );
-
-		echo $args['after_widget'];
+		$this->after_widget( $args );
 	}
 
 	/**
@@ -219,7 +203,14 @@ abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 		return is_taxonomy_hierarchical( $this->get_taxonomy() );
 	}
 
-	protected function get_select_options( $taxonomies ) {
+	/**
+	 * Gets an array of taxonomy name and label, name => label.
+	 *
+	 * @param $taxonomies
+	 *
+	 * @return array
+	 */
+	protected function get_taxonomy_options( $taxonomies ) {
 		$options = array( '' => __( '-- Choose --', 'wc-ajax-product-filter' ) );
 
 		foreach ( $taxonomies as $_taxonomy ) {

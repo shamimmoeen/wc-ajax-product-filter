@@ -112,6 +112,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-meta.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
 
@@ -122,7 +123,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
 
 		// TODO: Remove this from free version
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-pro.php';
