@@ -1,0 +1,83 @@
+const { src, dest, watch, series } = require( 'gulp' );
+const sass = require( 'gulp-sass' );
+const sourcemaps = require( 'gulp-sourcemaps' );
+const touch = require( 'gulp-touch-cmd' );
+const autoPrefix = require( 'gulp-autoprefixer' );
+const babel = require( 'gulp-babel' );
+const concat = require( 'gulp-concat' );
+const minCss = require( 'gulp-minify-css' );
+const rename = require( 'gulp-rename' );
+const uglify = require( 'gulp-uglify' );
+const browserSync = require( 'browser-sync' ).create();
+
+/**
+ * @source https://stackoverflow.com/a/34028652
+ */
+function backendCss() {
+	const DEST = './admin/css';
+
+	return src( './admin/src/scss/wc-ajax-product-filter-scripts-admin.scss' )
+		.pipe( sourcemaps.init() )
+		.pipe( sass.sync( { outputStyle: 'expanded' } ).on( 'error', sass.logError ) )
+		.pipe( autoPrefix() )
+		.pipe( sourcemaps.write() )
+		.pipe( dest( DEST ) ) // Output non-minified css file
+		.pipe( browserSync.stream() )
+
+		.pipe( minCss() )
+		.pipe( rename( { extname: '.min.css' } ) )
+		.pipe( dest( DEST ) ) // Output minified css file
+
+		.pipe( touch() );
+}
+
+/**
+ * @source https://github.com/gulpjs/gulp/blob/master/docs/recipes/minified-and-non-minified.md
+ */
+function backendJs() {
+	const DEST = './admin/js';
+
+	return src( './admin/src/js/**/*.js' )
+		.pipe( sourcemaps.init() )
+		.pipe(
+			babel(
+				{
+					presets: [ '@babel/env' ],
+				}
+			)
+		)
+		.pipe( concat( 'wc-ajax-product-filter-scripts-admin.js' ) )
+		.pipe( sourcemaps.write() )
+		.pipe( dest( DEST ) ) // Output non-minified js file
+
+		.pipe( uglify() )
+		.pipe( rename( { extname: '.min.js' } ) )
+		.pipe( dest( DEST ) ) // Output minified js file
+
+		.pipe( touch() );
+}
+
+function browser() {
+	browserSync.init(
+		{
+			open: false, // Stop the browser from automatically opening
+			proxy: 'http://wcfilter.test/',
+			files: [
+				'./**/*.php',
+			],
+		}
+	);
+
+	watch( './admin/src/scss/**/*.scss', backendCss );
+	watch( './admin/src/js/**/*.js', backendJs ).on( 'change', browserSync.reload );
+}
+
+const build = series(
+	backendCss,
+	backendJs,
+);
+
+module.exports.backendCss = backendCss;
+module.exports.backendJs = backendJs;
+module.exports.build = build;
+module.exports.default = browser;

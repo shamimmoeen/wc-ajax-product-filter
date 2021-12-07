@@ -1,0 +1,21 @@
+.wcapf-widget-field {
+	margin: 10px 0;
+
+	&:not(.wcapf-widget-field-radio) {
+		.wcapf-wrapper {
+			margin: 3px 0 0;
+		}
+	}
+
+	&.wcapf-widget-field-radio {
+		align-items: center;
+		display: flex;
+		gap: 15px;
+
+		.wcapf-wrapper {
+			align-items: center;
+			display: flex;
+			gap: 10px;
+		}
+	}
+}

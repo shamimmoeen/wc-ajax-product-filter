@@ -9,5 +9,11 @@
 			"email": "shamim.moeen@gmail.com"
 		}
 	],
-	"require": {}
+	"require-dev": {
+    "squizlabs/php_codesniffer": "*",
+    "wp-coding-standards/wpcs": "^2.3",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "phpcompatibility/php-compatibility": "^9.3",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+  }
 }

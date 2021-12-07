@@ -38,7 +38,7 @@ class WCAPF_Meta {
 					name="widget-wcapf-custom-taxonomy-filter-1-meta-key"
 					id="widget-wcapf-custom-taxonomy-filter-1-meta-key"
 				>
-					<?php foreach ( $meta_keys as $meta_key ): ?>
+					<?php foreach ( $meta_keys as $meta_key ) : ?>
 						<option value="<?php echo esc_attr( $meta_key ); ?>">
 							<?php echo esc_html( $meta_key ); ?>
 						</option>
@@ -140,11 +140,11 @@ class WCAPF_Meta {
 		</div>
 
 		<script>
-			const wrapper = jQuery('.widget-content');
+			const wrapper = jQuery( '.widget-content' );
 
-			wrapper.on('change', '#widget-wcapf-custom-taxonomy-filter-1-value-type', function () {
-				console.log(jQuery(this).val());
-			});
+			wrapper.on( 'change', '#widget-wcapf-custom-taxonomy-filter-1-value-type', function() {
+				console.log( jQuery( this ).val() );
+			} );
 		</script>
 		<?php
 		return ob_get_clean();
@@ -170,7 +170,6 @@ class WCAPF_Meta {
 		$post_type = 'product';
 
 		return $wpdb->get_col( $wpdb->prepare( $query, $post_type ) );
-
 	}
 
 }

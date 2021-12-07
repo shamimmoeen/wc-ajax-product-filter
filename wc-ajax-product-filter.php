@@ -46,7 +46,7 @@ if ( ! defined( 'WCAPF_PLUGIN_FILE' ) ) {
 
 // Defines constant WCAPF_PLUGIN_DIR
 if ( ! defined( 'WCAPF_PLUGIN_DIR' ) ) {
-	define( 'WCAPF_PLUGIN_DIR', __DIR__ );
+	define( 'WCAPF_PLUGIN_DIR', trailingslashit( __DIR__ ) );
 }
 
 // Defines constant WCAPF_PLUGIN_URL
@@ -65,7 +65,7 @@ if ( ! defined( 'WCAPF_CACHE_TIME' ) ) {
  * @since 3.0.0
  */
 function wcapf_activate() {
-	require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-activator.php';
+	require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-activator.php';
 	WCAPF_Activator::activate();
 }
 
@@ -75,7 +75,7 @@ function wcapf_activate() {
  * @since 3.0.0
  */
 function wcapf_deactivate() {
-	require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-deactivator.php';
+	require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-deactivator.php';
 	WCAPF_Deactivator::deactivate();
 }
 
@@ -83,7 +83,7 @@ register_activation_hook( WCAPF_PLUGIN_FILE, 'wcapf_activate' );
 register_deactivation_hook( WCAPF_PLUGIN_FILE, 'wcapf_deactivate' );
 
 // Include the WCAPF main class
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf.php';
+require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf.php';
 
 /**
  * Instantiate the main class.
