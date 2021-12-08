@@ -82,17 +82,19 @@ class WCAPF {
 
 		if ( $required_plugins ) {
 			$message = sprintf(
-				/* translators: %s: required plugins */
-				__( '<b>WC Ajax Product Filter</b> requires you to install %s.', 'wc-ajax-product-filter' ),
+				/* translators: our plugin, required plugins */
+				__( '%1$s requires you to install %2$s.', 'wc-ajax-product-filter' ),
+				'<strong>' . __( 'WC Ajax Product Filter', 'wc-ajax-product-filter' ) . '</strong>',
 				implode( ', ', $required_plugins )
 			);
 		} elseif ( version_compare( $current_wc_version, $required_wc_version, '<' ) ) {
 			$message = sprintf(
-			/* translators: %s: minimum woocommerce version */
+				/* translators: our plugin, minimum woocommerce version, current woocommerce version */
 				__(
-					'<b>WC Ajax Product Filter</b> requires WooCommerce %1$s (you are using %2$s).',
+					'%1$s requires WooCommerce %2$s (you are using %3$s).',
 					'wc-ajax-product-filter'
 				),
+				'<strong>' . __( 'WC Ajax Product Filter', 'wc-ajax-product-filter' ) . '</strong>',
 				$required_wc_version,
 				$current_wc_version
 			);
@@ -116,26 +118,28 @@ class WCAPF {
 			return;
 		}
 
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-admin.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-filter.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-taxonomy-walker.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-meta.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-hooks.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy-walker.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-meta.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
 
-		// require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-active-filters.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-category-filter.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-tag-filter.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-attribute-filter.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-price-filter.php';
-		require_once WCAPF_PLUGIN_DIR . 'includes/widgets/class-wcapf-widget-post-meta.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-active-filters.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-category-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-post-meta.php';
 
 		// TODO: Remove this from free version
-		require_once WCAPF_PLUGIN_DIR . 'includes/class-wcapf-pro.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-pro.php';
 	}
 
 	/**
@@ -159,21 +163,21 @@ class WCAPF {
 			'wcapf-styles',
 			WCAPF_PLUGIN_URL . 'assets/css/wcapf-styles.css',
 			array(),
-			filemtime( WCAPF_PLUGIN_DIR . 'assets/css/wcapf-styles.css' )
+			filemtime( WCAPF_PLUGIN_DIR . '/assets/css/wcapf-styles.css' )
 		);
 
 		wp_enqueue_style(
 			'wcapf-fontawesome-icons',
 			WCAPF_PLUGIN_URL . 'assets/css/font-awesome.min.css',
 			array(),
-			filemtime( WCAPF_PLUGIN_DIR . 'assets/css/font-awesome.min.css' )
+			filemtime( WCAPF_PLUGIN_DIR . '/assets/css/font-awesome.min.css' )
 		);
 
 		wp_enqueue_script(
 			'wcapf-ui-slider',
 			WCAPF_PLUGIN_URL . 'assets/js/nouislider.min.js',
 			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . 'assets/js/nouislider.min.js' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/assets/js/nouislider.min.js' ),
 			true
 		);
 
@@ -181,7 +185,7 @@ class WCAPF {
 			'wcapf-price-filter',
 			WCAPF_PLUGIN_URL . 'assets/js/price-filter.js',
 			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . 'assets/js/price-filter.js' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/assets/js/price-filter.js' ),
 			true
 		);
 
@@ -189,7 +193,7 @@ class WCAPF {
 			'wcapf-scripts',
 			WCAPF_PLUGIN_URL . 'assets/js/scripts.js',
 			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . 'assets/js/scripts.js' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/assets/js/scripts.js' ),
 			true
 		);
 
@@ -224,7 +228,7 @@ class WCAPF {
 			return;
 		}
 
-		if ( 'widgets.php' !== $hook ) {
+		if ( WCAPF_Helper::settings_page_hook() !== $hook ) {
 			return;
 		}
 
@@ -233,10 +237,10 @@ class WCAPF {
 			: '.css';
 
 		wp_enqueue_style(
-			'wcapf-widget-styles',
-			WCAPF_PLUGIN_URL . 'admin/css/wc-ajax-product-filter-scripts-admin' . $ext,
+			'wc-ajax-product-filter-admin-styles',
+			WCAPF_PLUGIN_URL . 'admin/css/wc-ajax-product-filter-admin-styles' . $ext,
 			array(),
-			filemtime( WCAPF_PLUGIN_DIR . 'admin/css/wc-ajax-product-filter-scripts-admin' . $ext )
+			filemtime( WCAPF_PLUGIN_DIR . '/admin/css/wc-ajax-product-filter-admin-styles' . $ext )
 		);
 
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
@@ -244,10 +248,10 @@ class WCAPF {
 			: '.js';
 
 		wp_enqueue_script(
-			'wcapf-widget-scripts',
-			WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-scripts-admin' . $ext,
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . 'admin/js/wc-ajax-product-filter-scripts-admin' . $ext ),
+			'wc-ajax-product-filter-admin-scripts',
+			WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts' . $ext,
+			array( 'jquery', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts' . $ext ),
 			true
 		);
 	}

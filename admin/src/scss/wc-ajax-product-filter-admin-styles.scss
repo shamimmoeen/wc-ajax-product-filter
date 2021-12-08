@@ -1,0 +1,67 @@
+@mixin form_field {
+	background-color: #fafafa;
+	border: 1px solid #cccccc;
+	color: #23282d;
+	cursor: move;
+
+	position: relative;
+	z-index: 1;
+
+	h4 {
+		font-size: 1em;
+		line-height: 1;
+		margin: 0;
+		overflow: hidden;
+		padding: 15px;
+		text-overflow: ellipsis;
+		user-select: none;
+		white-space: nowrap;
+	}
+}
+
+#post-body {
+	&::before,
+	&::after {
+		clear: both;
+		content: '';
+		display: table;
+	}
+}
+
+#available-fields {
+	margin-top: -5px;
+
+	&::before,
+	&::after {
+		clear: both;
+		content: '';
+		display: table;
+	}
+
+	.available-field {
+		@include form_field;
+
+		float: left;
+		margin: 10px 10px 0 0;
+		min-width: 150px;
+	}
+
+}
+
+#search-form {
+	&.ui-drop-active {
+		border-color: #777;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	}
+
+	.available-field {
+		@include form_field;
+
+		margin-bottom: 10px;
+	}
+
+	#search-form-wrapper {
+		margin-bottom: -10px;
+		margin-top: 10px;
+	}
+}
