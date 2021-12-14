@@ -138,6 +138,15 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-post-meta.php';
 
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-category.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-tag.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-attribute.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-custom-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-submit-button.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-reset-button.php';
+
 		// TODO: Remove this from free version
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-pro.php';
 	}
@@ -250,7 +259,7 @@ class WCAPF {
 		wp_enqueue_script(
 			'wc-ajax-product-filter-admin-scripts',
 			WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts' . $ext,
-			array( 'jquery', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
+			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
 			filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts' . $ext ),
 			true
 		);

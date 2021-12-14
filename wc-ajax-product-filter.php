@@ -97,8 +97,20 @@ function wcapf_setup() {
 wcapf_setup();
 
 // todo: remove this
-add_action('wp_default_scripts', function ($scripts) {
-	if (!empty($scripts->registered['jquery'])) {
-		$scripts->registered['jquery']->deps = array_diff($scripts->registered['jquery']->deps, ['jquery-migrate']);
+add_action( 'wp_default_scripts', 'wcapf_fix_jquery_migrate_issue' );
+
+/**
+ * Remove jquery migrate related logs on console.
+ *
+ * @param array $scripts The default scripts.
+ *
+ * @return void
+ */
+function wcapf_fix_jquery_migrate_issue( $scripts ) {
+	if ( ! empty( $scripts->registered['jquery'] ) ) {
+		$scripts->registered['jquery']->deps = array_diff(
+			$scripts->registered['jquery']->deps,
+			array( 'jquery-migrate' )
+		);
 	}
-});
+}

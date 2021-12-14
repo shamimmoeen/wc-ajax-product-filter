@@ -1,24 +1,3 @@
-@mixin form_field {
-	background-color: #fafafa;
-	border: 1px solid #cccccc;
-	color: #23282d;
-	cursor: move;
-
-	position: relative;
-	z-index: 1;
-
-	h4 {
-		font-size: 1em;
-		line-height: 1;
-		margin: 0;
-		overflow: hidden;
-		padding: 15px;
-		text-overflow: ellipsis;
-		user-select: none;
-		white-space: nowrap;
-	}
-}
-
 #post-body {
 	&::before,
 	&::after {
@@ -38,12 +17,16 @@
 		display: table;
 	}
 
-	.available-field {
-		@include form_field;
-
+	.widget {
 		float: left;
 		margin: 10px 10px 0 0;
 		min-width: 150px;
+		position: relative;
+		z-index: 1;
+
+		.widget-title-action {
+			display: none;
+		}
 	}
 
 }
@@ -54,14 +37,65 @@
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 	}
 
-	.available-field {
-		@include form_field;
-
-		margin-bottom: 10px;
-	}
-
 	#search-form-wrapper {
 		margin-bottom: -10px;
 		margin-top: 10px;
+	}
+
+	.widget {
+		margin-bottom: 10px;
+		min-width: 150px;
+
+		.widget-inside {
+			border-top: none;
+			padding: 12px 15px 15px 15px;
+		}
+
+		&.ui-sortable-helper {
+			.widget-title-action {
+				display: none;
+			}
+
+			.widget-inside {
+				display: none !important;
+			}
+		}
+
+		.wcapf-form-field-no-settings {
+			margin: 0 0 10px;
+		}
+	}
+}
+
+.wcapf-form-field {
+	margin: 0 0 20px;
+
+	.wcapf-form-sub-field {
+		margin: 0 0 10px;
+	}
+
+	.widefat {
+		max-width: 300px;
+		width: unset;
+	}
+
+	.widefat[type="text"] {
+		width: 100%;
+	}
+
+	.wcapf-form-sub-field {
+		align-items: center;
+		display: flex;
+		gap: 15px;
+
+		.wcapf-form-sub-field-label {
+			min-width: 200px;
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.wcapf-wrapper {
+			flex: 1;
+		}
 	}
 }

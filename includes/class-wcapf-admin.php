@@ -47,6 +47,8 @@ class WCAPF_Admin {
 		add_action( 'admin_footer-' . $hook, array( $this, 'render_pro_features_modal' ) );
 		add_filter( 'plugin_action_links_' . WCAPF_PLUGIN_FILE, array( $this, 'plugin_action_links' ) );
 		add_filter( 'admin_footer_text', array( $this, 'footer_text' ) );
+		add_action( 'admin_footer-' . $hook, array( $this, 'render_tmpl_templates' ) );
+		add_action( 'wp_ajax_wcapf_save_form', array( $this, 'save_form' ) );
 	}
 
 	/**
@@ -143,6 +145,44 @@ class WCAPF_Admin {
 		);
 
 		return '<i>' . $text . '</i>';
+	}
+
+	/**
+	 * Renders the tmpl version of all available fields.
+	 *
+	 * @return void
+	 */
+	public function render_tmpl_templates() {
+		$search_form_fields = WCAPF_Helper::available_search_fields();
+
+		foreach ( $search_form_fields as $type => $field_label ) {
+			$class_name = WCAPF_Helper::get_field_class_name_by_type( $type );
+
+			if ( ! $class_name ) {
+				continue;
+			}
+
+			$field        = new $class_name();
+			$field_markup = $field->form( false, true );
+
+			echo '<script type="text/html" id="tmpl-wcapf-form-field-' . esc_attr( $type ) . '">';
+			echo $field_markup; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+			echo '</script>';
+		}
+	}
+
+	/**
+	 * Saves the form configurations via ajax.
+	 *
+	 * @return void
+	 */
+	public function save_form() {
+		// todo: Check for nonce, show alert on leave.
+		$data = $_POST;
+
+		update_option( 'wcapf_form_conf', $data );
+
+		wp_send_json_success( $data );
 	}
 
 }

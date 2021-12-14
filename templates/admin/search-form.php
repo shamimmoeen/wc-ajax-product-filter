@@ -30,15 +30,21 @@
 
 		<div id="available-fields">
 			<?php foreach ( WCAPF_Helper::available_search_fields() as $wcapf_field_key => $wcapf_field ) : ?>
-				<div class="available-field <?php echo esc_attr( $wcapf_field_key ); ?>">
-					<h4><?php echo esc_html( $wcapf_field ); ?></h4>
-				</div>
+				<?php
+				WCAPF_Template_Loader::get_instance()->load(
+					'admin/form-field',
+					array(
+						'field_key'  => $wcapf_field_key,
+						'field_name' => $wcapf_field,
+					)
+				)
+				?>
 			<?php endforeach; ?>
 		</div>
 	</div>
 </div>
 
-<div id="search-form" class="postbox">
+<form id="search-form" class="postbox" method="post">
 	<div class="postbox-header">
 		<h2><?php esc_html_e( 'Search Form UI', 'wc-ajax-product-filter' ); ?></h2>
 	</div>
@@ -57,8 +63,15 @@
 		</p>
 
 		<div id="search-form-wrapper">
-			<div class="available-field"><h4>Hello</h4></div>
-			<div class="available-field"><h4>World</h4></div>
+			<?php WCAPF_Helper::render_form_fields(); ?>
 		</div>
+
+		<input
+			type="hidden"
+			id="total_field_instances"
+			name="total_field_instances"
+			value="<?php echo esc_attr( count( WCAPF_Helper::get_form_config() ) ); ?>"
+		>
+		<input type="hidden" name="action" value="wcapf_save_form">
 	</div>
-</div>
+</form>
