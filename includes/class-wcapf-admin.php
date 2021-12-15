@@ -177,12 +177,50 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function save_form() {
-		// todo: Check for nonce, show alert on leave.
-		$data = $_POST;
+		$nonce = isset( $_POST['save_form_nonce_field'] ) ? sanitize_text_field( $_POST['save_form_nonce_field'] ) : '';
 
-		update_option( 'wcapf_form_conf', $data );
+		if ( ! wp_verify_nonce( $nonce, 'save_form_nonce' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed.', 'wc-ajax-product-filter' ) );
+		}
 
-		wp_send_json_success( $data );
+		$fields = isset( $_POST['wcapf-fields'] ) ? $_POST['wcapf-fields'] : array();
+		$parsed = array();
+
+		foreach ( $fields as $type => $sub_fields ) {
+			$class_name = WCAPF_Helper::get_field_class_name_by_type( $type );
+
+			if ( ! $class_name ) {
+				continue;
+			}
+
+			$field_class        = new $class_name();
+			$field_sub_fields   = $field_class->get_sub_fields();
+			$available_fields   = wp_list_pluck( $field_sub_fields, 'name' );
+			$available_fields[] = 'position';
+
+			foreach ( $sub_fields as $field ) {
+				$parsed_field = array();
+
+				foreach ( $field as $field_key => $field_value ) {
+					if ( ! in_array( $field_key, $available_fields, true ) ) {
+						continue;
+					}
+
+					$parsed_field[ $field_key ] = sanitize_text_field( $field_value );
+				}
+
+				$parsed_field['type'] = $type;
+
+				$parsed[] = $parsed_field;
+			}
+		}
+
+		$sorted = wp_list_sort( $parsed, 'position' );
+		$sorted = apply_filters( 'wcapf_pre_save_form_conf', $sorted, $_POST );
+
+		update_option( 'wcapf_form_conf', $sorted );
+
+		wp_send_json_success( __( 'Successfully saved.', 'wc-ajax-product-filter' ) );
 	}
 
 }

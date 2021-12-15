@@ -15,8 +15,8 @@ $wcapf_tab = WCAPF_Helper::get_current_tab();
 	<div class="postbox-header">
 		<h2><?php esc_html_e( 'Action', 'wc-ajax-product-filter' ); ?></h2>
 	</div>
-	<div class="inside">
-		<p>
+	<div class="inside wcapf-form-sidebar">
+		<p class="description">
 			<?php
 			if ( 'search-form' === $wcapf_tab ) {
 				esc_html_e( 'Save the search form.', 'wc-ajax-product-filter' );
@@ -28,5 +28,6 @@ $wcapf_tab = WCAPF_Helper::get_current_tab();
 		<button type="button" class="button button-primary">
 			<?php esc_html_e( 'Save', 'wc-ajax-product-filter' ); ?>
 		</button>
+		<div class="wcapf-message-wrapper"></div>
 	</div>
 </div>

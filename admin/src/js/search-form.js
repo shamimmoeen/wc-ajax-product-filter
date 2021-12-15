@@ -1,7 +1,10 @@
 /**
  * The search form.
  *
- * @package WC_Ajax_Product_Filter
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/admin/src/js
+ * @author     Mainul Hassan Main
  */
 
 const totalFieldInstances = jQuery( '#total_field_instances' );
@@ -201,6 +204,7 @@ function removeField() {
 		'fast',
 		function() {
 			widget.remove();
+			updateFieldsPosition();
 		}
 	);
 }
@@ -208,26 +212,70 @@ function removeField() {
 searchForm.on( 'click', '.widget-control-remove', removeField );
 
 /**
+ * Store the initial form data into a variable so that we can compare it when leaving the page.
+ */
+let initialFormState = searchForm.serializeArray();
+
+/**
+ * Show message after form submission.
+ */
+function showMessage( message, type = 'success' ) {
+	const element = jQuery( '<p class="' + type + '">' + message + '</p>' );
+	const wrapper = jQuery( '.wcapf-message-wrapper' );
+
+	if ( ! wrapper.is( ':empty' ) ) {
+		return;
+	}
+
+	jQuery( wrapper ).html( element ).slideDown( 'fast' );
+
+	setTimeout(
+		function() {
+			jQuery( wrapper ).slideUp( 'fast' );
+			wrapper.html( '' );
+		},
+		3000
+	);
+}
+
+/**
  * Save the search form.
  */
 function saveForm() {
+	const button   = jQuery( this );
 	const formData = searchForm.serializeArray();
-	const action   = 'wcapf_save_form';
 
-	function okCallback( res ) {
-		console.log( res );
+	button.attr( 'disabled', 'disabled' );
+
+	function okCallback( message ) {
+		button.removeAttr( 'disabled' );
+
+		// Update the initial form data after successfully saving the form.
+		initialFormState = formData;
+
+		showMessage( message );
 	}
 
-	function errCallback( err ) {
-		console.log( err );
+	function errCallback( message ) {
+		button.removeAttr( 'disabled' );
+		showMessage( message, 'error' );
 	}
 
 	// https://stackoverflow.com/a/59181252
-	wp.ajax.post( action, formData ).done( okCallback ).fail( errCallback );
+	wp.ajax.post( formData ).done( okCallback ).fail( errCallback );
 }
 
-jQuery( '#postbox-container-1' ).on(
-	'click',
-	'button',
-	saveForm
-);
+jQuery( '#postbox-container-1' ).on( 'click', 'button', saveForm );
+
+/**
+ * Show alert on leave if the form is dirty.
+ */
+window.onbeforeunload = function() {
+	const newFormState = searchForm.serializeArray();
+
+	const isFormDirty = ! _.isEqual( newFormState, initialFormState );
+
+	if ( isFormDirty ) {
+		return '';
+	}
+};

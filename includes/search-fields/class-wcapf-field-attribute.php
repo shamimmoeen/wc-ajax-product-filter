@@ -2,8 +2,10 @@
 /**
  * WCAPF_Field_Attribute class.
  *
- * @package    WC_Ajax_Product_Filter
- * @subpackage search-fields
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @author     Mainul Hassan Main
  */
 
 /**
@@ -18,7 +20,7 @@ class WCAPF_Field_Attribute extends WCAPF_Field_Taxonomy {
 	 *
 	 * @return array
 	 */
-	public function sub_fields() {
+	protected function sub_fields() {
 		$fields     = parent::sub_fields();
 		$attributes = wc_get_attribute_taxonomy_names();
 		$options    = $this->get_taxonomy_options( $attributes );

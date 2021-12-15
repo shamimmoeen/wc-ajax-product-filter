@@ -38,7 +38,7 @@ class WCAPF_Template_Loader {
 	 *
 	 * @param string $slug   The template path.
 	 * @param array  $params The parameters.
-	 * @param bool   $render Do we render or just return the output.
+	 * @param bool   $render Determines if we render or just return the output.
 	 *
 	 * @return bool|string
 	 */
@@ -84,7 +84,6 @@ class WCAPF_Template_Loader {
 				ob_start();
 				require $located;
 				$html = ob_get_clean();
-
 			}
 		}
 

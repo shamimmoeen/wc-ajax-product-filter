@@ -94,19 +94,7 @@ class WCAPF_Helper {
 	 * @return array
 	 */
 	public static function get_form_config() {
-		$form_conf = get_option( 'wcapf_form_conf' );
-
-		$sorted = array();
-		$fields = isset( $form_conf['wcapf-fields'] ) ? $form_conf['wcapf-fields'] : array();
-
-		foreach ( $fields as $type => $sub_fields ) {
-			foreach ( $sub_fields as $field ) {
-				$field['type'] = $type;
-				$sorted[]      = $field;
-			}
-		}
-
-		return wp_list_sort( $sorted, 'position' );
+		return get_option( 'wcapf_form_conf' );
 	}
 
 	/**
@@ -115,7 +103,7 @@ class WCAPF_Helper {
 	 * @return array
 	 */
 	public static function available_search_fields() {
-		return array(
+		$fields = array(
 			'category'        => __( 'Filter by Category', 'wc-ajax-product-filter' ),
 			'tag'             => __( 'Filter by Tag', 'wc-ajax-product-filter' ),
 			'attribute'       => __( 'Filter by Attribute', 'wc-ajax-product-filter' ),
@@ -125,6 +113,8 @@ class WCAPF_Helper {
 			'submit-button'   => __( 'Submit Button', 'wc-ajax-product-filter' ),
 			'reset-button'    => __( 'Reset Button', 'wc-ajax-product-filter' ),
 		);
+
+		return apply_filters( 'wcapf_available_search_fields', $fields );
 	}
 
 	/**
@@ -172,7 +162,7 @@ class WCAPF_Helper {
 			return '';
 		}
 
-		return $class_name;
+		return apply_filters( 'wcapf_field_class_name_by_type', $class_name, $type );
 	}
 
 }

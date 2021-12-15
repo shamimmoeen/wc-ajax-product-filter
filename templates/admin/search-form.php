@@ -73,5 +73,6 @@
 			value="<?php echo esc_attr( count( WCAPF_Helper::get_form_config() ) ); ?>"
 		>
 		<input type="hidden" name="action" value="wcapf_save_form">
+		<?php wp_nonce_field( 'save_form_nonce', 'save_form_nonce_field' ); ?>
 	</div>
 </form>

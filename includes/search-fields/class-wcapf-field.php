@@ -2,8 +2,10 @@
 /**
  * WCAPF_Field class.
  *
- * @package    WC_Ajax_Product_Filter
- * @subpackage search-fields
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @author     Mainul Hassan Main
  */
 
 /**
@@ -59,28 +61,11 @@ abstract class WCAPF_Field {
 			ob_start();
 		}
 
-		if ( ! $this->sub_fields() ) {
-			echo '<p class="wcapf-form-field-no-settings">';
-			esc_html_e( 'No settings are required.', 'wc-ajax-product-filter' );
-			echo '</p>';
-		} else {
-			$this->render_field();
-		}
+		$this->render_field();
 
 		if ( ! $echo ) {
 			return ob_get_clean();
 		}
-	}
-
-	/**
-	 * The child class must override this method and sets the field's subfields.
-	 *
-	 * TODO: Should be abstract and protected.
-	 *
-	 * @return array
-	 */
-	public function sub_fields() {
-		return array();
 	}
 
 	/**
@@ -104,14 +89,20 @@ abstract class WCAPF_Field {
 
 		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $this->type() ) . '">';
 
-		foreach ( $sub_fields as $_data ) {
-			$data = $this->merge_data( $_data );
+		if ( $sub_fields ) {
+			foreach ( $sub_fields as $_data ) {
+				$data = $this->merge_data( $_data );
 
-			$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
-			$data['value'] = isset( $instance[ $data['name'] ] ) ? $instance[ $data['name'] ] : $data['default'];
-			$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
+				$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
+				$data['value'] = isset( $instance[ $data['name'] ] ) ? $instance[ $data['name'] ] : $data['default'];
+				$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
 
-			$this->get_field( $data );
+				$this->get_field( $data );
+			}
+		} else {
+			echo '<p class="wcapf-form-field-no-settings">';
+			esc_html_e( 'No settings are required.', 'wc-ajax-product-filter' );
+			echo '</p>';
 		}
 
 		$this->get_field_position_input( $field_name_prefix );
@@ -120,7 +111,16 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * The child class must override this method and sets the field's subfields.
+	 *
+	 * @return array
+	 */
+	abstract protected function sub_fields();
+
+	/**
 	 * The extended classes should set the field type.
+	 *
+	 * @return string
 	 */
 	abstract protected function type();
 
@@ -385,15 +385,23 @@ abstract class WCAPF_Field {
 		$position_field_id   = 'wcapf-input-position-' . $field_index;
 		$position_field_name = $field_name_prefix . '[position]';
 		$field_position      = isset( $instance['position'] ) ? $instance['position'] : $field_index;
-		// todo: the field should be hidden.
 		?>
 		<input
-			type="text"
+			type="hidden"
 			id="<?php echo esc_attr( $position_field_id ); ?>"
 			name="<?php echo esc_attr( $position_field_name ); ?>"
 			value="<?php echo esc_attr( $field_position ); ?>"
 		>
 		<?php
+	}
+
+	/**
+	 * Gets the field's subfields.
+	 *
+	 * @return array
+	 */
+	public function get_sub_fields() {
+		return $this->sub_fields();
 	}
 
 	/**

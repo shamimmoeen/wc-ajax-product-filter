@@ -2,8 +2,10 @@
 /**
  * WCAPF_Field_Submit_Button class.
  *
- * @package    WC_Ajax_Product_Filter
- * @subpackage search-fields
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @author     Mainul Hassan Main
  */
 
 /**
@@ -12,6 +14,23 @@
  * @since 3.0.0
  */
 class WCAPF_Field_Submit_Button extends WCAPF_Field {
+
+	/**
+	 * The field's subfields.
+	 *
+	 * @return array|array[]
+	 */
+	protected function sub_fields() {
+		return array(
+			array(
+				'type'     => 'text',
+				'id'       => 'title',
+				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
+				'name'     => 'title',
+				'position' => 5,
+			),
+		);
+	}
 
 	/**
 	 * The field type.

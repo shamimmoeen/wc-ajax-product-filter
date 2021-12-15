@@ -2,8 +2,10 @@
 /**
  * WCAPF_Field_Tag class.
  *
- * @package    WC_Ajax_Product_Filter
- * @subpackage search-fields
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @author     Mainul Hassan Main
  */
 
 /**

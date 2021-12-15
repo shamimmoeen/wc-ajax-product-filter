@@ -89,13 +89,35 @@
 		gap: 15px;
 
 		.wcapf-form-sub-field-label {
-			min-width: 200px;
 			display: flex;
 			justify-content: flex-end;
+			min-width: 200px;
 		}
 
 		.wcapf-wrapper {
 			flex: 1;
 		}
+	}
+}
+
+.wcapf-form-sidebar {
+	.description {
+		margin-bottom: 10px;
+	}
+}
+
+.wcapf-message-wrapper {
+	display: none;
+
+	p {
+		margin: 7px 0 0;
+	}
+
+	.success {
+		color: #28a745;
+	}
+
+	.error {
+		color: #dc3545;
 	}
 }
