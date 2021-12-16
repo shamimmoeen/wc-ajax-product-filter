@@ -396,6 +396,24 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * Output the field's filter form on frontend.
+	 *
+	 * @return void
+	 */
+	public function filter_form() {
+		echo '<div class="wcapf-ajax-term-filter">';
+		$this->render_filter_form();
+		echo '</div>';
+	}
+
+	/**
+	 * Output the field's filter form.
+	 *
+	 * @return void
+	 */
+	abstract protected function render_filter_form();
+
+	/**
 	 * Gets the field's subfields.
 	 *
 	 * @return array
@@ -405,42 +423,16 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * Renders the field's start markup.
+	 * Get the field's subfield value.
 	 *
-	 * @param array  $args         Widget arguments.
-	 * @param array  $instance     Saved values from the database.
-	 * @param string $widget_class The widget class.
+	 * @param string $name The subfield name.
 	 *
-	 * @return void
+	 * @return mixed
 	 */
-	protected function before_widget( $args, $instance, $widget_class ) {
-		$before_widget = $args['before_widget'];
+	protected function get_sub_field_value( $name ) {
+		$instance = $this->get_instance();
 
-		// No class found, so add it.
-		if ( strpos( $before_widget, 'class' ) === false ) {
-			$before_widget = str_replace( '>', 'class="' . $widget_class . '"', $before_widget );
-		} else { // Class found but not the one that we need, so add it.
-			$before_widget = str_replace( 'class="', 'class="' . $widget_class . ' ', $before_widget );
-		}
-
-		echo $before_widget; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-
-		if ( ! empty( $instance['title'] ) ) {
-			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
-			// phpcs:enable
-		}
-	}
-
-	/**
-	 * Renders the widget's end markup.
-	 *
-	 * @param array $args Widget arguments.
-	 *
-	 * @return void
-	 */
-	protected function after_widget( $args ) {
-		echo $args['after_widget']; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+		return isset( $instance[ $name ] ) ? $instance[ $name ] : '';
 	}
 
 }

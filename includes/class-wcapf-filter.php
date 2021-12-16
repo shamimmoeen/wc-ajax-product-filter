@@ -1,9 +1,12 @@
 <?php
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * The product filter class.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan Main
+ */
 
 /**
  * WCAPF_Filter class.

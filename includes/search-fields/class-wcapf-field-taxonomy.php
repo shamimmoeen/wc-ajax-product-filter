@@ -134,4 +134,66 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		return $options;
 	}
 
+	/**
+	 * Output the field form.
+	 *
+	 * @return void
+	 */
+	protected function render_filter_form() {
+		if ( ! is_shop() && ! is_product_taxonomy() ) {
+			return;
+		}
+
+		$query_type         = $this->get_sub_field_value( 'query_type' );
+		$enable_multiple    = $this->get_sub_field_value( 'enable_multiple' );
+		$show_count         = $this->get_sub_field_value( 'show_count' );
+		$hierarchical       = $this->get_sub_field_value( 'hierarchical' );
+		$show_children_only = $this->get_sub_field_value( 'show_children_only' );
+		$hide_empty         = $this->get_sub_field_value( 'hide_empty' );
+		$display_type       = $this->get_sub_field_value( 'display_type' );
+
+		$filter_key = $this->get_filter_key();
+		$taxonomy   = $this->taxonomy();
+
+		$walker = new WCAPF_Taxonomy_Walker();
+
+		$walker->taxonomy        = $taxonomy;
+		$walker->display_type    = $display_type;
+		$walker->query_type      = $query_type;
+		$walker->enable_multiple = $enable_multiple;
+		$walker->show_count      = $show_count;
+		$walker->hide_empty      = $hide_empty;
+		$walker->filter_key      = $filter_key;
+
+		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
+			$walker->hierarchical       = $hierarchical;
+			$walker->show_children_only = $show_children_only;
+		} else {
+			$walker->hierarchical       = false;
+			$walker->show_children_only = false;
+		}
+
+		$taxonomy = new WCAPF_Taxonomy( $walker );
+		$terms    = $taxonomy->get_terms();
+
+		if ( $terms ) {
+			echo $walker->build_menu( $terms ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+		}
+	}
+
+	/**
+	 * Get the field's filter key.
+	 *
+	 * @return string
+	 */
+	protected function get_filter_key() {
+		$utils       = new WCAPF_Utils(); // TODO: Maybe move to the helper class.
+		$filter_keys = $utils->get_taxonomy_filter_keys();
+
+		$query_type = $this->get_sub_field_value( 'query_type' );
+		$taxonomy   = $this->taxonomy();
+
+		return isset( $filter_keys[ $taxonomy ] ) ? $filter_keys[ $taxonomy ][ $query_type ] : '';
+	}
+
 }

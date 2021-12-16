@@ -118,22 +118,28 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Renders the field for the given instance.
-	 *
-	 * @param array $field_instance The field's instance.
+	 * Renders the filter form.
 	 *
 	 * @return void
 	 */
-	public static function render_field_by_instance( $field_instance ) {
-		$type       = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
-		$class_name = self::get_field_class_name_by_type( $type );
+	public static function render_filter_form() {
+		$form_config = self::get_form_config();
 
-		if ( ! $class_name ) {
+		if ( ! $form_config ) {
 			return;
 		}
 
-		$field = new $class_name( $field_instance );
-		$field->form();
+		foreach ( $form_config as $field_instance ) {
+			$field_type  = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
+			$field_class = self::get_field_class_name_by_type( $field_type );
+
+			if ( ! $field_class ) {
+				continue;
+			}
+
+			$field = self::get_field_instance( $field_type, $field_instance );
+			$field->filter_form();
+		}
 	}
 
 	/**
@@ -163,6 +169,39 @@ class WCAPF_Helper {
 		}
 
 		return apply_filters( 'wcapf_field_class_name_by_type', $class_name, $type );
+	}
+
+	/**
+	 * Gets the field's instance.
+	 *
+	 * @param string $type           The field type.
+	 * @param array  $field_instance The field's instance.
+	 *
+	 * @return WCAPF_Field
+	 */
+	public static function get_field_instance( $type, $field_instance = array() ) {
+		$class = self::get_field_class_name_by_type( $type );
+
+		return new $class( $field_instance );
+	}
+
+	/**
+	 * Renders the field's form for the given instance.
+	 *
+	 * @param array $field_instance The field's instance.
+	 *
+	 * @return void
+	 */
+	public static function render_field_form_by_instance( $field_instance ) {
+		$type       = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
+		$class_name = self::get_field_class_name_by_type( $type );
+
+		if ( ! $class_name ) {
+			return;
+		}
+
+		$field = self::get_field_instance( $type, $field_instance );
+		$field->form();
 	}
 
 }

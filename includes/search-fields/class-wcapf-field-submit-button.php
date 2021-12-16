@@ -41,4 +41,7 @@ class WCAPF_Field_Submit_Button extends WCAPF_Field {
 		return 'submit-button';
 	}
 
+	protected function render_filter_form() {
+		// TODO: Implement render_form() method.
+	}
 }

@@ -2,14 +2,11 @@
 /**
  * Setup WC Ajax Product Filter.
  *
- * @since   3.0.0
- * @package WC_Ajax_Product_Filter
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan Main
  */
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
 /**
  * WC Ajax Product Filter main class.
@@ -127,16 +124,17 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-meta.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-widget.php';
 
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-active-filters.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-category-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-post-meta.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-taxonomy.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-category-filter.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
+		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-post-meta.php';
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-taxonomy.php';
@@ -144,6 +142,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-tag.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-attribute.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-custom-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-post-meta.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-submit-button.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-reset-button.php';
 

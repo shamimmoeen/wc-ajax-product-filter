@@ -98,6 +98,13 @@
 			flex: 1;
 		}
 	}
+
+	.wcapf-form-sub-field-radio {
+		.wcapf-wrapper {
+			display: flex;
+			gap: 10px;
+		}
+	}
 }
 
 .wcapf-form-sidebar {

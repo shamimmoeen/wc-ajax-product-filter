@@ -40,7 +40,7 @@ if ( isset( $field_instance ) ) {
 		<div class="widget-content">
 			<?php
 			if ( isset( $field_instance ) ) {
-				WCAPF_Helper::render_field_by_instance( $field_instance );
+				WCAPF_Helper::render_field_form_by_instance( $field_instance );
 			}
 			?>
 

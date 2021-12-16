@@ -41,4 +41,7 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 		return 'reset-button';
 	}
 
+	protected function render_filter_form() {
+		// TODO: Implement render_form() method.
+	}
 }
