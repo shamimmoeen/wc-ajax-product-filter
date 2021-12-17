@@ -44,7 +44,7 @@
 	</div>
 </div>
 
-<form id="search-form" class="postbox" method="post">
+<form id="search-form" class="postbox" method="post" action="javascript:void(0)">
 	<div class="postbox-header">
 		<h2><?php esc_html_e( 'Search Form UI', 'wc-ajax-product-filter' ); ?></h2>
 	</div>
