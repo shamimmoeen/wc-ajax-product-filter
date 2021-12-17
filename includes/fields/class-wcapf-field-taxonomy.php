@@ -4,7 +4,7 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @subpackage wc-ajax-product-filter/includes/fields
  * @author     Mainul Hassan Main
  */
 
@@ -175,10 +175,15 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 
 		$taxonomy = new WCAPF_Taxonomy( $walker );
 		$terms    = $taxonomy->get_terms();
+		$classes  = array( 'wcapf-ajax-term-filter' );
 
-		if ( $terms ) {
-			echo $walker->build_menu( $terms ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+		if ( ! $terms ) {
+			$classes[] = 'wcapf-field-hidden';
 		}
+
+		$this->before_filter_form( $classes );
+		echo $walker->build_menu( $terms ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped // todo
+		$this->after_filter_form();
 	}
 
 	/**

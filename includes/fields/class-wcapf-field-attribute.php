@@ -1,19 +1,19 @@
 <?php
 /**
- * WCAPF_Field_Custom_Taxonomy class.
+ * WCAPF_Field_Attribute class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @subpackage wc-ajax-product-filter/includes/fields
  * @author     Mainul Hassan Main
  */
 
 /**
- * WCAPF_Field_Custom_Taxonomy class.
+ * WCAPF_Field_Attribute class.
  *
  * @since 3.0.0
  */
-class WCAPF_Field_Custom_Taxonomy extends WCAPF_Field_Taxonomy {
+class WCAPF_Field_Attribute extends WCAPF_Field_Taxonomy {
 
 	/**
 	 * The field's subfields.
@@ -22,10 +22,8 @@ class WCAPF_Field_Custom_Taxonomy extends WCAPF_Field_Taxonomy {
 	 */
 	protected function sub_fields() {
 		$fields     = parent::sub_fields();
-		$taxonomies = get_object_taxonomies( 'product' );
-		$excluded   = array_merge( wc_get_attribute_taxonomy_names(), array( 'product_cat', 'product_tag' ) );
-		$allowed    = array_diff( $taxonomies, $excluded );
-		$options    = $this->get_taxonomy_options( $allowed );
+		$attributes = wc_get_attribute_taxonomy_names();
+		$options    = $this->get_taxonomy_options( $attributes );
 
 		return array_merge(
 			$fields,
@@ -59,7 +57,7 @@ class WCAPF_Field_Custom_Taxonomy extends WCAPF_Field_Taxonomy {
 	 * @return string
 	 */
 	protected function type() {
-		return 'custom-taxonomy';
+		return 'attribute';
 	}
 
 }

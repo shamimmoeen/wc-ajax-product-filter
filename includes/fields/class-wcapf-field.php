@@ -4,7 +4,7 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @subpackage wc-ajax-product-filter/includes/fields
  * @author     Mainul Hassan Main
  */
 
@@ -401,9 +401,7 @@ abstract class WCAPF_Field {
 	 * @return void
 	 */
 	public function filter_form() {
-		echo '<div class="wcapf-ajax-term-filter">';
 		$this->render_filter_form();
-		echo '</div>';
 	}
 
 	/**
@@ -423,6 +421,36 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * Renders the field's start markup.
+	 *
+	 * @param array $classes The field classes.
+	 *
+	 * @return void
+	 */
+	protected function before_filter_form( $classes ) {
+		array_unshift( $classes, 'wcapf-field-filter-form' );
+
+		$field_classes = implode( ' ', $classes );
+		$field_id      = $this->get_filter_form_id();
+		$field_title   = $this->get_sub_field_value( 'title' );
+
+		echo '<div class="' . esc_attr( $field_classes ) . '" id="' . esc_attr( $field_id ) . '">';
+
+		if ( $field_title ) {
+			echo '<h4 class="wcapf-field-title">' . esc_html( $field_title ) . '</h4>';
+		}
+	}
+
+	/**
+	 * Get the field's filter form id.
+	 *
+	 * @return string
+	 */
+	private function get_filter_form_id() {
+		return 'wcapf-filter-by-' . $this->type() . '-' . $this->get_field_index();
+	}
+
+	/**
 	 * Get the field's subfield value.
 	 *
 	 * @param string $name The subfield name.
@@ -433,6 +461,15 @@ abstract class WCAPF_Field {
 		$instance = $this->get_instance();
 
 		return isset( $instance[ $name ] ) ? $instance[ $name ] : '';
+	}
+
+	/**
+	 * Renders the field's end markup.
+	 *
+	 * @return void
+	 */
+	protected function after_filter_form() {
+		echo '</div>';
 	}
 
 }

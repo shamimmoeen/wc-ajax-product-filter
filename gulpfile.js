@@ -31,6 +31,24 @@ function backendCss() {
 		.pipe( touch() );
 }
 
+function frontendCss() {
+	const DEST = './public/css';
+
+	return src( './public/src/scss/wc-ajax-product-filter-public-styles.scss' )
+		.pipe( sourcemaps.init() )
+		.pipe( sass.sync( { outputStyle: 'expanded' } ).on( 'error', sass.logError ) )
+		.pipe( autoPrefix() )
+		.pipe( sourcemaps.write() )
+		.pipe( dest( DEST ) ) // Output non-minified css file
+		.pipe( browserSync.stream() )
+
+		.pipe( minCss() )
+		.pipe( rename( { extname: '.min.css' } ) )
+		.pipe( dest( DEST ) ) // Output minified css file
+
+		.pipe( touch() );
+}
+
 /**
  * @source https://github.com/gulpjs/gulp/blob/master/docs/recipes/minified-and-non-minified.md
  */
@@ -57,6 +75,29 @@ function backendJs() {
 		.pipe( touch() );
 }
 
+function frontendJs() {
+	const DEST = './public/js';
+
+	return src( './public/src/js/**/*.js' )
+		.pipe( sourcemaps.init() )
+		.pipe(
+			babel(
+				{
+					presets: [ '@babel/env' ],
+				}
+			)
+		)
+		.pipe( concat( 'wc-ajax-product-filter-public-scripts.js' ) )
+		.pipe( sourcemaps.write() )
+		.pipe( dest( DEST ) ) // Output non-minified js file
+
+		.pipe( uglify() )
+		.pipe( rename( { extname: '.min.js' } ) )
+		.pipe( dest( DEST ) ) // Output minified js file
+
+		.pipe( touch() );
+}
+
 function browser() {
 	browserSync.init(
 		{
@@ -69,7 +110,9 @@ function browser() {
 	);
 
 	watch( './admin/src/scss/**/*.scss', backendCss );
+	watch( './public/src/scss/**/*.scss', frontendCss );
 	watch( './admin/src/js/**/*.js', backendJs ).on( 'change', browserSync.reload );
+	watch( './public/src/js/**/*.js', frontendJs ).on( 'change', browserSync.reload );
 }
 
 const build = series(
@@ -78,6 +121,8 @@ const build = series(
 );
 
 module.exports.backendCss = backendCss;
+module.exports.frontendCss = frontendCss;
 module.exports.backendJs = backendJs;
+module.exports.frontendJs = frontendJs;
 module.exports.build = build;
 module.exports.default = browser;

@@ -48,3 +48,5 @@ package-lock.json -diff
 composer.lock
 admin/css/* -diff
 admin/js/* -diff
+public/css/* -diff
+public/js/* -diff

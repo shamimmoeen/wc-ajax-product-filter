@@ -1,19 +1,19 @@
 <?php
 /**
- * WCAPF_Field_Reset_Button class.
+ * WCAPF_Field_Submit_Button class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/search-fields
+ * @subpackage wc-ajax-product-filter/includes/fields
  * @author     Mainul Hassan Main
  */
 
 /**
- * WCAPF_Field_Reset_Button class.
+ * WCAPF_Field_Submit_Button class.
  *
  * @since 3.0.0
  */
-class WCAPF_Field_Reset_Button extends WCAPF_Field {
+class WCAPF_Field_Submit_Button extends WCAPF_Field {
 
 	/**
 	 * The field's subfields.
@@ -38,7 +38,7 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 	 * @return string
 	 */
 	protected function type() {
-		return 'reset-button';
+		return 'submit-button';
 	}
 
 	protected function render_filter_form() {

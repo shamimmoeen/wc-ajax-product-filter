@@ -136,15 +136,15 @@ class WCAPF {
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-post-meta.php';
 
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-category.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-tag.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-attribute.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-custom-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-post-meta.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-submit-button.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/search-fields/class-wcapf-field-reset-button.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-category.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-tag.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-attribute.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-custom-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-post-meta.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-submit-button.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
 
 		// TODO: Remove this from free version
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-pro.php';
@@ -166,6 +166,29 @@ class WCAPF {
 		if ( ! $this->wc_loaded() ) {
 			return;
 		}
+
+		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
+			? '.min.css'
+			: '.css';
+
+		wp_enqueue_style(
+			'wc-ajax-product-filter-public-styles',
+			WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-public-styles' . $ext,
+			array(),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
+		);
+
+		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
+			? '.min.js'
+			: '.js';
+
+		wp_enqueue_script(
+			'wc-ajax-product-filter-public-scripts',
+			WCAPF_PLUGIN_URL . 'public/js/wc-ajax-product-filter-public-scripts' . $ext,
+			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
+			true
+		);
 
 		wp_enqueue_style(
 			'wcapf-styles',
