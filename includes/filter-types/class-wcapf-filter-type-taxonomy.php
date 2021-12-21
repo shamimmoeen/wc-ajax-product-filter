@@ -1,6 +1,6 @@
 <?php
 /**
- * WCAPF_Taxonomy class.
+ * WCAPF_Filter_Type_Taxonomy class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
@@ -9,44 +9,87 @@
  */
 
 /**
- * WCAPF_Taxonomy class.
+ * WCAPF_Filter_Type_Taxonomy class.
  *
  * @since 3.0.0
  */
-class WCAPF_Taxonomy {
+class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 	/**
-	 * The walker class instance.
+	 * Taxonomy
 	 *
-	 * @var WCAPF_Walker_Taxonomy
+	 * @var string
 	 */
-	public $walker;
+	protected $taxonomy;
 
 	/**
-	 * Constructor.
+	 * Query type
 	 *
-	 * @param WCAPF_Walker_Taxonomy $walker The taxonomy walker class instance.
+	 * @var string
 	 */
-	public function __construct( $walker ) {
-		$this->walker = $walker;
+	protected $query_type;
+
+	/**
+	 * Is Hierarchical
+	 *
+	 * @var bool
+	 */
+	protected $hierarchical;
+
+	/**
+	 * Show children only
+	 *
+	 * @var bool
+	 */
+	protected $show_children_only;
+
+	/**
+	 * Hide empty
+	 *
+	 * @var bool
+	 */
+	protected $hide_empty;
+
+	/**
+	 * Filter key
+	 *
+	 * @var string
+	 */
+	protected $filter_key;
+
+	/**
+	 * The constructor.
+	 *
+	 * @param array $field_data The field data.
+	 */
+	public function __construct( $field_data ) {
+		$this->set_properties( $field_data );
 	}
 
 	/**
-	 * Gets the taxonomy terms.
+	 * Sets the properties.
+	 *
+	 * @param array $field_data The field data.
+	 *
+	 * @return void
+	 */
+	private function set_properties( $field_data ) {
+		$this->taxonomy           = isset( $field_data['taxonomy'] ) ? $field_data['taxonomy'] : '';
+		$this->query_type         = isset( $field_data['query_type'] ) ? $field_data['query_type'] : '';
+		$this->hierarchical       = isset( $field_data['hierarchical'] );
+		$this->show_children_only = isset( $field_data['show_children_only'] );
+		$this->hide_empty         = isset( $field_data['hide_empty'] );
+		$this->filter_key         = isset( $field_data['filter_key'] ) ? $field_data['filter_key'] : '';
+	}
+
+	/**
+	 * Prepare the terms for the taxonomy.
 	 *
 	 * @return array
 	 */
-	public function get_terms() {
-		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return array();
-		}
-
-		$walker     = $this->get_walker();
-		$taxonomy   = $walker->taxonomy;
-		$query_type = $walker->query_type;
-
+	protected function prepare_items() {
 		$args = array(
-			'taxonomy'               => $taxonomy,
+			'taxonomy'               => $this->taxonomy,
 			'hide_empty'             => false,
 			'count'                  => true,
 			'update_term_meta_cache' => false,
@@ -56,6 +99,11 @@ class WCAPF_Taxonomy {
 
 		$_terms = get_terms( $args );
 		$terms  = array();
+
+		// If there was an error fetching the terms, return empty array.
+		if ( is_wp_error( $_terms ) ) {
+			return $terms;
+		}
 
 		foreach ( $_terms as $_term ) {
 			$term_id   = $_term->term_id;
@@ -75,7 +123,7 @@ class WCAPF_Taxonomy {
 			$terms[ $term_id ] = $_term;
 		}
 
-		if ( 'or' === $query_type ) {
+		if ( 'or' === $this->query_type ) {
 			$terms = $this->filter_by_hide_empty( $terms );
 			$terms = $this->filter_by_child_only( $terms );
 
@@ -99,15 +147,6 @@ class WCAPF_Taxonomy {
 	}
 
 	/**
-	 * Gets the walker class instance.
-	 *
-	 * @return WCAPF_Walker_Taxonomy
-	 */
-	public function get_walker() {
-		return $this->walker;
-	}
-
-	/**
 	 * Exclude the empty terms.
 	 *
 	 * @param array $terms The terms.
@@ -115,10 +154,7 @@ class WCAPF_Taxonomy {
 	 * @return array
 	 */
 	private function filter_by_hide_empty( $terms ) {
-		$walker     = $this->get_walker();
-		$hide_empty = $walker->hide_empty;
-
-		if ( $hide_empty ) {
+		if ( $this->hide_empty ) {
 			$terms_with_count = array();
 
 			foreach ( $terms as $em_term ) {
@@ -142,10 +178,7 @@ class WCAPF_Taxonomy {
 	 * @return array
 	 */
 	private function filter_by_child_only( $terms ) {
-		$walker     = $this->get_walker();
-		$child_only = $walker->show_children_only;
-
-		if ( $child_only ) {
+		if ( $this->show_children_only ) {
 			$child_only_filtered = array();
 			$allowed             = $this->get_child_only_term_ids( $terms );
 
@@ -170,16 +203,16 @@ class WCAPF_Taxonomy {
 	 * @param array $terms The terms.
 	 */
 	private function get_child_only_term_ids( $terms ) {
-		$walker   = $this->get_walker();
-		$taxonomy = $walker->taxonomy;
+		$walker             = new WCAPF_Walker();
+		$walker->filter_key = $this->filter_key;
 
-		$active_filters    = $walker->get_active_filters(); // value
+		$active_filters    = $walker->get_active_filters(); // values only
 		$ancestors         = array();
 		$children          = array();
 		$first_level_terms = array();
 
 		foreach ( $active_filters as $term_id ) {
-			$ancestors = array_unique( array_merge( $ancestors, get_ancestors( $term_id, $taxonomy ) ) );
+			$ancestors = array_unique( array_merge( $ancestors, get_ancestors( $term_id, $this->taxonomy ) ) );
 		}
 
 		foreach ( $terms as $term ) {
@@ -257,11 +290,8 @@ class WCAPF_Taxonomy {
 			$updated_terms_count[ $term_id ] = $term;
 		}
 
-		$walker   = $this->get_walker();
-		$taxonomy = $walker->taxonomy;
-
 		// The pad count logic should only run for hierarchical taxonomies like product categories.
-		if ( ! is_taxonomy_hierarchical( $taxonomy ) ) {
+		if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
 			return $updated_terms_count;
 		}
 
@@ -326,23 +356,14 @@ class WCAPF_Taxonomy {
 	private function get_filtered_term_product_counts( $term_ids ) {
 		global $wpdb;
 
-		$main_query = WC_Query::get_main_query();
-		$tax_query  = WC_Query::get_main_tax_query();
-		$meta_query = WC_Query::get_main_meta_query();
-
-		$meta_query     = new WP_Meta_Query( $meta_query );
-		$tax_query      = new WP_Tax_Query( $tax_query );
-		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
-		$post__in       = $main_query->query_vars['post__in'];
+		list( $meta_query_sql, $tax_query_sql ) = $this->get_query_data();
 
 		// Generate query.
 		$query = array();
 
 		$select = "SELECT COUNT(DISTINCT $wpdb->posts.ID) ";
 
-		// todo: maybe terms.name is redundant
-		$select .= 'AS term_count, terms.term_id AS term_count_id, terms.name';
+		$select .= 'AS term_count, terms.term_id AS term_count_id';
 
 		$query['select'] = $select;
 
@@ -358,20 +379,9 @@ class WCAPF_Taxonomy {
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+		$where .= $this->get_common_where_clauses();
 
 		$query['where'] = $where;
-
-		if ( $post__in ) {
-			$post_in = implode( ',', $post__in );
-
-			$query['where'] .= " AND $wpdb->posts.ID IN ( $post_in )";
-		}
-
-		$search = WC_Query::get_main_search_query_sql();
-
-		if ( $search ) {
-			$query['where'] .= ' AND ' . $search;
-		}
 
 		$query['group_by'] = 'GROUP BY terms.term_id';
 

@@ -189,26 +189,35 @@ class WCAPF_Field_Post_Meta extends WCAPF_Field {
 		$hide_empty      = $this->get_sub_field_value( 'hide_empty' );
 		$get_options     = $this->get_sub_field_value( 'get_options' );
 
-		$walker = new WCAPF_Walker_Post_Meta();
+		$filter_key = 'price';
 
-		$walker->post_meta       = $meta_key;
-		$walker->value_type      = $value_type;
+		$field_filter_data = array(
+			'post_meta'   => $meta_key,
+			'value_type'  => $value_type,
+			'query_type'  => $query_type,
+			'hide_empty'  => $hide_empty,
+			'filter_key'  => $filter_key,
+			'get_options' => $get_options,
+		);
+
+		$filter = new WCAPF_Filter_Type_Post_Meta( $field_filter_data );
+		$items  = $filter->get_items();
+
+		$walker                  = new WCAPF_Walker();
 		$walker->display_type    = $display_type;
 		$walker->enable_multiple = $enable_multiple;
 		$walker->query_type      = $query_type;
 		$walker->show_count      = $show_count;
-		$walker->hide_empty      = $hide_empty;
-		$walker->get_options     = $get_options;
+		$walker->filter_key      = $filter_key;
 
-		$classes = array( 'wcapf-ajax-term-filter' );
+		$classes = array( 'wcapf-ajax-meta-filter' );
 
-		$post_meta = new WCAPF_Post_Meta( $walker );
-		$terms     = $post_meta->get_terms();
+		if ( ! $items ) {
+			$classes[] = 'wcapf-field-hidden';
+		}
 
 		$this->before_filter_form( $classes );
-
-		echo $walker->build_menu( $terms );
-
+		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped // todo
 		$this->after_filter_form();
 	}
 

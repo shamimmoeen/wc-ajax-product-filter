@@ -1,6 +1,6 @@
 <?php
 /**
- * WCAPF_Post_Meta class.
+ * WCAPF_Filter_Type_Post_Meta class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
@@ -9,34 +9,85 @@
  */
 
 /**
- * WCAPF_Post_Meta class.
+ * WCAPF_Filter_Type_Post_Meta class.
  *
  * @since 3.0.0
  */
-class WCAPF_Post_Meta {
+class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 	/**
-	 * The walker class instance.
+	 * Post meta
 	 *
-	 * @var WCAPF_Walker_Post_Meta
+	 * @var string
 	 */
-	public $walker;
+	protected $post_meta;
 
 	/**
-	 * Constructor.
+	 * Post meta value type
 	 *
-	 * @param WCAPF_Walker_Post_Meta $walker The walker class instance.
+	 * @var string
 	 */
-	public function __construct( $walker ) {
-		$this->walker = $walker;
+	protected $value_type;
+
+	/**
+	 * Query type
+	 *
+	 * @var string
+	 */
+	protected $query_type;
+
+	/**
+	 * Hide empty
+	 *
+	 * @var bool
+	 */
+	protected $hide_empty;
+
+	/**
+	 * Filter key
+	 *
+	 * @var string
+	 */
+	protected $filter_key;
+
+	/**
+	 * The way to get the options
+	 *
+	 * @var string
+	 */
+	protected $get_options;
+
+	/**
+	 * The constructor.
+	 *
+	 * @param array $field_data The field data.
+	 */
+	public function __construct( $field_data ) {
+		$this->set_properties( $field_data );
 	}
 
 	/**
-	 * Hello World.
+	 * Sets the properties.
 	 *
-	 * @return string[][]
+	 * @param array $field_data The field data.
+	 *
+	 * @return void
 	 */
-	public function get_terms() {
+	private function set_properties( $field_data ) {
+		$this->post_meta   = isset( $field_data['post_meta'] ) ? $field_data['post_meta'] : '';
+		$this->value_type  = isset( $field_data['value_type'] ) ? $field_data['value_type'] : '';
+		$this->query_type  = isset( $field_data['query_type'] ) ? $field_data['query_type'] : '';
+		$this->hide_empty  = isset( $field_data['hide_empty'] );
+		$this->filter_key  = isset( $field_data['filter_key'] ) ? $field_data['filter_key'] : '';
+		$this->get_options = isset( $field_data['get_options'] ) ? $field_data['get_options'] : '';
+	}
+
+	/**
+	 * Prepare the meta values for the post meta.
+	 *
+	 * @return array
+	 */
+	protected function prepare_items() {
 		$all_values = $this->get_meta_values();
 		$with_count = $this->get_filtered_meta_product_counts( $all_values );
 
@@ -68,10 +119,6 @@ class WCAPF_Post_Meta {
 	private function get_meta_values() {
 		global $wpdb;
 
-		$walker    = $this->get_walker();
-		$post_type = 'product';
-		$meta_key  = $walker->post_meta;
-
 		return $wpdb->get_col(
 			$wpdb->prepare(
 				"
@@ -83,19 +130,10 @@ class WCAPF_Post_Meta {
 					AND $wpdb->postmeta.meta_key = %s
 					ORDER BY $wpdb->postmeta.meta_value * 1
 				",
-				$post_type,
-				$meta_key
+				'product',
+				$this->post_meta
 			)
 		);
-	}
-
-	/**
-	 * Gets the walker class instance.
-	 *
-	 * @return WCAPF_Walker_Post_Meta
-	 */
-	public function get_walker() {
-		return $this->walker;
 	}
 
 	/**
@@ -110,20 +148,9 @@ class WCAPF_Post_Meta {
 	 * @return array The filtered term product counts.
 	 */
 	private function get_filtered_meta_product_counts( $meta_values ) {
-		$walker   = $this->get_walker();
-		$meta_key = $walker->post_meta;
-
 		global $wpdb;
 
-		$main_query = WC_Query::get_main_query();
-		$tax_query  = WC_Query::get_main_tax_query();
-		$meta_query = WC_Query::get_main_meta_query();
-
-		$meta_query     = new WP_Meta_Query( $meta_query );
-		$tax_query      = new WP_Tax_Query( $tax_query );
-		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
-		$post__in       = $main_query->query_vars['post__in'];
+		list( $meta_query_sql, $tax_query_sql ) = $this->get_query_data();
 
 		// Generate query.
 		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS meta_count, metas.meta_value";
@@ -137,24 +164,14 @@ class WCAPF_Post_Meta {
 
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
-		$where .= " AND metas.meta_key = '$meta_key'";
+		$where .= " AND metas.meta_key = '$this->post_meta'";
 
-		// todo
+		// TODO: Filter by given values.
 		// $where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
 
+		$where .= $this->get_common_where_clauses();
+
 		$query['where'] = $where;
-
-		if ( $post__in ) {
-			$post_in = implode( ',', $post__in );
-
-			$query['where'] .= " AND $wpdb->posts.ID IN ( $post_in )";
-		}
-
-		$search = WC_Query::get_main_search_query_sql();
-
-		if ( $search ) {
-			$query['where'] .= ' AND ' . $search;
-		}
 
 		$query['group_by'] = 'GROUP BY metas.meta_value';
 		$query['order_by'] = 'ORDER BY metas.meta_value * 1';
@@ -163,13 +180,7 @@ class WCAPF_Post_Meta {
 		$query = implode( ' ', $query );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$results = $wpdb->get_results( $query, ARRAY_A );
-
-		echo '<pre>';
-		print_r( $results );
-		echo '</pre>';
-
-		return array();
+		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
 }

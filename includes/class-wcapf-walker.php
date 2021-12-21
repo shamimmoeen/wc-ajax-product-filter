@@ -13,7 +13,7 @@
  *
  * @since 3.0.0
  */
-abstract class WCAPF_Walker {
+class WCAPF_Walker {
 
 	/**
 	 * Display type
@@ -23,11 +23,11 @@ abstract class WCAPF_Walker {
 	public $display_type;
 
 	/**
-	 * Query type
+	 * Is Hierarchical
 	 *
 	 * @var string
 	 */
-	public $query_type;
+	public $hierarchical;
 
 	/**
 	 * Enable multiple filter
@@ -37,18 +37,18 @@ abstract class WCAPF_Walker {
 	public $enable_multiple;
 
 	/**
+	 * Query type
+	 *
+	 * @var string
+	 */
+	public $query_type;
+
+	/**
 	 * Show count
 	 *
 	 * @var bool
 	 */
 	public $show_count;
-
-	/**
-	 * Hide empty
-	 *
-	 * @var bool
-	 */
-	public $hide_empty;
 
 	/**
 	 * Filter key
@@ -79,7 +79,7 @@ abstract class WCAPF_Walker {
 		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
 			$html .= '<div class="wcapf-layered-nav" ' . $attrs . '>';
 
-			if ( isset( $this->hierarchical ) && $this->hierarchical ) {
+			if ( $this->hierarchical ) {
 				$html .= $this->build_hierarchical_menu( $tree );
 			} else {
 				$html .= $this->build_non_hierarchical_menu( $tree );
@@ -96,6 +96,8 @@ abstract class WCAPF_Walker {
 
 	/**
 	 * Gets the filter key.
+	 *
+	 * TODO: Maybe redundant.
 	 *
 	 * @return string
 	 */
@@ -155,7 +157,7 @@ abstract class WCAPF_Walker {
 	private function tree_item( $item, $depth ) {
 		$html = '';
 
-		$classes = $this->term_active( $item ) ? 'item chosen' : 'item';
+		$classes = $this->item_active( $item ) ? 'item chosen' : 'item';
 
 		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
 
@@ -173,13 +175,13 @@ abstract class WCAPF_Walker {
 	}
 
 	/**
-	 * Checks if the given term is active.
+	 * Checks if the given item is active.
 	 *
 	 * @param array $item The item data.
 	 *
 	 * @return bool
 	 */
-	private function term_active( $item ) {
+	private function item_active( $item ) {
 		if ( in_array( strval( $item['id'] ), $this->get_active_filters(), true ) ) {
 			return true;
 		}

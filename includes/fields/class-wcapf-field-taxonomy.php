@@ -156,34 +156,34 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		$filter_key = $this->get_filter_key();
 		$taxonomy   = $this->taxonomy();
 
-		$walker = new WCAPF_Walker_Taxonomy();
+		$field_filter_data = array(
+			'taxonomy'           => $taxonomy,
+			'query_type'         => $query_type,
+			'hierarchical'       => $hierarchical,
+			'show_children_only' => $show_children_only,
+			'hide_empty'         => $hide_empty,
+			'filter_key'         => $filter_key,
+		);
 
-		$walker->taxonomy        = $taxonomy;
+		$filter = new WCAPF_Filter_Type_Taxonomy( $field_filter_data );
+		$items  = $filter->get_items();
+
+		$walker                  = new WCAPF_Walker();
 		$walker->display_type    = $display_type;
-		$walker->query_type      = $query_type;
+		$walker->hierarchical    = $hierarchical;
 		$walker->enable_multiple = $enable_multiple;
+		$walker->query_type      = $query_type;
 		$walker->show_count      = $show_count;
-		$walker->hide_empty      = $hide_empty;
 		$walker->filter_key      = $filter_key;
 
-		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
-			$walker->hierarchical       = $hierarchical;
-			$walker->show_children_only = $show_children_only;
-		} else {
-			$walker->hierarchical       = false;
-			$walker->show_children_only = false;
-		}
+		$classes = array( 'wcapf-ajax-term-filter' );
 
-		$taxonomy = new WCAPF_Taxonomy( $walker );
-		$terms    = $taxonomy->get_terms();
-		$classes  = array( 'wcapf-ajax-term-filter' );
-
-		if ( ! $terms ) {
+		if ( ! $items ) {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
 		$this->before_filter_form( $classes );
-		echo $walker->build_menu( $terms ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped // todo
+		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped // todo
 		$this->after_filter_form();
 	}
 
