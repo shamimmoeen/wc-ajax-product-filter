@@ -93,6 +93,7 @@ abstract class WCAPF_Field {
 			foreach ( $sub_fields as $_data ) {
 				$data = $this->merge_data( $_data );
 
+				$data['_name'] = $data['name'];
 				$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
 				$data['value'] = isset( $instance[ $data['name'] ] ) ? $instance[ $data['name'] ] : $data['default'];
 				$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
@@ -162,6 +163,7 @@ abstract class WCAPF_Field {
 				'type'    => '',
 				'id'      => '',
 				'label'   => '',
+				'_name'   => '',
 				'name'    => '',
 				'value'   => '',
 				'options' => array(),
@@ -239,9 +241,10 @@ abstract class WCAPF_Field {
 	 */
 	private function field_classes( $data ) {
 		$type  = $data['type'];
+		$_name = $data['_name'];
 		$class = $data['class'];
 
-		$classes = 'wcapf-form-sub-field wcapf-form-sub-field-' . $type;
+		$classes = 'wcapf-form-sub-field wcapf-form-sub-field-' . $type . ' wcapf-form-sub-field-' . $_name;
 
 		if ( $class ) {
 			$classes .= ' wcapf-widget-sub-field-' . $class;

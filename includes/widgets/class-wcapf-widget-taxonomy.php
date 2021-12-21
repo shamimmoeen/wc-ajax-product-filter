@@ -41,7 +41,7 @@ abstract class WCAPF_Widget_Taxonomy extends WCAPF_Widget {
 		$filter_key = $this->get_filter_key( $query_type );
 		$taxonomy   = $this->get_taxonomy();
 
-		$walker = new WCAPF_Taxonomy_Walker();
+		$walker = new WCAPF_Walker_Post_Meta();
 
 		$walker->taxonomy        = $taxonomy;
 		$walker->display_type    = $display_type;

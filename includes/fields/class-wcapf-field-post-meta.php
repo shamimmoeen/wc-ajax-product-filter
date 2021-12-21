@@ -101,18 +101,6 @@ class WCAPF_Field_Post_Meta extends WCAPF_Field {
 				'position' => 35,
 			),
 			array(
-				'type'     => 'radio',
-				'id'       => 'get_options',
-				'label'    => __( 'Get options', 'wc-ajax-product-filter' ),
-				'name'     => 'get_options',
-				'options'  => array(
-					'automatically' => __( 'Automatically', 'wc-ajax-product-filter' ),
-					'manual_entry'  => __( 'Manual Entry', 'wc-ajax-product-filter' ),
-				),
-				'default'  => 'automatically',
-				'position' => 40,
-			),
-			array(
 				'type'     => 'checkbox',
 				'id'       => 'show_count',
 				'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
@@ -125,6 +113,25 @@ class WCAPF_Field_Post_Meta extends WCAPF_Field {
 				'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
 				'name'     => 'hide_empty',
 				'position' => 85,
+			),
+			array(
+				'type'     => 'radio',
+				'id'       => 'get_options',
+				'label'    => __( 'Get options', 'wc-ajax-product-filter' ),
+				'name'     => 'get_options',
+				'options'  => array(
+					'automatically' => __( 'Automatically', 'wc-ajax-product-filter' ),
+					'manual_entry'  => __( 'Manual Entry', 'wc-ajax-product-filter' ),
+				),
+				'default'  => 'automatically',
+				'position' => 90,
+			),
+			array(
+				'type'     => 'get_options_orderby',
+				'id'       => 'get_options_orderby',
+				'label'    => __( 'Order by', 'wc-ajax-product-filter' ),
+				'name'     => 'get_options_orderby',
+				'position' => 95,
 			),
 		);
 	}
@@ -167,7 +174,42 @@ class WCAPF_Field_Post_Meta extends WCAPF_Field {
 		return 'post-meta';
 	}
 
+	/**
+	 * Output the field form.
+	 *
+	 * @return void
+	 */
 	protected function render_filter_form() {
-		// TODO: Implement render_form() method.
+		$meta_key        = $this->get_sub_field_value( 'meta_key' );
+		$value_type      = $this->get_sub_field_value( 'value_type' );
+		$display_type    = $this->get_sub_field_value( 'display_type' );
+		$enable_multiple = $this->get_sub_field_value( 'enable_multiple' );
+		$query_type      = $this->get_sub_field_value( 'query_type' );
+		$show_count      = $this->get_sub_field_value( 'show_count' );
+		$hide_empty      = $this->get_sub_field_value( 'hide_empty' );
+		$get_options     = $this->get_sub_field_value( 'get_options' );
+
+		$walker = new WCAPF_Walker_Post_Meta();
+
+		$walker->post_meta       = $meta_key;
+		$walker->value_type      = $value_type;
+		$walker->display_type    = $display_type;
+		$walker->enable_multiple = $enable_multiple;
+		$walker->query_type      = $query_type;
+		$walker->show_count      = $show_count;
+		$walker->hide_empty      = $hide_empty;
+		$walker->get_options     = $get_options;
+
+		$classes = array( 'wcapf-ajax-term-filter' );
+
+		$post_meta = new WCAPF_Post_Meta( $walker );
+		$terms     = $post_meta->get_terms();
+
+		$this->before_filter_form( $classes );
+
+		echo $walker->build_menu( $terms );
+
+		$this->after_filter_form();
 	}
+
 }

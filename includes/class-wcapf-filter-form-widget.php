@@ -13,7 +13,7 @@
  *
  * @since 3.0.0
  */
-class WCAPF_Form_Widget extends WP_Widget {
+class WCAPF_Filter_Form_Widget extends WP_Widget {
 
 	/**
 	 * Constructor.
@@ -86,7 +86,7 @@ class WCAPF_Form_Widget extends WP_Widget {
  * @return void
  */
 function wcapf_register_filter_form_widget() {
-	register_widget( 'WCAPF_Form_Widget' );
+	register_widget( 'WCAPF_Filter_Form_Widget' );
 }
 
 add_action( 'widgets_init', 'wcapf_register_filter_form_widget' );

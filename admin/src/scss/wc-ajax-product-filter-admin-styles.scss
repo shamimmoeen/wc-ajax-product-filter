@@ -71,7 +71,7 @@
 	margin: 0 0 20px;
 
 	.wcapf-form-sub-field {
-		margin: 0 0 10px;
+		margin: 0 0 15px;
 	}
 
 	.widefat {
@@ -90,8 +90,8 @@
 
 		.wcapf-form-sub-field-label {
 			display: flex;
-			justify-content: flex-end;
-			min-width: 200px;
+			justify-content: flex-start;
+			width: 200px;
 		}
 
 		.wcapf-wrapper {

@@ -119,12 +119,17 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy-walker.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/walkers/class-wcapf-walker-re.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/walkers/class-wcapf-walker-taxonomy-re.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/walkers/class-wcapf-walker-post-meta-re.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker-post-meta.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-meta.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-meta.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-widget.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-form-widget.php';
 
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-active-filters.php';
 		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget.php';

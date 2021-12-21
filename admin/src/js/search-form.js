@@ -270,12 +270,12 @@ jQuery( '#postbox-container-1' ).on( 'click', 'button', saveForm );
 /**
  * Show alert on leave if the form is dirty.
  */
-window.onbeforeunload = function() {
-	const newFormState = searchForm.serializeArray();
-
-	const isFormDirty = ! _.isEqual( newFormState, initialFormState );
-
-	if ( isFormDirty ) {
-		return '';
-	}
-};
+// window.onbeforeunload = function() {
+// 	const newFormState = searchForm.serializeArray();
+//
+// 	const isFormDirty = ! _.isEqual( newFormState, initialFormState );
+//
+// 	if ( isFormDirty ) {
+// 		return '';
+// 	}
+// };

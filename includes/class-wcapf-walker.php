@@ -1,27 +1,19 @@
 <?php
 /**
- * A class for displaying various tree-like structures.
+ * WCAPF_Walker class.
  *
- * @package    WC_Ajax_Product_Filter
- * @subpackage Class
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan Main
  */
 
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit();
-}
-
 /**
- * WCAPF_Taxonomy_Walker class.
+ * WCAPF_Walker class.
  *
  * @since 3.0.0
  */
-class WCAPF_Taxonomy_Walker {
-
-	/**
-	 * Taxonomy
-	 */
-	public $taxonomy;
+abstract class WCAPF_Walker {
 
 	/**
 	 * Display type
@@ -52,20 +44,6 @@ class WCAPF_Taxonomy_Walker {
 	public $show_count;
 
 	/**
-	 * Hierarchical
-	 *
-	 * @var bool
-	 */
-	public $hierarchical;
-
-	/**
-	 * Show children only
-	 *
-	 * @var bool
-	 */
-	public $show_children_only;
-
-	/**
 	 * Hide empty
 	 *
 	 * @var bool
@@ -75,7 +53,7 @@ class WCAPF_Taxonomy_Walker {
 	/**
 	 * Filter key
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	public $filter_key;
 
@@ -106,7 +84,6 @@ class WCAPF_Taxonomy_Walker {
 			} else {
 				$html .= $this->build_non_hierarchical_menu( $tree );
 			}
-
 		} else {
 			$html .= '<div class="wcapf-dropdown-nav">';
 			$html .= 'Make the dropdown'; // TODO: Build the dropdown
@@ -117,6 +94,11 @@ class WCAPF_Taxonomy_Walker {
 		return apply_filters( 'wcapf_build_menu', $html, $this );
 	}
 
+	/**
+	 * Gets the filter key.
+	 *
+	 * @return string
+	 */
 	private function get_filter_key() {
 		return $this->filter_key;
 	}
@@ -134,7 +116,7 @@ class WCAPF_Taxonomy_Walker {
 			$increment = 0;
 
 			foreach ( $tree as $item ) {
-				$increment ++;
+				$increment++;
 
 				$depth = $item['depth'];
 
@@ -173,8 +155,7 @@ class WCAPF_Taxonomy_Walker {
 	private function tree_item( $item, $depth ) {
 		$html = '';
 
-		$classes = 'item';
-		$classes .= $this->term_active( $item ) ? ' chosen' : '';
+		$classes = $this->term_active( $item ) ? 'item chosen' : 'item';
 
 		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
 
@@ -191,16 +172,30 @@ class WCAPF_Taxonomy_Walker {
 		return $html;
 	}
 
+	/**
+	 * Checks if the given term is active.
+	 *
+	 * @param array $item The item data.
+	 *
+	 * @return bool
+	 */
 	private function term_active( $item ) {
-		if ( in_array( $item['id'], $this->get_active_filters() ) ) {
+		if ( in_array( strval( $item['id'] ), $this->get_active_filters(), true ) ) {
 			return true;
 		}
 
 		return false;
 	}
 
+	/**
+	 * Gets the active filters.
+	 *
+	 * @return array|string[]
+	 */
 	public function get_active_filters() {
 		$key = $this->get_filter_key();
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$str = isset( $_GET[ $key ] ) ? $_GET[ $key ] : '';
 
 		if ( $str ) {
@@ -229,9 +224,7 @@ class WCAPF_Taxonomy_Walker {
 			$html .= $this->tree_item( $item, $depth );
 
 			if ( isset( $item['children'] ) ) {
-				$wrap_with = false;
-
-				$html .= $this->build_non_hierarchical_menu( $item['children'], $wrap_with );
+				$html .= $this->build_non_hierarchical_menu( $item['children'], false );
 			}
 		}
 

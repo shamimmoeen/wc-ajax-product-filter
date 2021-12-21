@@ -1,9 +1,12 @@
 <?php
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * WCAPF_Taxonomy class.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan Main
+ */
 
 /**
  * WCAPF_Taxonomy class.
@@ -15,14 +18,14 @@ class WCAPF_Taxonomy {
 	/**
 	 * The walker class instance.
 	 *
-	 * @var WCAPF_Taxonomy_Walker
+	 * @var WCAPF_Walker_Taxonomy
 	 */
 	public $walker;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param $walker WCAPF_Taxonomy_Walker
+	 * @param WCAPF_Walker_Taxonomy $walker The taxonomy walker class instance.
 	 */
 	public function __construct( $walker ) {
 		$this->walker = $walker;
@@ -98,14 +101,16 @@ class WCAPF_Taxonomy {
 	/**
 	 * Gets the walker class instance.
 	 *
-	 * @return WCAPF_Taxonomy_Walker
+	 * @return WCAPF_Walker_Taxonomy
 	 */
 	public function get_walker() {
 		return $this->walker;
 	}
 
 	/**
-	 * @param array $terms
+	 * Exclude the empty terms.
+	 *
+	 * @param array $terms The terms.
 	 *
 	 * @return array
 	 */
@@ -130,7 +135,9 @@ class WCAPF_Taxonomy {
 	}
 
 	/**
-	 * @param array $terms
+	 * Filters the terms having the children only.
+	 *
+	 * @param array $terms The terms.
 	 *
 	 * @return array
 	 */
@@ -140,11 +147,12 @@ class WCAPF_Taxonomy {
 
 		if ( $child_only ) {
 			$child_only_filtered = array();
-			$allowed             = $this->get_child_only_term_ids( $walker, $terms );
+			$allowed             = $this->get_child_only_term_ids( $terms );
 
 			foreach ( $terms as $oc_term ) {
 				$oc_term_id = $oc_term['id'];
 
+				// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 				if ( in_array( $oc_term_id, $allowed ) ) {
 					$child_only_filtered[ $oc_term_id ] = $oc_term;
 				}
@@ -157,10 +165,12 @@ class WCAPF_Taxonomy {
 	}
 
 	/**
-	 * @param WCAPF_Taxonomy_Walker $walker
-	 * @param array                 $terms
+	 * Gets the child terms for the filtered parent terms.
+	 *
+	 * @param array $terms The terms.
 	 */
-	private function get_child_only_term_ids( $walker, $terms ) {
+	private function get_child_only_term_ids( $terms ) {
+		$walker   = $this->get_walker();
 		$taxonomy = $walker->taxonomy;
 
 		$active_filters    = $walker->get_active_filters(); // value
@@ -173,11 +183,12 @@ class WCAPF_Taxonomy {
 		}
 
 		foreach ( $terms as $term ) {
+			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 			if ( in_array( $term['parent_id'], $active_filters ) ) {
 				$children = array_unique( array_merge( $children, array( $term['id'] ) ) );
 			}
 
-			if ( $term['parent_id'] === 0 ) {
+			if ( 0 === $term['parent_id'] ) {
 				$first_level_terms = array_unique( array_merge( $first_level_terms, array( $term['id'] ) ) );
 			}
 		}
@@ -190,16 +201,18 @@ class WCAPF_Taxonomy {
 	 *
 	 * TODO: We should build the tree when taxonomy is hierarchical and hierarchical is activated in widget settings.
 	 *
-	 * @param array   $terms     The terms
-	 * @param integer $parent_id The parent identifier
+	 * @param array   $terms     The terms.
+	 * @param integer $parent_id The parent identifier.
+	 * @param int     $depth     The current depth.
 	 *
-	 * @return     array    The taxonomy tree
+	 * @return array The taxonomy tree.
 	 */
 	private function build_tree( $terms, $parent_id = 0, $depth = 0 ) {
 		$tree      = array();
 		$increment = 0;
 
 		foreach ( $terms as $term ) {
+			// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			if ( $term['parent_id'] == $parent_id ) {
 				$children = $this->build_tree( $terms, $term['id'], $depth );
 
@@ -213,10 +226,10 @@ class WCAPF_Taxonomy {
 			}
 
 			if ( 0 === $increment ) {
-				$depth ++;
+				$depth++;
 			}
 
-			$increment ++;
+			$increment++;
 		}
 
 		return $tree;
@@ -225,7 +238,7 @@ class WCAPF_Taxonomy {
 	/**
 	 * Updates the terms count based on the current filter.
 	 *
-	 * @param array $terms List of all terms
+	 * @param array $terms List of all terms.
 	 *
 	 * @return array
 	 */
@@ -253,7 +266,7 @@ class WCAPF_Taxonomy {
 		}
 
 		/**
-		 * pad count logic starts
+		 * Pad count logic starts.
 		 *
 		 * @see _pad_term_counts
 		 */
@@ -263,6 +276,7 @@ class WCAPF_Taxonomy {
 			$child     = $term_id;
 			$ancestors = array();
 
+			// phpcs:ignore Generic.Files.LineLength.TooLong, WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
 			while ( ! empty( $updated_terms_count[ $child ] ) && $parent = $updated_terms_count[ $child ]['parent_id'] ) {
 				$ancestors[] = $child;
 
@@ -323,23 +337,33 @@ class WCAPF_Taxonomy {
 		$post__in       = $main_query->query_vars['post__in'];
 
 		// Generate query.
-		$query           = array();
-		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS term_count, terms.term_id AS term_count_id, terms.name";
-		$query['from']   = "FROM $wpdb->posts";
-		$query['join']   = "
+		$query = array();
+
+		$select = "SELECT COUNT(DISTINCT $wpdb->posts.ID) ";
+
+		// todo: maybe terms.name is redundant
+		$select .= 'AS term_count, terms.term_id AS term_count_id, terms.name';
+
+		$query['select'] = $select;
+
+		$query['from'] = "FROM $wpdb->posts";
+		$query['join'] = "
 			INNER JOIN $wpdb->term_relationships AS term_relationships ON $wpdb->posts.ID = term_relationships.object_id
 			INNER JOIN $wpdb->term_taxonomy AS term_taxonomy USING(term_taxonomy_id)
 			INNER JOIN $wpdb->terms AS terms USING(term_id)
 			" . $tax_query_sql['join'] . $meta_query_sql['join'];
 
-		$query['where'] = "
-			WHERE $wpdb->posts.post_type IN ('product')
-			AND $wpdb->posts.post_status = 'publish'"
-		                  . $tax_query_sql['where'] . $meta_query_sql['where'] .
-		                  'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+		$where = "WHERE $wpdb->posts.post_type IN ('product')";
+
+		$where .= " AND $wpdb->posts.post_status = 'publish' ";
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+
+		$query['where'] = $where;
 
 		if ( $post__in ) {
-			$post_in        = implode( ',', $post__in );
+			$post_in = implode( ',', $post__in );
+
 			$query['where'] .= " AND $wpdb->posts.ID IN ( $post_in )";
 		}
 
@@ -354,6 +378,7 @@ class WCAPF_Taxonomy {
 		$query = apply_filters( 'wcapf_get_filtered_term_product_counts_query', $query, $this );
 		$query = implode( ' ', $query );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );

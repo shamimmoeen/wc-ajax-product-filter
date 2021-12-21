@@ -140,6 +140,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 	 * @return void
 	 */
 	protected function render_filter_form() {
+		// TODO: Maybe redundant
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}
@@ -155,7 +156,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		$filter_key = $this->get_filter_key();
 		$taxonomy   = $this->taxonomy();
 
-		$walker = new WCAPF_Taxonomy_Walker();
+		$walker = new WCAPF_Walker_Taxonomy();
 
 		$walker->taxonomy        = $taxonomy;
 		$walker->display_type    = $display_type;
