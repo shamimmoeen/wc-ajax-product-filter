@@ -118,37 +118,24 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-form-widget.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
+
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-meta.php';
-
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-active-filters.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-taxonomy.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-category-filter.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-tag-filter.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-custom-taxonomy-filter.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-attribute-filter.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-price-filter.php';
-		// require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-widget-post-meta.php';
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-category.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-tag.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-attribute.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-custom-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-post-meta.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-price.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-submit-button.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
-
-		// TODO: Remove this from free version
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-pro.php';
 	}
 
 	/**

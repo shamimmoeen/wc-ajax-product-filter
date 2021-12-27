@@ -147,30 +147,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Exclude the empty terms.
-	 *
-	 * @param array $terms The terms.
-	 *
-	 * @return array
-	 */
-	private function filter_by_hide_empty( $terms ) {
-		if ( $this->hide_empty ) {
-			$terms_with_count = array();
-
-			foreach ( $terms as $em_term ) {
-				$em_term_id = $em_term['id'];
-				if ( $em_term['count'] ) {
-					$terms_with_count[ $em_term_id ] = $em_term;
-				}
-			}
-
-			$terms = $terms_with_count;
-		}
-
-		return $terms;
-	}
-
-	/**
 	 * Filters the terms having the children only.
 	 *
 	 * @param array $terms The terms.

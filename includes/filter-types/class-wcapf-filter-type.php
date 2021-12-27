@@ -77,4 +77,29 @@ abstract class WCAPF_Filter_Type {
 		return $where;
 	}
 
+	/**
+	 * Exclude the empty items.
+	 *
+	 * @param array $items The items.
+	 *
+	 * @return array
+	 */
+	protected function filter_by_hide_empty( $items ) {
+		if ( $this->hide_empty ) {
+			$items_with_count = array();
+
+			foreach ( $items as $item ) {
+				$id = $item['id'];
+
+				if ( $item['count'] ) {
+					$items_with_count[ $id ] = $item;
+				}
+			}
+
+			$items = $items_with_count;
+		}
+
+		return $items;
+	}
+
 }

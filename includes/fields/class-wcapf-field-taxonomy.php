@@ -193,8 +193,8 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 	 * @return string
 	 */
 	protected function get_filter_key() {
-		$utils       = new WCAPF_Utils(); // TODO: Maybe move to the helper class.
-		$filter_keys = $utils->get_taxonomy_filter_keys();
+		// TODO: Maybe move to the helper class.
+		$filter_keys = WCAPF_Product_Filter_Utils::get_taxonomy_filter_keys();
 
 		$query_type = $this->get_sub_field_value( 'query_type' );
 		$taxonomy   = $this->taxonomy();

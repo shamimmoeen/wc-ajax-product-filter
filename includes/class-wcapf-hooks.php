@@ -1,12 +1,15 @@
 <?php
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * WC Ajax Product Filter hooks class.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan Main
+ */
+
+/**
+ * WCAPF_Hooks class.
  *
  * @since  3.0.0
  * @author Mainul Hassan Main
@@ -54,10 +57,10 @@ class WCAPF_Hooks {
 	/**
 	 * HTML wrapper to insert after the not found product loops.
 	 *
-	 * @param string $template_name The template name
+	 * @param string $template_name The template name.
 	 */
 	public function insert_after_no_products( $template_name ) {
-		if ( $template_name == 'loop/no-products-found.php' ) {
+		if ( 'loop/no-products-found.php' === $template_name ) {
 			echo '</div>';
 		}
 	}
@@ -72,10 +75,10 @@ class WCAPF_Hooks {
 	/**
 	 * HTML wrapper to insert before the not found product loops.
 	 *
-	 * @param string $template_name The template name
+	 * @param string $template_name The template name.
 	 */
 	public function insert_before_no_products( $template_name ) {
-		if ( $template_name == 'loop/no-products-found.php' ) {
+		if ( 'loop/no-products-found.php' === $template_name ) {
 			echo '<div class="wcapf-before-products">';
 		}
 	}
@@ -88,11 +91,17 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 * TODO: Delete transients when product gets updated.
+	 * Delete transients when product gets updated.
 	 *
-	 * @param $post_id
+	 * @param int $post_id The post id.
+	 *
+	 * @todo
 	 */
 	public function delete_transients( $post_id ) {
+		if ( ! $post_id ) {
+			return;
+		}
+
 		delete_transient( 'wcapf_term_product_counts_product_cat' );
 	}
 

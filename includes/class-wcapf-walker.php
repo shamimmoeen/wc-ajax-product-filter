@@ -200,7 +200,8 @@ class WCAPF_Walker {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$str = isset( $_GET[ $key ] ) ? $_GET[ $key ] : '';
 
-		if ( $str ) {
+		// Check if we have any string(including 0) in the url.
+		if ( strlen( $str ) ) {
 			return explode( ',', $str );
 		}
 
