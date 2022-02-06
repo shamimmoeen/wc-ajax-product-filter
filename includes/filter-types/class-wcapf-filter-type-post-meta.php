@@ -129,15 +129,26 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	private function get_meta_values() {
 		global $wpdb;
 
+		list( $meta_query_sql, $tax_query_sql ) = $this->get_query_data();
+
 		// Generate query.
 		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS meta_count, metas.meta_value";
 		$query['from']   = "FROM $wpdb->posts";
-		$query['join']   = "INNER JOIN $wpdb->postmeta AS metas ON $wpdb->posts.ID = metas.post_id";
+
+		$join = "INNER JOIN $wpdb->postmeta AS metas ON $wpdb->posts.ID = metas.post_id";
+
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		$query['join'] = $join;
 
 		$where = "WHERE $wpdb->posts.post_type IN ('product')";
 
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
 		$where .= " AND metas.meta_key = '$this->post_meta'";
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $this->get_common_where_clauses();
 
 		$query['where'] = $where;
 

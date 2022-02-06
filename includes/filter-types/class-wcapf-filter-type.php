@@ -59,7 +59,7 @@ abstract class WCAPF_Filter_Type {
 		global $wpdb;
 
 		$main_query = WC_Query::get_main_query();
-		$post__in   = $main_query->query_vars['post__in'];
+		$post__in   = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
 		$where      = '';
 
 		if ( $post__in ) {
