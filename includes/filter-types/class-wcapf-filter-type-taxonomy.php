@@ -194,12 +194,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			return $updated_terms_count;
 		}
 
-		// echo '<pre>';
-		// print_r( $active_terms );
-		// echo '</pre>';
-
-		// return $this->pad_counts( $terms, $updated_terms_count );
-
 		/**
 		 * Pad count logic starts.
 		 *
@@ -221,30 +215,11 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 							$active_terms[ $parent ][ $parent_child_term_id ] = $parent_child_term_count;
 						}
 					} else {
-						// echo '<pre>';
-						// print_r( $parent );
-						// echo '</pre>';
-
-						// TODO: Increment the count
-						// $active_terms[ $parent ]
-
 						if ( isset( $active_terms[ $parent ] ) && ! is_array( $active_terms[ $parent ] ) ) {
 							$active_terms[ $parent ] = array( $active_terms[ $parent ] );
 						}
 
-						// if ( isset( $active_terms[ $parent ] ) && $active_terms[ $parent ] ) {
-						// 	$active_terms[ $parent ] = array( $active_terms[ $parent ] );
-						// }
-
 						$active_terms[ $parent ][ $term_id ] = $active_terms[ $term_id ];
-
-						// if ( isset( $active_terms[ $parent ] ) && $active_terms[ $parent ] ) {
-						// 	$parent_count = $active_terms[ $parent ];
-						//
-						// 	var_dump( $parent_count );
-						// } else {
-						// 	$active_terms[ $parent ][ $term_id ] = $active_terms[ $term_id ];
-						// }
 					}
 				}
 
@@ -255,10 +230,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 				}
 			}
 		}
-
-		// echo '<pre>';
-		// print_r( $active_terms );
-		// echo '</pre>';
 
 		// Transfer the touched cells.
 		foreach ( $active_terms as $id => $count ) {
@@ -295,7 +266,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$select = "SELECT COUNT(DISTINCT $wpdb->posts.ID) ";
 
-		$select .= 'AS term_count, terms.term_id AS term_count_id, terms.name AS term_name';
+		$select .= 'AS term_count, terms.term_id AS term_count_id';
 
 		$query['select'] = $select;
 
@@ -360,19 +331,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
-		// echo '<pre>';
-		// print_r( $results );
-		// echo '</pre>';
-
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
-	}
-
-	private function pad_counts( $terms, $updated_terms_count ) {
-		echo '<pre>';
-		print_r( $updated_terms_count );
-		echo '</pre>';
-
-		return $updated_terms_count;
 	}
 
 	/**
