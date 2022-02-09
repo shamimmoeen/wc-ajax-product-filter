@@ -220,10 +220,10 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$where = "WHERE $wpdb->posts.post_type IN ('product')";
 
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
+		$where .= 'AND metas.meta_value IN (' . implode( ',', $meta_values ) . ')';
 		$where .= " AND metas.meta_key = '$this->post_meta'";
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
-		// $where .= 'AND metas.meta_value IN (' . implode( ',', $meta_values ) . ')';
 
 		$main_query_type = WCAPF_Product_Filter::instance()->get_field_relations();
 		$main_query      = WC_Query::get_main_query();

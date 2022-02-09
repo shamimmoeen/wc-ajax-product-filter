@@ -41,6 +41,13 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 				'position' => 10,
 			),
 			array(
+				'type'     => 'checkbox',
+				'id'       => 'enable_multiple',
+				'label'    => __( 'Enable multiple filter', 'wc-ajax-product-filter' ),
+				'name'     => 'enable_multiple',
+				'position' => 15,
+			),
+			array(
 				'type'     => 'select',
 				'id'       => 'query_type',
 				'label'    => __( 'Query Type', 'wc-ajax-product-filter' ),
@@ -49,28 +56,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 					'and' => __( 'AND', 'wc-ajax-product-filter' ),
 					'or'  => __( 'OR', 'wc-ajax-product-filter' ),
 				),
-				'position' => 15,
-			),
-			array(
-				'type'     => 'checkbox',
-				'id'       => 'enable_multiple',
-				'label'    => __( 'Enable multiple filter', 'wc-ajax-product-filter' ),
-				'name'     => 'enable_multiple',
 				'position' => 20,
-			),
-			array(
-				'type'     => 'checkbox',
-				'id'       => 'show_count',
-				'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
-				'name'     => 'show_count',
-				'position' => 25,
-			),
-			array(
-				'type'     => 'checkbox',
-				'id'       => 'hide_empty',
-				'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
-				'name'     => 'hide_empty',
-				'position' => 40,
 			),
 		);
 
@@ -83,20 +69,38 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 						'id'       => 'hierarchical',
 						'label'    => __( 'Show hierarchy', 'wc-ajax-product-filter' ),
 						'name'     => 'hierarchical',
-						'position' => 30,
+						'position' => 25,
 					),
 					array(
 						'type'     => 'checkbox',
 						'id'       => 'show_children_only',
 						'label'    => __( 'Only show children of the current', 'wc-ajax-product-filter' ),
 						'name'     => 'show_children_only',
-						'position' => 35,
+						'position' => 30,
 					),
 				)
 			);
 		}
 
-		return $fields;
+		return array_merge(
+			$fields,
+			array(
+				array(
+					'type'     => 'checkbox',
+					'id'       => 'show_count',
+					'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
+					'name'     => 'show_count',
+					'position' => 35,
+				),
+				array(
+					'type'     => 'checkbox',
+					'id'       => 'hide_empty',
+					'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
+					'name'     => 'hide_empty',
+					'position' => 40,
+				),
+			)
+		);
 	}
 
 	/**
