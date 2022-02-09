@@ -112,6 +112,7 @@ class WCAPF_Helper {
 			'post-meta'       => __( 'Filter by Post Meta', 'wc-ajax-product-filter' ), // TODO: Pro
 			'submit-button'   => __( 'Submit Button', 'wc-ajax-product-filter' ),
 			'reset-button'    => __( 'Reset Button', 'wc-ajax-product-filter' ),
+			'chosen-filters'  => __( 'Chosen Filters', 'wc-ajax-product-filter' ),
 		);
 
 		return apply_filters( 'wcapf_available_search_fields', $fields );

@@ -76,10 +76,24 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function set_properties( $field_data ) {
 		$this->taxonomy           = isset( $field_data['taxonomy'] ) ? $field_data['taxonomy'] : '';
 		$this->query_type         = isset( $field_data['query_type'] ) ? $field_data['query_type'] : '';
-		$this->hierarchical       = isset( $field_data['hierarchical'] );
 		$this->show_children_only = isset( $field_data['show_children_only'] );
-		$this->hide_empty         = isset( $field_data['hide_empty'] );
 		$this->filter_key         = isset( $field_data['filter_key'] ) ? $field_data['filter_key'] : '';
+
+		$this->hierarchical = false;
+
+		if ( isset( $field_data['hierarchical'] ) ) {
+			if ( $field_data['hierarchical'] ) {
+				$this->hierarchical = true;
+			}
+		}
+
+		$this->hide_empty = false;
+
+		if ( isset( $field_data['hide_empty'] ) ) {
+			if ( $field_data['hide_empty'] ) {
+				$this->hide_empty = true;
+			}
+		}
 	}
 
 	/**
@@ -123,14 +137,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			$terms[ $term_id ] = $_term;
 		}
 
-		if ( 'or' === $this->query_type ) {
-			$terms = $this->filter_by_hide_empty( $terms );
-			$terms = $this->filter_by_child_only( $terms );
-
-			// TODO: Use a filter to alter the "or terms"
-
-			return $this->build_tree( $terms );
-		}
+		// if ( 'or' === $this->query_type ) {
+		// 	$terms = $this->filter_by_hide_empty( $terms );
+		// 	$terms = $this->filter_by_child_only( $terms );
+		//
+		// 	// TODO: Use a filter to alter the "or terms"
+		//
+		// 	return $this->build_tree( $terms );
+		// }
 
 		// taxonomy hierarchical
 		// query_type = AND
@@ -354,8 +368,45 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
-		$where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
-		$where .= $this->get_common_where_clauses();
+		// $where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+
+		$main_query_type = WCAPF_Product_Filter::instance()->get_field_relations();
+		$main_query      = WC_Query::get_main_query();
+		$post__in        = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
+
+		if ( 'and' === $main_query_type ) {
+			if ( 'and' === $this->query_type ) {
+				if ( $post__in ) {
+					$post_in = implode( ',', $post__in );
+
+					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			} elseif ( 'or' === $this->query_type ) {
+				$filtered_product_ids = $this->get_product_ids_by_other_filters();
+
+				if ( $filtered_product_ids ) {
+					$post_in = implode( ',', $filtered_product_ids );
+
+					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			}
+		} elseif ( 'or' === $main_query_type ) {
+			if ( 'and' === $this->query_type ) {
+				$filtered_product_ids = $this->get_excluded_filtered_product_ids();
+
+				if ( $filtered_product_ids ) {
+					$post_in = implode( ',', $filtered_product_ids );
+
+					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			} elseif ( 'or' === $this->query_type ) {
+				// No where clause required.
+			}
+		}
+
+		// TODO: Include search clause.
+
+		// $where .= $this->get_common_where_clauses();
 
 		$query['where'] = $where;
 

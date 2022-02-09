@@ -49,7 +49,7 @@ class WCAPF_Product_Filter_Utils {
 
 	/**
 	 * Gets the filter keys for the product price filter.
-	 * 
+	 *
 	 * TODO: Refactor this.
 	 *
 	 * @return string[][]
@@ -63,6 +63,34 @@ class WCAPF_Product_Filter_Utils {
 				'or'  => $key . 'o',
 			),
 		);
+	}
+
+	/**
+	 * Combine the values of an associative array.
+	 *
+	 * @param string $query_type The query type.
+	 * @param array  $values     The associative array of values.
+	 *
+	 * @return array|false|mixed
+	 */
+	public static function combine_values( $query_type, $values ) {
+		$combined = array();
+
+		if ( ! $values ) {
+			return $combined;
+		}
+
+		if ( 2 > count( $values ) ) {
+			return reset( $values );
+		}
+
+		if ( 'or' === $query_type ) {
+			$combined = call_user_func_array( 'array_merge', $values );
+		} else {
+			$combined = call_user_func_array( 'array_intersect', $values );
+		}
+
+		return $combined;
 	}
 
 }

@@ -64,136 +64,46 @@ class WCAPF_Product_Filter {
 			return $query;
 		}
 
-		$search_results = $this->product_ids_for_keyword();
-		$tax_results    = $this->filtered_product_ids_for_terms();
-
-		// When both search and tax results found
-		if ( count( $search_results ) > 0 && count( $tax_results ) > 0 ) {
-			$post__in = array_intersect( $search_results, $tax_results );
-		} elseif ( count( $search_results ) > 0 && count( $tax_results ) === 0 ) { // When only search results found
-			$post__in = $search_results;
-		} else {
-			$post__in = $tax_results;
-		}
-
-		$query->set( 'meta_query', $this->build_meta_query() );
-		$query->set( 'post__in', $post__in );
+		$query->set( 'post__in', $this->get_filtered_product_ids() );
 
 		return $query;
 	}
 
 	/**
-	 * Retrieve Product ids for keyword.
-	 *
-	 * TODO: Move to pro version.
+	 * Gets the filtered product ids.
 	 *
 	 * @return array
 	 */
-	private function product_ids_for_keyword() {
-		if ( isset( $_GET['keyword'] ) && ! empty( $_GET['keyword'] ) ) {
-			$keyword = $_GET['keyword'];
+	private function get_filtered_product_ids() {
+		$main_query_type = $this->get_field_relations();
 
-			$args = array(
-				's'           => $keyword,
-				'post_type'   => 'product',
-				'post_status' => 'publish',
-				'numberposts' => -1,
-				'fields'      => 'ids',
-			);
+		$chosen_filters     = $this->get_chosen_filters();
+		$products_in_fields = array();
 
-			$results   = get_posts( $args );
-			$results[] = 0;
-		} else {
-			$results = array();
+		// echo '<pre>';
+		// print_r( $chosen_filters );
+		// echo '</pre>';
+
+		foreach ( $chosen_filters as $fields ) {
+			foreach ( $fields as $field ) {
+				$products_in_fields[] = $field['product_ids'];
+			}
 		}
 
-		return $results;
+		$filtered_product_ids = WCAPF_Product_Filter_Utils::combine_values( $main_query_type, $products_in_fields );
+
+		return array_unique( $filtered_product_ids );
 	}
 
 	/**
-	 * Filtered product ids for terms.
+	 * Gets the field relations.
 	 *
-	 * @return array
+	 * TODO: Get from settings.
+	 *
+	 * @return string
 	 */
-	private function filtered_product_ids_for_terms() {
-		$chosen_filters = $this->get_chosen_filters();
-		$chosen_terms   = $chosen_filters['taxonomy'];
-		$results        = array();
-
-		// 99% copy of WC_Query
-		if ( count( $chosen_terms ) > 0 ) {
-			$matched_products = array(
-				'and' => array(),
-				'or'  => array(),
-			);
-
-			$filtered_attribute = array(
-				'and' => false,
-				'or'  => false,
-			);
-
-			foreach ( $chosen_terms as $attribute => $data ) {
-				$matched_products_from_attribute = array();
-				$filtered                        = false;
-
-				if ( count( $data['terms'] ) > 0 ) {
-					foreach ( $data['terms'] as $value ) {
-						$posts = get_posts(
-							array(
-								'post_type'     => 'product',
-								'numberposts'   => -1,
-								'post_status'   => 'publish',
-								'fields'        => 'ids',
-								'no_found_rows' => true,
-								'tax_query'     => array(
-									array(
-										'taxonomy' => $attribute,
-										'terms'    => $value,
-										'field'    => 'term_id',
-									),
-								),
-							)
-						);
-
-						if ( ! is_wp_error( $posts ) ) {
-							if ( count( $matched_products_from_attribute ) > 0 || $filtered ) {
-								$matched_products_from_attribute = ( 'or' === $data['query_type'] )
-									? array_merge( $posts, $matched_products_from_attribute )
-									: array_intersect( $posts, $matched_products_from_attribute );
-							} else {
-								$matched_products_from_attribute = $posts;
-							}
-
-							$filtered = true;
-						}
-					}
-				}
-
-				if (
-					count( $matched_products[ $data['query_type'] ] ) > 0
-					|| true === $filtered_attribute[ $data['query_type'] ]
-				) {
-					$matched_products[ $data['query_type'] ] = ( 'or' === $data['query_type'] )
-						? array_merge( $matched_products_from_attribute, $matched_products[ $data['query_type'] ] ) :
-						array_intersect( $matched_products_from_attribute, $matched_products[ $data['query_type'] ] );
-				} else {
-					$matched_products[ $data['query_type'] ] = $matched_products_from_attribute;
-				}
-
-				$filtered_attribute[ $data['query_type'] ] = true;
-			}
-
-			// combine our 'AND' and 'OR' result sets
-			if ( $filtered_attribute['and'] && $filtered_attribute['or'] ) {
-				$results = array_intersect( $matched_products['and'], $matched_products['or'] );
-			} else {
-				$results = array_merge( $matched_products['and'], $matched_products['or'] );
-			}
-
-			$results[] = 0;
-		}
-
-		return $results;
+	public function get_field_relations() {
+		return get_option( 'main_query_type', 'or' );
 	}
 
 	/**
@@ -241,7 +151,7 @@ class WCAPF_Product_Filter {
 			$result = $this->get_chosen_term( $taxonomy, $keys, $query );
 
 			if ( $result ) {
-				$taxonomies[ $taxonomy ] = $result;
+				$taxonomies[ $result['filter_key'] ] = $result;
 			}
 		}
 
@@ -249,10 +159,10 @@ class WCAPF_Product_Filter {
 		$price_filter_keys = WCAPF_Product_Filter_Utils::get_price_filter_keys();
 
 		foreach ( $price_filter_keys as $meta_key => $keys ) {
-			$result = $this->get_chosen_post_meta( $keys, $query );
+			$result = $this->get_chosen_post_meta( $meta_key, $keys, $query );
 
 			if ( $result ) {
-				$post_metas[ $meta_key ] = $result;
+				$post_metas[ $result['filter_key'] ] = $result;
 			}
 		}
 
@@ -274,7 +184,8 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	private function get_chosen_term( $taxonomy, $keys, $query ) {
-		$active_filters = array();
+		$active_filters    = array();
+		$products_in_terms = array();
 
 		$filter_values = $this->get_chosen_filter_values( $keys, $query );
 
@@ -282,20 +193,44 @@ class WCAPF_Product_Filter {
 			return array();
 		}
 
-		list( $terms, $query_key, $query_type ) = $filter_values;
+		list( $terms, $filter_key, $query_type ) = $filter_values;
 
 		foreach ( $terms as $term_id ) {
-			$term_data = get_term( $term_id, $taxonomy );
+			// TODO: Maybe use cache.
+			$term_products = get_posts(
+				array(
+					'post_type'   => 'product',
+					'post_status' => 'publish',
+					'nopaging'    => true,
+					'fields'      => 'ids',
+					'tax_query'   => array(
+						array(
+							'taxonomy'         => $taxonomy,
+							'field'            => 'id',
+							'terms'            => $term_id,
+							'include_children' => true,
+						),
+					),
+				)
+			);
 
-			if ( $term_data ) {
-				$active_filters['term'][ $query_key ][ $term_id ] = $term_data->name;
-			}
+			$term_products[] = 0;
+
+			$products_in_terms[ $term_id ] = $term_products;
+
+			// TODO: Set the data for active filters.
 		}
 
+		$product_ids = WCAPF_Product_Filter_Utils::combine_values( $query_type, $products_in_terms );
+
 		return array(
-			'terms'          => $terms,
-			'query_type'     => $query_type,
-			'active_filters' => $active_filters,
+			'taxonomy'          => $taxonomy,
+			'filter_key'        => $filter_key,
+			'query_type'        => $query_type,
+			'values'            => $terms,
+			'product_ids'       => $product_ids,
+			'products_in_terms' => $products_in_terms,
+			'active_filters'    => $active_filters,
 		);
 	}
 
@@ -313,15 +248,15 @@ class WCAPF_Product_Filter {
 		$value_separator = ','; // TODO: Use a filter.
 
 		$values     = '';
-		$query_key  = '';
+		$filter_key = '';
 		$query_type = '';
 
 		if ( isset( $query[ $and_query_key ] ) ) {
-			$query_key  = $and_query_key;
+			$filter_key = $and_query_key;
 			$values     = $query[ $and_query_key ];
 			$query_type = 'and';
 		} elseif ( isset( $query[ $or_query_key ] ) ) {
-			$query_key  = $or_query_key;
+			$filter_key = $or_query_key;
 			$values     = $query[ $or_query_key ];
 			$query_type = 'or';
 		}
@@ -333,19 +268,21 @@ class WCAPF_Product_Filter {
 
 		$filter_values = explode( $value_separator, $values );
 
-		return array( $filter_values, $query_key, $query_type );
+		return array( $filter_values, $filter_key, $query_type );
 	}
 
 	/**
 	 * Gets the chosen post meta.
 	 *
-	 * @param array $keys  The filter keys.
-	 * @param array $query The query.
+	 * @param string $meta_key The post meta key.
+	 * @param array  $keys     The filter keys.
+	 * @param array  $query    The query.
 	 *
 	 * @return array
 	 */
-	private function get_chosen_post_meta( $keys, $query ) {
-		$active_filters = array();
+	private function get_chosen_post_meta( $meta_key, $keys, $query ) {
+		$active_filters    = array();
+		$products_in_metas = array();
 
 		$filter_values = $this->get_chosen_filter_values( $keys, $query );
 
@@ -353,45 +290,42 @@ class WCAPF_Product_Filter {
 			return array();
 		}
 
-		list( $meta_values, $query_key, $query_type ) = $filter_values;
+		list( $meta_values, $filter_key, $query_type ) = $filter_values;
 
 		foreach ( $meta_values as $meta_value ) {
-			$active_filters['post_meta'][ $query_key ][ $meta_value ] = $meta_value;
+			// TODO: Maybe use cache.
+			$meta_products = get_posts(
+				array(
+					'post_type'   => 'product',
+					'post_status' => 'publish',
+					'nopaging'    => true,
+					'fields'      => 'ids',
+					'meta_query'  => array(
+						array(
+							'key'   => $meta_key,
+							'value' => $meta_value,
+						),
+					),
+				)
+			);
+
+			$meta_products[] = 0;
+
+			$products_in_metas[] = $meta_products;
+
+			// TODO: Set the data for active filters.
 		}
+
+		$product_ids = WCAPF_Product_Filter_Utils::combine_values( $query_type, $products_in_metas );
 
 		return array(
-			'values'         => $meta_values,
+			'meta'           => $meta_key,
+			'filter_key'     => $filter_key,
 			'query_type'     => $query_type,
+			'values'         => $meta_values,
+			'product_ids'    => $product_ids,
 			'active_filters' => $active_filters,
 		);
-	}
-
-	/**
-	 * Builds the meta query that should be set to the main query.
-	 *
-	 * @return array
-	 */
-	private function build_meta_query() {
-		$chosen_filters = $this->get_chosen_filters();
-		$chosen_metas   = $chosen_filters['post_meta'];
-		$meta_query     = array();
-
-		foreach ( $chosen_metas as $meta_key => $filter_data ) {
-			$values = $filter_data['values'];
-
-			$_meta_query['relation'] = $filter_data['query_type'];
-
-			foreach ( $values as $value ) {
-				$_meta_query[] = array(
-					'key'   => $meta_key,
-					'value' => $value,
-				);
-			}
-
-			$meta_query[] = $_meta_query;
-		}
-
-		return $meta_query;
 	}
 
 }

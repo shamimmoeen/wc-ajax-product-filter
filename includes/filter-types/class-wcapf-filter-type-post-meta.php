@@ -77,9 +77,16 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$this->post_meta   = isset( $field_data['post_meta'] ) ? $field_data['post_meta'] : '';
 		$this->value_type  = isset( $field_data['value_type'] ) ? $field_data['value_type'] : '';
 		$this->query_type  = isset( $field_data['query_type'] ) ? $field_data['query_type'] : '';
-		$this->hide_empty  = isset( $field_data['hide_empty'] );
 		$this->filter_key  = isset( $field_data['filter_key'] ) ? $field_data['filter_key'] : '';
 		$this->get_options = isset( $field_data['get_options'] ) ? $field_data['get_options'] : '';
+
+		$this->hide_empty = false;
+
+		if ( isset( $field_data['hide_empty'] ) ) {
+			if ( $field_data['hide_empty'] ) {
+				$this->hide_empty = true;
+			}
+		}
 	}
 
 	/**
@@ -104,11 +111,6 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 			// TODO: Use a filter to alter the term data
 			$meta_values[ $meta_value ] = $_meta_value;
-		}
-
-		if ( 'or' === $this->query_type ) {
-			// TODO: Use a filter to alter the "or terms"
-			return $this->filter_by_hide_empty( $meta_values );
 		}
 
 		$meta_values = $this->get_updated_meta_values_count( $meta_values );
@@ -148,7 +150,8 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$where .= " AND metas.meta_key = '$this->post_meta'";
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
-		$where .= $this->get_common_where_clauses();
+
+		// TODO: Include the search clause.
 
 		$query['where'] = $where;
 
@@ -206,20 +209,59 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		// Generate query.
 		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS meta_count, metas.meta_value";
 		$query['from']   = "FROM $wpdb->posts";
-		$query['join']   = "
-			INNER JOIN $wpdb->postmeta ON $wpdb->posts.ID = $wpdb->postmeta.post_id
-			INNER JOIN $wpdb->postmeta AS metas ON $wpdb->posts.ID = metas.post_id
-		";
+
+		$join = "INNER JOIN $wpdb->postmeta AS metas ON $wpdb->posts.ID = metas.post_id";
+
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		$query['join'] = $join;
 
 		$where = "WHERE $wpdb->posts.post_type IN ('product')";
 
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
-		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= " AND metas.meta_key = '$this->post_meta'";
 
-		$where .= 'AND metas.meta_value IN (' . implode( ',', $meta_values ) . ')';
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		// $where .= 'AND metas.meta_value IN (' . implode( ',', $meta_values ) . ')';
 
-		$where .= $this->get_common_where_clauses();
+		$main_query_type = WCAPF_Product_Filter::instance()->get_field_relations();
+		$main_query      = WC_Query::get_main_query();
+		$post__in        = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
+
+		if ( 'and' === $main_query_type ) {
+			if ( 'and' === $this->query_type ) {
+				if ( $post__in ) {
+					$post_in = implode( ',', $post__in );
+
+					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			} elseif ( 'or' === $this->query_type ) {
+				$filtered_product_ids = $this->get_product_ids_by_other_filters();
+
+				if ( $filtered_product_ids ) {
+					$post_in = implode( ',', $filtered_product_ids );
+
+					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			}
+		} elseif ( 'or' === $main_query_type ) {
+			if ( 'and' === $this->query_type ) {
+				$filtered_product_ids = $this->get_excluded_filtered_product_ids();
+
+				if ( $filtered_product_ids ) {
+					$post_in = implode( ',', $filtered_product_ids );
+
+					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			} elseif ( 'or' === $this->query_type ) {
+				// No where clause required.
+			}
+		}
+
+		// TODO: Include search clause.
+
+		// $where .= $this->get_common_where_clauses();
 
 		$query['where'] = $where;
 

@@ -102,4 +102,57 @@ abstract class WCAPF_Filter_Type {
 		return $items;
 	}
 
+	/**
+	 * Gets the product ids by other filters.
+	 *
+	 * @return array
+	 */
+	protected function get_product_ids_by_other_filters() {
+		$filter = WCAPF_Product_Filter::instance();
+		$chosen = $filter->get_chosen_filters();
+
+		$excluded = array();
+
+		foreach ( $chosen as $fields ) {
+			foreach ( $fields as $filter_key => $field ) {
+				if ( $this->filter_key === $filter_key ) {
+					continue;
+				}
+
+				$excluded[] = $field['product_ids'];
+			}
+		}
+
+		return WCAPF_Product_Filter_Utils::combine_values( 'or', $excluded );
+	}
+
+	/**
+	 * Gets the filtered product ids by excluding self filtered product ids.
+	 *
+	 * @return array
+	 */
+	protected function get_excluded_filtered_product_ids() {
+		$filter = WCAPF_Product_Filter::instance();
+		$chosen = $filter->get_chosen_filters();
+
+		$excluded = array();
+
+		foreach ( $chosen as $fields ) {
+			foreach ( $fields as $filter_key => $field ) {
+				if ( $this->filter_key === $filter_key ) {
+					continue;
+				}
+
+				$excluded[] = $field['product_ids'];
+			}
+		}
+
+		$excluded = WCAPF_Product_Filter_Utils::combine_values( 'or', $excluded );
+
+		$main_query = WC_Query::get_main_query();
+		$post__in   = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
+
+		return array_diff( $post__in, $excluded );
+	}
+
 }
