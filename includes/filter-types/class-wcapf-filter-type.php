@@ -127,32 +127,26 @@ abstract class WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Gets the filtered product ids by excluding self filtered product ids.
+	 * Gets the self filtered product ids.
 	 *
 	 * @return array
 	 */
-	protected function get_excluded_filtered_product_ids() {
+	protected function get_self_filtered_product_ids() {
 		$filter = WCAPF_Product_Filter::instance();
 		$chosen = $filter->get_chosen_filters();
 
-		$excluded = array();
+		$self = array();
 
 		foreach ( $chosen as $fields ) {
 			foreach ( $fields as $filter_key => $field ) {
 				if ( $this->filter_key === $filter_key ) {
-					continue;
+					$self = $field['product_ids'];
+					break;
 				}
-
-				$excluded[] = $field['product_ids'];
 			}
 		}
 
-		$excluded = WCAPF_Product_Filter_Utils::combine_values( 'or', $excluded );
-
-		$main_query = WC_Query::get_main_query();
-		$post__in   = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
-
-		return array_diff( $post__in, $excluded );
+		return $self;
 	}
 
 }

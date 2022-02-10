@@ -247,7 +247,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 			}
 		} elseif ( 'or' === $main_query_type ) {
 			if ( 'and' === $this->query_type ) {
-				$filtered_product_ids = $this->get_excluded_filtered_product_ids();
+				$filtered_product_ids = $this->get_self_filtered_product_ids();
 
 				if ( $filtered_product_ids ) {
 					$post_in = implode( ',', $filtered_product_ids );
