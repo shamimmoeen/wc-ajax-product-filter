@@ -319,12 +319,13 @@ class WCAPF_Product_Filter {
 		$product_ids = WCAPF_Product_Filter_Utils::combine_values( $query_type, $products_in_metas );
 
 		return array(
-			'meta'           => $meta_key,
-			'filter_key'     => $filter_key,
-			'query_type'     => $query_type,
-			'values'         => $meta_values,
-			'product_ids'    => $product_ids,
-			'active_filters' => $active_filters,
+			'meta'              => $meta_key,
+			'filter_key'        => $filter_key,
+			'query_type'        => $query_type,
+			'values'            => $meta_values,
+			'product_ids'       => $product_ids,
+			'products_in_metas' => $products_in_metas,
+			'active_filters'    => $active_filters,
 		);
 	}
 
