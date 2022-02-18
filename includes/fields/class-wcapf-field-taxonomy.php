@@ -25,20 +25,31 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 			array(
 				'type'     => 'column-start',
 				'name'     => 'column',
-				'classes'  => 'row',
+				'classes'  => 'separator-bottom',
 				'position' => 5,
-			),
-			array(
-				'type'     => 'column-start',
-				'name'     => 'column',
-				'classes'  => 'column',
-				'position' => 10,
 			),
 			array(
 				'type'     => 'text',
 				'id'       => 'title',
 				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
 				'name'     => 'title',
+				'position' => 6,
+			),
+			array(
+				'type'     => 'column-end',
+				'name'     => 'column',
+				'position' => 7,
+			),
+			array(
+				'type'     => 'column-start',
+				'name'     => 'column',
+				'classes'  => 'row',
+				'position' => 10,
+			),
+			array(
+				'type'     => 'column-start',
+				'name'     => 'column',
+				'classes'  => 'column',
 				'position' => 15,
 			),
 			array(

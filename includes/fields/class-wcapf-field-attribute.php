@@ -31,7 +31,7 @@ class WCAPF_Field_Attribute extends WCAPF_Field_Taxonomy {
 				array(
 					'type'     => 'select',
 					'id'       => 'taxonomy',
-					'label'    => __( 'Taxonomy', 'wc-ajax-product-filter' ),
+					'label'    => __( 'Attribute', 'wc-ajax-product-filter' ),
 					'name'     => 'taxonomy',
 					'position' => 6,
 					'options'  => $options,
