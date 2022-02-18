@@ -76,18 +76,26 @@ class WCAPF_Walker {
 
 		$attrs .= 'data-filter-key="' . $filter_key . '"';
 
-		if ( isset( $this->display_type ) && 'list' === $this->display_type ) {
-			$html .= '<div class="wcapf-layered-nav" ' . $attrs . '>';
+		$display_type = $this->display_type;
+		$list_types   = array( 'checkbox', 'radio' );
+
+		if ( in_array( $display_type, $list_types ) ) {
+			$classes = 'wcapf-layered-nav';
+			$classes .= ' ' . $display_type;
+
+			$html .= '<div class="' . esc_attr( $classes ) . '" ' . $attrs . '>'; // TODO: Move to outer label.
 
 			if ( $this->hierarchical ) {
 				$html .= $this->build_hierarchical_menu( $tree );
 			} else {
 				$html .= $this->build_non_hierarchical_menu( $tree );
 			}
-		} else {
-			$html .= '<div class="wcapf-dropdown-nav">';
-			$html .= 'Make the dropdown'; // TODO: Build the dropdown
+		} elseif ( 'select' === $display_type ) {
+			$html .= '<div class="wcapf-dropdown-nav" ' . $attrs . '>';
+			$html .= $this->build_dropdown_menu( $tree );
 		}
+
+		$html .= '<input type="hidden" name="query_type" value="' . esc_attr( $this->query_type ) . '">';
 
 		$html .= '</div>';
 
@@ -118,7 +126,7 @@ class WCAPF_Walker {
 			$increment = 0;
 
 			foreach ( $tree as $item ) {
-				$increment++;
+				$increment ++;
 
 				$depth = $item['depth'];
 
@@ -155,19 +163,30 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	private function tree_item( $item, $depth ) {
-		$html = '';
+		$html         = '';
+		$classes      = 'item';
+		$checked      = '';
+		$input_markup = '';
+		$input_name   = $this->get_filter_key();
 
-		$classes = $this->item_active( $item ) ? 'item chosen' : 'item';
-
-		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
-
-		if ( $this->show_count ) {
-			$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+		if ( $this->item_active( $item ) ) {
+			$classes .= ' chosen';
+			$checked .= ' checked="checked"';
 		}
 
-		$inner = apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+		if ( $this->enable_multiple ) {
+			$input_name .= '[]';
+		}
 
-		$html .= '<span class="' . $classes . '" data-filter-id="' . esc_attr( $item['id'] ) . '">';
+		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
+		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
+		$input_markup .= ' value="' . esc_attr( $item['id'] ) . '"';
+		$input_markup .= $checked . '>';
+
+		$inner = $this->tree_item_inner( $item, $depth );
+
+		$html .= '<span class="' . $classes . '" data-filter-id="' . esc_attr( $item['id'] ) . '" tabindex="0">';
+		$html .= $input_markup;
 		$html .= $inner;
 		$html .= '</span>';
 
@@ -209,6 +228,24 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * Tree/Menu item inner content.
+	 *
+	 * @param array $item  The item array.
+	 * @param mixed $depth The item depth.
+	 *
+	 * @return string
+	 */
+	private function tree_item_inner( $item, $depth = null ) {
+		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
+
+		if ( $this->show_count ) {
+			$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+		}
+
+		return apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+	}
+
+	/**
 	 * Build non-hierarchical menu.
 	 *
 	 * @param array $tree      The tree as multidimensional array.
@@ -236,6 +273,53 @@ class WCAPF_Walker {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Build the dropdown menu.
+	 *
+	 * @param array $tree The tree as multidimensional array.
+	 */
+	private function build_dropdown_menu( $tree ) {
+		$input_name     = $this->get_filter_key();
+		$input_multiple = '';
+
+		if ( $this->enable_multiple ) {
+			$input_name     .= '[]';
+			$input_multiple = ' multiple="multiple"';
+		}
+
+		$html = '<select name="' . esc_attr( $input_name ) . '"' . $input_multiple . '>';
+
+		foreach ( $tree as $item ) {
+			$selected = $this->item_active( $item ) ? ' selected="selected"' : '';
+
+			$html .= '<option value="' . esc_attr( $item['id'] ) . '"' . $selected . '>';
+			$html .= $item['name'] . ' ' . '(' . $item['count'] . ')';
+			$html .= '</option>';
+		}
+
+		$html .= '</select>';
+
+		return $html;
+	}
+
+	/**
+	 * Tree/Menu item inner content.
+	 *
+	 * @param array $item  The item array.
+	 * @param mixed $depth The item depth.
+	 *
+	 * @return string
+	 */
+	private function dropdown_item_inner( $item, $depth = null ) {
+		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
+
+		if ( $this->show_count ) {
+			$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+		}
+
+		return apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
 	}
 
 }

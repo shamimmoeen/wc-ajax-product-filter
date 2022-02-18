@@ -23,11 +23,23 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 	protected function sub_fields() {
 		$fields = array(
 			array(
+				'type'     => 'column-start',
+				'name'     => 'column',
+				'classes'  => 'row',
+				'position' => 5,
+			),
+			array(
+				'type'     => 'column-start',
+				'name'     => 'column',
+				'classes'  => 'column',
+				'position' => 10,
+			),
+			array(
 				'type'     => 'text',
 				'id'       => 'title',
 				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
 				'name'     => 'title',
-				'position' => 5,
+				'position' => 15,
 			),
 			array(
 				'type'     => 'select',
@@ -35,20 +47,16 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 				'label'    => __( 'Display Type', 'wc-ajax-product-filter' ),
 				'name'     => 'display_type',
 				'options'  => array(
-					'list'     => __( 'List', 'wc-ajax-product-filter' ),
-					'dropdown' => __( 'Dropdown', 'wc-ajax-product-filter' ),
+					'checkbox'     => __( 'Checkbox', 'wc-ajax-product-filter' ),
+					'radio'        => __( 'Radio', 'wc-ajax-product-filter' ),
+					'select'       => __( 'Select', 'wc-ajax-product-filter' ),
+					'multi-select' => __( 'Multi select', 'wc-ajax-product-filter' ),
 				),
-				'position' => 10,
+				'default'  => 'checkbox',
+				'position' => 20,
 			),
 			array(
-				'type'     => 'checkbox',
-				'id'       => 'enable_multiple',
-				'label'    => __( 'Enable multiple filter', 'wc-ajax-product-filter' ),
-				'name'     => 'enable_multiple',
-				'position' => 15,
-			),
-			array(
-				'type'     => 'select',
+				'type'     => 'radio',
 				'id'       => 'query_type',
 				'label'    => __( 'Query Type', 'wc-ajax-product-filter' ),
 				'name'     => 'query_type',
@@ -56,8 +64,42 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 					'and' => __( 'AND', 'wc-ajax-product-filter' ),
 					'or'  => __( 'OR', 'wc-ajax-product-filter' ),
 				),
-				'position' => 20,
+				'default'  => 'and',
+				'position' => 25,
 			),
+			array(
+				'type'     => 'text',
+				'id'       => 'all_items_label',
+				'label'    => __( 'Change All Items Label', 'wc-ajax-product-filter' ),
+				'name'     => 'all_items_label',
+				'position' => 30,
+			),
+			array(
+				'type'     => 'checkbox',
+				'id'       => 'use_chosen',
+				'label'    => __( 'Use jQuery Chosen Library', 'wc-ajax-product-filter' ),
+				'name'     => 'use_chosen',
+				'position' => 35,
+			),
+			array(
+				'type'     => 'text',
+				'id'       => 'chosen_no_results_message',
+				'label'    => __( 'No results message', 'wc-ajax-product-filter' ),
+				'name'     => 'chosen_no_results_message',
+				'position' => 40,
+			),
+			array(
+				'type'     => 'column-end',
+				'name'     => 'column',
+				'position' => 45,
+			),
+		);
+
+		$fields[] = array(
+			'type'     => 'column-start',
+			'name'     => 'column',
+			'classes'  => 'column',
+			'position' => 50,
 		);
 
 		if ( $this->is_hierarchical() ) {
@@ -69,14 +111,14 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 						'id'       => 'hierarchical',
 						'label'    => __( 'Show hierarchy', 'wc-ajax-product-filter' ),
 						'name'     => 'hierarchical',
-						'position' => 25,
+						'position' => 55,
 					),
 					array(
 						'type'     => 'checkbox',
 						'id'       => 'show_children_only',
 						'label'    => __( 'Only show children of the current', 'wc-ajax-product-filter' ),
 						'name'     => 'show_children_only',
-						'position' => 30,
+						'position' => 60,
 					),
 				)
 			);
@@ -90,14 +132,24 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 					'id'       => 'show_count',
 					'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
 					'name'     => 'show_count',
-					'position' => 35,
+					'position' => 65,
 				),
 				array(
 					'type'     => 'checkbox',
 					'id'       => 'hide_empty',
 					'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
 					'name'     => 'hide_empty',
-					'position' => 40,
+					'position' => 70,
+				),
+				array(
+					'type'     => 'column-end',
+					'name'     => 'column',
+					'position' => 75,
+				),
+				array(
+					'type'     => 'column-end',
+					'name'     => 'column',
+					'position' => 80,
 				),
 			)
 		);

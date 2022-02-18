@@ -48,6 +48,7 @@
 
 		.widget-inside {
 			border-top: none;
+			display: block; // TODO: Remove this.
 			padding: 12px 15px 15px 15px;
 		}
 
@@ -70,8 +71,36 @@
 .wcapf-form-field {
 	margin: 0 0 20px;
 
+	.column-start {
+		&.row {
+			display: flex;
+			gap: 3em;
+		}
+
+		&.column {
+			flex: 0 0 40em;
+		}
+
+		&.separator-top {
+			border-top: 1px solid #ddd;
+			margin-top: .8em;
+			padding-top: 2em;
+		}
+
+		&.separator-bottom {
+			border-bottom: 1px solid #ddd;
+			margin-bottom: 2em;
+			padding-bottom: .8em;
+		}
+	}
+
+	.no-top-margin {
+		margin-top: 0;
+	}
+
 	.wcapf-form-sub-field {
-		margin: 0 0 15px;
+		margin: 0 0 20px;
+		min-width: 445px;
 	}
 
 	.widefat {
@@ -105,6 +134,128 @@
 			gap: 10px;
 		}
 	}
+
+	/* post meta field */
+	@mixin clearfix {
+		&::before,
+		&::after {
+			content: '';
+			clear: both;
+			display: table;
+		}
+	}
+
+	.wcapf-post-meta-order-options-field {
+		.wcapf-wrapper {
+			.wcapf-form-sub-field {
+				display: inline-block;
+				margin: 0;
+				min-width: unset;
+
+				.wcapf-form-sub-field-label {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.manual-options-table {
+		.manual-options-table-header {
+			font-weight: bold;
+			margin: 1em 0;
+
+			@include clearfix;
+
+			> div {
+				float: left;
+
+				&:first-child {
+					padding-left: 80px;
+					width: 250px;
+				}
+
+				&:last-child {
+				}
+			}
+		}
+
+		.manual-options-table-body {
+			.manual-options-table-body-rows {
+				.item {
+					@include clearfix;
+
+					background-color: #f7f7f7;
+					border: 1px solid #dddddd;
+					padding: 10px;
+
+					&:not(:last-child) {
+						margin-bottom: 10px;
+					}
+
+					> div {
+						&:not(:last-child) {
+							float: left;
+							margin-right: 15px;
+						}
+
+						&:last-child {
+							float: right;
+						}
+
+						&:first-child {
+							.dashicons {
+								cursor: move;
+								margin-top: 3px;
+								opacity: 0.5;
+							}
+						}
+
+						&:last-child {
+							button {
+								margin-top: 7px;
+							}
+						}
+					}
+				}
+			}
+
+			.no-options-found {
+				background-color: #f7f7f7;
+				border: 1px solid #dddddd;
+				padding: 5px 10px;
+				position: relative;
+				width: auto;
+			}
+		}
+
+		.manual-options-table-footer {
+			margin: 1em 0;
+
+			@include clearfix;
+
+			> div {
+				&:first-child {
+					float: left;
+				}
+
+				&:last-child {
+					float: right;
+				}
+			}
+		}
+
+		&:not(.has-options) {
+			.manual-options-table-body-rows {
+				display: none;
+			}
+		}
+
+		&.has-options {
+			.no-options-found {
+				display: none;
+			}
+		}
+	}
 }
 
 .wcapf-form-sidebar {
@@ -126,5 +277,108 @@
 
 	.error {
 		color: #dc3545;
+	}
+}
+
+.remodal-overlay {
+	z-index: 99999 !important;
+}
+
+.remodal-wrapper {
+	z-index: 100000 !important;
+}
+
+.wcapf-dual-ring {
+	display: inline-block;
+	height: 80px;
+	width: 80px;
+}
+
+.wcapf-dual-ring:after {
+	animation: wcapf-dual-ring 1.2s linear infinite;
+	border-color: #ccc transparent #ccc transparent;
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 4px;
+	content: '';
+	display: block;
+	height: 64px;
+	margin: 8px;
+	width: 64px;
+}
+
+@keyframes wcapf-dual-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+
+.post-meta-options-modal {
+	text-align: initial;
+
+	.wcapf-modal-header {
+		border-bottom: 1px solid #ddd;
+		display: flex;
+		margin: -35px -35px 15px -35px;
+		padding: 0 35px;
+
+		.remodal-close {
+			left: auto;
+			right: 0;
+			top: 5px;
+		}
+	}
+
+	.post-meta-options-loader {
+		text-align: center;
+
+		&:not(.active) {
+			display: none;
+		}
+	}
+
+	.no-key-found-message {
+		&:not(.active) {
+			display: none;
+		}
+	}
+
+	.post-meta-options {
+		label {
+			background-color: #fafafa;
+			border: 1px solid #eeeeee;
+			display: inline-block;
+			margin-bottom: 10px;
+			margin-right: 10px;
+			padding: 7px 10px;
+
+			input[type="checkbox"] {
+				margin-right: 8px;
+			}
+		}
+	}
+
+	.wcapf-modal-footer {
+		border-top: 1px solid #ddd;
+		display: flex;
+		justify-content: space-between;
+		margin: 15px -35px -35px -35px;
+		padding: 16px 35px;
+
+		&:not(.active) {
+			display: none;
+		}
+
+		div {
+			&:last-child {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+		}
 	}
 }

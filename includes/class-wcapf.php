@@ -179,6 +179,12 @@ class WCAPF {
 			true
 		);
 
+		wp_localize_script(
+			'wc-ajax-product-filter-public-scripts',
+			'wcapf_params',
+			$this->default_settings()
+		);
+
 		wp_enqueue_style(
 			'wcapf-styles',
 			WCAPF_PLUGIN_URL . 'assets/css/wcapf-styles.css',
@@ -193,31 +199,29 @@ class WCAPF {
 			filemtime( WCAPF_PLUGIN_DIR . '/assets/css/font-awesome.min.css' )
 		);
 
-		wp_enqueue_script(
-			'wcapf-ui-slider',
-			WCAPF_PLUGIN_URL . 'assets/js/nouislider.min.js',
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/assets/js/nouislider.min.js' ),
-			true
-		);
-
-		wp_enqueue_script(
-			'wcapf-price-filter',
-			WCAPF_PLUGIN_URL . 'assets/js/price-filter.js',
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/assets/js/price-filter.js' ),
-			true
-		);
-
-		wp_enqueue_script(
-			'wcapf-scripts',
-			WCAPF_PLUGIN_URL . 'assets/js/scripts.js',
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/assets/js/scripts.js' ),
-			true
-		);
-
-		wp_localize_script( 'wcapf-scripts', 'wcapf_params', $this->default_settings() );
+		// wp_enqueue_script(
+		// 	'wcapf-ui-slider',
+		// 	WCAPF_PLUGIN_URL . 'assets/js/nouislider.min.js',
+		// 	array( 'jquery' ),
+		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/nouislider.min.js' ),
+		// 	true
+		// );
+		//
+		// wp_enqueue_script(
+		// 	'wcapf-price-filter',
+		// 	WCAPF_PLUGIN_URL . 'assets/js/price-filter.js',
+		// 	array( 'jquery' ),
+		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/price-filter.js' ),
+		// 	true
+		// );
+		//
+		// wp_enqueue_script(
+		// 	'wcapf-scripts',
+		// 	WCAPF_PLUGIN_URL . 'assets/js/scripts.js',
+		// 	array( 'jquery' ),
+		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/scripts.js' ),
+		// 	true
+		// );
 	}
 
 	/**
@@ -263,6 +267,17 @@ class WCAPF {
 			filemtime( WCAPF_PLUGIN_DIR . '/admin/css/wc-ajax-product-filter-admin-styles' . $ext )
 		);
 
+		wp_enqueue_style( 'wcapf-remodal', WCAPF_PLUGIN_URL . 'admin/lib/remodal/remodal.css' );
+		wp_enqueue_style( 'wcapf-remodal-theme', WCAPF_PLUGIN_URL . 'admin/lib/remodal/remodal-default-theme.css' );
+
+		wp_enqueue_script(
+			'wcapf-remodal',
+			WCAPF_PLUGIN_URL . 'admin/lib/remodal/remodal.min.js',
+			array( 'jquery' ),
+			false,
+			true
+		);
+
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
 			? '.min.js'
 			: '.js';
@@ -270,7 +285,7 @@ class WCAPF {
 		wp_enqueue_script(
 			'wc-ajax-product-filter-admin-scripts',
 			WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts' . $ext,
-			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
+			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable', 'wcapf-remodal' ),
 			filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts' . $ext ),
 			true
 		);

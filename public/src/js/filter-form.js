@@ -284,7 +284,30 @@ jQuery( document ).ready(
 			wcapfFilterProducts();
 		}
 
-		// handle the filter request
+		// The main function to handle the filter request
+		function handleFilterRequest( $item, filterValue ) {
+			if ( ! filterValue ) {
+				return;
+			}
+
+			const $field         = $item.closest( '.wcapf-field-filter-form' );
+			const fieldID        = $field.attr( 'id' );
+			const fieldData      = fields[ fieldID ];
+			const filterKey      = fieldData.filterKey;
+			const multipleFilter = fieldData.multipleFilter;
+
+			if ( ! filterKey ) {
+				return;
+			}
+
+			if ( multipleFilter ) {
+				wcapfMakeParameters( filterKey, filterValue );
+			} else {
+				wcapfSingleFilter( filterKey, filterValue );
+			}
+		}
+
+		// handle the filter request for list fields
 		$wcapfTermFilter.on(
 			'click',
 			'.item',
@@ -294,27 +317,43 @@ jQuery( document ).ready(
 				const $item       = $( this );
 				const filterValue = $item.attr( 'data-filter-id' );
 
-				if ( ! filterValue ) {
-					return;
-				}
+				handleFilterRequest( $item, filterValue );
+			}
+		);
+
+		// handle the filter request for display type select fields
+		$wcapfTermFilter.on(
+			'change',
+			'select',
+			function( event ) {
+				event.preventDefault();
+
+				const $item       = $( this );
+				const filterValue = $item.val();
 
 				const $field         = $item.closest( '.wcapf-field-filter-form' );
 				const fieldID        = $field.attr( 'id' );
 				const fieldData      = fields[ fieldID ];
 				const filterKey      = fieldData.filterKey;
-				const multipleFilter = fieldData.multipleFilter;
 
-				if ( ! filterKey ) {
-					return;
-				}
-
-				if ( multipleFilter ) {
-					wcapfMakeParameters( filterKey, filterValue );
+				if ( ! filterValue.length ) {
+					const query = wcapfRemoveQueryStringParameter( filterKey );
+					history.pushState( {}, '', query );
 				} else {
-					wcapfSingleFilter( filterKey, filterValue );
+					const filterValString = filterValue.toString();
+					wcapfUpdateQueryStringParameter( filterKey, filterValString );
 				}
+
+				// filter products
+				wcapfFilterProducts();
 			}
 		);
+
+		// history back and forward request handling
+		$( window ).bind( 'popstate', function() {
+			// filter products
+			wcapfFilterProducts();
+		} );
 
 	}
 );

@@ -211,6 +211,13 @@ class WCAPF_Admin {
 
 				$parsed_field['type'] = $type;
 
+				// TODO: parse query_type here.
+				$_enable_multiple = isset( $parsed_field['enable_multiple'] ) ? $parsed_field['enable_multiple'] : 0;
+
+				if ( ! $_enable_multiple ) {
+					$parsed_field['query_type'] = 'and';
+				}
+
 				$parsed[] = $parsed_field;
 			}
 		}

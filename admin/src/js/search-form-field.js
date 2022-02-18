@@ -7,168 +7,165 @@
  * @author     Mainul Hassan Main
  */
 
-( function( $ ) {
+jQuery( document ).ready( function( $ ) {
 
 	const $searchForm = $( '#search-form' );
 
-	/**
-	 * Disables the slider and range option at display_type if the value type is text.
-	 */
-	function initDisplayTypeField( el ) {
-		const $subField         = $( el );
-		const valueTypeValue    = $subField.val();
-		const $field            = $subField.closest( '.wcapf-form-field' );
-		const $displayTypeField = $field.find( '.wcapf-form-sub-field-display_type select' );
-		const displayTypeValue  = $displayTypeField.val();
+	const dependantData = [
+		{
+			'handler': '.wcapf-form-sub-field-display_type select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-query_type',
+					'value': [ 'checkbox', 'multi-select' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-all_items_label',
+					'value': [ 'radio', 'select' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-use_chosen',
+					'value': [ 'select', 'multi-select' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-use_chosen input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-chosen_no_results_message',
+					'value': [ '1' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-get_options input',
+			'handlerType': 'radio',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.manual-options-table',
+					'value': [ 'manual_entry' ],
+				},
+			],
+		},
+	];
 
-		$displayTypeField.children( 'option' ).removeAttr( 'disabled' );
+	function _triggerDisplayTypeChange( value, $field ) {
+		const $noResults     = $field.find( '.wcapf-form-sub-field-chosen_no_results_message' );
+		const $allItemsLabel = $field.find( '.wcapf-form-sub-field-all_items_label' );
+		const useChosen      = $field.find( '.wcapf-form-sub-field-use_chosen input' ).is( ':checked' );
 
-		if ( 'text' !== valueTypeValue ) {
-			return;
-		}
-
-		const dependantOptions = 'option[value="slider"], option[value="range"]';
-
-		$displayTypeField.children( dependantOptions ).attr( 'disabled', 'disabled' );
-
-		if ( 'slider' === displayTypeValue || 'range' === displayTypeValue ) {
-			$displayTypeField.prop( 'selectedIndex', 0 ).change();
-		}
-	}
-
-	function initDisplayTypeFields() {
-		const $valueTypes = $searchForm.find( '.wcapf-form-sub-field-value_type select' );
-
-		$valueTypes.each(
-			function() {
-				initDisplayTypeField( this );
-			}
-		);
-	}
-
-	initDisplayTypeFields();
-
-	$searchForm.on(
-		'change',
-		'.wcapf-form-sub-field-value_type select',
-		function() {
-			initDisplayTypeField( this );
-		}
-	);
-
-	/**
-	 * Hides the use_select2 field if the value of display_type field is not 'dropdown'.
-	 */
-	function initUseSelect2Field( el ) {
-		const $subField        = $( el );
-		const displayTypeValue = $subField.val();
-		const $field           = $subField.closest( '.wcapf-form-field' );
-		const $useSelect2Field = $field.find( '.wcapf-form-sub-field-use_select2' );
-
-		if ( 'dropdown' === displayTypeValue ) {
-			$useSelect2Field.show();
+		if ( useChosen && ( 'select' === value || 'multi-select' === value ) ) {
+			$noResults.show();
 		} else {
-			$useSelect2Field.hide();
+			$noResults.hide();
 		}
-	}
 
-	function initUseSelect2Fields() {
-		const $valueTypes = $searchForm.find( '.wcapf-form-sub-field-display_type select' );
-
-		$valueTypes.each(
-			function() {
-				initUseSelect2Field( this );
-			}
-		);
-	}
-
-	initUseSelect2Fields();
-
-	$searchForm.on(
-		'change',
-		'.wcapf-form-sub-field-display_type select',
-		function() {
-			initUseSelect2Field( this );
-		}
-	);
-
-	/**
-	 * Hides the enable_multiple field if not appropriate.
-	 */
-	function initEnableMultipleFilterField( el ) {
-		const $subField                  = $( el );
-		const displayTypeValue           = $subField.val();
-		const $field                     = $subField.closest( '.wcapf-form-field' );
-		const $enableMultipleFilterField = $field.find( '.wcapf-form-sub-field-enable_multiple' );
-		const $enableMultipleFieldInput  = $enableMultipleFilterField.find( 'input' );
-		const enableMultiple             = $enableMultipleFieldInput.is( ':checked' );
-		const validDisplayTypes          = [ 'list', 'dropdown', 'cloud', 'range' ];
-
-		if ( validDisplayTypes.includes( displayTypeValue ) ) {
-			$enableMultipleFilterField.show();
+		if ( ( 'radio' === value || 'select' === value ) || ( 'multi-select' === value && useChosen ) ) {
+			$allItemsLabel.show();
 		} else {
-			$enableMultipleFilterField.hide();
-
-			if ( enableMultiple ) {
-				$enableMultipleFieldInput.prop( 'checked', false ).change();
-			}
+			$allItemsLabel.hide();
 		}
 	}
 
-	function initEnableMultipleFilterFields() {
-		const $valueTypes = $searchForm.find( '.wcapf-form-sub-field-display_type select' );
+	function _triggerUseSelectChange( value, $field ) {
+		const $noResults     = $field.find( '.wcapf-form-sub-field-chosen_no_results_message' );
+		const $allItemsLabel = $field.find( '.wcapf-form-sub-field-all_items_label' );
+		const displayType    = $field.find( '.wcapf-form-sub-field-display_type select' ).val();
 
-		$valueTypes.each(
-			function() {
-				initEnableMultipleFilterField( this );
-			}
-		);
-	}
-
-	initEnableMultipleFilterFields();
-
-	$searchForm.on(
-		'change',
-		'.wcapf-form-sub-field-display_type select',
-		function() {
-			initEnableMultipleFilterField( this );
-		}
-	);
-
-	/**
-	 * Hides the query_type field if not appropriate.
-	 */
-	function initQueryTypeField( el ) {
-		const $subField       = $( el );
-		const enableMultiple  = $subField.is( ':checked' );
-		const $field          = $subField.closest( '.wcapf-form-field' );
-		const $queryTypeField = $field.find( '.wcapf-form-sub-field-query_type' );
-
-		if ( enableMultiple ) {
-			$queryTypeField.show();
+		if ( '1' === value && ( 'select' === displayType || 'multi-select' === displayType ) ) {
+			$noResults.show();
 		} else {
-			$queryTypeField.hide();
+			$noResults.hide();
+		}
+
+		if ( ( '1' === value && 'multi-select' === displayType ) || ( 'radio' === displayType || 'select' === displayType ) ) {
+			$allItemsLabel.show();
+		} else {
+			$allItemsLabel.hide();
 		}
 	}
 
-	function initQueryTypeFields() {
-		const $valueTypes = $searchForm.find( '.wcapf-form-sub-field-enable_multiple input' );
+	function _handleToggleRequest( data, currentSelector, value ) {
+		const $field      = currentSelector.closest( '.wcapf-form-field' );
+		const handler     = data[ 'handler' ];
+		const handlerType = data[ 'handlerType' ];
+		const dependant   = data[ 'dependant' ];
 
-		$valueTypes.each(
-			function() {
-				initQueryTypeField( this );
+		let _value = value;
+
+		if ( 'checkbox' === handlerType ) {
+			_value = currentSelector.is( ':checked' ) ? '1' : '0';
+		}
+
+		if ( 'radio' === handlerType ) {
+			_value = $field.find( handler + ':checked' ).val();
+		}
+
+		$.each( dependant, function( id, d ) {
+			const $selector   = $field.find( d[ 'selector' ] );
+			const validValues = d[ 'value' ];
+
+			if ( validValues.includes( _value ) ) {
+				$selector.show();
+			} else {
+				$selector.hide();
 			}
-		);
+		} );
+
+		if ( '.wcapf-form-sub-field-display_type select' === handler ) {
+			_triggerDisplayTypeChange( _value, $field );
+		}
+
+		if ( '.wcapf-form-sub-field-use_chosen input' === handler ) {
+			_triggerUseSelectChange( _value, $field );
+		}
+
+		$searchForm.trigger( 'after_toggle_request', [ handler, _value, $field ] );
 	}
 
-	initQueryTypeFields();
+	function handleToggleRequest( data, currentSelector, value ) {
+		if ( null === currentSelector ) {
+			const handler  = data[ 'handler' ];
+			const $handler = $( handler );
 
-	$searchForm.on(
-		'change',
-		'.wcapf-form-sub-field-enable_multiple input',
-		function() {
-			initQueryTypeField( this );
+			$.each( $handler, function() {
+				const _this  = $( this );
+				const _value = _this.val();
+				_handleToggleRequest( data, _this, _value );
+			} );
+		} else {
+			_handleToggleRequest( data, currentSelector, value );
 		}
-	);
+	}
 
-}( jQuery ) );
+	function setupSearchForm( inital = false ) {
+		$.each( dependantData, function( i, data ) {
+			const handler = data[ 'handler' ];
+			const event   = data[ 'event' ];
+
+			handleToggleRequest( data, null, null );
+
+			if ( inital ) {
+				$searchForm.on( event, handler, function() {
+					const _this  = $( this );
+					const _value = $( this ).val();
+					handleToggleRequest( data, _this, _value );
+				} );
+			}
+		} );
+	}
+
+	setupSearchForm( true );
+
+	$searchForm.on( 'field_added', function() {
+		// Toggle the visibility of subfields.
+		setupSearchForm();
+	} );
+
+} );

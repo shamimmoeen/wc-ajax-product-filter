@@ -14,7 +14,7 @@
 /*todo: load svg*/
 .wcapf-active-filters a::before {
 	content: '\f057';
-	font-family: 'FontAwesome';
+	font-family: 'FontAwesome', monospace;
 	margin-right: 0.53em;
 	opacity: 0.5;
 }
@@ -32,24 +32,55 @@
 
 .wcapf-layered-nav ul li .count {
 	float: right;
-	font-size: 1em;
 }
 
 /*todo: load svg*/
+.wcapf-layered-nav .children {
+	margin: 0.618em 0 0 1.618em !important;
+}
+
+.wcapf-layered-nav ul li .item {
+	cursor: default;
+}
+
+.wcapf-layered-nav ul li .item input[type="checkbox"],
+.wcapf-layered-nav ul li .item input[type="radio"] {
+	display: none;
+}
+
 .wcapf-layered-nav ul li .item::before {
 	opacity: 0.35;
-	content: '\f0c8';
 	display: inline-block;
-	font-family: FontAwesome;
+	font-family: FontAwesome, monospace;
 	margin-right: 0.53em;
 }
 
 .wcapf-layered-nav ul li .item.chosen::before {
+	color: #1e90ff;
+	opacity: 1;
+}
+
+/*checkbox*/
+.wcapf-layered-nav.checkbox ul li .item::before {
+	content: '\f0c8';
+}
+
+.wcapf-layered-nav.checkbox ul li .item.chosen::before {
 	content: '\f14a';
 }
 
-.wcapf-layered-nav .children {
-	margin: 0.618em 0 0 1.618em !important;
+/*radio*/
+.wcapf-layered-nav.radio ul li .item::before {
+	content: '\f111';
+}
+
+.wcapf-layered-nav.radio ul li .item.chosen::before {
+	content: '\f058';
+}
+
+/*dropdown nav*/
+.wcapf-dropdown-nav select {
+	width: 100%;
 }
 
 /*price slider*/

@@ -43,7 +43,7 @@ abstract class WCAPF_Field {
 	 */
 	public function __construct( $instance = array() ) {
 		$this->instance = $instance;
-		self::$count++;
+		self::$count ++;
 	}
 
 	/**
@@ -90,16 +90,7 @@ abstract class WCAPF_Field {
 		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $this->type() ) . '">';
 
 		if ( $sub_fields ) {
-			foreach ( $sub_fields as $_data ) {
-				$data = $this->merge_data( $_data );
-
-				$data['_name'] = $data['name'];
-				$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
-				$data['value'] = isset( $instance[ $data['name'] ] ) ? $instance[ $data['name'] ] : $data['default'];
-				$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
-
-				$this->get_field( $data );
-			}
+			$this->render_sub_fields( $sub_fields, $field_index, $instance, $field_name_prefix );
 		} else {
 			echo '<p class="wcapf-form-field-no-settings">';
 			esc_html_e( 'No settings are required.', 'wc-ajax-product-filter' );
@@ -139,7 +130,7 @@ abstract class WCAPF_Field {
 	 *
 	 * @return int|string
 	 */
-	private function get_field_index() {
+	protected function get_field_index() {
 		if ( $this->placeholder ) {
 			$index = '%%';
 		} else {
@@ -150,13 +141,34 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * @param array  $sub_fields
+	 * @param mixed  $field_index
+	 * @param array  $instance
+	 * @param string $field_name_prefix
+	 *
+	 * @return void
+	 */
+	protected function render_sub_fields( $sub_fields, $field_index, $instance, $field_name_prefix ) {
+		foreach ( $sub_fields as $_data ) {
+			$data = $this->merge_data( $_data );
+
+			$data['_name'] = $data['name'];
+			$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
+			$data['value'] = isset( $instance[ $data['name'] ] ) ? $instance[ $data['name'] ] : $data['default'];
+			$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
+
+			$this->get_field( $data );
+		}
+	}
+
+	/**
 	 * Merges the form field data with the default data.
 	 *
 	 * @param array $data The field data.
 	 *
 	 * @return array
 	 */
-	private function merge_data( $data ) {
+	protected function merge_data( $data ) {
 		$default_data = apply_filters(
 			'wcapf_widget_field_default_data',
 			array(
@@ -200,6 +212,14 @@ abstract class WCAPF_Field {
 
 			case 'radio':
 				$this->field_radio( $data );
+				break;
+
+			case 'column-start':
+				$this->column_start( $data );
+				break;
+
+			case 'column-end':
+				$this->column_end();
 				break;
 		}
 	}
@@ -368,11 +388,32 @@ abstract class WCAPF_Field {
 							<?php echo esc_html( $label ); ?>
 						</label>
 					</div>
-					<?php $increment++; ?>
+					<?php $increment ++; ?>
 				<?php endforeach; ?>
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Renders the column start markup.
+	 *
+	 * @return void
+	 */
+	private function column_start( $data ) {
+		$col_classes = isset( $data['classes'] ) ? 'column-start ' . $data['classes'] : 'column-start';
+
+		echo '<!-- column start -->';
+		echo '<div class="' . esc_attr( $col_classes ) . '">';
+	}
+
+	/**
+	 * Renders the column start markup.
+	 *
+	 * @return void
+	 */
+	private function column_end() {
+		echo '</div><!-- column end -->';
 	}
 
 	/**
@@ -382,7 +423,7 @@ abstract class WCAPF_Field {
 	 *
 	 * @return void
 	 */
-	private function get_field_position_input( $field_name_prefix ) {
+	protected function get_field_position_input( $field_name_prefix ) {
 		$instance            = $this->get_instance();
 		$field_index         = $this->get_field_index();
 		$position_field_id   = 'wcapf-input-position-' . $field_index;
@@ -473,6 +514,15 @@ abstract class WCAPF_Field {
 	 */
 	protected function after_filter_form() {
 		echo '</div>';
+	}
+
+	/**
+	 * Renders the column start markup.
+	 *
+	 * @return void
+	 */
+	private function field_column() {
+		echo '<div class="column-start">';
 	}
 
 }

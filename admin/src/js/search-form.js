@@ -64,6 +64,8 @@ function insertFieldSubFields( ui ) {
 		removePlaceholder( uniqueId, ui.item.find( '*[id^="wcapf-input-position-"]' ), 'value' );
 
 		ui.item.addClass( 'sub-fields-ready' );
+
+		searchForm.trigger( 'field_added', [ ui ] );
 	}
 }
 
@@ -269,6 +271,8 @@ jQuery( '#postbox-container-1' ).on( 'click', 'button', saveForm );
 
 /**
  * Show alert on leave if the form is dirty.
+ *
+ * TODO: Uncomment this.
  */
 // window.onbeforeunload = function() {
 // 	const newFormState = searchForm.serializeArray();
