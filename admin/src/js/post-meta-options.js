@@ -13,8 +13,17 @@ jQuery( document ).ready( function( $ ) {
 
 	function initSortableForManualOptions( $selector ) {
 		$selector.sortable( {
-			placeholder: 'widget-placeholder',
+			opacity: 0.8,
+			revert: false,
+			cursor: 'move',
+			axis: 'y',
 			handle: '.move-options-handler',
+			placeholder: 'widget-placeholder',
+			update: function( e ) {
+				const $field = $( e.target ).closest( '.wcapf-form-field' );
+
+				triggerManualOptionsChange( $field );
+			}
 		} ).disableSelection();
 	}
 
@@ -43,6 +52,8 @@ jQuery( document ).ready( function( $ ) {
 		triggerRemoveOption( $field );
 
 		$item.remove();
+
+		triggerManualOptionsChange( $field );
 	} );
 
 	// Clear All Options
@@ -52,6 +63,8 @@ jQuery( document ).ready( function( $ ) {
 		$field.find( '.manual-options-table-body-rows' ).empty();
 
 		triggerRemoveOption( $field );
+
+		triggerManualOptionsChange( $field );
 	} );
 
 	// Add New Option
@@ -97,31 +110,6 @@ jQuery( document ).ready( function( $ ) {
 		$postMetaOptionsModal.find( '.replace-current-options' ).prop( 'checked', false );
 	}
 
-	/**
-	 * Ajax's success function.
-	 *
-	 * @param response
-	 */
-	function okCallback( response ) {
-		// Hide the loading animation.
-		$postMetaModalLoader.removeClass( 'active' );
-		$postMetaModalFooter.addClass( 'active' );
-
-		$postMetaOptions.html( response );
-	}
-
-	/**
-	 * Ajax's error function.
-	 *
-	 * @param message
-	 */
-	function errCallback( message ) {
-		console.log( 'error', message );
-
-		// Hide the loading animation.
-		$postMetaModalLoader.removeClass( 'active' );
-	}
-
 	// Browse Values
 	$searchForm.on( 'click', '.browse-values', function() {
 		resetPostMetaModal();
@@ -145,6 +133,31 @@ jQuery( document ).ready( function( $ ) {
 
 		// Show the loading animation.
 		$postMetaModalLoader.addClass( 'active' );
+
+		/**
+		 * Ajax's success function.
+		 *
+		 * @param response
+		 */
+		function okCallback( response ) {
+			// Hide the loading animation.
+			$postMetaModalLoader.removeClass( 'active' );
+			$postMetaModalFooter.addClass( 'active' );
+
+			$postMetaOptions.html( response );
+		}
+
+		/**
+		 * Ajax's error function.
+		 *
+		 * @param message
+		 */
+		function errCallback( message ) {
+			console.log( 'error', message );
+
+			// Hide the loading animation.
+			$postMetaModalLoader.removeClass( 'active' );
+		}
 
 		const formData = {
 			key: metaKey,
@@ -172,6 +185,25 @@ jQuery( document ).ready( function( $ ) {
 	$postMetaOptionsModal.on( 'click', '.select-all', function() {
 		$postMetaOptions.find( '[type="checkbox"]' ).prop( 'checked', true );
 	} );
+
+	function triggerManualOptionsChange( $postMetaField ) {
+		const $rows        = $postMetaField.find( '.manual-options-table-body-rows' );
+		const $valueHolder = $postMetaField.find( '.wcapf-form-sub-field-manual_options input' );
+		const _rows        = [];
+
+		$rows.find( '.item' ).each( function( i, _item ) {
+			const $item = $( _item );
+			const value = $item.find( '.option_value' ).val();
+			const label = $item.find( '.option_label' ).val();
+
+			if ( value && label ) {
+				_rows.push( [ value, label ] );
+			}
+		} );
+
+		const rawValues = encodeURIComponent( JSON.stringify( _rows ) );
+		$valueHolder.val( rawValues );
+	}
 
 	// Add selected options.
 	$postMetaOptionsModal.on( 'click', '.add-options', function() {
@@ -212,6 +244,8 @@ jQuery( document ).ready( function( $ ) {
 			if ( ! $wrapper.hasClass( 'has-options' ) ) {
 				$wrapper.addClass( 'has-options' );
 			}
+
+			triggerManualOptionsChange( $postMetaField );
 		}
 
 		postMetaOptionsModalInstance.close();
@@ -220,16 +254,25 @@ jQuery( document ).ready( function( $ ) {
 	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-get_options input' === handler ) {
 			const $selectElm       = $field.find( '.wcapf-form-sub-field-options_order_by select' );
+			const orderBy          = $selectElm.val();
 			const dependantOptions = 'option[value="label"]';
 
 			if ( 'automatically' === value ) {
 				$selectElm.children( dependantOptions ).attr( 'disabled', 'disabled' );
-				$selectElm.prop( 'selectedIndex', 1 ).change();
+
+				if ( 'label' === orderBy ) {
+					$selectElm.prop( 'selectedIndex', 1 ).change();
+				}
 			} else {
 				$selectElm.children( dependantOptions ).removeAttr( 'disabled' );
-				$selectElm.prop( 'selectedIndex', 0 ).change();
 			}
 		}
+	} );
+
+	$searchForm.on( 'input', '.manual-options-table-body-rows input[type="text"]', function() {
+		const $field = $( this ).closest( '.wcapf-form-field' );
+
+		triggerManualOptionsChange( $field );
 	} );
 
 } );

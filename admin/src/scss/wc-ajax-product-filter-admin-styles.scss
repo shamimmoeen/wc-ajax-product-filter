@@ -126,6 +126,10 @@
 		.wcapf-wrapper {
 			flex: 1;
 		}
+
+		&.wcapf-form-sub-field-hidden {
+			display: none;
+		}
 	}
 
 	.wcapf-form-sub-field-radio {
@@ -217,6 +221,10 @@
 						}
 					}
 				}
+			}
+
+			.ui-sortable-placeholder {
+				min-height: 52px; // 2px extra for the border
 			}
 
 			.no-options-found {

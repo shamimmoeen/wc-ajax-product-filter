@@ -154,7 +154,7 @@ abstract class WCAPF_Field {
 
 			$data['_name'] = $data['name'];
 			$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
-			$data['value'] = isset( $instance[ $data['name'] ] ) ? $instance[ $data['name'] ] : $data['default'];
+			$data['value'] = $this->get_field_value( $instance, $data );
 			$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
 
 			$this->get_field( $data );
@@ -188,6 +188,21 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * @param array $instance
+	 * @param array $data
+	 *
+	 * @return mixed
+	 */
+	private function get_field_value( $instance, $data ) {
+		$type = $this->type();
+		$name = $data['name'];
+
+		$value = isset( $instance[ $name ] ) ? $instance[ $name ] : $data['default'];
+
+		return apply_filters( 'wcapf_form_field_value', $value, $name, $type, $instance, $data );
+	}
+
+	/**
 	 * Renders the HTML markup for the widget field.
 	 *
 	 * @param array $data The field data.
@@ -198,6 +213,10 @@ abstract class WCAPF_Field {
 		$type = $data['type'];
 
 		switch ( $type ) {
+			case 'hidden':
+				$this->field_hidden( $data );
+				break;
+
 			case 'text':
 				$this->field_text( $data );
 				break;
@@ -222,6 +241,49 @@ abstract class WCAPF_Field {
 				$this->column_end();
 				break;
 		}
+	}
+
+	/**
+	 * Renders the hidden input field.
+	 *
+	 * @return void
+	 */
+	private function field_hidden( $data ) {
+		$id    = $data['id'];
+		$name  = $data['name'];
+		$value = $data['value'];
+		?>
+		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
+			<input
+				class="widefat"
+				id="<?php echo esc_attr( $id ); ?>"
+				name="<?php echo esc_attr( $name ); ?>"
+				type="hidden"
+				value="<?php echo esc_attr( $value ); ?>"
+			>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Gets the field classes.
+	 *
+	 * @param array $data The field data.
+	 *
+	 * @return string
+	 */
+	private function field_classes( $data ) {
+		$type  = $data['type'];
+		$_name = $data['_name'];
+		$class = $data['class'];
+
+		$classes = 'wcapf-form-sub-field wcapf-form-sub-field-' . $type . ' wcapf-form-sub-field-' . $_name;
+
+		if ( $class ) {
+			$classes .= ' wcapf-widget-sub-field-' . $class;
+		}
+
+		return $classes;
 	}
 
 	/**
@@ -250,27 +312,6 @@ abstract class WCAPF_Field {
 			</div>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Gets the field classes.
-	 *
-	 * @param array $data The field data.
-	 *
-	 * @return string
-	 */
-	private function field_classes( $data ) {
-		$type  = $data['type'];
-		$_name = $data['_name'];
-		$class = $data['class'];
-
-		$classes = 'wcapf-form-sub-field wcapf-form-sub-field-' . $type . ' wcapf-form-sub-field-' . $_name;
-
-		if ( $class ) {
-			$classes .= ' wcapf-widget-sub-field-' . $class;
-		}
-
-		return $classes;
 	}
 
 	/**

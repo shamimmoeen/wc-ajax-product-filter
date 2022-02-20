@@ -218,6 +218,8 @@ class WCAPF_Admin {
 					$parsed_field['query_type'] = 'and';
 				}
 
+				$parsed_field = apply_filters( 'wcapf_parse_form_field_data', $parsed_field, $type, $field );
+
 				$parsed[] = $parsed_field;
 			}
 		}
