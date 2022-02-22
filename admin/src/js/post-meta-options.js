@@ -58,9 +58,10 @@ jQuery( document ).ready( function( $ ) {
 
 	// Clear All Options
 	$searchForm.on( 'click', '.clear-all-options', function() {
-		const $field = $( this ).closest( '.wcapf-form-field' );
+		const $field        = $( this ).closest( '.wcapf-form-field' );
+		const $optionsTable = $field.find( '.manual-options-table' );
 
-		$field.find( '.manual-options-table-body-rows' ).empty();
+		$optionsTable.find( '.manual-options-table-body-rows' ).empty();
 
 		triggerRemoveOption( $field );
 
@@ -187,9 +188,10 @@ jQuery( document ).ready( function( $ ) {
 	} );
 
 	function triggerManualOptionsChange( $postMetaField ) {
-		const $rows        = $postMetaField.find( '.manual-options-table-body-rows' );
-		const $valueHolder = $postMetaField.find( '.wcapf-form-sub-field-manual_options input' );
-		const _rows        = [];
+		const $valueHolder  = $postMetaField.find( '.wcapf-form-sub-field-manual_options input' );
+		const $optionsTable = $postMetaField.find( '.manual-options-table' );
+		const $rows         = $optionsTable.find( '.manual-options-table-body-rows' );
+		const _rows         = [];
 
 		$rows.find( '.item' ).each( function( i, _item ) {
 			const $item = $( _item );
@@ -233,7 +235,7 @@ jQuery( document ).ready( function( $ ) {
 
 		if ( rows ) {
 			const $wrapper = $postMetaField.find( '.manual-options-table' );
-			const $rows    = $postMetaField.find( '.manual-options-table-body-rows' );
+			const $rows    = $wrapper.find( '.manual-options-table-body-rows' );
 
 			if ( isReplace ) {
 				$rows.html( rows );
@@ -269,10 +271,141 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 
-	$searchForm.on( 'input', '.manual-options-table-body-rows input[type="text"]', function() {
+	$searchForm.on( 'input', '.manual-options-table input[type="text"]', function() {
 		const $field = $( this ).closest( '.wcapf-form-field' );
 
 		triggerManualOptionsChange( $field );
+	} );
+
+	/**
+	 * Value type 'Number'
+	 */
+
+	function triggerRemoveNumberOption( $field ) {
+		const $optionsTable = $field.find( '.number-manual-options-table' );
+		const tableRows     = $optionsTable.find( '.manual-options-table-body-rows' ).children();
+
+		if ( 2 > tableRows.length ) {
+			$optionsTable.removeClass( 'has-options' );
+		}
+	}
+
+	function triggerNumberManualOptionsChange( $postMetaField ) {
+		const $valueHolder  = $postMetaField.find( '.wcapf-form-sub-field-number_manual_options input' );
+		const $optionsTable = $postMetaField.find( '.number-manual-options-table' );
+		const $rows         = $optionsTable.find( '.manual-options-table-body-rows' );
+		const _rows         = [];
+
+		$rows.find( '.item' ).each( function( i, _item ) {
+			const $item     = $( _item );
+			const min_value = $item.find( '.option_min_value' ).val();
+			const max_value = $item.find( '.option_max_value' ).val();
+			const label     = $item.find( '.option_label' ).val();
+
+			if ( min_value && max_value && label ) {
+				_rows.push( [ min_value, max_value, label ] );
+			}
+		} );
+
+		const rawValues = encodeURIComponent( JSON.stringify( _rows ) );
+		$valueHolder.val( rawValues );
+	}
+
+	// Remove Single Number Option
+	$searchForm.on( 'click', '.remove-number-option', function() {
+		const $item  = $( this ).closest( '.item' );
+		const $field = $item.closest( '.wcapf-form-field' );
+
+		triggerRemoveNumberOption( $field );
+
+		$item.remove();
+
+		triggerNumberManualOptionsChange( $field );
+	} );
+
+	// Clear All Options
+	$searchForm.on( 'click', '.clear-all-number-options', function() {
+		const $field        = $( this ).closest( '.wcapf-form-field' );
+		const $optionsTable = $field.find( '.number-manual-options-table' );
+
+		$optionsTable.find( '.manual-options-table-body-rows' ).empty();
+
+		triggerRemoveNumberOption( $field );
+
+		triggerNumberManualOptionsChange( $field );
+	} );
+
+	// Add New Option
+	$searchForm.on( 'click', '.add-number-option', function() {
+		const fieldType = 'wcapf-post-meta-type-number-option';
+
+		// Bail out if no tmpl found for the type.
+		if ( ! jQuery( '#tmpl-' + fieldType ).length ) {
+			return;
+		}
+
+		const $field = $( this ).closest( '.wcapf-form-field' );
+
+		const template = wp.template( fieldType );
+		const rendered = template( { value: '', label: '' } );
+		const $wrapper = $field.find( '.number-manual-options-table' );
+		const $rows    = $wrapper.find( '.manual-options-table-body-rows' );
+
+		$rows.append( rendered );
+
+		if ( ! $wrapper.hasClass( 'has-options' ) ) {
+			$wrapper.addClass( 'has-options' );
+		}
+	} );
+
+	$searchForm.on( 'input', '.number-manual-options-table input[type="text"]', function() {
+		const $field = $( this ).closest( '.wcapf-form-field' );
+
+		triggerNumberManualOptionsChange( $field );
+	} );
+
+	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-number_display_type select' === handler ) {
+			const $getOptions    = $field.find( '.wcapf-form-sub-field-number_get_options' );
+			const $autoOptions   = $field.find( '.number-automatic-options' );
+			const $manualOptions = $field.find( '.number-manual-options-table' );
+			const $elm           = $field.find( handler );
+			const displayType    = $elm.val();
+
+			if ( 'range_slider' === displayType || 'range_number' === displayType ) {
+				$getOptions.hide();
+				$manualOptions.addClass( 'force-hide' );
+				$autoOptions.addClass( 'force-show' );
+			} else {
+				$getOptions.show();
+				$manualOptions.removeClass( 'force-hide' );
+				$autoOptions.removeClass( 'force-show' );
+			}
+		}
+	} );
+
+	$searchForm.on( 'click', '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]', function() {
+		const $this      = $( this );
+		const $field     = $this.closest( '.wcapf-form-field' );
+		const $textField = $field.find( '.wcapf-form-sub-field-min_value input[type="text"]' );
+
+		if ( $this.is( ':checked' ) ) {
+			$textField.attr( 'disabled', 'disabled' );
+		} else {
+			$textField.removeAttr( 'disabled' );
+		}
+	} );
+
+	$searchForm.on( 'click', '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]', function() {
+		const $this      = $( this );
+		const $field     = $this.closest( '.wcapf-form-field' );
+		const $textField = $field.find( '.wcapf-form-sub-field-max_value input[type="text"]' );
+
+		if ( $this.is( ':checked' ) ) {
+			$textField.attr( 'disabled', 'disabled' );
+		} else {
+			$textField.removeAttr( 'disabled' );
+		}
 	} );
 
 } );

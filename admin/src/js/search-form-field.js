@@ -13,6 +13,21 @@ jQuery( document ).ready( function( $ ) {
 
 	const dependantData = [
 		{
+			'handler': '.wcapf-form-sub-field-value_type select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.input-type-text-fields',
+					'value': [ 'text' ],
+				},
+				{
+					'selector': '.input-type-number-fields',
+					'value': [ 'number' ],
+				},
+			],
+		},
+		{
 			'handler': '.wcapf-form-sub-field-display_type select',
 			'handlerType': 'select',
 			'event': 'change',
@@ -53,9 +68,66 @@ jQuery( document ).ready( function( $ ) {
 				},
 			],
 		},
+		{
+			'handler': '.wcapf-form-sub-field-number_display_type select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-number_range_slider_display_values_as',
+					'value': [ 'range_slider' ],
+				},
+				{
+					'selector': '.number-decimal-fields',
+					'value': [ 'range_slider', 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-number_range_checkbox_query_type',
+					'value': [ 'range_checkbox', 'range_multiselect' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-number_range_select_all_items_label',
+					'value': [ 'range_radio', 'range_select' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-number_range_use_chosen',
+					'value': [ 'range_select', 'range_multiselect' ],
+				},
+				{
+					'selector': '.number_range_col2_sub_fields',
+					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-number_range_use_chosen input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-number_range_chosen_no_results_message',
+					'value': [ '1' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-number_get_options input',
+			'handlerType': 'radio',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.number-automatic-options',
+					'value': [ 'automatically' ],
+				},
+				{
+					'selector': '.number-manual-options-table',
+					'value': [ 'manual_entry' ],
+				},
+			],
+		},
 	];
 
-	function _triggerDisplayTypeChange( value, $field ) {
+	function _triggerInputTypeTextDisplayTypeChange( value, $field ) {
 		const $noResults     = $field.find( '.wcapf-form-sub-field-chosen_no_results_message' );
 		const $allItemsLabel = $field.find( '.wcapf-form-sub-field-all_items_label' );
 		const useChosen      = $field.find( '.wcapf-form-sub-field-use_chosen input' ).is( ':checked' );
@@ -73,7 +145,25 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
-	function _triggerUseSelectChange( value, $field ) {
+	function _triggerInputTypeNumberDisplayTypeChange( value, $field ) {
+		const $noResults     = $field.find( '.wcapf-form-sub-field-number_range_chosen_no_results_message' );
+		const $allItemsLabel = $field.find( '.wcapf-form-sub-field-number_range_select_all_items_label' );
+		const useChosen      = $field.find( '.wcapf-form-sub-field-number_range_use_chosen input' ).is( ':checked' );
+
+		if ( useChosen && ( 'range_select' === value || 'range_multiselect' === value ) ) {
+			$noResults.show();
+		} else {
+			$noResults.hide();
+		}
+
+		if ( ( 'range_radio' === value || 'range_select' === value ) || ( 'range_multiselect' === value && useChosen ) ) {
+			$allItemsLabel.show();
+		} else {
+			$allItemsLabel.hide();
+		}
+	}
+
+	function _triggerInputTypeTextUseSelectChange( value, $field ) {
 		const $noResults     = $field.find( '.wcapf-form-sub-field-chosen_no_results_message' );
 		const $allItemsLabel = $field.find( '.wcapf-form-sub-field-all_items_label' );
 		const displayType    = $field.find( '.wcapf-form-sub-field-display_type select' ).val();
@@ -84,7 +174,31 @@ jQuery( document ).ready( function( $ ) {
 			$noResults.hide();
 		}
 
-		if ( ( '1' === value && 'multi-select' === displayType ) || ( 'radio' === displayType || 'select' === displayType ) ) {
+		if (
+			( '1' === value && 'multi-select' === displayType )
+			|| ( 'radio' === displayType || 'select' === displayType )
+		) {
+			$allItemsLabel.show();
+		} else {
+			$allItemsLabel.hide();
+		}
+	}
+
+	function _triggerInputTypeNumberUseSelectChange( value, $field ) {
+		const $noResults     = $field.find( '.wcapf-form-sub-field-number_range_chosen_no_results_message' );
+		const $allItemsLabel = $field.find( '.wcapf-form-sub-field-number_range_select_all_items_label' );
+		const displayType    = $field.find( '.wcapf-form-sub-field-number_display_type select' ).val();
+
+		if ( '1' === value && ( 'range_select' === displayType || 'range_multiselect' === displayType ) ) {
+			$noResults.show();
+		} else {
+			$noResults.hide();
+		}
+
+		if (
+			( '1' === value && 'range_multiselect' === displayType )
+			|| ( 'range_radio' === displayType || 'range_select' === displayType )
+		) {
 			$allItemsLabel.show();
 		} else {
 			$allItemsLabel.hide();
@@ -119,11 +233,19 @@ jQuery( document ).ready( function( $ ) {
 		} );
 
 		if ( '.wcapf-form-sub-field-display_type select' === handler ) {
-			_triggerDisplayTypeChange( _value, $field );
+			_triggerInputTypeTextDisplayTypeChange( _value, $field );
 		}
 
 		if ( '.wcapf-form-sub-field-use_chosen input' === handler ) {
-			_triggerUseSelectChange( _value, $field );
+			_triggerInputTypeTextUseSelectChange( _value, $field );
+		}
+
+		if ( '.wcapf-form-sub-field-number_display_type select' === handler ) {
+			_triggerInputTypeNumberDisplayTypeChange( _value, $field );
+		}
+
+		if ( '.wcapf-form-sub-field-number_range_use_chosen input' === handler ) {
+			_triggerInputTypeNumberUseSelectChange( _value, $field );
 		}
 
 		$searchForm.trigger( 'after_toggle_request', [ handler, _value, $field ] );
