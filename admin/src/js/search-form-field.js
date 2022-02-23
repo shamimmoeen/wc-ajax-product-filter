@@ -25,6 +25,10 @@ jQuery( document ).ready( function( $ ) {
 					'selector': '.input-type-number-fields',
 					'value': [ 'number' ],
 				},
+				{
+					'selector': '.input-type-date-fields',
+					'value': [ 'date' ],
+				},
 			],
 		},
 		{
@@ -78,10 +82,6 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'range_slider' ],
 				},
 				{
-					'selector': '.number-decimal-fields',
-					'value': [ 'range_slider', 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
-				},
-				{
 					'selector': '.wcapf-form-sub-field-number_range_checkbox_query_type',
 					'value': [ 'range_checkbox', 'range_multiselect' ],
 				},
@@ -96,6 +96,10 @@ jQuery( document ).ready( function( $ ) {
 				{
 					'selector': '.number_range_col2_sub_fields',
 					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+				},
+				{
+					'selector': '.number-decimal-fields',
+					'value': [ 'range_slider', 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
 				},
 			],
 		},
@@ -122,6 +126,17 @@ jQuery( document ).ready( function( $ ) {
 				{
 					'selector': '.number-manual-options-table',
 					'value': [ 'manual_entry' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-date_input_type select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.date-to-ui-options',
+					'value': [ 'range_date' ],
 				},
 			],
 		},

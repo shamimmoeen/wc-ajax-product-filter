@@ -137,6 +137,18 @@
 			display: flex;
 			gap: 10px;
 		}
+
+		&.wcapf-widget-sub-field-radio-row {
+			align-items: flex-start;
+
+			.wcapf-form-sub-field-label {
+				margin-top: 4px;
+			}
+
+			.wcapf-wrapper {
+				flex-direction: column;
+			}
+		}
 	}
 
 	/* post meta field */
@@ -291,6 +303,9 @@
 
 	.number-automatic-options.force-show {
 		display: block !important;
+		border-top: initial;
+		padding-top: initial;
+		margin-top: initial;
 	}
 
 	.number-manual-options-table.force-hide {

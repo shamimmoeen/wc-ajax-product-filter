@@ -28,7 +28,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// Sort Manual Options
-	initSortableForManualOptions( $searchForm.find( '.manual-options-table-body-rows' ) );
+	initSortableForManualOptions( $searchForm.find( '.manual-options-table .manual-options-table-body-rows' ) );
 
 	$searchForm.on( 'field_added', function( e, ui ) {
 		// Init Sortable for the manual options.
@@ -271,6 +271,33 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 
+	function disableOrderByOptions( $elm ) {
+		const value                = $elm.val();
+		const $wrapper             = $elm.closest( '.wcapf-post-meta-order-options-field' );
+		const $orderDirectionField = $wrapper.find( '.wcapf-form-sub-field-options_order_dir select' );
+		const $orderTypeField      = $wrapper.find( '.wcapf-form-sub-field-options_order_type select' );
+
+		if ( 'none' === value ) {
+			$orderDirectionField.attr( 'disabled', 'disabled' );
+			$orderTypeField.attr( 'disabled', 'disabled' );
+		} else {
+			$orderDirectionField.removeAttr( 'disabled' );
+			$orderTypeField.removeAttr( 'disabled' );
+		}
+	}
+
+	$searchForm.find( '.wcapf-form-sub-field-options_order_by select' ).each( function() {
+		const $this = $( this );
+
+		disableOrderByOptions( $this );
+	} );
+
+	$searchForm.on( 'change', '.wcapf-form-sub-field-options_order_by select', function() {
+		const $this = $( this );
+
+		disableOrderByOptions( $this );
+	} );
+
 	$searchForm.on( 'input', '.manual-options-table input[type="text"]', function() {
 		const $field = $( this ).closest( '.wcapf-form-field' );
 
@@ -280,6 +307,30 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Value type 'Number'
 	 */
+
+	function initSortableForNumberManualOptions( $selector ) {
+		$selector.sortable( {
+			opacity: 0.8,
+			revert: false,
+			cursor: 'move',
+			axis: 'y',
+			handle: '.move-options-handler',
+			placeholder: 'widget-placeholder',
+			update: function( e ) {
+				const $field = $( e.target ).closest( '.wcapf-form-field' );
+
+				triggerNumberManualOptionsChange( $field );
+			}
+		} ).disableSelection();
+	}
+
+	// Sort Number Manual Options
+	initSortableForNumberManualOptions( $searchForm.find( '.number-manual-options-table .manual-options-table-body-rows' ) );
+
+	$searchForm.on( 'field_added', function( e, ui ) {
+		// Init Sortable for the number manual options.
+		initSortableForNumberManualOptions( $( ui.item.find( '.manual-options-table-body-rows' ) ) );
+	} );
 
 	function triggerRemoveNumberOption( $field ) {
 		const $optionsTable = $field.find( '.number-manual-options-table' );
@@ -366,7 +417,7 @@ jQuery( document ).ready( function( $ ) {
 
 	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-number_display_type select' === handler ) {
-			const $getOptions    = $field.find( '.wcapf-form-sub-field-number_get_options' );
+			const $getOptions    = $field.find( '.get-options' );
 			const $autoOptions   = $field.find( '.number-automatic-options' );
 			const $manualOptions = $field.find( '.number-manual-options-table' );
 			const $elm           = $field.find( handler );
@@ -384,28 +435,50 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 
-	$searchForm.on( 'click', '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]', function() {
-		const $this      = $( this );
-		const $field     = $this.closest( '.wcapf-form-field' );
+	function toggleNumberMinValueField( $elm ) {
+		const $field     = $elm.closest( '.wcapf-form-field' );
 		const $textField = $field.find( '.wcapf-form-sub-field-min_value input[type="text"]' );
 
-		if ( $this.is( ':checked' ) ) {
+		if ( $elm.is( ':checked' ) ) {
 			$textField.attr( 'disabled', 'disabled' );
 		} else {
 			$textField.removeAttr( 'disabled' );
 		}
+	}
+
+	$searchForm.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
+		const $this = $( this );
+
+		toggleNumberMinValueField( $this );
+	} );
+
+	$searchForm.on( 'click', '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]', function() {
+		const $this = $( this );
+
+		toggleNumberMinValueField( $this );
+	} );
+
+	function toggleNumberMaxValueField( $elm ) {
+		const $field     = $elm.closest( '.wcapf-form-field' );
+		const $textField = $field.find( '.wcapf-form-sub-field-max_value input[type="text"]' );
+
+		if ( $elm.is( ':checked' ) ) {
+			$textField.attr( 'disabled', 'disabled' );
+		} else {
+			$textField.removeAttr( 'disabled' );
+		}
+	}
+
+	$searchForm.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
+		const $this = $( this );
+
+		toggleNumberMaxValueField( $this );
 	} );
 
 	$searchForm.on( 'click', '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]', function() {
-		const $this      = $( this );
-		const $field     = $this.closest( '.wcapf-form-field' );
-		const $textField = $field.find( '.wcapf-form-sub-field-max_value input[type="text"]' );
+		const $this = $( this );
 
-		if ( $this.is( ':checked' ) ) {
-			$textField.attr( 'disabled', 'disabled' );
-		} else {
-			$textField.removeAttr( 'disabled' );
-		}
+		toggleNumberMaxValueField( $this );
 	} );
 
 } );
