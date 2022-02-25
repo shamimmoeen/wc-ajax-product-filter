@@ -128,6 +128,8 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-meta.php';
 
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-input-type-text.php';
+
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-category.php';

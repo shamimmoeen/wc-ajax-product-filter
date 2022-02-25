@@ -89,6 +89,9 @@ abstract class WCAPF_Field {
 
 		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $this->type() ) . '">';
 
+		// TODO: Add hook.
+		do_action( 'wcapf_before_render_field_subfields' );
+
 		if ( $sub_fields ) {
 			$this->render_sub_fields( $sub_fields, $field_index, $instance, $field_name_prefix );
 		} else {
@@ -96,6 +99,8 @@ abstract class WCAPF_Field {
 			esc_html_e( 'No settings are required.', 'wc-ajax-product-filter' );
 			echo '</p>';
 		}
+
+		// TODO: Add hook.
 
 		$this->get_field_position_input( $field_name_prefix );
 
@@ -231,6 +236,10 @@ abstract class WCAPF_Field {
 
 			case 'radio':
 				$this->field_radio( $data );
+				break;
+
+			case 'html':
+				$this->field_template( $data );
 				break;
 
 			case 'column-start':
@@ -437,6 +446,23 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * Renders the html template inside field.
+	 *
+	 * @param array $data The field data.
+	 *
+	 * @return void
+	 */
+	private function field_template( $data ) {
+		$template_name = isset( $data['template'] ) ? $data['template'] : '';
+
+		if ( ! $template_name ) {
+			return;
+		}
+
+		WCAPF_Template_Loader::get_instance()->load( $template_name, array( 'instance' => $this->get_instance() ) );
+	}
+
+	/**
 	 * Renders the column start markup.
 	 *
 	 * @return void
@@ -555,15 +581,6 @@ abstract class WCAPF_Field {
 	 */
 	protected function after_filter_form() {
 		echo '</div>';
-	}
-
-	/**
-	 * Renders the column start markup.
-	 *
-	 * @return void
-	 */
-	private function field_column() {
-		echo '<div class="column-start">';
 	}
 
 }

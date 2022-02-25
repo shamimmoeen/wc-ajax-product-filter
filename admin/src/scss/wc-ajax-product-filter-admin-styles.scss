@@ -301,11 +301,14 @@
 		}
 	}
 
+	.column-group-manual-options {
+		.column-start.row {
+			display: block;
+		}
+	}
+
 	.number-automatic-options.force-show {
 		display: block !important;
-		border-top: initial;
-		padding-top: initial;
-		margin-top: initial;
 	}
 
 	.number-manual-options-table.force-hide {
@@ -463,7 +466,7 @@
 		flex: 0 0 15em;
 	}
 
-	.column-start {
+	.column-start.column {
 		flex: 0 0 15em;
 
 		.wcapf-form-sub-field ~ .wcapf-form-sub-field {
