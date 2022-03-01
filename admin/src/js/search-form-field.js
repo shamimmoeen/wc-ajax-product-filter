@@ -160,13 +160,13 @@ jQuery( document ).ready( function( $ ) {
 			],
 		},
 		{
-			'handler': '.wcapf-form-sub-field-enable_soft_limit select',
-			'handlerType': 'select',
+			'handler': '.wcapf-form-sub-field-enable_soft_limit input',
+			'handlerType': 'radio',
 			'event': 'change',
 			'dependant': [
 				{
 					'selector': '.wcapf-form-sub-field-soft_limit',
-					'value': [ 'yes' ],
+					'value': [ 'enable' ],
 				},
 			],
 		},

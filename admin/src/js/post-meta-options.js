@@ -503,4 +503,52 @@ jQuery( document ).ready( function( $ ) {
 		toggleNumberMaxValueField( $this );
 	} );
 
+	// Toggle soft limit fields when number display type is changed.
+	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-number_display_type select' === handler ) {
+			const $softLimitFields = $field.find( '.soft-limit-fields' );
+			const $valueTypeField  = $field.find( '.wcapf-form-sub-field-value_type select' );
+			const valueType        = $valueTypeField.val();
+			const displayTypes     = [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ];
+
+			if ( $valueTypeField.length ) {
+				if ( 'number' === valueType ) {
+					if ( displayTypes.includes( value ) ) {
+						$softLimitFields.show();
+					} else {
+						$softLimitFields.hide();
+					}
+				}
+			} else {
+				if ( displayTypes.includes( value ) ) {
+					$softLimitFields.show();
+				} else {
+					$softLimitFields.hide();
+				}
+			}
+		}
+	} );
+
+	// Toggle soft limit fields when value type is changed.
+	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-value_type select' === handler ) {
+			const $softLimitFields  = $field.find( '.soft-limit-fields' );
+			const $displayTypeField = $field.find( '.wcapf-form-sub-field-number_display_type select' );
+			const displayType       = $displayTypeField.val();
+			const displayTypes      = [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ];
+
+			if ( 'number' === value ) {
+				if ( displayTypes.includes( displayType ) ) {
+					$softLimitFields.show();
+				} else {
+					$softLimitFields.hide();
+				}
+			} else if ( 'text' === value ) {
+				$softLimitFields.show();
+			} else if ( 'date' === value ) {
+				$softLimitFields.hide();
+			}
+		}
+	} );
+
 } );
