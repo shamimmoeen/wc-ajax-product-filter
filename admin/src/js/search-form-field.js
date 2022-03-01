@@ -67,7 +67,7 @@ jQuery( document ).ready( function( $ ) {
 			'event': 'change',
 			'dependant': [
 				{
-					'selector': '.manual-options-table',
+					'selector': '.column-group-meta_key_manual_options',
 					'value': [ 'manual_entry' ],
 				},
 			],
@@ -82,7 +82,7 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'range_slider' ],
 				},
 				{
-					'selector': '.wcapf-form-sub-field-number_range_checkbox_query_type',
+					'selector': '.wcapf-form-sub-field-number_range_query_type',
 					'value': [ 'range_checkbox', 'range_multiselect' ],
 				},
 				{
@@ -94,7 +94,11 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'range_select', 'range_multiselect' ],
 				},
 				{
-					'selector': '.number_range_col2_sub_fields',
+					'selector': '.wcapf-form-sub-field-number_range_show_count',
+					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-number_range_hide_empty',
 					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
 				},
 				{
@@ -139,6 +143,37 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'range_date' ],
 				},
 			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-limit_terms select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-parent_term',
+					'value': [ 'child' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-limit_terms_by_id',
+					'value': [ 'include', 'exclude' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-enable_soft_limit select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-soft_limit',
+					'value': [ 'yes' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-custom-taxonomy select',
+			'handlerType': 'select',
+			'event': 'change',
 		},
 	];
 

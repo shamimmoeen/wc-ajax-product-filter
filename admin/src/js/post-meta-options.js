@@ -11,6 +11,28 @@ jQuery( document ).ready( function( $ ) {
 
 	const $searchForm = $( '#search-form' );
 
+	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-custom-taxonomy select' === handler ) {
+			const params           = window[ 'wcapf_admin_params' ];
+			const hierarchicalData = params[ 'taxonomy_hierarchical_data' ];
+
+			if ( ! hierarchicalData ) {
+				return;
+			}
+
+			const isHierarchical   = hierarchicalData[ value ];
+			const $dependantFields = $field.find(
+				'.wcapf-form-sub-field-hierarchical, .wcapf-form-sub-field-show_children_only'
+			);
+
+			if ( isHierarchical ) {
+				$dependantFields.show();
+			} else {
+				$dependantFields.hide();
+			}
+		}
+	} );
+
 	function initSortableForManualOptions( $selector ) {
 		$selector.sortable( {
 			opacity: 0.8,
@@ -417,19 +439,19 @@ jQuery( document ).ready( function( $ ) {
 
 	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-number_display_type select' === handler ) {
-			const $getOptions    = $field.find( '.get-options' );
-			const $autoOptions   = $field.find( '.number-automatic-options' );
-			const $manualOptions = $field.find( '.number-manual-options-table' );
-			const $elm           = $field.find( handler );
-			const displayType    = $elm.val();
+			const $getOptions         = $field.find( '.number-get-options' );
+			const $autoOptions        = $field.find( '.number-automatic-options' );
+			const $manualOptionsTable = $field.find( '.number-manual-options-table' );
+			const $elm                = $field.find( handler );
+			const displayType         = $elm.val();
 
 			if ( 'range_slider' === displayType || 'range_number' === displayType ) {
 				$getOptions.hide();
-				$manualOptions.addClass( 'force-hide' );
+				$manualOptionsTable.addClass( 'force-hide' );
 				$autoOptions.addClass( 'force-show' );
 			} else {
 				$getOptions.show();
-				$manualOptions.removeClass( 'force-hide' );
+				$manualOptionsTable.removeClass( 'force-hide' );
 				$autoOptions.removeClass( 'force-show' );
 			}
 		}

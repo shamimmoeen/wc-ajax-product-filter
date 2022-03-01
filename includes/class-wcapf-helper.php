@@ -104,18 +104,47 @@ class WCAPF_Helper {
 	 */
 	public static function available_search_fields() {
 		$fields = array(
-			'category'        => __( 'Filter by Category', 'wc-ajax-product-filter' ),
-			'tag'             => __( 'Filter by Tag', 'wc-ajax-product-filter' ),
-			'attribute'       => __( 'Filter by Attribute', 'wc-ajax-product-filter' ),
-			'price'           => __( 'Filter by Price', 'wc-ajax-product-filter' ),
-			'custom-taxonomy' => __( 'Filter by Custom Taxonomy', 'wc-ajax-product-filter' ), // TODO: Pro
-			'post-meta'       => __( 'Filter by Post Meta', 'wc-ajax-product-filter' ), // TODO: Pro
-			'submit-button'   => __( 'Submit Button', 'wc-ajax-product-filter' ),
-			'reset-button'    => __( 'Reset Button', 'wc-ajax-product-filter' ),
-			'chosen-filters'  => __( 'Chosen Filters', 'wc-ajax-product-filter' ),
+			array(
+				'type'     => 'active-filters',
+				'name'     => __( 'Active Filters', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
+				'type'     => 'category',
+				'name'     => __( 'Filter by Category', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
+				'type'     => 'tag',
+				'name'     => __( 'Filter by Tag', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
+				'type'     => 'attribute',
+				'name'     => __( 'Filter by Attribute', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
+				'type'     => 'price',
+				'name'     => __( 'Filter by Price', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
+				'type'     => 'rating',
+				'name'     => __( 'Filter by Rating', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
+				'type'     => 'reset-button',
+				'name'     => __( 'Reset Button', 'wc-ajax-product-filter' ),
+				'position' => 15,
+			),
 		);
 
-		return apply_filters( 'wcapf_available_search_fields', $fields );
+		$fields = apply_filters( 'wcapf_available_search_fields', $fields );
+		$fields = wp_list_sort( $fields, 'position' );
+
+		return wp_list_pluck( $fields, 'name', 'type' );
 	}
 
 	/**
@@ -162,7 +191,7 @@ class WCAPF_Helper {
 
 			$class_name .= ucfirst( $_field_key );
 
-			$index++;
+			$index ++;
 		}
 
 		if ( ! class_exists( $class_name ) ) {

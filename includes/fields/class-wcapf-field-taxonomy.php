@@ -16,154 +16,18 @@
 abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 
 	/**
-	 * The field's subfields.
+	 * Sets the field groups.
 	 *
-	 * @return array|array[]
+	 * @return array
 	 */
-	protected function sub_fields() {
-		$fields = array(
-			array(
-				'type'     => 'column-start',
-				'name'     => 'column',
-				'classes'  => 'separator-bottom',
-				'position' => 5,
-			),
-			array(
-				'type'     => 'text',
-				'id'       => 'title',
-				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
-				'name'     => 'title',
-				'position' => 6,
-			),
-			array(
-				'type'     => 'column-end',
-				'name'     => 'column',
-				'position' => 7,
-			),
-			array(
-				'type'     => 'column-start',
-				'name'     => 'column',
-				'classes'  => 'row',
-				'position' => 10,
-			),
-			array(
-				'type'     => 'column-start',
-				'name'     => 'column',
-				'classes'  => 'column',
-				'position' => 15,
-			),
-			array(
-				'type'     => 'select',
-				'id'       => 'display_type',
-				'label'    => __( 'Display Type', 'wc-ajax-product-filter' ),
-				'name'     => 'display_type',
-				'options'  => array(
-					'checkbox'     => __( 'Checkbox', 'wc-ajax-product-filter' ),
-					'radio'        => __( 'Radio', 'wc-ajax-product-filter' ),
-					'select'       => __( 'Select', 'wc-ajax-product-filter' ),
-					'multi-select' => __( 'Multi select', 'wc-ajax-product-filter' ),
-				),
-				'default'  => 'checkbox',
-				'position' => 20,
-			),
-			array(
-				'type'     => 'radio',
-				'id'       => 'query_type',
-				'label'    => __( 'Query Type', 'wc-ajax-product-filter' ),
-				'name'     => 'query_type',
-				'options'  => array(
-					'and' => __( 'AND', 'wc-ajax-product-filter' ),
-					'or'  => __( 'OR', 'wc-ajax-product-filter' ),
-				),
-				'default'  => 'and',
-				'position' => 25,
-			),
-			array(
-				'type'     => 'text',
-				'id'       => 'all_items_label',
-				'label'    => __( 'Change All Items Label', 'wc-ajax-product-filter' ),
-				'name'     => 'all_items_label',
-				'position' => 30,
-			),
-			array(
-				'type'     => 'checkbox',
-				'id'       => 'use_chosen',
-				'label'    => __( 'Use jQuery Chosen Library', 'wc-ajax-product-filter' ),
-				'name'     => 'use_chosen',
-				'position' => 35,
-			),
-			array(
-				'type'     => 'text',
-				'id'       => 'chosen_no_results_message',
-				'label'    => __( 'No results message', 'wc-ajax-product-filter' ),
-				'name'     => 'chosen_no_results_message',
-				'position' => 40,
-			),
-			array(
-				'type'     => 'column-end',
-				'name'     => 'column',
-				'position' => 45,
-			),
-		);
-
-		$fields[] = array(
-			'type'     => 'column-start',
-			'name'     => 'column',
-			'classes'  => 'column',
-			'position' => 50,
-		);
+	protected function field_groups() {
+		$text_field_group = new WCAPF_Field_Group_Text();
 
 		if ( $this->is_hierarchical() ) {
-			$fields = array_merge(
-				$fields,
-				array(
-					array(
-						'type'     => 'checkbox',
-						'id'       => 'hierarchical',
-						'label'    => __( 'Show hierarchy', 'wc-ajax-product-filter' ),
-						'name'     => 'hierarchical',
-						'position' => 55,
-					),
-					array(
-						'type'     => 'checkbox',
-						'id'       => 'show_children_only',
-						'label'    => __( 'Only show children of the current', 'wc-ajax-product-filter' ),
-						'name'     => 'show_children_only',
-						'position' => 60,
-					),
-				)
-			);
+			$text_field_group->set_hierarchical();
 		}
 
-		return array_merge(
-			$fields,
-			array(
-				array(
-					'type'     => 'checkbox',
-					'id'       => 'show_count',
-					'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
-					'name'     => 'show_count',
-					'position' => 65,
-				),
-				array(
-					'type'     => 'checkbox',
-					'id'       => 'hide_empty',
-					'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
-					'name'     => 'hide_empty',
-					'position' => 70,
-				),
-				array(
-					'type'     => 'column-end',
-					'name'     => 'column',
-					'position' => 75,
-				),
-				array(
-					'type'     => 'column-end',
-					'name'     => 'column',
-					'position' => 80,
-				),
-			)
-		);
+		return $text_field_group->get_group_fields();
 	}
 
 	/**

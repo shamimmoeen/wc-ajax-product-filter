@@ -69,31 +69,85 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * Outputs the form field in the admin.
+	 * Outputs the form field in the admin area.
 	 *
 	 * @return void
 	 */
 	protected function render_field() {
-		$_sub_fields = apply_filters(
-			'wcapf_field_sub_fields',
-			$this->sub_fields(),
-			$this->type(),
-			$this->get_instance()
-		);
+		$groups = wp_list_sort( $this->get_group_fields(), 'position' );
 
-		$sub_fields  = wp_list_sort( $_sub_fields, 'position' );
 		$instance    = $this->get_instance();
 		$field_index = $this->get_field_index();
+		$type        = $this->type();
 
-		$field_name_prefix = 'wcapf-fields[' . $this->type() . '][' . $field_index . ']';
+		$field_name_prefix = 'wcapf-fields[' . $type . '][' . $field_index . ']';
 
-		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $this->type() ) . '">';
+		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $type ) . '">';
 
 		// TODO: Add hook.
-		do_action( 'wcapf_before_render_field_subfields' );
+		do_action( 'wcapf_before_render_field_subfields', $type, $instance );
 
-		if ( $sub_fields ) {
-			$this->render_sub_fields( $sub_fields, $field_index, $instance, $field_name_prefix );
+		if ( $groups ) {
+
+			foreach ( $groups as $group ) {
+				$group_name  = isset( $group['name'] ) ? $group['name'] : '';
+				$group_class = isset( $group['class'] ) ? $group['class'] : '';
+
+				if ( 'group_start_wrapper' === $group_name ) {
+					$classes = $group_name;
+					$classes .= $group_class ? ' ' . $group_class : '';
+
+					echo '<div class="' . esc_attr( $classes ) . '">';
+
+					continue;
+				}
+
+				if ( 'group_end_wrapper' === $group_name ) {
+					echo '</div>';
+
+					continue;
+				}
+
+				$group_heading = isset( $group['heading'] ) ? $group['heading'] : '';
+				$row_class     = isset( $group['row_class'] ) ? $group['row_class'] : '';
+				$group_columns = isset( $group['columns'] ) ? $group['columns'] : array();
+				$group_classes = 'column-start column-group-' . $group_name;
+
+				$group_classes .= $group_class ? ' ' . $group_class : '';
+
+				echo '<div class="' . esc_attr( $group_classes ) . '">';
+
+				if ( $group_heading ) {
+					echo '<h4 class="no-top-margin">' . esc_html( $group_heading ) . '</h4>';
+				}
+
+				if ( $group_columns ) {
+					$row_classes = 'column-start row';
+
+					$row_classes .= $row_class ? ' ' . $row_class : '';
+
+					echo '<div class="' . $row_classes . '">';
+
+					// TODO: Add hook.
+					do_action( 'wcapf_before_render_field_row', $type, $instance );
+
+					foreach ( $group_columns as $columns ) {
+						$columns = wp_list_sort( $columns, 'position' );
+
+						echo '<div class="column-start column">';
+						$this->render_sub_fields( $columns, $field_index, $instance, $field_name_prefix );
+						echo '</div>';
+					}
+
+					// TODO: Add hook.
+					do_action( 'wcapf_after_render_field_row', $type, $instance );
+
+					echo '</div>';
+				}
+
+				echo '</div>';
+			}
+
 		} else {
 			echo '<p class="wcapf-form-field-no-settings">';
 			esc_html_e( 'No settings are required.', 'wc-ajax-product-filter' );
@@ -101,6 +155,7 @@ abstract class WCAPF_Field {
 		}
 
 		// TODO: Add hook.
+		do_action( 'wcapf_after_render_field_subfields', $type, $instance );
 
 		$this->get_field_position_input( $field_name_prefix );
 
@@ -108,11 +163,59 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * The child class must override this method and sets the field's subfields.
+	 * Gets the field group fields.
 	 *
 	 * @return array
 	 */
-	abstract protected function sub_fields();
+	public function get_group_fields() {
+		$group_fields = $this->field_groups();
+
+		if ( ! is_array( $group_fields ) ) {
+			$group_fields = array();
+		}
+
+		// Include the title group fields.
+		$group_fields = array_merge( $this->fields_title_group(), $group_fields );
+
+		return apply_filters( 'wcapf_field_group_fields', $group_fields, $this->type() );
+	}
+
+	// TODO: Make it abstract.
+	protected function field_groups() {
+		return array();
+	}
+
+	/**
+	 * The title group fields.
+	 *
+	 * @return array[]
+	 */
+	private function fields_title_group() {
+		return array(
+			array(
+				'name'     => 'title',
+				'position' => 5,
+				'columns'  => array( $this->title_group_columns() ),
+			),
+		);
+	}
+
+	/**
+	 * The title group columns.
+	 *
+	 * @return array[]
+	 */
+	protected function title_group_columns() {
+		return array(
+			array(
+				'type'     => 'text',
+				'id'       => 'title',
+				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
+				'name'     => 'title',
+				'position' => 5,
+			),
+		);
+	}
 
 	/**
 	 * The extended classes should set the field type.
@@ -289,7 +392,7 @@ abstract class WCAPF_Field {
 		$classes = 'wcapf-form-sub-field wcapf-form-sub-field-' . $type . ' wcapf-form-sub-field-' . $_name;
 
 		if ( $class ) {
-			$classes .= ' wcapf-widget-sub-field-' . $class;
+			$classes .= ' wcapf-form-sub-field-' . $class;
 		}
 
 		return $classes;
@@ -324,7 +427,7 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * Renders the HTML markup for the field label.
+	 * Renders the field label.
 	 *
 	 * @param array $data The field data.
 	 *
@@ -507,7 +610,7 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * Output the field's filter form on frontend.
+	 * Output the filter form for the field in the frontend.
 	 *
 	 * @return void
 	 */
@@ -528,7 +631,20 @@ abstract class WCAPF_Field {
 	 * @return array
 	 */
 	public function get_sub_fields() {
-		return $this->sub_fields();
+		$sub_fields   = array();
+		$group_fields = $this->get_group_fields();
+
+		foreach ( $group_fields as $group_field ) {
+			$columns = isset( $group_field['columns'] ) ? $group_field['columns'] : array();
+
+			foreach ( $columns as $column ) {
+				foreach ( $column as $column_field ) {
+					$sub_fields[] = $column_field;
+				}
+			}
+		}
+
+		return apply_filters( 'wcapf_field_sub_fields', $sub_fields, $this->type() );
 	}
 
 	/**

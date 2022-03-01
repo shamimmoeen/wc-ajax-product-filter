@@ -128,7 +128,9 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-meta.php';
 
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-input-type-text.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-text.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-number.php';
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-taxonomy.php';
@@ -291,6 +293,23 @@ class WCAPF {
 			filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts' . $ext ),
 			true
 		);
+
+		wp_localize_script(
+			'wc-ajax-product-filter-admin-scripts',
+			'wcapf_admin_params',
+			$this->admin_js_params()
+		);
+	}
+
+	/**
+	 * Admin js params.
+	 *
+	 * @return array
+	 */
+	public function admin_js_params() {
+		$params = array();
+
+		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
 
 }

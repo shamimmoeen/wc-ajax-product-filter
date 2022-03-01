@@ -16,28 +16,26 @@
 class WCAPF_Field_Attribute extends WCAPF_Field_Taxonomy {
 
 	/**
-	 * The field's subfields.
+	 * Extend the title group by adding the attribute select field.
 	 *
-	 * @return array
+	 * @return array[]
 	 */
-	protected function sub_fields() {
-		$fields     = parent::sub_fields();
+	protected function title_group_columns() {
+		$_group_columns = parent::title_group_columns();
+
 		$attributes = wc_get_attribute_taxonomy_names();
 		$options    = $this->get_taxonomy_options( $attributes );
 
-		return array_merge(
-			$fields,
-			array(
-				array(
-					'type'     => 'select',
-					'id'       => 'taxonomy',
-					'label'    => __( 'Attribute', 'wc-ajax-product-filter' ),
-					'name'     => 'taxonomy',
-					'position' => 6,
-					'options'  => $options,
-				),
-			)
+		$_group_columns[] = array(
+			'type'     => 'select',
+			'id'       => 'taxonomy',
+			'label'    => __( 'Attribute', 'wc-ajax-product-filter' ),
+			'name'     => 'taxonomy',
+			'position' => 10,
+			'options'  => $options,
 		);
+
+		return $_group_columns;
 	}
 
 	/**
