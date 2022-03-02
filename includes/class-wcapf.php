@@ -138,6 +138,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-tag.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-attribute.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-price.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-rating.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-submit-button.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-chosen-filters.php';

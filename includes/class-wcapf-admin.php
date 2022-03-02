@@ -139,7 +139,7 @@ class WCAPF_Admin {
 
 		$text = sprintf(
 			/* translators: plugin name, plugin review page link */
-			__( 'Thank you for using %1$s! Your feedback and review both are import, %2$s.', 'wc-ajax-product-filter' ),
+			__( 'Thank you for using %1$s! Your rating is important to us, %2$s.', 'wc-ajax-product-filter' ),
 			'<b>' . __( 'WC Ajax Product Filter', 'wc-ajax-product-filter' ) . '</b>',
 			$give_rating
 		);

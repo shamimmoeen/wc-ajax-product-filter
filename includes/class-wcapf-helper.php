@@ -135,6 +135,11 @@ class WCAPF_Helper {
 				'position' => 5,
 			),
 			array(
+				'type'     => 'product-status',
+				'name'     => __( 'Filter by Product Status', 'wc-ajax-product-filter' ),
+				'position' => 5,
+			),
+			array(
 				'type'     => 'reset-button',
 				'name'     => __( 'Reset Button', 'wc-ajax-product-filter' ),
 				'position' => 15,
