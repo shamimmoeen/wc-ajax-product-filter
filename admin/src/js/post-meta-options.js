@@ -582,7 +582,30 @@ jQuery( document ).ready( function( $ ) {
 				}
 			} else if ( 'date' === value ) {
 				$softLimitFields.hide();
+			} else {
+				$softLimitFields.hide();
 			}
+		}
+	} );
+
+	// Set the value type when post property changed.
+	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-post_property select' === handler ) {
+			const $valueType       = $field.find( '.wcapf-form-sub-field-value_type select' );
+			const params           = window[ 'wcapf_admin_params' ];
+			const postPropertyData = params[ 'post_property_data' ];
+
+			if ( ! postPropertyData ) {
+				return;
+			}
+
+			let valueType = postPropertyData[ value ];
+
+			if ( ! valueType ) {
+				valueType = '';
+			}
+
+			$valueType.val( valueType ).change();
 		}
 	} );
 

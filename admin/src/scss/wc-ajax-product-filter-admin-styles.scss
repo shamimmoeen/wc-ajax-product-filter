@@ -101,6 +101,10 @@
 	.wcapf-form-sub-field {
 		margin: 0 0 20px;
 		min-width: 445px;
+
+		&.wcapf-form-sub-field-wcapf-hidden {
+			display: none;
+		}
 	}
 
 	.widefat {

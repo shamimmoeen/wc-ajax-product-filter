@@ -175,6 +175,11 @@ jQuery( document ).ready( function( $ ) {
 			'handlerType': 'select',
 			'event': 'change',
 		},
+		{
+			'handler': '.wcapf-form-sub-field-post_property select',
+			'handlerType': 'select',
+			'event': 'change',
+		},
 	];
 
 	function _triggerInputTypeTextDisplayTypeChange( value, $field ) {

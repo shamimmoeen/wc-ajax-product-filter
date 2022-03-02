@@ -1,6 +1,6 @@
 <?php
 /**
- * WCAPF_Field_Chosen_Filters class.
+ * WCAPF_Field_Active_Filters class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
@@ -9,11 +9,11 @@
  */
 
 /**
- * WCAPF_Field_Chosen_Filters class.
+ * WCAPF_Field_Active_Filters class.
  *
  * @since 3.0.0
  */
-class WCAPF_Field_Chosen_Filters extends WCAPF_Field {
+class WCAPF_Field_Active_Filters extends WCAPF_Field {
 
 	/**
 	 * The field's subfields.
@@ -38,7 +38,7 @@ class WCAPF_Field_Chosen_Filters extends WCAPF_Field {
 	 * @return string
 	 */
 	protected function type() {
-		return 'chosen-filters';
+		return 'active-filters';
 	}
 
 	/**
