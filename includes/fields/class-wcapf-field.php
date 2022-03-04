@@ -307,6 +307,12 @@ abstract class WCAPF_Field {
 
 		$value = isset( $instance[ $name ] ) ? $instance[ $name ] : $data['default'];
 
+		// Sets the product status options.
+		if ( 'product_status_options' === $name ) {
+			$encode = json_encode( $value );
+			$value  = rawurlencode( $encode );
+		}
+
 		return apply_filters( 'wcapf_form_field_value', $value, $name, $type, $instance, $data );
 	}
 

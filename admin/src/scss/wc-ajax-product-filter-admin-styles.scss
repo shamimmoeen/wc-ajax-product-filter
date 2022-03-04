@@ -186,7 +186,8 @@
 	}
 
 	.manual-options-table,
-	.number-manual-options-table {
+	.number-manual-options-table,
+	.product-status-options-table {
 		.manual-options-table-header {
 			@include clearfix;
 
@@ -280,7 +281,8 @@
 		}
 	}
 
-	.manual-options-table {
+	.manual-options-table,
+	.product-status-options-table {
 		.manual-options-table-header {
 			> div {
 				&:first-child {
@@ -312,7 +314,8 @@
 	}
 
 	.column-group-meta_key_manual_options,
-	.column-group-number_manual_options {
+	.column-group-number_manual_options,
+	.column-group-product_status_options_group {
 		.column-start.row {
 			display: block;
 		}

@@ -93,4 +93,70 @@ class WCAPF_Product_Filter_Utils {
 		return $combined;
 	}
 
+	/**
+	 * The product status option placeholder template.
+	 *
+	 * @return void
+	 */
+	public function product_status_option_placeholder_template() {
+		$this->product_status_option_markup( true );
+	}
+
+	/**
+	 * The product status option row markup.
+	 *
+	 * @param bool  $is_placeholder Determines if return the placeholder template or not.
+	 * @param array $data           The template data.
+	 *
+	 * @return void
+	 */
+	private function product_status_option_markup( $is_placeholder, $data = array() ) {
+		if ( $is_placeholder ) {
+			$value = '{{ data.value }}';
+			$label = '{{ data.label }}';
+		} else {
+			$value = isset( $data['value'] ) ? sanitize_text_field( $data['value'] ) : '';
+			$label = isset( $data['label'] ) ? sanitize_text_field( $data['label'] ) : '';
+		}
+
+		WCAPF_Template_Loader::get_instance()->load(
+			'admin/field-templates/product-status-option-row',
+			array(
+				'value' => $value,
+				'label' => $label,
+			)
+		);
+	}
+
+	/**
+	 * Gets the product status options.
+	 *
+	 * @return array
+	 */
+	public static function get_product_status_options() {
+		$options = array(
+			'featured' => __( 'Featured', 'wc-ajax-product-filter' ),
+			'on_sale'  => __( 'On sale', 'wc-ajax-product-filter' ),
+		);
+
+		return apply_filters( 'wcapf_product_status_options', $options );
+	}
+
+	/**
+	 * The product status option row.
+	 *
+	 * @param mixed $value The option value.
+	 * @param mixed $label The option label.
+	 *
+	 * @return void
+	 */
+	public function product_status_option_row( $value = '', $label = '' ) {
+		$data = array(
+			'value' => $value,
+			'label' => $label,
+		);
+
+		$this->product_status_option_markup( false, $data );
+	}
+
 }

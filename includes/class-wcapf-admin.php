@@ -43,11 +43,11 @@ class WCAPF_Admin {
 		$hook = WCAPF_Helper::settings_page_hook();
 
 		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
-		add_filter( 'set-screen-option', array( $this, 'list_table_set_option' ), 10, 3 );
 		add_action( 'admin_footer-' . $hook, array( $this, 'render_pro_features_modal' ) );
 		add_filter( 'plugin_action_links_' . WCAPF_PLUGIN_FILE, array( $this, 'plugin_action_links' ) );
 		add_filter( 'admin_footer_text', array( $this, 'footer_text' ) );
 		add_action( 'admin_footer-' . $hook, array( $this, 'render_tmpl_templates' ) );
+		add_action( 'admin_footer-' . $hook, array( $this, 'render_product_status_option_placeholder_template' ) );
 		add_action( 'wp_ajax_wcapf_save_form', array( $this, 'save_form' ) );
 	}
 
@@ -172,6 +172,19 @@ class WCAPF_Admin {
 	}
 
 	/**
+	 * Renders the product status option's placeholder template.
+	 *
+	 * @return void
+	 */
+	public function render_product_status_option_placeholder_template() {
+		$utils = new WCAPF_Product_Filter_Utils();
+
+		echo '<script type="text/html" id="tmpl-wcapf-product-status-option">';
+		$utils->product_status_option_placeholder_template();
+		echo '</script>';
+	}
+
+	/**
 	 * Saves the form configurations via ajax.
 	 *
 	 * @return void
@@ -216,6 +229,18 @@ class WCAPF_Admin {
 
 				if ( ! $_enable_multiple ) {
 					$parsed_field['query_type'] = 'and';
+				}
+
+				// Parse the product status options.
+				if ( isset( $field['product_status_options'] ) ) {
+					$product_status_options = $field['product_status_options'];
+
+					if ( $product_status_options ) {
+						$decode = rawurldecode( $product_status_options );
+						$array  = json_decode( $decode );
+
+						$parsed_field['product_status_options'] = $array;
+					}
 				}
 
 				$parsed_field = apply_filters( 'wcapf_parse_form_field_data', $parsed_field, $field );
