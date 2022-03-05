@@ -22,9 +22,6 @@ jQuery( document ).ready( function( $ ) {
 			const value = $item.find( '.option_value' ).val();
 			const label = $item.find( '.option_label' ).val();
 
-			console.log( 'value', value );
-			console.log( 'label', label );
-
 			if ( value ) {
 				_rows.push( [ value, label ] );
 			}

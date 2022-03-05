@@ -4,8 +4,8 @@
  */
 
 /**
- * @var string $value The option value.
- * @var string $label The option label.
+ * @var string $value The value.
+ * @var string $label The label.
  */
 
 $options = WCAPF_Product_Filter_Utils::get_product_status_options();

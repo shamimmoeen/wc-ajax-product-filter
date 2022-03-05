@@ -94,6 +94,20 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * Gets the product status options.
+	 *
+	 * @return array
+	 */
+	public static function get_product_status_options() {
+		$options = array(
+			'featured' => __( 'Featured', 'wc-ajax-product-filter' ),
+			'on_sale'  => __( 'On sale', 'wc-ajax-product-filter' ),
+		);
+
+		return apply_filters( 'wcapf_product_status_options', $options );
+	}
+
+	/**
 	 * The product status option placeholder template.
 	 *
 	 * @return void
@@ -129,24 +143,10 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * Gets the product status options.
-	 *
-	 * @return array
-	 */
-	public static function get_product_status_options() {
-		$options = array(
-			'featured' => __( 'Featured', 'wc-ajax-product-filter' ),
-			'on_sale'  => __( 'On sale', 'wc-ajax-product-filter' ),
-		);
-
-		return apply_filters( 'wcapf_product_status_options', $options );
-	}
-
-	/**
 	 * The product status option row.
 	 *
-	 * @param mixed $value The option value.
-	 * @param mixed $label The option label.
+	 * @param string $value The value.
+	 * @param string $label The label.
 	 *
 	 * @return void
 	 */
