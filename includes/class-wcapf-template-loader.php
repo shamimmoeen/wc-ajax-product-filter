@@ -62,15 +62,29 @@ class WCAPF_Template_Loader {
 		 */
 		$template = apply_filters( 'wcapf_get_template_part', $template, $slug );
 
+		$_c_theme_location = get_stylesheet_directory() . '/wcapf/';
+		$_p_theme_location = get_template_directory() . '/wcapf/';
+		$_pro_location     = defined( 'WCAPF_PRO_PLUGIN_DIR' ) ? WCAPF_PRO_PLUGIN_DIR . '/templates/' : '';
+		$_free_location    = WCAPF_PLUGIN_DIR . '/templates/';
+
 		// No file found yet.
-		$located           = false;
-		$template_location = WCAPF_PLUGIN_DIR . '/templates';
+		$located = false;
 
-		$template_location = apply_filters( 'wcapf_get_template_location', $template_location, $template );
-
-		if ( file_exists( trailingslashit( $template_location ) . $template ) ) {
-			$located = trailingslashit( $template_location ) . $template;
+		// First check inside the child theme.
+		// In second check inside the parent theme.
+		// In third check inside the pro version.
+		// On last check inside the free version.
+		if ( file_exists( $_c_theme_location . $template ) ) {
+			$located = $_c_theme_location . $template;
+		} elseif ( file_exists( $_p_theme_location . $template ) ) {
+			$located = $_p_theme_location . $template;
+		} elseif ( file_exists( $_pro_location . $template ) ) {
+			$located = $_pro_location . $template;
+		} elseif ( file_exists( $_free_location . $template ) ) {
+			$located = $_free_location . $template;
 		}
+
+		$located = apply_filters( 'wcapf_get_template_location', $located, $template );
 
 		$html = false;
 
