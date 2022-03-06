@@ -333,6 +333,14 @@
 	}
 
 	.sort-by-options-table {
+		.manual-options-table-header {
+			> div {
+				&:first-child {
+					width: 155px;
+				}
+			}
+		}
+
 		.manual-options-table-body {
 			.manual-options-table-body-rows {
 				.sort-option-item {
