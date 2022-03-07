@@ -134,13 +134,17 @@ jQuery( document ).ready( function( $ ) {
 			],
 		},
 		{
-			'handler': '.wcapf-form-sub-field-date_input_type select',
+			'handler': '.wcapf-form-sub-field-date_display_type select',
 			'handlerType': 'select',
 			'event': 'change',
 			'dependant': [
 				{
 					'selector': '.date-to-ui-options',
-					'value': [ 'range_date' ],
+					'value': [ 'input_date_range' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-date_format',
+					'value': [ 'input_date', 'input_date_range' ],
 				},
 			],
 		},

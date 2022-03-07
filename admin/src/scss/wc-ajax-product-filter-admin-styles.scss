@@ -188,7 +188,8 @@
 	.manual-options-table,
 	.number-manual-options-table,
 	.product-status-options-table,
-	.sort-by-options-table {
+	.sort-by-options-table,
+	.time-period-options-table {
 		.manual-options-table-header {
 			@include clearfix;
 
@@ -283,7 +284,8 @@
 	}
 
 	.manual-options-table,
-	.product-status-options-table {
+	.product-status-options-table,
+	.time-period-options-table {
 		.manual-options-table-header {
 			> div {
 				&:first-child {
@@ -318,7 +320,8 @@
 	.column-group-meta_key_manual_options,
 	.column-group-number_manual_options,
 	.column-group-product_status_options_group,
-	.column-group-sort_by_options_group {
+	.column-group-sort_by_options_group,
+	.column-group-time_period_group {
 		.column-start.row {
 			display: block;
 		}
@@ -332,18 +335,11 @@
 		display: none !important;
 	}
 
-	.sort-by-options-table {
-		.manual-options-table-header {
-			> div {
-				&:first-child {
-					width: 155px;
-				}
-			}
-		}
-
+	@mixin nestedTable {
 		.manual-options-table-body {
 			.manual-options-table-body-rows {
-				.sort-option-item {
+				.sort-option-item,
+				.time-period-item {
 					margin-bottom: 10px;
 
 					.item {
@@ -353,7 +349,8 @@
 			}
 		}
 
-		.meta-data {
+		.meta-data,
+		.custom-time-period {
 			background-color: #fcfcfc;
 			border-color: #e9e9e9;
 			border-style: solid;
@@ -364,7 +361,23 @@
 
 			div {
 				float: left;
+			}
+		}
+	}
 
+	.sort-by-options-table {
+		@include nestedTable;
+
+		.manual-options-table-header {
+			> div {
+				&:first-child {
+					width: 155px;
+				}
+			}
+		}
+
+		.meta-data {
+			div {
 				&:first-child {
 					min-width: 285px;
 				}
@@ -374,6 +387,36 @@
 		.sort-option-item {
 			&:not(.active) {
 				.meta-data {
+					display: none;
+				}
+			}
+		}
+	}
+
+	.time-period-options-table {
+		@include nestedTable;
+
+		.manual-options-table-header {
+			> div {
+				&:first-child {
+					width: 125px;
+				}
+			}
+		}
+
+		.custom-time-period {
+			div {
+				margin-right: 15px;
+			}
+
+			.difference_amount {
+				max-width: 80px;
+			}
+		}
+
+		.time-period-item {
+			&:not(.active) {
+				.custom-time-period {
 					display: none;
 				}
 			}
@@ -546,6 +589,55 @@
 			.wcapf-form-sub-field-label {
 				flex: 1;
 			}
+		}
+	}
+}
+
+.date-ui-group {
+	&:before,
+	&:after {
+		clear: both;
+		content: '';
+		display: table;
+	}
+
+	.column-start.row.date-ui-options-row {
+		flex-direction: column;
+		gap: 0;
+
+		.column-start.column {
+			flex: 0;
+			max-width: 14em;
+
+			.wcapf-form-sub-field {
+				align-items: unset;
+				flex-direction: column;
+				gap: 5px;
+				min-width: unset;
+
+				.wcapf-form-sub-field-label {
+					width: unset;
+				}
+			}
+		}
+	}
+
+	.date-from-ui-options {
+		margin-right: 2em;
+	}
+
+	.date-from-ui-options,
+	.date-to-ui-options {
+		float: left;
+		width: 15em;
+	}
+
+	.datepicker-settings {
+		clear: left;
+		float: left;
+
+		h4 {
+			margin-top: 10px;
 		}
 	}
 }
