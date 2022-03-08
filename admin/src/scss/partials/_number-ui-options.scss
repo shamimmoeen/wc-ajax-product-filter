@@ -1,0 +1,42 @@
+.column-start.row.ui-options-row {
+	display: flex;
+	gap: 2em;
+	margin: 0 0 15px;
+
+	.wcapf-form-sub-field {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 5px;
+		margin: 0 0 10px;
+		min-width: unset;
+
+		.wcapf-form-sub-field-label {
+			width: unset;
+		}
+
+		.widefat[type="text"] {
+			width: 100px;
+		}
+	}
+
+	> .wcapf-form-sub-field {
+		flex: 0 0 15em;
+	}
+
+	.column-start.column {
+		flex: 0 0 15em;
+
+		.wcapf-form-sub-field ~ .wcapf-form-sub-field {
+			align-items: center;
+			flex-direction: row-reverse;
+
+			.wcapf-wrapper {
+				flex: 0 0 auto;
+			}
+
+			.wcapf-form-sub-field-label {
+				flex: 1;
+			}
+		}
+	}
+}

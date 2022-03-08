@@ -11,6 +11,8 @@ jQuery( document ).ready( function( $ ) {
 
 	const $searchForm = $( '#search-form' );
 
+	return;
+
 	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-custom-taxonomy select' === handler ) {
 			const params           = window[ 'wcapf_admin_params' ];
@@ -457,51 +459,51 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 
-	function toggleNumberMinValueField( $elm ) {
-		const $field     = $elm.closest( '.wcapf-form-field' );
-		const $textField = $field.find( '.wcapf-form-sub-field-min_value input[type="text"]' );
-
-		if ( $elm.is( ':checked' ) ) {
-			$textField.attr( 'disabled', 'disabled' );
-		} else {
-			$textField.removeAttr( 'disabled' );
-		}
-	}
-
-	$searchForm.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
-		const $this = $( this );
-
-		toggleNumberMinValueField( $this );
-	} );
-
-	$searchForm.on( 'click', '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]', function() {
-		const $this = $( this );
-
-		toggleNumberMinValueField( $this );
-	} );
-
-	function toggleNumberMaxValueField( $elm ) {
-		const $field     = $elm.closest( '.wcapf-form-field' );
-		const $textField = $field.find( '.wcapf-form-sub-field-max_value input[type="text"]' );
-
-		if ( $elm.is( ':checked' ) ) {
-			$textField.attr( 'disabled', 'disabled' );
-		} else {
-			$textField.removeAttr( 'disabled' );
-		}
-	}
-
-	$searchForm.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
-		const $this = $( this );
-
-		toggleNumberMaxValueField( $this );
-	} );
-
-	$searchForm.on( 'click', '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]', function() {
-		const $this = $( this );
-
-		toggleNumberMaxValueField( $this );
-	} );
+	// function toggleNumberMinValueField( $elm ) {
+	// 	const $field     = $elm.closest( '.wcapf-form-field' );
+	// 	const $textField = $field.find( '.wcapf-form-sub-field-min_value input[type="text"]' );
+	//
+	// 	if ( $elm.is( ':checked' ) ) {
+	// 		$textField.attr( 'disabled', 'disabled' );
+	// 	} else {
+	// 		$textField.removeAttr( 'disabled' );
+	// 	}
+	// }
+	//
+	// $searchForm.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
+	// 	const $this = $( this );
+	//
+	// 	toggleNumberMinValueField( $this );
+	// } );
+	//
+	// $searchForm.on( 'click', '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]', function() {
+	// 	const $this = $( this );
+	//
+	// 	toggleNumberMinValueField( $this );
+	// } );
+	//
+	// function toggleNumberMaxValueField( $elm ) {
+	// 	const $field     = $elm.closest( '.wcapf-form-field' );
+	// 	const $textField = $field.find( '.wcapf-form-sub-field-max_value input[type="text"]' );
+	//
+	// 	if ( $elm.is( ':checked' ) ) {
+	// 		$textField.attr( 'disabled', 'disabled' );
+	// 	} else {
+	// 		$textField.removeAttr( 'disabled' );
+	// 	}
+	// }
+	//
+	// $searchForm.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
+	// 	const $this = $( this );
+	//
+	// 	toggleNumberMaxValueField( $this );
+	// } );
+	//
+	// $searchForm.on( 'click', '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]', function() {
+	// 	const $this = $( this );
+	//
+	// 	toggleNumberMaxValueField( $this );
+	// } );
 
 	// Toggle soft limit fields when display type is changed.
 	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {

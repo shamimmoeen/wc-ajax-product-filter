@@ -1,0 +1,101 @@
+@import "../mixins";
+
+.field-table {
+	.field-table-header {
+		@include clearfix;
+
+		font-weight: bold;
+		margin: 1em 0;
+
+		> div {
+			float: left;
+
+			&:first-child {
+				padding-left: 80px;
+			}
+		}
+	}
+
+	.field-table-body {
+		.field-table-body-rows {
+			.row-item {
+				&:not(:last-child) {
+					margin-bottom: 10px;
+				}
+			}
+
+			.item {
+				@include clearfix;
+
+				background-color: #f7f7f7;
+				border: 1px solid #dddddd;
+				padding: 10px;
+
+				> div {
+					&:not(:last-child) {
+						float: left;
+						margin-right: 15px;
+					}
+
+					&:last-child {
+						float: right;
+					}
+
+					&:first-child {
+						.dashicons {
+							cursor: move;
+							margin-top: 3px;
+							opacity: 0.5;
+						}
+					}
+
+					&:last-child {
+						button {
+							margin-top: 7px;
+						}
+					}
+				}
+			}
+		}
+
+		.ui-sortable-placeholder {
+			min-height: 52px; // 2px extra for the border
+		}
+
+		.no-options-found {
+			background-color: #f7f7f7;
+			border: 1px solid #dddddd;
+			padding: 5px 10px;
+			position: relative;
+			width: auto;
+		}
+	}
+
+	.field-table-footer {
+		margin: 1em 0;
+
+		@include clearfix;
+
+		> div {
+			&:first-child {
+				float: left;
+			}
+
+			&:last-child {
+				float: right;
+			}
+		}
+	}
+
+	&:not(.has-options) {
+		.manual-options-table-body-rows {
+			display: none;
+		}
+	}
+
+	&.has-options {
+		.no-options-found {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,15 @@
+.column-group-product_status_options_group {
+	.column-start.row {
+		display: block;
+	}
+}
+
+.product-status-options-table {
+	.field-table-header {
+		> div {
+			&:first-child {
+				width: 110px;
+			}
+		}
+	}
+}

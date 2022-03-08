@@ -1,0 +1,36 @@
+#search-form {
+	&.ui-drop-active {
+		border-color: #777;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	}
+
+	#search-form-wrapper {
+		margin-bottom: -10px;
+		margin-top: 10px;
+	}
+
+	.widget {
+		margin-bottom: 10px;
+		min-width: 150px;
+
+		.widget-inside {
+			border-top: none;
+			display: block; // TODO: Remove this.
+			padding: 12px 15px 15px 15px;
+		}
+
+		&.ui-sortable-helper {
+			.widget-title-action {
+				display: none;
+			}
+
+			.widget-inside {
+				display: none !important;
+			}
+		}
+
+		.wcapf-form-field-no-settings {
+			margin: 0 0 10px;
+		}
+	}
+}
