@@ -1,3 +1,18 @@
+/**
+ * Manual Options' table function.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/admin/src/js
+ * @author     Mainul Hassan Main
+ */
+
+/**
+ * @param tableIdentifier
+ * @param valueIdentifier
+ * @param rowTemplateId
+ * @param rowDefaultOptions
+ */
 function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId, rowDefaultOptions ) {
 	const $ = jQuery;
 
@@ -133,6 +148,13 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 		const $field = $( this ).closest( fieldIdentifier );
 
 		triggerOptionsChange( $field );
+	} );
+
+	// Trigger options change when value is added from modal.
+	$searchForm.on( 'trigger_options_table', function( e, tableId, $field ) {
+		if ( tableId === tableIdentifier ) {
+			triggerOptionsChange( $field );
+		}
 	} );
 
 }

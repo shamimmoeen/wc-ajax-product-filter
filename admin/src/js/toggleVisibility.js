@@ -1,3 +1,14 @@
+/**
+ * The toggle visibility scripts.
+ *
+ * NOTE: These scripts must be located at the very bottom of the combined scripts.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/admin/src/js
+ * @author     Mainul Hassan Main
+ */
+
 jQuery( document ).ready( function( $ ) {
 
 	const $searchForm = $( '#search-form' );
@@ -174,6 +185,17 @@ jQuery( document ).ready( function( $ ) {
 			'handler': '.wcapf-form-sub-field-post_property select',
 			'handlerType': 'select',
 			'event': 'change',
+		},
+		{
+			'handler': '.wcapf-form-sub-field-rating_get_options input',
+			'handlerType': 'radio',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.rating-manual-options',
+					'value': [ 'manual_entry' ],
+				},
+			],
 		},
 	];
 

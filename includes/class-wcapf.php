@@ -288,10 +288,37 @@ class WCAPF {
 			? '.min.js'
 			: '.js';
 
+		$main_admin_script_deps = array(
+			'jquery',
+			'wp-util',
+			'jquery-ui-draggable',
+			'jquery-ui-droppable',
+			'jquery-ui-sortable',
+			'wcapf-remodal',
+		);
+
+		$admin_scripts = apply_filters( 'wcapf_admin_scripts_before_main_script', array() );
+
+		if ( $admin_scripts ) {
+			foreach ( $admin_scripts as $script ) {
+				$handle = isset( $script['handle'] ) ? $script['handle'] : '';
+				$src    = isset( $script['src'] ) ? $script['src'] : '';
+				$deps   = isset( $script['deps'] ) ? $script['deps'] : array();
+				$path   = isset( $script['path'] ) ? $script['path'] : '';
+				$footer = isset( $script['in_footer'] ) ? $script['in_footer'] : true;
+
+				if ( $handle && $src ) {
+					$main_admin_script_deps[] = $handle;
+
+					wp_enqueue_script( $handle, $src, $deps, filemtime( $path ), $footer );
+				}
+			}
+		}
+
 		wp_enqueue_script(
 			'wc-ajax-product-filter-admin-scripts',
 			WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts' . $ext,
-			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable', 'wcapf-remodal' ),
+			$main_admin_script_deps,
 			filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts' . $ext ),
 			true
 		);
@@ -308,7 +335,7 @@ class WCAPF {
 	 *
 	 * @return array
 	 */
-	public function admin_js_params() {
+	private function admin_js_params() {
 		$params = array();
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
