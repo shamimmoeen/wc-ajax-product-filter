@@ -197,6 +197,17 @@ jQuery( document ).ready( function( $ ) {
 				},
 			],
 		},
+		{
+			'handler': '.wcapf-form-sub-field-limit_options select',
+			'handlerType': 'select',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-limit_values_by_id',
+					'value': [ 'include', 'exclude' ],
+				},
+			],
+		},
 	];
 
 	function _handleToggleRequest( data, currentSelector, value ) {
