@@ -208,6 +208,17 @@ jQuery( document ).ready( function( $ ) {
 				},
 			],
 		},
+		{
+			'handler': '.wcapf-form-sub-field-enable_accordion input',
+			'handlerType': 'radio',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-accordion_default_state',
+					'value': [ 'yes' ],
+				},
+			],
+		},
 	];
 
 	function _handleToggleRequest( data, currentSelector, value ) {
