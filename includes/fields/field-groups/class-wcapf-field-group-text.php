@@ -25,6 +25,7 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 		$right_column_fields = array();
 
 		if ( $this->is_hierarchical ) {
+			// TODO: We may need to group the elements in another element.
 			$right_column_fields = array_merge(
 				$right_column_fields,
 				array(
@@ -37,10 +38,17 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 					),
 					array(
 						'type'     => 'checkbox',
+						'id'       => 'enable_hierarchy_accordion',
+						'label'    => __( 'Enable hierarchy accordion', 'wc-ajax-product-filter' ),
+						'name'     => 'enable_hierarchy_accordion',
+						'position' => 25,
+					),
+					array(
+						'type'     => 'checkbox',
 						'id'       => 'show_children_only',
 						'label'    => __( 'Only show children of the current', 'wc-ajax-product-filter' ),
 						'name'     => 'show_children_only',
-						'position' => 25,
+						'position' => 30,
 					),
 				)
 			);
@@ -54,7 +62,7 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 					'id'       => 'show_count',
 					'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
 					'name'     => 'show_count',
-					'position' => 30,
+					'position' => 35,
 				),
 				array(
 					'type'     => 'checkbox',

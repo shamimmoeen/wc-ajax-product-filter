@@ -64,6 +64,17 @@ jQuery( document ).ready( function( $ ) {
 			],
 		},
 		{
+			'handler': '.wcapf-form-sub-field-hierarchical input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-enable_hierarchy_accordion',
+					'value': [ '1' ],
+				},
+			],
+		},
+		{
 			'handler': '.wcapf-form-sub-field-get_options input',
 			'handlerType': 'radio',
 			'event': 'change',
