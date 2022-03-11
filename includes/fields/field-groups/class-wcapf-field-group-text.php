@@ -25,30 +25,35 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 		$right_column_fields = array();
 
 		if ( $this->is_hierarchical ) {
-			// TODO: We may need to group the elements in another element.
 			$right_column_fields = array_merge(
 				$right_column_fields,
 				array(
+					array(
+						'type'     => 'column-start',
+						'id'       => 'hierarchical_fields_start',
+						'name'     => 'hierarchical_fields_start',
+						'classes'  => 'hierarchical-fields',
+						'position' => 20,
+					),
 					array(
 						'type'     => 'checkbox',
 						'id'       => 'hierarchical',
 						'label'    => __( 'Show hierarchy', 'wc-ajax-product-filter' ),
 						'name'     => 'hierarchical',
-						'position' => 20,
+						'position' => 25,
 					),
 					array(
 						'type'     => 'checkbox',
 						'id'       => 'enable_hierarchy_accordion',
 						'label'    => __( 'Enable hierarchy accordion', 'wc-ajax-product-filter' ),
 						'name'     => 'enable_hierarchy_accordion',
-						'position' => 25,
+						'position' => 30,
 					),
 					array(
-						'type'     => 'checkbox',
-						'id'       => 'show_children_only',
-						'label'    => __( 'Only show children of the current', 'wc-ajax-product-filter' ),
-						'name'     => 'show_children_only',
-						'position' => 30,
+						'type'     => 'column-end',
+						'id'       => 'hierarchical_fields_end',
+						'name'     => 'hierarchical_fields_end',
+						'position' => 35,
 					),
 				)
 			);
@@ -62,15 +67,26 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 					'id'       => 'show_count',
 					'label'    => __( 'Show count', 'wc-ajax-product-filter' ),
 					'name'     => 'show_count',
-					'position' => 35,
+					'position' => 40,
 				),
 				array(
 					'type'     => 'checkbox',
 					'id'       => 'hide_empty',
 					'label'    => __( 'Hide empty', 'wc-ajax-product-filter' ),
 					'name'     => 'hide_empty',
-					'position' => 40,
+					'position' => 45,
 				),
+			)
+		);
+
+		$text_display_types = apply_filters(
+			'wcapf_text_display_types',
+			array(
+				'checkbox'     => __( 'Checkbox', 'wc-ajax-product-filter' ),
+				'radio'        => __( 'Radio', 'wc-ajax-product-filter' ),
+				'select'       => __( 'Select', 'wc-ajax-product-filter' ),
+				'multi-select' => __( 'Multi select', 'wc-ajax-product-filter' ),
+				'label'        => __( 'Label', 'wc-ajax-product-filter' ),
 			)
 		);
 
@@ -86,12 +102,7 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 							'id'       => 'display_type',
 							'label'    => __( 'Display Type', 'wc-ajax-product-filter' ),
 							'name'     => 'display_type',
-							'options'  => array(
-								'checkbox'     => __( 'Checkbox', 'wc-ajax-product-filter' ),
-								'radio'        => __( 'Radio', 'wc-ajax-product-filter' ),
-								'select'       => __( 'Select', 'wc-ajax-product-filter' ),
-								'multi-select' => __( 'Multi select', 'wc-ajax-product-filter' ),
-							),
+							'options'  => $text_display_types,
 							'default'  => 'checkbox',
 							'position' => 20,
 						),
