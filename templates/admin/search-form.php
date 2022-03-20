@@ -47,6 +47,15 @@
 <form id="search-form" class="postbox" method="post" action="javascript:void(0)">
 	<div class="postbox-header">
 		<h2><?php esc_html_e( 'Search Form UI', 'wc-ajax-product-filter' ); ?></h2>
+		<div class="toggle-search-fields-btn-group">
+			<button type="button" class="button-link expand-all-fields-btn">
+				<?php esc_html_e( 'Expand All', 'wc-ajax-product-filter' ); ?>
+			</button>
+			&#47;
+			<button type="button" class="button-link collapse-all-fields-btn">
+				<?php esc_html_e( 'Collapse All', 'wc-ajax-product-filter' ); ?>
+			</button>
+		</div>
 	</div>
 	<div class="inside">
 		<p class="description">

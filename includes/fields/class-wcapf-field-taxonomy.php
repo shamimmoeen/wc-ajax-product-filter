@@ -27,6 +27,12 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 			$text_field_group->set_hierarchical();
 		}
 
+		if ( 'product_cat' === $this->taxonomy() ) {
+			$text_field_group->set_taxonomy_has_image();
+		}
+
+		$text_field_group->set_advanced_appearance_supported();
+
 		return $text_field_group->get_group_fields();
 	}
 

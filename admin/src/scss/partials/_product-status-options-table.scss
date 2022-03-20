@@ -5,11 +5,7 @@
 }
 
 .product-status-options-table {
-	.field-table-header {
-		> div {
-			&:first-child {
-				width: 110px;
-			}
-		}
+	.status-column {
+		width: 110px;
 	}
 }

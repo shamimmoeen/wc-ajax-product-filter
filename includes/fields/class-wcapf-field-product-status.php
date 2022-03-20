@@ -22,6 +22,7 @@ class WCAPF_Field_Product_Status extends WCAPF_Field {
 	 */
 	protected function field_groups() {
 		$text_field_group = new WCAPF_Field_Group_Text();
+		$text_field_group->set_advanced_appearance_supported();
 
 		return array_merge(
 			$text_field_group->get_group_fields(),

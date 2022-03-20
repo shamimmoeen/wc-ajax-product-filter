@@ -12,8 +12,8 @@ $product_status_options = isset( $instance['product_status_options'] ) ? $instan
 	<p><?php esc_html_e( 'Add the options that will be available to this field.', 'wc-ajax-product-filter' ); ?></p>
 
 	<div class="field-table-header">
-		<div><?php esc_html_e( 'Status', 'wc-ajax-product-filter' ); ?></div>
-		<div><?php esc_html_e( 'Label', 'wc-ajax-product-filter' ); ?></div>
+		<div class="status-column"><?php esc_html_e( 'Status', 'wc-ajax-product-filter' ); ?></div>
+		<div class="label-column"><?php esc_html_e( 'Label', 'wc-ajax-product-filter' ); ?></div>
 	</div>
 
 	<div class="field-table-body">
@@ -22,11 +22,8 @@ $product_status_options = isset( $instance['product_status_options'] ) ? $instan
 			if ( $product_status_options ) {
 				$utils = new WCAPF_Product_Filter_Utils();
 
-				foreach ( $product_status_options as $number_manual_option ) {
-					$value = isset( $number_manual_option[0] ) ? $number_manual_option[0] : '';
-					$label = isset( $number_manual_option[1] ) ? $number_manual_option[1] : '';
-
-					$utils->product_status_option_row( $value, $label );
+				foreach ( $product_status_options as $product_status_option ) {
+					$utils->product_status_option_markup( $product_status_option );
 				}
 			}
 			?>

@@ -180,7 +180,7 @@ class WCAPF_Admin {
 		$utils = new WCAPF_Product_Filter_Utils();
 
 		echo '<script type="text/html" id="tmpl-wcapf-product-status-option">';
-		$utils->product_status_option_placeholder_template();
+		$utils->product_status_option_markup();
 		echo '</script>';
 	}
 
@@ -237,7 +237,7 @@ class WCAPF_Admin {
 
 					if ( $product_status_options ) {
 						$decode = rawurldecode( $product_status_options );
-						$array  = json_decode( $decode );
+						$array  = json_decode( $decode, true );
 
 						$parsed_field['product_status_options'] = $array;
 					}

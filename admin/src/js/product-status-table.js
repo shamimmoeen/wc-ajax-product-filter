@@ -13,11 +13,6 @@ jQuery( document ).ready( function() {
 	const valueIdentifier = '.wcapf-form-sub-field-product_status_options input';
 	const rowTemplateId   = 'wcapf-product-status-option';
 
-	const rowDefaultOptions = {
-		value: '',
-		label: '',
-	};
-
-	initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId, rowDefaultOptions );
+	initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId );
 
 } );

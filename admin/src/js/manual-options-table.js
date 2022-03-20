@@ -11,9 +11,8 @@
  * @param tableIdentifier
  * @param valueIdentifier
  * @param rowTemplateId
- * @param rowDefaultOptions
  */
-function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId, rowDefaultOptions ) {
+function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId ) {
 	const $ = jQuery;
 
 	const $searchForm = $( '#search-form' );
@@ -23,8 +22,6 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	const rowIdentifier   = '.row-item';
 
 	function initSortableTable( $selector ) {
-		console.log( 'update called for', $selector );
-
 		$selector.sortable( {
 			opacity: 0.8,
 			revert: false,
@@ -57,15 +54,16 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 
 		$rows.find( '.row-item' ).each( function( i, _item ) {
 			const $item = $( _item );
-			const row   = [];
+			const obj   = {};
 
 			$item.find( '[data-name]' ).each( function( fieldIndex, field ) {
 				const $field = $( field );
+				const name   = $field.attr( 'data-name' );
 
-				row.push( $field.val() );
+				obj[ name ] = $field.val();
 			} );
 
-			_rows.push( row );
+			_rows.push( obj );
 		} );
 
 		const rawValues = encodeURIComponent( JSON.stringify( _rows ) );
@@ -119,13 +117,15 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 		const $field = $( this ).closest( fieldIdentifier );
 
 		const template = wp.template( rowTemplateId );
-		const rendered = template( rowDefaultOptions );
+		const rendered = template();
 		const $table   = $field.find( tableIdentifier );
 		const $rows    = $field.find( tableRowsIdentifier );
 
 		$rows.append( rendered );
 
 		triggerOptionsChange( $field );
+
+		$searchForm.trigger( 'new_option_added', [ $field ] );
 
 		if ( ! $table.hasClass( 'has-options' ) ) {
 			$table.addClass( 'has-options' );

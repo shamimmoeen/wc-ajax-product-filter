@@ -50,6 +50,26 @@ jQuery( document ).ready( function( $ ) {
 					'selector': '.wcapf-form-sub-field-use_chosen',
 					'value': [ 'select', 'multi-select' ],
 				},
+				{
+					'selector': '.hierarchical-fields',
+					'value': [ 'checkbox', 'radio', 'select', 'multi-select' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-use_category_images',
+					'value': [ 'image' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-enable_multiple_filter',
+					'value': [ 'label', 'color', 'image' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-inline_display',
+					'value': [ 'label', 'color', 'image' ],
+				},
+				{
+					'selector': '.column-group-custom_appearance',
+					'value': [ 'color', 'image' ],
+				},
 			],
 		},
 		{
@@ -198,17 +218,6 @@ jQuery( document ).ready( function( $ ) {
 			'event': 'change',
 		},
 		{
-			'handler': '.wcapf-form-sub-field-rating_get_options input',
-			'handlerType': 'radio',
-			'event': 'change',
-			'dependant': [
-				{
-					'selector': '.rating-manual-options',
-					'value': [ 'manual_entry' ],
-				},
-			],
-		},
-		{
 			'handler': '.wcapf-form-sub-field-limit_options select',
 			'handlerType': 'select',
 			'event': 'change',
@@ -229,6 +238,16 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'yes' ],
 				},
 			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-enable_multiple_filter input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+		},
+		{
+			'handler': '.wcapf-form-sub-field-use_category_images input',
+			'handlerType': 'checkbox',
+			'event': 'change',
 		},
 	];
 

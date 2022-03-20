@@ -3,10 +3,8 @@
  * todo
  */
 
-/**
- * @var string $value The value.
- * @var string $label The label.
- */
+$value = isset( $value ) ? $value : '';
+$label = isset( $label ) ? $label : '';
 
 $options = WCAPF_Product_Filter_Utils::get_product_status_options();
 ?>
@@ -14,7 +12,7 @@ $options = WCAPF_Product_Filter_Utils::get_product_status_options();
 	<div class="item">
 		<div><span class="dashicons dashicons-move move-options-handler"></span></div>
 
-		<div>
+		<div class="status-column">
 			<label>
 				<select data-name="value">
 					<?php foreach ( $options as $option_key => $option_label ) : ?>
@@ -29,7 +27,7 @@ $options = WCAPF_Product_Filter_Utils::get_product_status_options();
 			</label>
 		</div>
 
-		<div>
+		<div class="label-column">
 			<label>
 				<input
 					type="text"

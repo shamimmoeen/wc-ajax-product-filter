@@ -269,6 +269,30 @@ function saveForm() {
 
 jQuery( '#postbox-container-1' ).on( 'click', 'button', saveForm );
 
+searchForm.on( 'click', '.expand-all-fields-btn', function() {
+	const $fields = searchForm.find( '[data-field-type]' );
+
+	$fields.each( function() {
+		const $item = jQuery( this );
+
+		if ( ! $item.hasClass( 'open' ) ) {
+			$item.find( '.widget-top' ).trigger( 'click' );
+		}
+	} );
+} );
+
+searchForm.on( 'click', '.collapse-all-fields-btn', function() {
+	const $fields = searchForm.find( '[data-field-type]' );
+
+	$fields.each( function() {
+		const $item = jQuery( this );
+
+		if ( $item.hasClass( 'open' ) ) {
+			$item.find( '.widget-top' ).trigger( 'click' );
+		}
+	} );
+} );
+
 /**
  * Show alert on leave if the form is dirty.
  *

@@ -9,9 +9,14 @@
 
 		> div {
 			float: left;
+			text-align: center;
+
+			&:not(:last-child) {
+				margin-right: 15px;
+			}
 
 			&:first-child {
-				padding-left: 80px;
+				padding-left: 45px;
 			}
 		}
 	}
@@ -53,6 +58,14 @@
 						button {
 							margin-top: 7px;
 						}
+					}
+
+					input[type="text"] {
+						width: 100%;
+					}
+
+					select {
+						width: 100%;
 					}
 				}
 			}
