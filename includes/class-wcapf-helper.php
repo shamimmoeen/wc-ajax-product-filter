@@ -77,6 +77,10 @@ class WCAPF_Helper {
 			$field_type = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
 			$field_name = isset( $fields_data[ $field_type ] ) ? $fields_data[ $field_type ] : '';
 
+			if ( ! $field_name ) {
+				continue;
+			}
+
 			WCAPF_Template_Loader::get_instance()->load(
 				'admin/form-field',
 				array(

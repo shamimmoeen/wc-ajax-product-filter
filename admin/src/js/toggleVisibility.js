@@ -127,16 +127,24 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'range_select', 'range_multiselect' ],
 				},
 				{
+					'selector': '.wcapf-form-sub-field-number_range_enable_multiple_filter',
+					'value': [ 'range_label' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-number_range_inline_display',
+					'value': [ 'range_label' ],
+				},
+				{
 					'selector': '.wcapf-form-sub-field-number_range_show_count',
-					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label' ],
 				},
 				{
 					'selector': '.wcapf-form-sub-field-number_range_hide_empty',
-					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+					'value': [ 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label' ],
 				},
 				{
 					'selector': '.number-decimal-fields',
-					'value': [ 'range_slider', 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect' ],
+					'value': [ 'range_slider', 'range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label' ],
 				},
 			],
 		},
@@ -178,6 +186,45 @@ jQuery( document ).ready( function( $ ) {
 				{
 					'selector': '.wcapf-form-sub-field-date_format',
 					'value': [ 'input_date', 'input_date_range' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_query_type',
+					'value': [ 'time_period_checkbox', 'time_period_multiselect' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_select_all_items_label',
+					'value': [ 'time_period_radio', 'time_period_select' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_use_chosen',
+					'value': [ 'time_period_select', 'time_period_multiselect' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_enable_multiple_filter',
+					'value': [ 'time_period_label' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_inline_display',
+					'value': [ 'time_period_label' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_show_count',
+					'value': [ 'time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-time_period_hide_empty',
+					'value': [ 'time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-time_period_use_chosen input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-time_period_chosen_no_results_message',
+					'value': [ '1' ],
 				},
 			],
 		},
@@ -246,6 +293,16 @@ jQuery( document ).ready( function( $ ) {
 		},
 		{
 			'handler': '.wcapf-form-sub-field-use_category_images input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+		},
+		{
+			'handler': '.wcapf-form-sub-field-number_range_enable_multiple_filter input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+		},
+		{
+			'handler': '.wcapf-form-sub-field-time_period_enable_multiple_filter input',
 			'handlerType': 'checkbox',
 			'event': 'change',
 		},
