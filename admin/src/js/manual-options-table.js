@@ -11,8 +11,9 @@
  * @param tableIdentifier
  * @param valueIdentifier
  * @param rowTemplateId
+ * @param rowDefaultOptions
  */
-function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId ) {
+function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId, rowDefaultOptions = {} ) {
 	const $ = jQuery;
 
 	const $searchForm = $( '#search-form' );
@@ -117,7 +118,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 		const $field = $( this ).closest( fieldIdentifier );
 
 		const template = wp.template( rowTemplateId );
-		const rendered = template();
+		const rendered = template( rowDefaultOptions );
 		const $table   = $field.find( tableIdentifier );
 		const $rows    = $field.find( tableRowsIdentifier );
 
