@@ -229,21 +229,6 @@ jQuery( document ).ready( function( $ ) {
 			],
 		},
 		{
-			'handler': '.wcapf-form-sub-field-limit_terms select',
-			'handlerType': 'select',
-			'event': 'change',
-			'dependant': [
-				{
-					'selector': '.wcapf-form-sub-field-parent_term',
-					'value': [ 'child' ],
-				},
-				{
-					'selector': '.wcapf-form-sub-field-limit_terms_by_id',
-					'value': [ 'include', 'exclude' ],
-				},
-			],
-		},
-		{
 			'handler': '.wcapf-form-sub-field-enable_soft_limit input',
 			'handlerType': 'radio',
 			'event': 'change',
@@ -269,6 +254,10 @@ jQuery( document ).ready( function( $ ) {
 			'handlerType': 'select',
 			'event': 'change',
 			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-parent_term',
+					'value': [ 'child' ],
+				},
 				{
 					'selector': '.wcapf-form-sub-field-limit_values_by_id',
 					'value': [ 'include', 'exclude' ],

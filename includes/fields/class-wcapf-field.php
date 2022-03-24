@@ -335,6 +335,10 @@ abstract class WCAPF_Field {
 				$this->field_text( $data );
 				break;
 
+			case 'limit_values':
+				$this->field_limit_values( $data );
+				break;
+
 			case 'select':
 				$this->field_select( $data );
 				break;
@@ -447,6 +451,37 @@ abstract class WCAPF_Field {
 			<label for="<?php echo esc_attr( $id ); ?>">
 				<?php echo esc_html( $label ); ?>
 			</label>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders the HTML markup for the limit values field.
+	 *
+	 * @param array $data The field data.
+	 *
+	 * @return void
+	 */
+	private function field_limit_values( $data ) {
+		$id    = $data['id'];
+		$name  = $data['name'];
+		$value = $data['value'];
+		?>
+		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
+			<?php $this->field_label( $data ); ?>
+
+			<div class="wcapf-wrapper">
+				<input
+					class="widefat"
+					id="<?php echo esc_attr( $id ); ?>"
+					name="<?php echo esc_attr( $name ); ?>"
+					type="text"
+					value="<?php echo esc_attr( $value ); ?>"
+				>
+				<button type="button" class="button button-small limit-values-btn">
+					<span class="dashicons dashicons-search"></span>
+				</button>
+			</div>
 		</div>
 		<?php
 	}
