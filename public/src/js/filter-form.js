@@ -46,12 +46,45 @@ jQuery( document ).ready(
 			}
 		);
 
+		// Initialize jQuery chosen library
+		function initChosen() {
+			if ( ! jQuery().chosen ) {
+				return;
+			}
+
+			$wcapfTermFilter.find( '.wcapf-chosen-select' ).each( function() {
+				const $this   = $( this );
+				const options = {};
+
+				const noResultsMessage = $this.attr( 'data-no-results-message' );
+
+				if ( noResultsMessage ) {
+					options[ 'no_results_text' ] = noResultsMessage;
+				}
+
+				$this.chosen( options );
+			} );
+		}
+
+		initChosen();
+
+		// Initialize hierarchy accordion
+		function initHierarchyAccordion() {
+			$wcapfTermFilter.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
+				$( this ).toggleClass( 'active' );
+			} );
+		}
+
+		initHierarchyAccordion();
+
 		// show a loading indicator
 		function wcapfBeforeUpdate() {
 		}
 
 		// scroll to top
 		function wcapfAfterUpdate() {
+			initChosen();
+			initHierarchyAccordion();
 		}
 
 		// filter the products
@@ -286,10 +319,6 @@ jQuery( document ).ready(
 
 		// The main function to handle the filter request
 		function handleFilterRequest( $item, filterValue ) {
-			if ( ! filterValue ) {
-				return;
-			}
-
 			const $field         = $item.closest( '.wcapf-field-filter-form' );
 			const fieldID        = $field.attr( 'id' );
 			const fieldData      = fields[ fieldID ];
@@ -297,6 +326,16 @@ jQuery( document ).ready(
 			const multipleFilter = fieldData.multipleFilter;
 
 			if ( ! filterKey ) {
+				return;
+			}
+
+			if ( ! filterValue.length ) {
+				const query = wcapfRemoveQueryStringParameter( filterKey );
+				history.pushState( {}, '', query );
+
+				// filter products
+				wcapfFilterProducts();
+
 				return;
 			}
 
@@ -309,13 +348,27 @@ jQuery( document ).ready(
 
 		// handle the filter request for list fields
 		$wcapfTermFilter.on(
-			'click',
-			'.item',
+			'change',
+			'.wcapf-layered-nav [type="checkbox"], .wcapf-layered-nav [type="radio"]',
 			function( event ) {
 				event.preventDefault();
 
 				const $item       = $( this );
-				const filterValue = $item.attr( 'data-filter-id' );
+				const filterValue = $item.val();
+
+				handleFilterRequest( $item, filterValue );
+			}
+		);
+
+		// handle the filter request for labeled item
+		$wcapfTermFilter.on(
+			'click',
+			'.wcapf-labeled-nav .item',
+			function( event ) {
+				event.preventDefault();
+
+				const $item       = $( this );
+				const filterValue = $item.attr( 'data-value' );
 
 				handleFilterRequest( $item, filterValue );
 			}
@@ -331,10 +384,10 @@ jQuery( document ).ready(
 				const $item       = $( this );
 				const filterValue = $item.val();
 
-				const $field         = $item.closest( '.wcapf-field-filter-form' );
-				const fieldID        = $field.attr( 'id' );
-				const fieldData      = fields[ fieldID ];
-				const filterKey      = fieldData.filterKey;
+				const $field    = $item.closest( '.wcapf-field-filter-form' );
+				const fieldID   = $field.attr( 'id' );
+				const fieldData = fields[ fieldID ];
+				const filterKey = fieldData.filterKey;
 
 				if ( ! filterValue.length ) {
 					const query = wcapfRemoveQueryStringParameter( filterKey );

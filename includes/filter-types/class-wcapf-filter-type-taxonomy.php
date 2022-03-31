@@ -160,7 +160,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$terms = $this->get_updated_terms_count( $terms );
 		$terms = $this->filter_by_hide_empty( $terms );
-		$terms = $this->filter_by_child_only( $terms );
 
 		// TODO: Use a filter to alter the "and terms"
 
@@ -335,65 +334,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Filters the terms having the children only.
-	 *
-	 * @param array $terms The terms.
-	 *
-	 * @return array
-	 */
-	private function filter_by_child_only( $terms ) {
-		if ( $this->show_children_only ) {
-			$child_only_filtered = array();
-			$allowed             = $this->get_child_only_term_ids( $terms );
-
-			foreach ( $terms as $oc_term ) {
-				$oc_term_id = $oc_term['id'];
-
-				// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
-				if ( in_array( $oc_term_id, $allowed ) ) {
-					$child_only_filtered[ $oc_term_id ] = $oc_term;
-				}
-			}
-
-			$terms = $child_only_filtered;
-		}
-
-		return $terms;
-	}
-
-	/**
-	 * Gets the child terms for the filtered parent terms.
-	 *
-	 * @param array $terms The terms.
-	 */
-	private function get_child_only_term_ids( $terms ) {
-		$walker             = new WCAPF_Walker();
-		$walker->filter_key = $this->filter_key;
-
-		$active_filters    = $walker->get_active_filters(); // values only
-		$ancestors         = array();
-		$children          = array();
-		$first_level_terms = array();
-
-		foreach ( $active_filters as $term_id ) {
-			$ancestors = array_unique( array_merge( $ancestors, get_ancestors( $term_id, $this->taxonomy ) ) );
-		}
-
-		foreach ( $terms as $term ) {
-			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
-			if ( in_array( $term['parent_id'], $active_filters ) ) {
-				$children = array_unique( array_merge( $children, array( $term['id'] ) ) );
-			}
-
-			if ( 0 === $term['parent_id'] ) {
-				$first_level_terms = array_unique( array_merge( $first_level_terms, array( $term['id'] ) ) );
-			}
-		}
-
-		return array_unique( array_merge( $first_level_terms, $ancestors, $children, $active_filters ) );
-	}
-
-	/**
 	 * Builds the taxonomy tree.
 	 *
 	 * TODO: We should build the tree when taxonomy is hierarchical and hierarchical is activated in widget settings.
@@ -409,6 +349,10 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$increment = 0;
 
 		foreach ( $terms as $term ) {
+			if ( 0 === $increment ) {
+				$depth ++;
+			}
+
 			// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			if ( $term['parent_id'] == $parent_id ) {
 				$children = $this->build_tree( $terms, $term['id'], $depth );
@@ -420,10 +364,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 				$term['depth'] = $depth;
 
 				$tree[ $term['id'] ] = $term;
-			}
-
-			if ( 0 === $increment ) {
-				$depth ++;
 			}
 
 			$increment ++;

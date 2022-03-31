@@ -16,46 +16,102 @@
 class WCAPF_Walker {
 
 	/**
-	 * Display type
+	 * Display type.
 	 *
 	 * @var string
 	 */
 	public $display_type;
 
 	/**
-	 * Is Hierarchical
+	 * Is Hierarchical.
 	 *
-	 * @var string
+	 * @var bool
 	 */
 	public $hierarchical;
 
 	/**
-	 * Enable multiple filter
+	 * Enable Hierarchy Accordion.
+	 *
+	 * @var bool
+	 */
+	public $enable_hierarchy_accordion;
+
+	/**
+	 * All items label.
+	 *
+	 * @var string
+	 */
+	public $all_items_label;
+
+	/**
+	 * Use chosen.
+	 *
+	 * @var bool
+	 */
+	public $use_chosen;
+
+	/**
+	 * Chosen no results message.
+	 *
+	 * @var string
+	 */
+	public $no_results_message;
+
+	/**
+	 * Enable multiple filter.
 	 *
 	 * @var bool
 	 */
 	public $enable_multiple;
 
 	/**
-	 * Query type
+	 * Query type.
 	 *
 	 * @var string
 	 */
 	public $query_type;
 
 	/**
-	 * Show count
+	 * Show count.
 	 *
 	 * @var bool
 	 */
 	public $show_count;
 
 	/**
-	 * Filter key
+	 * Filter key.
 	 *
 	 * @var string
 	 */
 	public $filter_key;
+
+	/**
+	 * Filter key.
+	 *
+	 * @var string
+	 */
+	public $filter_type;
+
+	/**
+	 * Custom appearance options.
+	 *
+	 * @var array
+	 */
+	public $custom_appearance_options;
+
+	/**
+	 * Form id.
+	 *
+	 * @var string
+	 */
+	public $form_id;
+
+	/**
+	 * The position.
+	 *
+	 * @var string
+	 */
+	public $position;
 
 	/**
 	 * Build the menu.
@@ -63,54 +119,47 @@ class WCAPF_Walker {
 	 * @param array $tree The tree as multidimensional array.
 	 */
 	public function build_menu( $tree ) {
-		$html  = '';
-		$attrs = '';
-
-		if ( $this->enable_multiple ) {
-			$attrs .= 'data-multiple-filter="1"';
-		} else {
-			$attrs .= 'data-multiple-filter="0"';
-		}
-
-		$filter_key = $this->get_filter_key();
-
-		$attrs .= 'data-filter-key="' . $filter_key . '"';
-
 		$display_type = $this->display_type;
-		$list_types   = array( 'checkbox', 'radio' );
+		$show_count   = $this->show_count;
+
+		$list_types     = array( 'checkbox', 'radio' );
+		$dropdown_types = array( 'select', 'multi-select' );
 
 		if ( in_array( $display_type, $list_types ) ) {
-			$classes = 'wcapf-layered-nav';
-			$classes .= ' ' . $display_type;
-
-			$html .= '<div class="' . esc_attr( $classes ) . '" ' . $attrs . '>'; // TODO: Move to outer label.
-
-			if ( $this->hierarchical ) {
-				$html .= $this->build_hierarchical_menu( $tree );
-			} else {
-				$html .= $this->build_non_hierarchical_menu( $tree );
-			}
-		} elseif ( 'select' === $display_type ) {
-			$html .= '<div class="wcapf-dropdown-nav" ' . $attrs . '>';
-			$html .= $this->build_dropdown_menu( $tree );
+			$wrapper_classes = 'wcapf-layered-nav display-type-' . $display_type;
+		} elseif ( in_array( $display_type, $dropdown_types ) ) {
+			$wrapper_classes = 'wcapf-dropdown-nav';
+		} else {
+			$wrapper_classes = 'wcapf-labeled-nav display-type-' . $display_type;
 		}
 
-		$html .= '<input type="hidden" name="query_type" value="' . esc_attr( $this->query_type ) . '">';
+		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
+			$wrapper_classes .= ' hierarchy-accordion';
+		}
 
-		$html .= '</div>';
+		if ( $show_count ) {
+			$wrapper_classes .= ' show-count';
+		}
 
-		return apply_filters( 'wcapf_build_menu', $html, $this );
-	}
+		if ( in_array( $display_type, $list_types ) ) {
+			if ( $this->hierarchical ) {
+				$html = $this->build_hierarchical_menu( $tree );
+			} else {
+				$html = $this->build_non_hierarchical_menu( $tree );
+			}
+		} elseif ( in_array( $display_type, $dropdown_types ) ) {
+			$html = $this->build_dropdown_menu( $tree );
+		} else {
+			$html = $this->build_labeled_nav( $tree );
+		}
 
-	/**
-	 * Gets the filter key.
-	 *
-	 * TODO: Maybe redundant.
-	 *
-	 * @return string
-	 */
-	private function get_filter_key() {
-		return $this->filter_key;
+		$attrs = $this->get_wrapper_attrs();
+
+		$menu = '<div class="' . esc_attr( $wrapper_classes ) . '" ' . $attrs . '>';
+		$menu .= $html;
+		$menu .= '</div>';
+
+		return apply_filters( 'wcapf_walker_menu', $menu, $this );
 	}
 
 	/**
@@ -140,6 +189,7 @@ class WCAPF_Walker {
 				$html .= $this->tree_item( $item, $depth );
 
 				if ( isset( $item['children'] ) ) {
+					$html .= $this->get_hierarchy_accordion_html( $item );
 					$html .= $this->build_hierarchical_menu( $item['children'] );
 				}
 
@@ -164,13 +214,11 @@ class WCAPF_Walker {
 	 */
 	private function tree_item( $item, $depth ) {
 		$html         = '';
-		$classes      = 'item';
 		$checked      = '';
 		$input_markup = '';
-		$input_name   = $this->get_filter_key();
+		$input_name   = $this->filter_key;
 
 		if ( $this->item_active( $item ) ) {
-			$classes .= ' chosen';
 			$checked .= ' checked="checked"';
 		}
 
@@ -178,17 +226,19 @@ class WCAPF_Walker {
 			$input_name .= '[]';
 		}
 
+		$item_id   = $item['id'];
+		$unique_id = $input_name . '-input-' . $this->form_id . '-' . $this->position . '-' . $item_id;
+
 		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
+		$input_markup .= ' id="' . $unique_id . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
-		$input_markup .= ' value="' . esc_attr( $item['id'] ) . '"';
+		$input_markup .= ' value="' . esc_attr( $item_id ) . '"';
 		$input_markup .= $checked . '>';
 
-		$inner = $this->tree_item_inner( $item, $depth );
+		$inner = $this->tree_item_inner( $item, $unique_id, $depth );
 
-		$html .= '<span class="' . $classes . '" data-filter-id="' . esc_attr( $item['id'] ) . '" tabindex="0">';
 		$html .= $input_markup;
 		$html .= $inner;
-		$html .= '</span>';
 
 		return $html;
 	}
@@ -201,7 +251,7 @@ class WCAPF_Walker {
 	 * @return bool
 	 */
 	private function item_active( $item ) {
-		if ( in_array( strval( $item['id'] ), $this->get_active_filters(), true ) ) {
+		if ( in_array( strval( $item['id'] ), $this->get_active_items(), true ) ) {
 			return true;
 		}
 
@@ -209,22 +259,30 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * Gets the active filters.
+	 * Gets the active items.
 	 *
 	 * @return array|string[]
 	 */
-	public function get_active_filters() {
-		$key = $this->get_filter_key();
+	public function get_active_items() {
+		$active_filters = $this->get_active_filters();
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$str = isset( $_GET[ $key ] ) ? $_GET[ $key ] : '';
+		return isset( $active_filters['values'] ) ? $active_filters['values'] : array();
+	}
 
-		// Check if we have any string(including 0) in the url.
-		if ( strlen( $str ) ) {
-			return explode( ',', $str );
-		}
+	/**
+	 * Gets the active filters.
+	 *
+	 * @return array
+	 */
+	private function get_active_filters() {
+		$filter_key     = $this->filter_key;
+		$filter_type    = $this->filter_type;
+		$wcapf_filter   = WCAPF_Product_Filter::instance();
+		$chosen_filters = $wcapf_filter->get_chosen_filters();
 
-		return array();
+		$filters = $chosen_filters[ $filter_type ];
+
+		return isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 	}
 
 	/**
@@ -235,14 +293,67 @@ class WCAPF_Walker {
 	 *
 	 * @return string
 	 */
-	private function tree_item_inner( $item, $depth = null ) {
-		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
+	private function tree_item_inner( $item, $unique_id, $depth = null ) {
+		$inner = '<label for="' . esc_attr( $unique_id ) . '">';
+		$inner .= '<span>' . esc_html( $item['name'] ) . '</span>';
 
-		if ( $this->show_count ) {
-			$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+		$count = $item['count'];
+
+		if ( $this->show_count && '-1' !== $count ) {
+			$inner .= '<span class="count">' . esc_html( $count ) . '</span>';
 		}
 
+		$inner .= '</label>';
+
 		return apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+	}
+
+	/**
+	 * @param array $item The item data.
+	 *
+	 * @return string
+	 */
+	private function get_hierarchy_accordion_html( $item ) {
+		$html = '';
+
+		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
+			$classes = 'hierarchy-accordion-toggle';
+
+			if ( $this->item_active_as_ancestor( $item ) ) {
+				$classes .= ' active';
+			}
+
+			$html .= '<span class="' . esc_attr( $classes ) . '" tabindex="0"></span>';
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Checks if the given item is active as ancestor.
+	 *
+	 * @param array $item The item data.
+	 *
+	 * @return bool
+	 */
+	private function item_active_as_ancestor( $item ) {
+		// Ancestors are coming as int, and we don't compare it in strict mode.
+		if ( in_array( $item['id'], $this->get_active_ancestors() ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Gets the active ancestors.
+	 *
+	 * @return array
+	 */
+	public function get_active_ancestors() {
+		$active_filters = $this->get_active_filters();
+
+		return isset( $active_filters['active_ancestors'] ) ? $active_filters['active_ancestors'] : array();
 	}
 
 	/**
@@ -281,22 +392,41 @@ class WCAPF_Walker {
 	 * @param array $tree The tree as multidimensional array.
 	 */
 	private function build_dropdown_menu( $tree ) {
-		$input_name     = $this->get_filter_key();
+		$input_name     = $this->filter_key;
 		$input_multiple = '';
+		$input_attrs    = '';
 
-		if ( $this->enable_multiple ) {
+		if ( 'multi-select' === $this->display_type ) {
 			$input_name     .= '[]';
 			$input_multiple = ' multiple="multiple"';
 		}
 
-		$html = '<select name="' . esc_attr( $input_name ) . '"' . $input_multiple . '>';
+		if ( $this->use_chosen ) {
+			$input_classes = 'wcapf-chosen-select';
+		} else {
+			$input_classes = 'wcapf-select';
+		}
+
+		$all_items_label = $this->all_items_label;
+
+		if ( $all_items_label && 'multi-select' === $this->display_type ) {
+			$input_attrs .= 'data-placeholder="' . esc_attr( $all_items_label ) . '"';
+		}
+
+		$no_results_message = $this->no_results_message;
+
+		if ( $no_results_message ) {
+			$input_attrs .= ' data-no-results-message="' . esc_attr( $no_results_message ) . '"';
+		}
+
+		$html = '<select class="' . $input_classes . '"';
+		$html .= ' name="' . esc_attr( $input_name ) . '"';
+		$html .= $input_attrs;
+		$html .= $input_multiple;
+		$html .= '>';
 
 		foreach ( $tree as $item ) {
-			$selected = $this->item_active( $item ) ? ' selected="selected"' : '';
-
-			$html .= '<option value="' . esc_attr( $item['id'] ) . '"' . $selected . '>';
-			$html .= $item['name'] . ' ' . '(' . $item['count'] . ')';
-			$html .= '</option>';
+			$html .= $this->dropdown_item( $item );
 		}
 
 		$html .= '</select>';
@@ -305,21 +435,142 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * Tree/Menu item inner content.
+	 * Dropdown item.
 	 *
-	 * @param array $item  The item array.
-	 * @param mixed $depth The item depth.
+	 * @param array $item The item array.
 	 *
 	 * @return string
 	 */
-	private function dropdown_item_inner( $item, $depth = null ) {
-		$inner = '<span>' . esc_html( $item['name'] ) . '</span>';
+	private function dropdown_item( $item ) {
+		$option = '';
 
-		if ( $this->show_count ) {
-			$inner .= '<span class="count">(' . esc_html( $item['count'] ) . ')</span>';
+		$selected = $this->item_active( $item ) ? ' selected="selected"' : '';
+
+		$option .= '<option value="' . esc_attr( $item['id'] ) . '"' . $selected . '>';
+
+		if ( $this->hierarchical ) {
+			$option .= $this->dropdown_item_depth( $item );
 		}
 
-		return apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+		$option .= $item['name'];
+
+		$count = $item['count'];
+
+		if ( $this->show_count && '-1' !== $count ) {
+			$option .= ' (' . $item['count'] . ')';
+		}
+
+		$option .= '</option>';
+
+		$children = isset( $item['children'] ) ? $item['children'] : array();
+
+		if ( $children ) {
+			foreach ( $children as $child_item ) {
+				$option .= $this->dropdown_item( $child_item );
+			}
+		}
+
+		return $option;
+	}
+
+	private function dropdown_item_depth( $item ) {
+		$spaces = '';
+		$depth  = $item['depth'];
+
+		while ( $depth > 1 ) {
+			$spaces .= '&nbsp;&nbsp;&nbsp;';
+			$depth --;
+		}
+
+		return $spaces;
+	}
+
+	private function build_labeled_nav( $tree ) {
+		$html = '';
+
+		foreach ( $tree as $item ) {
+			$html .= $this->labeled_item( $item );
+		}
+
+		return $html;
+	}
+
+	private function labeled_item( $item ) {
+		$style = '';
+
+		$display_type = $this->display_type;
+
+		$id = $item['id'];
+
+		if ( 'color' === $display_type ) {
+			$color = '#fff'; // Default color.
+
+			$appearance_options = isset( $this->custom_appearance_options[ $id ] )
+				? $this->custom_appearance_options[ $id ]
+				: array();
+
+			if ( $appearance_options ) {
+				$color = $appearance_options['color'];
+			}
+
+			$style .= ' style="background-color: ' . $color . ';"';
+		}
+
+		$classes = 'item';
+
+		if ( $this->item_active( $item ) ) {
+			$classes .= ' checked';
+		}
+
+		$html = '<div class="' . $classes . '"' . $style . ' data-value="' . esc_attr( $id ) . '" tabindex="0">';
+
+		if ( 'color' !== $display_type && 'image' !== $display_type ) {
+			$html .= $item['name'];
+		}
+
+		if ( 'image' === $display_type ) {
+			$appearance_options = isset( $this->custom_appearance_options[ $id ] )
+				? $this->custom_appearance_options[ $id ]
+				: array();
+
+			if ( $appearance_options ) {
+				$image = $appearance_options['image_url'];
+				$html  .= '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $item['name'] ) . '">';
+			}
+		}
+
+		if ( $this->show_count ) {
+			$html .= '<span class="count">' . $item['count'] . '</span>';
+		}
+
+		$html .= '</div>';
+
+		$children = isset( $item['children'] ) ? $item['children'] : array();
+
+		if ( $children ) {
+			foreach ( $children as $child_item ) {
+				$html .= $this->labeled_item( $child_item );
+			}
+		}
+
+		return $html;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function get_wrapper_attrs() {
+		$wrapper_attrs = '';
+
+		if ( $this->enable_multiple ) {
+			$wrapper_attrs .= 'data-multiple-filter="1"';
+		} else {
+			$wrapper_attrs .= 'data-multiple-filter="0"';
+		}
+
+		$wrapper_attrs .= 'data-filter-key="' . $this->filter_key . '"';
+
+		return $wrapper_attrs;
 	}
 
 }

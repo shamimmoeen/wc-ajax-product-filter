@@ -82,16 +82,44 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 			return;
 		}
 
-		$query_type         = $this->get_sub_field_value( 'query_type' );
-		$enable_multiple    = $this->get_sub_field_value( 'enable_multiple' );
-		$show_count         = $this->get_sub_field_value( 'show_count' );
-		$hierarchical       = $this->get_sub_field_value( 'hierarchical' );
-		$show_children_only = $this->get_sub_field_value( 'show_children_only' );
-		$hide_empty         = $this->get_sub_field_value( 'hide_empty' );
-		$display_type       = $this->get_sub_field_value( 'display_type' );
+		$instance = $this->get_instance();
+		$form_id  = 1;
 
-		$filter_key = $this->get_filter_key();
-		$taxonomy   = $this->taxonomy();
+		$display_type       = $this->get_sub_field_value( 'display_type' );
+		$all_items_label    = $this->get_sub_field_value( 'all_items_label' );
+		$query_type         = $this->get_sub_field_value( 'query_type' );
+		$enable_multiple    = boolval( $this->get_sub_field_value( 'enable_multiple_filter' ) );
+		$use_chosen         = boolval( $this->get_sub_field_value( 'use_chosen' ) );
+		$no_results_message = $this->get_sub_field_value( 'chosen_no_results_message' );
+		$show_count         = boolval( $this->get_sub_field_value( 'show_count' ) );
+		$hierarchical       = boolval( $this->get_sub_field_value( 'hierarchical' ) );
+		$show_children_only = boolval( $this->get_sub_field_value( 'show_children_only' ) ); // todo: remove
+		$hide_empty         = boolval( $this->get_sub_field_value( 'hide_empty' ) );
+		$inline_display     = boolval( $this->get_sub_field_value( 'inline_display' ) );
+		$position           = $this->get_sub_field_value( 'position' );
+
+		$enable_hierarchy_accordion = boolval( $this->get_sub_field_value( 'enable_hierarchy_accordion' ) );
+		$custom_appearance_options  = $this->get_sub_field_value( 'custom_appearance_options' );
+
+		switch ( $display_type ) {
+			case 'multiselect':
+			case 'checkbox':
+				$enable_multiple = true;
+				break;
+
+			case 'select':
+			case 'radio':
+				$enable_multiple = false;
+				$query_type      = 'or';
+				break;
+		}
+
+		$enable_multiple = apply_filters( 'wcapf_field_taxonomy_enable_multiple', $enable_multiple, $instance );
+		$query_type      = apply_filters( 'wcapf_field_taxonomy_query_type', $query_type, $instance );
+
+		$filter_key  = $this->get_filter_key();
+		$filter_type = 'taxonomy';
+		$taxonomy    = $this->taxonomy();
 
 		$field_filter_data = array(
 			'taxonomy'           => $taxonomy,
@@ -105,13 +133,50 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		$filter = new WCAPF_Filter_Type_Taxonomy( $field_filter_data );
 		$items  = $filter->get_items();
 
-		$walker                  = new WCAPF_Walker();
-		$walker->display_type    = $display_type;
-		$walker->hierarchical    = $hierarchical;
-		$walker->enable_multiple = $enable_multiple;
-		$walker->query_type      = $query_type;
-		$walker->show_count      = $show_count;
-		$walker->filter_key      = $filter_key;
+		if ( 'radio' === $display_type || 'select' === $display_type || ( 'multi-select' === $display_type && $use_chosen ) ) {
+			if ( ! $all_items_label ) {
+				switch ( $this->type() ) {
+					case 'category':
+						$all_items_label = __( 'All categories', 'wc-ajax-product-filter' );
+						break;
+
+					case 'tag':
+						$all_items_label = __( 'All tags', 'wc-ajax-product-filter' );
+						break;
+				}
+			}
+
+			if ( 'multi-select' !== $display_type ) {
+				$all_items = array(
+					0 => array(
+						'id'        => '',
+						'name'      => $all_items_label,
+						'count'     => '-1',
+						'parent_id' => 0,
+						'depth'     => 0,
+					)
+				);
+
+				$items = array_merge( $all_items, $items );
+			}
+		}
+
+		$walker                             = new WCAPF_Walker();
+		$walker->display_type               = $display_type;
+		$walker->all_items_label            = $all_items_label;
+		$walker->use_chosen                 = $use_chosen;
+		$walker->no_results_message         = $no_results_message;
+		$walker->hierarchical               = $hierarchical;
+		$walker->enable_multiple            = $enable_multiple;
+		$walker->query_type                 = $query_type;
+		$walker->show_count                 = $show_count;
+		$walker->inline_display             = $inline_display;
+		$walker->filter_key                 = $filter_key;
+		$walker->filter_type                = $filter_type;
+		$walker->form_id                    = $form_id;
+		$walker->position                   = $position;
+		$walker->enable_hierarchy_accordion = $enable_hierarchy_accordion;
+		$walker->custom_appearance_options  = $custom_appearance_options;
 
 		$classes = array( 'wcapf-ajax-term-filter' );
 
@@ -133,8 +198,17 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		// TODO: Maybe move to the helper class.
 		$filter_keys = WCAPF_Product_Filter_Utils::get_taxonomy_filter_keys();
 
-		$query_type = $this->get_sub_field_value( 'query_type' );
-		$taxonomy   = $this->taxonomy();
+		$query_type      = $this->get_sub_field_value( 'query_type' );
+		$display_type    = $this->get_sub_field_value( 'display_type' );
+		$enable_multiple = $this->get_sub_field_value( 'enable_multiple_filter' );
+
+		if ( 'radio' === $display_type || 'select' === $display_type ) {
+			$query_type = 'or';
+		} elseif ( ! $enable_multiple ) {
+			$query_type = 'or';
+		}
+
+		$taxonomy = $this->taxonomy();
 
 		return isset( $filter_keys[ $taxonomy ] ) ? $filter_keys[ $taxonomy ][ $query_type ] : '';
 	}

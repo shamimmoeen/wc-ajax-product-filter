@@ -168,6 +168,11 @@ class WCAPF_Helper {
 			return;
 		}
 
+		// TODO: Render the preview in admin area.
+		if ( is_admin() ) {
+			return;
+		}
+
 		foreach ( $form_config as $field_instance ) {
 			$field_type  = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
 			$field_class = self::get_field_class_name_by_type( $field_type );

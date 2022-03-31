@@ -173,6 +173,13 @@ class WCAPF {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
 		);
 
+		wp_enqueue_style(
+			'wcapf-chosen',
+			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
+			array(),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
+		);
+
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
 			? '.min.js'
 			: '.js';
@@ -185,18 +192,26 @@ class WCAPF {
 			true
 		);
 
+		wp_enqueue_script(
+			'wcapf-chosen',
+			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
+			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
+			true
+		);
+
 		wp_localize_script(
 			'wc-ajax-product-filter-public-scripts',
 			'wcapf_params',
 			$this->default_settings()
 		);
 
-		wp_enqueue_style(
-			'wcapf-styles',
-			WCAPF_PLUGIN_URL . 'assets/css/wcapf-styles.css',
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/assets/css/wcapf-styles.css' )
-		);
+		// wp_enqueue_style(
+		// 	'wcapf-styles',
+		// 	WCAPF_PLUGIN_URL . 'assets/css/wcapf-styles.css',
+		// 	array(),
+		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/css/wcapf-styles.css' )
+		// );
 
 		wp_enqueue_style(
 			'wcapf-fontawesome-icons',

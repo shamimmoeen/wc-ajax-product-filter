@@ -185,6 +185,7 @@ class WCAPF_Product_Filter {
 	 */
 	private function get_chosen_term( $taxonomy, $keys, $query ) {
 		$active_filters    = array();
+		$active_ancestors  = array();
 		$products_in_terms = array();
 
 		$filter_values = $this->get_chosen_filter_values( $keys, $query );
@@ -194,6 +195,12 @@ class WCAPF_Product_Filter {
 		}
 
 		list( $terms, $filter_key, $query_type ) = $filter_values;
+
+		$include_hierarchical_data = false;
+
+		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
+			$include_hierarchical_data = true;
+		}
 
 		foreach ( $terms as $term_id ) {
 			// TODO: Maybe use cache.
@@ -218,6 +225,11 @@ class WCAPF_Product_Filter {
 
 			$products_in_terms[ $term_id ] = $term_products;
 
+			if ( $include_hierarchical_data ) {
+				$ancestors        = get_ancestors( $term_id, $taxonomy );
+				$active_ancestors = array_merge( $ancestors, $active_ancestors );
+			}
+
 			// TODO: Set the data for active filters.
 		}
 
@@ -231,6 +243,7 @@ class WCAPF_Product_Filter {
 			'product_ids'       => $product_ids,
 			'products_in_terms' => $products_in_terms,
 			'active_filters'    => $active_filters,
+			'active_ancestors'  => $active_ancestors,
 		);
 	}
 
