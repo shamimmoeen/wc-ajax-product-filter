@@ -167,17 +167,24 @@ class WCAPF {
 			: '.css';
 
 		wp_enqueue_style(
-			'wc-ajax-product-filter-public-styles',
-			WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-public-styles' . $ext,
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
-		);
-
-		wp_enqueue_style(
 			'wcapf-chosen',
 			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
 			array(),
 			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
+		);
+
+		wp_enqueue_style(
+			'wcapf-nouislider',
+			WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
+			array(),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext )
+		);
+
+		wp_enqueue_style(
+			'wc-ajax-product-filter-public-styles',
+			WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-public-styles' . $ext,
+			array(),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
 		);
 
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
@@ -185,18 +192,26 @@ class WCAPF {
 			: '.js';
 
 		wp_enqueue_script(
-			'wc-ajax-product-filter-public-scripts',
-			WCAPF_PLUGIN_URL . 'public/js/wc-ajax-product-filter-public-scripts' . $ext,
-			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
+			'wcapf-chosen',
+			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
+			array( 'jquery' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
 			true
 		);
 
 		wp_enqueue_script(
-			'wcapf-chosen',
-			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
-			array( 'jquery', 'wp-util', 'jquery-ui-draggable', 'jquery-ui-droppable', 'jquery-ui-sortable' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
+			'wcapf-nouislider',
+			WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
+			array( 'jquery' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext ),
+			true
+		);
+
+		wp_enqueue_script(
+			'wc-ajax-product-filter-public-scripts',
+			WCAPF_PLUGIN_URL . 'public/js/wc-ajax-product-filter-public-scripts' . $ext,
+			array( 'jquery' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
 			true
 		);
 

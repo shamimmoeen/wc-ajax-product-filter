@@ -114,6 +114,7 @@ class WCAPF_Product_Filter {
 	public function get_chosen_filters() {
 		// parse url
 		$url = $_SERVER['QUERY_STRING'];
+		$url = str_replace( '+', '%2B', $url ); // Preserve '+'
 		parse_str( $url, $query );
 
 		$chosen     = array();
@@ -134,16 +135,6 @@ class WCAPF_Product_Filter {
 			$chosen['orderby'] = $orderby;
 		}
 
-		// min-price
-		if ( isset( $_GET['min-price'] ) ) {
-			$chosen['min_price'] = $_GET['min-price'];
-		}
-
-		// max-price
-		if ( isset( $_GET['max-price'] ) ) {
-			$chosen['max_price'] = $_GET['max-price'];
-		}
-
 		// taxonomies
 		$taxonomy_filter_keys = WCAPF_Product_Filter_Utils::get_taxonomy_filter_keys();
 
@@ -153,6 +144,13 @@ class WCAPF_Product_Filter {
 			if ( $result ) {
 				$taxonomies[ $result['filter_key'] ] = $result;
 			}
+		}
+
+		// price
+		$filter_by_price = $this->get_chosen_price( $query );
+
+		if ( $filter_by_price ) {
+			$post_metas['price'] = $filter_by_price;
 		}
 
 		// post metas
@@ -282,6 +280,73 @@ class WCAPF_Product_Filter {
 		$filter_values = explode( $value_separator, $values );
 
 		return array( $filter_values, $filter_key, $query_type );
+	}
+
+	/**
+	 * Gets the chosen post meta.
+	 *
+	 * @param array $query The query.
+	 *
+	 * @return array
+	 */
+	private function get_chosen_price( $query ) {
+		$active_filters = array();
+
+		$meta_key      = '_price';
+		$filter_key    = 'price';
+		$filter_values = array();
+		$query_type    = 'between';
+
+		if ( isset( $query[ $filter_key ] ) ) {
+			$_filter_values = $query[ $filter_key ];
+			$filter_values  = explode( '+', $_filter_values );
+		}
+
+		if ( ! $filter_values ) {
+			return array();
+		}
+
+		if ( 2 > count( $filter_values ) ) {
+			return array();
+		}
+
+		$min = $filter_values[0];
+		$max = $filter_values[1];
+
+		$type = apply_filters( 'wcapf_price_filter_data_type', 'DECIMAL(10,3)' );
+
+		$args = array(
+			'post_type'   => 'product',
+			'post_status' => 'publish',
+			'nopaging'    => true,
+			'fields'      => 'ids',
+			'meta_query'  => array(
+				array(
+					'key'     => $meta_key,
+					'value'   => array( $min, $max ),
+					'compare' => 'BETWEEN',
+					'type'    => $type,
+				),
+			),
+		);
+
+		$ranged_products = get_posts( $args );
+
+		$ranged_products[] = 0;
+		$products_in_metas = $ranged_products;
+		$product_ids       = $ranged_products;
+
+		// TODO: Set the data for active filters.
+
+		return array(
+			'meta'              => $meta_key,
+			'filter_key'        => $filter_key,
+			'query_type'        => $query_type,
+			'values'            => $filter_values,
+			'product_ids'       => $product_ids,
+			'products_in_metas' => $products_in_metas,
+			'active_filters'    => $active_filters,
+		);
 	}
 
 	/**

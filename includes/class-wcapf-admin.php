@@ -199,6 +199,9 @@ class WCAPF_Admin {
 		$fields = isset( $_POST['wcapf-fields'] ) ? $_POST['wcapf-fields'] : array();
 		$parsed = array();
 
+		$float_fields  = array( 'min_value', 'max_value', 'step' );
+		$absint_fields = array( 'decimal_places' );
+
 		foreach ( $fields as $type => $sub_fields ) {
 			$class_name = WCAPF_Helper::get_field_class_name_by_type( $type );
 
@@ -219,7 +222,23 @@ class WCAPF_Admin {
 						continue;
 					}
 
-					$parsed_field[ $field_key ] = sanitize_text_field( $field_value );
+					if ( in_array( $field_key, $float_fields ) ) {
+						$_field_value = floatval( $field_value );
+
+						if ( 'step' === $field_key && ! $_field_value ) {
+							$_field_value = 1;
+						}
+					} elseif ( in_array( $field_key, $absint_fields ) ) {
+						$_field_value = absint( $field_value );
+					} else {
+						$_field_value = sanitize_text_field( $field_value );
+
+						if ( 'decimal_separator' === $field_key && ! $_field_value ) {
+							$_field_value = '.';
+						}
+					}
+
+					$parsed_field[ $field_key ] = $_field_value;
 				}
 
 				$parsed_field['type'] = $type;

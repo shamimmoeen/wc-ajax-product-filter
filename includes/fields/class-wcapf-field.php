@@ -721,6 +721,8 @@ abstract class WCAPF_Field {
 	/**
 	 * Get the field's subfield value.
 	 *
+	 * TODO: Add default parameter.
+	 *
 	 * @param string $name The subfield name.
 	 *
 	 * @return mixed

@@ -83,7 +83,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		}
 
 		$instance = $this->get_instance();
-		$form_id  = 1;
+		$form_id  = 1; // TODO: Set it dynamically.
 
 		$display_type       = $this->get_sub_field_value( 'display_type' );
 		$all_items_label    = $this->get_sub_field_value( 'all_items_label' );
@@ -95,7 +95,6 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		$hierarchical       = boolval( $this->get_sub_field_value( 'hierarchical' ) );
 		$show_children_only = boolval( $this->get_sub_field_value( 'show_children_only' ) ); // todo: remove
 		$hide_empty         = boolval( $this->get_sub_field_value( 'hide_empty' ) );
-		$inline_display     = boolval( $this->get_sub_field_value( 'inline_display' ) );
 		$position           = $this->get_sub_field_value( 'position' );
 
 		$enable_hierarchy_accordion = boolval( $this->get_sub_field_value( 'enable_hierarchy_accordion' ) );
@@ -170,7 +169,6 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		$walker->enable_multiple            = $enable_multiple;
 		$walker->query_type                 = $query_type;
 		$walker->show_count                 = $show_count;
-		$walker->inline_display             = $inline_display;
 		$walker->filter_key                 = $filter_key;
 		$walker->filter_type                = $filter_type;
 		$walker->form_id                    = $form_id;

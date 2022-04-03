@@ -121,7 +121,7 @@ class WCAPF_Field_Group_Number extends WCAPF_Field_Group {
 							'id'       => 'step',
 							'label'    => __( 'Step', 'wc-ajax-product-filter' ),
 							'name'     => 'step',
-							'default'  => '10',
+							'default'  => '1',
 							'position' => 15,
 						),
 					),

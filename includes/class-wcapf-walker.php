@@ -216,7 +216,8 @@ class WCAPF_Walker {
 		$html         = '';
 		$checked      = '';
 		$input_markup = '';
-		$input_name   = $this->filter_key;
+		$filter_key   = $this->filter_key;
+		$input_name   = $filter_key;
 
 		if ( $this->item_active( $item ) ) {
 			$checked .= ' checked="checked"';
@@ -227,7 +228,7 @@ class WCAPF_Walker {
 		}
 
 		$item_id   = $item['id'];
-		$unique_id = $input_name . '-input-' . $this->form_id . '-' . $this->position . '-' . $item_id;
+		$unique_id = $filter_key . '-input-' . $this->form_id . '-' . $this->position . '-' . $item_id;
 
 		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
 		$input_markup .= ' id="' . $unique_id . '"';
@@ -251,8 +252,16 @@ class WCAPF_Walker {
 	 * @return bool
 	 */
 	private function item_active( $item ) {
-		if ( in_array( strval( $item['id'] ), $this->get_active_items(), true ) ) {
-			return true;
+		$active_items = $this->get_active_items();
+
+		if ( $active_items ) {
+			if ( in_array( strval( $item['id'] ), $active_items, true ) ) {
+				return true;
+			}
+		} else {
+			if ( '-1' === $item['count'] ) {
+				return true;
+			}
 		}
 
 		return false;
