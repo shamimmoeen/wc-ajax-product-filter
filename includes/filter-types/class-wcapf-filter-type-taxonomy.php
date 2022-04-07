@@ -37,13 +37,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	protected $hierarchical;
 
 	/**
-	 * Show children only
-	 *
-	 * @var bool
-	 */
-	protected $show_children_only;
-
-	/**
 	 * Hide empty
 	 *
 	 * @var bool
@@ -58,49 +51,34 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	protected $filter_key;
 
 	/**
+	 * @var WCAPF_Field_Instance
+	 */
+	private $field;
+
+	/**
 	 * The constructor.
 	 *
-	 * @param array $field_data The field data.
+	 * @param WCAPF_Field_Instance $field The field instance.
 	 */
-	public function __construct( $field_data ) {
-		$this->set_properties( $field_data );
+	public function __construct( $field ) {
+		$this->field = $field;
+
+		$this->set_properties();
 	}
 
 	/**
 	 * Sets the properties.
 	 *
-	 * @param array $field_data The field data.
-	 *
 	 * @return void
 	 */
-	private function set_properties( $field_data ) {
-		$this->taxonomy   = isset( $field_data['taxonomy'] ) ? $field_data['taxonomy'] : '';
-		$this->query_type = isset( $field_data['query_type'] ) ? $field_data['query_type'] : '';
-		$this->filter_key = isset( $field_data['filter_key'] ) ? $field_data['filter_key'] : '';
+	private function set_properties() {
+		$field = $this->field;
 
-		$this->hierarchical = false;
-
-		if ( isset( $field_data['hierarchical'] ) ) {
-			if ( $field_data['hierarchical'] ) {
-				$this->hierarchical = true;
-			}
-		}
-
-		$this->show_children_only = false;
-
-		if ( isset( $field_data['show_children_only'] ) ) {
-			if ( $field_data['show_children_only'] ) {
-				$this->show_children_only = true;
-			}
-		}
-
-		$this->hide_empty = false;
-
-		if ( isset( $field_data['hide_empty'] ) ) {
-			if ( $field_data['hide_empty'] ) {
-				$this->hide_empty = true;
-			}
-		}
+		$this->taxonomy     = $field->taxonomy;
+		$this->hierarchical = $field->hierarchical;
+		$this->query_type   = $field->query_type;
+		$this->filter_key   = $field->filter_key;
+		$this->hide_empty   = $field->hide_empty;
 	}
 
 	/**

@@ -80,10 +80,6 @@ class WCAPF_Product_Filter {
 		$chosen_filters     = $this->get_chosen_filters();
 		$products_in_fields = array();
 
-		// echo '<pre>';
-		// print_r( $chosen_filters );
-		// echo '</pre>';
-
 		foreach ( $chosen_filters as $fields ) {
 			foreach ( $fields as $field ) {
 				$products_in_fields[] = $field['product_ids'];
@@ -114,7 +110,7 @@ class WCAPF_Product_Filter {
 	public function get_chosen_filters() {
 		// parse url
 		$url = $_SERVER['QUERY_STRING'];
-		$url = str_replace( '+', '%2B', $url ); // Preserve '+'
+		$url = str_replace( '+', '%2B', $url ); // Preserve '+' to filter by ranges.
 		parse_str( $url, $query );
 
 		$chosen     = array();
@@ -153,27 +149,17 @@ class WCAPF_Product_Filter {
 			$post_metas['price'] = $filter_by_price;
 		}
 
-		// post metas
-		$price_filter_keys = WCAPF_Product_Filter_Utils::get_price_filter_keys();
-
-		foreach ( $price_filter_keys as $meta_key => $keys ) {
-			$result = $this->get_chosen_post_meta( $meta_key, $keys, $query );
-
-			if ( $result ) {
-				$post_metas[ $result['filter_key'] ] = $result;
-			}
-		}
-
-		// TODO: Rating, s.
+		// TODO: Rating.
+		// TODO: Product Status.
 
 		$chosen['taxonomy']  = $taxonomies;
-		$chosen['post_meta'] = $post_metas;
+		$chosen['post-meta'] = $post_metas;
 
-		return apply_filters( 'wcapf_chosen_filters', $chosen );
+		return apply_filters( 'wcapf_chosen_filters', $chosen, $query );
 	}
 
 	/**
-	 * Gets the chosen term.
+	 * Filter data by taxonomy.
 	 *
 	 * @param string $taxonomy The taxonomy.
 	 * @param array  $keys     The filter keys.
@@ -186,7 +172,7 @@ class WCAPF_Product_Filter {
 		$active_ancestors  = array();
 		$products_in_terms = array();
 
-		$filter_values = $this->get_chosen_filter_values( $keys, $query );
+		$filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $keys, $query );
 
 		if ( ! $filter_values ) {
 			return array();
@@ -223,6 +209,7 @@ class WCAPF_Product_Filter {
 
 			$products_in_terms[ $term_id ] = $term_products;
 
+			// For hierarchical accordion.
 			if ( $include_hierarchical_data ) {
 				$ancestors        = get_ancestors( $term_id, $taxonomy );
 				$active_ancestors = array_merge( $ancestors, $active_ancestors );
@@ -246,44 +233,7 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * Gets the chosen filter values.
-	 *
-	 * @param array $keys  The filter keys.
-	 * @param array $query The url query.
-	 *
-	 * @return array
-	 */
-	private function get_chosen_filter_values( $keys, $query ) {
-		$and_query_key   = $keys['and'];
-		$or_query_key    = $keys['or'];
-		$value_separator = ','; // TODO: Use a filter.
-
-		$values     = '';
-		$filter_key = '';
-		$query_type = '';
-
-		if ( isset( $query[ $and_query_key ] ) ) {
-			$filter_key = $and_query_key;
-			$values     = $query[ $and_query_key ];
-			$query_type = 'and';
-		} elseif ( isset( $query[ $or_query_key ] ) ) {
-			$filter_key = $or_query_key;
-			$values     = $query[ $or_query_key ];
-			$query_type = 'or';
-		}
-
-		// Check if we have any string(including 0) in the url.
-		if ( ! strlen( $values ) ) {
-			return array();
-		}
-
-		$filter_values = explode( $value_separator, $values );
-
-		return array( $filter_values, $filter_key, $query_type );
-	}
-
-	/**
-	 * Gets the chosen post meta.
+	 * Filter data by price.
 	 *
 	 * @param array $query The query.
 	 *
@@ -310,8 +260,8 @@ class WCAPF_Product_Filter {
 			return array();
 		}
 
-		$min = $filter_values[0];
-		$max = $filter_values[1];
+		$min = floatval( $filter_values[0] );
+		$max = floatval( $filter_values[1] );
 
 		$type = apply_filters( 'wcapf_price_filter_data_type', 'DECIMAL(10,3)' );
 
@@ -343,64 +293,6 @@ class WCAPF_Product_Filter {
 			'filter_key'        => $filter_key,
 			'query_type'        => $query_type,
 			'values'            => $filter_values,
-			'product_ids'       => $product_ids,
-			'products_in_metas' => $products_in_metas,
-			'active_filters'    => $active_filters,
-		);
-	}
-
-	/**
-	 * Gets the chosen post meta.
-	 *
-	 * @param string $meta_key The post meta key.
-	 * @param array  $keys     The filter keys.
-	 * @param array  $query    The query.
-	 *
-	 * @return array
-	 */
-	private function get_chosen_post_meta( $meta_key, $keys, $query ) {
-		$active_filters    = array();
-		$products_in_metas = array();
-
-		$filter_values = $this->get_chosen_filter_values( $keys, $query );
-
-		if ( ! $filter_values ) {
-			return array();
-		}
-
-		list( $meta_values, $filter_key, $query_type ) = $filter_values;
-
-		foreach ( $meta_values as $meta_value ) {
-			// TODO: Maybe use cache.
-			$meta_products = get_posts(
-				array(
-					'post_type'   => 'product',
-					'post_status' => 'publish',
-					'nopaging'    => true,
-					'fields'      => 'ids',
-					'meta_query'  => array(
-						array(
-							'key'   => $meta_key,
-							'value' => $meta_value,
-						),
-					),
-				)
-			);
-
-			$meta_products[] = 0;
-
-			$products_in_metas[] = $meta_products;
-
-			// TODO: Set the data for active filters.
-		}
-
-		$product_ids = WCAPF_Product_Filter_Utils::combine_values( $query_type, $products_in_metas );
-
-		return array(
-			'meta'              => $meta_key,
-			'filter_key'        => $filter_key,
-			'query_type'        => $query_type,
-			'values'            => $meta_values,
 			'product_ids'       => $product_ids,
 			'products_in_metas' => $products_in_metas,
 			'active_filters'    => $active_filters,

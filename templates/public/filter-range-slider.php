@@ -18,9 +18,6 @@
 
 $input_name = $filter_key . '[]';
 
-$min_value = number_format( $min_value, $decimal_places, $decimal_separator, $thousand_separator );
-$max_value = number_format( $max_value, $decimal_places, $decimal_separator, $thousand_separator );
-
 $_attrs = array();
 
 $_attrs[] = 'data-range-min-value="' . $range_min_value . '"';

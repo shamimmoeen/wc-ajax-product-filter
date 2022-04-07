@@ -62,7 +62,7 @@ class WCAPF_Walker {
 	 *
 	 * @var bool
 	 */
-	public $enable_multiple;
+	public $enable_multiple_filter;
 
 	/**
 	 * Query type.
@@ -114,6 +114,107 @@ class WCAPF_Walker {
 	public $position;
 
 	/**
+	 * The active filters.
+	 *
+	 * @var array
+	 */
+	private $active_filters;
+
+	/**
+	 * The active items.
+	 *
+	 * @var array
+	 */
+	private $active_items;
+
+	/**
+	 * The active ancestors.
+	 *
+	 * @var array
+	 */
+	private $active_ancestors;
+
+	/**
+	 * The constructor.
+	 *
+	 * @param WCAPF_Field_Instance $field The field instance.
+	 */
+	public function __construct( $field ) {
+		$this->set_properties( $field );
+
+		$this->active_filters   = $this->active_filters();
+		$this->active_items     = $this->active_items();
+		$this->active_ancestors = $this->active_ancestors();
+	}
+
+	private function set_properties( $field ) {
+		$default_properties = array(
+			'display_type'               => '',
+			'hierarchical'               => false,
+			'enable_hierarchy_accordion' => false,
+			'all_items_label'            => '',
+			'use_chosen'                 => false,
+			'no_results_message'         => '',
+			'enable_multiple_filter'     => false,
+			'query_type'                 => '',
+			'show_count'                 => false,
+			'filter_key'                 => '',
+			'filter_type'                => '',
+			'custom_appearance_options'  => array(),
+			'form_id'                    => '',
+			'position'                   => '',
+		);
+
+		foreach ( $default_properties as $key => $value ) {
+			$property_value = $value;
+
+			if ( isset( $field->$key ) ) {
+				$property_value = $field->$key;
+			}
+
+			$this->$key = $property_value;
+		}
+	}
+
+	/**
+	 * The active filters.
+	 *
+	 * @return array
+	 */
+	private function active_filters() {
+		$filter_key     = $this->filter_key;
+		$filter_type    = $this->filter_type;
+		$wcapf_filter   = WCAPF_Product_Filter::instance();
+		$chosen_filters = $wcapf_filter->get_chosen_filters();
+
+		$filters = $chosen_filters[ $filter_type ];
+
+		return isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
+	}
+
+	/**
+	 * The active items.
+	 *
+	 * @return array|string[]
+	 */
+	private function active_items() {
+		$active_filters = $this->active_filters;
+
+		return isset( $active_filters['values'] ) ? $active_filters['values'] : array();
+	}
+
+	/**
+	 * The active ancestors.
+	 *
+	 * @return array
+	 */
+	private function active_ancestors() {
+		$active_filters = $this->active_filters;
+
+		return isset( $active_filters['active_ancestors'] ) ? $active_filters['active_ancestors'] : array();
+	}
+
+	/**
 	 * Build the menu.
 	 *
 	 * @param array $tree The tree as multidimensional array.
@@ -122,8 +223,20 @@ class WCAPF_Walker {
 		$display_type = $this->display_type;
 		$show_count   = $this->show_count;
 
+		if ( 'radio' === $display_type || 'select' === $display_type ) {
+			$all_items = array(
+				0 => array(
+					'id'    => '',
+					'name'  => $this->all_items_label,
+					'count' => '-1',
+				)
+			);
+
+			$tree = array_merge( $all_items, $tree );
+		}
+
 		$list_types     = array( 'checkbox', 'radio' );
-		$dropdown_types = array( 'select', 'multi-select' );
+		$dropdown_types = array( 'select', 'multiselect' );
 
 		if ( in_array( $display_type, $list_types ) ) {
 			$wrapper_classes = 'wcapf-layered-nav display-type-' . $display_type;
@@ -223,7 +336,7 @@ class WCAPF_Walker {
 			$checked .= ' checked="checked"';
 		}
 
-		if ( $this->enable_multiple ) {
+		if ( $this->enable_multiple_filter ) {
 			$input_name .= '[]';
 		}
 
@@ -252,7 +365,7 @@ class WCAPF_Walker {
 	 * @return bool
 	 */
 	private function item_active( $item ) {
-		$active_items = $this->get_active_items();
+		$active_items = $this->active_items;
 
 		if ( $active_items ) {
 			if ( in_array( strval( $item['id'] ), $active_items, true ) ) {
@@ -265,33 +378,6 @@ class WCAPF_Walker {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Gets the active items.
-	 *
-	 * @return array|string[]
-	 */
-	public function get_active_items() {
-		$active_filters = $this->get_active_filters();
-
-		return isset( $active_filters['values'] ) ? $active_filters['values'] : array();
-	}
-
-	/**
-	 * Gets the active filters.
-	 *
-	 * @return array
-	 */
-	private function get_active_filters() {
-		$filter_key     = $this->filter_key;
-		$filter_type    = $this->filter_type;
-		$wcapf_filter   = WCAPF_Product_Filter::instance();
-		$chosen_filters = $wcapf_filter->get_chosen_filters();
-
-		$filters = $chosen_filters[ $filter_type ];
-
-		return isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 	}
 
 	/**
@@ -347,22 +433,11 @@ class WCAPF_Walker {
 	 */
 	private function item_active_as_ancestor( $item ) {
 		// Ancestors are coming as int, and we don't compare it in strict mode.
-		if ( in_array( $item['id'], $this->get_active_ancestors() ) ) {
+		if ( in_array( $item['id'], $this->active_ancestors ) ) {
 			return true;
 		}
 
 		return false;
-	}
-
-	/**
-	 * Gets the active ancestors.
-	 *
-	 * @return array
-	 */
-	public function get_active_ancestors() {
-		$active_filters = $this->get_active_filters();
-
-		return isset( $active_filters['active_ancestors'] ) ? $active_filters['active_ancestors'] : array();
 	}
 
 	/**
@@ -374,6 +449,10 @@ class WCAPF_Walker {
 	private function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
 		$html  = '';
 		$depth = 0;
+
+		if ( ! $tree ) {
+			return $html;
+		}
 
 		if ( $wrap_with ) {
 			$html .= '<ul>';
@@ -405,7 +484,7 @@ class WCAPF_Walker {
 		$input_multiple = '';
 		$input_attrs    = '';
 
-		if ( 'multi-select' === $this->display_type ) {
+		if ( 'multiselect' === $this->display_type ) {
 			$input_name     .= '[]';
 			$input_multiple = ' multiple="multiple"';
 		}
@@ -418,7 +497,7 @@ class WCAPF_Walker {
 
 		$all_items_label = $this->all_items_label;
 
-		if ( $all_items_label && 'multi-select' === $this->display_type ) {
+		if ( $all_items_label && 'multiselect' === $this->display_type ) {
 			$input_attrs .= 'data-placeholder="' . esc_attr( $all_items_label ) . '"';
 		}
 
@@ -571,7 +650,7 @@ class WCAPF_Walker {
 	private function get_wrapper_attrs() {
 		$wrapper_attrs = '';
 
-		if ( $this->enable_multiple ) {
+		if ( $this->enable_multiple_filter ) {
 			$wrapper_attrs .= 'data-multiple-filter="1"';
 		} else {
 			$wrapper_attrs .= 'data-multiple-filter="0"';

@@ -231,6 +231,13 @@ class WCAPF_Admin {
 					} elseif ( in_array( $field_key, $absint_fields ) ) {
 						$_field_value = absint( $field_value );
 					} else {
+						$space_allowed = array( 'value_prefix', 'value_postfix', 'values_separator' );
+
+						// Preserve spaces in values separator.
+						if ( in_array( $field_key, $space_allowed ) ) {
+							$field_value = str_replace( ' ', '&nbsp;', $field_value );
+						}
+
 						$_field_value = sanitize_text_field( $field_value );
 
 						if ( 'decimal_separator' === $field_key && ! $_field_value ) {

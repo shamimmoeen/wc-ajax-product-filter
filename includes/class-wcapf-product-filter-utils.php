@@ -44,25 +44,49 @@ class WCAPF_Product_Filter_Utils {
 			);
 		}
 
-		return apply_filters( 'wcapf_filter_keys', $keys );
+		return apply_filters( 'wcapf_taxonomy_filter_keys', $keys );
 	}
 
 	/**
-	 * Gets the filter keys for the product price filter.
+	 * Gets the chosen filter values.
 	 *
-	 * TODO: Refactor this.
+	 * @param array $keys  The filter keys.
+	 * @param array $query The url query.
 	 *
-	 * @return string[][]
+	 * @return array
 	 */
-	public static function get_price_filter_keys() {
-		$key = '_price';
+	public static function get_chosen_filter_values( $keys, $query ) {
+		$and_query_key     = $keys['and'];
+		$or_query_key      = $keys['or'];
+		$between_query_key = isset( $keys['between'] ) ? $keys['between'] : ''; // To filter by ranges.
+		$value_separator   = ','; // TODO: Use a filter.
 
-		return array(
-			$key => array(
-				'and' => $key . 'a',
-				'or'  => $key . 'o',
-			),
-		);
+		$values     = '';
+		$filter_key = '';
+		$query_type = '';
+
+		if ( isset( $query[ $and_query_key ] ) ) {
+			$filter_key = $and_query_key;
+			$values     = $query[ $and_query_key ];
+			$query_type = 'and';
+		} elseif ( isset( $query[ $or_query_key ] ) ) {
+			$filter_key = $or_query_key;
+			$values     = $query[ $or_query_key ];
+			$query_type = 'or';
+		} elseif ( isset( $query[ $between_query_key ] ) ) {
+			$filter_key = $between_query_key;
+			$values     = $query[ $between_query_key ];
+			$query_type = 'between';
+		}
+
+		// Check if we have any string(including 0) in the url.
+		if ( ! strlen( $values ) ) {
+			return array();
+		}
+
+		$filter_values = explode( $value_separator, $values );
+
+		return array( $filter_values, $filter_key, $query_type );
 	}
 
 	/**

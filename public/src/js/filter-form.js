@@ -170,13 +170,10 @@ jQuery( document ).ready(
 				} );
 
 				function filterProductsAccordingToSlider( values ) {
-					const minValue = number_format( values[ 0 ], decimalPlaces, decimalSeparator, thousandSeparator );
-					const maxValue = number_format( values[ 1 ], decimalPlaces, decimalSeparator, thousandSeparator );
+					const minValue = parseFloat( values[ 0 ] );
+					const maxValue = parseFloat( values[ 1 ] );
 
-					const _rangeMinValue = number_format( rangeMinValue, decimalPlaces, decimalSeparator, thousandSeparator );
-					const _rangeMaxValue = number_format( rangeMaxValue, decimalPlaces, decimalSeparator, thousandSeparator );
-
-					if ( minValue === _rangeMinValue && maxValue === _rangeMaxValue ) {
+					if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
 						const query = wcapfRemoveQueryStringParameter( filterKey );
 						history.pushState( {}, '', query );
 					} else {
