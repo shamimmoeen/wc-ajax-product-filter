@@ -23,13 +23,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	protected $taxonomy;
 
 	/**
-	 * Query type
-	 *
-	 * @var string
-	 */
-	protected $query_type;
-
-	/**
 	 * Is Hierarchical
 	 *
 	 * @var bool
@@ -37,48 +30,15 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	protected $hierarchical;
 
 	/**
-	 * Hide empty
-	 *
-	 * @var bool
-	 */
-	protected $hide_empty;
-
-	/**
-	 * Filter key
-	 *
-	 * @var string
-	 */
-	protected $filter_key;
-
-	/**
-	 * @var WCAPF_Field_Instance
-	 */
-	private $field;
-
-	/**
-	 * The constructor.
-	 *
-	 * @param WCAPF_Field_Instance $field The field instance.
-	 */
-	public function __construct( $field ) {
-		$this->field = $field;
-
-		$this->set_properties();
-	}
-
-	/**
 	 * Sets the properties.
 	 *
 	 * @return void
 	 */
-	private function set_properties() {
+	protected function set_properties() {
 		$field = $this->field;
 
 		$this->taxonomy     = $field->taxonomy;
 		$this->hierarchical = $field->hierarchical;
-		$this->query_type   = $field->query_type;
-		$this->filter_key   = $field->filter_key;
-		$this->hide_empty   = $field->hide_empty;
 	}
 
 	/**
@@ -87,14 +47,16 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function prepare_items() {
-		$args = array(
-			'taxonomy'               => $this->taxonomy,
-			'hide_empty'             => false,
-			'count'                  => true,
-			'update_term_meta_cache' => false,
+		$args = apply_filters(
+			'wcapf_get_terms_args',
+			array(
+				'taxonomy'               => $this->taxonomy,
+				'hide_empty'             => false,
+				'count'                  => true,
+				'update_term_meta_cache' => false,
+			),
+			$this->field
 		);
-
-		// TODO: Use a filter to alter the arguments
 
 		$_terms = get_terms( $args );
 		$terms  = array();
@@ -117,29 +79,22 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 				'parent_id' => $parent_id,
 			);
 
-			// TODO: Use a filter to alter the term data
-
 			$terms[ $term_id ] = $_term;
 		}
 
-		// if ( 'or' === $this->query_type ) {
-		// 	$terms = $this->filter_by_hide_empty( $terms );
-		// 	$terms = $this->filter_by_child_only( $terms );
-		//
-		// 	// TODO: Use a filter to alter the "or terms"
-		//
-		// 	return $this->build_tree( $terms );
-		// }
-
-		// taxonomy hierarchical
-		// query_type = AND
-		// show count
-		// hide empty
-
+		$terms = apply_filters( 'wcapf_taxonomy_terms', $terms, $this->field );
 		$terms = $this->get_updated_terms_count( $terms );
 		$terms = $this->filter_by_hide_empty( $terms );
 
-		// TODO: Use a filter to alter the "and terms"
+		// If taxonomy is non-hierarchical then don't need to build the tree.
+		if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
+			return $terms;
+		}
+
+		// If hierarchical display is disabled then don't need to build the tree.
+		if ( ! $this->hierarchical ) {
+			return $terms;
+		}
 
 		return $this->build_tree( $terms );
 	}
@@ -156,19 +111,19 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			return array();
 		}
 
-		$term_ids            = wp_list_pluck( $terms, 'id' );
-		$active_terms        = $this->get_filtered_term_product_counts( $term_ids );
-		$updated_terms_count = array();
+		$term_ids       = wp_list_pluck( $terms, 'id' );
+		$filtered_count = $this->get_filtered_term_product_counts( $term_ids );
+		$updated_count  = array();
 
 		foreach ( $terms as $term_id => $term ) {
-			$term['count'] = isset( $active_terms[ $term_id ] ) ? $active_terms[ $term_id ] : 0;
+			$term['count'] = isset( $filtered_count[ $term_id ] ) ? $filtered_count[ $term_id ] : 0;
 
-			$updated_terms_count[ $term_id ] = $term;
+			$updated_count[ $term_id ] = $term;
 		}
 
 		// The pad count logic should only run for hierarchical taxonomies like product categories.
 		if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
-			return $updated_terms_count;
+			return $updated_count;
 		}
 
 		/**
@@ -183,20 +138,20 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			$ancestors = array();
 
 			// phpcs:ignore Generic.Files.LineLength.TooLong, WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-			while ( ! empty( $updated_terms_count[ $child ] ) && $parent = $updated_terms_count[ $child ]['parent_id'] ) {
+			while ( ! empty( $updated_count[ $child ] ) && $parent = $updated_count[ $child ]['parent_id'] ) {
 				$ancestors[] = $child;
 
-				if ( ! empty( $active_terms[ $term_id ] ) ) {
-					if ( is_array( $active_terms[ $term_id ] ) ) {
-						foreach ( $active_terms[ $term_id ] as $parent_child_term_id => $parent_child_term_count ) {
-							$active_terms[ $parent ][ $parent_child_term_id ] = $parent_child_term_count;
+				if ( ! empty( $filtered_count[ $term_id ] ) ) {
+					if ( is_array( $filtered_count[ $term_id ] ) ) {
+						foreach ( $filtered_count[ $term_id ] as $parent_child_term_id => $parent_child_term_count ) {
+							$filtered_count[ $parent ][ $parent_child_term_id ] = $parent_child_term_count;
 						}
 					} else {
-						if ( isset( $active_terms[ $parent ] ) && ! is_array( $active_terms[ $parent ] ) ) {
-							$active_terms[ $parent ] = array( $active_terms[ $parent ] );
+						if ( isset( $filtered_count[ $parent ] ) && ! is_array( $filtered_count[ $parent ] ) ) {
+							$filtered_count[ $parent ] = array( $filtered_count[ $parent ] );
 						}
 
-						$active_terms[ $parent ][ $term_id ] = $active_terms[ $term_id ];
+						$filtered_count[ $parent ][ $term_id ] = $filtered_count[ $term_id ];
 					}
 				}
 
@@ -209,17 +164,17 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		}
 
 		// Transfer the touched cells.
-		foreach ( $active_terms as $id => $count ) {
-			if ( isset( $updated_terms_count[ $id ] ) ) {
+		foreach ( $filtered_count as $id => $count ) {
+			if ( isset( $updated_count[ $id ] ) ) {
 				if ( is_array( $count ) ) {
 					$count = array_sum( $count );
 				}
 
-				$updated_terms_count[ $id ]['count'] = $count;
+				$updated_count[ $id ]['count'] = $count;
 			}
 		}
 
-		return $updated_terms_count;
+		return $updated_count;
 	}
 
 	/**
@@ -236,73 +191,42 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function get_filtered_term_product_counts( $term_ids ) {
 		global $wpdb;
 
-		list( $meta_query_sql, $tax_query_sql ) = $this->get_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $this->get_query_data();
 
-		// Generate query.
-		$query = array();
+		$query  = array();
+		$select = '';
+		$join   = '';
+		$where  = '';
 
-		$select = "SELECT COUNT(DISTINCT $wpdb->posts.ID) ";
-
+		$select .= "SELECT COUNT(DISTINCT $wpdb->posts.ID) ";
 		$select .= 'AS term_count, terms.term_id AS term_count_id';
 
 		$query['select'] = $select;
 
 		$query['from'] = "FROM $wpdb->posts";
-		$query['join'] = "
-			INNER JOIN $wpdb->term_relationships AS term_relationships ON $wpdb->posts.ID = term_relationships.object_id
-			INNER JOIN $wpdb->term_taxonomy AS term_taxonomy USING(term_taxonomy_id)
-			INNER JOIN $wpdb->terms AS terms USING(term_id)
-			" . $tax_query_sql['join'] . $meta_query_sql['join'];
 
-		$where = "WHERE $wpdb->posts.post_type IN ('product')";
+		$join .= "INNER JOIN $wpdb->term_relationships AS term_relationships ON $wpdb->posts.ID = term_relationships.object_id";
+		$join .= " INNER JOIN $wpdb->term_taxonomy AS term_taxonomy USING(term_taxonomy_id)";
+		$join .= " INNER JOIN $wpdb->terms AS terms USING(term_id)";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
 
+		$query['join'] = $join;
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
 		$where .= " AND $wpdb->posts.post_status = 'publish' ";
 		$where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
 
-		$main_query_type = WCAPF_Product_Filter::instance()->get_field_relations();
-		$main_query      = WC_Query::get_main_query();
-		$post__in        = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
-
-		if ( 'and' === $main_query_type ) {
-			if ( 'and' === $this->query_type ) {
-				if ( $post__in ) {
-					$post_in = implode( ',', $post__in );
-
-					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
-				}
-			} elseif ( 'or' === $this->query_type ) {
-				$filtered_product_ids = $this->get_product_ids_by_other_filters();
-
-				if ( $filtered_product_ids ) {
-					$post_in = implode( ',', $filtered_product_ids );
-
-					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
-				}
-			}
-		} elseif ( 'or' === $main_query_type ) {
-			if ( 'and' === $this->query_type ) {
-				$filtered_product_ids = $this->get_self_filtered_product_ids();
-
-				if ( $filtered_product_ids ) {
-					$post_in = implode( ',', $filtered_product_ids );
-
-					$where .= " AND $wpdb->posts.ID IN ( $post_in )";
-				}
-			} elseif ( 'or' === $this->query_type ) {
-				// No where clause required.
-			}
-		}
-
-		// TODO: Include search clause.
-
-		// $where .= $this->get_common_where_clauses();
+		$where .= $this->get_post_in_clause();
 
 		$query['where'] = $where;
 
 		$query['group_by'] = 'GROUP BY terms.term_id';
 
-		$query = apply_filters( 'wcapf_get_filtered_term_product_counts_query', $query, $this );
+		$query = apply_filters( 'wcapf_terms_query_sql', $query, $this->field );
 		$query = implode( ' ', $query );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -313,8 +237,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 	/**
 	 * Builds the taxonomy tree.
-	 *
-	 * TODO: We should build the tree when taxonomy is hierarchical and hierarchical is activated in widget settings.
 	 *
 	 * @param array   $terms     The terms.
 	 * @param integer $parent_id The parent identifier.

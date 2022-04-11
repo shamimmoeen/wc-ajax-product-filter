@@ -126,7 +126,6 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-number.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group.php';

@@ -16,6 +16,66 @@
 abstract class WCAPF_Filter_Type {
 
 	/**
+	 * Filter key
+	 *
+	 * @var string
+	 */
+	protected $filter_key;
+
+	/**
+	 * Query type
+	 *
+	 * @var string
+	 */
+	protected $query_type;
+
+	/**
+	 * Hide empty
+	 *
+	 * @var bool
+	 */
+	protected $hide_empty;
+
+	/**
+	 * The field instance.
+	 *
+	 * @var WCAPF_Field_Instance
+	 */
+	protected $field;
+
+	/**
+	 * The constructor.
+	 *
+	 * @param WCAPF_Field_Instance $field The field instance.
+	 */
+	public function __construct( $field ) {
+		$this->field = $field;
+
+		$this->set_default_properties();
+		$this->set_properties();
+	}
+
+	/**
+	 * Sets the default properties.
+	 *
+	 * @return void
+	 */
+	private function set_default_properties() {
+		$field = $this->field;
+
+		$this->filter_key = $field->filter_key;
+		$this->query_type = $field->query_type;
+		$this->hide_empty = $field->hide_empty;
+	}
+
+	/**
+	 * Sets the properties.
+	 *
+	 * @return void
+	 */
+	abstract protected function set_properties();
+
+	/**
 	 * Gets the items.
 	 *
 	 * @return array
@@ -39,42 +99,16 @@ abstract class WCAPF_Filter_Type {
 	protected function get_query_data() {
 		global $wpdb;
 
-		$tax_query  = WC_Query::get_main_tax_query();
-		$meta_query = WC_Query::get_main_meta_query();
+		$tax_query    = WC_Query::get_main_tax_query();
+		$meta_query   = WC_Query::get_main_meta_query();
+		$search_query = WC_Query::get_main_search_query_sql();
 
 		$meta_query     = new WP_Meta_Query( $meta_query );
 		$tax_query      = new WP_Tax_Query( $tax_query );
 		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
 		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
 
-		return array( $meta_query_sql, $tax_query_sql );
-	}
-
-	/**
-	 * Gets the common where clauses for the sql query.
-	 *
-	 * @return string
-	 */
-	protected function get_common_where_clauses() {
-		global $wpdb;
-
-		$main_query = WC_Query::get_main_query();
-		$post__in   = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
-		$where      = '';
-
-		if ( $post__in ) {
-			$post_in = implode( ',', $post__in );
-
-			$where .= " AND $wpdb->posts.ID IN ( $post_in )";
-		}
-
-		$search = WC_Query::get_main_search_query_sql();
-
-		if ( $search ) {
-			$where .= ' AND ' . $search;
-		}
-
-		return $where;
+		return array( $meta_query_sql, $tax_query_sql, $search_query );
 	}
 
 	/**
@@ -100,6 +134,50 @@ abstract class WCAPF_Filter_Type {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_post_in_clause() {
+		global $wpdb;
+
+		$main_query_type = WCAPF_Product_Filter::instance()->get_field_relations();
+		$main_query      = WC_Query::get_main_query();
+		$post__in        = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
+		$post_in_clause  = '';
+
+		if ( 'and' === $main_query_type ) {
+			if ( 'and' === $this->query_type ) {
+				if ( $post__in ) {
+					$post_in = implode( ',', $post__in );
+
+					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			} elseif ( 'or' === $this->query_type ) {
+				$filtered_product_ids = $this->get_product_ids_by_other_filters();
+
+				if ( $filtered_product_ids ) {
+					$post_in = implode( ',', $filtered_product_ids );
+
+					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			}
+		} elseif ( 'or' === $main_query_type ) {
+			if ( 'and' === $this->query_type ) {
+				$filtered_product_ids = $this->get_self_filtered_product_ids();
+
+				if ( $filtered_product_ids ) {
+					$post_in = implode( ',', $filtered_product_ids );
+
+					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
+				}
+			} elseif ( 'or' === $this->query_type ) {
+				$post_in_clause = " AND ( 1 = 1 )";
+			}
+		}
+
+		return $post_in_clause;
 	}
 
 	/**

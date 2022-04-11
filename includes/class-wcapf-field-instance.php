@@ -42,7 +42,9 @@ class WCAPF_Field_Instance {
 	private $instance;
 
 	/**
-	 * @param $instance
+	 * The constructor.
+	 *
+	 * @param array $instance The raw field instance.
 	 */
 	public function __construct( $instance ) {
 		$this->instance = $instance;
@@ -50,6 +52,11 @@ class WCAPF_Field_Instance {
 		$this->set_default_properties();
 	}
 
+	/**
+	 * Sets the default properties.
+	 *
+	 * @return void
+	 */
 	private function set_default_properties() {
 		$value_type = $this->get_value_type();
 
@@ -132,7 +139,7 @@ class WCAPF_Field_Instance {
 
 		$this->position = $this->get_sub_field_value( 'position' );
 		$this->type     = $this->get_field_type();
-		$this->form_id  = 1;
+		$this->form_id  = 1; // TODO: Form id will be dynamic.
 
 		$this->filter_type  = $this->get_filter_type();
 		$this->filter_key   = $this->get_filter_key();
@@ -185,13 +192,13 @@ class WCAPF_Field_Instance {
 	 */
 	private function parse_display_type( $display_type ) {
 		$available_display_types = array(
-			'checkbox'     => array( 'checkbox' ),
-			'radio'        => array( 'radio' ),
-			'select'       => array( 'select' ),
-			'multiselect'  => array( 'multi-select' ),
-			'label'        => array( 'label' ),
-			'color'        => array( 'color' ),
-			'image'        => array( 'image' ),
+			'checkbox'     => array( 'checkbox', 'range_checkbox', 'time_period_checkbox' ),
+			'radio'        => array( 'radio', 'range_radio', 'time_period_radio' ),
+			'select'       => array( 'select', 'range_select', 'time_period_select' ),
+			'multiselect'  => array( 'multi-select', 'range_multiselect', 'time_period_multiselect' ),
+			'label'        => array( 'label', 'range_label', 'time_period_label' ),
+			'color'        => array( 'color', 'range_color', 'time_period_color' ),
+			'image'        => array( 'image', 'range_image', 'time_period_image' ),
 			'range_slider' => array( 'range_slider' ),
 			'range_number' => array( 'range_number' ),
 		);
@@ -358,9 +365,18 @@ class WCAPF_Field_Instance {
 			return false;
 		}
 
+		$non_hierarchical_display_types = array( 'label', 'color', 'image' );
+
+		if ( in_array( $this->display_type, $non_hierarchical_display_types ) ) {
+			return false;
+		}
+
 		return boolval( $this->get_sub_field_value( 'hierarchical' ) );
 	}
 
+	/**
+	 * @return bool
+	 */
 	private function is_hierarchy_accordion_enabled() {
 		if ( ! $this->taxonomy_is_hierarchical() ) {
 			return false;

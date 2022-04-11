@@ -132,6 +132,44 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * @noinspection SqlNoDataSourceInspection
+	 * @noinspection SqlResolve
+	 *
+	 * @param string $meta_key The meta key.
+	 *
+	 * @return string
+	 */
+	public static function get_min_value( $meta_key ) {
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT MIN( CAST( meta_value as SIGNED ) ) FROM $wpdb->postmeta WHERE meta_key='%s'",
+			$meta_key
+		);
+
+		return $wpdb->get_var( $query );
+	}
+
+	/**
+	 * @noinspection SqlNoDataSourceInspection
+	 * @noinspection SqlResolve
+	 *
+	 * @param string $meta_key The meta key.
+	 *
+	 * @return string
+	 */
+	public static function get_max_value( $meta_key ) {
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT MAX( CAST( meta_value as SIGNED ) ) FROM $wpdb->postmeta WHERE meta_key='%s'",
+			$meta_key
+		);
+
+		return $wpdb->get_var( $query );
+	}
+
+	/**
 	 * The product status option row markup.
 	 *
 	 * @param array $data The template data.
