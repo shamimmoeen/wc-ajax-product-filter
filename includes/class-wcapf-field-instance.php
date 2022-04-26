@@ -192,15 +192,17 @@ class WCAPF_Field_Instance {
 	 */
 	private function parse_display_type( $display_type ) {
 		$available_display_types = array(
-			'checkbox'     => array( 'checkbox', 'range_checkbox', 'time_period_checkbox' ),
-			'radio'        => array( 'radio', 'range_radio', 'time_period_radio' ),
-			'select'       => array( 'select', 'range_select', 'time_period_select' ),
-			'multiselect'  => array( 'multi-select', 'range_multiselect', 'time_period_multiselect' ),
-			'label'        => array( 'label', 'range_label', 'time_period_label' ),
-			'color'        => array( 'color', 'range_color', 'time_period_color' ),
-			'image'        => array( 'image', 'range_image', 'time_period_image' ),
-			'range_slider' => array( 'range_slider' ),
-			'range_number' => array( 'range_number' ),
+			'checkbox'         => array( 'checkbox', 'range_checkbox', 'time_period_checkbox' ),
+			'radio'            => array( 'radio', 'range_radio', 'time_period_radio' ),
+			'select'           => array( 'select', 'range_select', 'time_period_select' ),
+			'multiselect'      => array( 'multi-select', 'range_multiselect', 'time_period_multiselect' ),
+			'label'            => array( 'label', 'range_label', 'time_period_label' ),
+			'color'            => array( 'color', 'range_color', 'time_period_color' ),
+			'image'            => array( 'image', 'range_image', 'time_period_image' ),
+			'range_slider'     => array( 'range_slider' ),
+			'range_number'     => array( 'range_number' ),
+			'input_date'       => array( 'input_date' ),
+			'input_date_range' => array( 'input_date_range' ),
 		);
 
 		$available_display_types = apply_filters( 'wcapf_field_display_types', $available_display_types );

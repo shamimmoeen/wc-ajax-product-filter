@@ -9,7 +9,7 @@
 
 jQuery( document ).ready( function( $ ) {
 
-	const $searchForm = $( '#search-form' );
+	const fieldWrapper = $( '#chosen_field_wrapper' );
 
 	/**
 	 * Toggle disabled attribute of min-value field for number type.
@@ -25,13 +25,13 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
-	$searchForm.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
+	fieldWrapper.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
 		const $this = $( this );
 
 		toggleNumberMinValueField( $this );
 	} );
 
-	$searchForm.on(
+	fieldWrapper.on(
 		'click',
 		'.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]',
 		function() {
@@ -55,13 +55,13 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
-	$searchForm.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
+	fieldWrapper.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
 		const $this = $( this );
 
 		toggleNumberMaxValueField( $this );
 	} );
 
-	$searchForm.on(
+	fieldWrapper.on(
 		'click',
 		'.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]',
 		function() {

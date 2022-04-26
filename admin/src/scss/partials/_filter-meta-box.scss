@@ -1,0 +1,44 @@
+@import "../mixins";
+
+#available_fields {
+	.inside {
+		.available-fields {
+			@include clearfix;
+
+			margin-top: -5px;
+
+			.available-field {
+				cursor: pointer;
+				float: left;
+				margin: 10px 10px 0 0;
+				min-width: 150px;
+
+				input[type="radio"] {
+					display: none;
+				}
+
+				span {
+					border: 1px solid #c3c4c7;
+					box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+					color: #1d2327;
+					display: block;
+					font-size: 1em;
+					font-weight: 500;
+					line-height: 1;
+					margin: 0;
+					overflow: hidden;
+					padding: 15px;
+					text-overflow: ellipsis;
+					user-select: none;
+					white-space: nowrap;
+				}
+
+				input[type="radio"]:checked + span {
+					background: #2271b1;
+					border-color: #2271b1;
+					color: #fff;
+				}
+			}
+		}
+	}
+}

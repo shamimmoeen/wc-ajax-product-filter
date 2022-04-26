@@ -16,6 +16,25 @@
 class WCAPF_Product_Filter_Utils {
 
 	/**
+	 * Gets the list of field types in those the field key is required.
+	 *
+	 * @return array
+	 */
+	public static function get_field_types_with_key_required() {
+		return apply_filters(
+			'wcapf_field_types_with_key_required',
+			array(
+				'category',
+				'tag',
+				'attribute',
+				'price',
+				'rating',
+				'product-status',
+			)
+		);
+	}
+
+	/**
 	 * Gets the filter keys.
 	 *
 	 * @return array

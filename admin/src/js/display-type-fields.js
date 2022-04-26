@@ -9,10 +9,10 @@
 
 jQuery( document ).ready( function( $ ) {
 
-	const $searchForm = $( '#search-form' );
+	const fieldWrapper = $( '#chosen_field_wrapper' );
 
 	// Override no-results-message, all-items-label field's toggle visibility when text display type is changed.
-	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-display_type select' === handler ) {
 			const $noResults     = $field.find( '.wcapf-form-sub-field-chosen_no_results_message' );
 			const $allItemsLabel = $field.find( '.wcapf-form-sub-field-all_items_label' );
@@ -33,7 +33,7 @@ jQuery( document ).ready( function( $ ) {
 	} );
 
 	// Override no-results-message, all-items-label field's toggle visibility when text use chosen is changed.
-	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-use_chosen input' === handler ) {
 			const $noResults     = $field.find( '.wcapf-form-sub-field-chosen_no_results_message' );
 			const $allItemsLabel = $field.find( '.wcapf-form-sub-field-all_items_label' );

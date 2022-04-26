@@ -116,14 +116,6 @@ class WCAPF_Field_Group_Text extends WCAPF_Field_Group {
 				'name'     => 'enable_multiple_filter',
 				'position' => 30,
 			),
-			array(
-				'type'     => 'checkbox',
-				'id'       => 'inline_display',
-				'label'    => __( 'Display the options inline', 'wc-ajax-product-filter' ),
-				'name'     => 'inline_display',
-				'default'  => '1',
-				'position' => 55,
-			),
 		);
 
 		if ( $this->is_advanced_appearance_supported ) {

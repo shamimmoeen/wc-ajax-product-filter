@@ -247,6 +247,8 @@ jQuery( document ).ready(
 			initChosen();
 			initHierarchyAccordion();
 			initNoUISlider();
+
+			$( 'body' ).trigger( 'wcapf_after_update' );
 		}
 
 		// filter the products

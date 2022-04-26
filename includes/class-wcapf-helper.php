@@ -23,82 +23,30 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The settings page hook.
-	 *
-	 * @return string
-	 */
-	public static function settings_page_hook() {
-		return 'settings_page_wc-ajax-product-filter';
-	}
-
-	/**
-	 * The settings page's settings tab url.
-	 *
-	 * @return string
-	 */
-	public static function settings_page_tab_url() {
-		return add_query_arg( 'tab', 'settings', self::settings_page_url() );
-	}
-
-	/**
 	 * The settings page url.
 	 *
 	 * @return string
 	 */
 	public static function settings_page_url() {
-		return menu_page_url( 'wc-ajax-product-filter', false );
+		return menu_page_url( 'wcapf-settings', false );
 	}
 
 	/**
-	 * Gets the current tab of the settings page.
-	 *
-	 * @return string
-	 */
-	public static function get_current_tab() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		return ( isset( $_GET['tab'] ) && 'settings' === $_GET['tab'] ) ? 'settings' : 'search-form';
-	}
-
-	/**
-	 * Renders the form fields.
-	 *
-	 * @return void
-	 */
-	public static function render_form_fields() {
-		$form_config = self::get_form_config();
-
-		if ( ! $form_config ) {
-			return;
-		}
-
-		$fields_data = self::available_search_fields();
-
-		foreach ( $form_config as $field_instance ) {
-			$field_type = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
-			$field_name = isset( $fields_data[ $field_type ] ) ? $fields_data[ $field_type ] : '';
-
-			if ( ! $field_name ) {
-				continue;
-			}
-
-			WCAPF_Template_Loader::get_instance()->load(
-				'admin/form-field',
-				array(
-					'field_key'      => $field_type,
-					'field_name'     => $field_name,
-					'field_instance' => $field_instance,
-				)
-			);
-		}
-	}
-
-	/**
-	 * Gets the search form config.
+	 * Gets the wcapf settings.
 	 *
 	 * @return array
 	 */
-	public static function get_form_config() {
-		return get_option( 'wcapf_form_conf' );
+	public static function get_settings() {
+		$option_name = 'wcapf_settings';
+		$db_options  = get_option( $option_name );
+
+		if ( has_filter( $option_name ) ) {
+			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
+		} else {
+			$settings = $db_options;
+		}
+
+		return $settings;
 	}
 
 	/**
@@ -159,29 +107,31 @@ class WCAPF_Helper {
 	/**
 	 * Renders the filter form.
 	 *
+	 * TODO: Render the preview in admin area.
+	 *
 	 * @return void
 	 */
 	public static function render_filter_form() {
-		$form_config = self::get_form_config();
+		$args = array(
+			'post_type'   => 'wcapf-filter',
+			'post_status' => 'publish',
+			'nopaging'    => true,
+			'fields'      => 'ids',
+		);
 
-		if ( ! $form_config ) {
-			return;
-		}
+		$filters = get_posts( $args );
 
-		// TODO: Render the preview in admin area.
-		if ( is_admin() ) {
-			return;
-		}
+		foreach ( $filters as $post_id ) {
+			$field_data = get_post_meta( $post_id, '_field_data', true );
 
-		foreach ( $form_config as $field_instance ) {
-			$field_type  = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
+			$field_type  = isset( $field_data['type'] ) ? $field_data['type'] : '';
 			$field_class = self::get_field_class_name_by_type( $field_type );
 
 			if ( ! $field_class ) {
 				continue;
 			}
 
-			$field = self::get_field_instance( $field_type, $field_instance );
+			$field = self::get_field_instance( $field_type, $field_data );
 			$field->filter_form();
 		}
 	}

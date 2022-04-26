@@ -8,46 +8,35 @@
  * @author     Mainul Hassan Main
  */
 
-$wcapf_tab             = WCAPF_Helper::get_current_tab();
-$wcapf_template_loader = WCAPF_Template_Loader::get_instance();
+$wcapf_settings_instance = WCAPF_Settings_Page::get_instance();
+
+$msg_code = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) : '';
 ?>
 
 <div class="wrap">
 	<h1 class="wp-heading-inline">
-		<?php echo esc_html( get_admin_page_title() ); ?>
+		<?php esc_html_e( 'Settings', 'wc-ajax-product-filter' ); ?>
 	</h1>
 
 	<hr class="wp-header-end">
 
-	<h2 class="nav-tab-wrapper">
-		<a
-			href="<?php echo esc_url( WCAPF_Helper::settings_page_url() ); ?>"
-			class="nav-tab <?php echo 'search-form' === $wcapf_tab ? esc_attr( 'nav-tab-active' ) : ''; ?>"
-		>
-			<?php esc_html_e( 'Search Form', 'wc-ajax-product-filter' ); ?>
-		</a>
-		<a
-			href="<?php echo esc_url( WCAPF_Helper::settings_page_tab_url() ); ?>"
-			class="nav-tab <?php echo 'settings' === $wcapf_tab ? esc_attr( 'nav-tab-active' ) : ''; ?>"
-		>
-			<?php esc_html_e( 'Settings', 'wc-ajax-product-filter' ); ?>
-		</a>
-	</h2>
+	<?php $wcapf_settings_instance->render_admin_notices( $msg_code ); ?>
 
-	<div id="poststuff">
-		<div id="post-body" class="columns-2">
-			<div id="post-body-content">
-				<?php
-				if ( 'search-form' === $wcapf_tab ) {
-					$wcapf_template_loader->load( 'admin/search-form' );
-				} else {
-					$wcapf_template_loader->load( 'admin/settings' );
-				}
-				?>
-			</div>
-			<div id="postbox-container-1" class="postbox-container">
-				<?php $wcapf_template_loader->load( 'admin/sidebar' ); ?>
-			</div>
-		</div>
-	</div>
+	<form method="post">
+		<?php if ( has_filter( $wcapf_settings_instance->get_option_name() ) ): ?>
+			<p>
+				<span class="dashicons dashicons-info"></span>
+				<?php esc_html_e( 'Filter has been applied and that may modify the settings below.', 'wc-ajax-product-filter' ); ?>
+			</p>
+		<?php endif ?>
+
+		<table class="form-table">
+			<?php $wcapf_settings_instance->render_settings_fields(); ?>
+		</table>
+
+		<?php
+		wp_nonce_field( 'wcapf_settings_save_nonce', 'wcapf_settings_nonce_field' );
+		submit_button();
+		?>
+	</form>
 </div>

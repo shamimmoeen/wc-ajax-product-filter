@@ -1,4 +1,4 @@
-@import "./partials/layout";
+@import "./partials/layout"; // todo: deprecated
 @import "./partials/search-form";
 @import "./partials/message";
 @import "./partials/remodal";
@@ -6,3 +6,6 @@
 @import "./partials/number-ui-options";
 @import "./partials/manual-options-table";
 @import "./partials/product-status-options-table";
+@import "./partials/filter-meta-box";
+@import "./partials/header-navigation";
+@import "./partials/admin-notice";

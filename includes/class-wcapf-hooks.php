@@ -46,6 +46,7 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'show_query' ), 80 );
 	}
 
+	// TODO: Remove this.
 	public function show_query() {
 		// global $wp_query;
 		//

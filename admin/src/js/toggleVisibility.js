@@ -11,7 +11,7 @@
 
 jQuery( document ).ready( function( $ ) {
 
-	const $searchForm = $( '#search-form' );
+	const fieldWrapper = $( '#chosen_field_wrapper' );
 
 	const dependantData = [
 		{
@@ -30,6 +30,10 @@ jQuery( document ).ready( function( $ ) {
 				{
 					'selector': '.input-type-date-fields',
 					'value': [ 'date' ],
+				},
+				{
+					'selector': '.value-decimal-fields',
+					'value': [ 'number' ],
 				},
 			],
 		},
@@ -63,10 +67,6 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'label', 'color', 'image' ],
 				},
 				{
-					'selector': '.wcapf-form-sub-field-inline_display',
-					'value': [ 'label', 'color', 'image' ],
-				},
-				{
 					'selector': '.column-group-custom_appearance',
 					'value': [ 'color', 'image' ],
 				},
@@ -90,6 +90,17 @@ jQuery( document ).ready( function( $ ) {
 			'dependant': [
 				{
 					'selector': '.wcapf-form-sub-field-enable_hierarchy_accordion',
+					'value': [ '1' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-value_decimal input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-value_decimal_places',
 					'value': [ '1' ],
 				},
 			],
@@ -128,10 +139,6 @@ jQuery( document ).ready( function( $ ) {
 				},
 				{
 					'selector': '.wcapf-form-sub-field-number_range_enable_multiple_filter',
-					'value': [ 'range_label' ],
-				},
-				{
-					'selector': '.wcapf-form-sub-field-number_range_inline_display',
 					'value': [ 'range_label' ],
 				},
 				{
@@ -204,10 +211,6 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'time_period_label' ],
 				},
 				{
-					'selector': '.wcapf-form-sub-field-time_period_inline_display',
-					'value': [ 'time_period_label' ],
-				},
-				{
 					'selector': '.wcapf-form-sub-field-time_period_show_count',
 					'value': [ 'time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label' ],
 				},
@@ -240,7 +243,17 @@ jQuery( document ).ready( function( $ ) {
 			],
 		},
 		{
+			'handler': '.wcapf-form-sub-field-taxonomy select',
+			'handlerType': 'select',
+			'event': 'change',
+		},
+		{
 			'handler': '.wcapf-form-sub-field-custom-taxonomy select',
+			'handlerType': 'select',
+			'event': 'change',
+		},
+		{
+			'handler': '.wcapf-form-sub-field-meta_key select',
 			'handlerType': 'select',
 			'event': 'change',
 		},
@@ -324,7 +337,7 @@ jQuery( document ).ready( function( $ ) {
 			}
 		} );
 
-		$searchForm.trigger( 'after_toggle_request', [ handler, _value, $field ] );
+		fieldWrapper.trigger( 'after_toggle_request', [ handler, _value, $field ] );
 	}
 
 	function handleToggleRequest( data, currentSelector, value ) {
@@ -342,7 +355,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
-	function setupSearchForm( inital = false ) {
+	function setupField( inital = false ) {
 		$.each( dependantData, function( i, data ) {
 			const handler = data[ 'handler' ];
 			const event   = data[ 'event' ];
@@ -350,7 +363,7 @@ jQuery( document ).ready( function( $ ) {
 			handleToggleRequest( data, null, null );
 
 			if ( inital ) {
-				$searchForm.on( event, handler, function() {
+				fieldWrapper.on( event, handler, function() {
 					const _this  = $( this );
 					const _value = $( this ).val();
 					handleToggleRequest( data, _this, _value );
@@ -359,11 +372,11 @@ jQuery( document ).ready( function( $ ) {
 		} );
 	}
 
-	setupSearchForm( true );
+	setupField( true );
 
-	$searchForm.on( 'field_added', function() {
+	fieldWrapper.on( 'field_added', function() {
 		// Toggle the visibility of subfields.
-		setupSearchForm();
+		setupField();
 	} );
 
 } );

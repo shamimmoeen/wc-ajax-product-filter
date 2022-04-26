@@ -9,9 +9,9 @@
 
 jQuery( document ).ready( function( $ ) {
 
-	const $searchForm = $( '#search-form' );
+	const fieldWrapper = $( '#chosen_field_wrapper' );
 
-	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-display_type select' === handler ) {
 			const $queryType        = $field.find( '.wcapf-form-sub-field-query_type' );
 			const validDisplayTypes = [ 'label', 'color', 'image' ];
@@ -28,7 +28,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 
-	$searchForm.on( 'after_toggle_request', function( e, handler, value, $field ) {
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-enable_multiple_filter input' === handler ) {
 			const $queryType        = $field.find( '.wcapf-form-sub-field-query_type' );
 			const $displayType      = $field.find( '.wcapf-form-sub-field-display_type select' );

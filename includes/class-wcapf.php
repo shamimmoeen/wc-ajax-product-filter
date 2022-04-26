@@ -118,12 +118,15 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-settings-page.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-form-widget.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-meta-box.php';
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
@@ -280,15 +283,15 @@ class WCAPF {
 
 	/**
 	 * Loads the backend scripts.
-	 *
-	 * @param string $hook The current admin page.
 	 */
-	public function load_backend_scripts( $hook ) {
+	public function load_backend_scripts() {
 		if ( ! $this->wc_loaded() ) {
 			return;
 		}
 
-		if ( WCAPF_Helper::settings_page_hook() !== $hook ) {
+		global $typenow;
+
+		if ( 'wcapf-filter' !== $typenow ) {
 			return;
 		}
 

@@ -16,7 +16,7 @@
 function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId, rowDefaultOptions = {} ) {
 	const $ = jQuery;
 
-	const $searchForm = $( '#search-form' );
+	const fieldWrapper = $( '#chosen_field_wrapper' );
 
 	const fieldIdentifier = '.wcapf-form-field';
 	const rowsIdentifier  = '.field-table-body-rows';
@@ -41,11 +41,11 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	const tableRowsIdentifier = tableIdentifier + ' ' + rowsIdentifier;
 
 	// Init the sortable table after page loads.
-	initSortableTable( $searchForm.find( tableRowsIdentifier ) );
+	initSortableTable( fieldWrapper.find( tableRowsIdentifier ) );
 
 	// Init the sortable table after the field is added.
-	$searchForm.on( 'field_added', function( e, ui ) {
-		initSortableTable( $( ui.item.find( tableRowsIdentifier ) ) );
+	fieldWrapper.on( 'field_added', function() {
+		initSortableTable( $( fieldWrapper.find( tableRowsIdentifier ) ) );
 	} );
 
 	function triggerOptionsChange( $field ) {
@@ -83,7 +83,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	// Remove Option
 	const removeBtnIdentifier = tableIdentifier + ' .remove-option';
 
-	$searchForm.on( 'click', removeBtnIdentifier, function() {
+	fieldWrapper.on( 'click', removeBtnIdentifier, function() {
 		const $item  = $( this ).closest( rowIdentifier );
 		const $field = $item.closest( fieldIdentifier );
 
@@ -97,7 +97,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	// Clear All Options
 	const clearOptionsBtnIdentifier = tableIdentifier + ' .clear-options';
 
-	$searchForm.on( 'click', clearOptionsBtnIdentifier, function() {
+	fieldWrapper.on( 'click', clearOptionsBtnIdentifier, function() {
 		const $field = $( this ).closest( fieldIdentifier );
 
 		$field.find( tableRowsIdentifier ).empty();
@@ -109,7 +109,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	// Add New Option
 	const addOptionBtnIdentifier = tableIdentifier + ' .add-option';
 
-	$searchForm.on( 'click', addOptionBtnIdentifier, function() {
+	fieldWrapper.on( 'click', addOptionBtnIdentifier, function() {
 		// Bail out if no tmpl found for the type.
 		if ( ! jQuery( '#tmpl-' + rowTemplateId ).length ) {
 			return;
@@ -126,7 +126,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 
 		triggerOptionsChange( $field );
 
-		$searchForm.trigger( 'new_option_added', [ $field ] );
+		fieldWrapper.trigger( 'new_option_added', [ $field ] );
 
 		if ( ! $table.hasClass( 'has-options' ) ) {
 			$table.addClass( 'has-options' );
@@ -136,7 +136,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	// Trigger options change when the text fields get changed.
 	const textFieldsIdentifier = tableRowsIdentifier + ' input[type="text"]';
 
-	$searchForm.on( 'input', textFieldsIdentifier, function() {
+	fieldWrapper.on( 'input', textFieldsIdentifier, function() {
 		const $field = $( this ).closest( fieldIdentifier );
 
 		triggerOptionsChange( $field );
@@ -145,14 +145,14 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 	// Trigger options change when the select fields get changed.
 	let selectFieldsIdentifier = tableRowsIdentifier + ' select';
 
-	$searchForm.on( 'change', selectFieldsIdentifier, function() {
+	fieldWrapper.on( 'change', selectFieldsIdentifier, function() {
 		const $field = $( this ).closest( fieldIdentifier );
 
 		triggerOptionsChange( $field );
 	} );
 
 	// Trigger options change when value is added from modal.
-	$searchForm.on( 'trigger_options_table', function( e, tableId, $field ) {
+	fieldWrapper.on( 'trigger_options_table', function( e, tableId, $field ) {
 		if ( tableId === tableIdentifier ) {
 			triggerOptionsChange( $field );
 		}

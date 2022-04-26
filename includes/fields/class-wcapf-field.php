@@ -16,25 +16,11 @@
 abstract class WCAPF_Field {
 
 	/**
-	 * The number of times the class instantiated.
-	 *
-	 * @var int
-	 */
-	public static $count = 0;
-
-	/**
 	 * The field's instance.
 	 *
 	 * @var array
 	 */
 	protected $instance;
-
-	/**
-	 * Determines if the field will be used as placeholder or not.
-	 *
-	 * @var bool
-	 */
-	private $placeholder = false;
 
 	/**
 	 * The constructor.
@@ -43,20 +29,16 @@ abstract class WCAPF_Field {
 	 */
 	public function __construct( $instance = array() ) {
 		$this->instance = $instance;
-		self::$count ++;
 	}
 
 	/**
 	 * Output form field.
 	 *
-	 * @param bool $echo        Determines if we echo the field or not.
-	 * @param bool $placeholder Determines if the field will be used as placeholder or not.
+	 * @param bool $echo Determines if we echo the field or not.
 	 *
 	 * @return string|void
 	 */
-	public function form( $echo = true, $placeholder = false ) {
-		$this->placeholder = $placeholder;
-
+	public function form( $echo = true ) {
 		if ( ! $echo ) {
 			ob_start();
 		}
@@ -76,11 +58,8 @@ abstract class WCAPF_Field {
 	protected function render_field() {
 		$groups = wp_list_sort( $this->get_group_fields(), 'position' );
 
-		$instance    = $this->get_instance();
-		$field_index = $this->get_field_index();
-		$type        = $this->type();
-
-		$field_name_prefix = 'wcapf-fields[' . $type . '][' . $field_index . ']';
+		$instance = $this->get_instance();
+		$type     = $this->type();
 
 		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $type ) . '">';
 
@@ -135,7 +114,7 @@ abstract class WCAPF_Field {
 						$columns = wp_list_sort( $columns, 'position' );
 
 						echo '<div class="column-start column">';
-						$this->render_sub_fields( $columns, $field_index, $instance, $field_name_prefix );
+						$this->render_sub_fields( $columns );
 						echo '</div>';
 					}
 
@@ -157,7 +136,7 @@ abstract class WCAPF_Field {
 		// TODO: Add hook.
 		do_action( 'wcapf_after_render_field_subfields', $type, $instance );
 
-		$this->get_field_position_input( $field_name_prefix );
+		$this->get_field_type_input();
 
 		echo '</div>';
 	}
@@ -206,15 +185,27 @@ abstract class WCAPF_Field {
 	 * @return array[]
 	 */
 	protected function title_group_columns() {
-		return array(
+		$type                = $this->type();
+		$allowed_field_types = WCAPF_Product_Filter_Utils::get_field_types_with_key_required();
+
+		$fields = array(
 			array(
-				'type'     => 'text',
-				'id'       => 'title',
-				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
-				'name'     => 'title',
+				'type'     => 'checkbox',
+				'id'       => 'show_title',
+				'label'    => __( 'Show Title', 'wc-ajax-product-filter' ),
+				'name'     => 'show_title',
+				'default'  => '1',
 				'position' => 5,
 			),
 		);
+
+		$show_field_key_in_title_group = apply_filters( 'wcapf_show_field_key_in_title_group', true, $type );
+
+		if ( $show_field_key_in_title_group && in_array( $type, $allowed_field_types ) ) {
+			$fields = array_merge( $fields, array( $this->get_field_key_data() ) );
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -223,6 +214,53 @@ abstract class WCAPF_Field {
 	 * @return string
 	 */
 	abstract protected function type();
+
+	/**
+	 * @return array
+	 */
+	protected function get_field_key_data() {
+		return array(
+			'type'     => 'text',
+			'id'       => 'field_key',
+			'label'    => __( 'Filter Key', 'wc-ajax-product-filter' ),
+			'name'     => 'field_key',
+			'default'  => $this->get_default_field_key(),
+			'position' => 15,
+		);
+	}
+
+	/**
+	 * The default field key.
+	 *
+	 * @return string
+	 */
+	private function get_default_field_key() {
+		if ( $this->get_instance() ) {
+			return '';
+		}
+
+		$type = $this->type();
+
+		switch ( $type ) {
+			case 'category':
+				$key = 'product_cat';
+				break;
+
+			case 'tag':
+				$key = 'product_tag';
+				break;
+
+			case 'product-status':
+				$key = 'status';
+				break;
+
+			default:
+				$key = $type;
+				break;
+		}
+
+		return apply_filters( 'wcapf_field_default_key', $key, $type );
+	}
 
 	/**
 	 * Gets the field's instance.
@@ -234,36 +272,19 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * Gets the field index.
-	 *
-	 * @return int|string
-	 */
-	protected function get_field_index() {
-		if ( $this->placeholder ) {
-			$index = '%%';
-		} else {
-			$index = self::$count - 1;
-		}
-
-		return $index;
-	}
-
-	/**
-	 * @param array  $sub_fields
-	 * @param mixed  $field_index
-	 * @param array  $instance
-	 * @param string $field_name_prefix
+	 * @param array $sub_fields
 	 *
 	 * @return void
 	 */
-	protected function render_sub_fields( $sub_fields, $field_index, $instance, $field_name_prefix ) {
+	protected function render_sub_fields( $sub_fields ) {
 		foreach ( $sub_fields as $_data ) {
 			$data = $this->merge_data( $_data );
 
-			$data['_name'] = $data['name'];
-			$data['id']    = 'wcapf-input-' . $data['id'] . '-' . $field_index;
-			$data['value'] = $this->get_field_value( $instance, $data );
-			$data['name']  = $field_name_prefix . '[' . $data['name'] . ']';
+			$name          = $data['name'];
+			$data['_name'] = $name;
+			$data['id']    = 'wcapf-input-' . $data['id'];
+			$data['value'] = $this->get_field_value( $data );
+			$data['name']  = 'field[' . $name . ']';
 
 			$this->get_field( $data );
 		}
@@ -296,14 +317,14 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * @param array $instance
 	 * @param array $data
 	 *
 	 * @return mixed
 	 */
-	private function get_field_value( $instance, $data ) {
-		$type = $this->type();
-		$name = $data['name'];
+	private function get_field_value( $data ) {
+		$instance = $this->get_instance();
+		$type     = $this->type();
+		$name     = $data['name'];
 
 		$value = isset( $instance[ $name ] ) ? $instance[ $name ] : $data['default'];
 
@@ -628,24 +649,16 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * The hidden input element for field's position.
-	 *
-	 * @param string $field_name_prefix The field name prefix.
+	 * The hidden input element for field type.
 	 *
 	 * @return void
 	 */
-	protected function get_field_position_input( $field_name_prefix ) {
-		$instance            = $this->get_instance();
-		$field_index         = $this->get_field_index();
-		$position_field_id   = 'wcapf-input-position-' . $field_index;
-		$position_field_name = $field_name_prefix . '[position]';
-		$field_position      = isset( $instance['position'] ) ? $instance['position'] : $field_index;
+	protected function get_field_type_input() {
 		?>
 		<input
 			type="hidden"
-			id="<?php echo esc_attr( $position_field_id ); ?>"
-			name="<?php echo esc_attr( $position_field_name ); ?>"
-			value="<?php echo esc_attr( $field_position ); ?>"
+			name="field[type]"
+			value="<?php echo esc_attr( $this->type() ); ?>"
 		>
 		<?php
 	}
@@ -670,6 +683,7 @@ abstract class WCAPF_Field {
 	 * Gets the field's subfields.
 	 *
 	 * @return array
+	 * @noinspection PhpUnused
 	 */
 	public function get_sub_fields() {
 		$sub_fields   = array();
@@ -699,23 +713,13 @@ abstract class WCAPF_Field {
 		array_unshift( $classes, 'wcapf-field-filter-form' );
 
 		$field_classes = implode( ' ', $classes );
-		$field_id      = $this->get_filter_form_id();
 		$field_title   = $this->get_sub_field_value( 'title' );
 
-		echo '<div class="' . esc_attr( $field_classes ) . '" id="' . esc_attr( $field_id ) . '">';
+		echo '<div class="' . esc_attr( $field_classes ) . '">';
 
 		if ( $field_title ) {
 			echo '<h4 class="wcapf-field-title">' . esc_html( $field_title ) . '</h4>';
 		}
-	}
-
-	/**
-	 * Get the field's filter form id.
-	 *
-	 * @return string
-	 */
-	private function get_filter_form_id() {
-		return 'wcapf-filter-by-' . $this->type() . '-' . $this->get_field_index();
 	}
 
 	/**
