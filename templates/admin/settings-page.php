@@ -20,7 +20,7 @@ $msg_code = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) 
 
 	<hr class="wp-header-end">
 
-	<?php $wcapf_settings_instance->render_admin_notices( $msg_code ); ?>
+	<?php $wcapf_settings_instance->render_settings_form_submission_messages( $msg_code ); ?>
 
 	<form method="post">
 		<?php if ( has_filter( $wcapf_settings_instance->get_option_name() ) ): ?>
@@ -39,4 +39,7 @@ $msg_code = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) 
 		submit_button();
 		?>
 	</form>
+
+	<?php WCAPF_Template_Loader::get_instance()->load( 'admin/generate-product-prices' ); ?>
+
 </div>

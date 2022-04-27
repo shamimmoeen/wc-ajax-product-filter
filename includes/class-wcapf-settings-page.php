@@ -41,7 +41,7 @@ class WCAPF_Settings_Page {
 	}
 
 	private function set_option_name() {
-		$this->option_name = 'wcapf_settings';
+		$this->option_name = WCAPF_Helper::settings_option_key();
 	}
 
 	public function get_option_name() {
@@ -128,13 +128,13 @@ class WCAPF_Settings_Page {
 	}
 
 	/**
-	 * Renders the admin notices in the settings page.
+	 * Renders the settings form submission messages.
 	 *
 	 * @param string $msg_code The message code.
 	 *
 	 * @return void
 	 */
-	public function render_admin_notices( $msg_code ) {
+	public function render_settings_form_submission_messages( $msg_code ) {
 		if ( ! $msg_code ) {
 			return;
 		}

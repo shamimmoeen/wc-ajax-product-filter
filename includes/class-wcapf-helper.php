@@ -32,12 +32,21 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * The option key that contains the plugin settings.
+	 *
+	 * @return string
+	 */
+	public static function settings_option_key() {
+		return 'wcapf_settings';
+	}
+
+	/**
 	 * Gets the wcapf settings.
 	 *
 	 * @return array
 	 */
 	public static function get_settings() {
-		$option_name = 'wcapf_settings';
+		$option_name = self::settings_option_key();
 		$db_options  = get_option( $option_name );
 
 		if ( has_filter( $option_name ) ) {
@@ -47,6 +56,59 @@ class WCAPF_Helper {
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * Check to see if store is incl tax but display excl.
+	 *
+	 * @return bool
+	 */
+	public static function store_is_in_tax_inclusive_mode() {
+		if ( wc_tax_enabled() && 'excl' === get_option( 'woocommerce_tax_display_shop' ) && wc_prices_include_tax() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check to see if store is excl tax but display incl.
+	 *
+	 * @return bool
+	 */
+	public static function store_is_in_tax_exclusive_mode() {
+		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * The meta key that contains the product's price including tax.
+	 *
+	 * @return string
+	 */
+	public static function meta_key_for_price_including_tax() {
+		return '_price_including_tax';
+	}
+
+	/**
+	 * The meta key that contains the product's price excluding tax.
+	 *
+	 * @return string
+	 */
+	public static function meta_key_for_price_excluding_tax() {
+		return '_price_excluding_tax';
+	}
+
+	/**
+	 * The option key that contains the information if the product prices generated earlier.
+	 *
+	 * @return string
+	 */
+	public static function product_prices_generated_option_key() {
+		return 'wcapf_product_prices_generated';
 	}
 
 	/**
@@ -123,6 +185,11 @@ class WCAPF_Helper {
 
 		foreach ( $filters as $post_id ) {
 			$field_data = get_post_meta( $post_id, '_field_data', true );
+
+			// todo: remove
+			// echo '<pre>';
+			// print_r( $field_data );
+			// echo '</pre>';
 
 			$field_type  = isset( $field_data['type'] ) ? $field_data['type'] : '';
 			$field_class = self::get_field_class_name_by_type( $field_type );

@@ -713,11 +713,13 @@ abstract class WCAPF_Field {
 		array_unshift( $classes, 'wcapf-field-filter-form' );
 
 		$field_classes = implode( ' ', $classes );
-		$field_title   = $this->get_sub_field_value( 'title' );
+		$show_title    = $this->get_sub_field_value( 'show_title' );
+		$field_id      = $this->get_sub_field_value( 'field_id' );
+		$field_title   = get_the_title( $field_id );
 
 		echo '<div class="' . esc_attr( $field_classes ) . '">';
 
-		if ( $field_title ) {
+		if ( $show_title ) {
 			echo '<h4 class="wcapf-field-title">' . esc_html( $field_title ) . '</h4>';
 		}
 	}

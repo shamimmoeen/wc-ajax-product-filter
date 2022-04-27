@@ -119,6 +119,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-settings-page.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-prices-generator.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-form-widget.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
@@ -324,6 +325,7 @@ class WCAPF {
 		$main_admin_script_deps = array(
 			'jquery',
 			'wp-util',
+			'jquery-serialize-object',
 			'jquery-ui-draggable',
 			'jquery-ui-droppable',
 			'jquery-ui-sortable',
@@ -369,7 +371,9 @@ class WCAPF {
 	 * @return array
 	 */
 	private function admin_js_params() {
-		$params = array();
+		$params = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		);
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}

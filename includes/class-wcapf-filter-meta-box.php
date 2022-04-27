@@ -133,6 +133,9 @@ class WCAPF_Filter_Meta_Box {
 			}
 		}
 
+		// Store the post id in the field data.
+		$parsed_field['field_id'] = $post_id;
+
 		$parsed_field = apply_filters( 'wcapf_parse_form_field_data', $parsed_field, $field_data );
 
 		update_post_meta( $post_id, '_field_data', $parsed_field );
