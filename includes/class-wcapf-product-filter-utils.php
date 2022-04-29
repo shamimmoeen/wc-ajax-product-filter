@@ -35,39 +35,34 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * Gets the filter keys.
+	 * Gets the chosen filter values.
+	 *
+	 * @param string $filter_key The filter key.
+	 * @param array  $query      The url query.
 	 *
 	 * @return array
 	 */
-	public static function get_taxonomy_filter_keys() {
-		$keys = array(
-			'product_cat' => array(
-				'and' => 'product-cata',
-				'or'  => 'product-cato',
-			),
-			'product_tag' => array(
-				'and' => 'product-taga',
-				'or'  => 'product-tago',
-			),
-		);
+	public static function get_chosen_filter_values_refactored( $filter_key, $query ) {
+		$value_separator = ',';
 
-		$attribute_taxonomies = wc_get_attribute_taxonomies();
+		$values = '';
 
-		foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
-			$name     = $attribute_taxonomy->attribute_name;
-			$taxonomy = wc_attribute_taxonomy_name( $name );
-
-			$keys[ $taxonomy ] = array(
-				'and' => 'attra-' . $name,
-				'or'  => 'attro-' . $name,
-			);
+		if ( isset( $query[ $filter_key ] ) ) {
+			$values = $query[ $filter_key ];
 		}
 
-		return apply_filters( 'wcapf_taxonomy_filter_keys', $keys );
+		// Check if we have any string(including 0) in the url.
+		if ( ! strlen( $values ) ) {
+			return array();
+		}
+
+		return explode( $value_separator, $values );
 	}
 
 	/**
 	 * Gets the chosen filter values.
+	 *
+	 * TODO: Remove it.
 	 *
 	 * @param array $keys  The filter keys.
 	 * @param array $query The url query.
@@ -152,38 +147,76 @@ class WCAPF_Product_Filter_Utils {
 
 	/**
 	 * @noinspection SqlNoDataSourceInspection
-	 * @noinspection SqlResolve
+	 * @noinspection SqlDialectInspection
 	 *
-	 * @param string $meta_key The meta key.
+	 * @param string $meta_key  The meta key.
+	 * @param string $data_type The mysql data type.
 	 *
 	 * @return string
 	 */
-	public static function get_min_value( $meta_key ) {
+	public static function get_min_value( $meta_key, $data_type = '' ) {
 		global $wpdb;
 
+		if ( ! $data_type ) {
+			$data_type = 'SIGNED';
+		}
+
+		$post_type     = 'product';
+		$post_statuses = WCAPF_Helper::visible_product_statuses();
+
 		$query = $wpdb->prepare(
-			"SELECT MIN( CAST( meta_value as SIGNED ) ) FROM $wpdb->postmeta WHERE meta_key='%s'",
+			"
+				SELECT MIN( CAST( $wpdb->postmeta.meta_value as $data_type ) )
+				FROM $wpdb->postmeta
+				INNER JOIN $wpdb->posts
+				ON $wpdb->postmeta.post_id = $wpdb->posts.ID
+		        WHERE $wpdb->posts.post_type = %s
+				AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')
+				AND $wpdb->postmeta.meta_key='%s'
+			",
+			$post_type,
 			$meta_key
 		);
+
+		// todo: use filter
 
 		return $wpdb->get_var( $query );
 	}
 
 	/**
 	 * @noinspection SqlNoDataSourceInspection
-	 * @noinspection SqlResolve
+	 * @noinspection SqlDialectInspection
 	 *
-	 * @param string $meta_key The meta key.
+	 * @param string $meta_key  The meta key.
+	 * @param string $data_type The mysql data type.
 	 *
 	 * @return string
 	 */
-	public static function get_max_value( $meta_key ) {
+	public static function get_max_value( $meta_key, $data_type = '' ) {
 		global $wpdb;
 
+		if ( ! $data_type ) {
+			$data_type = 'SIGNED';
+		}
+
+		$post_type     = 'product';
+		$post_statuses = WCAPF_Helper::visible_product_statuses();
+
 		$query = $wpdb->prepare(
-			"SELECT MAX( CAST( meta_value as SIGNED ) ) FROM $wpdb->postmeta WHERE meta_key='%s'",
+			"
+				SELECT MAX( CAST( $wpdb->postmeta.meta_value as $data_type ) )
+				FROM $wpdb->postmeta
+				INNER JOIN $wpdb->posts
+				ON $wpdb->postmeta.post_id = $wpdb->posts.ID
+		        WHERE $wpdb->posts.post_type = %s
+				AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')
+				AND $wpdb->postmeta.meta_key='%s'
+			",
+			$post_type,
 			$meta_key
 		);
+
+		// todo: use filter
 
 		return $wpdb->get_var( $query );
 	}

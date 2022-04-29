@@ -15,6 +15,11 @@ jQuery( document ).ready( function( $ ) {
 		if ( '.wcapf-form-sub-field-taxonomy select' === handler ) {
 			const $fieldKey = $field.find( '.wcapf-form-sub-field-field_key' );
 
+			// Prepend dash to avoid conflicting with the registered taxonomies.
+			if ( value ) {
+				value = '_' + value;
+			}
+
 			$fieldKey.find( 'input[type="text"]' ).val( value );
 		}
 	} );

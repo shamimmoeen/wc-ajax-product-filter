@@ -57,10 +57,19 @@ class WCAPF_Post_Type {
 			'show_in_admin_bar' => false,
 			'query_var'         => true,
 			'rewrite'           => array( 'slug' => 'wcapf-filter' ),
-			'capability_type'   => 'page',
 			'supports'          => array( 'title' ),
 			'menu_icon'         => 'dashicons-filter',
 			'menu_position'     => 100,
+			'capabilities'      => array(
+				'edit_post'          => 'manage_options',
+				'read_post'          => 'manage_options',
+				'delete_post'        => 'manage_options',
+				'edit_posts'         => 'manage_options',
+				'edit_others_posts'  => 'manage_options',
+				'delete_posts'       => 'manage_options',
+				'publish_posts'      => 'manage_options',
+				'read_private_posts' => 'manage_options'
+			),
 		);
 
 		register_post_type( 'wcapf-filter', $args );

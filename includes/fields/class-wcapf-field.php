@@ -230,7 +230,7 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * The default field key.
+	 * The default field key. Prepend dash to avoid conflicting with the registered taxonomies.
 	 *
 	 * @return string
 	 */
@@ -243,19 +243,19 @@ abstract class WCAPF_Field {
 
 		switch ( $type ) {
 			case 'category':
-				$key = 'product_cat';
+				$key = '_product_cat';
 				break;
 
 			case 'tag':
-				$key = 'product_tag';
+				$key = '_product_tag';
 				break;
 
 			case 'product-status':
-				$key = 'status';
+				$key = '_status';
 				break;
 
 			default:
-				$key = $type;
+				$key = '_' . $type;
 				break;
 		}
 
@@ -710,17 +710,19 @@ abstract class WCAPF_Field {
 	 * @return void
 	 */
 	protected function before_filter_form( $classes ) {
-		array_unshift( $classes, 'wcapf-field-filter-form' );
+		array_unshift( $classes, 'wcapf-single-filter' );
+
+		$classes = apply_filters( 'wcapf_field_classes', $classes );
 
 		$field_classes = implode( ' ', $classes );
 		$show_title    = $this->get_sub_field_value( 'show_title' );
-		$field_id      = $this->get_sub_field_value( 'field_id' );
-		$field_title   = get_the_title( $field_id );
+		$filter_id     = $this->get_sub_field_value( 'field_id' );
+		$filter_title  = get_the_title( $filter_id );
 
-		echo '<div class="' . esc_attr( $field_classes ) . '">';
+		echo '<div class="' . esc_attr( $field_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
 		if ( $show_title ) {
-			echo '<h4 class="wcapf-field-title">' . esc_html( $field_title ) . '</h4>';
+			echo '<h4 class="wcapf-field-title">' . esc_html( $filter_title ) . '</h4>';
 		}
 	}
 
@@ -763,8 +765,7 @@ abstract class WCAPF_Field {
 
 		$filter_key  = $field_instance->filter_key;
 		$filter_type = $field_instance->filter_type;
-		$form_id     = $field_instance->form_id;
-		$position    = $field_instance->position;
+		$filter_id   = $field_instance->filter_id;
 
 		$range_min_value       = $this->get_sub_field_value( 'min_value' );
 		$range_max_value       = $this->get_sub_field_value( 'max_value' );
@@ -779,18 +780,32 @@ abstract class WCAPF_Field {
 		$decimal_separator     = $this->get_sub_field_value( 'decimal_separator' );
 		$display_values_as     = $this->get_sub_field_value( 'number_range_slider_display_values_as' );
 
+		$data_type = ''; // TODO: Get the data type from field options.
+
+		// Price is actually a post-meta.
+		if ( 'price' === $filter_type ) {
+			// In chosen filters, price filter data is stored under 'post-meta'.
+			$filter_type = 'post-meta';
+
+			$meta_key  = WCAPF_Helper::get_meta_key_for_price_filter();
+			$data_type = WCAPF_Helper::price_data_type();
+		}
+
 		if ( $range_min_auto_detect ) {
-			$range_min_value = WCAPF_Product_Filter_Utils::get_min_value( $meta_key );
+			$range_min_value = WCAPF_Product_Filter_Utils::get_min_value( $meta_key, $data_type );
 		}
 
 		if ( $range_max_auto_detect ) {
-			$range_max_value = WCAPF_Product_Filter_Utils::get_max_value( $meta_key );
+			$range_max_value = WCAPF_Product_Filter_Utils::get_max_value( $meta_key, $data_type );
 		}
 
 		$chosen_filters = WCAPF_Product_Filter::instance()->get_chosen_filters();
 		$filters        = $chosen_filters[ $filter_type ];
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
+
+		$range_min_value = floor( $range_min_value );
+		$range_max_value = ceil( $range_max_value );
 
 		if ( 2 === count( $values ) ) {
 			$min_value = $values[0];
@@ -807,7 +822,7 @@ abstract class WCAPF_Field {
 			$max_value = $min_value;
 		}
 
-		$slider_id = $filter_key . '-slider-' . $form_id . '-' . $position;
+		$slider_id = $filter_key . '-slider-' . $filter_id;
 
 		$data = array(
 			'filter_key'         => $filter_key,

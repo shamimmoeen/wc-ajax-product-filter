@@ -49,13 +49,17 @@ class WCAPF {
 	 * Check requirements, if requirements fail show notice.
 	 */
 	public function show_admin_notice() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$notice = $this->wc_required_notice();
 
 		if ( ! $notice ) {
 			return;
 		}
 
-		echo '<div class="notice notice-warning"><p>' . wp_kses_post( $notice ) . '</p></div>';
+		echo '<div class="notice notice-error"><p>' . wp_kses_post( $notice ) . '</p></div>';
 	}
 
 	/**
@@ -121,7 +125,6 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-settings-page.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-prices-generator.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-form-widget.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
@@ -147,6 +150,9 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-product-status.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-submit-button.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
+
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-shortcode.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-widget.php';
 	}
 
 	/**
@@ -222,9 +228,10 @@ class WCAPF {
 		wp_localize_script(
 			'wc-ajax-product-filter-public-scripts',
 			'wcapf_params',
-			$this->default_settings()
+			WCAPF_Helper::get_settings()
 		);
 
+		// TODO: Remove 'assets' directory.
 		// wp_enqueue_style(
 		// 	'wcapf-styles',
 		// 	WCAPF_PLUGIN_URL . 'assets/css/wcapf-styles.css',
@@ -262,24 +269,6 @@ class WCAPF {
 		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/scripts.js' ),
 		// 	true
 		// );
-	}
-
-	/**
-	 * The default settings.
-	 *
-	 * @return string[]
-	 */
-	public function default_settings() {
-		return array(
-			'shop_loop_container'  => '.wcapf-before-products',
-			'not_found_container'  => '.wcapf-before-products',
-			'pagination_container' => '.woocommerce-pagination',
-			'overlay_bg_color'     => '#fff',
-			'sorting_control'      => '1',
-			'scroll_to_top'        => '1',
-			'scroll_to_top_offset' => '100',
-			'custom_scripts'       => '',
-		);
 	}
 
 	/**

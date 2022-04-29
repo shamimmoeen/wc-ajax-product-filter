@@ -44,7 +44,7 @@ class WCAPF_Filter_Meta_Box {
 
 		$field_data = isset( $_POST['field'] ) ? $_POST['field'] : array();
 		$field_type = isset( $field_data['type'] ) ? sanitize_text_field( $field_data['type'] ) : '';
-		$filter_key = isset( $field_data['field_key'] ) ? sanitize_text_field( $field_data['field_key'] ) : '';
+		$filter_key = isset( $field_data['field_key'] ) ? sanitize_title( $field_data['field_key'] ) : '';
 		$class_name = WCAPF_Helper::get_field_class_name_by_type( $field_type );
 
 		$error_code = '';
@@ -60,6 +60,8 @@ class WCAPF_Filter_Meta_Box {
 				$error_code = 22;
 			} elseif ( $this->is_filter_key_already_in_use( $post_id, $filter_key ) ) { // Filter key is already in use.
 				$error_code = 23;
+			} elseif ( $this->taxonomy_exists_for_filter_key( $filter_key ) ) {
+				$error_code = 24;
 			}
 		}
 
@@ -133,6 +135,9 @@ class WCAPF_Filter_Meta_Box {
 			}
 		}
 
+		// Store the field key as sanitized.
+		$parsed_field['field_key'] = $filter_key;
+
 		// Store the post id in the field data.
 		$parsed_field['field_id'] = $post_id;
 
@@ -198,6 +203,8 @@ class WCAPF_Filter_Meta_Box {
 			$error_message = __( 'Filter key is required.', 'wc-ajax-product-filter' );
 		} elseif ( '23' === $error_code ) {
 			$error_message = __( 'The filter key is already in use on another filter.', 'wc-ajax-product-filter' );
+		} elseif ( '24' === $error_code ) {
+			$error_message = __( 'There is a taxonomy exists with the filter key.', 'wc-ajax-product-filter' );
 		}
 
 		if ( ! $error_message ) {
@@ -305,6 +312,17 @@ class WCAPF_Filter_Meta_Box {
 			$utils->product_status_option_markup();
 			echo '</script>';
 		}
+	}
+
+	/**
+	 * Checks if taxonomy exists with the filter key.
+	 *
+	 * @param string $filter_key The filter key.
+	 *
+	 * @return bool
+	 */
+	private function taxonomy_exists_for_filter_key( $filter_key ) {
+		return taxonomy_exists( $filter_key );
 	}
 
 }

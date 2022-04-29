@@ -93,25 +93,18 @@ class WCAPF_Walker {
 	public $filter_type;
 
 	/**
+	 * Filter id.
+	 *
+	 * @var string
+	 */
+	public $filter_id;
+
+	/**
 	 * Custom appearance options.
 	 *
 	 * @var array
 	 */
 	public $custom_appearance_options;
-
-	/**
-	 * Form id.
-	 *
-	 * @var string
-	 */
-	public $form_id;
-
-	/**
-	 * The position.
-	 *
-	 * @var string
-	 */
-	public $position;
 
 	/**
 	 * The active filters.
@@ -160,9 +153,8 @@ class WCAPF_Walker {
 			'show_count'                 => false,
 			'filter_key'                 => '',
 			'filter_type'                => '',
+			'filter_id'                  => '',
 			'custom_appearance_options'  => array(),
-			'form_id'                    => '',
-			'position'                   => '',
 		);
 
 		foreach ( $default_properties as $key => $value ) {
@@ -341,7 +333,7 @@ class WCAPF_Walker {
 		}
 
 		$item_id   = $item['id'];
-		$unique_id = $filter_key . '-input-' . $this->form_id . '-' . $this->position . '-' . $item_id;
+		$unique_id = $filter_key . '-input-' . $this->filter_id . '-' . $item_id;
 
 		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
 		$input_markup .= ' id="' . $unique_id . '"';

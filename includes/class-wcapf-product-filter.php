@@ -94,12 +94,12 @@ class WCAPF_Product_Filter {
 	/**
 	 * Gets the field relations.
 	 *
-	 * TODO: Get from settings.
-	 *
 	 * @return string
 	 */
 	public function get_field_relations() {
-		return get_option( 'main_query_type', 'or' );
+		$settings = WCAPF_Helper::get_settings();
+
+		return isset( $settings['filter_relationships'] ) ? $settings['filter_relationships'] : 'and';
 	}
 
 	/**
@@ -131,22 +131,58 @@ class WCAPF_Product_Filter {
 			$chosen['orderby'] = $orderby;
 		}
 
-		// taxonomies
-		$taxonomy_filter_keys = WCAPF_Product_Filter_Utils::get_taxonomy_filter_keys();
+		$filters_data = array();
 
-		foreach ( $taxonomy_filter_keys as $taxonomy => $keys ) {
-			$result = $this->get_chosen_term( $taxonomy, $keys, $query );
+		if ( $query ) {
+			$filter_keys = array_keys( $query );
 
-			if ( $result ) {
-				$taxonomies[ $result['filter_key'] ] = $result;
+			$args = array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+				'nopaging'    => true,
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					array(
+						'key'   => '_filter_key',
+						'value' => $filter_keys,
+					),
+				),
+			);
+
+			$filters = get_posts( $args );
+
+			if ( $filters ) {
+				foreach ( $filters as $filter_id ) {
+					$field_data = get_post_meta( $filter_id, '_field_data', true );
+					$field_key  = isset( $field_data['field_key'] ) ? $field_data['field_key'] : '';
+
+					if ( ! $field_key ) {
+						continue;
+					}
+
+					$filters_data[ $field_key ] = $field_data;
+				}
 			}
 		}
 
-		// price
-		$filter_by_price = $this->get_chosen_price( $query );
+		foreach ( $filters_data as $_filter_data ) {
+			$field_instance = new WCAPF_Field_Instance( $_filter_data );
+			$filter_key     = $field_instance->filter_key;
+			$filter_type    = $field_instance->filter_type;
 
-		if ( $filter_by_price ) {
-			$post_metas['price'] = $filter_by_price;
+			if ( 'taxonomy' === $filter_type ) {
+				$result = $this->get_chosen_term( $field_instance, $query );
+
+				if ( $result ) {
+					$taxonomies[ $filter_key ] = $result;
+				}
+			} elseif ( 'price' === $filter_type ) {
+				$result = $this->get_chosen_price( $field_instance, $query );
+
+				if ( $result ) {
+					$post_metas[ $filter_key ] = $result;
+				}
+			}
 		}
 
 		// TODO: Rating.
@@ -161,24 +197,25 @@ class WCAPF_Product_Filter {
 	/**
 	 * Filter data by taxonomy.
 	 *
-	 * @param string $taxonomy The taxonomy.
-	 * @param array  $keys     The filter keys.
-	 * @param array  $query    The query.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                $query          The url query.
 	 *
 	 * @return array
 	 */
-	private function get_chosen_term( $taxonomy, $keys, $query ) {
+	private function get_chosen_term( $field_instance, $query ) {
 		$active_filters    = array();
 		$active_ancestors  = array();
 		$products_in_terms = array();
 
-		$filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $keys, $query );
+		$filter_key = $field_instance->filter_key;
+		$terms      = WCAPF_Product_Filter_Utils::get_chosen_filter_values_refactored( $filter_key, $query );
 
-		if ( ! $filter_values ) {
+		if ( ! $terms ) {
 			return array();
 		}
 
-		list( $terms, $filter_key, $query_type ) = $filter_values;
+		$query_type = $field_instance->query_type;
+		$taxonomy   = $field_instance->taxonomy;
 
 		$include_hierarchical_data = false;
 
@@ -191,7 +228,7 @@ class WCAPF_Product_Filter {
 			$term_products = get_posts(
 				array(
 					'post_type'   => 'product',
-					'post_status' => 'publish',
+					'post_status' => WCAPF_Helper::visible_product_statuses(),
 					'nopaging'    => true,
 					'fields'      => 'ids',
 					'tax_query'   => array(
@@ -235,22 +272,22 @@ class WCAPF_Product_Filter {
 	/**
 	 * Filter data by price.
 	 *
-	 * @param array $query The query.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                $query          The url query.
 	 *
 	 * @return array
 	 */
-	private function get_chosen_price( $query ) {
+	private function get_chosen_price( $field_instance, $query ) {
 		$active_filters = array();
 
-		$meta_key      = '_price';
-		$filter_key    = 'price';
-		$filter_values = array();
-		$query_type    = 'between';
+		$meta_key   = WCAPF_Helper::get_meta_key_for_price_filter();
+		$filter_key = $field_instance->filter_key;
+		$query_type = $field_instance->query_type;
 
-		if ( isset( $query[ $filter_key ] ) ) {
-			$_filter_values = $query[ $filter_key ];
-			$filter_values  = explode( '+', $_filter_values );
-		}
+		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values_refactored( $filter_key, $query );
+		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
+
+		$filter_values = $_filter_values ? explode( '+', $_filter_values ) : array();
 
 		if ( ! $filter_values ) {
 			return array();
@@ -263,24 +300,25 @@ class WCAPF_Product_Filter {
 		$min = floatval( $filter_values[0] );
 		$max = floatval( $filter_values[1] );
 
-		$type = apply_filters( 'wcapf_price_filter_data_type', 'DECIMAL(10,3)' );
+		$type = WCAPF_Helper::price_data_type();
 
-		$args = array(
-			'post_type'   => 'product',
-			'post_status' => 'publish',
-			'nopaging'    => true,
-			'fields'      => 'ids',
-			'meta_query'  => array(
-				array(
-					'key'     => $meta_key,
-					'value'   => array( $min, $max ),
-					'compare' => 'BETWEEN',
-					'type'    => $type,
+		// TODO: Maybe use cache.
+		$ranged_products = get_posts(
+			array(
+				'post_type'   => 'product',
+				'post_status' => WCAPF_Helper::visible_product_statuses(),
+				'nopaging'    => true,
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					array(
+						'key'     => $meta_key,
+						'value'   => array( $min, $max ),
+						'compare' => 'BETWEEN',
+						'type'    => $type,
+					),
 				),
-			),
+			)
 		);
-
-		$ranged_products = get_posts( $args );
 
 		$ranged_products[] = 0;
 		$products_in_metas = $ranged_products;

@@ -17,7 +17,7 @@
 		</h3>
 
 		<p>
-			<?php esc_html_e( 'Whenever the tax rates are changed you need to regenerate the product prices. The process may take a little while, so please be patient during the process and don\'t leave this page. Click the below button to start the process.', 'wc-ajax-product-filter' ); ?>
+			<?php esc_html_e( 'Whenever the tax configuration is changed you need to regenerate the product prices. The process may take a little while, so please be patient during the process and don\'t leave this page. Click the below button to start the process.', 'wc-ajax-product-filter' ); ?>
 		</p>
 
 		<input type="hidden" name="action" value="generate_product_prices">

@@ -10,12 +10,12 @@
 const wcapf_params = wcapf_params || {
 	'shop_loop_container': '',
 	'not_found_container': '',
-	'pagination_container': '',
-	'overlay_bg_color': '',
-	'sorting_control': '',
-	'scroll_to_top': '',
-	'scroll_to_top_offset': '',
-	'custom_scripts': ''
+	'pagination_container': '', // todo
+	'sorting_control': '', // todo
+	'scroll_to_top': '', // todo
+	'scroll_to_top_offset': '', // todo
+	'custom_scripts': '',
+	'filter_relationships': '',
 };
 
 jQuery( document ).ready(
@@ -26,17 +26,18 @@ jQuery( document ).ready(
 			return false;
 		}
 
-		const delay = 800;
+		const delay = 800; // todo: option to change
 
 		// store fields' id and filter information
 		const fields = {};
 
-		const $wcapfTermFilter = $( '.wcapf-ajax-term-filter' );
+		const $wcapfSingleFilters = $( '.wcapf-single-filter' );
+		const $wcapfTermFilters   = $( '.wcapf-ajax-term-filter' );
 
-		$wcapfTermFilter.each(
+		$wcapfTermFilters.each(
 			function() {
 				const $field         = $( this );
-				const id             = $field.attr( 'id' );
+				const id             = $field.attr( 'data-id' );
 				const $wrapper       = $field.children( 'div' );
 				const filterKey      = $wrapper.attr( 'data-filter-key' );
 				const multipleFilter = parseInt( $wrapper.attr( 'data-multiple-filter' ) );
@@ -54,7 +55,7 @@ jQuery( document ).ready(
 				return;
 			}
 
-			$wcapfTermFilter.find( '.wcapf-chosen-select' ).each( function() {
+			$wcapfTermFilters.find( '.wcapf-chosen-select' ).each( function() {
 				const $this   = $( this );
 				const options = {};
 
@@ -72,7 +73,7 @@ jQuery( document ).ready(
 
 		// Initialize hierarchy accordion
 		function initHierarchyAccordion() {
-			$wcapfTermFilter.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
+			$wcapfTermFilters.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
 				$( this ).toggleClass( 'active' );
 			} );
 		}
@@ -122,7 +123,7 @@ jQuery( document ).ready(
 
 		// Initialize noUISlider
 		function initNoUISlider() {
-			$wcapfTermFilter.find( '.wcapf-range-slider' ).each( function() {
+			$wcapfSingleFilters.find( '.wcapf-range-slider' ).each( function() {
 				const $item = $( this );
 
 				const filterKey         = $item.attr( 'data-filter-key' );
@@ -240,13 +241,13 @@ jQuery( document ).ready(
 
 		// show a loading indicator
 		function wcapfBeforeUpdate() {
+			$( 'body' ).trigger( 'wcapf_before_update' );
 		}
 
 		// scroll to top
 		function wcapfAfterUpdate() {
 			initChosen();
 			initHierarchyAccordion();
-			initNoUISlider();
 
 			$( 'body' ).trigger( 'wcapf_after_update' );
 		}
@@ -267,7 +268,7 @@ jQuery( document ).ready(
 					$.each(
 						fields,
 						function( id ) {
-							const fieldID    = '#' + id;
+							const fieldID    = '[data-id="' + id + '"]';
 							const $field     = $( fieldID );
 							const _field     = $data.find( fieldID );
 							const fieldClass = $( _field ).attr( 'class' );
@@ -301,9 +302,11 @@ jQuery( document ).ready(
 
 					wcapfAfterUpdate();
 
+					// todo
 					// reinitialize ordering
 					// wcapfInitOrder();
 
+					// todo
 					// reinitialize dropdown filter
 					// wcapfDropDownFilter();
 
@@ -483,8 +486,8 @@ jQuery( document ).ready(
 
 		// The main function to handle the filter request
 		function handleFilterRequest( $item, filterValue ) {
-			const $field         = $item.closest( '.wcapf-field-filter-form' );
-			const fieldID        = $field.attr( 'id' );
+			const $field         = $item.closest( '.wcapf-single-filter' );
+			const fieldID        = $field.attr( 'data-id' );
 			const fieldData      = fields[ fieldID ];
 			const filterKey      = fieldData.filterKey;
 			const multipleFilter = fieldData.multipleFilter;
@@ -511,7 +514,7 @@ jQuery( document ).ready(
 		}
 
 		// handle the filter request for list fields
-		$wcapfTermFilter.on(
+		$wcapfTermFilters.on(
 			'change',
 			'.wcapf-layered-nav [type="checkbox"], .wcapf-layered-nav [type="radio"]',
 			function( event ) {
@@ -526,7 +529,7 @@ jQuery( document ).ready(
 
 		// TODO: Use a combination of label, checkbox and radio
 		// handle the filter request for labeled item
-		$wcapfTermFilter.on(
+		$wcapfTermFilters.on(
 			'click',
 			'.wcapf-labeled-nav .item',
 			function( event ) {
@@ -540,7 +543,7 @@ jQuery( document ).ready(
 		);
 
 		// handle the filter request for display type select fields
-		$wcapfTermFilter.on(
+		$wcapfTermFilters.on(
 			'change',
 			'select',
 			function( event ) {
@@ -549,8 +552,8 @@ jQuery( document ).ready(
 				const $item       = $( this );
 				const filterValue = $item.val();
 
-				const $field    = $item.closest( '.wcapf-field-filter-form' );
-				const fieldID   = $field.attr( 'id' );
+				const $field    = $item.closest( '.wcapf-single-filter' );
+				const fieldID   = $field.attr( 'data-id' );
 				const fieldData = fields[ fieldID ];
 				const filterKey = fieldData.filterKey;
 
@@ -568,7 +571,7 @@ jQuery( document ).ready(
 		);
 
 		// handle the filter request for range number
-		$wcapfTermFilter.on(
+		$wcapfSingleFilters.on(
 			'input',
 			'.wcapf-range-number .min-value, .wcapf-range-number .max-value',
 			function( event ) {
@@ -600,6 +603,8 @@ jQuery( document ).ready(
 					if ( parseFloat( minValue ) > parseFloat( maxValue ) ) {
 						maxValue = minValue;
 					}
+
+					// TODO: Update the min, max value accordingly.
 
 					if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
 						const query = wcapfRemoveQueryStringParameter( filterKey );

@@ -128,6 +128,10 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function render_admin_notice_to_generate_product_prices() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		// Don't show if the prices were already generate before.
 		if ( '1' === get_option( WCAPF_Helper::product_prices_generated_option_key() ) ) {
 			return;

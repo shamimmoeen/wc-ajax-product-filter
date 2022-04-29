@@ -36,53 +36,57 @@ $attrs = implode( ' ', $_attrs );
 
 <div class="wcapf-range-slider" <?php echo $attrs; ?>>
 	<div class="slided-number-wrapper">
-		<?php if ( $value_prefix ) : ?>
-			<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
-		<?php endif; ?>
+		<span class="wcapf-range-start">
+			<?php if ( $value_prefix ) : ?>
+				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
+			<?php endif; ?>
 
-		<?php if ( 'plain_text' === $display_values_as ) : ?>
-			<span class="min-value"><?php echo esc_html( $min_value ); ?></span>
-		<?php else: ?>
-			<label>
-				<input
-					type="text"
-					class="min-value"
-					name="<?php echo esc_attr( $input_name ); ?>"
-					value="<?php echo esc_attr( $min_value ); ?>"
-					autocomplete="off"
-				>
-			</label>
-		<?php endif; ?>
+			<?php if ( 'plain_text' === $display_values_as ) : ?>
+				<span class="min-value"><?php echo esc_html( $min_value ); ?></span>
+			<?php else: ?>
+				<label>
+					<input
+						type="text"
+						class="min-value"
+						name="<?php echo esc_attr( $input_name ); ?>"
+						value="<?php echo esc_attr( $min_value ); ?>"
+						autocomplete="off"
+					>
+				</label>
+			<?php endif; ?>
 
-		<?php if ( $value_postfix ) : ?>
-			<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
-		<?php endif; ?>
+			<?php if ( $value_postfix ) : ?>
+				<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
+			<?php endif; ?>
+		</span>
 
 		<?php if ( $values_separator ) : ?>
 			<span class="wcapf-range-separator"><?php echo esc_html( $values_separator ); ?></span>
 		<?php endif; ?>
 
-		<?php if ( $value_prefix ) : ?>
-			<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
-		<?php endif; ?>
+		<span class="wcapf-range-end">
+			<?php if ( $value_prefix ) : ?>
+				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
+			<?php endif; ?>
 
-		<?php if ( 'plain_text' === $display_values_as ) : ?>
-			<span class="max-value"><?php echo esc_html( $max_value ); ?></span>
-		<?php else: ?>
-			<label>
-				<input
-					type="text"
-					class="max-value"
-					name="<?php echo esc_attr( $input_name ); ?>"
-					value="<?php echo esc_attr( $max_value ); ?>"
-					autocomplete="off"
-				>
-			</label>
-		<?php endif; ?>
+			<?php if ( 'plain_text' === $display_values_as ) : ?>
+				<span class="max-value"><?php echo esc_html( $max_value ); ?></span>
+			<?php else: ?>
+				<label>
+					<input
+						type="text"
+						class="max-value"
+						name="<?php echo esc_attr( $input_name ); ?>"
+						value="<?php echo esc_attr( $max_value ); ?>"
+						autocomplete="off"
+					>
+				</label>
+			<?php endif; ?>
 
-		<?php if ( $value_postfix ) : ?>
-			<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
-		<?php endif; ?>
+			<?php if ( $value_postfix ) : ?>
+				<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
+			<?php endif; ?>
+		</span>
 	</div>
 
 	<div id="<?php echo esc_attr( $slider_id ); ?>" class="wcapf-noui-slider"></div>

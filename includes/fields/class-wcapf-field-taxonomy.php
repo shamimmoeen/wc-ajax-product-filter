@@ -77,7 +77,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 	 * @return void
 	 */
 	protected function render_filter_form() {
-		// TODO: Maybe redundant
+		// TODO: Maybe show the preview in the backend also.
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}

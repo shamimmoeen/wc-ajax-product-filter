@@ -25,9 +25,8 @@ class WCAPF_Field_Instance {
 	public $hide_empty;
 	public $get_options;
 	public $manual_options;
-	public $position;
 	public $type;
-	public $form_id;
+	public $filter_id;
 	public $filter_key;
 	public $filter_type;
 	public $taxonomy;
@@ -137,12 +136,11 @@ class WCAPF_Field_Instance {
 		$this->query_type             = $query_type;
 		$this->enable_multiple_filter = $enable_multiple_filter;
 
-		$this->position = $this->get_sub_field_value( 'position' );
-		$this->type     = $this->get_field_type();
-		$this->form_id  = 1; // TODO: Form id will be dynamic.
+		$this->filter_id  = $this->get_sub_field_value( 'field_id' );
+		$this->filter_key = $this->get_sub_field_value( 'field_key' );
 
+		$this->type         = $this->get_field_type();
 		$this->filter_type  = $this->get_filter_type();
-		$this->filter_key   = $this->get_filter_key();
 		$this->taxonomy     = $this->get_taxonomy();
 		$this->hierarchical = $this->taxonomy_is_hierarchical();
 
@@ -271,40 +269,6 @@ class WCAPF_Field_Instance {
 	/**
 	 * @return string
 	 */
-	private function get_filter_key() {
-		$field_type = $this->get_field_type();
-		$filter_key = '';
-
-		$taxonomy_types = $this->taxonomy_field_types();
-
-		if ( in_array( $field_type, $taxonomy_types ) ) {
-			$filter_key = $this->get_taxonomy_filter_key();
-		} elseif ( 'price' === $field_type ) {
-			$filter_key = $this->get_price_filter_key();
-		} elseif ( 'rating' === $field_type ) {
-			$filter_key = $this->get_rating_filter_key();
-		} elseif ( 'product-status' === $field_type ) {
-			$filter_key = $this->get_product_status_filter_key();
-		}
-
-		return apply_filters( 'wcapf_field_filter_key', $filter_key, $this );
-	}
-
-	/**
-	 * @return string
-	 */
-	private function get_taxonomy_filter_key() {
-		$taxonomy = $this->get_taxonomy_from_field_instance();
-
-		$filter_keys = WCAPF_Product_Filter_Utils::get_taxonomy_filter_keys();
-		$query_type  = $this->query_type;
-
-		return isset( $filter_keys[ $taxonomy ] ) ? $filter_keys[ $taxonomy ][ $query_type ] : '';
-	}
-
-	/**
-	 * @return string
-	 */
 	private function get_taxonomy_from_field_instance() {
 		$field_type = $this->get_field_type();
 
@@ -328,18 +292,6 @@ class WCAPF_Field_Instance {
 		}
 
 		return $taxonomy;
-	}
-
-	private function get_price_filter_key() {
-		return 'price';
-	}
-
-	private function get_rating_filter_key() {
-		return 'rating';
-	}
-
-	private function get_product_status_filter_key() {
-		return 'product-status';
 	}
 
 	/**

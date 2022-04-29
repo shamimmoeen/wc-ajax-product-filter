@@ -40,5 +40,5 @@ if ( ! $message ) {
 ?>
 
 <div id="message" class="<?php echo esc_attr( $notice_classes ); ?>">
-	<p><?php echo $message; ?></p>
+	<p><?php echo wp_kses_post( $message ); ?></p>
 </div>

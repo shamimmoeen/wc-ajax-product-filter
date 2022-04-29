@@ -85,21 +85,23 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The meta key that contains the product's price including tax.
-	 *
 	 * @return string
 	 */
-	public static function meta_key_for_price_including_tax() {
-		return '_price_including_tax';
+	public static function price_data_type() {
+		// woocommerce_price_num_decimals
+		$decimal_places = get_option( 'woocommerce_price_num_decimals' );
+		$decimal_places = strlen( $decimal_places ) ? $decimal_places : 3;
+
+		return apply_filters( 'wcapf_price_data_type', 'DECIMAL(10,' . $decimal_places . ')' );
 	}
 
 	/**
-	 * The meta key that contains the product's price excluding tax.
+	 * The meta key that contains the product's price with tax.
 	 *
 	 * @return string
 	 */
-	public static function meta_key_for_price_excluding_tax() {
-		return '_price_excluding_tax';
+	public static function meta_key_for_price_with_tax() {
+		return '_price_with_tax';
 	}
 
 	/**
@@ -109,6 +111,41 @@ class WCAPF_Helper {
 	 */
 	public static function product_prices_generated_option_key() {
 		return 'wcapf_product_prices_generated';
+	}
+
+	/**
+	 * Gets the meta key for price filter.
+	 *
+	 * @return string
+	 */
+	public static function get_meta_key_for_price_filter() {
+		$prices_with_tax_generated = '1' === get_option( self::product_prices_generated_option_key() );
+
+		$store_is_in_tax_incl_or_excl_mode = self::store_is_in_tax_inclusive_mode()
+		                                     || self::store_is_in_tax_exclusive_mode();
+
+		if ( $prices_with_tax_generated && $store_is_in_tax_incl_or_excl_mode ) {
+			$meta_key = self::meta_key_for_price_with_tax();
+		} else {
+			$meta_key = '_price';
+		}
+
+		return $meta_key;
+	}
+
+	/**
+	 * The filtering system for the private products only work if the user is logged in.
+	 *
+	 * @return array
+	 */
+	public static function visible_product_statuses() {
+		$valid_statuses = array( 'publish' );
+
+		if ( is_user_logged_in() ) {
+			$valid_statuses[] = 'private';
+		}
+
+		return apply_filters( 'wcapf_valid_post_statuses_for_sql_query', $valid_statuses );
 	}
 
 	/**
@@ -164,43 +201,6 @@ class WCAPF_Helper {
 		$fields = wp_list_sort( $fields, 'position' );
 
 		return wp_list_pluck( $fields, 'name', 'type' );
-	}
-
-	/**
-	 * Renders the filter form.
-	 *
-	 * TODO: Render the preview in admin area.
-	 *
-	 * @return void
-	 */
-	public static function render_filter_form() {
-		$args = array(
-			'post_type'   => 'wcapf-filter',
-			'post_status' => 'publish',
-			'nopaging'    => true,
-			'fields'      => 'ids',
-		);
-
-		$filters = get_posts( $args );
-
-		foreach ( $filters as $post_id ) {
-			$field_data = get_post_meta( $post_id, '_field_data', true );
-
-			// todo: remove
-			// echo '<pre>';
-			// print_r( $field_data );
-			// echo '</pre>';
-
-			$field_type  = isset( $field_data['type'] ) ? $field_data['type'] : '';
-			$field_class = self::get_field_class_name_by_type( $field_type );
-
-			if ( ! $field_class ) {
-				continue;
-			}
-
-			$field = self::get_field_instance( $field_type, $field_data );
-			$field->filter_form();
-		}
 	}
 
 	/**

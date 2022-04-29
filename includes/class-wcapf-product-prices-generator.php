@@ -16,8 +16,32 @@ class WCAPF_Product_Prices_Generator {
 	/**
 	 * The constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
+	}
+
+	/**
+	 * Gets the instance of this class.
+	 */
+	public static function get_instance() {
+		// Store the instance locally to avoid private static replication.
+		static $instance = null;
+
+		if ( null === $instance ) {
+			$instance = new WCAPF_Product_Prices_Generator();
+			$instance->set_actions();
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Sets the actions.
+	 *
+	 * @return void
+	 */
+	private function set_actions() {
 		add_action( 'wp_ajax_generate_product_prices', array( $this, 'generate_product_prices_via_ajax' ) );
+		add_action( 'woocommerce_update_product', array( $this, 'save_product_price_with_tax' ), 10, 2 );
 	}
 
 	/**
@@ -60,7 +84,10 @@ class WCAPF_Product_Prices_Generator {
 
 			if ( $page <= $max_pages ) {
 				foreach ( $results->products as $product ) {
-					$this->store_product_prices( $product );
+					/**
+					 * @var WC_Product $product The product object.
+					 */
+					$this->save_product_price_with_tax( $product->get_id(), $product );
 					$count ++;
 				}
 
@@ -106,23 +133,25 @@ class WCAPF_Product_Prices_Generator {
 	}
 
 	/**
-	 * Get the product price with and without tax then store them in the metadata table.
-	 *
-	 * @param WC_Product $product The product object.
+	 * @param int        $product_id The product id.
+	 * @param WC_Product $product    The product object.
 	 *
 	 * @return void
 	 */
-	private function store_product_prices( $product ) {
-		$product_id     = $product->get_id();
-		$price_incl_tax = wc_get_price_including_tax( $product );
-		$price_excl_tax = wc_get_price_excluding_tax( $product );
+	public function save_product_price_with_tax( $product_id, $product ) {
+		if ( WCAPF_Helper::store_is_in_tax_inclusive_mode() ) {
+			$price_with_tax = wc_get_price_excluding_tax( $product );
+		} elseif ( WCAPF_Helper::store_is_in_tax_exclusive_mode() ) {
+			$price_with_tax = wc_get_price_including_tax( $product );
+		} else {
+			$price_with_tax = $product->get_price();
+		}
 
-		update_post_meta( $product_id, WCAPF_Helper::meta_key_for_price_including_tax(), $price_incl_tax );
-		update_post_meta( $product_id, WCAPF_Helper::meta_key_for_price_excluding_tax(), $price_excl_tax );
+		update_post_meta( $product_id, WCAPF_Helper::meta_key_for_price_with_tax(), $price_with_tax );
 	}
 
 }
 
 if ( is_admin() ) {
-	new WCAPF_Product_Prices_Generator();
+	WCAPF_Product_Prices_Generator::get_instance();
 }
