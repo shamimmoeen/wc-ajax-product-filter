@@ -8,6 +8,7 @@
  */
 
 const wcapf_params = wcapf_params || {
+	'filter_input_delay': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '', // todo
@@ -15,7 +16,6 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top': '', // todo
 	'scroll_to_top_offset': '', // todo
 	'custom_scripts': '',
-	'filter_relationships': '',
 };
 
 jQuery( document ).ready(
@@ -26,7 +26,8 @@ jQuery( document ).ready(
 			return false;
 		}
 
-		const delay = 800; // todo: option to change
+		const _delay = parseInt( wcapf_params.filter_input_delay );
+		const delay  = _delay >= 0 ? _delay : 800;
 
 		// store fields' id and filter information
 		const fields = {};
