@@ -602,9 +602,9 @@ jQuery( document ).ready(
 
 					if ( parseFloat( minValue ) > parseFloat( maxValue ) ) {
 						maxValue = minValue;
-					}
 
-					// TODO: Update the min, max value accordingly.
+						$rangeNumber.find( '.max-value' ).val( maxValue );
+					}
 
 					if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
 						const query = wcapfRemoveQueryStringParameter( filterKey );
