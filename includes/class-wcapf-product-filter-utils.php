@@ -16,25 +16,6 @@
 class WCAPF_Product_Filter_Utils {
 
 	/**
-	 * Gets the list of field types in those the field key is required.
-	 *
-	 * @return array
-	 */
-	public static function get_field_types_with_key_required() {
-		return apply_filters(
-			'wcapf_field_types_with_key_required',
-			array(
-				'category',
-				'tag',
-				'attribute',
-				'price',
-				'rating',
-				'product-status',
-			)
-		);
-	}
-
-	/**
 	 * Gets the chosen filter values.
 	 *
 	 * @param string $filter_key The filter key.
@@ -132,20 +113,6 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * Gets the product status options.
-	 *
-	 * @return array
-	 */
-	public static function get_product_status_options() {
-		$options = array(
-			'featured' => __( 'Featured', 'wc-ajax-product-filter' ),
-			'on_sale'  => __( 'On sale', 'wc-ajax-product-filter' ),
-		);
-
-		return apply_filters( 'wcapf_product_status_options', $options );
-	}
-
-	/**
 	 * @noinspection SqlNoDataSourceInspection
 	 * @noinspection SqlDialectInspection
 	 *
@@ -162,7 +129,7 @@ class WCAPF_Product_Filter_Utils {
 		}
 
 		$post_type     = 'product';
-		$post_statuses = WCAPF_Helper::visible_product_statuses();
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
 
 		$query = $wpdb->prepare(
 			"
@@ -178,7 +145,7 @@ class WCAPF_Product_Filter_Utils {
 			$meta_key
 		);
 
-		// todo: use filter
+		$query = apply_filters( 'wcapf_min_value_sql_query', $query, $meta_key );
 
 		return $wpdb->get_var( $query );
 	}
@@ -200,7 +167,7 @@ class WCAPF_Product_Filter_Utils {
 		}
 
 		$post_type     = 'product';
-		$post_statuses = WCAPF_Helper::visible_product_statuses();
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
 
 		$query = $wpdb->prepare(
 			"
@@ -216,20 +183,42 @@ class WCAPF_Product_Filter_Utils {
 			$meta_key
 		);
 
-		// todo: use filter
+		$query = apply_filters( 'wcapf_max_value_sql_query', $query, $meta_key );
 
 		return $wpdb->get_var( $query );
 	}
 
 	/**
-	 * The product status option row markup.
-	 *
-	 * @param array $data The template data.
-	 *
-	 * @return void
+	 * @return string
 	 */
-	public function product_status_option_markup( $data = array() ) {
-		WCAPF_Template_Loader::get_instance()->load( 'admin/field-templates/product-status-option-row', $data );
+	public static function price_data_type() {
+		// woocommerce_price_num_decimals
+		$decimal_places = get_option( 'woocommerce_price_num_decimals' );
+		$decimal_places = strlen( $decimal_places ) ? $decimal_places : 3;
+
+		return apply_filters( 'wcapf_price_data_type', 'DECIMAL(10,' . $decimal_places . ')' );
+	}
+
+	/**
+	 * Gets the meta key for price filter.
+	 *
+	 * @return string
+	 */
+	public static function get_meta_key_for_price_filter() {
+		$helper = new WCAPF_Helper;
+
+		$prices_with_tax_generated = '1' === get_option( $helper::product_prices_generated_option_key() );
+
+		$store_is_in_tax_incl_or_excl_mode = $helper::store_is_in_tax_inclusive_mode()
+		                                     || $helper::store_is_in_tax_exclusive_mode();
+
+		if ( $prices_with_tax_generated && $store_is_in_tax_incl_or_excl_mode ) {
+			$meta_key = $helper::meta_key_for_price_with_tax();
+		} else {
+			$meta_key = '_price';
+		}
+
+		return $meta_key;
 	}
 
 }

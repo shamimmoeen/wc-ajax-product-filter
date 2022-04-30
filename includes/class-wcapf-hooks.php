@@ -17,6 +17,12 @@
 class WCAPF_Hooks {
 
 	/**
+	 * Constructor.
+	 */
+	private function __construct() {
+	}
+
+	/**
 	 * Returns an instance of this class.
 	 *
 	 * @return WCAPF_Hooks

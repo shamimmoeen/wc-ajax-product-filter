@@ -185,8 +185,7 @@ abstract class WCAPF_Field {
 	 * @return array[]
 	 */
 	protected function title_group_columns() {
-		$type                = $this->type();
-		$allowed_field_types = WCAPF_Product_Filter_Utils::get_field_types_with_key_required();
+		$type = $this->type();
 
 		$fields = array(
 			array(
@@ -200,8 +199,9 @@ abstract class WCAPF_Field {
 		);
 
 		$show_field_key_in_title_group = apply_filters( 'wcapf_show_field_key_in_title_group', true, $type );
+		$field_types_with_key_required = WCAPF_Helper::field_types_with_key_required();
 
-		if ( $show_field_key_in_title_group && in_array( $type, $allowed_field_types ) ) {
+		if ( $show_field_key_in_title_group && in_array( $type, $field_types_with_key_required ) ) {
 			$fields = array_merge( $fields, array( $this->get_field_key_data() ) );
 		}
 
@@ -782,6 +782,8 @@ abstract class WCAPF_Field {
 		$decimal_separator     = $this->get_sub_field_value( 'decimal_separator' );
 		$display_values_as     = $this->get_sub_field_value( 'number_range_slider_display_values_as' );
 
+		$filter_utils = new WCAPF_Product_Filter_Utils;
+
 		$data_type = ''; // TODO: Get the data type from field options.
 
 		// Price is actually a post-meta.
@@ -789,16 +791,16 @@ abstract class WCAPF_Field {
 			// In chosen filters, price filter data is stored under 'post-meta'.
 			$filter_type = 'post-meta';
 
-			$meta_key  = WCAPF_Helper::get_meta_key_for_price_filter();
-			$data_type = WCAPF_Helper::price_data_type();
+			$meta_key  = $filter_utils::get_meta_key_for_price_filter();
+			$data_type = $filter_utils::price_data_type();
 		}
 
 		if ( $range_min_auto_detect ) {
-			$range_min_value = WCAPF_Product_Filter_Utils::get_min_value( $meta_key, $data_type );
+			$range_min_value = $filter_utils::get_min_value( $meta_key, $data_type );
 		}
 
 		if ( $range_max_auto_detect ) {
-			$range_max_value = WCAPF_Product_Filter_Utils::get_max_value( $meta_key, $data_type );
+			$range_max_value = $filter_utils::get_max_value( $meta_key, $data_type );
 		}
 
 		$chosen_filters = WCAPF_Product_Filter::instance()->get_chosen_filters();

@@ -228,7 +228,7 @@ class WCAPF_Product_Filter {
 			$term_products = get_posts(
 				array(
 					'post_type'   => 'product',
-					'post_status' => WCAPF_Helper::visible_product_statuses(),
+					'post_status' => WCAPF_Helper::filterable_post_statuses(),
 					'nopaging'    => true,
 					'fields'      => 'ids',
 					'tax_query'   => array(
@@ -280,7 +280,7 @@ class WCAPF_Product_Filter {
 	private function get_chosen_price( $field_instance, $query ) {
 		$active_filters = array();
 
-		$meta_key   = WCAPF_Helper::get_meta_key_for_price_filter();
+		$meta_key   = WCAPF_Product_Filter_Utils::get_meta_key_for_price_filter();
 		$filter_key = $field_instance->filter_key;
 		$query_type = $field_instance->query_type;
 
@@ -300,13 +300,13 @@ class WCAPF_Product_Filter {
 		$min = floatval( $filter_values[0] );
 		$max = floatval( $filter_values[1] );
 
-		$type = WCAPF_Helper::price_data_type();
+		$type = WCAPF_Product_Filter_Utils::price_data_type();
 
 		// TODO: Maybe use cache.
 		$ranged_products = get_posts(
 			array(
 				'post_type'   => 'product',
-				'post_status' => WCAPF_Helper::visible_product_statuses(),
+				'post_status' => WCAPF_Helper::filterable_post_statuses(),
 				'nopaging'    => true,
 				'fields'      => 'ids',
 				'meta_query'  => array(

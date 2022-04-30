@@ -17,6 +17,12 @@
 class WCAPF {
 
 	/**
+	 * The constructor.
+	 */
+	private function __construct() {
+	}
+
+	/**
 	 * Returns an instance of this class.
 	 *
 	 * @return WCAPF

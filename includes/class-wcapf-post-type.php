@@ -16,7 +16,31 @@ class WCAPF_Post_Type {
 	/**
 	 * Constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
+	}
+
+	/**
+	 * Returns an instance of this class.
+	 *
+	 * @return WCAPF_Post_Type
+	 */
+	public static function instance() {
+		// Store the instance locally to avoid private static replication
+		static $instance = null;
+
+		// Only run these methods if they haven't been run previously
+		if ( null === $instance ) {
+			$instance = new WCAPF_Post_Type();
+			$instance->init_hooks();
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Hook into actions and filters.
+	 */
+	public function init_hooks() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_filter( 'post_row_actions', array( $this, 'remove_row_actions' ) );
 		add_filter( 'manage_wcapf-filter_posts_columns', array( $this, 'set_filter_posts_table_columns' ) );
@@ -143,6 +167,29 @@ class WCAPF_Post_Type {
 	}
 
 	/**
+	 * Gets the filter type custom column data.
+	 *
+	 * @param int $post_id The post id.
+	 *
+	 * @return string
+	 */
+	protected function get_filter_type_custom_column( $post_id ) {
+		$data = get_post_meta( $post_id, '_field_data', true );
+		$type = isset( $data['type'] ) ? $data['type'] : '';
+
+		$fields = WCAPF_Helper::available_search_fields();
+		$name   = isset( $fields[ $type ] ) ? $fields[ $type ] : '';
+
+		if ( 'attribute' === $type ) {
+			$taxonomy = isset( $data['taxonomy'] ) ? $data['taxonomy'] : '';
+
+			$name .= $taxonomy ? ': <b>' . $taxonomy . '</b>' : '';
+		}
+
+		return apply_filters( 'wcapf_filter_type_custom_column', $name, $data );
+	}
+
+	/**
 	 * Run admin init scripts.
 	 *
 	 * @return void
@@ -258,29 +305,6 @@ class WCAPF_Post_Type {
 		return $bulk_messages;
 	}
 
-	/**
-	 * Gets the filter type custom column data.
-	 *
-	 * @param int $post_id The post id.
-	 *
-	 * @return string
-	 */
-	protected function get_filter_type_custom_column( $post_id ) {
-		$data = get_post_meta( $post_id, '_field_data', true );
-		$type = isset( $data['type'] ) ? $data['type'] : '';
-
-		$fields = WCAPF_Helper::available_search_fields();
-		$name   = isset( $fields[ $type ] ) ? $fields[ $type ] : '';
-
-		if ( 'attribute' === $type ) {
-			$taxonomy = isset( $data['taxonomy'] ) ? $data['taxonomy'] : '';
-
-			$name .= $taxonomy ? ': <b>' . $taxonomy . '</b>' : '';
-		}
-
-		return apply_filters( 'wcapf_filter_type_custom_column', $name, $data );
-	}
-
 }
 
-new WCAPF_Post_Type();
+WCAPF_Post_Type::instance();

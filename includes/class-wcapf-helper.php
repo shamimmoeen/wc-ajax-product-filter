@@ -32,15 +32,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The option key that contains the plugin settings.
-	 *
-	 * @return string
-	 */
-	public static function settings_option_key() {
-		return 'wcapf_settings';
-	}
-
-	/**
 	 * Gets the wcapf settings.
 	 *
 	 * @return array
@@ -56,6 +47,24 @@ class WCAPF_Helper {
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * The option key that contains the plugin settings.
+	 *
+	 * @return string
+	 */
+	public static function settings_option_key() {
+		return 'wcapf_settings';
+	}
+
+	/**
+	 * The option key that contains the information if the product prices generated earlier.
+	 *
+	 * @return string
+	 */
+	public static function product_prices_generated_option_key() {
+		return 'wcapf_product_prices_generated';
 	}
 
 	/**
@@ -85,67 +94,28 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @return string
-	 */
-	public static function price_data_type() {
-		// woocommerce_price_num_decimals
-		$decimal_places = get_option( 'woocommerce_price_num_decimals' );
-		$decimal_places = strlen( $decimal_places ) ? $decimal_places : 3;
-
-		return apply_filters( 'wcapf_price_data_type', 'DECIMAL(10,' . $decimal_places . ')' );
-	}
-
-	/**
 	 * The meta key that contains the product's price with tax.
 	 *
 	 * @return string
 	 */
 	public static function meta_key_for_price_with_tax() {
-		return '_price_with_tax';
+		return apply_filters( 'wcapf_price_with_tax_meta_key', '_price_with_tax' );
 	}
 
 	/**
-	 * The option key that contains the information if the product prices generated earlier.
-	 *
-	 * @return string
-	 */
-	public static function product_prices_generated_option_key() {
-		return 'wcapf_product_prices_generated';
-	}
-
-	/**
-	 * Gets the meta key for price filter.
-	 *
-	 * @return string
-	 */
-	public static function get_meta_key_for_price_filter() {
-		$prices_with_tax_generated = '1' === get_option( self::product_prices_generated_option_key() );
-
-		$store_is_in_tax_incl_or_excl_mode = self::store_is_in_tax_inclusive_mode()
-		                                     || self::store_is_in_tax_exclusive_mode();
-
-		if ( $prices_with_tax_generated && $store_is_in_tax_incl_or_excl_mode ) {
-			$meta_key = self::meta_key_for_price_with_tax();
-		} else {
-			$meta_key = '_price';
-		}
-
-		return $meta_key;
-	}
-
-	/**
-	 * The filtering system for the private products only work if the user is logged in.
+	 * The filtering works for the products with these post statuses.
 	 *
 	 * @return array
 	 */
-	public static function visible_product_statuses() {
-		$valid_statuses = array( 'publish' );
+	public static function filterable_post_statuses() {
+		$post_statuses = array( 'publish' );
 
-		if ( is_user_logged_in() ) {
-			$valid_statuses[] = 'private';
+		// Shop managers can see the private products, the filtering should work there.
+		if ( current_user_can( 'manage_woocommerce' ) ) {
+			$post_statuses[] = 'private';
 		}
 
-		return apply_filters( 'wcapf_valid_post_statuses_for_sql_query', $valid_statuses );
+		return apply_filters( 'wcapf_filterable_post_statuses', $post_statuses );
 	}
 
 	/**
@@ -204,6 +174,44 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * The field types where the field key is required.
+	 *
+	 * @return array
+	 */
+	public static function field_types_with_key_required() {
+		return apply_filters(
+			'wcapf_field_types_with_key_required',
+			array(
+				'category',
+				'tag',
+				'attribute',
+				'price',
+				'rating',
+				'product-status',
+			)
+		);
+	}
+
+	/**
+	 * Renders the field's form for the given instance.
+	 *
+	 * @param array $field_instance The field's instance.
+	 *
+	 * @return void
+	 */
+	public static function render_field_form_by_instance( $field_instance ) {
+		$type       = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
+		$class_name = self::get_field_class_name_by_type( $type );
+
+		if ( ! $class_name ) {
+			return;
+		}
+
+		$field = self::get_field_instance( $type, $field_instance );
+		$field->form();
+	}
+
+	/**
 	 * Gets the field's class name for the given type.
 	 *
 	 * @param string $type The field type.
@@ -247,22 +255,28 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Renders the field's form for the given instance.
+	 * Gets the product status options.
 	 *
-	 * @param array $field_instance The field's instance.
+	 * @return array
+	 */
+	public static function get_product_status_options() {
+		$options = array(
+			'featured' => __( 'Featured', 'wc-ajax-product-filter' ),
+			'on_sale'  => __( 'On sale', 'wc-ajax-product-filter' ),
+		);
+
+		return apply_filters( 'wcapf_product_status_options', $options );
+	}
+
+	/**
+	 * The product status option row markup.
+	 *
+	 * @param array $data The template data.
 	 *
 	 * @return void
 	 */
-	public static function render_field_form_by_instance( $field_instance ) {
-		$type       = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
-		$class_name = self::get_field_class_name_by_type( $type );
-
-		if ( ! $class_name ) {
-			return;
-		}
-
-		$field = self::get_field_instance( $type, $field_instance );
-		$field->form();
+	public static function product_status_option_markup( $data = array() ) {
+		WCAPF_Template_Loader::get_instance()->load( 'admin/field-templates/product-status-option-row', $data );
 	}
 
 }

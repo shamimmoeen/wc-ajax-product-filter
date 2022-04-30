@@ -6,7 +6,7 @@
 $value = isset( $value ) ? $value : '';
 $label = isset( $label ) ? $label : '';
 
-$options = WCAPF_Product_Filter_Utils::get_product_status_options();
+$options = WCAPF_Helper::get_product_status_options();
 ?>
 <div class="row-item">
 	<div class="item">

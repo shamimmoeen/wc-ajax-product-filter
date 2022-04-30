@@ -16,7 +16,31 @@ class WCAPF_Filter_Meta_Box {
 	/**
 	 * Constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
+	}
+
+	/**
+	 * Returns an instance of this class.
+	 *
+	 * @return WCAPF_Filter_Meta_Box
+	 */
+	public static function instance() {
+		// Store the instance locally to avoid private static replication
+		static $instance = null;
+
+		// Only run these methods if they haven't been run previously
+		if ( null === $instance ) {
+			$instance = new WCAPF_Filter_Meta_Box();
+			$instance->init_hooks();
+		}
+
+		return $instance;
+	}
+
+	/**
+	 * Hook into actions and filters.
+	 */
+	public function init_hooks() {
 		add_action( 'save_post', array( $this, 'save_filter' ) );
 		add_filter( 'redirect_post_location', array( $this, 'meta_validation_redirect_location' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'validation_error_admin_notice' ) );
@@ -49,13 +73,13 @@ class WCAPF_Filter_Meta_Box {
 
 		$error_code = '';
 
-		$fields_with_key_required = WCAPF_Product_Filter_Utils::get_field_types_with_key_required();
+		$field_types_with_key_required = WCAPF_Helper::field_types_with_key_required();
 
 		if ( ! $field_type ) { // Filter is required.
 			$error_code = 20;
 		} elseif ( ! $class_name ) { // Invalid filter type.
 			$error_code = 21;
-		} elseif ( in_array( $field_type, $fields_with_key_required ) ) {
+		} elseif ( in_array( $field_type, $field_types_with_key_required ) ) {
 			if ( ! $filter_key ) { // Filter key required.
 				$error_code = 22;
 			} elseif ( $this->is_filter_key_already_in_use( $post_id, $filter_key ) ) { // Filter key is already in use.
@@ -163,6 +187,17 @@ class WCAPF_Filter_Meta_Box {
 		);
 
 		return get_posts( $args );
+	}
+
+	/**
+	 * Checks if taxonomy exists with the filter key.
+	 *
+	 * @param string $filter_key The filter key.
+	 *
+	 * @return bool
+	 */
+	private function taxonomy_exists_for_filter_key( $filter_key ) {
+		return taxonomy_exists( $filter_key );
 	}
 
 	private function meta_validation_transient_name( $post_id, $user_id ) {
@@ -306,25 +341,12 @@ class WCAPF_Filter_Meta_Box {
 	 */
 	public function render_product_status_option_placeholder_template() {
 		if ( 'wcapf-filter' === get_post_type() ) {
-			$utils = new WCAPF_Product_Filter_Utils();
-
 			echo '<script type="text/html" id="tmpl-wcapf-product-status-option">';
-			$utils->product_status_option_markup();
+			WCAPF_Helper::product_status_option_markup();
 			echo '</script>';
 		}
 	}
 
-	/**
-	 * Checks if taxonomy exists with the filter key.
-	 *
-	 * @param string $filter_key The filter key.
-	 *
-	 * @return bool
-	 */
-	private function taxonomy_exists_for_filter_key( $filter_key ) {
-		return taxonomy_exists( $filter_key );
-	}
-
 }
 
-new WCAPF_Filter_Meta_Box();
+WCAPF_Filter_Meta_Box::instance();

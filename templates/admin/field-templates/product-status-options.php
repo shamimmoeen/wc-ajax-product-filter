@@ -20,10 +20,8 @@ $product_status_options = isset( $instance['product_status_options'] ) ? $instan
 		<div class="field-table-body-rows">
 			<?php
 			if ( $product_status_options ) {
-				$utils = new WCAPF_Product_Filter_Utils();
-
 				foreach ( $product_status_options as $product_status_option ) {
-					$utils->product_status_option_markup( $product_status_option );
+					WCAPF_Helper::product_status_option_markup( $product_status_option );
 				}
 			}
 			?>
