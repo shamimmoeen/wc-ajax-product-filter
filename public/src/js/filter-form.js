@@ -32,10 +32,11 @@ jQuery( document ).ready(
 		// store fields' id and filter information
 		const fields = {};
 
-		const $wcapfSingleFilters = $( '.wcapf-single-filter' );
-		const $wcapfTermFilters   = $( '.wcapf-ajax-term-filter' );
+		const $wcapfSingleFilters      = $( '.wcapf-single-filter' );
+		const $wcapfNavFilters         = $( '.wcapf-nav-filter' );
+		const $wcapfNumberRangeFilters = $( '.wcapf-number-range-filter' );
 
-		$wcapfTermFilters.each(
+		$wcapfSingleFilters.each(
 			function() {
 				const $field         = $( this );
 				const id             = $field.attr( 'data-id' );
@@ -56,7 +57,7 @@ jQuery( document ).ready(
 				return;
 			}
 
-			$wcapfTermFilters.find( '.wcapf-chosen-select' ).each( function() {
+			$wcapfNavFilters.find( '.wcapf-chosen-select' ).each( function() {
 				const $this   = $( this );
 				const options = {};
 
@@ -74,7 +75,7 @@ jQuery( document ).ready(
 
 		// Initialize hierarchy accordion
 		function initHierarchyAccordion() {
-			$wcapfTermFilters.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
+			$wcapfNavFilters.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
 				$( this ).toggleClass( 'active' );
 			} );
 		}
@@ -124,11 +125,17 @@ jQuery( document ).ready(
 
 		// Initialize noUISlider
 		function initNoUISlider() {
-			$wcapfSingleFilters.find( '.wcapf-range-slider' ).each( function() {
+			$wcapfNumberRangeFilters.find( '.wcapf-range-slider' ).each( function() {
 				const $item = $( this );
 
-				const filterKey         = $item.attr( 'data-filter-key' );
-				const $slider           = $item.find( '.wcapf-noui-slider' );
+				const filterKey = $item.attr( 'data-filter-key' );
+				const $slider   = $item.find( '.wcapf-noui-slider' );
+
+				// If slider is already initialized then don't reinitialize again.
+				if ( $slider.hasClass( 'noUi-target' ) ) {
+					return;
+				}
+
 				const sliderId          = $slider.attr( 'id' );
 				const displayValuesAs   = $item.attr( 'data-display-values-as' );
 				const rangeMinValue     = parseFloat( $item.attr( 'data-range-min-value' ) );
@@ -242,19 +249,20 @@ jQuery( document ).ready(
 
 		// show a loading indicator
 		function wcapfBeforeUpdate() {
-			$( 'body' ).trigger( 'wcapf_before_update' );
+			$( 'body' ).trigger( 'wcapf_before_update_filters' );
 		}
 
 		// scroll to top
 		function wcapfAfterUpdate() {
 			initChosen();
 			initHierarchyAccordion();
+			initNoUISlider();
 
-			$( 'body' ).trigger( 'wcapf_after_update' );
+			$( 'body' ).trigger( 'wcapf_after_update_filters' );
 		}
 
 		// filter the products
-		function wcapfFilterProducts() {
+		function wcapfFilterProducts( forceReRender = false ) {
 			wcapfBeforeUpdate();
 
 			$.get(
@@ -274,11 +282,29 @@ jQuery( document ).ready(
 							const _field     = $data.find( fieldID );
 							const fieldClass = $( _field ).attr( 'class' );
 
-							// update class
-							$field.attr( 'class', fieldClass );
+							// When called from history back or forward request then rerender all fields.
+							if ( forceReRender ) {
 
-							// update field
-							$field.html( _field.html() );
+								// update class
+								$field.attr( 'class', fieldClass );
+
+								// update field
+								$field.html( _field.html() );
+
+							} else {
+
+								// Selectively rerender the fields.
+								if ( $field.hasClass( 'wcapf-nav-filter' ) ) {
+
+									// update class
+									$field.attr( 'class', fieldClass );
+
+									// update field
+									$field.html( _field.html() );
+
+								}
+
+							}
 						}
 					);
 
@@ -515,7 +541,7 @@ jQuery( document ).ready(
 		}
 
 		// handle the filter request for list fields
-		$wcapfTermFilters.on(
+		$wcapfNavFilters.on(
 			'change',
 			'.wcapf-layered-nav [type="checkbox"], .wcapf-layered-nav [type="radio"]',
 			function( event ) {
@@ -530,7 +556,7 @@ jQuery( document ).ready(
 
 		// TODO: Use a combination of label, checkbox and radio
 		// handle the filter request for labeled item
-		$wcapfTermFilters.on(
+		$wcapfNavFilters.on(
 			'click',
 			'.wcapf-labeled-nav .item',
 			function( event ) {
@@ -544,7 +570,7 @@ jQuery( document ).ready(
 		);
 
 		// handle the filter request for display type select fields
-		$wcapfTermFilters.on(
+		$wcapfNavFilters.on(
 			'change',
 			'select',
 			function( event ) {
@@ -572,7 +598,7 @@ jQuery( document ).ready(
 		);
 
 		// handle the filter request for range number
-		$wcapfSingleFilters.on(
+		$wcapfNumberRangeFilters.on(
 			'input',
 			'.wcapf-range-number .min-value, .wcapf-range-number .max-value',
 			function( event ) {
@@ -593,14 +619,42 @@ jQuery( document ).ready(
 					let minValue        = $rangeNumber.find( '.min-value' ).val();
 					let maxValue        = $rangeNumber.find( '.max-value' ).val();
 
+					// Force the minValue not to be empty.
 					if ( ! minValue.length ) {
 						minValue = rangeMinValue;
+
+						$rangeNumber.find( '.min-value' ).val( minValue );
 					}
 
+					// Force the maxValue not to be empty.
 					if ( ! maxValue.length ) {
 						maxValue = rangeMaxValue;
+
+						$rangeNumber.find( '.max-value' ).val( maxValue );
 					}
 
+					// Force the minValue not to go below the rangeMinValue.
+					if ( parseFloat( minValue ) < parseFloat( rangeMinValue ) ) {
+						minValue = rangeMinValue;
+
+						$rangeNumber.find( '.min-value' ).val( minValue );
+					}
+
+					// Force the minValue not to go up the rangeMaxValue.
+					if ( parseFloat( minValue ) > parseFloat( rangeMaxValue ) ) {
+						minValue = rangeMaxValue;
+
+						$rangeNumber.find( '.min-value' ).val( minValue );
+					}
+
+					// Force the maxValue not to go up the rangeMaxValue.
+					if ( parseFloat( maxValue ) > parseFloat( rangeMaxValue ) ) {
+						maxValue = rangeMaxValue;
+
+						$rangeNumber.find( '.max-value' ).val( maxValue );
+					}
+
+					// Force the maxValue not to go below the minValue.
 					if ( parseFloat( minValue ) > parseFloat( maxValue ) ) {
 						maxValue = minValue;
 
@@ -624,7 +678,7 @@ jQuery( document ).ready(
 		// history back and forward request handling
 		$( window ).bind( 'popstate', function() {
 			// filter products
-			wcapfFilterProducts();
+			wcapfFilterProducts( true );
 		} );
 
 	}

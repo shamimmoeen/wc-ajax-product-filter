@@ -710,11 +710,7 @@ abstract class WCAPF_Field {
 	 * @return void
 	 */
 	protected function before_filter_form( $classes ) {
-		array_unshift( $classes, 'wcapf-single-filter' );
-
-		$classes = apply_filters( 'wcapf_field_classes', $classes );
-
-		$field_classes = implode( ' ', $classes );
+		$field_classes = $this->get_field_classes( $classes );
 		$show_title    = $this->get_sub_field_value( 'show_title' );
 		$filter_id     = $this->get_sub_field_value( 'field_id' );
 		$filter_title  = get_the_title( $filter_id );
@@ -724,6 +720,30 @@ abstract class WCAPF_Field {
 		if ( $show_title ) {
 			echo '<h4 class="wcapf-field-title">' . esc_html( $filter_title ) . '</h4>';
 		}
+	}
+
+	/**
+	 * Gets the field classes.
+	 *
+	 * @param array $classes The default classes.
+	 *
+	 * @return string
+	 */
+	protected function get_field_classes( $classes ) {
+		array_unshift( $classes, 'wcapf-single-filter' );
+
+		$type = $this->type();
+
+		$classes[] = 'wcapf-' . $type . '-filter';
+
+		if ( 'attribute' === $type ) {
+			$taxonomy  = $this->get_sub_field_value( 'taxonomy' );
+			$classes[] = 'wcapf-' . $taxonomy . '-filter';
+		}
+
+		$classes = apply_filters( 'wcapf_field_classes', $classes, $this->get_instance() );
+
+		return implode( ' ', $classes );
 	}
 
 	/**

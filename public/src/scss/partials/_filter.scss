@@ -104,6 +104,11 @@
 	}
 }
 
+.wcapf-range-number,
+.wcapf-range-slider {
+	margin: 0 0 1.5em;
+}
+
 .wcapf-range-number {
 	input[type="number"] {
 		max-width: 80px;

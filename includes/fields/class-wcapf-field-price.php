@@ -41,24 +41,22 @@ class WCAPF_Field_Price extends WCAPF_Field {
 	 * @return void
 	 */
 	protected function render_filter_form() {
-		// TODO: Maybe redundant
+		// TODO: Maybe show the preview in the backend also.
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}
 
-		$field        = new WCAPF_Field_Instance( $this->get_instance() );
-		$display_type = $field->display_type;
+		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
+		$display_type   = $field_instance->display_type;
 
 		$non_menu_filters = array( 'range_slider', 'range_number' );
 
-		$classes = array();
-
-		$classes[] = 'wcapf-ajax-' . $this->type() . '-filter';
+		$classes = array( 'wcapf-number-range-filter' );
 
 		$this->before_filter_form( $classes );
 
 		if ( in_array( $display_type, $non_menu_filters ) ) {
-			$this->render_non_menu_filter_field( $field );
+			$this->render_non_menu_filter_field( $field_instance );
 		}
 
 		$this->after_filter_form();

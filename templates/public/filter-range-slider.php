@@ -35,7 +35,7 @@ $attrs = implode( ' ', $_attrs );
 ?>
 
 <div class="wcapf-range-slider" <?php echo $attrs; ?>>
-	<div class="slided-number-wrapper">
+	<div class="range-wrapper">
 		<span class="wcapf-range-start">
 			<?php if ( $value_prefix ) : ?>
 				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>

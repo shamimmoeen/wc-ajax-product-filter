@@ -89,7 +89,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 
 		$walker = new WCAPF_Walker( $field_instance );
 
-		$classes = array( 'wcapf-ajax-term-filter' );
+		$classes = array( 'wcapf-nav-filter' );
 
 		if ( ! $items ) {
 			$classes[] = 'wcapf-field-hidden';
