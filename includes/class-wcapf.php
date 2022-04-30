@@ -228,7 +228,7 @@ class WCAPF {
 		wp_localize_script(
 			'wc-ajax-product-filter-public-scripts',
 			'wcapf_params',
-			WCAPF_Helper::get_settings()
+			$this->get_js_params()
 		);
 
 		// TODO: Remove 'assets' directory.
@@ -269,6 +269,21 @@ class WCAPF {
 		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/scripts.js' ),
 		// 	true
 		// );
+	}
+
+	/**
+	 * Frontend js params.
+	 *
+	 * @return array
+	 */
+	private function get_js_params() {
+		$params = array(
+			'filter_input_delay' => 800, // In milliseconds.
+		);
+
+		$params = array_merge( $params, WCAPF_Helper::get_settings() );
+
+		return apply_filters( 'wcapf_js_params', $params );
 	}
 
 	/**
