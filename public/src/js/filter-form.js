@@ -94,7 +94,7 @@ jQuery( document ).ready(
 		 */
 		function number_format( number, decimals, dec_point, thousands_sep ) {
 			// Strip all characters but numerical ones.
-			number = ( number + '' ).replace( /[^0-9+\-Ee.]/g, '' );
+			number = ( number + '' ).replace( /[^\d+\-Ee.]/g, '' );
 
 			const n    = ! isFinite( +number ) ? 0 : +number;
 			const prec = ! isFinite( +decimals ) ? 0 : Math.abs( decimals );
