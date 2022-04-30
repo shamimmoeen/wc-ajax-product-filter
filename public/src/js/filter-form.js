@@ -342,11 +342,11 @@ jQuery( document ).ready(
 		function wcapfFixPagination() {
 			let url                = window.location.href;
 			const params           = wcapfGetUrlVars( url );
-			const currentPageInUrl = parseInt( url.replace( /.+\/page\/([0-9]+)+/, '$1' ) );
+			const currentPageInUrl = parseInt( url.replace( /.+\/page\/(\d+)+/, '$1' ) );
 
 			if ( currentPageInUrl ) {
 				if ( currentPageInUrl > 1 ) {
-					url = url.replace( /page\/([0-9]+)/, 'page/1' );
+					url = url.replace( /page\/(\d+)/, 'page/1' );
 				}
 			} else if ( typeof params[ 'paged' ] !== 'undefined' ) {
 				const currentPageInParams = parseInt( params[ 'paged' ] );
