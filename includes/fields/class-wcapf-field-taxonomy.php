@@ -96,7 +96,7 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 		}
 
 		$this->before_filter_form( $classes );
-		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped // todo
+		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		$this->after_filter_form();
 	}
 

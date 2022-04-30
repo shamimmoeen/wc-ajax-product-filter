@@ -47,7 +47,6 @@ class WCAPF_Field_Product_Status extends WCAPF_Field {
 						array(
 							'type'     => 'html',
 							'name'     => 'product_status_options_markup',
-							// TODO: Might need to change
 							'template' => 'admin/field-templates/product-status-options',
 							'position' => 30,
 						),
