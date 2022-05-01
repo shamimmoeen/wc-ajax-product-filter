@@ -4,7 +4,7 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes
+ * @subpackage wc-ajax-product-filter/includes/filter-types
  * @author     Mainul Hassan Main
  */
 
@@ -191,7 +191,11 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function get_filtered_term_product_counts( $term_ids ) {
 		global $wpdb;
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $this->get_query_data();
+		$helper = new WCAPF_Helper;
+
+		$post_statuses = $helper::filterable_post_statuses();
+
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $helper::get_main_query_data();
 
 		$query  = array();
 		$select = '';
@@ -214,8 +218,8 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status = 'publish' ";
-		$where .= 'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+		$where .= ' AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';

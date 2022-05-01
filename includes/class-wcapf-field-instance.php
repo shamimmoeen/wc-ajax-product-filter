@@ -32,6 +32,9 @@ class WCAPF_Field_Instance {
 	public $taxonomy;
 	public $hierarchical;
 	public $enable_hierarchy_accordion;
+	public $value_type;
+	public $meta_key;
+	public $number_data_type;
 
 	/**
 	 * The raw field instance.
@@ -145,6 +148,10 @@ class WCAPF_Field_Instance {
 		$this->hierarchical = $this->taxonomy_is_hierarchical();
 
 		$this->enable_hierarchy_accordion = $this->is_hierarchy_accordion_enabled();
+
+		$this->value_type       = $this->get_value_type();
+		$this->meta_key         = $this->get_meta_key();
+		$this->number_data_type = $this->get_number_data_type();
 	}
 
 	/**
@@ -160,7 +167,7 @@ class WCAPF_Field_Instance {
 			$value_type = 'number';
 		}
 
-		return apply_filters( 'wcapf_field_value_type', $value_type );
+		return apply_filters( 'wcapf_field_value_type', $value_type, $field_type, $this->instance );
 	}
 
 	/**
@@ -250,20 +257,26 @@ class WCAPF_Field_Instance {
 	private function get_filter_type() {
 		$field_type = $this->get_field_type();
 
-		if ( in_array( $field_type, $this->taxonomy_field_types() ) ) {
+		if ( in_array( $field_type, WCAPF_Helper::taxonomy_field_types() ) ) {
 			$filter_type = 'taxonomy';
+		} elseif ( 'price' === $field_type ) {
+			$filter_type = 'post-meta';
 		} else {
 			$filter_type = $field_type;
 		}
 
-		return $filter_type;
+		return apply_filters( 'wcapf_field_filter_type', $filter_type, $field_type, $this->instance );
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
-	private function taxonomy_field_types() {
-		return array( 'category', 'tag', 'attribute', 'custom-taxonomy' );
+	private function get_taxonomy() {
+		if ( 'taxonomy' !== $this->get_filter_type() ) {
+			return '';
+		}
+
+		return $this->get_taxonomy_from_field_instance();
 	}
 
 	/**
@@ -282,7 +295,6 @@ class WCAPF_Field_Instance {
 				break;
 
 			case 'attribute':
-			case 'custom-taxonomy':
 				$taxonomy = $this->get_sub_field_value( 'taxonomy' );
 				break;
 
@@ -291,18 +303,7 @@ class WCAPF_Field_Instance {
 				break;
 		}
 
-		return $taxonomy;
-	}
-
-	/**
-	 * @return string
-	 */
-	private function get_taxonomy() {
-		if ( 'taxonomy' !== $this->get_filter_type() ) {
-			return '';
-		}
-
-		return $this->get_taxonomy_from_field_instance();
+		return apply_filters( 'wcapf_field_taxonomy', $taxonomy, $field_type, $this->instance );
 	}
 
 	/**
@@ -337,6 +338,42 @@ class WCAPF_Field_Instance {
 		}
 
 		return boolval( $this->get_sub_field_value( 'enable_hierarchy_accordion' ) );
+	}
+
+	/**
+	 * @return string
+	 */
+	private function get_meta_key() {
+		if ( 'price' === $this->get_field_type() ) {
+			$meta_key = WCAPF_Product_Filter_Utils::get_meta_key_for_price_filter();
+		} else {
+			$meta_key = $this->get_sub_field_value( 'meta_key' );
+		}
+
+		return $meta_key;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function get_number_data_type() {
+		$data_type = 'SIGNED';
+
+		if ( 'price' === $this->get_field_type() ) {
+			// Get from the woocommerce settings.
+			$dec_places = get_option( 'woocommerce_price_num_decimals' );
+			$dec_places = strlen( $dec_places ) ? $dec_places : 3;
+
+			$data_type = 'DECIMAL(10,' . $dec_places . ')';
+		} elseif ( 'number' === $this->get_value_type() ) {
+			if ( '1' === $this->get_sub_field_value( 'value_decimal' ) ) {
+				$dec_places = $this->get_sub_field_value( 'value_decimal_places' );
+
+				$data_type = 'DECIMAL(10,' . $dec_places . ')';
+			}
+		}
+
+		return apply_filters( 'wcapf_number_data_type', $data_type, $this->instance );
 	}
 
 }

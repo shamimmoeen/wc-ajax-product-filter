@@ -16,10 +16,17 @@ class WCAPF_Helper {
 	/**
 	 * Determines if we show the pro features modal.
 	 *
-	 * @return mixed|void
+	 * @return bool
 	 */
 	public static function show_pro_version_offer() {
 		return apply_filters( 'wcapf_show_pro_offer', true );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function found_pro_version() {
+		return defined( 'WCAPF_PRO_VERSION' );
 	}
 
 	/**
@@ -193,6 +200,17 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * The taxonomy field types.
+	 *
+	 * @return array
+	 */
+	public static function taxonomy_field_types() {
+		$types = array( 'category', 'tag', 'attribute' );
+
+		return apply_filters( 'wcapf_taxonomy_field_types', $types );
+	}
+
+	/**
 	 * Renders the field's form for the given instance.
 	 *
 	 * @param array $field_instance The field's instance.
@@ -277,6 +295,50 @@ class WCAPF_Helper {
 	 */
 	public static function product_status_option_markup( $data = array() ) {
 		WCAPF_Template_Loader::get_instance()->load( 'admin/field-templates/product-status-option-row', $data );
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function range_number_filter_types() {
+		return apply_filters( 'wcapf_range_number_filter_types', array( 'range_slider', 'range_number' ) );
+	}
+
+	/**
+	 * @param WCAPF_Field_Instance $instance The field instance.
+	 *
+	 * @return bool
+	 */
+	public static function round_range_min_max_values( $instance ) {
+		$type  = $instance->type;
+		$round = false;
+
+		// For price filter we do the rounding.
+		if ( 'price' === $type ) {
+			$round = true;
+		}
+
+		return apply_filters( 'wcapf_round_range_min_max_values', $round, $instance );
+	}
+
+	/**
+	 * Gets the main wc query data.
+	 *
+	 * @return array
+	 */
+	public static function get_main_query_data() {
+		global $wpdb;
+
+		$tax_query    = WC_Query::get_main_tax_query();
+		$meta_query   = WC_Query::get_main_meta_query();
+		$search_query = WC_Query::get_main_search_query_sql();
+
+		$meta_query     = new WP_Meta_Query( $meta_query );
+		$tax_query      = new WP_Tax_Query( $tax_query );
+		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
+		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
+
+		return array( $meta_query_sql, $tax_query_sql, $search_query );
 	}
 
 }

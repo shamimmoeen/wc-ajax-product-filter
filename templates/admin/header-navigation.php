@@ -54,7 +54,10 @@ if ( $tabs === false ) {
 	return;
 }
 
-$show_pro_offer = WCAPF_Helper::show_pro_version_offer();
+$helper = new WCAPF_Helper;
+
+$show_pro_offer    = $helper::show_pro_version_offer();
+$found_pro_version = $helper::found_pro_version();
 ?>
 
 <div class="wcapf-admin-toolbar">
@@ -65,6 +68,7 @@ $show_pro_offer = WCAPF_Helper::show_pro_version_offer();
 
 	<?php
 	foreach ( $tabs as $tab ) {
+		/** @noinspection HtmlUnknownTarget */
 		printf(
 			'<a class="wcapf-tab%s" href="%s">%s</a>',
 			! empty( $tab['is_active'] ) ? ' is-active' : '',
@@ -74,7 +78,7 @@ $show_pro_offer = WCAPF_Helper::show_pro_version_offer();
 	}
 	?>
 
-	<?php if ( $show_pro_offer && ! defined( 'WCAPF_PRO_VERSION' ) ) : ?>
+	<?php if ( $show_pro_offer && ! $found_pro_version ) : ?>
 		<a target="_blank" href="https://wptools.io/wc-ajax-product-filter/?utm_source=wcapf-free" class="btn-upgrade">
 			<span>
 				<img src="<?php echo WCAPF_PLUGIN_URL . '/admin/images/pro-icon.png'; ?>" alt="pro-icon">

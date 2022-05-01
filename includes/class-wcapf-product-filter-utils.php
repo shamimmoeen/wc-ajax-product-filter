@@ -41,56 +41,12 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * Gets the chosen filter values.
-	 *
-	 * TODO: Remove it.
-	 *
-	 * @param array $keys  The filter keys.
-	 * @param array $query The url query.
-	 *
-	 * @return array
-	 */
-	public static function get_chosen_filter_values( $keys, $query ) {
-		$and_query_key     = $keys['and'];
-		$or_query_key      = $keys['or'];
-		$between_query_key = isset( $keys['between'] ) ? $keys['between'] : ''; // To filter by ranges.
-		$value_separator   = ','; // TODO: Use a filter.
-
-		$values     = '';
-		$filter_key = '';
-		$query_type = '';
-
-		if ( isset( $query[ $and_query_key ] ) ) {
-			$filter_key = $and_query_key;
-			$values     = $query[ $and_query_key ];
-			$query_type = 'and';
-		} elseif ( isset( $query[ $or_query_key ] ) ) {
-			$filter_key = $or_query_key;
-			$values     = $query[ $or_query_key ];
-			$query_type = 'or';
-		} elseif ( isset( $query[ $between_query_key ] ) ) {
-			$filter_key = $between_query_key;
-			$values     = $query[ $between_query_key ];
-			$query_type = 'between';
-		}
-
-		// Check if we have any string(including 0) in the url.
-		if ( ! strlen( $values ) ) {
-			return array();
-		}
-
-		$filter_values = explode( $value_separator, $values );
-
-		return array( $filter_values, $filter_key, $query_type );
-	}
-
-	/**
 	 * Combine the values of an associative array.
 	 *
 	 * @param string $query_type The query type.
 	 * @param array  $values     The associative array of values.
 	 *
-	 * @return array|false|mixed
+	 * @return array
 	 */
 	public static function combine_values( $query_type, $values ) {
 		$combined = array();
@@ -113,90 +69,77 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * @noinspection SqlNoDataSourceInspection
-	 * @noinspection SqlDialectInspection
-	 *
 	 * @param string $meta_key  The meta key.
 	 * @param string $data_type The mysql data type.
 	 *
 	 * @return string
 	 */
-	public static function get_min_value( $meta_key, $data_type = '' ) {
+	public static function get_min_value( $meta_key, $data_type ) {
 		global $wpdb;
 
-		if ( ! $data_type ) {
-			$data_type = 'SIGNED';
-		}
-
-		$post_type     = 'product';
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
-
-		$query = $wpdb->prepare(
-			"
-				SELECT MIN( CAST( $wpdb->postmeta.meta_value as $data_type ) )
-				FROM $wpdb->postmeta
-				INNER JOIN $wpdb->posts
-				ON $wpdb->postmeta.post_id = $wpdb->posts.ID
-		        WHERE $wpdb->posts.post_type = %s
-				AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')
-				AND $wpdb->postmeta.meta_key='%s'
-			",
-			$post_type,
-			$meta_key
-		);
-
-		$query = apply_filters( 'wcapf_min_value_sql_query', $query, $meta_key );
+		$query = self::meta_value_min_max_sql_query( $meta_key, $data_type );
 
 		return $wpdb->get_var( $query );
 	}
 
+	private static function meta_value_min_max_sql_query( $meta_key, $data_type, $min = true ) {
+		global $wpdb;
+
+		$helper = new WCAPF_Helper;
+
+		$post_statuses = $helper::filterable_post_statuses();
+
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $helper::get_main_query_data();
+
+		$query  = array();
+		$select = '';
+		$join   = '';
+		$where  = '';
+
+		if ( $min ) {
+			$select .= "SELECT MIN( CAST( $wpdb->postmeta.meta_value as $data_type ) )";
+		} else {
+			$select .= "SELECT MAX( CAST( $wpdb->postmeta.meta_value as $data_type ) )";
+		}
+
+		$query['select'] = $select;
+
+		$query['from'] = "FROM $wpdb->postmeta";
+
+		$join .= "INNER JOIN $wpdb->posts ON $wpdb->postmeta.post_id = $wpdb->posts.ID";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		$query['join'] = $join;
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+		$where .= " AND $wpdb->postmeta.meta_key='$meta_key'";
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
+
+		// The where clause for auto updatable min, max value according to the applied filters will go here.
+
+		$query['where'] = $where;
+
+		$query = apply_filters( 'wcapf_meta_value_min_max_sql_query', $query, $meta_key, $min );
+
+		return implode( ' ', $query );
+	}
+
 	/**
-	 * @noinspection SqlNoDataSourceInspection
-	 * @noinspection SqlDialectInspection
-	 *
 	 * @param string $meta_key  The meta key.
 	 * @param string $data_type The mysql data type.
 	 *
 	 * @return string
 	 */
-	public static function get_max_value( $meta_key, $data_type = '' ) {
+	public static function get_max_value( $meta_key, $data_type ) {
 		global $wpdb;
 
-		if ( ! $data_type ) {
-			$data_type = 'SIGNED';
-		}
-
-		$post_type     = 'product';
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
-
-		$query = $wpdb->prepare(
-			"
-				SELECT MAX( CAST( $wpdb->postmeta.meta_value as $data_type ) )
-				FROM $wpdb->postmeta
-				INNER JOIN $wpdb->posts
-				ON $wpdb->postmeta.post_id = $wpdb->posts.ID
-		        WHERE $wpdb->posts.post_type = %s
-				AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')
-				AND $wpdb->postmeta.meta_key='%s'
-			",
-			$post_type,
-			$meta_key
-		);
-
-		$query = apply_filters( 'wcapf_max_value_sql_query', $query, $meta_key );
+		$query = self::meta_value_min_max_sql_query( $meta_key, $data_type, false );
 
 		return $wpdb->get_var( $query );
-	}
-
-	/**
-	 * @return string
-	 */
-	public static function price_data_type() {
-		// woocommerce_price_num_decimals
-		$decimal_places = get_option( 'woocommerce_price_num_decimals' );
-		$decimal_places = strlen( $decimal_places ) ? $decimal_places : 3;
-
-		return apply_filters( 'wcapf_price_data_type', 'DECIMAL(10,' . $decimal_places . ')' );
 	}
 
 	/**

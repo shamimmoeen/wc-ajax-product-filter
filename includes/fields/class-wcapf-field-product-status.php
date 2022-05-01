@@ -2,10 +2,11 @@
 /**
  * WCAPF_Field_Product_Status class.
  *
- * @since      3.0.0
- * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/fields
- * @author     Mainul Hassan Main
+ * @since        3.0.0
+ * @package      wc-ajax-product-filter
+ * @subpackage   wc-ajax-product-filter/includes/fields
+ * @author       Mainul Hassan Main
+ * @noinspection PhpUnused
  */
 
 /**

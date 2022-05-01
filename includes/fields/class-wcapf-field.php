@@ -751,13 +751,12 @@ abstract class WCAPF_Field {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return void
 	 */
-	protected function render_non_menu_filter_field( $field_instance ) {
+	protected function render_range_number_filter( $field_instance ) {
 		$display_type = $field_instance->display_type;
-		$meta_key     = $field_instance->get_sub_field_value( 'meta_key' );
 
 		if ( 'range_slider' === $display_type ) {
 			$template = 'public/filter-range-slider';
@@ -784,16 +783,8 @@ abstract class WCAPF_Field {
 
 		$filter_utils = new WCAPF_Product_Filter_Utils;
 
-		$data_type = ''; // TODO: Get the data type from field options.
-
-		// Price is actually a post-meta.
-		if ( 'price' === $filter_type ) {
-			// In chosen filters, price filter data is stored under 'post-meta'.
-			$filter_type = 'post-meta';
-
-			$meta_key  = $filter_utils::get_meta_key_for_price_filter();
-			$data_type = $filter_utils::price_data_type();
-		}
+		$meta_key  = $field_instance->meta_key;
+		$data_type = $field_instance->number_data_type;
 
 		if ( $range_min_auto_detect ) {
 			$range_min_value = $filter_utils::get_min_value( $meta_key, $data_type );
@@ -808,8 +799,10 @@ abstract class WCAPF_Field {
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
 
-		$range_min_value = floor( $range_min_value );
-		$range_max_value = ceil( $range_max_value );
+		if ( WCAPF_Helper::round_range_min_max_values( $field_instance ) ) {
+			$range_min_value = floor( $range_min_value );
+			$range_max_value = ceil( $range_max_value );
+		}
 
 		if ( 2 === count( $values ) ) {
 			$min_value = $values[0];

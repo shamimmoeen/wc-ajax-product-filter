@@ -2,10 +2,11 @@
 /**
  * WCAPF_Field_Price class.
  *
- * @since      3.0.0
- * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/fields
- * @author     Mainul Hassan Main
+ * @since        3.0.0
+ * @package      wc-ajax-product-filter
+ * @subpackage   wc-ajax-product-filter/includes/fields
+ * @author       Mainul Hassan Main
+ * @noinspection PhpUnused
  */
 
 /**
@@ -36,7 +37,7 @@ class WCAPF_Field_Price extends WCAPF_Field {
 	}
 
 	/**
-	 * TODO: Complete this.
+	 * Output the field form.
 	 *
 	 * @return void
 	 */
@@ -49,14 +50,32 @@ class WCAPF_Field_Price extends WCAPF_Field {
 		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
 		$display_type   = $field_instance->display_type;
 
-		$non_menu_filters = array( 'range_slider', 'range_number' );
+		$walker = new WCAPF_Walker( $field_instance );
 
-		$classes = array( 'wcapf-number-range-filter' );
+		$range_number_filters = WCAPF_Helper::range_number_filter_types();
+
+		$classes = array();
+
+		if ( in_array( $display_type, $range_number_filters ) ) {
+			$classes[] = 'wcapf-number-range-filter';
+			$items     = array( '' );
+		} else {
+			$classes[] = 'wcapf-nav-filter';
+			$items     = array();
+		}
+
+		$items = apply_filters( 'wcapf_price_filter_items', $items, $field_instance );
+
+		if ( ! $items ) {
+			$classes[] = 'wcapf-field-hidden';
+		}
 
 		$this->before_filter_form( $classes );
 
-		if ( in_array( $display_type, $non_menu_filters ) ) {
-			$this->render_non_menu_filter_field( $field_instance );
+		if ( in_array( $display_type, $range_number_filters ) ) {
+			$this->render_range_number_filter( $field_instance );
+		} else {
+			echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
 
 		$this->after_filter_form();

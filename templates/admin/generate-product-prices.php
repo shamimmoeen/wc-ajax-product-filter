@@ -8,9 +8,12 @@
  * @author     Mainul Hassan Main
  */
 
+$helper = new WCAPF_Helper;
+
+$show = $helper::store_is_in_tax_inclusive_mode() || $helper::store_is_in_tax_exclusive_mode();
 ?>
 
-<?php if ( WCAPF_Helper::store_is_in_tax_inclusive_mode() || WCAPF_Helper::store_is_in_tax_exclusive_mode() ) : ?>
+<?php if ( $show ) : ?>
 	<form id="generate-product-prices" method="post">
 		<h3>
 			<?php esc_html_e( 'Generate product prices according to the tax configuration', 'wc-ajax-product-filter' ); ?>
