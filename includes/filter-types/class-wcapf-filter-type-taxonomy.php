@@ -82,9 +82,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			$terms[ $term_id ] = $_term;
 		}
 
-		$terms = apply_filters( 'wcapf_taxonomy_terms', $terms, $this->field );
 		$terms = $this->get_updated_terms_count( $terms );
 		$terms = $this->filter_by_hide_empty( $terms );
+		$terms = apply_filters( 'wcapf_taxonomy_terms', $terms, $this->field );
 
 		// If taxonomy is non-hierarchical then don't need to build the tree.
 		if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {

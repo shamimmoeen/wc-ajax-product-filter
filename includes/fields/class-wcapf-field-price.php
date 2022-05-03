@@ -42,11 +42,6 @@ class WCAPF_Field_Price extends WCAPF_Field {
 	 * @return void
 	 */
 	protected function render_filter_form() {
-		// TODO: Maybe show the preview in the backend also.
-		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return;
-		}
-
 		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
 		$display_type   = $field_instance->display_type;
 

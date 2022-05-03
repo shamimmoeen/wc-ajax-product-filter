@@ -1,8 +1,16 @@
-# WC Ajax Product Filter
+# WC Ajax Product Filter #
+**Contributors:** shamimmoeen  
+**Tags:** product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter  
+**Requires at least:** 4.0  
+**Tested up to:** 5.9.3  
+**Stable tag:** 3.0.0  
+**Requires PHP:** 5.5  
+**License:** GPLv2 or later  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
 WooCommerce Ajax Product Filter - adds advanced products filtering to your shop.
 
-## Description
+## Description ##
 
 WooCommerce Ajax Product Filter - is a plugin that allows you to filter your products easily by categories, attributes, prices. Your can sort products, navigate to next and previous pages without reloading the page.
 
@@ -26,55 +34,67 @@ Features:
 * Minimalist, lightweight, and efficient code means that your users won’t notice any hiccups
 * Developer friendly - Useful filter is included! So you can use it in your themes
 
-## Installation
+## Installation ##
 
 * Once you have installed the plugin, you just need to activate the plugin in order to enable it.
 * Drop the widgets in the sidebar
 
-## Frequently Asked Questions
+## Frequently Asked Questions ##
 
-= Incorrect number of products =
+### Incorrect number of products ###
 
 Go to settings page. You will see a checkbox to clear transients.
 
-= Active filters doesn't update =
+### Active filters doesn't update ###
 
 Maybe your widgets don't have ids. See this support. https://wordpress.org/support/topic/active-filters-doesnt-update/
 
-= Can I add custom scripts to load after updating shop loop? =
+### Can I add custom scripts to load after updating shop loop? ###
 
 Yes, you can. Go to settings page. You will see a text field to put your custom scripts.
 
-= Can I change the overlay background color? =
+### Can I change the overlay background color? ###
 
 Yes, you can. Go to settings page. You will see a text field to chage the overlay background color.
 
-## Screenshots
+## Screenshots ##
 
-1. Plugin frontend
-2. WC Ajax Product Filter by Attribute widget settings
-3. WC Ajax Product Filter by Price display type list widget settings
-4. Backend settings
+### 1. Plugin frontend ###
+![Plugin frontend](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-1.png)
 
-## Changelog
+### 2. WC Ajax Product Filter by Attribute widget settings ###
+![WC Ajax Product Filter by Attribute widget settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-2.png)
 
-= 2.0.3 =
+### 3. WC Ajax Product Filter by Price display type list widget settings ###
+![WC Ajax Product Filter by Price display type list widget settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-3.png)
+
+### 4. Backend settings ###
+![Backend settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-4.png)
+
+
+## Changelog ##
+
+### 3.0.0 ###
+
+* Refactor the plugin
+
+### 2.0.3 ###
 
 * Fixed bug - 'wcapf_get_term_objects' funtion was working incorrectly
 
-= 2.0.2 =
+### 2.0.2 ###
 
 * Added option to disable transients
 * Added option to clear transients
 
-= 2.0.1 =
+### 2.0.1 ###
 
 * Fixed filtering bugs on product taxonomy pages
 * Added more functionality to price filter display type list widget
 * Added option to enable/disable font awesome
 * Updated localization
 
-= 2.0 =
+### 2.0 ###
 
 * Fixed PHP version related issue
 * Fixed translation and localization issue
@@ -82,6 +102,6 @@ Yes, you can. Go to settings page. You will see a text field to chage the overla
 * Added functionality to filter products by price list
 * Added functionality to clear all active filters with one click
 
-= 1.0 =
+### 1.0 ###
 
 * Initial release

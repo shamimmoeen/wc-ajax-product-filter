@@ -10,6 +10,8 @@
 
 /**
  * WCAPF_Post_Type class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Post_Type {
 
@@ -40,7 +42,7 @@ class WCAPF_Post_Type {
 	/**
 	 * Hook into actions and filters.
 	 */
-	public function init_hooks() {
+	private function init_hooks() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_filter( 'post_row_actions', array( $this, 'remove_row_actions' ) );
 		add_filter( 'manage_wcapf-filter_posts_columns', array( $this, 'set_filter_posts_table_columns' ) );

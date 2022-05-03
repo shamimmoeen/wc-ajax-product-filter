@@ -10,6 +10,8 @@
 
 /**
  * WCAPF_Settings_Page class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Settings_Page {
 

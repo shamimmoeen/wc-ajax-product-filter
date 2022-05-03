@@ -2,8 +2,10 @@
 /**
  * Plugin Name: WC Ajax Product Filter
  * Plugin URI: https://wordpress.org/plugins/wc-ajax-product-filter
- * Description: A plugin to filter woocommerce products with AJAX request.
+ * Description: A plugin to filter WooCommerce products with AJAX request.
  * Version: 3.0.0
+ * Requires at least: 4.0
+ * Requires PHP: 5.5
  * Author: Mainul Hassan Main
  * Author URI: http://mainulhassan.info
  * Text Domain: wc-ajax-product-filter

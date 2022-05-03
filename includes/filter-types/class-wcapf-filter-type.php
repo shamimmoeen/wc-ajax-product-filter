@@ -122,7 +122,7 @@ abstract class WCAPF_Filter_Type {
 	protected function get_post_in_clause() {
 		global $wpdb;
 
-		$main_query_type = WCAPF_Product_Filter::instance()->get_field_relations();
+		$main_query_type = WCAPF_Helper::get_field_relations();
 		$main_query      = WC_Query::get_main_query();
 		$post__in        = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
 		$post_in_clause  = '';
@@ -166,8 +166,7 @@ abstract class WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function get_product_ids_by_other_filters() {
-		$filter = WCAPF_Product_Filter::instance();
-		$chosen = $filter->get_chosen_filters();
+		$chosen = WCAPF_Helper::get_chosen_filters();
 
 		$excluded = array();
 
@@ -190,8 +189,7 @@ abstract class WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function get_self_filtered_product_ids() {
-		$filter = WCAPF_Product_Filter::instance();
-		$chosen = $filter->get_chosen_filters();
+		$chosen = WCAPF_Helper::get_chosen_filters();
 
 		$self = array();
 

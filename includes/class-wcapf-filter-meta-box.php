@@ -10,6 +10,8 @@
 
 /**
  * WCAPF_Filter_Meta_Box class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Filter_Meta_Box {
 
@@ -40,7 +42,7 @@ class WCAPF_Filter_Meta_Box {
 	/**
 	 * Hook into actions and filters.
 	 */
-	public function init_hooks() {
+	private function init_hooks() {
 		add_action( 'save_post', array( $this, 'save_filter' ) );
 		add_filter( 'redirect_post_location', array( $this, 'meta_validation_redirect_location' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'validation_error_admin_notice' ) );

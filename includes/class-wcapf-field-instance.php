@@ -60,7 +60,11 @@ class WCAPF_Field_Instance {
 	 * @return void
 	 */
 	private function set_default_properties() {
-		$value_type = $this->get_value_type();
+		$field_type = $this->get_field_type();
+		$this->type = $field_type;
+
+		$value_type       = $this->get_value_type();
+		$this->value_type = $value_type;
 
 		if ( 'number' === $value_type ) {
 			$display_type              = $this->get_sub_field_value( 'number_display_type' );
@@ -93,8 +97,14 @@ class WCAPF_Field_Instance {
 			$enable_multiple_filter    = $this->get_sub_field_value( 'enable_multiple_filter' );
 			$show_count                = $this->get_sub_field_value( 'show_count' );
 			$hide_empty                = $this->get_sub_field_value( 'hide_empty' );
-			$get_options               = $this->get_sub_field_value( 'get_options' );
-			$manual_options            = $this->get_sub_field_value( 'manual_options' );
+
+			if ( 'rating' === $field_type ) {
+				$get_options    = $this->get_sub_field_value( 'number_get_options' );
+				$manual_options = $this->get_sub_field_value( 'number_manual_options' );
+			} else {
+				$get_options    = $this->get_sub_field_value( 'get_options' );
+				$manual_options = $this->get_sub_field_value( 'manual_options' );
+			}
 		}
 
 		$_display_type    = $this->parse_display_type( $display_type );
@@ -142,32 +152,14 @@ class WCAPF_Field_Instance {
 		$this->filter_id  = $this->get_sub_field_value( 'field_id' );
 		$this->filter_key = $this->get_sub_field_value( 'field_key' );
 
-		$this->type         = $this->get_field_type();
 		$this->filter_type  = $this->get_filter_type();
 		$this->taxonomy     = $this->get_taxonomy();
 		$this->hierarchical = $this->taxonomy_is_hierarchical();
 
 		$this->enable_hierarchy_accordion = $this->is_hierarchy_accordion_enabled();
 
-		$this->value_type       = $this->get_value_type();
 		$this->meta_key         = $this->get_meta_key();
 		$this->number_data_type = $this->get_number_data_type();
-	}
-
-	/**
-	 * @return string
-	 */
-	private function get_value_type() {
-		$field_type = $this->get_field_type();
-		$value_type = $this->get_sub_field_value( 'value_type' );
-
-		if ( 'price' === $field_type ) {
-			$value_type = 'number';
-		} elseif ( 'rating' === $field_type ) {
-			$value_type = 'number';
-		}
-
-		return apply_filters( 'wcapf_field_value_type', $value_type, $field_type, $this->instance );
 	}
 
 	/**
@@ -191,6 +183,20 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
+	 * @return string
+	 */
+	private function get_value_type() {
+		$field_type = $this->get_field_type();
+		$value_type = $this->get_sub_field_value( 'value_type' );
+
+		if ( 'price' === $field_type ) {
+			$value_type = 'number';
+		}
+
+		return apply_filters( 'wcapf_field_value_type', $value_type, $field_type, $this->instance );
+	}
+
+	/**
 	 * @param string $display_type
 	 *
 	 * @return string
@@ -210,6 +216,7 @@ class WCAPF_Field_Instance {
 			'input_date_range' => array( 'input_date_range' ),
 		);
 
+		// TODO: Refactor, move pro display types to pro plugin.
 		$available_display_types = apply_filters( 'wcapf_field_display_types', $available_display_types );
 
 		$_display_type = '';
@@ -296,6 +303,11 @@ class WCAPF_Field_Instance {
 
 			case 'attribute':
 				$taxonomy = $this->get_sub_field_value( 'taxonomy' );
+				break;
+
+			// TODO: Convert to post meta lookup table.
+			case 'rating':
+				$taxonomy = 'product_visibility';
 				break;
 
 			default:

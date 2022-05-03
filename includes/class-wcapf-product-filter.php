@@ -18,57 +18,17 @@
 class WCAPF_Product_Filter {
 
 	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_Product_Filter
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Product_Filter();
-			$instance->init_hooks();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	public function init_hooks() {
-		add_action( 'woocommerce_product_query', array( $this, 'set_filter' ) );
-	}
-
-	/**
-	 * Query the products, applying sorting/ordering etc. This applies to the
-	 * main WordPress loop.
-	 *
-	 * @param WP_Query $query Query instance.
-	 *
-	 * @return WP_Query Return modified query instance.
-	 */
-	public function set_filter( $query ) {
-		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return $query;
-		}
-
-		$query->set( 'post__in', $this->get_filtered_product_ids() );
-
-		return $query;
-	}
-
-	/**
 	 * Gets the filtered product ids.
 	 *
 	 * @return array
 	 */
-	private function get_filtered_product_ids() {
-		$main_query_type = $this->get_field_relations();
+	public function get_filtered_product_ids() {
+		$main_query_type = WCAPF_Helper::get_field_relations();
 
-		$chosen_filters     = $this->get_chosen_filters();
+		$chosen_filters = $this->get_chosen_filters();
+
+		$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
+
 		$products_in_fields = array();
 
 		foreach ( $chosen_filters as $fields ) {
@@ -80,17 +40,6 @@ class WCAPF_Product_Filter {
 		$filtered_product_ids = WCAPF_Product_Filter_Utils::combine_values( $main_query_type, $products_in_fields );
 
 		return array_unique( $filtered_product_ids );
-	}
-
-	/**
-	 * Gets the field relations.
-	 *
-	 * @return string
-	 */
-	public function get_field_relations() {
-		$settings = WCAPF_Helper::get_settings();
-
-		return isset( $settings['filter_relationships'] ) ? $settings['filter_relationships'] : 'and';
 	}
 
 	/**
@@ -164,9 +113,10 @@ class WCAPF_Product_Filter {
 
 		$taxonomy_field_types = $helper::taxonomy_field_types();
 
-		foreach ( $filters_data as $_filter_data ) {
+		$already_filtered = array();
+
+		foreach ( $filters_data as $filter_key => $_filter_data ) {
 			$field_instance = new WCAPF_Field_Instance( $_filter_data );
-			$filter_key     = $field_instance->filter_key;
 			$field_type     = $field_instance->type;
 
 			if ( in_array( $field_type, $taxonomy_field_types ) ) {
@@ -174,12 +124,16 @@ class WCAPF_Product_Filter {
 
 				if ( $result ) {
 					$taxonomies[ $filter_key ] = $result;
+
+					$already_filtered[] = $filter_key;
 				}
 			} elseif ( 'price' === $field_type && ! $helper::found_pro_version() ) {
 				$result = $this->get_chosen_price( $field_instance, $query );
 
 				if ( $result ) {
 					$post_metas[ $filter_key ] = $result;
+
+					$already_filtered[] = $filter_key;
 				}
 			}
 		}
@@ -190,7 +144,17 @@ class WCAPF_Product_Filter {
 		$chosen['taxonomy']  = $taxonomies;
 		$chosen['post-meta'] = $post_metas;
 
-		return apply_filters( 'wcapf_chosen_filters', $chosen, $filters_data, $query );
+		$remaining_filters = array();
+
+		foreach ( array_keys( $filters_data ) as $_filter_key ) {
+			if ( in_array( $_filter_key, $already_filtered ) ) {
+				continue;
+			}
+
+			$remaining_filters[ $_filter_key ] = $filters_data[ $_filter_key ];
+		}
+
+		return apply_filters( 'wcapf_chosen_filters', $chosen, $remaining_filters, $query );
 	}
 
 	/**
@@ -201,7 +165,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @return array
 	 */
-	private function get_chosen_term( $field_instance, $query ) {
+	protected function get_chosen_term( $field_instance, $query ) {
 		$active_filters    = array();
 		$active_ancestors  = array();
 		$products_in_terms = array();
@@ -278,7 +242,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @return array
 	 */
-	private function get_chosen_price( $field_instance, $query ) {
+	protected function get_chosen_price( $field_instance, $query ) {
 		$active_filters = array();
 
 		$filter_key = $field_instance->filter_key;
@@ -341,4 +305,24 @@ class WCAPF_Product_Filter {
 
 }
 
-add_action( 'plugins_loaded', array( 'WCAPF_Product_Filter', 'instance' ) );
+/**
+ * Query the products, applying sorting/ordering etc. This applies to the
+ * main WordPress loop.
+ *
+ * @param WP_Query $query Query instance.
+ *
+ * @return WP_Query Return modified query instance.
+ */
+function wcapf_set_product_query( $query ) {
+	if ( ! is_shop() && ! is_product_taxonomy() ) {
+		return $query;
+	}
+
+	$wcapf_product_filter = new WCAPF_Product_Filter();
+
+	$query->set( 'post__in', $wcapf_product_filter->get_filtered_product_ids() );
+
+	return $query;
+}
+
+add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );

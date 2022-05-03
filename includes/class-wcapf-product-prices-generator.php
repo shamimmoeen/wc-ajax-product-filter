@@ -10,6 +10,8 @@
 
 /**
  * WCAPF_Product_Prices_Generator class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Product_Prices_Generator {
 

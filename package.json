@@ -1,6 +1,6 @@
 {
   "name": "wc-ajax-product-filter",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "main": "Gruntfile.js",
   "author": "Mainul Hassan Main",
   "scripts": {
@@ -26,5 +26,6 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-touch-cmd": "0.0.1",
     "gulp-uglify": "^3.0.2"
-  }
+  },
+  "dependencies": {}
 }

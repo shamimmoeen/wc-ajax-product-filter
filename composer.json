@@ -1,6 +1,6 @@
 {
 	"name": "shamimmoeen/wc-ajax-product-filter",
-	"description": "Filter WooCommerce products.",
+	"description": "A plugin to filter WooCommerce products with AJAX request.",
 	"type": "wp-plugin",
 	"license": "GPL-3.0+",
 	"authors": [

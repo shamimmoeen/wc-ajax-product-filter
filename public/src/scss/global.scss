@@ -1,3 +1,7 @@
 .wcapf-field-hidden {
 	display: none;
 }
+
+i[class^="wcapf-icon-star-"], i[class*=" wcapf-icon-star-"] {
+	color: rgb(240, 201, 48);
+}

@@ -14,7 +14,7 @@
  *
  * @since 3.0.0
  */
-class WCAPF_Field_Rating extends WCAPF_Field {
+class WCAPF_Field_Rating extends WCAPF_Field_Taxonomy { // TODO: Convert to post meta lookup table.
 
 	/**
 	 * Sets the field groups.
@@ -28,16 +28,23 @@ class WCAPF_Field_Rating extends WCAPF_Field {
 	}
 
 	/**
+	 * The taxonomy.
+	 *
+	 * // TODO: Convert to post meta lookup table.
+	 *
+	 * @return string
+	 */
+	protected function taxonomy() {
+		return 'product_visibility';
+	}
+
+	/**
 	 * The field type.
 	 *
 	 * @return string
 	 */
 	protected function type() {
 		return 'rating';
-	}
-
-	protected function render_filter_form() {
-		// TODO: Implement render_filter_form() method.
 	}
 
 }

@@ -25,14 +25,14 @@ class WCAPF_Walker {
 	/**
 	 * Is Hierarchical.
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	public $hierarchical;
 
 	/**
 	 * Enable Hierarchy Accordion.
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	public $enable_hierarchy_accordion;
 
@@ -46,7 +46,7 @@ class WCAPF_Walker {
 	/**
 	 * Use chosen.
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	public $use_chosen;
 
@@ -60,7 +60,7 @@ class WCAPF_Walker {
 	/**
 	 * Enable multiple filter.
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	public $enable_multiple_filter;
 
@@ -74,7 +74,7 @@ class WCAPF_Walker {
 	/**
 	 * Show count.
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	public $show_count;
 
@@ -93,11 +93,25 @@ class WCAPF_Walker {
 	public $filter_type;
 
 	/**
+	 * Field type.
+	 *
+	 * @var string
+	 */
+	public $type;
+
+	/**
 	 * Filter id.
 	 *
 	 * @var string
 	 */
 	public $filter_id;
+
+	/**
+	 * Get options method.
+	 *
+	 * @var string
+	 */
+	public $get_options;
 
 	/**
 	 * Custom appearance options.
@@ -153,7 +167,9 @@ class WCAPF_Walker {
 			'show_count'                 => false,
 			'filter_key'                 => '',
 			'filter_type'                => '',
+			'type'                       => '',
 			'filter_id'                  => '',
+			'get_options'                => '',
 			'custom_appearance_options'  => array(),
 		);
 
@@ -176,8 +192,7 @@ class WCAPF_Walker {
 	private function active_filters() {
 		$filter_key     = $this->filter_key;
 		$filter_type    = $this->filter_type;
-		$wcapf_filter   = WCAPF_Product_Filter::instance();
-		$chosen_filters = $wcapf_filter->get_chosen_filters();
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
 		$filters = $chosen_filters[ $filter_type ];
 
@@ -382,7 +397,10 @@ class WCAPF_Walker {
 	 */
 	private function tree_item_inner( $item, $unique_id, $depth = null ) {
 		$inner = '<label for="' . esc_attr( $unique_id ) . '">';
-		$inner .= '<span>' . esc_html( $item['name'] ) . '</span>';
+
+		$name = apply_filters( 'wcapf_tree_item_name', $item['name'], $item, $this );
+
+		$inner .= '<span>' . wp_kses_post( $name ) . '</span>';
 
 		$count = $item['count'];
 
@@ -392,7 +410,7 @@ class WCAPF_Walker {
 
 		$inner .= '</label>';
 
-		return apply_filters( 'wcapf_tree_item', $inner, $item, $depth );
+		return apply_filters( 'wcapf_tree_item', $inner, $item, $unique_id, $this, $depth );
 	}
 
 	/**
@@ -532,7 +550,9 @@ class WCAPF_Walker {
 			$option .= $this->dropdown_item_depth( $item );
 		}
 
-		$option .= $item['name'];
+		$inner = $item['name'];
+
+		$option .= apply_filters( 'wcapf_dropdown_item_name', $inner, $item, $this );
 
 		$count = $item['count'];
 
@@ -542,15 +562,17 @@ class WCAPF_Walker {
 
 		$option .= '</option>';
 
+		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
+
 		$children = isset( $item['children'] ) ? $item['children'] : array();
 
 		if ( $children ) {
 			foreach ( $children as $child_item ) {
-				$option .= $this->dropdown_item( $child_item );
+				$inner .= $this->dropdown_item( $child_item );
 			}
 		}
 
-		return $option;
+		return $inner;
 	}
 
 	private function dropdown_item_depth( $item ) {
@@ -605,7 +627,8 @@ class WCAPF_Walker {
 		$html = '<div class="' . $classes . '"' . $style . ' data-value="' . esc_attr( $id ) . '" tabindex="0">';
 
 		if ( 'color' !== $display_type && 'image' !== $display_type ) {
-			$html .= $item['name'];
+			$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
+			$html  .= wp_kses_post( $label );
 		}
 
 		if ( 'image' === $display_type ) {
@@ -625,15 +648,17 @@ class WCAPF_Walker {
 
 		$html .= '</div>';
 
+		$inner = apply_filters( 'wcapf_labeled_item', $html, $item, $this );
+
 		$children = isset( $item['children'] ) ? $item['children'] : array();
 
 		if ( $children ) {
 			foreach ( $children as $child_item ) {
-				$html .= $this->labeled_item( $child_item );
+				$inner .= $this->labeled_item( $child_item );
 			}
 		}
 
-		return $html;
+		return $inner;
 	}
 
 	/**

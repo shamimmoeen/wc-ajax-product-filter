@@ -10,6 +10,8 @@
 
 /**
  * WCAPF_Helper class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Helper {
 
@@ -36,33 +38,6 @@ class WCAPF_Helper {
 	 */
 	public static function settings_page_url() {
 		return menu_page_url( 'wcapf-settings', false );
-	}
-
-	/**
-	 * Gets the wcapf settings.
-	 *
-	 * @return array
-	 */
-	public static function get_settings() {
-		$option_name = self::settings_option_key();
-		$db_options  = get_option( $option_name );
-
-		if ( has_filter( $option_name ) ) {
-			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
-		} else {
-			$settings = $db_options;
-		}
-
-		return $settings;
-	}
-
-	/**
-	 * The option key that contains the plugin settings.
-	 *
-	 * @return string
-	 */
-	public static function settings_option_key() {
-		return 'wcapf_settings';
 	}
 
 	/**
@@ -205,7 +180,8 @@ class WCAPF_Helper {
 	 * @return array
 	 */
 	public static function taxonomy_field_types() {
-		$types = array( 'category', 'tag', 'attribute' );
+		// TODO: Convert to post meta lookup table.
+		$types = array( 'category', 'tag', 'attribute', 'rating' );
 
 		return apply_filters( 'wcapf_taxonomy_field_types', $types );
 	}
@@ -322,6 +298,15 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * @return array
+	 */
+	public static function get_chosen_filters() {
+		global $wcapf_chosen_filters;
+
+		return $wcapf_chosen_filters;
+	}
+
+	/**
 	 * Gets the main wc query data.
 	 *
 	 * @return array
@@ -339,6 +324,44 @@ class WCAPF_Helper {
 		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
 
 		return array( $meta_query_sql, $tax_query_sql, $search_query );
+	}
+
+	/**
+	 * Gets the field relations.
+	 *
+	 * @return string
+	 */
+	public static function get_field_relations() {
+		$settings = WCAPF_Helper::get_settings();
+
+		return isset( $settings['filter_relationships'] ) ? $settings['filter_relationships'] : 'and';
+	}
+
+	/**
+	 * Gets the wcapf settings.
+	 *
+	 * @return array
+	 */
+	public static function get_settings() {
+		$option_name = self::settings_option_key();
+		$db_options  = get_option( $option_name );
+
+		if ( has_filter( $option_name ) ) {
+			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
+		} else {
+			$settings = $db_options;
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * The option key that contains the plugin settings.
+	 *
+	 * @return string
+	 */
+	public static function settings_option_key() {
+		return 'wcapf_settings';
 	}
 
 }

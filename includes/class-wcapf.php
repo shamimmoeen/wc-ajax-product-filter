@@ -43,7 +43,7 @@ class WCAPF {
 	/**
 	 * Hook into actions and filters.
 	 */
-	public function init_hooks() {
+	private function init_hooks() {
 		add_action( 'admin_notices', array( $this, 'show_admin_notice' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'woocommerce_loaded', array( $this, 'load_dependencies' ) );
@@ -77,7 +77,7 @@ class WCAPF {
 	private function wc_required_notice() {
 		$message             = '';
 		$required_plugins    = array();
-		$required_wc_version = '3.4.5';
+		$required_wc_version = '3.6';
 		$current_wc_version  = defined( 'WC_VERSION' ) ? WC_VERSION : '';
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
@@ -156,6 +156,8 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-product-status.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
 
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-rating-filter.php';
+
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-shortcode.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-widget.php';
 	}
@@ -176,6 +178,13 @@ class WCAPF {
 		if ( ! $this->wc_loaded() ) {
 			return;
 		}
+
+		wp_enqueue_style(
+			'wcapf-icons',
+			WCAPF_PLUGIN_URL . 'public/icons/icons.css',
+			array(),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/icons/icons.css' )
+		);
 
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
 			? '.min.css'

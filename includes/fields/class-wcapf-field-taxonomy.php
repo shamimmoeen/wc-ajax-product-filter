@@ -77,11 +77,6 @@ abstract class WCAPF_Field_Taxonomy extends WCAPF_Field {
 	 * @return void
 	 */
 	protected function render_filter_form() {
-		// TODO: Maybe show the preview in the backend also.
-		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return;
-		}
-
 		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
 
 		$filter = new WCAPF_Filter_Type_Taxonomy( $field_instance );

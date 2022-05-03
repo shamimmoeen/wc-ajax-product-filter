@@ -10,6 +10,8 @@
 
 /**
  * Template loader class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Template_Loader {
 

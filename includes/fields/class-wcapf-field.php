@@ -669,6 +669,11 @@ abstract class WCAPF_Field {
 	 * @return void
 	 */
 	public function filter_form() {
+		// TODO: Maybe show the preview in the backend also.
+		if ( ! is_shop() && ! is_product_taxonomy() ) {
+			return;
+		}
+
 		$this->render_filter_form();
 	}
 
@@ -794,7 +799,7 @@ abstract class WCAPF_Field {
 			$range_max_value = $filter_utils::get_max_value( $meta_key, $data_type );
 		}
 
-		$chosen_filters = WCAPF_Product_Filter::instance()->get_chosen_filters();
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 		$filters        = $chosen_filters[ $filter_type ];
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();

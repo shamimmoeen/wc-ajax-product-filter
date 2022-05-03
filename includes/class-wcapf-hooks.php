@@ -11,8 +11,7 @@
 /**
  * WCAPF_Hooks class.
  *
- * @since  3.0.0
- * @author Mainul Hassan Main
+ * @since 3.0.0
  */
 class WCAPF_Hooks {
 
@@ -43,7 +42,7 @@ class WCAPF_Hooks {
 	/**
 	 * Hook into actions and filters.
 	 */
-	public function init_hooks() {
+	private function init_hooks() {
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
@@ -102,7 +101,7 @@ class WCAPF_Hooks {
 	 *
 	 * @param int $post_id The post id.
 	 *
-	 * @todo
+	 * TODO: Remove this.
 	 */
 	public function delete_transients( $post_id ) {
 		if ( ! $post_id ) {
