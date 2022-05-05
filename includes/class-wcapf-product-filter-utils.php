@@ -23,7 +23,7 @@ class WCAPF_Product_Filter_Utils {
 	 *
 	 * @return array
 	 */
-	public static function get_chosen_filter_values_refactored( $filter_key, $query ) {
+	public static function get_chosen_filter_values( $filter_key, $query ) {
 		$value_separator = ',';
 
 		$values = '';
@@ -97,9 +97,9 @@ class WCAPF_Product_Filter_Utils {
 		$where  = '';
 
 		if ( $min ) {
-			$select .= "SELECT MIN( CAST( $wpdb->postmeta.meta_value as $data_type ) )";
+			$select .= "SELECT MIN( CAST( $wpdb->postmeta.meta_value AS $data_type ) )";
 		} else {
-			$select .= "SELECT MAX( CAST( $wpdb->postmeta.meta_value as $data_type ) )";
+			$select .= "SELECT MAX( CAST( $wpdb->postmeta.meta_value AS $data_type ) )";
 		}
 
 		$query['select'] = $select;

@@ -14,7 +14,7 @@
  *
  * @since 3.0.0
  */
-class WCAPF_Field_Rating extends WCAPF_Field_Taxonomy { // TODO: Convert to post meta lookup table.
+class WCAPF_Field_Rating extends WCAPF_Field {
 
 	/**
 	 * Sets the field groups.
@@ -28,23 +28,42 @@ class WCAPF_Field_Rating extends WCAPF_Field_Taxonomy { // TODO: Convert to post
 	}
 
 	/**
-	 * The taxonomy.
-	 *
-	 * // TODO: Convert to post meta lookup table.
-	 *
-	 * @return string
-	 */
-	protected function taxonomy() {
-		return 'product_visibility';
-	}
-
-	/**
 	 * The field type.
 	 *
 	 * @return string
 	 */
 	protected function type() {
 		return 'rating';
+	}
+
+	/**
+	 * Output the field form.
+	 *
+	 * @return void
+	 */
+	protected function render_filter_form() {
+		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
+
+		$walker = new WCAPF_Walker( $field_instance );
+
+		if ( WCAPF_Helper::found_pro_version() ) {
+			$_items = array();
+		} else {
+			$filter = new WCAPF_Filter_Type_Taxonomy( $field_instance );
+			$_items = $filter->get_items();
+		}
+
+		$items = apply_filters( 'wcapf_rating_filter_items', $_items, $field_instance );
+
+		$classes = array( 'wcapf-nav-filter' );
+
+		if ( ! $items ) {
+			$classes[] = 'wcapf-field-hidden';
+		}
+
+		$this->before_filter_form( $classes );
+		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+		$this->after_filter_form();
 	}
 
 }

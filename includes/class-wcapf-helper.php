@@ -180,8 +180,7 @@ class WCAPF_Helper {
 	 * @return array
 	 */
 	public static function taxonomy_field_types() {
-		// TODO: Convert to post meta lookup table.
-		$types = array( 'category', 'tag', 'attribute', 'rating' );
+		$types = array( 'category', 'tag', 'attribute' );
 
 		return apply_filters( 'wcapf_taxonomy_field_types', $types );
 	}
@@ -362,6 +361,40 @@ class WCAPF_Helper {
 	 */
 	public static function settings_option_key() {
 		return 'wcapf_settings';
+	}
+
+	public static function get_rating_entities( $rating ) {
+		$rating_entities = '';
+
+		while ( $rating > 0 ) {
+			// @source https://www.htmlsymbols.xyz/unicode/U+2B50
+			$rating_entities .= '&#11088;';
+			$rating --;
+		}
+
+		return $rating_entities;
+	}
+
+	public static function get_rating_svg_icons( $rating ) {
+		$rating_html = '';
+
+		$remaining = 5 - $rating;
+
+		while ( $rating > 0 ) {
+			$rating_html .= '<i class="wcapf-icon-star-full"></i>';
+			$rating --;
+		}
+
+		$show_empty_stars = apply_filters( 'wcapf_show_empty_star_in_rating', true );
+
+		if ( $show_empty_stars ) {
+			while ( $remaining > 0 ) {
+				$rating_html .= '<i class="wcapf-icon-star-empty"></i>';
+				$remaining --;
+			}
+		}
+
+		return $rating_html;
 	}
 
 }

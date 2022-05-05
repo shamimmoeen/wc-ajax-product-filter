@@ -708,6 +708,28 @@ abstract class WCAPF_Field {
 	}
 
 	/**
+	 * @return void
+	 */
+	protected function render_taxonomy_filter() {
+		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
+
+		$walker = new WCAPF_Walker( $field_instance );
+
+		$filter = new WCAPF_Filter_Type_Taxonomy( $field_instance );
+		$items  = $filter->get_items();
+
+		$classes = array( 'wcapf-nav-filter' );
+
+		if ( ! $items ) {
+			$classes[] = 'wcapf-field-hidden';
+		}
+
+		$this->before_filter_form( $classes );
+		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+		$this->after_filter_form();
+	}
+
+	/**
 	 * Renders the field's start markup.
 	 *
 	 * @param array $classes The field classes.

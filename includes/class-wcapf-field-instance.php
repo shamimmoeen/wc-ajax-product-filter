@@ -63,8 +63,7 @@ class WCAPF_Field_Instance {
 		$field_type = $this->get_field_type();
 		$this->type = $field_type;
 
-		$value_type       = $this->get_value_type();
-		$this->value_type = $value_type;
+		$value_type = $this->field_default_value_type();
 
 		if ( 'number' === $value_type ) {
 			$display_type              = $this->get_sub_field_value( 'number_display_type' );
@@ -106,6 +105,12 @@ class WCAPF_Field_Instance {
 				$manual_options = $this->get_sub_field_value( 'manual_options' );
 			}
 		}
+
+		// Default is an array.
+		$manual_options = is_array( $manual_options ) ? $manual_options : array();
+
+		// Default is 'automatically'.
+		$get_options = ! empty( $get_options ) ? $get_options : 'automatically';
 
 		$_display_type    = $this->parse_display_type( $display_type );
 		$_all_items_label = $this->parse_all_items_label( $all_items_label );
@@ -159,6 +164,7 @@ class WCAPF_Field_Instance {
 		$this->enable_hierarchy_accordion = $this->is_hierarchy_accordion_enabled();
 
 		$this->meta_key         = $this->get_meta_key();
+		$this->value_type       = $this->get_value_type();
 		$this->number_data_type = $this->get_number_data_type();
 	}
 
@@ -185,7 +191,7 @@ class WCAPF_Field_Instance {
 	/**
 	 * @return string
 	 */
-	private function get_value_type() {
+	private function field_default_value_type() {
 		$field_type = $this->get_field_type();
 		$value_type = $this->get_sub_field_value( 'value_type' );
 
@@ -193,7 +199,7 @@ class WCAPF_Field_Instance {
 			$value_type = 'number';
 		}
 
-		return apply_filters( 'wcapf_field_value_type', $value_type, $field_type, $this->instance );
+		return apply_filters( 'wcapf_field_default_value_type', $value_type, $field_type, $this->instance );
 	}
 
 	/**
@@ -305,11 +311,6 @@ class WCAPF_Field_Instance {
 				$taxonomy = $this->get_sub_field_value( 'taxonomy' );
 				break;
 
-			// TODO: Convert to post meta lookup table.
-			case 'rating':
-				$taxonomy = 'product_visibility';
-				break;
-
 			default:
 				$taxonomy = '';
 				break;
@@ -362,7 +363,16 @@ class WCAPF_Field_Instance {
 			$meta_key = $this->get_sub_field_value( 'meta_key' );
 		}
 
-		return $meta_key;
+		return apply_filters( 'wcapf_field_meta_key', $meta_key, $this->instance );
+	}
+
+	/**
+	 * @return string
+	 */
+	private function get_value_type() {
+		$default_value_type = $this->field_default_value_type();
+
+		return apply_filters( 'wcapf_field_value_type', $default_value_type, $this->instance );
 	}
 
 	/**
@@ -371,13 +381,16 @@ class WCAPF_Field_Instance {
 	private function get_number_data_type() {
 		$data_type = 'SIGNED';
 
-		if ( 'price' === $this->get_field_type() ) {
+		$field_type = $this->get_field_type();
+		$value_type = $this->get_value_type();
+
+		if ( 'price' === $field_type ) {
 			// Get from the woocommerce settings.
 			$dec_places = get_option( 'woocommerce_price_num_decimals' );
 			$dec_places = strlen( $dec_places ) ? $dec_places : 3;
 
 			$data_type = 'DECIMAL(10,' . $dec_places . ')';
-		} elseif ( 'number' === $this->get_value_type() ) {
+		} elseif ( 'number' === $value_type ) {
 			if ( '1' === $this->get_sub_field_value( 'value_decimal' ) ) {
 				$dec_places = $this->get_sub_field_value( 'value_decimal_places' );
 

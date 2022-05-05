@@ -43,14 +43,75 @@ class WCAPF_Rating_Filter {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms' ), 10, 2 );
+		add_filter( 'wcapf_taxonomy_field_types', array( $this, 'set_rating_as_taxonomy_field' ) );
+		add_filter( 'wcapf_field_taxonomy', array( $this, 'set_rating_taxonomy_name' ), 10, 2 );
+		add_filter( 'wcapf_term_filter_query_args', array( $this, 'set_rating_filter_query_args' ), 10, 2 );
+
+		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms_query_args' ), 10, 2 );
 		add_filter( 'wcapf_taxonomy_terms', array( $this, 'set_rating_terms_data' ), 10, 2 );
 
 		add_filter( 'wcapf_tree_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
 		add_filter( 'wcapf_labeled_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
 		add_filter( 'wcapf_dropdown_item_name', array( $this, 'set_dropdown_item_name' ), 10, 3 );
+	}
 
-		add_filter( 'wcapf_term_filter_query_args', array( $this, 'set_rating_filter_query_args' ), 10, 2 );
+	/**
+	 * @param array $types The field types.
+	 *
+	 * @return array
+	 */
+	public function set_rating_as_taxonomy_field( $types ) {
+		if ( WCAPF_Helper::found_pro_version() ) {
+			return $types;
+		}
+
+		$types[] = 'rating';
+
+		return $types;
+	}
+
+	/**
+	 * @param string $taxonomy   The taxonomy name.
+	 * @param string $field_type The field type.
+	 *
+	 * @return string
+	 */
+	public function set_rating_taxonomy_name( $taxonomy, $field_type ) {
+		if ( WCAPF_Helper::found_pro_version() ) {
+			return $taxonomy;
+		}
+
+		if ( 'rating' === $field_type ) {
+			$taxonomy = 'product_visibility';
+		}
+
+		return $taxonomy;
+	}
+
+	/**
+	 * @param array                $args           The products' query args.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	public function set_rating_filter_query_args( $args, $field_instance ) {
+		if ( WCAPF_Helper::found_pro_version() ) {
+			return $args;
+		}
+
+		if ( 'rating' === $field_instance->type ) {
+			$tax_query = $args['tax_query'];
+			$tax_query = $tax_query[0];
+
+			$rating_tax_query = $tax_query;
+
+			$rating_tax_query['field'] = 'name';
+			$rating_tax_query['terms'] = 'rated-' . $tax_query['terms'];
+
+			$args['tax_query'][0] = $rating_tax_query;
+		}
+
+		return $args;
 	}
 
 	/**
@@ -59,7 +120,7 @@ class WCAPF_Rating_Filter {
 	 *
 	 * @return array
 	 */
-	public function set_rating_terms( $args, $field_instance ) {
+	public function set_rating_terms_query_args( $args, $field_instance ) {
 		if ( 'rating' === $field_instance->type ) {
 			$names = array();
 
@@ -111,25 +172,17 @@ class WCAPF_Rating_Filter {
 			return $inner;
 		}
 
+		if ( 'automatically' !== $walker->get_options ) {
+			return $inner;
+		}
+
 		$rating = absint( $item['id'] );
 
 		if ( ! $rating ) {
 			return $inner;
 		}
 
-		return $this->get_rating_entities( $rating );
-	}
-
-	private function get_rating_entities( $rating ) {
-		$rating_entities = '';
-
-		while ( $rating > 0 ) {
-			// @source https://www.htmlsymbols.xyz/unicode/U+2B50
-			$rating_entities .= '&#11088;';
-			$rating --;
-		}
-
-		return $rating_entities;
+		return WCAPF_Helper::get_rating_entities( $rating );
 	}
 
 	/**
@@ -144,57 +197,17 @@ class WCAPF_Rating_Filter {
 			return $inner;
 		}
 
+		if ( 'automatically' !== $walker->get_options ) {
+			return $inner;
+		}
+
 		$rating = absint( $item['id'] );
 
 		if ( ! $rating ) {
 			return $inner;
 		}
 
-		return $this->get_rating_svg_icons( $rating );
-	}
-
-	private function get_rating_svg_icons( $rating ) {
-		$rating_html = '';
-
-		$remaining = 5 - $rating;
-
-		while ( $rating > 0 ) {
-			$rating_html .= '<i class="wcapf-icon-star-full"></i>';
-			$rating --;
-		}
-
-		$show_empty_stars = apply_filters( 'wcapf_show_empty_star_in_rating', true );
-
-		if ( $show_empty_stars ) {
-			while ( $remaining > 0 ) {
-				$rating_html .= '<i class="wcapf-icon-star-empty"></i>';
-				$remaining --;
-			}
-		}
-
-		return $rating_html;
-	}
-
-	/**
-	 * @param array                $args           The products' query args.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	public function set_rating_filter_query_args( $args, $field_instance ) {
-		if ( 'rating' === $field_instance->type ) {
-			$tax_query = $args['tax_query'];
-			$tax_query = $tax_query[0];
-
-			$rating_tax_query = $tax_query;
-
-			$rating_tax_query['field'] = 'name';
-			$rating_tax_query['terms'] = 'rated-' . $tax_query['terms'];
-
-			$args['tax_query'][0] = $rating_tax_query;
-		}
-
-		return $args;
+		return WCAPF_Helper::get_rating_svg_icons( $rating );
 	}
 
 }

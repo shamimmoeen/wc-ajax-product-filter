@@ -171,7 +171,7 @@ class WCAPF_Product_Filter {
 		$products_in_terms = array();
 
 		$filter_key = $field_instance->filter_key;
-		$terms      = WCAPF_Product_Filter_Utils::get_chosen_filter_values_refactored( $filter_key, $query );
+		$terms      = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_key, $query );
 
 		if ( ! $terms ) {
 			return array();
@@ -250,7 +250,7 @@ class WCAPF_Product_Filter {
 		$meta_key   = $field_instance->meta_key;
 		$data_type  = $field_instance->number_data_type;
 
-		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values_refactored( $filter_key, $query );
+		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_key, $query );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
 
 		$filter_values = $_filter_values ? explode( '+', $_filter_values ) : array();

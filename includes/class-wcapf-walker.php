@@ -194,7 +194,8 @@ class WCAPF_Walker {
 		$filter_type    = $this->filter_type;
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
-		$filters = $chosen_filters[ $filter_type ];
+		// TODO: Maybe required.
+		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
 
 		return isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 	}
