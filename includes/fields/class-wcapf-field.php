@@ -822,7 +822,7 @@ abstract class WCAPF_Field {
 		}
 
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
-		$filters        = $chosen_filters[ $filter_type ];
+		$filters        = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array(); // todo
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
 

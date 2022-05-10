@@ -675,6 +675,59 @@ jQuery( document ).ready(
 			}
 		);
 
+		function initDatepicker() {
+			const $wcapfDateFilters = $( '.wcapf-date-range-filter' );
+			const $wcapfDateFilter  = $wcapfDateFilters.find( '.wcapf-date-input' );
+			const $dateInputs       = $wcapfDateFilter.find( '.date-input' );
+
+			const format        = $wcapfDateFilter.attr( 'data-date-format' );
+			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
+			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
+			const filterKey     = $wcapfDateFilter.attr( 'data-filter-key' );
+			const isRange       = $wcapfDateFilter.attr( 'data-is-range' );
+
+			const rangedValues = [];
+			let date;
+
+			const $from = $wcapfDateFilter.find( '.date-from-input' );
+			const $to   = $wcapfDateFilter.find( '.date-to-input' );
+
+			$from.datepicker( {
+				dateFormat: format,
+				changeYear: yearDropdown,
+				changeMonth: monthDropdown,
+			} );
+
+			// $to.datepicker( {
+			// 	dateFormat: format,
+			// 	changeYear: yearDropdown,
+			// 	changeMonth: monthDropdown,
+			// } );
+
+			// $from.on( 'change', function() {
+			// 	const from = $( this ).val();
+			//
+			// 	date = from;
+			// 	rangedValues.push( from );
+			// 	// console.log( 'changed-from', from );
+			// } );
+
+			// $to.on( 'change', function() {
+			// 	const to = $( this ).val();
+			//
+			// 	rangedValues.push( to );
+			// 	// console.log( 'changed-to', to );
+			// } );
+
+			// if ( isRange ) {
+			// 	console.log( 'range', rangedValues );
+			// } else {
+			// 	console.log( 'not range', date );
+			// }
+		}
+
+		initDatepicker();
+
 		// history back and forward request handling
 		$( window ).bind( 'popstate', function() {
 			// filter products

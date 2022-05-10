@@ -130,6 +130,7 @@ abstract class WCAPF_Filter_Type {
 		if ( 'and' === $main_query_type ) {
 			if ( 'and' === $this->query_type ) {
 				if ( $post__in ) {
+					// todo: we run full query are here.
 					$post_in = implode( ',', $post__in );
 
 					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
@@ -194,6 +195,11 @@ abstract class WCAPF_Filter_Type {
 		$self = array();
 
 		foreach ( $chosen as $fields ) {
+			// TODO: Otherwise throw notice when order by price is enabled.
+			if ( ! is_array( $fields ) ) {
+				continue;
+			}
+
 			foreach ( $fields as $filter_key => $field ) {
 				if ( $this->filter_key === $filter_key ) {
 					$self = $field['product_ids'];

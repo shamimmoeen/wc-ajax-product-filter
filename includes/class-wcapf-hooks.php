@@ -53,6 +53,12 @@ class WCAPF_Hooks {
 
 	// TODO: Remove this.
 	public function show_query() {
+		// $helper = WCAPF_Helper::get_chosen_filters();
+		//
+		// echo '<pre>';
+		// print_r( $helper );
+		// echo '</pre>';
+
 		// global $wp_query;
 		//
 		// echo '<pre>';

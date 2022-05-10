@@ -112,7 +112,8 @@ class WCAPF_Product_Filter_Utils {
 
 		$query['join'] = $join;
 
-		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+		// TODO: Add 'product_variation' post type.
+		$where .= "WHERE $wpdb->posts.post_type IN ('product', 'product_variation')";
 		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
 		$where .= " AND $wpdb->postmeta.meta_key='$meta_key'";
 

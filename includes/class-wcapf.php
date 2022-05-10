@@ -133,6 +133,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-refactored.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';

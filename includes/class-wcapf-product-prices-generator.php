@@ -141,15 +141,38 @@ class WCAPF_Product_Prices_Generator {
 	 * @return void
 	 */
 	public function save_product_price_with_tax( $product_id, $product ) {
-		if ( WCAPF_Helper::store_is_in_tax_inclusive_mode() ) {
-			$price_with_tax = wc_get_price_excluding_tax( $product );
-		} elseif ( WCAPF_Helper::store_is_in_tax_exclusive_mode() ) {
-			$price_with_tax = wc_get_price_including_tax( $product );
-		} else {
-			$price_with_tax = $product->get_price();
-		}
+		$helper    = new WCAPF_Helper;
+		$incl_mode = $helper::store_is_in_tax_inclusive_mode();
+		$excl_mode = $helper::store_is_in_tax_exclusive_mode();
+		$meta_key  = $helper::meta_key_for_price_with_tax();
 
-		update_post_meta( $product_id, WCAPF_Helper::meta_key_for_price_with_tax(), $price_with_tax );
+		$children = $product->get_children();
+
+		if ( $children ) {
+			foreach ( $children as $variation_id ) {
+				$variation = wc_get_product( $variation_id );
+
+				if ( $incl_mode ) {
+					$variation_price_with_tax = wc_get_price_excluding_tax( $variation );
+				} elseif ( $excl_mode ) {
+					$variation_price_with_tax = wc_get_price_including_tax( $variation );
+				} else {
+					$variation_price_with_tax = $variation->get_price();
+				}
+
+				update_post_meta( $variation_id, $meta_key, $variation_price_with_tax );
+			}
+		} else {
+			if ( $incl_mode ) {
+				$price_with_tax = wc_get_price_excluding_tax( $product );
+			} elseif ( $excl_mode ) {
+				$price_with_tax = wc_get_price_including_tax( $product );
+			} else {
+				$price_with_tax = $product->get_price();
+			}
+
+			update_post_meta( $product_id, $meta_key, $price_with_tax );
+		}
 	}
 
 }

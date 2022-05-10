@@ -15,37 +15,7 @@
  *
  * @since 3.0.0
  */
-class WCAPF_Product_Filter {
-
-	/**
-	 * Gets the filtered product ids.
-	 *
-	 * @return array
-	 */
-	public function get_filtered_product_ids() {
-		$main_query_type = WCAPF_Helper::get_field_relations();
-
-		$chosen_filters = $this->get_chosen_filters();
-
-		$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
-
-		$products_in_fields = array();
-
-		foreach ( $chosen_filters as $fields ) {
-			// TODO: Otherwise throw notice when order by price is enabled.
-			if ( ! is_array( $fields ) ) {
-				continue;
-			}
-
-			foreach ( $fields as $field ) {
-				$products_in_fields[] = $field['product_ids'];
-			}
-		}
-
-		$filtered_product_ids = WCAPF_Product_Filter_Utils::combine_values( $main_query_type, $products_in_fields );
-
-		return array_unique( $filtered_product_ids );
-	}
+class WCAPF_Product_Filter_Refactored {
 
 	/**
 	 * Gets the chosen filters from url.
@@ -311,23 +281,42 @@ class WCAPF_Product_Filter {
 }
 
 /**
+ * @param WP_Query $wp_query Query instance.
+ */
+function wcapf_posts_clauses( $args, $wp_query ) {
+	$args['where'] .= ' AND 1=1';
+
+	echo '<pre>';
+	print_r( $args );
+	echo '</pre>';
+
+	return $args;
+}
+
+/**
  * Query the products, applying sorting/ordering etc. This applies to the
  * main WordPress loop.
  *
- * @param WP_Query $query Query instance.
+ * @param WP_Query $q Query instance.
  *
- * @return WP_Query Return modified query instance.
+ * @return void
  */
-function wcapf_set_product_query( $query ) {
+function wcapf_set_product_query_refactored( $q ) {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
-		return $query;
+		return;
 	}
 
-	$wcapf_product_filter = new WCAPF_Product_Filter();
+	// $filter = new WCAPF_Product_Filter_Refactored();
+	//
+	// echo '<pre>';
+	// print_r( $filter->get_chosen_filters() );
+	// echo '</pre>';
 
-	$query->set( 'post__in', $wcapf_product_filter->get_filtered_product_ids() );
+	echo '<pre>';
+	print_r( $q );
+	echo '</pre>';
 
-	return $query;
+	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 10, 2 );
 }
 
-// add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
+add_action( 'woocommerce_product_query', 'wcapf_set_product_query_refactored' );

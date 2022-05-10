@@ -302,7 +302,7 @@ class WCAPF_Helper {
 	public static function get_chosen_filters() {
 		global $wcapf_chosen_filters;
 
-		return $wcapf_chosen_filters;
+		return $wcapf_chosen_filters ?: array(); // todo
 	}
 
 	/**
