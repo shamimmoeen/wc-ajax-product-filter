@@ -17,34 +17,39 @@
  */
 class WCAPF_Product_Filter {
 
+	public function get_full_join_clause() {
+		$post_clauses = $this->get_full_join_n_where_clauses();
+		$joins        = $post_clauses['joins'];
+
+		return implode( ' ', $joins );
+	}
+
 	/**
-	 * Gets the filtered product ids.
+	 * Gets the full join n where clauses for the main filter.
 	 *
 	 * @return array
 	 */
-	public function get_filtered_product_ids() {
-		$main_query_type = WCAPF_Helper::get_field_relations();
+	public function get_full_join_n_where_clauses() {
+		$joins  = array();
+		$wheres = array();
 
-		$chosen_filters = $this->get_chosen_filters();
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
-		$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
+		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
+			if ( 'filters_data' === $filter_type ) {
+				$wheres[] = $filter_type_filters['products__not_in'];
+			} else {
+				foreach ( $filter_type_filters as $filters ) {
+					$join  = $filters['join'];
+					$where = $filters['where'];
 
-		$products_in_fields = array();
-
-		foreach ( $chosen_filters as $fields ) {
-			// TODO: Otherwise throw notice when order by price is enabled.
-			if ( ! is_array( $fields ) ) {
-				continue;
-			}
-
-			foreach ( $fields as $field ) {
-				$products_in_fields[] = $field['product_ids'];
+					$joins[]  = $join;
+					$wheres[] = $where;
+				}
 			}
 		}
 
-		$filtered_product_ids = WCAPF_Product_Filter_Utils::combine_values( $main_query_type, $products_in_fields );
-
-		return array_unique( $filtered_product_ids );
+		return compact( 'joins', 'wheres' );
 	}
 
 	/**
@@ -60,26 +65,75 @@ class WCAPF_Product_Filter {
 
 		$chosen     = array();
 		$taxonomies = array();
-		$post_metas = array();
+		$attributes = array();
+		$price      = array();
 
-		// keyword
-		if ( isset( $_GET['keyword'] ) ) {
-			$keyword = ( ! empty( $_GET['keyword'] ) ) ? $_GET['keyword'] : '';
+		$filters_data = $this->filters_data( $query );
 
-			$chosen['keyword'] = $keyword;
+		$helper = new WCAPF_Helper;
+
+		$use_attribute_table  = $helper::filtering_via_lookup_table_is_active();
+		$hide_stock_out_items = $helper::hide_stock_out_items();
+		$range_display_types  = $helper::range_number_filter_types();
+
+		$already_filtered = array();
+
+		foreach ( $filters_data as $filter_key => $_filter_data ) {
+			$field_instance = new WCAPF_Field_Instance( $_filter_data );
+			$filter_type    = $field_instance->filter_type;
+			$field_type     = $field_instance->type;
+			$display_type   = $field_instance->display_type;
+			$filter_values  = $query[ $filter_key ];
+
+			if ( 'taxonomy' === $filter_type ) {
+				if ( 'attribute' === $field_type ) {
+					$attributes[ $filter_key ] = $this->set_attribute_filter_data( $filter_values, $field_instance );
+				} else {
+					$taxonomies[ $filter_key ] = $this->set_taxonomy_filter_data( $filter_values, $field_instance );
+				}
+
+				$already_filtered[] = $filter_key;
+			} elseif ( 'price' === $field_type && in_array( $display_type, $range_display_types ) ) {
+				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
+
+				$already_filtered[] = $filter_key;
+			}
 		}
 
-		// orderby
-		if ( isset( $_GET['orderby'] ) ) {
-			$orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : '';
-
-			$chosen['orderby'] = $orderby;
+		if ( $use_attribute_table && $hide_stock_out_items && $attributes ) {
+			$chosen['filters_data']['products__not_in'] = $this->set_product_not_where_clause( $attributes );
 		}
 
+		// TODO: Rating, Product Property, Product Status, Sort by, Per Page.
+
+		$chosen['taxonomy']  = $taxonomies;
+		$chosen['attribute'] = $attributes;
+		$chosen['price']     = $price;
+
+		$remaining_filters = array();
+
+		foreach ( array_keys( $filters_data ) as $_filter_key ) {
+			if ( in_array( $_filter_key, $already_filtered ) ) {
+				continue;
+			}
+
+			$remaining_filters[ $_filter_key ] = $filters_data[ $_filter_key ];
+		}
+
+		return apply_filters( 'wcapf_chosen_filters', $chosen, $remaining_filters, $query );
+	}
+
+	/**
+	 * @param array $query The key, values array from the $_GET variable.
+	 *
+	 * @return array
+	 */
+	protected function filters_data( $query ) {
 		$filters_data = array();
 
 		if ( $query ) {
 			$filter_keys = array_keys( $query );
+			$filter_keys = array_map( 'sanitize_title', $filter_keys );
 
 			$args = array(
 				'post_type'   => 'wcapf-filter',
@@ -112,150 +166,195 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		$filters_data = apply_filters( 'wcapf_filters_data', $filters_data );
-
-		$helper = new WCAPF_Helper;
-
-		$taxonomy_field_types = $helper::taxonomy_field_types();
-
-		$already_filtered = array();
-
-		foreach ( $filters_data as $filter_key => $_filter_data ) {
-			$field_instance = new WCAPF_Field_Instance( $_filter_data );
-			$field_type     = $field_instance->type;
-
-			if ( in_array( $field_type, $taxonomy_field_types ) ) {
-				$result = $this->get_chosen_term( $field_instance, $query );
-
-				if ( $result ) {
-					$taxonomies[ $filter_key ] = $result;
-
-					$already_filtered[] = $filter_key;
-				}
-			} elseif ( 'price' === $field_type && ! $helper::found_pro_version() ) {
-				$result = $this->get_chosen_price( $field_instance, $query );
-
-				if ( $result ) {
-					$post_metas[ $filter_key ] = $result;
-
-					$already_filtered[] = $filter_key;
-				}
-			}
-		}
-
-		// TODO: Rating.
-		// TODO: Product Status.
-
-		$chosen['taxonomy']  = $taxonomies;
-		$chosen['post-meta'] = $post_metas;
-
-		$remaining_filters = array();
-
-		foreach ( array_keys( $filters_data ) as $_filter_key ) {
-			if ( in_array( $_filter_key, $already_filtered ) ) {
-				continue;
-			}
-
-			$remaining_filters[ $_filter_key ] = $filters_data[ $_filter_key ];
-		}
-
-		return apply_filters( 'wcapf_chosen_filters', $chosen, $remaining_filters, $query );
+		return apply_filters( 'wcapf_filters_data', $filters_data );
 	}
 
 	/**
-	 * Filter data by taxonomy.
-	 *
+	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                $query          The url query.
 	 *
 	 * @return array
 	 */
-	protected function get_chosen_term( $field_instance, $query ) {
-		$active_filters    = array();
-		$active_ancestors  = array();
-		$products_in_terms = array();
+	protected function set_attribute_filter_data( $filter_value, $field_instance ) {
+		$use_attribute_table = WCAPF_Helper::filtering_via_lookup_table_is_active();
 
-		$filter_key = $field_instance->filter_key;
-		$terms      = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_key, $query );
-
-		if ( ! $terms ) {
-			return array();
+		if ( ! $use_attribute_table ) {
+			return $this->set_taxonomy_filter_data( $filter_value, $field_instance );
 		}
+
+		global $wpdb;
 
 		$query_type = $field_instance->query_type;
 		$taxonomy   = $field_instance->taxonomy;
 
-		$include_hierarchical_data = false;
+		$join = '';
 
-		if ( is_taxonomy_hierarchical( $taxonomy ) ) {
-			$include_hierarchical_data = true;
+		$term_ids = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+
+		$clauses = array();
+
+		// The extra derived table ("SELECT product_or_parent_id FROM") is needed for performance
+		// (causes the filtering subquery to be executed only once).
+		$clause_root = "$wpdb->posts.ID IN ( SELECT product_or_parent_id FROM (";
+		$clause_end  = ') AS temp)';
+
+		$hide_stock_out_items = WCAPF_Helper::hide_stock_out_items();
+
+		if ( $hide_stock_out_items ) {
+			$in_stock_clause = ' AND in_stock = 1';
+		} else {
+			$in_stock_clause = '';
 		}
 
-		foreach ( $terms as $term_id ) {
-			$args = array(
-				'post_type'   => 'product',
-				'post_status' => WCAPF_Helper::filterable_post_statuses(),
-				'nopaging'    => true,
-				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
-						'taxonomy'         => $taxonomy,
-						'field'            => 'id',
-						'terms'            => $term_id,
-						'include_children' => true,
-					),
-				),
-			);
+		foreach ( $term_ids as $term_id ) {
+			$clauses[] = "
+				$clause_root
+				SELECT DISTINCT product_or_parent_id
+				FROM $lookup_table_name
+				WHERE is_variation_attribute = 1
+				$in_stock_clause
+				AND term_id = $term_id
+				UNION
+				SELECT product_or_parent_id
+				FROM $lookup_table_name
+				WHERE is_variation_attribute = 0
+				$in_stock_clause
+				AND term_id = $term_id
+				$clause_end
+			";
+		}
 
-			$args = apply_filters( 'wcapf_term_filter_query_args', $args, $field_instance );
-
-			// TODO: Maybe use cache.
-			$term_products = get_posts( $args );
-
-			$term_products[] = 0;
-
-			$products_in_terms[ $term_id ] = $term_products;
-
-			// For hierarchical accordion.
-			if ( $include_hierarchical_data ) {
-				$ancestors        = get_ancestors( $term_id, $taxonomy );
-				$active_ancestors = array_merge( $ancestors, $active_ancestors );
+		if ( $clauses ) {
+			if ( 'or' === $query_type ) {
+				$sql = implode( ' OR ', $clauses );
+			} else {
+				$sql = implode( ' AND ', $clauses );
 			}
 
-			// TODO: Set the data for active filters.
+			if ( 1 > count( $clauses ) ) {
+				$where = '( ' . $sql . ' )';
+			} else {
+				$where = $sql;
+			}
+		} else {
+			$where = '1=0';
 		}
 
-		$product_ids = WCAPF_Product_Filter_Utils::combine_values( $query_type, $products_in_terms );
-
 		return array(
-			'taxonomy'          => $taxonomy,
-			'filter_key'        => $filter_key,
-			'query_type'        => $query_type,
-			'values'            => $terms,
-			'product_ids'       => $product_ids,
-			'products_in_terms' => $products_in_terms,
-			'active_filters'    => $active_filters,
-			'active_ancestors'  => $active_ancestors,
+			'taxonomy'   => $taxonomy,
+			'query_type' => $query_type,
+			'values'     => $term_ids,
+			'join'       => $join,
+			'where'      => $where,
 		);
 	}
 
 	/**
-	 * Filter data by price.
-	 *
+	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                $query          The url query.
 	 *
 	 * @return array
 	 */
-	protected function get_chosen_price( $field_instance, $query ) {
-		$active_filters = array();
+	protected function set_taxonomy_filter_data( $filter_value, $field_instance ) {
+		global $wpdb;
 
 		$filter_key = $field_instance->filter_key;
 		$query_type = $field_instance->query_type;
-		$meta_key   = $field_instance->meta_key;
-		$data_type  = $field_instance->number_data_type;
+		$taxonomy   = $field_instance->taxonomy;
 
-		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_key, $query );
+		$term_ids = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+
+		$is_hierarchical  = is_taxonomy_hierarchical( $taxonomy );
+		$include_children = apply_filters( 'wcapf_taxonomy_include_children', true, $field_instance );
+
+		$join = "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
+
+		if ( 'or' === $query_type ) {
+			if ( $is_hierarchical && $include_children ) {
+				$with_children = array();
+
+				foreach ( $term_ids as $term_id ) {
+					$term_children = get_term_children( $term_id, $taxonomy );
+					$with_children = array_merge( $with_children, $term_children );
+				}
+
+				$term_ids = array_merge( $term_ids, $with_children );
+			}
+
+			if ( $term_ids ) {
+				$ids   = $this->get_term_ids_sql( $term_ids );
+				$where = "$filter_key.term_taxonomy_id IN $ids";
+			} else {
+				$where = '1=0';
+			}
+		} else {
+			$clauses = array();
+
+			foreach ( $term_ids as $term_id ) {
+				if ( $is_hierarchical && $include_children ) {
+					$with_children = get_term_children( $term_id, $taxonomy );
+
+					$and_term_id = array_merge( array( $term_id ), $with_children );
+				} else {
+					$and_term_id = array( $term_id );
+				}
+
+				$id_sql    = $this->get_term_ids_sql( $and_term_id );
+				$clauses[] = "$filter_key.term_taxonomy_id IN $id_sql";
+			}
+
+			if ( $clauses ) {
+				$sql = implode( ' AND ', $clauses );
+
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . $sql . ' )';
+				} else {
+					$where = $sql;
+				}
+			} else {
+				$where = '1=0';
+			}
+		}
+
+		return array(
+			'taxonomy'   => $taxonomy,
+			'query_type' => $query_type,
+			'values'     => $term_ids,
+			'join'       => $join,
+			'where'      => $where,
+		);
+	}
+
+	/**
+	 * Formats a list of term ids as "(id,id,id)".
+	 *
+	 * @param array $term_ids The list of terms to format.
+	 *
+	 * @return string The formatted list.
+	 */
+	protected function get_term_ids_sql( $term_ids ) {
+		return '(' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+	}
+
+	/**
+	 * @param string               $filter_value   The filter value.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	protected function set_price_filter_data( $filter_value, $field_instance ) {
+		global $wpdb;
+
+		$filter_key = $field_instance->filter_key;
+		$query_type = $field_instance->query_type;
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_meta_lookup';
+
+		$join = "LEFT JOIN $lookup_table_name AS $filter_key ON $wpdb->posts.ID = $filter_key.product_id";
+
+		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
 
 		$filter_values = $_filter_values ? explode( '+', $_filter_values ) : array();
@@ -271,63 +370,126 @@ class WCAPF_Product_Filter {
 		$min = floatval( $filter_values[0] );
 		$max = floatval( $filter_values[1] );
 
-		$args = array(
-			'post_type'   => 'product',
-			'post_status' => WCAPF_Helper::filterable_post_statuses(),
-			'nopaging'    => true,
-			'fields'      => 'ids',
-			'meta_query'  => array(
-				array(
-					'key'     => $meta_key,
-					'value'   => array( $min, $max ),
-					'compare' => 'BETWEEN',
-					'type'    => $data_type,
-				),
-			),
-		);
+		/**
+		 * Adjust if the store taxes are not displayed how they are stored.
+		 * Kicks in when prices excluding tax are displayed including tax.
+		 */
+		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
+			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
+			$tax_rates = WC_Tax::get_rates( $tax_class );
 
-		$args = apply_filters( 'wcapf_price_filter_query_args', $args, $field_instance );
+			if ( $tax_rates ) {
+				$min -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $min, $tax_rates ) );
+				$max -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $max, $tax_rates ) );
+			}
+		}
 
-		// TODO: Maybe use cache.
-		$ranged_products = get_posts( $args );
-
-		$ranged_products[] = 0;
-		$products_in_metas = $ranged_products;
-		$product_ids       = $ranged_products;
-
-		// TODO: Set the data for active filters.
+		$where = "($min <= $filter_key.min_price AND $max >= $filter_key.max_price)";
 
 		return array(
-			'meta'              => $meta_key,
-			'filter_key'        => $filter_key,
-			'query_type'        => $query_type,
-			'values'            => $filter_values,
-			'product_ids'       => $product_ids,
-			'products_in_metas' => $products_in_metas,
-			'active_filters'    => $active_filters,
+			'query_type' => $query_type,
+			'values'     => $filter_values,
+			'join'       => $join,
+			'where'      => $where,
 		);
 	}
 
+	/**
+	 * @param array $attributes_data
+	 *
+	 * @return string
+	 * @noinspection SqlNoDataSourceInspection
+	 */
+	protected function set_product_not_where_clause( $attributes_data ) {
+		$term_ids = array();
+
+		foreach ( $attributes_data as $attribute_data ) {
+			$values   = $attribute_data['values'];
+			$term_ids = array_merge( $term_ids, $values );
+		}
+
+		$term_ids_to_filter_by = $this->get_term_ids_sql( $term_ids );
+
+		global $wpdb;
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+
+		$query = "
+			SELECT DISTINCT product_or_parent_id
+			FROM $lookup_table_name
+			WHERE `is_variation_attribute` = 1
+			AND `in_stock` = 0
+			AND `term_id` in $term_ids_to_filter_by
+			UNION
+			SELECT product_or_parent_id
+			FROM $lookup_table_name
+			WHERE `is_variation_attribute` = 0
+			AND `in_stock` = 0
+			AND `term_id` in $term_ids_to_filter_by
+		";
+
+		// TODO: Cache the results.
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		$products__not_in = wp_list_pluck( $results, 'product_or_parent_id' );
+
+		if ( $products__not_in ) {
+			$product_not_ids_sql = $this->get_term_ids_sql( $products__not_in );
+
+			$sql = "$wpdb->posts.ID NOT IN $product_not_ids_sql";
+		} else {
+			$sql = ' 1=1';
+		}
+
+		return $sql;
+	}
+
+	public function get_full_where_clause() {
+		$post_clauses = $this->get_full_join_n_where_clauses();
+		$wheres       = $post_clauses['wheres'];
+		$query_type   = WCAPF_Helper::get_field_relations();
+
+		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
+	}
+
+}
+
+/**
+ * @param WP_Query $wp_query Query instance.
+ */
+function wcapf_posts_clauses( $args, $wp_query ) {
+	if ( ! $wp_query->is_main_query() ) {
+		return $args;
+	}
+
+	$filter = new WCAPF_Product_Filter();
+
+	$chosen_filters = $filter->get_chosen_filters();
+
+	$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
+
+	$args['join']  .= $filter->get_full_join_clause();
+	$args['where'] .= $filter->get_full_where_clause();
+
+	return $args;
 }
 
 /**
  * Query the products, applying sorting/ordering etc. This applies to the
  * main WordPress loop.
  *
- * @param WP_Query $query Query instance.
- *
- * @return WP_Query Return modified query instance.
+ * @return void
  */
-function wcapf_set_product_query( $query ) {
+function wcapf_set_product_query_refactored() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
-		return $query;
+		return;
 	}
 
-	$wcapf_product_filter = new WCAPF_Product_Filter();
+	// echo '<pre>';
+	// print_r( $q );
+	// echo '</pre>';
 
-	$query->set( 'post__in', $wcapf_product_filter->get_filtered_product_ids() );
-
-	return $query;
+	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 10, 2 );
 }
 
-// add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
+add_action( 'woocommerce_product_query', 'wcapf_set_product_query_refactored' );

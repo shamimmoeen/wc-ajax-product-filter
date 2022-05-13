@@ -54,6 +54,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 				'hide_empty'             => false,
 				'count'                  => true,
 				'update_term_meta_cache' => false,
+				// TODO: The order and order_by args should go here.
 			),
 			$this->field
 		);
@@ -111,9 +112,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			return array();
 		}
 
-		$term_ids       = wp_list_pluck( $terms, 'id' );
-		$filtered_count = $this->get_filtered_term_product_counts( $term_ids );
-		$updated_count  = array();
+		$term_ids      = wp_list_pluck( $terms, 'id' );
+		$updated_count = array();
+
+		if ( 'attribute' == $this->field->type && WCAPF_Helper::filtering_via_lookup_table_is_active() ) {
+			$filtered_count = $this->get_filtered_term_product_counts_using_lookup_table( $term_ids );
+		} else {
+			$filtered_count = $this->get_filtered_term_product_not_counts_using_lookup_table( $term_ids );
+		}
 
 		foreach ( $terms as $term_id => $term ) {
 			$term['count'] = isset( $filtered_count[ $term_id ] ) ? $filtered_count[ $term_id ] : 0;
@@ -188,7 +194,93 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	 *
 	 * @return array The filtered term product counts.
 	 */
-	private function get_filtered_term_product_counts( $term_ids ) {
+	private function get_filtered_term_product_counts_using_lookup_table( $term_ids ) {
+		global $wpdb;
+
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+
+		$tax_query    = WC_Query::get_main_tax_query();
+		$meta_query   = WC_Query::get_main_meta_query();
+		$search_query = WC_Query::get_main_search_query_sql();
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+
+		$meta_query     = new WP_Meta_Query( $meta_query );
+		$tax_query      = new WP_Tax_Query( $tax_query );
+		$meta_query_sql = $meta_query->get_sql( 'post', $lookup_table_name, 'product_or_parent_id' );
+		$tax_query_sql  = $tax_query->get_sql( $lookup_table_name, 'product_or_parent_id' );
+
+		$query = array();
+		$join  = '';
+		$where = '';
+
+		$query['select'] = 'SELECT COUNT(DISTINCT product_or_parent_id) as term_count, term_id as term_count_id';
+
+		$query['from'] = "FROM $lookup_table_name";
+
+		$join .= "INNER JOIN $wpdb->posts ON $wpdb->posts.ID = $lookup_table_name.product_or_parent_id";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		$filter = new WCAPF_Product_Filter();
+
+		$join .= ' ' . $filter->get_full_join_clause();
+
+		$query['join'] = $join;
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
+
+		$term_ids_sql = '(' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';;
+
+		$where .= " AND $lookup_table_name.taxonomy = '$this->taxonomy'";
+		$where .= " AND $lookup_table_name.term_id IN $term_ids_sql";
+
+		$where .= WCAPF_Helper::hide_stock_out_items() ? ' AND in_stock = 1' : '';
+
+		$where .= $this->get_where_clause();
+
+		// Out of products in the attributes.
+		// $where .= ' AND ' . WCAPF_Product_Filter_Utils::get_products_not_in_where_clause( $term_ids );
+
+		// if ( '_pa_color' === $this->filter_key ) {
+		// 	// $where .= ' AND wp_posts.ID NOT IN (15)';
+		// } elseif ( '_pa_size' === $this->filter_key ) {
+		// 	// $where .= ' AND wp_posts.ID NOT IN (15,17)';
+		// }
+
+		$query['where'] = $where;
+
+		$query['group_by'] = "GROUP BY $lookup_table_name.term_id";
+
+		$query = apply_filters( 'wcapf_terms_query_sql', $query, $this->field );
+		$query = implode( ' ', $query );
+
+		if ( '_pa_color' === $this->filter_key ) {
+			// echo $query;
+		}
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
+	}
+
+	/**
+	 * Count products within certain terms, taking the main WP query into
+	 * consideration.
+	 *
+	 * This query allows counts to be generated based on the viewed products,
+	 * not all products.
+	 *
+	 * @param array $term_ids List of all term ids.
+	 *
+	 * @return array The filtered term product counts.
+	 */
+	private function get_filtered_term_product_not_counts_using_lookup_table( $term_ids ) {
 		global $wpdb;
 
 		$helper = new WCAPF_Helper;
@@ -215,6 +307,10 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
+		$filter = new WCAPF_Product_Filter();
+
+		$join .= ' ' . $filter->get_full_join_clause();
+
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
@@ -224,7 +320,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
 
-		$where .= $this->get_post_in_clause();
+		$where .= $this->get_where_clause();
 
 		$query['where'] = $where;
 
@@ -232,6 +328,10 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$query = apply_filters( 'wcapf_terms_query_sql', $query, $this->field );
 		$query = implode( ' ', $query );
+
+		if ( '_product_cat' === $this->filter_key ) {
+			// echo $query;
+		}
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $query, ARRAY_A );

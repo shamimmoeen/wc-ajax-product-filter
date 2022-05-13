@@ -18,54 +18,21 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * Gets the chosen filter values.
 	 *
-	 * @param string $filter_key The filter key.
-	 * @param array  $query      The url query.
+	 * @param string $values The filter values.
 	 *
 	 * @return array
 	 */
-	public static function get_chosen_filter_values( $filter_key, $query ) {
+	public static function get_chosen_filter_values( $values ) {
 		$value_separator = ',';
-
-		$values = '';
-
-		if ( isset( $query[ $filter_key ] ) ) {
-			$values = $query[ $filter_key ];
-		}
 
 		// Check if we have any string(including 0) in the url.
 		if ( ! strlen( $values ) ) {
 			return array();
 		}
 
-		return explode( $value_separator, $values );
-	}
+		$values_array = explode( $value_separator, $values );
 
-	/**
-	 * Combine the values of an associative array.
-	 *
-	 * @param string $query_type The query type.
-	 * @param array  $values     The associative array of values.
-	 *
-	 * @return array
-	 */
-	public static function combine_values( $query_type, $values ) {
-		$combined = array();
-
-		if ( ! $values ) {
-			return $combined;
-		}
-
-		if ( 2 > count( $values ) ) {
-			return reset( $values );
-		}
-
-		if ( 'or' === $query_type ) {
-			$combined = call_user_func_array( 'array_merge', $values );
-		} else {
-			$combined = call_user_func_array( 'array_intersect', $values );
-		}
-
-		return $combined;
+		return is_array( $values_array ) ? $values_array : array();
 	}
 
 	/**
@@ -163,6 +130,83 @@ class WCAPF_Product_Filter_Utils {
 		}
 
 		return $meta_key;
+	}
+
+	/**
+	 * @param array  $wheres
+	 * @param string $query_type
+	 *
+	 * @return string
+	 */
+	public static function combine_where_clauses( $wheres, $query_type ) {
+		if ( 'or' === $query_type ) {
+			$separator = ' OR ';
+		} else {
+			$separator = ' AND ';
+		}
+
+		if ( $wheres ) {
+			if ( 1 < count( $wheres ) ) {
+				$sql = ' AND ( ' . implode( $separator, $wheres ) . ' )';
+			} else {
+				$sql = ' AND ' . implode( $separator, $wheres );
+			}
+		} else {
+			$sql = '';
+		}
+
+		return $sql;
+	}
+
+	/**
+	 * @param array $attribute_terms The array of term ids of attribute.
+	 *
+	 * @return string
+	 * @noinspection SqlNoDataSourceInspection
+	 */
+	public static function get_products_not_in_where_clause( $attribute_terms ) {
+		if ( ! $attribute_terms ) {
+			return ' 1=1';
+		}
+
+		return ' 1=1';
+
+		$term_ids_to_filter_by = '(' . implode( ',', array_map( 'absint', $attribute_terms ) ) . ')';
+
+		global $wpdb;
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+
+		$query = "
+			SELECT DISTINCT product_or_parent_id
+			FROM $lookup_table_name
+			WHERE `is_variation_attribute` = 1
+			AND `in_stock` = 0
+			AND `term_id` in $term_ids_to_filter_by
+			GROUP BY product_id
+			HAVING COUNT(product_id)=1
+			UNION
+			SELECT product_or_parent_id
+			FROM $lookup_table_name
+			WHERE `is_variation_attribute` = 0
+			AND `in_stock` = 0
+			AND `term_id` in $term_ids_to_filter_by
+		";
+
+		// TODO: Cache the results.
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		$products__not_in = wp_list_pluck( $results, 'product_or_parent_id' );
+
+		if ( $products__not_in ) {
+			$product_not_ids_sql = '(' . implode( ',', array_map( 'absint', $products__not_in ) ) . ')';;
+
+			$sql = "$wpdb->posts.ID NOT IN $product_not_ids_sql";
+		} else {
+			$sql = ' 1=1';
+		}
+
+		return $sql;
 	}
 
 }

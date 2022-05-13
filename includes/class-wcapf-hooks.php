@@ -48,22 +48,67 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
 		add_action( 'woocommerce_update_product', array( $this, 'delete_transients' ) );
-		add_action( 'woocommerce_before_shop_loop', array( $this, 'show_query' ), 80 );
+		add_action( 'storefront_before_content', array( $this, 'show_query' ), 80 );
 	}
 
 	// TODO: Remove this.
 	public function show_query() {
-		// $helper = WCAPF_Helper::get_chosen_filters();
+		$args = array(
+			'paginate' => true,
+			'page'     => 1,
+			'limit'    => 50,
+		);
+
+		// TODO: Check if the filter query also work with other wp queries.
+		$results = wc_get_products( $args );
+
+		// $term_ids = array(21, 22, 23);
+		//
+		// $term_ids_to_filter_by = '(' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+		//
+		// global $wpdb;
+		//
+		// $lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+		//
+		// $query = "
+		// 	SELECT DISTINCT product_or_parent_id
+		// 	FROM $lookup_table_name
+		// 	WHERE `is_variation_attribute` = 1
+		// 	AND `in_stock` = 0
+		// 	AND `term_id` in $term_ids_to_filter_by
+		// 	UNION
+		// 	SELECT product_or_parent_id
+		// 	FROM $lookup_table_name
+		// 	WHERE `is_variation_attribute` = 0
+		// 	AND `in_stock` = 0
+		// 	AND `term_id` in $term_ids_to_filter_by
+		// ";
+		//
+		// echo $query;
+		//
+		// $results = $wpdb->get_results( $query, ARRAY_A );
 		//
 		// echo '<pre>';
-		// print_r( $helper );
+		// print_r( $results );
+		// echo '</pre>';
+
+		// global $wpdb;
+
+		// echo '<pre>';
+		// print_r( $wpdb->last_query );
 		// echo '</pre>';
 
 		// global $wp_query;
 		//
 		// echo '<pre>';
-		// print_r( $wp_query->query_vars );
+		// print_r( $wp_query->request );
 		// echo '</pre>';
+
+		// $term_ids = array(18,28,19,20,29);
+		//
+		// $query = WCAPF_Product_Filter_Utils::get_products_not_in_where_clause( $term_ids );
+		//
+		// echo $query;
 	}
 
 	/**

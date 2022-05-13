@@ -119,96 +119,83 @@ abstract class WCAPF_Filter_Type {
 	/**
 	 * @return string
 	 */
-	protected function get_post_in_clause() {
-		global $wpdb;
-
+	protected function get_where_clause() {
 		$main_query_type = WCAPF_Helper::get_field_relations();
-		$main_query      = WC_Query::get_main_query();
-		$post__in        = isset( $main_query->query_vars['post__in'] ) ? $main_query->query_vars['post__in'] : array();
-		$post_in_clause  = '';
+
+		// TODO: Maybe include post__in, post__not_in and other vars from the main products query.
+		$where = '';
 
 		if ( 'and' === $main_query_type ) {
 			if ( 'and' === $this->query_type ) {
-				if ( $post__in ) {
-					// todo: we run full query are here.
-					$post_in = implode( ',', $post__in );
-
-					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
-				}
+				$where = $this->get_full_where_clause();
 			} elseif ( 'or' === $this->query_type ) {
-				$filtered_product_ids = $this->get_product_ids_by_other_filters();
-
-				if ( $filtered_product_ids ) {
-					$post_in = implode( ',', $filtered_product_ids );
-
-					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
-				}
+				$where = $this->get_where_clauses_by_other_filters();
 			}
 		} elseif ( 'or' === $main_query_type ) {
 			if ( 'and' === $this->query_type ) {
-				$filtered_product_ids = $this->get_self_filtered_product_ids();
-
-				if ( $filtered_product_ids ) {
-					$post_in = implode( ',', $filtered_product_ids );
-
-					$post_in_clause = " AND $wpdb->posts.ID IN ( $post_in )";
-				}
+				$where = $this->get_self_where_clause();
 			} elseif ( 'or' === $this->query_type ) {
-				$post_in_clause = " AND ( 1 = 1 )";
+				$where = ' AND 1=1';
 			}
 		}
 
-		return $post_in_clause;
+		return $where;
 	}
 
 	/**
-	 * Gets the product ids by other filters.
-	 *
-	 * @return array
+	 * @return string
 	 */
-	protected function get_product_ids_by_other_filters() {
-		$chosen = WCAPF_Helper::get_chosen_filters();
+	protected function get_full_where_clause() {
+		$filter = new WCAPF_Product_Filter();
 
-		$excluded = array();
-
-		foreach ( $chosen as $fields ) {
-			foreach ( $fields as $filter_key => $field ) {
-				if ( $this->filter_key === $filter_key ) {
-					continue;
-				}
-
-				$excluded[] = $field['product_ids'];
-			}
-		}
-
-		return WCAPF_Product_Filter_Utils::combine_values( 'or', $excluded );
+		return $filter->get_full_where_clause();
 	}
 
-	/**
-	 * Gets the self filtered product ids.
-	 *
-	 * @return array
-	 */
-	protected function get_self_filtered_product_ids() {
-		$chosen = WCAPF_Helper::get_chosen_filters();
+	protected function get_where_clauses_by_other_filters() {
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
-		$self = array();
+		$wheres = array();
 
-		foreach ( $chosen as $fields ) {
-			// TODO: Otherwise throw notice when order by price is enabled.
-			if ( ! is_array( $fields ) ) {
-				continue;
-			}
+		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
+			if ( 'filters_data' === $filter_type ) {
+				$wheres[] = $filter_type_filters['products__not_in'];
+			} else {
+				foreach ( $filter_type_filters as $filter_key => $filter ) {
+					if ( $this->filter_key === $filter_key ) {
+						continue;
+					}
 
-			foreach ( $fields as $filter_key => $field ) {
-				if ( $this->filter_key === $filter_key ) {
-					$self = $field['product_ids'];
-					break;
+					$wheres[] = $filter['where'];
 				}
 			}
 		}
 
-		return $self;
+		$query_type = WCAPF_Helper::get_field_relations();
+
+		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
+	}
+
+	protected function get_self_where_clause() {
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+
+		$wheres = array();
+
+		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
+			if ( 'filters_data' === $filter_type ) {
+				$wheres[] = $filter_type_filters['products__not_in'];
+			} else {
+				foreach ( $filter_type_filters as $filter_key => $filter ) {
+					if ( $this->filter_key === $filter_key ) {
+						$wheres[] = $filter['where'];
+						break;
+					}
+				}
+			}
+		}
+
+		$query_type = WCAPF_Helper::get_field_relations();
+
+		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
 	}
 
 }

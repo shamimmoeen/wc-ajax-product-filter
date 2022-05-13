@@ -397,4 +397,20 @@ class WCAPF_Helper {
 		return $rating_html;
 	}
 
+	/**
+	 * Checks if the product attribute filtering via lookup table feature is enabled.
+	 *
+	 * @return bool
+	 */
+	public static function filtering_via_lookup_table_is_active() {
+		return 'yes' === get_option( 'woocommerce_attribute_lookup_enabled' );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function hide_stock_out_items() {
+		return 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' );
+	}
+
 }
