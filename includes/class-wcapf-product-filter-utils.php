@@ -158,55 +158,25 @@ class WCAPF_Product_Filter_Utils {
 		return $sql;
 	}
 
-	/**
-	 * @param array $attribute_terms The array of term ids of attribute.
-	 *
-	 * @return string
-	 * @noinspection SqlNoDataSourceInspection
-	 */
-	public static function get_products_not_in_where_clause( $attribute_terms ) {
-		if ( ! $attribute_terms ) {
-			return ' 1=1';
+	public static function get_min_max_price_according_to_tax( $min, $max ) {
+		$min = floatval( $min );
+		$max = floatval( $max );
+
+		/**
+		 * Adjust if the store taxes are not displayed how they are stored.
+		 * Kicks in when prices excluding tax are displayed including tax.
+		 */
+		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
+			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
+			$tax_rates = WC_Tax::get_rates( $tax_class );
+
+			if ( $tax_rates ) {
+				$min -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $min, $tax_rates ) );
+				$max -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $max, $tax_rates ) );
+			}
 		}
 
-		return ' 1=1';
-
-		$term_ids_to_filter_by = '(' . implode( ',', array_map( 'absint', $attribute_terms ) ) . ')';
-
-		global $wpdb;
-
-		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
-
-		$query = "
-			SELECT DISTINCT product_or_parent_id
-			FROM $lookup_table_name
-			WHERE `is_variation_attribute` = 1
-			AND `in_stock` = 0
-			AND `term_id` in $term_ids_to_filter_by
-			GROUP BY product_id
-			HAVING COUNT(product_id)=1
-			UNION
-			SELECT product_or_parent_id
-			FROM $lookup_table_name
-			WHERE `is_variation_attribute` = 0
-			AND `in_stock` = 0
-			AND `term_id` in $term_ids_to_filter_by
-		";
-
-		// TODO: Cache the results.
-		$results = $wpdb->get_results( $query, ARRAY_A );
-
-		$products__not_in = wp_list_pluck( $results, 'product_or_parent_id' );
-
-		if ( $products__not_in ) {
-			$product_not_ids_sql = '(' . implode( ',', array_map( 'absint', $products__not_in ) ) . ')';;
-
-			$sql = "$wpdb->posts.ID NOT IN $product_not_ids_sql";
-		} else {
-			$sql = ' 1=1';
-		}
-
-		return $sql;
+		return compact( 'min', 'max' );
 	}
 
 }

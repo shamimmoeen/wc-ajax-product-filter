@@ -158,15 +158,15 @@ abstract class WCAPF_Filter_Type {
 
 		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
 			if ( 'filters_data' === $filter_type ) {
-				$wheres[] = $filter_type_filters['products__not_in'];
-			} else {
-				foreach ( $filter_type_filters as $filter_key => $filter ) {
-					if ( $this->filter_key === $filter_key ) {
-						continue;
-					}
+				continue;
+			}
 
-					$wheres[] = $filter['where'];
+			foreach ( $filter_type_filters as $filter_key => $filter ) {
+				if ( $this->filter_key === $filter_key ) {
+					continue;
 				}
+
+				$wheres[] = $filter['where'];
 			}
 		}
 
@@ -182,13 +182,13 @@ abstract class WCAPF_Filter_Type {
 
 		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
 			if ( 'filters_data' === $filter_type ) {
-				$wheres[] = $filter_type_filters['products__not_in'];
-			} else {
-				foreach ( $filter_type_filters as $filter_key => $filter ) {
-					if ( $this->filter_key === $filter_key ) {
-						$wheres[] = $filter['where'];
-						break;
-					}
+				continue;
+			}
+
+			foreach ( $filter_type_filters as $filter_key => $filter ) {
+				if ( $this->filter_key === $filter_key ) {
+					$wheres[] = $filter['where'];
+					break;
 				}
 			}
 		}

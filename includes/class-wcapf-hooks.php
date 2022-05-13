@@ -62,53 +62,17 @@ class WCAPF_Hooks {
 		// TODO: Check if the filter query also work with other wp queries.
 		$results = wc_get_products( $args );
 
-		// $term_ids = array(21, 22, 23);
-		//
-		// $term_ids_to_filter_by = '(' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
-		//
-		// global $wpdb;
-		//
-		// $lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
-		//
-		// $query = "
-		// 	SELECT DISTINCT product_or_parent_id
-		// 	FROM $lookup_table_name
-		// 	WHERE `is_variation_attribute` = 1
-		// 	AND `in_stock` = 0
-		// 	AND `term_id` in $term_ids_to_filter_by
-		// 	UNION
-		// 	SELECT product_or_parent_id
-		// 	FROM $lookup_table_name
-		// 	WHERE `is_variation_attribute` = 0
-		// 	AND `in_stock` = 0
-		// 	AND `term_id` in $term_ids_to_filter_by
-		// ";
-		//
-		// echo $query;
-		//
-		// $results = $wpdb->get_results( $query, ARRAY_A );
-		//
-		// echo '<pre>';
-		// print_r( $results );
-		// echo '</pre>';
-
 		// global $wpdb;
 
 		// echo '<pre>';
 		// print_r( $wpdb->last_query );
 		// echo '</pre>';
 
-		// global $wp_query;
-		//
-		// echo '<pre>';
-		// print_r( $wp_query->request );
-		// echo '</pre>';
+		global $wp_query;
 
-		// $term_ids = array(18,28,19,20,29);
-		//
-		// $query = WCAPF_Product_Filter_Utils::get_products_not_in_where_clause( $term_ids );
-		//
-		// echo $query;
+		echo '<pre>';
+		print_r( $wp_query->request );
+		echo '</pre>';
 	}
 
 	/**

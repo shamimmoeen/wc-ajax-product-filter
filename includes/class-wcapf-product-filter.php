@@ -37,15 +37,15 @@ class WCAPF_Product_Filter {
 
 		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
 			if ( 'filters_data' === $filter_type ) {
-				$wheres[] = $filter_type_filters['products__not_in'];
-			} else {
-				foreach ( $filter_type_filters as $filters ) {
-					$join  = $filters['join'];
-					$where = $filters['where'];
+				continue;
+			}
 
-					$joins[]  = $join;
-					$wheres[] = $where;
-				}
+			foreach ( $filter_type_filters as $filters ) {
+				$join  = $filters['join'];
+				$where = $filters['where'];
+
+				$joins[]  = $join;
+				$wheres[] = $where;
 			}
 		}
 
@@ -70,11 +70,7 @@ class WCAPF_Product_Filter {
 
 		$filters_data = $this->filters_data( $query );
 
-		$helper = new WCAPF_Helper;
-
-		$use_attribute_table  = $helper::filtering_via_lookup_table_is_active();
-		$hide_stock_out_items = $helper::hide_stock_out_items();
-		$range_display_types  = $helper::range_number_filter_types();
+		$range_display_types = WCAPF_Helper::range_number_filter_types();
 
 		$already_filtered = array();
 
@@ -98,10 +94,6 @@ class WCAPF_Product_Filter {
 
 				$already_filtered[] = $filter_key;
 			}
-		}
-
-		if ( $use_attribute_table && $hide_stock_out_items && $attributes ) {
-			$chosen['filters_data']['products__not_in'] = $this->set_product_not_where_clause( $attributes );
 		}
 
 		// TODO: Rating, Product Property, Product Status, Sort by, Per Page.
@@ -211,17 +203,10 @@ class WCAPF_Product_Filter {
 		foreach ( $term_ids as $term_id ) {
 			$clauses[] = "
 				$clause_root
-				SELECT DISTINCT product_or_parent_id
-				FROM $lookup_table_name
-				WHERE is_variation_attribute = 1
-				$in_stock_clause
-				AND term_id = $term_id
-				UNION
 				SELECT product_or_parent_id
-				FROM $lookup_table_name
-				WHERE is_variation_attribute = 0
+				FROM $lookup_table_name lt
+				WHERE term_id = $term_id
 				$in_stock_clause
-				AND term_id = $term_id
 				$clause_end
 			";
 		}
@@ -367,22 +352,10 @@ class WCAPF_Product_Filter {
 			return array();
 		}
 
-		$min = floatval( $filter_values[0] );
-		$max = floatval( $filter_values[1] );
-
-		/**
-		 * Adjust if the store taxes are not displayed how they are stored.
-		 * Kicks in when prices excluding tax are displayed including tax.
-		 */
-		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
-			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
-			$tax_rates = WC_Tax::get_rates( $tax_class );
-
-			if ( $tax_rates ) {
-				$min -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $min, $tax_rates ) );
-				$max -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $max, $tax_rates ) );
-			}
-		}
+		list( 'min' => $min, 'max' => $max ) = WCAPF_Product_Filter_Utils::get_min_max_price_according_to_tax(
+			$filter_values[0],
+			$filter_values[1]
+		);
 
 		$where = "($min <= $filter_key.min_price AND $max >= $filter_key.max_price)";
 
@@ -392,56 +365,6 @@ class WCAPF_Product_Filter {
 			'join'       => $join,
 			'where'      => $where,
 		);
-	}
-
-	/**
-	 * @param array $attributes_data
-	 *
-	 * @return string
-	 * @noinspection SqlNoDataSourceInspection
-	 */
-	protected function set_product_not_where_clause( $attributes_data ) {
-		$term_ids = array();
-
-		foreach ( $attributes_data as $attribute_data ) {
-			$values   = $attribute_data['values'];
-			$term_ids = array_merge( $term_ids, $values );
-		}
-
-		$term_ids_to_filter_by = $this->get_term_ids_sql( $term_ids );
-
-		global $wpdb;
-
-		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
-
-		$query = "
-			SELECT DISTINCT product_or_parent_id
-			FROM $lookup_table_name
-			WHERE `is_variation_attribute` = 1
-			AND `in_stock` = 0
-			AND `term_id` in $term_ids_to_filter_by
-			UNION
-			SELECT product_or_parent_id
-			FROM $lookup_table_name
-			WHERE `is_variation_attribute` = 0
-			AND `in_stock` = 0
-			AND `term_id` in $term_ids_to_filter_by
-		";
-
-		// TODO: Cache the results.
-		$results = $wpdb->get_results( $query, ARRAY_A );
-
-		$products__not_in = wp_list_pluck( $results, 'product_or_parent_id' );
-
-		if ( $products__not_in ) {
-			$product_not_ids_sql = $this->get_term_ids_sql( $products__not_in );
-
-			$sql = "$wpdb->posts.ID NOT IN $product_not_ids_sql";
-		} else {
-			$sql = ' 1=1';
-		}
-
-		return $sql;
 	}
 
 	public function get_full_where_clause() {
