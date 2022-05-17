@@ -779,10 +779,11 @@ abstract class WCAPF_Field {
 
 	/**
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                $range_min_max  The filter range min, max value.
 	 *
 	 * @return void
 	 */
-	protected function render_range_number_filter( $field_instance ) {
+	protected function render_range_number_filter( $field_instance, $range_min_max ) {
 		$display_type = $field_instance->display_type;
 
 		if ( 'range_slider' === $display_type ) {
@@ -790,10 +791,6 @@ abstract class WCAPF_Field {
 		} else {
 			$template = 'public/filter-range-number';
 		}
-
-		$filter_key  = $field_instance->filter_key;
-		$filter_type = $field_instance->filter_type;
-		$filter_id   = $field_instance->filter_id;
 
 		$range_min_value       = $this->get_sub_field_value( 'min_value' );
 		$range_max_value       = $this->get_sub_field_value( 'max_value' );
@@ -808,18 +805,17 @@ abstract class WCAPF_Field {
 		$decimal_separator     = $this->get_sub_field_value( 'decimal_separator' );
 		$display_values_as     = $this->get_sub_field_value( 'number_range_slider_display_values_as' );
 
-		$filter_utils = new WCAPF_Product_Filter_Utils;
-
-		$meta_key  = $field_instance->meta_key;
-		$data_type = $field_instance->number_data_type;
-
 		if ( $range_min_auto_detect ) {
-			$range_min_value = $filter_utils::get_min_value( $meta_key, $data_type );
+			$range_min_value = isset( $range_min_max['min'] ) ? $range_min_max['min'] : '';
 		}
 
 		if ( $range_max_auto_detect ) {
-			$range_max_value = $filter_utils::get_max_value( $meta_key, $data_type );
+			$range_max_value = isset( $range_min_max['max'] ) ? $range_min_max['max'] : '';
 		}
+
+		$filter_key  = $field_instance->filter_key;
+		$filter_type = $field_instance->filter_type;
+		$filter_id   = $field_instance->filter_id;
 
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 		$filters        = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array(); // todo
@@ -829,6 +825,10 @@ abstract class WCAPF_Field {
 		if ( WCAPF_Helper::round_range_min_max_values( $field_instance ) ) {
 			$range_min_value = floor( $range_min_value );
 			$range_max_value = ceil( $range_max_value );
+		}
+
+		if ( $range_min_value > $range_max_value ) {
+			$range_max_value = $range_min_value;
 		}
 
 		if ( 2 === count( $values ) ) {
@@ -845,6 +845,8 @@ abstract class WCAPF_Field {
 		if ( $min_value > $max_value ) {
 			$max_value = $min_value;
 		}
+
+		$step = apply_filters( 'wcapf_filter_range_step', $step, $min_value, $max_value, $field_instance );
 
 		$slider_id = $filter_key . '-slider-' . $filter_id;
 

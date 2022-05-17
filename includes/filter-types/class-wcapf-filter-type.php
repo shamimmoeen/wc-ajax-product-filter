@@ -117,85 +117,21 @@ abstract class WCAPF_Filter_Type {
 	}
 
 	/**
-	 * @return string
+	 * @return bool
 	 */
-	protected function get_where_clause() {
-		$main_query_type = WCAPF_Helper::get_field_relations();
+	protected function auto_count_enabled() {
+		$settings = WCAPF_Helper::get_settings();
+		$enabled  = true;
 
-		// TODO: Maybe include post__in, post__not_in and other vars from the main products query.
-		$where = '';
-
-		if ( 'and' === $main_query_type ) {
-			if ( 'and' === $this->query_type ) {
-				$where = $this->get_full_where_clause();
-			} elseif ( 'or' === $this->query_type ) {
-				$where = $this->get_where_clauses_by_other_filters();
-			}
-		} elseif ( 'or' === $main_query_type ) {
-			if ( 'and' === $this->query_type ) {
-				$where = $this->get_self_where_clause();
-			} elseif ( 'or' === $this->query_type ) {
-				$where = ' AND 1=1';
-			}
+		if ( ! isset( $settings['update_count'] ) ) {
+			$enabled = false;
 		}
 
-		return $where;
-	}
-
-	/**
-	 * @return string
-	 */
-	protected function get_full_where_clause() {
-		$filter = new WCAPF_Product_Filter();
-
-		return $filter->get_full_where_clause();
-	}
-
-	protected function get_where_clauses_by_other_filters() {
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
-
-		$wheres = array();
-
-		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
-			if ( 'filters_data' === $filter_type ) {
-				continue;
-			}
-
-			foreach ( $filter_type_filters as $filter_key => $filter ) {
-				if ( $this->filter_key === $filter_key ) {
-					continue;
-				}
-
-				$wheres[] = $filter['where'];
-			}
+		if ( ! $settings['update_count'] ) {
+			$enabled = false;
 		}
 
-		$query_type = WCAPF_Helper::get_field_relations();
-
-		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
-	}
-
-	protected function get_self_where_clause() {
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
-
-		$wheres = array();
-
-		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
-			if ( 'filters_data' === $filter_type ) {
-				continue;
-			}
-
-			foreach ( $filter_type_filters as $filter_key => $filter ) {
-				if ( $this->filter_key === $filter_key ) {
-					$wheres[] = $filter['where'];
-					break;
-				}
-			}
-		}
-
-		$query_type = WCAPF_Helper::get_field_relations();
-
-		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
+		return apply_filters( 'wcapf_filter_update_count', $enabled, $this->field );
 	}
 
 }

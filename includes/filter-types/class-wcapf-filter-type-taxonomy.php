@@ -198,7 +198,12 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function get_filtered_term_product_counts_using_lookup_table( $term_ids ) {
 		global $wpdb;
 
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+		$helper = new WCAPF_Helper();
+		$utils  = new WCAPF_Product_Filter_Utils();
+
+		$post_statuses  = $helper::filterable_post_statuses();
+		$update_count   = $this->auto_count_enabled();
+		$hide_stock_out = $helper::hide_stock_out_items();
 
 		$tax_query    = WC_Query::get_main_tax_query();
 		$meta_query   = WC_Query::get_main_meta_query();
@@ -223,9 +228,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
-		$filter = new WCAPF_Product_Filter();
-
-		$join .= ' ' . $filter->get_full_join_clause();
+		if ( $update_count ) {
+			$join .= $utils::get_join_clause();
+		}
 
 		$query['join'] = $join;
 
@@ -240,15 +245,17 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$where .= " AND $lookup_table_name.taxonomy = '$this->taxonomy'";
 		$where .= " AND $lookup_table_name.term_id IN $term_ids_sql";
 
-		$where .= WCAPF_Helper::hide_stock_out_items() ? ' AND in_stock = 1' : '';
+		$where .= $hide_stock_out ? ' AND in_stock = 1' : '';
 
-		$where .= $this->get_where_clause();
+		if ( $update_count ) {
+			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
+		}
 
 		$query['where'] = $where;
 
 		$query['group_by'] = "GROUP BY $lookup_table_name.term_id";
 
-		$query = apply_filters( 'wcapf_terms_query_sql', $query, $this->field );
+		$query = apply_filters( 'wcapf_term_product_counts_query_using_lookup_table', $query, $this->field, $term_ids );
 		$query = implode( ' ', $query );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -272,10 +279,12 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		global $wpdb;
 
 		$helper = new WCAPF_Helper;
+		$utils  = new WCAPF_Product_Filter_Utils();
 
 		$post_statuses = $helper::filterable_post_statuses();
+		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $helper::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data();
 
 		$query  = array();
 		$select = '';
@@ -295,9 +304,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
-		$filter = new WCAPF_Product_Filter();
-
-		$join .= ' ' . $filter->get_full_join_clause();
+		if ( $update_count ) {
+			$join .= $utils::get_join_clause();
+		}
 
 		$query['join'] = $join;
 
@@ -308,13 +317,15 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
 
-		$where .= $this->get_where_clause();
+		if ( $update_count ) {
+			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
+		}
 
 		$query['where'] = $where;
 
 		$query['group_by'] = 'GROUP BY terms.term_id';
 
-		$query = apply_filters( 'wcapf_terms_query_sql', $query, $this->field );
+		$query = apply_filters( 'wcapf_term_product_counts_query_not_using_lookup_table', $query, $this->field, $term_ids );
 		$query = implode( ' ', $query );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

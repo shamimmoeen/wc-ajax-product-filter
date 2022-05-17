@@ -272,8 +272,6 @@ class WCAPF_Field_Instance {
 
 		if ( in_array( $field_type, WCAPF_Helper::taxonomy_field_types() ) ) {
 			$filter_type = 'taxonomy';
-		} elseif ( 'price' === $field_type ) {
-			$filter_type = 'post-meta';
 		} else {
 			$filter_type = $field_type;
 		}
@@ -357,11 +355,7 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function get_meta_key() {
-		if ( 'price' === $this->get_field_type() ) {
-			$meta_key = WCAPF_Product_Filter_Utils::get_meta_key_for_price_filter();
-		} else {
-			$meta_key = $this->get_sub_field_value( 'meta_key' );
-		}
+		$meta_key = $this->get_sub_field_value( 'meta_key' );
 
 		return apply_filters( 'wcapf_field_meta_key', $meta_key, $this->instance );
 	}

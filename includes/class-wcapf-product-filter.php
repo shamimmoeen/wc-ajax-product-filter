@@ -140,7 +140,7 @@ class WCAPF_Product_Filter {
 				),
 			);
 
-			$args = apply_filters( 'wcapf_filters_query_args', $args );
+			$args = apply_filters( 'wcapf_filters_data_query_args', $args );
 
 			$filters = get_posts( $args );
 
@@ -185,8 +185,6 @@ class WCAPF_Product_Filter {
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
-		$clauses = array();
-
 		// The extra derived table ("SELECT product_or_parent_id FROM") is needed for performance
 		// (causes the filtering subquery to be executed only once).
 		$clause_root = "$wpdb->posts.ID IN ( SELECT product_or_parent_id FROM (";
@@ -200,31 +198,46 @@ class WCAPF_Product_Filter {
 			$in_stock_clause = '';
 		}
 
-		foreach ( $term_ids as $term_id ) {
-			$clauses[] = "
-				$clause_root
-				SELECT product_or_parent_id
-				FROM $lookup_table_name lt
-				WHERE term_id = $term_id
-				$in_stock_clause
-				$clause_end
-			";
-		}
+		if ( 'or' === $query_type ) {
+			if ( $term_ids ) {
+				$ids = $this->get_term_ids_sql( $term_ids );
 
-		if ( $clauses ) {
-			if ( 'or' === $query_type ) {
-				$sql = implode( ' OR ', $clauses );
+				$where = "
+					$clause_root
+					SELECT product_or_parent_id
+					FROM $lookup_table_name lt
+					WHERE term_id IN $ids
+					$in_stock_clause
+					$clause_end
+				";
 			} else {
-				$sql = implode( ' AND ', $clauses );
-			}
-
-			if ( 1 > count( $clauses ) ) {
-				$where = '( ' . $sql . ' )';
-			} else {
-				$where = $sql;
+				$where = '1=0';
 			}
 		} else {
-			$where = '1=0';
+			$clauses = array();
+
+			foreach ( $term_ids as $term_id ) {
+				$clauses[] = "
+					$clause_root
+					SELECT product_or_parent_id
+					FROM $lookup_table_name lt
+					WHERE term_id = $term_id
+					$in_stock_clause
+					$clause_end
+				";
+			}
+
+			if ( $clauses ) {
+				$sql = implode( ' AND ', $clauses );
+
+				if ( 1 > count( $clauses ) ) {
+					$where = '( ' . $sql . ' )';
+				} else {
+					$where = $sql;
+				}
+			} else {
+				$where = '1=0';
+			}
 		}
 
 		return array(
@@ -357,7 +370,7 @@ class WCAPF_Product_Filter {
 			$filter_values[1]
 		);
 
-		$where = "($min <= $filter_key.min_price AND $max >= $filter_key.max_price)";
+		$where = "NOT ($max < $filter_key.min_price OR $min > $filter_key.max_price)";
 
 		return array(
 			'query_type' => $query_type,
@@ -407,10 +420,6 @@ function wcapf_set_product_query_refactored() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}
-
-	// echo '<pre>';
-	// print_r( $q );
-	// echo '</pre>';
 
 	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 10, 2 );
 }

@@ -306,26 +306,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Gets the main wc query data.
-	 *
-	 * @return array
-	 */
-	public static function get_main_query_data() {
-		global $wpdb;
-
-		$tax_query    = WC_Query::get_main_tax_query();
-		$meta_query   = WC_Query::get_main_meta_query();
-		$search_query = WC_Query::get_main_search_query_sql();
-
-		$meta_query     = new WP_Meta_Query( $meta_query );
-		$tax_query      = new WP_Tax_Query( $tax_query );
-		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
-
-		return array( $meta_query_sql, $tax_query_sql, $search_query );
-	}
-
-	/**
 	 * Gets the field relations.
 	 *
 	 * @return string

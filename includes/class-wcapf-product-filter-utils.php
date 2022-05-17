@@ -36,100 +36,180 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * @param string $meta_key  The meta key.
-	 * @param string $data_type The mysql data type.
+	 * When filtering the products by price we set the price according to tax.
 	 *
-	 * @return string
+	 * @param string $min
+	 * @param string $max
+	 *
+	 * @return array
 	 */
-	public static function get_min_value( $meta_key, $data_type ) {
-		global $wpdb;
+	public static function get_min_max_price_according_to_tax( $min, $max ) {
+		$min = floatval( $min );
+		$max = floatval( $max );
 
-		$query = self::meta_value_min_max_sql_query( $meta_key, $data_type );
+		/**
+		 * Adjust if the store taxes are not displayed how they are stored.
+		 * Kicks in when prices excluding tax are displayed including tax.
+		 */
+		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
+			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
+			$tax_rates = WC_Tax::get_rates( $tax_class );
 
-		return $wpdb->get_var( $query );
-	}
-
-	private static function meta_value_min_max_sql_query( $meta_key, $data_type, $min = true ) {
-		global $wpdb;
-
-		$helper = new WCAPF_Helper;
-
-		$post_statuses = $helper::filterable_post_statuses();
-
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $helper::get_main_query_data();
-
-		$query  = array();
-		$select = '';
-		$join   = '';
-		$where  = '';
-
-		if ( $min ) {
-			$select .= "SELECT MIN( CAST( $wpdb->postmeta.meta_value AS $data_type ) )";
-		} else {
-			$select .= "SELECT MAX( CAST( $wpdb->postmeta.meta_value AS $data_type ) )";
+			if ( $tax_rates ) {
+				$min -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $min, $tax_rates ) );
+				$max -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $max, $tax_rates ) );
+			}
 		}
 
+		return compact( 'min', 'max' );
+	}
+
+	/**
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	public static function get_price_range( $field_instance ) {
+		global $wpdb;
+
+		$helper = new WCAPF_Helper();
+
+		$post_statuses  = $helper::filterable_post_statuses();
+		$hide_stock_out = $helper::hide_stock_out_items();
+
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = self::get_main_query_data();
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_meta_lookup';
+
+		$join  = '';
+		$where = '';
+		$query = array();
+
+		$select = 'SELECT MIN( price_table.min_price ) AS min_price, MAX( price_table.max_price ) AS max_price';
+
 		$query['select'] = $select;
+		$query['from']   = "FROM $wpdb->posts";
 
-		$query['from'] = "FROM $wpdb->postmeta";
-
-		$join .= "INNER JOIN $wpdb->posts ON $wpdb->postmeta.post_id = $wpdb->posts.ID";
+		$join .= " LEFT JOIN $lookup_table_name AS price_table ON $wpdb->posts.ID = price_table.product_id";
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
 		$query['join'] = $join;
 
-		// TODO: Add 'product_variation' post type.
-		$where .= "WHERE $wpdb->posts.post_type IN ('product', 'product_variation')";
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
 		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
-		$where .= " AND $wpdb->postmeta.meta_key='$meta_key'";
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
 
-		// The where clause for auto updatable min, max value according to the applied filters will go here.
+		$where .= $hide_stock_out ? " AND price_table.stock_status = 'instock'" : '';
 
 		$query['where'] = $where;
 
-		$query = apply_filters( 'wcapf_meta_value_min_max_sql_query', $query, $meta_key, $min );
+		$query = apply_filters( 'wcapf_price_min_max_sql_query', $query, $field_instance );
+		$query = implode( ' ', $query );
 
-		return implode( ' ', $query );
-	}
+		$results = $wpdb->get_row( $query, ARRAY_A );
 
-	/**
-	 * @param string $meta_key  The meta key.
-	 * @param string $data_type The mysql data type.
-	 *
-	 * @return string
-	 */
-	public static function get_max_value( $meta_key, $data_type ) {
-		global $wpdb;
+		$min = isset( $results['min_price'] ) ? floatval( $results['min_price'] ) : 0;
+		$max = isset( $results['max_price'] ) ? floatval( $results['max_price'] ) : 0;
 
-		$query = self::meta_value_min_max_sql_query( $meta_key, $data_type, false );
+		// Check to see if we should add taxes to the prices if store are excl tax but display incl.
+		$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
 
-		return $wpdb->get_var( $query );
-	}
+		if ( wc_tax_enabled() && ! wc_prices_include_tax() && 'incl' === $tax_display_mode ) {
+			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
+			$tax_rates = WC_Tax::get_rates( $tax_class );
 
-	/**
-	 * Gets the meta key for price filter.
-	 *
-	 * @return string
-	 */
-	public static function get_meta_key_for_price_filter() {
-		$helper = new WCAPF_Helper;
-
-		$prices_with_tax_generated = '1' === get_option( $helper::product_prices_generated_option_key() );
-
-		$store_is_in_tax_incl_or_excl_mode = $helper::store_is_in_tax_inclusive_mode()
-		                                     || $helper::store_is_in_tax_exclusive_mode();
-
-		if ( $prices_with_tax_generated && $store_is_in_tax_incl_or_excl_mode ) {
-			$meta_key = $helper::meta_key_for_price_with_tax();
-		} else {
-			$meta_key = '_price';
+			if ( $tax_rates ) {
+				$min += WC_Tax::get_tax_total( WC_Tax::calc_exclusive_tax( $min, $tax_rates ) );
+				$max += WC_Tax::get_tax_total( WC_Tax::calc_exclusive_tax( $max, $tax_rates ) );
+			}
 		}
 
-		return $meta_key;
+		return compact( 'min', 'max' );
+	}
+
+	/**
+	 * Gets the main wc query data.
+	 *
+	 * @return array
+	 */
+	public static function get_main_query_data() {
+		global $wpdb;
+
+		$tax_query    = WC_Query::get_main_tax_query();
+		$meta_query   = WC_Query::get_main_meta_query();
+		$search_query = WC_Query::get_main_search_query_sql();
+
+		$meta_query     = new WP_Meta_Query( $meta_query );
+		$tax_query      = new WP_Tax_Query( $tax_query );
+		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
+		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
+
+		return array( $meta_query_sql, $tax_query_sql, $search_query );
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_where_clause( $query_type, $filter_key ) {
+		$main_query_type = WCAPF_Helper::get_field_relations();
+
+		// TODO: Maybe include post__in, post__not_in and other vars from the main products query.
+		$where = '';
+
+		if ( 'and' === $main_query_type ) {
+			if ( 'and' === $query_type ) {
+				$where = self::get_full_where_clause();
+			} elseif ( 'or' === $query_type ) {
+				$where = self::get_where_clauses_by_other_filters( $filter_key );
+			}
+		} elseif ( 'or' === $main_query_type ) {
+			if ( 'and' === $query_type ) {
+				$where = self::get_self_where_clause( $filter_key );
+			} elseif ( 'or' === $query_type ) {
+				$where = ' AND 1=1';
+			}
+		}
+
+		return apply_filters( 'wcapf_filter_where_clause', $where, $query_type, $filter_key );
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_full_where_clause() {
+		$filter = new WCAPF_Product_Filter();
+
+		return $filter->get_full_where_clause();
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_where_clauses_by_other_filters( $filter_key ) {
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+
+		$wheres = array();
+
+		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
+			if ( 'filters_data' === $filter_type ) {
+				continue;
+			}
+
+			foreach ( $filter_type_filters as $_filter_key => $filter ) {
+				if ( $filter_key === $_filter_key ) {
+					continue;
+				}
+
+				$wheres[] = $filter['where'];
+			}
+		}
+
+		$query_type = WCAPF_Helper::get_field_relations();
+
+		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
 	}
 
 	/**
@@ -158,25 +238,41 @@ class WCAPF_Product_Filter_Utils {
 		return $sql;
 	}
 
-	public static function get_min_max_price_according_to_tax( $min, $max ) {
-		$min = floatval( $min );
-		$max = floatval( $max );
+	/**
+	 * @return string
+	 */
+	public static function get_self_where_clause( $filter_key ) {
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
-		/**
-		 * Adjust if the store taxes are not displayed how they are stored.
-		 * Kicks in when prices excluding tax are displayed including tax.
-		 */
-		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
-			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
-			$tax_rates = WC_Tax::get_rates( $tax_class );
+		$wheres = array();
 
-			if ( $tax_rates ) {
-				$min -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $min, $tax_rates ) );
-				$max -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $max, $tax_rates ) );
+		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
+			if ( 'filters_data' === $filter_type ) {
+				continue;
+			}
+
+			foreach ( $filter_type_filters as $_filter_key => $filter ) {
+				if ( $filter_key === $_filter_key ) {
+					$wheres[] = $filter['where'];
+					break;
+				}
 			}
 		}
 
-		return compact( 'min', 'max' );
+		$query_type = WCAPF_Helper::get_field_relations();
+
+		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_join_clause() {
+		$filter = new WCAPF_Product_Filter();
+
+		$join = ' ' . $filter->get_full_join_clause();
+
+		return apply_filters( 'wcapf_filter_join_clause', $join );
 	}
 
 }
