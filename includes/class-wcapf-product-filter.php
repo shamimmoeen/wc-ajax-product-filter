@@ -63,7 +63,6 @@ class WCAPF_Product_Filter {
 	public function get_chosen_filters() {
 		// parse url
 		$url = $_SERVER['QUERY_STRING'];
-		$url = str_replace( '+', '%2B', $url ); // Preserve '+' to filter by ranges.
 		parse_str( $url, $query );
 
 		$chosen     = array();
@@ -354,7 +353,9 @@ class WCAPF_Product_Filter {
 		$_filter_values = $utils::get_chosen_filter_values( $filter_value );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
 
-		$filter_values = $_filter_values ? explode( '+', $_filter_values ) : array();
+		$range_values_separator = WCAPF_Helper::range_values_separator();
+
+		$filter_values = $_filter_values ? explode( $range_values_separator, $_filter_values ) : array();
 
 		if ( ! $filter_values ) {
 			return array();

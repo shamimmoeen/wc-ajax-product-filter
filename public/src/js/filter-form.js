@@ -353,6 +353,8 @@ jQuery( document ).ready(
 				url = window.location.href;
 			}
 
+			url = url.replaceAll( '%2C', ',' );
+
 			const hashes  = url.slice( url.indexOf( '?' ) + 1 ).split( '&' );
 			const hLength = hashes.length;
 
@@ -443,6 +445,8 @@ jQuery( document ).ready(
 
 		// take the key and value and make query
 		function wcapfMakeParameters( filterKey, filterValue, url ) {
+			const valueSeparator = ',';
+
 			let params, nextValues, emptyValue = false;
 
 			if ( typeof url !== 'undefined' ) {
@@ -453,7 +457,7 @@ jQuery( document ).ready(
 
 			if ( typeof params[ filterKey ] != 'undefined' ) {
 				const prevValues      = params[ filterKey ];
-				const prevValuesArray = prevValues.split( ',' );
+				const prevValuesArray = prevValues.split( valueSeparator );
 
 				if ( prevValues.length > 0 ) {
 					const found = $.inArray( filterValue, prevValuesArray );
@@ -471,7 +475,7 @@ jQuery( document ).ready(
 					}
 
 					if ( prevValuesArray.length > 1 ) {
-						nextValues = prevValuesArray.join( ',' );
+						nextValues = prevValuesArray.join( valueSeparator );
 					} else {
 						nextValues = prevValuesArray;
 					}

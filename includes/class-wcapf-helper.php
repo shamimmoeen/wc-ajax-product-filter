@@ -273,6 +273,13 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * @return string
+	 */
+	public static function range_values_separator() {
+		return '~';
+	}
+
+	/**
 	 * @return array
 	 */
 	public static function range_number_filter_types() {
