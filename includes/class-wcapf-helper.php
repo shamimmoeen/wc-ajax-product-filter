@@ -41,50 +41,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The option key that contains the information if the product prices generated earlier.
-	 *
-	 * @return string
-	 */
-	public static function product_prices_generated_option_key() {
-		return 'wcapf_product_prices_generated';
-	}
-
-	/**
-	 * Check to see if store is incl tax but display excl.
-	 *
-	 * @return bool
-	 */
-	public static function store_is_in_tax_inclusive_mode() {
-		if ( wc_tax_enabled() && 'excl' === get_option( 'woocommerce_tax_display_shop' ) && wc_prices_include_tax() ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check to see if store is excl tax but display incl.
-	 *
-	 * @return bool
-	 */
-	public static function store_is_in_tax_exclusive_mode() {
-		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * The meta key that contains the product's price with tax.
-	 *
-	 * @return string
-	 */
-	public static function meta_key_for_price_with_tax() {
-		return apply_filters( 'wcapf_price_with_tax_meta_key', '_price_with_tax' );
-	}
-
-	/**
 	 * The filtering works for the products with these post statuses.
 	 *
 	 * @return array
@@ -273,6 +229,13 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * @return string
+	 */
+	public static function range_values_separator() {
+		return '~';
+	}
+
+	/**
 	 * @return array
 	 */
 	public static function range_number_filter_types() {
@@ -302,27 +265,7 @@ class WCAPF_Helper {
 	public static function get_chosen_filters() {
 		global $wcapf_chosen_filters;
 
-		return $wcapf_chosen_filters;
-	}
-
-	/**
-	 * Gets the main wc query data.
-	 *
-	 * @return array
-	 */
-	public static function get_main_query_data() {
-		global $wpdb;
-
-		$tax_query    = WC_Query::get_main_tax_query();
-		$meta_query   = WC_Query::get_main_meta_query();
-		$search_query = WC_Query::get_main_search_query_sql();
-
-		$meta_query     = new WP_Meta_Query( $meta_query );
-		$tax_query      = new WP_Tax_Query( $tax_query );
-		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
-
-		return array( $meta_query_sql, $tax_query_sql, $search_query );
+		return $wcapf_chosen_filters ?: array(); // todo
 	}
 
 	/**
@@ -395,6 +338,22 @@ class WCAPF_Helper {
 		}
 
 		return $rating_html;
+	}
+
+	/**
+	 * Checks if the product attribute filtering via lookup table feature is enabled.
+	 *
+	 * @return bool
+	 */
+	public static function filtering_via_lookup_table_is_active() {
+		return 'yes' === get_option( 'woocommerce_attribute_lookup_enabled' );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function hide_stock_out_items() {
+		return 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' );
 	}
 
 }

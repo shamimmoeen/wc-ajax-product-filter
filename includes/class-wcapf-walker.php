@@ -190,9 +190,17 @@ class WCAPF_Walker {
 	 * @return array
 	 */
 	private function active_filters() {
-		$filter_key     = $this->filter_key;
-		$filter_type    = $this->filter_type;
+		$filter_key  = $this->filter_key;
+		$filter_type = $this->filter_type;
+		$field_type  = $this->type;
+
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+
+		if ( 'attribute' === $field_type ) {
+			$filter_type = 'attribute';
+		} elseif ( 'price' === $field_type ) {
+			$filter_type = 'price';
+		}
 
 		// TODO: Maybe required.
 		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();

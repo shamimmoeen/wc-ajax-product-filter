@@ -25,8 +25,6 @@ class WCAPF_Admin {
 			'plugin_action_links_' . plugin_basename( WCAPF_PLUGIN_FILE ),
 			array( $this, 'plugin_action_links' )
 		);
-
-		add_action( 'admin_notices', array( $this, 'render_admin_notice_to_generate_product_prices' ) );
 	}
 
 	/**
@@ -120,40 +118,6 @@ class WCAPF_Admin {
 		);
 
 		return $links;
-	}
-
-	/**
-	 * Renders the admin notice to generate the product prices according to the tax configuration.
-	 *
-	 * @return void
-	 */
-	public function render_admin_notice_to_generate_product_prices() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		// Don't show if the prices were already generate before.
-		if ( '1' === get_option( WCAPF_Helper::product_prices_generated_option_key() ) ) {
-			return;
-		}
-
-		if ( ! WCAPF_Helper::store_is_in_tax_inclusive_mode() && ! WCAPF_Helper::store_is_in_tax_exclusive_mode() ) {
-			return;
-		}
-
-		$settings_page_url = WCAPF_Helper::settings_page_url();
-		$settings_page_url = $settings_page_url . '#generate-product-prices';
-
-		/** @noinspection HtmlUnknownTarget */
-		$message = sprintf(
-			__( 'Your store has enabled taxes and the product prices weren\'t entered according to your tax configuration. For accurate filtering and sorting by price, we have to store the product prices according to the tax configuration in the metadata table. <a href="%s">Click to start</a>.', 'wc-ajax-product-filter' ),
-			$settings_page_url
-		);
-
-		WCAPF_Template_Loader::get_instance()->load(
-			'admin/admin-notice',
-			array( 'msg_type' => 'info', 'message' => $message, 'is_dismissible' => false )
-		);
 	}
 
 }
