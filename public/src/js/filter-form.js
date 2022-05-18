@@ -21,6 +21,8 @@ const wcapf_params = wcapf_params || {
 jQuery( document ).ready(
 	function( $ ) {
 
+		const rangeValuesSeparator = '~';
+
 		// return false if wcapf_params variable is not found
 		if ( typeof wcapf_params === 'undefined' ) {
 			return false;
@@ -186,7 +188,7 @@ jQuery( document ).ready(
 						const query = wcapfRemoveQueryStringParameter( filterKey );
 						history.pushState( {}, '', query );
 					} else {
-						const filterValString = minValue + '+' + maxValue;
+						const filterValString = minValue + rangeValuesSeparator + maxValue;
 						wcapfUpdateQueryStringParameter( filterKey, filterValString );
 					}
 
@@ -669,7 +671,7 @@ jQuery( document ).ready(
 						const query = wcapfRemoveQueryStringParameter( filterKey );
 						history.pushState( {}, '', query );
 					} else {
-						const filterValString = minValue + '+' + maxValue;
+						const filterValString = minValue + rangeValuesSeparator + maxValue;
 						wcapfUpdateQueryStringParameter( filterKey, filterValString );
 					}
 
