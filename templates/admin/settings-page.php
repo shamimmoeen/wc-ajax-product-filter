@@ -39,7 +39,4 @@ $msg_code = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) 
 		submit_button();
 		?>
 	</form>
-
-	<?php WCAPF_Template_Loader::get_instance()->load( 'admin/generate-product-prices' ); ?>
-
 </div>

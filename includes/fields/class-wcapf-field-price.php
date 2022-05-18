@@ -53,13 +53,11 @@ class WCAPF_Field_Price extends WCAPF_Field {
 
 		if ( in_array( $display_type, $range_number_filters ) ) {
 			$classes[] = 'wcapf-number-range-filter';
-			$items     = array( '' );
 		} else {
 			$classes[] = 'wcapf-nav-filter';
-			$items     = array();
 		}
 
-		$items = apply_filters( 'wcapf_price_filter_items', $items, $field_instance );
+		$items = apply_filters( 'wcapf_price_filter_items', array(), $field_instance );
 
 		if ( ! $items ) {
 			$classes[] = 'wcapf-field-hidden';
@@ -68,7 +66,7 @@ class WCAPF_Field_Price extends WCAPF_Field {
 		$this->before_filter_form( $classes );
 
 		if ( in_array( $display_type, $range_number_filters ) ) {
-			$this->render_range_number_filter( $field_instance );
+			$this->render_range_number_filter( $field_instance, $items );
 		} else {
 			echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}

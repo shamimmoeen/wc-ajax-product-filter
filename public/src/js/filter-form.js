@@ -353,6 +353,8 @@ jQuery( document ).ready(
 				url = window.location.href;
 			}
 
+			url = url.replaceAll( '%2C', ',' );
+
 			const hashes  = url.slice( url.indexOf( '?' ) + 1 ).split( '&' );
 			const hLength = hashes.length;
 
@@ -443,6 +445,8 @@ jQuery( document ).ready(
 
 		// take the key and value and make query
 		function wcapfMakeParameters( filterKey, filterValue, url ) {
+			const valueSeparator = ',';
+
 			let params, nextValues, emptyValue = false;
 
 			if ( typeof url !== 'undefined' ) {
@@ -453,7 +457,7 @@ jQuery( document ).ready(
 
 			if ( typeof params[ filterKey ] != 'undefined' ) {
 				const prevValues      = params[ filterKey ];
-				const prevValuesArray = prevValues.split( ',' );
+				const prevValuesArray = prevValues.split( valueSeparator );
 
 				if ( prevValues.length > 0 ) {
 					const found = $.inArray( filterValue, prevValuesArray );
@@ -471,7 +475,7 @@ jQuery( document ).ready(
 					}
 
 					if ( prevValuesArray.length > 1 ) {
-						nextValues = prevValuesArray.join( ',' );
+						nextValues = prevValuesArray.join( valueSeparator );
 					} else {
 						nextValues = prevValuesArray;
 					}
@@ -674,6 +678,59 @@ jQuery( document ).ready(
 				}, delay ) );
 			}
 		);
+
+		function initDatepicker() {
+			const $wcapfDateFilters = $( '.wcapf-date-range-filter' );
+			const $wcapfDateFilter  = $wcapfDateFilters.find( '.wcapf-date-input' );
+			const $dateInputs       = $wcapfDateFilter.find( '.date-input' );
+
+			const format        = $wcapfDateFilter.attr( 'data-date-format' );
+			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
+			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
+			const filterKey     = $wcapfDateFilter.attr( 'data-filter-key' );
+			const isRange       = $wcapfDateFilter.attr( 'data-is-range' );
+
+			const rangedValues = [];
+			let date;
+
+			const $from = $wcapfDateFilter.find( '.date-from-input' );
+			const $to   = $wcapfDateFilter.find( '.date-to-input' );
+
+			$from.datepicker( {
+				dateFormat: format,
+				changeYear: yearDropdown,
+				changeMonth: monthDropdown,
+			} );
+
+			// $to.datepicker( {
+			// 	dateFormat: format,
+			// 	changeYear: yearDropdown,
+			// 	changeMonth: monthDropdown,
+			// } );
+
+			// $from.on( 'change', function() {
+			// 	const from = $( this ).val();
+			//
+			// 	date = from;
+			// 	rangedValues.push( from );
+			// 	// console.log( 'changed-from', from );
+			// } );
+
+			// $to.on( 'change', function() {
+			// 	const to = $( this ).val();
+			//
+			// 	rangedValues.push( to );
+			// 	// console.log( 'changed-to', to );
+			// } );
+
+			// if ( isRange ) {
+			// 	console.log( 'range', rangedValues );
+			// } else {
+			// 	console.log( 'not range', date );
+			// }
+		}
+
+		initDatepicker();
 
 		// history back and forward request handling
 		$( window ).bind( 'popstate', function() {
