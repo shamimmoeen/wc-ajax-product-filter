@@ -129,7 +129,6 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-settings-page.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-prices-generator.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';

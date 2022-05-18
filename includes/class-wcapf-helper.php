@@ -41,50 +41,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The option key that contains the information if the product prices generated earlier.
-	 *
-	 * @return string
-	 */
-	public static function product_prices_generated_option_key() {
-		return 'wcapf_product_prices_generated';
-	}
-
-	/**
-	 * Check to see if store is incl tax but display excl.
-	 *
-	 * @return bool
-	 */
-	public static function store_is_in_tax_inclusive_mode() {
-		if ( wc_tax_enabled() && 'excl' === get_option( 'woocommerce_tax_display_shop' ) && wc_prices_include_tax() ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check to see if store is excl tax but display incl.
-	 *
-	 * @return bool
-	 */
-	public static function store_is_in_tax_exclusive_mode() {
-		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * The meta key that contains the product's price with tax.
-	 *
-	 * @return string
-	 */
-	public static function meta_key_for_price_with_tax() {
-		return apply_filters( 'wcapf_price_with_tax_meta_key', '_price_with_tax' );
-	}
-
-	/**
 	 * The filtering works for the products with these post statuses.
 	 *
 	 * @return array
