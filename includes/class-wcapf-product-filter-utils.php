@@ -36,6 +36,25 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * We are using the same join to avoid the sorting issues.
+	 *
+	 * @return array
+	 *
+	 * @see wcapf_set_product_query()
+	 * @see WC_Query::append_product_sorting_table_join()
+	 */
+	public static function get_price_table_data() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'wc_product_meta_lookup';
+		$alias = 'wc_product_meta_lookup';
+
+		$join = "LEFT JOIN $table AS $alias ON $wpdb->posts.ID = $alias.product_id";
+
+		return compact( 'join', 'alias' );
+	}
+
+	/**
 	 * When filtering the products by price we set the price according to tax.
 	 *
 	 * @param string $min

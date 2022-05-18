@@ -53,9 +53,12 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * Gets the chosen filters from url.
+	 * Gets the chosen filters from url. Avoid calling this method using this class instance,
+	 * rather use the helper class instance.
 	 *
 	 * @return array
+	 *
+	 * @see WCAPF_Helper::get_chosen_filters()
 	 */
 	public function get_chosen_filters() {
 		// parse url
@@ -343,16 +346,12 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function set_price_filter_data( $filter_value, $field_instance ) {
-		global $wpdb;
-
-		$filter_key = $field_instance->filter_key;
+		$utils      = new WCAPF_Product_Filter_Utils;
 		$query_type = $field_instance->query_type;
 
-		$lookup_table_name = $wpdb->prefix . 'wc_product_meta_lookup';
+		list( 'join' => $join, 'alias' => $alias ) = $utils::get_price_table_data();
 
-		$join = "LEFT JOIN $lookup_table_name AS $filter_key ON $wpdb->posts.ID = $filter_key.product_id";
-
-		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+		$_filter_values = $utils::get_chosen_filter_values( $filter_value );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
 
 		$filter_values = $_filter_values ? explode( '+', $_filter_values ) : array();
@@ -370,7 +369,7 @@ class WCAPF_Product_Filter {
 			$filter_values[1]
 		);
 
-		$where = "NOT ($max < $filter_key.min_price OR $min > $filter_key.max_price)";
+		$where = "NOT ($max < $alias.min_price OR $min > $alias.max_price)";
 
 		return array(
 			'query_type' => $query_type,
@@ -416,12 +415,15 @@ function wcapf_posts_clauses( $args, $wp_query ) {
  *
  * @return void
  */
-function wcapf_set_product_query_refactored() {
+function wcapf_set_product_query() {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}
 
-	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 10, 2 );
+	/**
+	 * We must hook the filter early to avoid the sorting issues.
+	 */
+	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 5, 2 );
 }
 
-add_action( 'woocommerce_product_query', 'wcapf_set_product_query_refactored' );
+add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
