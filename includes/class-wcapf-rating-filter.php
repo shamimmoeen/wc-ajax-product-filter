@@ -45,10 +45,11 @@ class WCAPF_Rating_Filter {
 	private function init_hooks() {
 		add_filter( 'wcapf_taxonomy_field_types', array( $this, 'set_rating_as_taxonomy_field' ) );
 		add_filter( 'wcapf_field_taxonomy', array( $this, 'set_rating_taxonomy_name' ), 10, 2 );
-		add_filter( 'wcapf_term_filter_query_args', array( $this, 'set_rating_filter_query_args' ), 10, 2 );
 
 		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms_query_args' ), 10, 2 );
 		add_filter( 'wcapf_taxonomy_terms', array( $this, 'set_rating_terms_data' ), 10, 2 );
+
+		add_filter( 'wcapf_taxonomy_filter_values', array( $this, 'set_rating_filter_values' ), 10, 2 );
 
 		add_filter( 'wcapf_tree_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
 		add_filter( 'wcapf_labeled_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
@@ -89,29 +90,40 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
-	 * @param array                $args           The products' query args.
+	 * @param array                $values         The filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function set_rating_filter_query_args( $args, $field_instance ) {
+	public function set_rating_filter_values( $values, $field_instance ) {
 		if ( WCAPF_Helper::found_pro_version() ) {
-			return $args;
+			return $values;
 		}
 
 		if ( 'rating' === $field_instance->type ) {
-			$tax_query = $args['tax_query'];
-			$tax_query = $tax_query[0];
+			$new_values = array();
 
-			$rating_tax_query = $tax_query;
+			foreach ( $values as $value ) {
+				$new_values[] = 'rated-' . $value;
+			}
 
-			$rating_tax_query['field'] = 'name';
-			$rating_tax_query['terms'] = 'rated-' . $tax_query['terms'];
+			$terms = get_terms(
+				array(
+					'taxonomy'   => 'product_visibility',
+					'hide_empty' => false,
+					'fields'     => 'ids',
+					'slug'       => $new_values,
+				)
+			);
 
-			$args['tax_query'][0] = $rating_tax_query;
+			if ( is_wp_error( $terms ) ) {
+				return array();
+			}
+
+			$values = $terms;
 		}
 
-		return $args;
+		return $values;
 	}
 
 	/**
