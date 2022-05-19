@@ -356,13 +356,14 @@ class WCAPF_Walker {
 			$input_name .= '[]';
 		}
 
-		$item_id   = $item['id'];
-		$unique_id = $filter_key . '-input-' . $this->filter_id . '-' . $item_id;
+		$item_id    = $item['id'];
+		$item_value = rawurlencode( $item['id'] );
+		$unique_id  = $filter_key . '-input-' . $this->filter_id . '-' . $item_id;
 
 		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
 		$input_markup .= ' id="' . $unique_id . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
-		$input_markup .= ' value="' . esc_attr( $item_id ) . '"';
+		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
 		$input_markup .= $checked . '>';
 
 		$inner = $this->tree_item_inner( $item, $unique_id, $depth );
@@ -553,7 +554,9 @@ class WCAPF_Walker {
 
 		$selected = $this->item_active( $item ) ? ' selected="selected"' : '';
 
-		$option .= '<option value="' . esc_attr( $item['id'] ) . '"' . $selected . '>';
+		$item_value = rawurlencode( $item['id'] );
+
+		$option .= '<option value="' . esc_attr( $item_value ) . '"' . $selected . '>';
 
 		if ( $this->hierarchical ) {
 			$option .= $this->dropdown_item_depth( $item );
@@ -633,7 +636,9 @@ class WCAPF_Walker {
 			$classes .= ' checked';
 		}
 
-		$html = '<div class="' . $classes . '"' . $style . ' data-value="' . esc_attr( $id ) . '" tabindex="0">';
+		$item_value = rawurlencode( $item['id'] );
+
+		$html = '<div class="' . $classes . '"' . $style . ' data-value="' . esc_attr( $item_value ) . '" tabindex="0">';
 
 		if ( 'color' !== $display_type && 'image' !== $display_type ) {
 			$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
