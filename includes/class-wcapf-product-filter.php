@@ -264,7 +264,12 @@ class WCAPF_Product_Filter {
 		$query_type = $field_instance->query_type;
 		$taxonomy   = $field_instance->taxonomy;
 
-		$term_ids = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+		$filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+
+		/**
+		 * The hook to change the values for the rating filter.
+		 */
+		$term_ids = apply_filters( 'wcapf_taxonomy_filter_values', $filter_values, $field_instance );
 
 		$is_hierarchical  = is_taxonomy_hierarchical( $taxonomy );
 		$include_children = apply_filters( 'wcapf_taxonomy_include_children', true, $field_instance );
@@ -321,7 +326,7 @@ class WCAPF_Product_Filter {
 		return array(
 			'taxonomy'   => $taxonomy,
 			'query_type' => $query_type,
-			'values'     => $term_ids,
+			'values'     => $filter_values,
 			'join'       => $join,
 			'where'      => $where,
 		);
