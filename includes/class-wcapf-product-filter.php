@@ -69,6 +69,7 @@ class WCAPF_Product_Filter {
 		$taxonomies = array();
 		$attributes = array();
 		$price      = array();
+		$statuses   = array();
 
 		$filters_data = $this->filters_data( $query );
 
@@ -95,6 +96,10 @@ class WCAPF_Product_Filter {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
 
 				$already_filtered[] = $filter_key;
+			} elseif ( 'product-status' === $filter_type ) {
+				$statuses[ $filter_key ] = $this->set_filter_by_product_status_data( $filter_values, $field_instance );
+
+				$already_filtered[] = $filter_key;
 			}
 		}
 
@@ -103,6 +108,8 @@ class WCAPF_Product_Filter {
 		$chosen['taxonomy']  = $taxonomies;
 		$chosen['attribute'] = $attributes;
 		$chosen['price']     = $price;
+
+		$chosen['product-status'] = $statuses;
 
 		$remaining_filters = array();
 
@@ -183,7 +190,9 @@ class WCAPF_Product_Filter {
 
 		$join = '';
 
-		$term_ids = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+		$utils = new WCAPF_Product_Filter_Utils;
+
+		$term_ids = $utils::get_chosen_filter_values( $filter_value );
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
@@ -202,7 +211,7 @@ class WCAPF_Product_Filter {
 
 		if ( 'or' === $query_type ) {
 			if ( $term_ids ) {
-				$ids = $this->get_term_ids_sql( $term_ids );
+				$ids = $utils::get_ids_sql( $term_ids );
 
 				$where = "
 					$clause_root
@@ -232,7 +241,7 @@ class WCAPF_Product_Filter {
 			if ( $clauses ) {
 				$sql = implode( ' AND ', $clauses );
 
-				if ( 1 > count( $clauses ) ) {
+				if ( 1 < count( $clauses ) ) {
 					$where = '( ' . $sql . ' )';
 				} else {
 					$where = $sql;
@@ -264,7 +273,9 @@ class WCAPF_Product_Filter {
 		$query_type = $field_instance->query_type;
 		$taxonomy   = $field_instance->taxonomy;
 
-		$filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
+		$utils = new WCAPF_Product_Filter_Utils;
+
+		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
 		/**
 		 * The hook to change the values for the rating filter.
@@ -289,7 +300,7 @@ class WCAPF_Product_Filter {
 			}
 
 			if ( $term_ids ) {
-				$ids   = $this->get_term_ids_sql( $term_ids );
+				$ids   = $utils::get_ids_sql( $term_ids );
 				$where = "$filter_key.term_taxonomy_id IN $ids";
 			} else {
 				$where = '1=0';
@@ -306,7 +317,7 @@ class WCAPF_Product_Filter {
 					$and_term_id = array( $term_id );
 				}
 
-				$id_sql    = $this->get_term_ids_sql( $and_term_id );
+				$id_sql    = $utils::get_ids_sql( $and_term_id );
 				$clauses[] = "$filter_key.term_taxonomy_id IN $id_sql";
 			}
 
@@ -330,17 +341,6 @@ class WCAPF_Product_Filter {
 			'join'       => $join,
 			'where'      => $where,
 		);
-	}
-
-	/**
-	 * Formats a list of term ids as "(id,id,id)".
-	 *
-	 * @param array $term_ids The list of terms to format.
-	 *
-	 * @return string The formatted list.
-	 */
-	protected function get_term_ids_sql( $term_ids ) {
-		return '(' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
 	}
 
 	/**
@@ -376,6 +376,68 @@ class WCAPF_Product_Filter {
 		);
 
 		$where = "NOT ($max < $alias.min_price OR $min > $alias.max_price)";
+
+		return array(
+			'query_type' => $query_type,
+			'values'     => $filter_values,
+			'join'       => $join,
+			'where'      => $where,
+		);
+	}
+
+	/**
+	 * @param string               $filter_value   The filter value.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	protected function set_filter_by_product_status_data( $filter_value, $field_instance ) {
+		$query_type = $field_instance->query_type;
+
+		$utils = new WCAPF_Product_Filter_Utils;
+
+		$filter_values = $utils::get_chosen_filter_values( $filter_value );
+
+		global $wpdb;
+
+		$join   = '';
+		$wheres = array();
+
+		foreach ( $filter_values as $value ) {
+			if ( 'featured' === $value ) {
+				$featured_products = $utils::get_featured_product_ids_sql();
+
+				$wheres[] = "$wpdb->posts.ID IN $featured_products";
+			} elseif ( 'on_sale' === $value ) {
+				$on_sale_products = $utils::get_product_ids_on_sale_sql();
+
+				$wheres[] = "$wpdb->posts.ID IN $on_sale_products";
+			} else {
+				$condition = apply_filters( 'wcapf_filter_condition_for_product_status', '', $value );
+
+				if ( $condition ) {
+					$wheres[] = $condition;
+				}
+			}
+		}
+
+		if ( $wheres ) {
+			if ( 'or' === $query_type ) {
+				$separator = ' OR ';
+			} else {
+				$separator = ' AND ';
+			}
+
+			$sql = implode( $separator, $wheres );
+
+			if ( 1 < count( $wheres ) ) {
+				$where = '( ' . $sql . ' )';
+			} else {
+				$where = $sql;
+			}
+		} else {
+			$where = '1=0';
+		}
 
 		return array(
 			'query_type' => $query_type,

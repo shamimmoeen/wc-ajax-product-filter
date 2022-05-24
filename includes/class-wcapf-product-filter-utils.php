@@ -294,4 +294,37 @@ class WCAPF_Product_Filter_Utils {
 		return apply_filters( 'wcapf_filter_join_clause', $join );
 	}
 
+	/**
+	 * @return string
+	 */
+	public static function get_featured_product_ids_sql() {
+		$ids = wc_get_featured_product_ids();
+
+		$ids = $ids ?: array( 0 );
+
+		return self::get_ids_sql( $ids );
+	}
+
+	/**
+	 * Formats a list of ids as "(id,id,id)".
+	 *
+	 * @param array $ids The list of ids to format.
+	 *
+	 * @return string The formatted list.
+	 */
+	public static function get_ids_sql( $ids ) {
+		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_product_ids_on_sale_sql() {
+		$ids = wc_get_product_ids_on_sale();
+
+		$ids = $ids ?: array( 0 );
+
+		return self::get_ids_sql( $ids );
+	}
+
 }
