@@ -67,7 +67,22 @@ class WCAPF_Field_Product_Status extends WCAPF_Field {
 	}
 
 	protected function render_filter_form() {
-		// TODO: Implement render_filter_form() method.
+		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
+
+		$walker = new WCAPF_Walker( $field_instance );
+
+		$filter = new WCAPF_Filter_Type_Product_Status( $field_instance );
+		$items  = $filter->get_items();
+
+		$classes = array( 'wcapf-nav-filter' );
+
+		if ( ! $items ) {
+			$classes[] = 'wcapf-field-hidden';
+		}
+
+		$this->before_filter_form( $classes );
+		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+		$this->after_filter_form();
 	}
 
 }

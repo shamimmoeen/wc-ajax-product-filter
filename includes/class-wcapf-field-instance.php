@@ -85,7 +85,7 @@ class WCAPF_Field_Instance {
 			$enable_multiple_filter    = $this->get_sub_field_value( 'time_period_enable_multiple_filter' );
 			$show_count                = $this->get_sub_field_value( 'time_period_show_count' );
 			$hide_empty                = $this->get_sub_field_value( 'time_period_hide_empty' );
-			$get_options               = 'manual_entry'; // todo
+			$get_options               = 'manual_entry';
 			$manual_options            = $this->get_sub_field_value( 'time_period_options' );
 		} else {
 			$display_type              = $this->get_sub_field_value( 'display_type' );
@@ -96,14 +96,16 @@ class WCAPF_Field_Instance {
 			$enable_multiple_filter    = $this->get_sub_field_value( 'enable_multiple_filter' );
 			$show_count                = $this->get_sub_field_value( 'show_count' );
 			$hide_empty                = $this->get_sub_field_value( 'hide_empty' );
+			$get_options               = $this->get_sub_field_value( 'get_options' );
+			$manual_options            = $this->get_sub_field_value( 'manual_options' );
+		}
 
-			if ( 'rating' === $field_type ) {
-				$get_options    = $this->get_sub_field_value( 'number_get_options' );
-				$manual_options = $this->get_sub_field_value( 'number_manual_options' );
-			} else {
-				$get_options    = $this->get_sub_field_value( 'get_options' );
-				$manual_options = $this->get_sub_field_value( 'manual_options' );
-			}
+		if ( 'rating' === $field_type ) {
+			$get_options    = $this->get_sub_field_value( 'number_get_options' );
+			$manual_options = $this->get_sub_field_value( 'number_manual_options' );
+		} elseif ( 'product-status' === $field_type ) {
+			$get_options    = 'manual_entry';
+			$manual_options = $this->get_sub_field_value( 'product_status_options' );
 		}
 
 		// Default is an array.
@@ -379,9 +381,7 @@ class WCAPF_Field_Instance {
 		$value_type = $this->get_value_type();
 
 		if ( 'price' === $field_type ) {
-			// Get from the woocommerce settings.
-			$dec_places = get_option( 'woocommerce_price_num_decimals' );
-			$dec_places = strlen( $dec_places ) ? $dec_places : 3;
+			$dec_places = absint( wc_get_price_decimals() );
 
 			$data_type = 'DECIMAL(10,' . $dec_places . ')';
 		} elseif ( 'number' === $value_type ) {

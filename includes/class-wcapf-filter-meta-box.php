@@ -153,11 +153,32 @@ class WCAPF_Filter_Meta_Box {
 		if ( isset( $field_data['product_status_options'] ) ) {
 			$product_status_options = $field_data['product_status_options'];
 
-			if ( $product_status_options ) {
-				$decode = rawurldecode( $product_status_options );
-				$array  = json_decode( $decode, true );
+			$statuses = WCAPF_Helper::get_product_status_options();
 
-				$parsed_field['product_status_options'] = $array;
+			if ( $product_status_options ) {
+				$decode  = rawurldecode( $product_status_options );
+				$options = json_decode( $decode, true );
+				$options = is_array( $options ) ? $options : array();
+
+				$parsed_options = array();
+
+				foreach ( $options as $option ) {
+					$value = sanitize_text_field( $option['value'] );
+					$label = wp_kses_post( $option['label'] );
+
+					if ( ! strlen( $value ) ) {
+						continue;
+					}
+
+					if ( ! strlen( $label ) ) {
+						$label = isset( $statuses[ $value ] ) ? $statuses[ $value ] : $value;
+					}
+
+					$parsed_option    = array_merge( $option, array( 'label' => $label ) );
+					$parsed_options[] = $parsed_option;
+				}
+
+				$parsed_field['product_status_options'] = $parsed_options;
 			}
 		}
 
