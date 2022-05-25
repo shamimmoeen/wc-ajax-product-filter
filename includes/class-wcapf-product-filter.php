@@ -103,7 +103,7 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		// TODO: Rating, Product Property, Product Status, Sort by, Per Page.
+		// TODO: Sort by, Per Page.
 
 		$chosen['taxonomy']  = $taxonomies;
 		$chosen['attribute'] = $attributes;
@@ -404,20 +404,22 @@ class WCAPF_Product_Filter {
 		$wheres = array();
 
 		foreach ( $filter_values as $value ) {
+			$condition = '';
+
 			if ( 'featured' === $value ) {
 				$featured_products = $utils::get_featured_product_ids_sql();
 
-				$wheres[] = "$wpdb->posts.ID IN $featured_products";
+				$condition = "$wpdb->posts.ID IN $featured_products";
 			} elseif ( 'on_sale' === $value ) {
 				$on_sale_products = $utils::get_product_ids_on_sale_sql();
 
-				$wheres[] = "$wpdb->posts.ID IN $on_sale_products";
-			} else {
-				$condition = apply_filters( 'wcapf_filter_condition_for_product_status', '', $value );
+				$condition = "$wpdb->posts.ID IN $on_sale_products";
+			}
 
-				if ( $condition ) {
-					$wheres[] = $condition;
-				}
+			$condition = apply_filters( 'wcapf_filter_condition_for_product_status', $condition, $value, $field_instance );
+
+			if ( $condition ) {
+				$wheres[] = $condition;
 			}
 		}
 

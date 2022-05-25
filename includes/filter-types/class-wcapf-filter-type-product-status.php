@@ -81,17 +81,19 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 			$where .= $search_query ? ' AND ' . $search_query : '';
 
+			$condition = '';
+
 			if ( 'featured' === $id ) {
 				$featured_products = $utils::get_featured_product_ids_sql();
 
-				$where .= " AND $wpdb->posts.ID IN $featured_products";
+				$condition = " AND $wpdb->posts.ID IN $featured_products";
 			} elseif ( 'on_sale' === $id ) {
 				$on_sale_products = $utils::get_product_ids_on_sale_sql();
 
-				$where .= " AND $wpdb->posts.ID IN $on_sale_products";
-			} else {
-				$where .= apply_filters( 'wcapf_product_counts_where_clause_for_status', '', $id );
+				$condition = " AND $wpdb->posts.ID IN $on_sale_products";
 			}
+
+			$where .= apply_filters( 'wcapf_product_counts_where_clause_for_status', $condition, $id, $this->field );
 
 			if ( $update_count ) {
 				$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
