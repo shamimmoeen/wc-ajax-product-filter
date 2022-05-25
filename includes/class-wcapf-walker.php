@@ -619,12 +619,18 @@ class WCAPF_Walker {
 		if ( 'color' === $display_type ) {
 			$color = '#fff'; // Default color.
 
-			$appearance_options = isset( $this->custom_appearance_options[ $id ] )
-				? $this->custom_appearance_options[ $id ]
-				: array();
+			if ( 'manual_entry' === $this->get_options ) {
+				if ( ! empty( $item['color'] ) ) {
+					$color = $item['color'];
+				}
+			} else {
+				$appearance_options = isset( $this->custom_appearance_options[ $id ] )
+					? $this->custom_appearance_options[ $id ]
+					: array();
 
-			if ( $appearance_options ) {
-				$color = $appearance_options['color'];
+				if ( ! empty( $appearance_options['color'] ) ) {
+					$color = $appearance_options['color'];
+				}
 			}
 
 			$style .= ' style="background-color: ' . $color . ';"';
@@ -646,13 +652,24 @@ class WCAPF_Walker {
 		}
 
 		if ( 'image' === $display_type ) {
-			$appearance_options = isset( $this->custom_appearance_options[ $id ] )
-				? $this->custom_appearance_options[ $id ]
-				: array();
+			$image_url = '';
 
-			if ( $appearance_options ) {
-				$image = $appearance_options['image_url'];
-				$html  .= '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $item['name'] ) . '">';
+			if ( 'manual_entry' === $this->get_options ) {
+				if ( ! empty( $item['image_url'] ) ) {
+					$image_url = $item['image_url'];
+				}
+			} else {
+				$appearance_options = isset( $this->custom_appearance_options[ $id ] )
+					? $this->custom_appearance_options[ $id ]
+					: array();
+
+				if ( ! empty( $appearance_options['image_url'] ) ) {
+					$image_url = $appearance_options['image_url'];
+				}
+			}
+
+			if ( $image_url ) {
+				$html .= '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $item['name'] ) . '">';
 			}
 		}
 

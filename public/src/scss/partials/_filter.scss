@@ -51,15 +51,17 @@
 
 .wcapf-layered-nav,
 .wcapf-labeled-nav {
-	.count {
-		opacity: 0.6;
+	&:not(.display-type-color) {
+		.count {
+			opacity: 0.6;
 
-		&::before {
-			content: ' (';
-		}
+			&::before {
+				content: ' (';
+			}
 
-		&::after {
-			content: ')';
+			&::after {
+				content: ')';
+			}
 		}
 	}
 }
