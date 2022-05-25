@@ -35,6 +35,7 @@ class WCAPF_Field_Instance {
 	public $enable_hierarchy_accordion;
 	public $value_type;
 	public $meta_key;
+	public $post_property;
 	public $number_data_type;
 
 	/**
@@ -128,6 +129,8 @@ class WCAPF_Field_Instance {
 		$this->manual_options            = $manual_options;
 
 		$this->custom_appearance_options = $this->get_sub_field_value( 'custom_appearance_options' );
+
+		$this->post_property = $this->get_sub_field_value( 'post_property' );
 
 		switch ( $_display_type ) {
 			case 'multiselect':
