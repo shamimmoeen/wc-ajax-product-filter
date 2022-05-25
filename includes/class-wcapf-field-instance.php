@@ -25,6 +25,7 @@ class WCAPF_Field_Instance {
 	public $hide_empty;
 	public $get_options;
 	public $manual_options;
+	public $custom_appearance_options;
 	public $type;
 	public $filter_id;
 	public $filter_key;
@@ -125,6 +126,8 @@ class WCAPF_Field_Instance {
 		$this->hide_empty                = $hide_empty;
 		$this->get_options               = $get_options;
 		$this->manual_options            = $manual_options;
+
+		$this->custom_appearance_options = $this->get_sub_field_value( 'custom_appearance_options' );
 
 		switch ( $_display_type ) {
 			case 'multiselect':
