@@ -334,12 +334,22 @@ class WCAPF_Product_Filter {
 			}
 		}
 
+		$active_ancestors = array();
+
+		if ( $is_hierarchical ) {
+			foreach ( $term_ids as $term_id ) {
+				$ancestors        = get_ancestors( $term_id, $taxonomy );
+				$active_ancestors = array_merge( $ancestors, $active_ancestors );
+			}
+		}
+
 		return array(
-			'taxonomy'   => $taxonomy,
-			'query_type' => $query_type,
-			'values'     => $filter_values,
-			'join'       => $join,
-			'where'      => $where,
+			'taxonomy'         => $taxonomy,
+			'query_type'       => $query_type,
+			'values'           => $filter_values,
+			'active_ancestors' => $active_ancestors,
+			'join'             => $join,
+			'where'            => $where,
 		);
 	}
 
