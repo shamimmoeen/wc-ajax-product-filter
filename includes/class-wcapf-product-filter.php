@@ -111,6 +111,7 @@ class WCAPF_Product_Filter {
 
 		$chosen['product-status'] = $statuses;
 
+		// TODO: Maybe redundant.
 		$remaining_filters = array();
 
 		foreach ( array_keys( $filters_data ) as $_filter_key ) {
@@ -470,6 +471,7 @@ class WCAPF_Product_Filter {
 }
 
 /**
+ * @param array    $args     The query clauses.
  * @param WP_Query $wp_query Query instance.
  */
 function wcapf_posts_clauses( $args, $wp_query ) {
@@ -478,10 +480,6 @@ function wcapf_posts_clauses( $args, $wp_query ) {
 	}
 
 	$filter = new WCAPF_Product_Filter();
-
-	$chosen_filters = $filter->get_chosen_filters();
-
-	$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
 
 	$args['join']  .= $filter->get_full_join_clause();
 	$args['where'] .= $filter->get_full_where_clause();
@@ -493,17 +491,27 @@ function wcapf_posts_clauses( $args, $wp_query ) {
  * Query the products, applying sorting/ordering etc. This applies to the
  * main WordPress loop.
  *
+ * @param WP_Query $q Query instance.
+ *
  * @return void
  */
-function wcapf_set_product_query() {
+function wcapf_set_product_query( $q ) {
 	if ( ! is_shop() && ! is_product_taxonomy() ) {
 		return;
 	}
+
+	$filter = new WCAPF_Product_Filter();
+
+	$chosen_filters = $filter->get_chosen_filters();
+
+	$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
 
 	/**
 	 * We must hook the filter early to avoid the sorting issues.
 	 */
 	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 5, 2 );
+
+	do_action( 'wcapf_filter_products_query', $q );
 }
 
 add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );

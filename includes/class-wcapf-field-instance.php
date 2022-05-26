@@ -116,6 +116,9 @@ class WCAPF_Field_Instance {
 		// Default is 'automatically'.
 		$get_options = ! empty( $get_options ) ? $get_options : 'automatically';
 
+		$this->get_options    = apply_filters( 'wcapf_field_instance_get_options', $get_options, $this->instance );
+		$this->manual_options = apply_filters( 'wcapf_field_instance_manual_options', $manual_options, $this->instance );
+
 		$_display_type    = $this->parse_display_type( $display_type );
 		$_all_items_label = $this->parse_all_items_label( $all_items_label );
 
@@ -125,8 +128,6 @@ class WCAPF_Field_Instance {
 		$this->chosen_no_results_message = $chosen_no_results_message;
 		$this->show_count                = $show_count;
 		$this->hide_empty                = $hide_empty;
-		$this->get_options               = $get_options;
-		$this->manual_options            = $manual_options;
 
 		$this->custom_appearance_options = $this->get_sub_field_value( 'custom_appearance_options' );
 
