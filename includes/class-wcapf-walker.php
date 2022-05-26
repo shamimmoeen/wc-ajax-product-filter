@@ -205,7 +205,9 @@ class WCAPF_Walker {
 		// TODO: Maybe required.
 		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
 
-		return isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
+		$filter_data = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
+
+		return apply_filters( 'wcapf_walker_filter_data', $filter_data, $filter_type );
 	}
 
 	/**
