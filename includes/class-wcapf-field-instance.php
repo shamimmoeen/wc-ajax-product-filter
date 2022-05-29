@@ -265,7 +265,8 @@ class WCAPF_Field_Instance {
 					break;
 
 				default:
-					$all_items_label = __( 'All items', 'wc-ajax-product-filter' );
+					$all_items_label = apply_filters( 'wcapf_default_all_items_label', $type );
+					$all_items_label = $all_items_label ?: __( 'All items', 'wc-ajax-product-filter' );
 					break;
 			}
 		}

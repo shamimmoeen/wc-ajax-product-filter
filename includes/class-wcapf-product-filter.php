@@ -8,8 +8,6 @@
  * @author     Mainul Hassan Main
  */
 
-// phpcs:disable WordPress.Security.NonceVerification.Recommended
-
 /**
  * WCAPF_Product_Filter class.
  *
@@ -21,7 +19,9 @@ class WCAPF_Product_Filter {
 		$post_clauses = $this->get_full_join_n_where_clauses();
 		$joins        = $post_clauses['joins'];
 
-		return implode( ' ', $joins );
+		$full_join = implode( ' ', $joins );
+
+		return $full_join ? ' ' . $full_join : '';
 	}
 
 	/**
@@ -102,8 +102,6 @@ class WCAPF_Product_Filter {
 				$already_filtered[] = $filter_key;
 			}
 		}
-
-		// TODO: Sort by, Per Page.
 
 		$chosen['taxonomy']  = $taxonomies;
 		$chosen['attribute'] = $attributes;
@@ -364,7 +362,7 @@ class WCAPF_Product_Filter {
 		$utils      = new WCAPF_Product_Filter_Utils;
 		$query_type = $field_instance->query_type;
 
-		list( 'join' => $join, 'alias' => $alias ) = $utils::get_price_table_data();
+		list( 'join' => $join, 'alias' => $alias ) = $utils::get_lookup_table_data();
 
 		$_filter_values = $utils::get_chosen_filter_values( $filter_value );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
@@ -484,7 +482,7 @@ function wcapf_posts_clauses( $args, $wp_query ) {
 	$args['join']  .= $filter->get_full_join_clause();
 	$args['where'] .= $filter->get_full_where_clause();
 
-	return $args;
+	return apply_filters( 'wcapf_posts_clauses', $args );
 }
 
 /**

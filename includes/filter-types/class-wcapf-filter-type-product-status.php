@@ -21,24 +21,7 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 	protected function prepare_items() {
 		$manual_options = $this->field->manual_options;
 
-		$_items = array();
-
-		foreach ( $manual_options as $option ) {
-			$value = $option['value'];
-			$label = $option['label'];
-			$count = 0;
-
-			$item = array_merge(
-				$option,
-				array(
-					'id'    => $value,
-					'name'  => $label,
-					'count' => $count,
-				)
-			);
-
-			$_items[ $value ] = $item;
-		}
+		$_items = $this->prepare_manual_options( $manual_options );
 
 		return $this->get_filtered_product_counts( $_items );
 	}
