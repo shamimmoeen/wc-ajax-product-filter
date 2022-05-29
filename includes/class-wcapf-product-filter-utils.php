@@ -43,7 +43,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @see wcapf_set_product_query()
 	 * @see WC_Query::append_product_sorting_table_join()
 	 */
-	public static function get_price_table_data() {
+	public static function get_lookup_table_data() {
 		global $wpdb;
 
 		$table = $wpdb->prefix . 'wc_product_meta_lookup';

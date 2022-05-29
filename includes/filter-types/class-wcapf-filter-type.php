@@ -134,4 +134,34 @@ abstract class WCAPF_Filter_Type {
 		return apply_filters( 'wcapf_filter_update_count', $enabled, $this->field );
 	}
 
+	/**
+	 * Prepare the manual options.
+	 *
+	 * @param array $manual_options The manual options from the filter field.
+	 *
+	 * @return array
+	 */
+	protected function prepare_manual_options( $manual_options ) {
+		$options = array();
+
+		foreach ( $manual_options as $option ) {
+			$value = $option['value'];
+			$label = $option['label'];
+			$count = 0;
+
+			$item = array_merge(
+				$option,
+				array(
+					'id'    => $value,
+					'name'  => $label,
+					'count' => $count,
+				)
+			);
+
+			$options[ $value ] = $item;
+		}
+
+		return $options;
+	}
+
 }
