@@ -102,22 +102,22 @@ class WCAPF_Field_Instance {
 			$manual_options            = $this->get_sub_field_value( 'manual_options' );
 		}
 
-		if ( 'rating' === $field_type ) {
-			$get_options    = $this->get_sub_field_value( 'number_get_options' );
-			$manual_options = $this->get_sub_field_value( 'number_manual_options' );
-		} elseif ( 'product-status' === $field_type ) {
+		if ( 'product-status' === $field_type ) {
 			$get_options    = 'manual_entry';
 			$manual_options = $this->get_sub_field_value( 'product_status_options' );
 		}
 
+		$get_options    = apply_filters( 'wcapf_field_instance_get_options', $get_options, $this->instance );
+		$manual_options = apply_filters( 'wcapf_field_instance_manual_options', $manual_options, $this->instance );
+
+		// Default is 'automatically'.
+		$get_options = 'manual_entry' === $get_options ? 'manual_entry' : 'automatically';
+
 		// Default is an array.
 		$manual_options = is_array( $manual_options ) ? $manual_options : array();
 
-		// Default is 'automatically'.
-		$get_options = ! empty( $get_options ) ? $get_options : 'automatically';
-
-		$this->get_options    = apply_filters( 'wcapf_field_instance_get_options', $get_options, $this->instance );
-		$this->manual_options = apply_filters( 'wcapf_field_instance_manual_options', $manual_options, $this->instance );
+		$this->get_options    = $get_options;
+		$this->manual_options = $manual_options;
 
 		$_display_type    = $this->parse_display_type( $display_type );
 		$_all_items_label = $this->parse_all_items_label( $all_items_label );
