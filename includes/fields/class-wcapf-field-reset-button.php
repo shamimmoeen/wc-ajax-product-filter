@@ -17,18 +17,34 @@
 class WCAPF_Field_Reset_Button extends WCAPF_Field {
 
 	/**
-	 * The field's subfields.
+	 * Sets the field groups.
 	 *
-	 * @return array|array[]
+	 * @return array
 	 */
-	protected function sub_fields() {
+	protected function field_groups() {
 		return array(
 			array(
-				'type'     => 'text',
-				'id'       => 'title',
-				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
-				'name'     => 'title',
-				'position' => 5,
+				'name'     => 'reset_button_group',
+				'position' => 20,
+				'columns'  => array(
+					array(
+						array(
+							'type'     => 'text',
+							'id'       => 'btn_title',
+							'label'    => __( 'Button title', 'wc-ajax-product-filter' ),
+							'name'     => 'btn_title',
+							'default'  => __( 'Reset', 'wc-ajax-product-filter' ),
+							'position' => 20,
+						),
+						array(
+							'type'     => 'checkbox',
+							'id'       => 'show_if_empty',
+							'label'    => __( 'Show if no filter is applied', 'wc-ajax-product-filter' ),
+							'name'     => 'show_if_empty',
+							'position' => 25,
+						),
+					),
+				),
 			),
 		);
 	}
@@ -43,6 +59,22 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 	}
 
 	protected function render_filter_form() {
-		// TODO: Implement render_form() method.
+		$btn_title     = $this->get_sub_field_value( 'btn_title' );
+		$show_if_empty = $this->get_sub_field_value( 'show_if_empty' );
+
+		$classes = array( 'wcapf-nav-filter' );
+
+		$all_filters = WCAPF_Helper::get_active_filters_data();
+
+		if ( ! $show_if_empty && ! $all_filters ) {
+			$classes[] = 'wcapf-field-hidden';
+		}
+
+		$this->before_filter_form( $classes );
+		WCAPF_Template_Loader::get_instance()->load(
+			'public/field-reset-filters',
+			array( 'btn_title' => $btn_title )
+		);
+		$this->after_filter_form();
 	}
 }

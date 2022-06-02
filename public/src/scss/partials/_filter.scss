@@ -1,5 +1,5 @@
 .wcapf-layered-nav {
-	margin: 0 0 1.5em;
+	margin: 0 0 var(--wcapf-filter-title-base-margin-bottom);
 
 	ul {
 		list-style-type: none;
@@ -67,7 +67,7 @@
 }
 
 .wcapf-dropdown-nav {
-	margin: 0 0 1.5em;
+	margin: 0 0 var(--wcapf-filter-title-base-margin-bottom);
 
 	select {
 		min-width: 170px;
@@ -88,7 +88,7 @@
 	}
 
 	&.display-type-label {
-		margin: 0 0 calc(1.5em - 4px);
+		margin: 0 0 calc(var(--wcapf-filter-title-base-margin-bottom) - 4px);
 
 		> div {
 			border: 1px solid var(--wcapf-filter-outline-color);
@@ -108,7 +108,7 @@
 
 .wcapf-range-number,
 .wcapf-range-slider {
-	margin: 0 0 1.5em;
+	margin: 0 0 var(--wcapf-filter-title-base-margin-bottom);
 }
 
 .wcapf-range-number {
@@ -129,5 +129,54 @@
 	.wcapf-noui-slider {
 		margin: 15px 0 0;
 		padding: 0 16px;
+	}
+}
+
+.wcapf-active-filters {
+	margin: 0 0 var(--wcapf-filter-title-base-margin-bottom);
+
+	&.no-clear-button {
+		margin: 0 0 calc(var(--wcapf-filter-title-base-margin-bottom) - 4px);
+	}
+
+	h5 {
+		font-size: 1em;
+	}
+
+	.active-items {
+		margin: 0 0 calc(1em - 4px);
+
+		> div {
+			border: 1px solid var(--wcapf-filter-outline-color);
+			margin: 0 4px 4px 0;
+			padding: 1px 7px;
+			display: inline-block;
+			cursor: pointer;
+
+			&::after {
+				content: '\00D7';
+				margin: 0 0 0 5px;
+			}
+
+			&:hover {
+				&::after {
+					color: var(--wcapf-remove-active-filter-btn-hover-color);
+				}
+			}
+		}
+	}
+}
+
+a.wcapf-reset-filters-btn {
+	cursor: pointer;
+}
+
+.wcapf-reset-button-filter {
+	> .wcapf-reset-filters-btn {
+		margin: 1em 0 var(--wcapf-filter-title-base-margin-bottom);
+	}
+
+	h4 ~ .wcapf-reset-filters-btn {
+		margin: 0 0 var(--wcapf-filter-title-base-margin-bottom);
 	}
 }

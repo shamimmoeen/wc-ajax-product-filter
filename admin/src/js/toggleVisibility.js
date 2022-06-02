@@ -308,6 +308,17 @@ jQuery( document ).ready( function( $ ) {
 			'handlerType': 'checkbox',
 			'event': 'change',
 		},
+		{
+			'handler': '.wcapf-form-sub-field-show_if_empty input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-empty_filter_message',
+					'value': [ '1' ],
+				},
+			],
+		},
 	];
 
 	function _handleToggleRequest( data, currentSelector, value ) {
