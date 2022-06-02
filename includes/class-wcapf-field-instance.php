@@ -218,23 +218,22 @@ class WCAPF_Field_Instance {
 	 */
 	private function parse_display_type( $display_type ) {
 		$available_display_types = array(
-			'checkbox'         => array( 'checkbox', 'range_checkbox', 'time_period_checkbox' ),
-			'radio'            => array( 'radio', 'range_radio', 'time_period_radio' ),
-			'select'           => array( 'select', 'range_select', 'time_period_select' ),
-			'multiselect'      => array( 'multi-select', 'range_multiselect', 'time_period_multiselect' ),
-			'label'            => array( 'label', 'range_label', 'time_period_label' ),
-			'color'            => array( 'color', 'range_color', 'time_period_color' ),
-			'image'            => array( 'image', 'range_image', 'time_period_image' ),
-			'range_slider'     => array( 'range_slider' ),
-			'range_number'     => array( 'range_number' ),
-			'input_date'       => array( 'input_date' ),
-			'input_date_range' => array( 'input_date_range' ),
+			'checkbox'     => array( 'checkbox' ),
+			'radio'        => array( 'radio' ),
+			'select'       => array( 'select' ),
+			'multiselect'  => array( 'multi-select' ),
+			'label'        => array( 'label' ),
+			'range_slider' => array( 'range_slider' ),
+			'range_number' => array( 'range_number' ),
 		);
 
-		// TODO: Refactor, move pro display types to pro plugin.
 		$available_display_types = apply_filters( 'wcapf_field_display_types', $available_display_types );
 
-		$_display_type = '';
+		if ( 'price' === $this->get_field_type() ) {
+			$_display_type = 'range_slider';
+		} else {
+			$_display_type = 'checkbox';
+		}
 
 		foreach ( $available_display_types as $key => $display_types ) {
 			if ( in_array( $display_type, $display_types ) ) {
