@@ -186,6 +186,7 @@ class WCAPF_Product_Filter {
 
 		$query_type = $field_instance->query_type;
 		$taxonomy   = $field_instance->taxonomy;
+		$filter_id  = $field_instance->filter_id;
 
 		$join = '';
 
@@ -250,12 +251,16 @@ class WCAPF_Product_Filter {
 			}
 		}
 
+		$active_filters = $this->active_taxonomy_filter_data( $taxonomy, $term_ids );
+
 		return array(
-			'taxonomy'   => $taxonomy,
-			'query_type' => $query_type,
-			'values'     => $term_ids,
-			'join'       => $join,
-			'where'      => $where,
+			'taxonomy'       => $taxonomy,
+			'query_type'     => $query_type,
+			'values'         => $term_ids,
+			'join'           => $join,
+			'where'          => $where,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
 		);
 	}
 
@@ -271,6 +276,7 @@ class WCAPF_Product_Filter {
 		$filter_key = $field_instance->filter_key;
 		$query_type = $field_instance->query_type;
 		$taxonomy   = $field_instance->taxonomy;
+		$filter_id  = $field_instance->filter_id;
 
 		$utils = new WCAPF_Product_Filter_Utils;
 
@@ -342,6 +348,12 @@ class WCAPF_Product_Filter {
 			}
 		}
 
+		if ( 'rating' === $field_instance->type ) {
+			$active_filters = $this->active_rating_filter_data( $filter_values, $field_instance->display_type );
+		} else {
+			$active_filters = $this->active_taxonomy_filter_data( $taxonomy, $term_ids );
+		}
+
 		return array(
 			'taxonomy'         => $taxonomy,
 			'query_type'       => $query_type,
@@ -349,6 +361,47 @@ class WCAPF_Product_Filter {
 			'active_ancestors' => $active_ancestors,
 			'join'             => $join,
 			'where'            => $where,
+			'filter_id'        => $filter_id,
+			'active_filters'   => $active_filters,
+		);
+	}
+
+	/**
+	 * @param array  $ratings      The rating values.
+	 * @param string $display_type Filter display type.
+	 *
+	 * @return array
+	 */
+	private function active_rating_filter_data( $ratings, $display_type ) {
+		$active_filters = array();
+
+		foreach ( $ratings as $rating ) {
+			$rating = absint( $rating );
+
+			if ( 'select' === $display_type || 'multiselect' === $display_type ) {
+				$active_filters[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
+			} else {
+				$active_filters[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
+			}
+		}
+
+		return $active_filters;
+	}
+
+	/**
+	 * @param string $taxonomy The taxonomy name.
+	 * @param array  $term_ids The term ids array.
+	 *
+	 * @return array
+	 */
+	private function active_taxonomy_filter_data( $taxonomy, $term_ids ) {
+		return get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'include'    => $term_ids,
+				'fields'     => 'id=>name',
+			)
 		);
 	}
 
@@ -359,17 +412,21 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function set_price_filter_data( $filter_value, $field_instance ) {
-		$utils      = new WCAPF_Product_Filter_Utils;
 		$query_type = $field_instance->query_type;
+		$filter_id  = $field_instance->filter_id;
+
+		$active_filters = array();
+
+		$utils = new WCAPF_Product_Filter_Utils;
 
 		list( 'join' => $join, 'alias' => $alias ) = $utils::get_lookup_table_data();
 
 		$_filter_values = $utils::get_chosen_filter_values( $filter_value );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
 
-		$range_values_separator = WCAPF_Helper::range_values_separator();
+		$separator = WCAPF_Helper::range_values_separator();
 
-		$filter_values = $_filter_values ? explode( $range_values_separator, $_filter_values ) : array();
+		$filter_values = explode( $separator, $_filter_values );
 
 		if ( ! $filter_values ) {
 			return array();
@@ -379,18 +436,24 @@ class WCAPF_Product_Filter {
 			return array();
 		}
 
-		list( 'min' => $min, 'max' => $max ) = WCAPF_Product_Filter_Utils::get_min_max_price_according_to_tax(
+		list( 'min' => $min, 'max' => $max ) = $utils::get_min_max_price_according_to_tax(
 			$filter_values[0],
 			$filter_values[1]
 		);
 
 		$where = "NOT ($max < $alias.min_price OR $min > $alias.max_price)";
 
+		$range_id = implode( $separator, $filter_values );
+
+		$active_filters[ $range_id ] = $utils::get_label_for_number_range( $field_instance, $range_id );
+
 		return array(
-			'query_type' => $query_type,
-			'values'     => $filter_values,
-			'join'       => $join,
-			'where'      => $where,
+			'query_type'     => $query_type,
+			'values'         => $filter_values,
+			'join'           => $join,
+			'where'          => $where,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
 		);
 	}
 
@@ -402,6 +465,7 @@ class WCAPF_Product_Filter {
 	 */
 	protected function set_filter_by_product_status_data( $filter_value, $field_instance ) {
 		$query_type = $field_instance->query_type;
+		$filter_id  = $field_instance->filter_id;
 
 		$utils = new WCAPF_Product_Filter_Utils;
 
@@ -450,12 +514,34 @@ class WCAPF_Product_Filter {
 			$where = '1=0';
 		}
 
+		$active_filters = $this->active_product_status_filter_data( $filter_values );
+
 		return array(
-			'query_type' => $query_type,
-			'values'     => $filter_values,
-			'join'       => $join,
-			'where'      => $where,
+			'query_type'     => $query_type,
+			'values'         => $filter_values,
+			'join'           => $join,
+			'where'          => $where,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
 		);
+	}
+
+	/**
+	 * @param array $filter_values The filter values.
+	 *
+	 * @return array
+	 */
+	private function active_product_status_filter_data( $filter_values ) {
+		$options        = WCAPF_Helper::get_product_status_options();
+		$active_filters = array();
+
+		foreach ( $filter_values as $filter_value ) {
+			$label = isset( $options[ $filter_value ] ) ? $options[ $filter_value ] : '';
+
+			$active_filters[ $filter_value ] = $label;
+		}
+
+		return $active_filters;
 	}
 
 	public function get_full_where_clause() {
@@ -482,7 +568,10 @@ function wcapf_posts_clauses( $args, $wp_query ) {
 	$args['join']  .= $filter->get_full_join_clause();
 	$args['where'] .= $filter->get_full_where_clause();
 
-	return apply_filters( 'wcapf_posts_clauses', $args );
+	/**
+	 * The filter to apply the sort-by filter.
+	 */
+	return apply_filters( 'wcapf_sql_clauses', $args );
 }
 
 /**
@@ -509,6 +598,9 @@ function wcapf_set_product_query( $q ) {
 	 */
 	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 5, 2 );
 
+	/**
+	 * The filter to apply the per-page filter.
+	 */
 	do_action( 'wcapf_filter_products_query', $q );
 }
 

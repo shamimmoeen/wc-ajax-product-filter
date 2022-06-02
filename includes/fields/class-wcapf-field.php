@@ -741,12 +741,18 @@ abstract class WCAPF_Field {
 
 		$classes[] = 'wcapf-' . $this->type() . '-filter';
 
-		$classes = apply_filters( 'wcapf_field_classes', $classes, $this->get_instance() );
+		$instance = $this->get_instance();
+		$classes  = apply_filters( 'wcapf_field_classes', $classes, $instance );
 
 		$field_classes = implode( ' ', $classes );
 		$show_title    = $this->get_sub_field_value( 'show_title' );
 		$filter_id     = $this->get_sub_field_value( 'field_id' );
 		$filter_title  = get_the_title( $filter_id );
+
+		/**
+		 * The hook to insert html content after the field title.
+		 */
+		do_action( 'wcapf_content_after_field_title', $instance );
 
 		echo '<div class="' . esc_attr( $field_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
@@ -774,6 +780,11 @@ abstract class WCAPF_Field {
 	 * @return void
 	 */
 	protected function after_filter_form() {
+		/**
+		 * The hook to insert html content before ending the field.
+		 */
+		do_action( 'wcapf_content_before_ending_field', $this->get_instance() );
+
 		echo '</div>';
 	}
 

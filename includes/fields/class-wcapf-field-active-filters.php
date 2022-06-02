@@ -17,18 +17,54 @@
 class WCAPF_Field_Active_Filters extends WCAPF_Field {
 
 	/**
-	 * The field's subfields.
+	 * Sets the field groups.
 	 *
-	 * @return array|array[]
+	 * @return array
 	 */
-	protected function sub_fields() {
+	protected function field_groups() {
 		return array(
 			array(
-				'type'     => 'text',
-				'id'       => 'title',
-				'label'    => __( 'Title', 'wc-ajax-product-filter' ),
-				'name'     => 'title',
-				'position' => 5,
+				'name'     => 'active_filters_group',
+				'position' => 20,
+				'columns'  => array(
+					array(
+						array(
+							'type'     => 'radio',
+							'id'       => 'layout',
+							'label'    => __( 'Layout', 'wc-ajax-product-filter' ),
+							'name'     => 'layout',
+							'options'  => array(
+								'simple'   => __( 'Simple', 'wc-ajax-product-filter' ),
+								'extended' => __( 'Extended (group by filter)', 'wc-ajax-product-filter' ),
+							),
+							'default'  => 'simple',
+							'position' => 15,
+						),
+						array(
+							'type'     => 'text',
+							'id'       => 'clear_all_btn_title',
+							'label'    => __( 'Clear All button title', 'wc-ajax-product-filter' ),
+							'name'     => 'clear_all_btn_title',
+							'default'  => __( 'Clear All', 'wc-ajax-product-filter' ),
+							'position' => 20,
+						),
+						array(
+							'type'     => 'checkbox',
+							'id'       => 'show_if_empty',
+							'label'    => __( 'Show if no filter is applied', 'wc-ajax-product-filter' ),
+							'name'     => 'show_if_empty',
+							'position' => 25,
+						),
+						array(
+							'type'     => 'text',
+							'id'       => 'empty_filter_message',
+							'label'    => __( 'Empty filter message', 'wc-ajax-product-filter' ),
+							'name'     => 'empty_filter_message',
+							'default'  => __( 'No filter is applied.', 'wc-ajax-product-filter' ),
+							'position' => 30,
+						),
+					),
+				),
 			),
 		);
 	}
@@ -48,15 +84,31 @@ class WCAPF_Field_Active_Filters extends WCAPF_Field {
 	 * @return void
 	 */
 	protected function render_filter_form() {
-		// TODO: Maybe redundant
-		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return;
+		$layout               = $this->get_sub_field_value( 'layout' );
+		$clear_btn_title      = $this->get_sub_field_value( 'clear_all_btn_title' );
+		$show_if_empty        = $this->get_sub_field_value( 'show_if_empty' );
+		$empty_filter_message = $this->get_sub_field_value( 'empty_filter_message' );
+
+		$classes = array( 'wcapf-nav-filter' );
+
+		$all_filters = WCAPF_Helper::get_active_filters_data();
+
+		if ( ! $show_if_empty && ! $all_filters ) {
+			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$classes = array( 'wcapf-ajax-term-filter' );
-
 		$this->before_filter_form( $classes );
-		WCAPF_Template_Loader::get_instance()->load( 'public/field-chosen-filters' );
+
+		WCAPF_Template_Loader::get_instance()->load(
+			'public/field-chosen-filters',
+			array(
+				'layout'               => $layout,
+				'all_filters'          => $all_filters,
+				'clear_btn_title'      => $clear_btn_title,
+				'empty_filter_message' => $empty_filter_message,
+			)
+		);
+
 		$this->after_filter_form();
 	}
 

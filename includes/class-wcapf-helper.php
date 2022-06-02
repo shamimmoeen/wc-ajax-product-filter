@@ -260,15 +260,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @return array
-	 */
-	public static function get_chosen_filters() {
-		global $wcapf_chosen_filters;
-
-		return $wcapf_chosen_filters ?: array(); // todo
-	}
-
-	/**
 	 * Gets the field relations.
 	 *
 	 * @return string
@@ -306,6 +297,11 @@ class WCAPF_Helper {
 		return 'wcapf_settings';
 	}
 
+	/**
+	 * @param int $rating The rating.
+	 *
+	 * @return string
+	 */
 	public static function get_rating_entities( $rating ) {
 		$rating_entities = '';
 
@@ -318,6 +314,11 @@ class WCAPF_Helper {
 		return $rating_entities;
 	}
 
+	/**
+	 * @param int $rating The rating.
+	 *
+	 * @return string
+	 */
 	public static function get_rating_svg_icons( $rating ) {
 		$rating_html = '';
 
@@ -354,6 +355,112 @@ class WCAPF_Helper {
 	 */
 	public static function hide_stock_out_items() {
 		return 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' );
+	}
+
+	/**
+	 * @param array  $filter_data Active filters data.
+	 * @param string $filter_key  The filter key.
+	 * @param string $layout      The layout, simple or extended.
+	 *
+	 * @return string
+	 */
+	public static function get_active_filters_markup( $filter_data, $filter_key, $layout ) {
+		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
+		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : array();
+		$filter_id      = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : array();
+
+		$html = '';
+
+		foreach ( $active_filters as $value => $label ) {
+			$attrs = 'class="item"';
+			$attrs .= ' tabindex="0"';
+			$attrs .= ' data-filter-key="' . esc_attr( $filter_key ) . '"';
+			$attrs .= ' data-value="' . esc_attr( $value ) . '"';
+
+			$label = apply_filters( 'wcapf_active_filter_label', $label, $layout, $filter_type, $filter_id, $filter_key );
+
+			$html .= '<div ' . $attrs . '>' . wp_kses_post( $label ) . '</div>';
+		}
+
+		return $html;
+	}
+
+	/**
+	 * @param string $btn_title Button title.
+	 *
+	 * @return string
+	 */
+	public static function get_reset_filters_button_markup( $btn_title, $tag = 'button' ) {
+		if ( ! $btn_title ) {
+			return '';
+		}
+
+		$active_filters = self::get_active_filters_data();
+		$filter_keys    = array_keys( $active_filters );
+
+		if ( $filter_keys ) {
+			$keys = implode( ',', $filter_keys );
+		} else {
+			$keys = '';
+		}
+
+		if ( 'a' === $tag ) {
+			$html = '<a role="button" tabindex="0" class="wcapf-reset-filters-btn" data-keys="' . esc_attr( $keys ) . '">';
+			$html .= $btn_title;
+			$html .= '</a>';
+		} else {
+			$html = '<button type="button" class="wcapf-reset-filters-btn" data-keys="' . esc_attr( $keys ) . '">';
+			$html .= $btn_title;
+			$html .= '</button>';
+		}
+
+		return $html;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function get_active_filters_data() {
+		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$active_filters = array();
+
+		foreach ( $chosen_filters as $filter_type_filters ) {
+			foreach ( $filter_type_filters as $filter_type => $filter ) {
+				$_active_filters = isset( $filter['active_filters'] ) ? $filter['active_filters'] : array();
+				$filter_id       = isset( $filter['filter_id'] ) ? $filter['filter_id'] : '';
+				$filter_key      = ! empty( $filter['filter_key'] ) ? $filter['filter_key'] : $filter_type;
+
+				if ( ! $_active_filters ) {
+					continue;
+				}
+
+				$active_filters[ $filter_key ] = array(
+					'filter_type'    => $filter_type,
+					'filter_id'      => $filter_id,
+					'active_filters' => $_active_filters,
+				);
+			}
+		}
+
+		// Sort the data according to the order in $_GET variable.
+		$sorted = array();
+
+		foreach ( $_GET as $_key => $_value ) {
+			if ( array_key_exists( $_key, $active_filters ) ) {
+				$sorted[ $_key ] = $active_filters[ $_key ];
+			}
+		}
+
+		return apply_filters( 'wcapf_active_filters_data', $sorted, $chosen_filters );
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function get_chosen_filters() {
+		global $wcapf_chosen_filters;
+
+		return $wcapf_chosen_filters ?: array();
 	}
 
 }

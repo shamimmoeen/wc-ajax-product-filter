@@ -68,11 +68,15 @@ class WCAPF_Hooks {
 		// print_r( $wpdb->last_query );
 		// echo '</pre>';
 
-		global $wp_query;
+		// echo '<pre>';
+		// print_r( WCAPF_Helper::get_chosen_filters());
+		// echo '</pre>';
 
-		echo '<pre>';
-		print_r( $wp_query->request );
-		echo '</pre>';
+		// global $wp_query;
+
+		// echo '<pre>';
+		// print_r( $wp_query->request );
+		// echo '</pre>';
 	}
 
 	/**

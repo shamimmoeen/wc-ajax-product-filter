@@ -175,7 +175,7 @@ class WCAPF_Product_Filter_Utils {
 	public static function get_where_clause( $query_type, $filter_key ) {
 		$main_query_type = WCAPF_Helper::get_field_relations();
 
-		// TODO: Maybe include post__in, post__not_in and other vars from the main products query.
+		// Maybe include post__in, post__not_in and other vars from the main products query.
 		$where = '';
 
 		if ( 'and' === $main_query_type ) {
@@ -325,6 +325,38 @@ class WCAPF_Product_Filter_Utils {
 		$ids = $ids ?: array( 0 );
 
 		return self::get_ids_sql( $ids );
+	}
+
+	/**
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string               $value          The min, max range using separator.
+	 *
+	 * @return string
+	 */
+	public static function get_label_for_number_range( $field_instance, $value ) {
+		$separator = WCAPF_Helper::range_values_separator();
+		$range     = explode( $separator, $value );
+
+		$range_min = $range[0];
+		$range_max = $range[1];
+
+		$value_prefix       = $field_instance->get_sub_field_value( 'value_prefix' );
+		$value_postfix      = $field_instance->get_sub_field_value( 'value_postfix' );
+		$values_separator   = $field_instance->get_sub_field_value( 'values_separator' );
+		$decimal_places     = $field_instance->get_sub_field_value( 'decimal_places' );
+		$thousand_separator = $field_instance->get_sub_field_value( 'thousand_separator' );
+		$decimal_separator  = $field_instance->get_sub_field_value( 'decimal_separator' );
+
+		$label = sprintf(
+			'%1$s%2$s%3$s%4$s%1$s%5$s%3$s',
+			$value_prefix,
+			number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator ),
+			$value_postfix,
+			$values_separator,
+			number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator )
+		);
+
+		return apply_filters( 'wcapf_label_for_number_range', $label, $field_instance );
 	}
 
 }

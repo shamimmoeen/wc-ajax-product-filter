@@ -249,6 +249,42 @@ jQuery( document ).ready(
 
 		initNoUISlider();
 
+		function initDatepicker() {
+			const $wcapfDateFilters = $( '.wcapf-date-range-filter' );
+			const $wcapfDateFilter  = $wcapfDateFilters.find( '.wcapf-date-input' );
+
+			const format        = $wcapfDateFilter.attr( 'data-date-format' );
+			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
+			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
+
+			const $from = $wcapfDateFilter.find( '.date-from-input' );
+			const $to   = $wcapfDateFilter.find( '.date-to-input' );
+
+			$from.datepicker( {
+				dateFormat: format,
+				changeYear: yearDropdown,
+				changeMonth: monthDropdown,
+			} );
+
+			$to.datepicker( {
+				dateFormat: format,
+				changeYear: yearDropdown,
+				changeMonth: monthDropdown,
+			} );
+
+			$from.on( 'change', function() {
+				const $input = $( this );
+				filterByDate( $input );
+			} );
+
+			$to.on( 'change', function() {
+				const $input = $( this );
+				filterByDate( $input );
+			} );
+		}
+
+		initDatepicker();
+
 		// show a loading indicator
 		function wcapfBeforeUpdate() {
 			$( 'body' ).trigger( 'wcapf_before_update_filters' );
@@ -259,6 +295,7 @@ jQuery( document ).ready(
 			initChosen();
 			initHierarchyAccordion();
 			initNoUISlider();
+			initDatepicker();
 
 			$( 'body' ).trigger( 'wcapf_after_update_filters' );
 		}
@@ -446,7 +483,7 @@ jQuery( document ).ready(
 		}
 
 		// take the key and value and make query
-		function wcapfMakeParameters( filterKey, filterValue, url ) {
+		function wcapfMakeParameters( filterKey, filterValue, forceRerender = false, url ) {
 			const valueSeparator = ',';
 
 			let params, nextValues, emptyValue = false;
@@ -497,7 +534,7 @@ jQuery( document ).ready(
 			}
 
 			// filter products
-			wcapfFilterProducts();
+			wcapfFilterProducts( forceRerender );
 		}
 
 		function wcapfSingleFilter( filterKey, filterValue ) {
@@ -681,6 +718,72 @@ jQuery( document ).ready(
 			}
 		);
 
+		// handle removing the active filters
+		$wcapfNavFilters.on(
+			'click',
+			'.wcapf-active-filters .item',
+			function( event ) {
+				event.preventDefault();
+
+				const $item       = $( this );
+				const filterKey   = $item.attr( 'data-filter-key' );
+				const filterValue = $item.attr( 'data-value' );
+
+				wcapfMakeParameters( filterKey, filterValue, true );
+			}
+		);
+
+		function resetFilters( $button ) {
+			const _filterKeys = $button.attr( 'data-keys' );
+
+			if ( ! _filterKeys ) {
+				return;
+			}
+
+			const filterKeys = _filterKeys.split( ',' );
+
+			let query = '';
+
+			$.each( filterKeys, function( i, filterKey ) {
+				if ( query ) {
+					query = wcapfRemoveQueryStringParameter( filterKey, query );
+				} else {
+					query = wcapfRemoveQueryStringParameter( filterKey );
+				}
+			} );
+
+			history.pushState( {}, '', query );
+
+			// filter products
+			wcapfFilterProducts( true );
+		}
+
+		// clear all filters
+		$wcapfNavFilters.on(
+			'click',
+			'.wcapf-active-filters .wcapf-reset-filters-btn',
+			function( event ) {
+				event.preventDefault();
+
+				const $button = $( this );
+
+				resetFilters( $button );
+			}
+		);
+
+		// reset filters
+		$wcapfNavFilters.on(
+			'click',
+			'.wcapf-reset-filters-btn',
+			function( event ) {
+				event.preventDefault();
+
+				const $button = $( this );
+
+				resetFilters( $button );
+			}
+		);
+
 		function filterByDate( $input ) {
 			const $wcapfDateFilter = $input.closest( '.wcapf-date-input' );
 			const filterKey        = $wcapfDateFilter.attr( 'data-filter-key' );
@@ -729,42 +832,6 @@ jQuery( document ).ready(
 				}, delay ) );
 			}
 		}
-
-		function initDatepicker() {
-			const $wcapfDateFilters = $( '.wcapf-date-range-filter' );
-			const $wcapfDateFilter  = $wcapfDateFilters.find( '.wcapf-date-input' );
-
-			const format        = $wcapfDateFilter.attr( 'data-date-format' );
-			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
-			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
-
-			const $from = $wcapfDateFilter.find( '.date-from-input' );
-			const $to   = $wcapfDateFilter.find( '.date-to-input' );
-
-			$from.datepicker( {
-				dateFormat: format,
-				changeYear: yearDropdown,
-				changeMonth: monthDropdown,
-			} );
-
-			$to.datepicker( {
-				dateFormat: format,
-				changeYear: yearDropdown,
-				changeMonth: monthDropdown,
-			} );
-
-			$from.on( 'change', function() {
-				const $input = $( this );
-				filterByDate( $input );
-			} );
-
-			$to.on( 'change', function() {
-				const $input = $( this );
-				filterByDate( $input );
-			} );
-		}
-
-		initDatepicker();
 
 		// history back and forward request handling
 		$( window ).bind( 'popstate', function() {
