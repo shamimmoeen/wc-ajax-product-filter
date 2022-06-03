@@ -23,11 +23,11 @@
 		background-color: var(--wcapf-hierarchy-accordion-toggle-bg-color);
 		cursor: pointer;
 		display: inline-block;
-		line-height: 14px;
+		line-height: var(--wcapf-hierarchy-accordion-toggle-size);
 		margin: 0 0 0 0.4em;
 		text-align: center;
 		user-select: none;
-		width: 14px;
+		width: var(--wcapf-hierarchy-accordion-toggle-size);
 
 		&::before {
 			content: '+';
