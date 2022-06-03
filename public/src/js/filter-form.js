@@ -134,6 +134,10 @@ jQuery( document ).ready(
 
 		// Initialize noUISlider
 		function initNoUISlider() {
+			if ( 'undefined' === typeof noUiSlider ) {
+				return;
+			}
+
 			$wcapfNumberRangeFilters.find( '.wcapf-range-slider' ).each( function() {
 				const $item = $( this );
 
@@ -157,10 +161,6 @@ jQuery( document ).ready(
 				const maxValue          = parseFloat( $item.attr( 'data-max-value' ) );
 				const $minValue         = $item.find( '.min-value' );
 				const $maxValue         = $item.find( '.max-value' );
-
-				if ( 'undefined' === typeof noUiSlider ) {
-					return;
-				}
 
 				const slider = document.getElementById( sliderId );
 
@@ -257,6 +257,10 @@ jQuery( document ).ready(
 		initNoUISlider();
 
 		function initDatepicker() {
+			if ( ! jQuery().datepicker ) {
+				return;
+			}
+
 			const $wcapfDateFilters = $( '.wcapf-date-range-filter' );
 			const $wcapfDateFilter  = $wcapfDateFilters.find( '.wcapf-date-input' );
 
