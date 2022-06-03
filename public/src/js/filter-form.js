@@ -203,7 +203,7 @@ jQuery( document ).ready(
 					wcapfFilterProducts();
 				}
 
-				slider.noUiSlider.on( 'end', function( values ) {
+				slider.noUiSlider.on( 'set', function( values ) {
 					// Clear any previously set timer before setting a fresh one
 					clearTimeout( $item.data( 'timer' ) );
 
