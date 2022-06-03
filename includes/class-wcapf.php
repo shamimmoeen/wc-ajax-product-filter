@@ -293,7 +293,8 @@ class WCAPF {
 	 */
 	private function get_js_params() {
 		$params = array(
-			'filter_input_delay' => 800, // In milliseconds.
+			'filter_input_delay'          => 800, // In milliseconds.
+			'chosen_lib_search_threshold' => 10,
 		);
 
 		$params = array_merge( $params, WCAPF_Helper::get_settings() );

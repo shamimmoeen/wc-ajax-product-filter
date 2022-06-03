@@ -253,6 +253,8 @@ class WCAPF_Walker {
 			$tree = array_merge( $all_items, $tree );
 		}
 
+		$tree = apply_filters( 'wcapf_menu_items', $tree, $this );
+
 		$list_types     = array( 'checkbox', 'radio' );
 		$dropdown_types = array( 'select', 'multiselect' );
 
@@ -502,11 +504,12 @@ class WCAPF_Walker {
 	 * @param array $tree The tree as multidimensional array.
 	 */
 	private function build_dropdown_menu( $tree ) {
+		$display_type   = $this->display_type;
 		$input_name     = $this->filter_key;
 		$input_multiple = '';
 		$input_attrs    = '';
 
-		if ( 'multiselect' === $this->display_type ) {
+		if ( 'multiselect' === $display_type ) {
 			$input_name     .= '[]';
 			$input_multiple = ' multiple="multiple"';
 		}
@@ -519,7 +522,7 @@ class WCAPF_Walker {
 
 		$all_items_label = $this->all_items_label;
 
-		if ( $all_items_label && 'multiselect' === $this->display_type ) {
+		if ( 'multiselect' === $display_type ) {
 			$input_attrs .= 'data-placeholder="' . esc_attr( $all_items_label ) . '"';
 		}
 
