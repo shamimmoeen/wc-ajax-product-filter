@@ -20,7 +20,7 @@
 	}
 
 	.hierarchy-accordion-toggle {
-		background-color: #ddd;
+		background-color: var(--wcapf-hierarchy-accordion-toggle-bg-color);
 		cursor: pointer;
 		display: inline-block;
 		line-height: 14px;
