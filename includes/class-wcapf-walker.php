@@ -202,7 +202,7 @@ class WCAPF_Walker {
 			$filter_type = 'price';
 		}
 
-		// TODO: Maybe required.
+		// We have grouped the filters based on filter types.
 		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
 
 		$filter_data = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
