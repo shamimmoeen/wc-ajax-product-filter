@@ -349,7 +349,7 @@ class WCAPF_Product_Filter {
 		}
 
 		if ( 'rating' === $field_instance->type ) {
-			$active_filters = $this->active_rating_filter_data( $filter_values, $field_instance->display_type );
+			$active_filters = $this->active_rating_filter_data( $filter_values, $field_instance );
 		} else {
 			$active_filters = $this->active_taxonomy_filter_data( $term_ids, $field_instance );
 		}
@@ -367,25 +367,26 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array  $ratings      The rating values.
-	 * @param string $display_type Filter display type.
+	 * @param array                $ratings        The rating values.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	private function active_rating_filter_data( $ratings, $display_type ) {
-		$active_filters = array();
+	private function active_rating_filter_data( $ratings, $field_instance ) {
+		$display_type = $field_instance->display_type;
+		$filter_data  = array();
 
 		foreach ( $ratings as $rating ) {
 			$rating = absint( $rating );
 
 			if ( 'select' === $display_type || 'multiselect' === $display_type ) {
-				$active_filters[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
+				$filter_data[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
 			} else {
-				$active_filters[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
+				$filter_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
 			}
 		}
 
-		return $active_filters;
+		return apply_filters( 'wcapf_active_rating_filter_data', $filter_data, $field_instance );
 	}
 
 	/**
@@ -406,7 +407,7 @@ class WCAPF_Product_Filter {
 			)
 		);
 
-		return apply_filters( 'wcapf_taxonomy_filter_data', $filter_data, $field_instance );
+		return apply_filters( 'wcapf_active_taxonomy_filter_data', $filter_data, $field_instance );
 	}
 
 	/**
@@ -518,7 +519,7 @@ class WCAPF_Product_Filter {
 			$where = '1=0';
 		}
 
-		$active_filters = $this->active_product_status_filter_data( $filter_values );
+		$active_filters = $this->active_product_status_filter_data( $filter_values, $field_instance );
 
 		return array(
 			'query_type'     => $query_type,
@@ -531,21 +532,29 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array $filter_values The filter values.
+	 * @param array                $filter_values  The filter values.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	private function active_product_status_filter_data( $filter_values ) {
-		$options        = WCAPF_Helper::get_product_status_options();
-		$active_filters = array();
+	private function active_product_status_filter_data( $filter_values, $field_instance ) {
+		$manual_options = $field_instance->manual_options;
+		$filter_data    = array();
 
 		foreach ( $filter_values as $filter_value ) {
-			$label = isset( $options[ $filter_value ] ) ? $options[ $filter_value ] : '';
+			$label = '';
 
-			$active_filters[ $filter_value ] = $label;
+			foreach ( $manual_options as $manual_option ) {
+				if ( $filter_value === $manual_option['value'] ) {
+					$label = $manual_option['label'];
+					break;
+				}
+			}
+
+			$filter_data[ $filter_value ] = $label ?: $filter_value;
 		}
 
-		return $active_filters;
+		return apply_filters( 'wcapf_active_product_status_filter_data', $filter_data, $field_instance );
 	}
 
 	public function get_full_where_clause() {
