@@ -752,6 +752,15 @@ jQuery( document ).ready(
 				}
 			} );
 
+			// Empty query causes issue(doesn't remove the filter keys from the url),
+			// this is why we are setting the page url as query.
+			if ( ! query ) {
+				const prevUrl = window.location.href;
+				const newUrl  = prevUrl.split( '?' );
+
+				query = newUrl[ 0 ];
+			}
+
 			history.pushState( {}, '', query );
 
 			// filter products
