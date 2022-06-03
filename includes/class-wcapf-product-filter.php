@@ -251,7 +251,7 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		$active_filters = $this->active_taxonomy_filter_data( $taxonomy, $term_ids );
+		$active_filters = $this->active_taxonomy_filter_data( $term_ids, $field_instance );
 
 		return array(
 			'taxonomy'       => $taxonomy,
@@ -351,7 +351,7 @@ class WCAPF_Product_Filter {
 		if ( 'rating' === $field_instance->type ) {
 			$active_filters = $this->active_rating_filter_data( $filter_values, $field_instance->display_type );
 		} else {
-			$active_filters = $this->active_taxonomy_filter_data( $taxonomy, $term_ids );
+			$active_filters = $this->active_taxonomy_filter_data( $term_ids, $field_instance );
 		}
 
 		return array(
@@ -389,13 +389,15 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param string $taxonomy The taxonomy name.
-	 * @param array  $term_ids The term ids array.
+	 * @param array                $term_ids       The term ids array.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	private function active_taxonomy_filter_data( $taxonomy, $term_ids ) {
-		return get_terms(
+	private function active_taxonomy_filter_data( $term_ids, $field_instance ) {
+		$taxonomy = $field_instance->taxonomy;
+
+		$filter_data = get_terms(
 			array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
@@ -403,6 +405,8 @@ class WCAPF_Product_Filter {
 				'fields'     => 'id=>name',
 			)
 		);
+
+		return apply_filters( 'wcapf_taxonomy_filter_data', $filter_data, $field_instance );
 	}
 
 	/**
