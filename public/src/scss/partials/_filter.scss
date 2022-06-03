@@ -51,7 +51,7 @@
 
 .wcapf-layered-nav,
 .wcapf-labeled-nav {
-	&:not(.display-type-color) {
+	&:not(.display-type-color):not(.display-type-image) {
 		.count {
 			opacity: 0.6;
 
