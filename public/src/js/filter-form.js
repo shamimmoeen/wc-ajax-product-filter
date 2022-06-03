@@ -9,6 +9,7 @@
 
 const wcapf_params = wcapf_params || {
 	'filter_input_delay': '',
+	'chosen_lib_search_threshold': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '', // todo
@@ -67,6 +68,12 @@ jQuery( document ).ready(
 
 				if ( noResultsMessage ) {
 					options[ 'no_results_text' ] = noResultsMessage;
+				}
+
+				const searchThreshold = parseInt( wcapf_params.chosen_lib_search_threshold );
+
+				if ( searchThreshold ) {
+					options[ 'disable_search_threshold' ] = searchThreshold;
 				}
 
 				$this.chosen( options );
