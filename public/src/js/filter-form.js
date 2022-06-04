@@ -145,7 +145,7 @@ jQuery( document ).ready(
 				const $slider   = $item.find( '.wcapf-noui-slider' );
 
 				// If slider is already initialized then don't reinitialize again.
-				if ( $slider.hasClass( 'noUi-target' ) ) {
+				if ( $slider.hasClass( 'wcapf-noui-target' ) ) {
 					return;
 				}
 
@@ -168,6 +168,7 @@ jQuery( document ).ready(
 					start: [ minValue, maxValue ],
 					step,
 					connect: true,
+					cssPrefix: 'wcapf-noui-',
 					range: {
 						'min': rangeMinValue,
 						'max': rangeMaxValue,
@@ -185,9 +186,15 @@ jQuery( document ).ready(
 						$minValue.val( minValue );
 						$maxValue.val( maxValue );
 					}
+
+					$( 'body' ).trigger( 'wcapf-nouislider-update', [ $item, values ] );
 				} );
 
 				function filterProductsAccordingToSlider( values ) {
+					const $body = $( 'body' );
+
+					$body.trigger( 'wcapf-nouislider-before-filter-products', [ $item, values ] );
+
 					const minValue = parseFloat( values[ 0 ] );
 					const maxValue = parseFloat( values[ 1 ] );
 
@@ -201,6 +208,8 @@ jQuery( document ).ready(
 
 					// filter products
 					wcapfFilterProducts();
+
+					$body.trigger( 'wcapf-nouislider-after-filter-products', [ $item, values ] );
 				}
 
 				slider.noUiSlider.on( 'set', function( values ) {

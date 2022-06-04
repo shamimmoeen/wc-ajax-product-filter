@@ -14,6 +14,7 @@
  * @var string $decimal_separator
  * @var string $slider_id
  * @var string $display_values_as
+ * @var string $align_at_the_end
  */
 
 $input_name = $filter_key . '[]';
@@ -32,10 +33,15 @@ $_attrs[] = 'data-decimal-separator="' . $decimal_separator . '"';
 $_attrs[] = 'data-display-values-as="' . $display_values_as . '"';
 
 $attrs = implode( ' ', $_attrs );
+
+$wrapper_classes = 'range-wrapper';
+
+$wrapper_classes .= ' display-values-as-' . $display_values_as;
+$wrapper_classes .= $align_at_the_end ? ' align-values-end-without-separator' : '';
 ?>
 
 <div class="wcapf-range-slider" <?php echo $attrs; ?>>
-	<div class="range-wrapper">
+	<div class="<?php echo esc_attr( $wrapper_classes ); ?>">
 		<span class="wcapf-range-start">
 			<?php if ( $value_prefix ) : ?>
 				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>

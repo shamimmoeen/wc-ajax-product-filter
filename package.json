@@ -6,7 +6,9 @@
   "scripts": {
     "start": "grunt default",
     "readme": "grunt readme",
-    "i18n": "grunt i18n"
+    "i18n": "grunt i18n",
+    "generate-nouislider-styles": "lessc public/lib/nouislider/less/nouislider.less public/lib/nouislider/nouislider.css",
+    "generate-nouislider-clean-styles": "lessc --clean-css public/lib/nouislider/less/nouislider.less public/lib/nouislider/nouislider.min.css"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -25,7 +27,9 @@
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-touch-cmd": "0.0.1",
-    "gulp-uglify": "^3.0.2"
+    "gulp-uglify": "^3.0.2",
+    "less": "^4.1.2",
+    "less-plugin-clean-css": "^1.5.1"
   },
   "dependencies": {}
 }

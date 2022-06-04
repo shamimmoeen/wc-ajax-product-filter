@@ -1,9 +1,20 @@
+:root {
+  --wcapf-nouislider-target-bg-color: #e5e5e5;
+  --wcapf-nouislider-target-border-radius: 0;
+  --wcapf-nouislider-target-size: 10px;
+  --wcapf-nouislider-connect-bg-color: #3ea8ff;
+  --wcapf-nouislider-connects-border-radius: 0;
+  --wcapf-nouislider-handle-border-radius: 0;
+  --wcapf-nouislider-handle-bg-color: #3ea8ff;
+  --wcapf-nouislider-handle-hr-size: 4px;
+  --wcapf-nouislider-handle-vr-size: 20px;
+}
 /* Functional styling;
  * These styles are required for noUiSlider to function.
  * You don't need to change these rules to apply your design.
  */
-.noUi-target,
-.noUi-target * {
+.wcapf-noui-target,
+.wcapf-noui-target * {
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-user-select: none;
@@ -15,11 +26,11 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.noUi-target {
+.wcapf-noui-target {
   position: relative;
 }
-.noUi-base,
-.noUi-connects {
+.wcapf-noui-base,
+.wcapf-noui-connects {
   width: 100%;
   height: 100%;
   position: relative;
@@ -27,12 +38,12 @@
 }
 /* Wrapper for all connect elements.
  */
-.noUi-connects {
+.wcapf-noui-connects {
   overflow: hidden;
   z-index: 0;
 }
-.noUi-connect,
-.noUi-origin {
+.wcapf-noui-connect,
+.wcapf-noui-origin {
   will-change: transform;
   position: absolute;
   z-index: 1;
@@ -48,226 +59,194 @@
 }
 /* Offset direction
  */
-.noUi-txt-dir-rtl.noUi-horizontal .noUi-origin {
+.wcapf-noui-txt-dir-rtl.wcapf-noui-horizontal .wcapf-noui-origin {
   left: 0;
   right: auto;
 }
 /* Give origins 0 height/width so they don't interfere with clicking the
  * connect elements.
  */
-.noUi-vertical .noUi-origin {
+.wcapf-noui-vertical .wcapf-noui-origin {
   top: -100%;
   width: 0;
 }
-.noUi-horizontal .noUi-origin {
+.wcapf-noui-horizontal .wcapf-noui-origin {
   height: 0;
 }
-.noUi-handle {
+.wcapf-noui-handle {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
 }
-.noUi-touch-area {
+.wcapf-noui-touch-area {
   height: 100%;
   width: 100%;
 }
-.noUi-state-tap .noUi-connect,
-.noUi-state-tap .noUi-origin {
+.wcapf-noui-state-tap .wcapf-noui-connect,
+.wcapf-noui-state-tap .wcapf-noui-origin {
   -webkit-transition: transform 0.3s;
   transition: transform 0.3s;
 }
-.noUi-state-drag * {
+.wcapf-noui-state-drag * {
   cursor: inherit !important;
 }
 /* Slider size and handle placement;
  */
-.noUi-horizontal {
-  height: 18px;
+.wcapf-noui-horizontal {
+  height: var(--wcapf-nouislider-target-size);
 }
-.noUi-horizontal .noUi-handle {
-  width: 34px;
-  height: 28px;
-  right: -17px;
-  top: -6px;
+.wcapf-noui-horizontal .wcapf-noui-handle {
+  width: var(--wcapf-nouislider-handle-hr-size);
+  height: var(--wcapf-nouislider-handle-vr-size);
+  right: calc(var(--wcapf-nouislider-handle-hr-size) / -2);
+  top: calc((var(--wcapf-nouislider-handle-vr-size) - var(--wcapf-nouislider-target-size)) / -2);
 }
-.noUi-vertical {
-  width: 18px;
+.wcapf-noui-vertical {
+  width: var(--wcapf-nouislider-target-size);
 }
-.noUi-vertical .noUi-handle {
-  width: 28px;
-  height: 34px;
-  right: -6px;
-  bottom: -17px;
+.wcapf-noui-vertical .wcapf-noui-handle {
+  width: var(--wcapf-nouislider-handle-vr-size);
+  height: var(--wcapf-nouislider-handle-hr-size);
+  right: calc((var(--wcapf-nouislider-handle-vr-size) - var(--wcapf-nouislider-target-size)) / -2);
+  bottom: calc(var(--wcapf-nouislider-handle-hr-size) / -2);
 }
-.noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
-  left: -17px;
+.wcapf-noui-txt-dir-rtl.wcapf-noui-horizontal .wcapf-noui-handle {
+  left: calc(var(--wcapf-nouislider-handle-hr-size) / -2);
   right: auto;
 }
 /* Styling;
  * Giving the connect element a border radius causes issues with using transform: scale
  */
-.noUi-target {
-  background: #FAFAFA;
-  border-radius: 4px;
-  border: 1px solid #D3D3D3;
-  box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB;
+.wcapf-noui-target {
+  background: var(--wcapf-nouislider-target-bg-color);
+  border-radius: var(--wcapf-nouislider-target-border-radius);
+  padding: 0 calc(var(--wcapf-nouislider-handle-hr-size) / 2);
 }
-.noUi-connects {
-  border-radius: 3px;
+.wcapf-noui-connects {
+  border-radius: var(--wcapf-nouislider-connects-border-radius);
 }
-.noUi-connect {
-  background: #3FB8AF;
+.wcapf-noui-connect {
+  background: var(--wcapf-nouislider-connect-bg-color);
 }
 /* Handles and cursors;
  */
-.noUi-draggable {
+.wcapf-noui-draggable {
   cursor: ew-resize;
 }
-.noUi-vertical .noUi-draggable {
+.wcapf-noui-vertical .wcapf-noui-draggable {
   cursor: ns-resize;
 }
-.noUi-handle {
-  border: 1px solid #D9D9D9;
-  border-radius: 3px;
-  background: #FFF;
+.wcapf-noui-handle {
+  border-radius: var(--wcapf-nouislider-handle-border-radius);
+  background: var(--wcapf-nouislider-handle-bg-color);
   cursor: default;
-  box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #BBB;
-}
-.noUi-active {
-  box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #DDD, 0 3px 6px -3px #BBB;
-}
-/* Handle stripes;
- */
-.noUi-handle:before,
-.noUi-handle:after {
-  content: "";
-  display: block;
-  position: absolute;
-  height: 14px;
-  width: 1px;
-  background: #E8E7E6;
-  left: 14px;
-  top: 6px;
-}
-.noUi-handle:after {
-  left: 17px;
-}
-.noUi-vertical .noUi-handle:before,
-.noUi-vertical .noUi-handle:after {
-  width: 14px;
-  height: 1px;
-  left: 6px;
-  top: 14px;
-}
-.noUi-vertical .noUi-handle:after {
-  top: 17px;
 }
 /* Disabled state;
  */
-[disabled] .noUi-connect {
+[disabled] .wcapf-noui-connect {
   background: #B8B8B8;
 }
-[disabled].noUi-target,
-[disabled].noUi-handle,
-[disabled] .noUi-handle {
+[disabled].wcapf-noui-target,
+[disabled].wcapf-noui-handle,
+[disabled] .wcapf-noui-handle {
   cursor: not-allowed;
 }
 /* Base;
  *
  */
-.noUi-pips,
-.noUi-pips * {
+.wcapf-noui-pips,
+.wcapf-noui-pips * {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.noUi-pips {
+.wcapf-noui-pips {
   position: absolute;
   color: #999;
 }
 /* Values;
  *
  */
-.noUi-value {
+.wcapf-noui-value {
   position: absolute;
   white-space: nowrap;
   text-align: center;
 }
-.noUi-value-sub {
+.wcapf-noui-value-sub {
   color: #ccc;
   font-size: 10px;
 }
 /* Markings;
  *
  */
-.noUi-marker {
+.wcapf-noui-marker {
   position: absolute;
   background: #CCC;
 }
-.noUi-marker-sub {
+.wcapf-noui-marker-sub {
   background: #AAA;
 }
-.noUi-marker-large {
+.wcapf-noui-marker-large {
   background: #AAA;
 }
 /* Horizontal layout;
  *
  */
-.noUi-pips-horizontal {
+.wcapf-noui-pips-horizontal {
   padding: 10px 0;
   height: 80px;
   top: 100%;
   left: 0;
   width: 100%;
 }
-.noUi-value-horizontal {
+.wcapf-noui-value-horizontal {
   -webkit-transform: translate(-50%, 50%);
   transform: translate(-50%, 50%);
 }
-.noUi-rtl .noUi-value-horizontal {
+.wcapf-noui-rtl .wcapf-noui-value-horizontal {
   -webkit-transform: translate(50%, 50%);
   transform: translate(50%, 50%);
 }
-.noUi-marker-horizontal.noUi-marker {
+.wcapf-noui-marker-horizontal.wcapf-noui-marker {
   margin-left: -1px;
   width: 2px;
   height: 5px;
 }
-.noUi-marker-horizontal.noUi-marker-sub {
+.wcapf-noui-marker-horizontal.wcapf-noui-marker-sub {
   height: 10px;
 }
-.noUi-marker-horizontal.noUi-marker-large {
+.wcapf-noui-marker-horizontal.wcapf-noui-marker-large {
   height: 15px;
 }
 /* Vertical layout;
  *
  */
-.noUi-pips-vertical {
+.wcapf-noui-pips-vertical {
   padding: 0 10px;
   height: 100%;
   top: 0;
   left: 100%;
 }
-.noUi-value-vertical {
+.wcapf-noui-value-vertical {
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   padding-left: 25px;
 }
-.noUi-rtl .noUi-value-vertical {
+.wcapf-noui-rtl .wcapf-noui-value-vertical {
   -webkit-transform: translate(0, 50%);
   transform: translate(0, 50%);
 }
-.noUi-marker-vertical.noUi-marker {
+.wcapf-noui-marker-vertical.wcapf-noui-marker {
   width: 5px;
   height: 2px;
   margin-top: -1px;
 }
-.noUi-marker-vertical.noUi-marker-sub {
+.wcapf-noui-marker-vertical.wcapf-noui-marker-sub {
   width: 10px;
 }
-.noUi-marker-vertical.noUi-marker-large {
+.wcapf-noui-marker-vertical.wcapf-noui-marker-large {
   width: 15px;
 }
-.noUi-tooltip {
+.wcapf-noui-tooltip {
   display: block;
   position: absolute;
   border: 1px solid #D9D9D9;
@@ -278,25 +257,25 @@
   text-align: center;
   white-space: nowrap;
 }
-.noUi-horizontal .noUi-tooltip {
+.wcapf-noui-horizontal .wcapf-noui-tooltip {
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   left: 50%;
   bottom: 120%;
 }
-.noUi-vertical .noUi-tooltip {
+.wcapf-noui-vertical .wcapf-noui-tooltip {
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   top: 50%;
   right: 120%;
 }
-.noUi-horizontal .noUi-origin > .noUi-tooltip {
+.wcapf-noui-horizontal .wcapf-noui-origin > .wcapf-noui-tooltip {
   -webkit-transform: translate(50%, 0);
   transform: translate(50%, 0);
   left: auto;
   bottom: 10px;
 }
-.noUi-vertical .noUi-origin > .noUi-tooltip {
+.wcapf-noui-vertical .wcapf-noui-origin > .wcapf-noui-tooltip {
   -webkit-transform: translate(0, -18px);
   transform: translate(0, -18px);
   top: auto;
