@@ -109,6 +109,13 @@
 .wcapf-range-number,
 .wcapf-range-slider {
 	margin: 0 0 var(--wcapf-filter-title-base-margin-bottom);
+
+	.range-wrapper {
+		> span {
+			display: inline-flex; // Remove extra whitespace between span elements
+			align-items: center;
+		}
+	}
 }
 
 .wcapf-range-number {
@@ -122,13 +129,24 @@
 		max-width: 80px;
 	}
 
-	.noUi-connect {
-		background: var(--wcapf-filter-outline-color);
-	}
+	.range-wrapper {
+		&.display-values-as-input_field {
+			margin-bottom: var(--wcapf-nouislider-input-field-margin-bottom);
+		}
 
-	.wcapf-noui-slider {
-		margin: 15px 0 0;
-		padding: 0 16px;
+		&.display-values-as-plain_text {
+			margin-bottom: var(--wcapf-nouislider-plain-text-margin-bottom);
+		}
+
+		&.align-values-end-without-separator {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.wcapf-range-separator {
+				display: none;
+			}
+		}
 	}
 }
 

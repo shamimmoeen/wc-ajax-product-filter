@@ -815,6 +815,7 @@ abstract class WCAPF_Field {
 		$thousand_separator    = $this->get_sub_field_value( 'thousand_separator' );
 		$decimal_separator     = $this->get_sub_field_value( 'decimal_separator' );
 		$display_values_as     = $this->get_sub_field_value( 'number_range_slider_display_values_as' );
+		$align_at_the_end      = $this->get_sub_field_value( 'align_values_at_the_end' );
 
 		if ( $range_min_auto_detect ) {
 			$range_min_value = isset( $range_min_max['min'] ) ? $range_min_max['min'] : '';
@@ -829,7 +830,7 @@ abstract class WCAPF_Field {
 		$filter_id   = $field_instance->filter_id;
 
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
-		$filters        = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array(); // todo
+		$filters        = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
 
@@ -876,6 +877,7 @@ abstract class WCAPF_Field {
 			'decimal_separator'  => $decimal_separator,
 			'slider_id'          => $slider_id,
 			'display_values_as'  => $display_values_as,
+			'align_at_the_end'   => $align_at_the_end,
 		);
 
 		WCAPF_Template_Loader::get_instance()->load( $template, $data );

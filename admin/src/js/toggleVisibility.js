@@ -126,6 +126,10 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'range_slider' ],
 				},
 				{
+					'selector': '.wcapf-form-sub-field-align_values_at_the_end',
+					'value': [ 'range_slider' ],
+				},
+				{
 					'selector': '.wcapf-form-sub-field-number_range_query_type',
 					'value': [ 'range_checkbox', 'range_multiselect' ],
 				},
