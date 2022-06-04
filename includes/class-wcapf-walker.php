@@ -649,7 +649,15 @@ class WCAPF_Walker {
 
 		$item_value = rawurlencode( $item['id'] );
 
-		$html = '<div class="' . $classes . '"' . $style . ' data-value="' . esc_attr( $item_value ) . '" tabindex="0">';
+		$attrs = $style;
+		$attrs .= ' data-value="' . esc_attr( $item_value ) . '"';
+		$attrs .= ' tabindex="0"';
+
+		$attrs = apply_filters( 'wcapf_labeled_item_attrs', $attrs, $item, $this );
+
+		$html = '<div class="' . $classes . '"' . $attrs . '>';
+
+		$html .= wp_kses_post( apply_filters( 'wcapf_before_labeled_item', '', $item, $this ) );
 
 		if ( 'color' !== $display_type && 'image' !== $display_type ) {
 			$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
@@ -677,6 +685,8 @@ class WCAPF_Walker {
 				$html .= '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $item['name'] ) . '">';
 			}
 		}
+
+		$html .= wp_kses_post( apply_filters( 'wcapf_after_labeled_item', '', $item, $this ) );
 
 		if ( $this->show_count ) {
 			$html .= '<span class="count">' . $item['count'] . '</span>';
