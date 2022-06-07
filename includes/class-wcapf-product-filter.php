@@ -192,7 +192,9 @@ class WCAPF_Product_Filter {
 
 		$utils = new WCAPF_Product_Filter_Utils;
 
-		$term_ids = $utils::get_chosen_filter_values( $filter_value );
+		$filter_values = $utils::get_chosen_filter_values( $filter_value );
+
+		$term_ids = $this->get_chosen_term_ids( $filter_values, $field_instance );
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
@@ -251,12 +253,12 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		$active_filters = $this->active_taxonomy_filter_data( $term_ids, $field_instance );
+		$active_filters = $this->active_terms_filter_data( $filter_values, $field_instance );
 
 		return array(
 			'taxonomy'       => $taxonomy,
 			'query_type'     => $query_type,
-			'values'         => $term_ids,
+			'values'         => $filter_values,
 			'join'           => $join,
 			'where'          => $where,
 			'filter_id'      => $filter_id,
@@ -282,10 +284,7 @@ class WCAPF_Product_Filter {
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
-		/**
-		 * The hook to change the values for the rating filter.
-		 */
-		$term_ids = apply_filters( 'wcapf_taxonomy_filter_values', $filter_values, $field_instance );
+		$term_ids = $this->get_chosen_term_ids( $filter_values, $field_instance );
 
 		$is_hierarchical  = is_taxonomy_hierarchical( $taxonomy );
 		$include_children = apply_filters( 'wcapf_taxonomy_include_children', true, $field_instance );
@@ -342,17 +341,10 @@ class WCAPF_Product_Filter {
 		$active_ancestors = array();
 
 		if ( $is_hierarchical ) {
-			foreach ( $term_ids as $term_id ) {
-				$ancestors        = get_ancestors( $term_id, $taxonomy );
-				$active_ancestors = array_merge( $ancestors, $active_ancestors );
-			}
+			$active_ancestors = $this->get_ancestors_of_active_terms( $term_ids, $field_instance );
 		}
 
-		if ( 'rating' === $field_instance->type ) {
-			$active_filters = $this->active_rating_filter_data( $filter_values, $field_instance );
-		} else {
-			$active_filters = $this->active_taxonomy_filter_data( $term_ids, $field_instance );
-		}
+		$active_filters = $this->active_terms_filter_data( $filter_values, $field_instance );
 
 		return array(
 			'taxonomy'         => $taxonomy,
@@ -367,47 +359,61 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array                $ratings        The rating values.
+	 * @param array                $filter_values  The filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	private function active_rating_filter_data( $ratings, $field_instance ) {
-		$display_type = $field_instance->display_type;
-		$filter_data  = array();
-
-		foreach ( $ratings as $rating ) {
-			$rating = absint( $rating );
-
-			if ( 'select' === $display_type || 'multiselect' === $display_type ) {
-				$filter_data[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
-			} else {
-				$filter_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
-			}
-		}
-
-		return apply_filters( 'wcapf_active_rating_filter_data', $filter_data, $field_instance );
+	private function get_chosen_term_ids( $filter_values, $field_instance ) {
+		/**
+		 * The hook to change the values for the rating filter.
+		 */
+		return apply_filters( 'wcapf_taxonomy_filter_values', $filter_values, $field_instance );
 	}
 
 	/**
-	 * @param array                $term_ids       The term ids array.
+	 * @param array                $term_ids       The term ids.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	private function active_taxonomy_filter_data( $term_ids, $field_instance ) {
+	private function get_ancestors_of_active_terms( $term_ids, $field_instance ) {
 		$taxonomy = $field_instance->taxonomy;
+
+		$active_ancestors = array();
+
+		foreach ( $term_ids as $term_id ) {
+			$ancestors        = get_ancestors( $term_id, $taxonomy );
+			$active_ancestors = array_merge( $ancestors, $active_ancestors );
+		}
+
+		return apply_filters( 'wcapf_ancestors_of_active_terms', $active_ancestors, $field_instance );
+	}
+
+	/**
+	 * @param array                $filter_values  The filter values.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	private function active_terms_filter_data( $filter_values, $field_instance ) {
+		$taxonomy = $field_instance->taxonomy;
+
+		$term_ids = array_map( 'absint', $filter_values );
 
 		$filter_data = get_terms(
 			array(
-				'taxonomy'   => $taxonomy,
-				'hide_empty' => false,
-				'include'    => $term_ids,
-				'fields'     => 'id=>name',
+				'taxonomy'         => $taxonomy,
+				'hide_empty'       => false,
+				'term_taxonomy_id' => $term_ids,
+				'fields'           => 'id=>name',
 			)
 		);
 
-		return apply_filters( 'wcapf_active_taxonomy_filter_data', $filter_data, $field_instance );
+		/**
+		 * The hook to change the filter data for the rating filter.
+		 */
+		return apply_filters( 'wcapf_active_taxonomy_filter_data', $filter_data, $field_instance, $filter_values );
 	}
 
 	/**

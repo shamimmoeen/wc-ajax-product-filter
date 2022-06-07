@@ -129,10 +129,6 @@ class WCAPF_Field_Instance {
 		$this->show_count                = $show_count;
 		$this->hide_empty                = $hide_empty;
 
-		$this->custom_appearance_options = $this->get_sub_field_value( 'custom_appearance_options' );
-
-		$this->post_property = $this->get_sub_field_value( 'post_property' );
-
 		switch ( $_display_type ) {
 			case 'multiselect':
 			case 'checkbox':
@@ -175,6 +171,10 @@ class WCAPF_Field_Instance {
 		$this->meta_key         = $this->get_meta_key();
 		$this->value_type       = $this->get_value_type();
 		$this->number_data_type = $this->get_number_data_type();
+
+		$this->post_property = $this->get_sub_field_value( 'post_property' );
+
+		$this->custom_appearance_options = $this->get_appearance_data();
 	}
 
 	/**
@@ -399,6 +399,15 @@ class WCAPF_Field_Instance {
 		}
 
 		return apply_filters( 'wcapf_number_data_type', $data_type, $this->instance );
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_appearance_data() {
+		$options = $this->get_sub_field_value( 'custom_appearance_options' );
+
+		return apply_filters( 'wcapf_field_instance_appearance_options', $options, $this );
 	}
 
 }

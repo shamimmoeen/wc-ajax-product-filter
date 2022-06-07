@@ -424,7 +424,7 @@ class WCAPF_Walker {
 
 		$inner .= '</label>';
 
-		return apply_filters( 'wcapf_tree_item', $inner, $item, $unique_id, $this, $depth );
+		return apply_filters( 'wcapf_tree_item_inner', $inner, $item, $unique_id, $this, $depth );
 	}
 
 	/**

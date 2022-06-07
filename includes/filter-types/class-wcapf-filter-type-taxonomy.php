@@ -347,14 +347,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$tree      = array();
 		$increment = 0;
 
-		foreach ( $terms as $term ) {
+		foreach ( $terms as $term_id => $term ) {
 			if ( 0 === $increment ) {
 				$depth ++;
 			}
 
 			// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			if ( $term['parent_id'] == $parent_id ) {
-				$children = $this->build_tree( $terms, $term['id'], $depth );
+				$children = $this->build_tree( $terms, $term_id, $depth );
 
 				if ( $children ) {
 					$term['children'] = $children;
@@ -362,7 +362,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 				$term['depth'] = $depth;
 
-				$tree[ $term['id'] ] = $term;
+				$tree[ $term_id ] = $term;
 			}
 
 			$increment ++;
