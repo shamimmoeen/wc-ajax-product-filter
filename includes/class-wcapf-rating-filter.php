@@ -50,6 +50,7 @@ class WCAPF_Rating_Filter {
 		add_filter( 'wcapf_taxonomy_terms', array( $this, 'set_rating_terms_data' ), 10, 2 );
 
 		add_filter( 'wcapf_taxonomy_filter_values', array( $this, 'set_rating_filter_values' ), 10, 2 );
+		add_filter( 'wcapf_active_taxonomy_filter_data', array( $this, 'set_rating_filter_data' ), 10, 3 );
 
 		add_filter( 'wcapf_tree_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
 		add_filter( 'wcapf_labeled_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
@@ -96,34 +97,58 @@ class WCAPF_Rating_Filter {
 	 * @return array
 	 */
 	public function set_rating_filter_values( $values, $field_instance ) {
-		if ( WCAPF_Helper::found_pro_version() ) {
+		if ( 'rating' !== $field_instance->type ) {
 			return $values;
 		}
 
-		if ( 'rating' === $field_instance->type ) {
-			$new_values = array();
+		$new_values = array();
 
-			foreach ( $values as $value ) {
-				$new_values[] = 'rated-' . $value;
-			}
-
-			$terms = get_terms(
-				array(
-					'taxonomy'   => 'product_visibility',
-					'hide_empty' => false,
-					'fields'     => 'ids',
-					'slug'       => $new_values,
-				)
-			);
-
-			if ( is_wp_error( $terms ) ) {
-				return array();
-			}
-
-			$values = $terms;
+		foreach ( $values as $value ) {
+			$new_values[] = 'rated-' . $value;
 		}
 
-		return $values;
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'product_visibility',
+				'hide_empty' => false,
+				'fields'     => 'ids',
+				'slug'       => $new_values,
+			)
+		);
+
+		if ( is_wp_error( $terms ) ) {
+			return array();
+		}
+
+		return $terms;
+	}
+
+	/**
+	 * @param array                $filter_data    The filter data.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                $ratings        The rating values.
+	 *
+	 * @return array
+	 */
+	public function set_rating_filter_data( $filter_data, $field_instance, $ratings ) {
+		if ( 'rating' !== $field_instance->type ) {
+			return $filter_data;
+		}
+
+		$display_type = $field_instance->display_type;
+		$filter_data  = array();
+
+		foreach ( $ratings as $rating ) {
+			$rating = absint( $rating );
+
+			if ( 'select' === $display_type || 'multiselect' === $display_type ) {
+				$filter_data[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
+			} else {
+				$filter_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
+			}
+		}
+
+		return $filter_data;
 	}
 
 	/**
