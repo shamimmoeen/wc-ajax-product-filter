@@ -383,6 +383,12 @@ jQuery( document ).ready( function( $ ) {
 					const _value = $( this ).val();
 					handleToggleRequest( data, _this, _value );
 				} );
+
+				if ( ! $( fieldWrapper ).hasClass( 'loaded' ) ) {
+					$( fieldWrapper ).addClass( 'loaded' );
+
+					fieldWrapper.trigger( 'field_added' );
+				}
 			}
 		} );
 	}

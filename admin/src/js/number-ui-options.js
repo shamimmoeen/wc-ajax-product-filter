@@ -25,10 +25,12 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
-	fieldWrapper.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
-		const $this = $( this );
+	fieldWrapper.on( 'field_added', function() {
+		fieldWrapper.find( '.wcapf-form-sub-field-min_value_auto_detect input[type="checkbox"]' ).each( function() {
+			const $this = $( this );
 
-		toggleNumberMinValueField( $this );
+			toggleNumberMinValueField( $this );
+		} );
 	} );
 
 	fieldWrapper.on(
@@ -55,10 +57,12 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
-	fieldWrapper.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
-		const $this = $( this );
+	fieldWrapper.on( 'field_added', function() {
+		fieldWrapper.find( '.wcapf-form-sub-field-max_value_auto_detect input[type="checkbox"]' ).each( function() {
+			const $this = $( this );
 
-		toggleNumberMaxValueField( $this );
+			toggleNumberMaxValueField( $this );
+		} );
 	} );
 
 	fieldWrapper.on(

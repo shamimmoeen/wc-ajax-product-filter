@@ -352,6 +352,10 @@ abstract class WCAPF_Field {
 				$this->field_hidden( $data );
 				break;
 
+			case 'hidden_manual_options':
+				$this->hidden_manual_options( $data );
+				break;
+
 			case 'text':
 				$this->field_text( $data );
 				break;
@@ -427,6 +431,32 @@ abstract class WCAPF_Field {
 		}
 
 		return $classes;
+	}
+
+	/**
+	 * Renders the hidden manual options field.
+	 *
+	 * @return void
+	 */
+	private function hidden_manual_options( $data ) {
+		$id    = $data['id'];
+		$name  = $data['name'];
+		$value = $data['value'];
+		$table = isset( $data['table'] ) ? $data['table'] : '';
+		$tmpl  = isset( $data['tmpl'] ) ? $data['tmpl'] : '';
+		?>
+		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
+			<input
+				class="widefat manual_options"
+				id="<?php echo esc_attr( $id ); ?>"
+				name="<?php echo esc_attr( $name ); ?>"
+				type="hidden"
+				value="<?php echo esc_attr( $value ); ?>"
+				data-table="<?php echo esc_attr( $table ); ?>"
+				data-tmpl="<?php echo esc_attr( $tmpl ); ?>"
+			>
+		</div>
+		<?php
 	}
 
 	/**
