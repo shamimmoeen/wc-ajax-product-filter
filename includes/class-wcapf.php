@@ -245,45 +245,6 @@ class WCAPF {
 			'wcapf_params',
 			$this->get_js_params()
 		);
-
-		// TODO: Remove 'assets' directory.
-		// wp_enqueue_style(
-		// 	'wcapf-styles',
-		// 	WCAPF_PLUGIN_URL . 'assets/css/wcapf-styles.css',
-		// 	array(),
-		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/css/wcapf-styles.css' )
-		// );
-
-		wp_enqueue_style(
-			'wcapf-fontawesome-icons',
-			WCAPF_PLUGIN_URL . 'assets/css/font-awesome.min.css',
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/assets/css/font-awesome.min.css' )
-		);
-
-		// wp_enqueue_script(
-		// 	'wcapf-ui-slider',
-		// 	WCAPF_PLUGIN_URL . 'assets/js/nouislider.min.js',
-		// 	array( 'jquery' ),
-		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/nouislider.min.js' ),
-		// 	true
-		// );
-		//
-		// wp_enqueue_script(
-		// 	'wcapf-price-filter',
-		// 	WCAPF_PLUGIN_URL . 'assets/js/price-filter.js',
-		// 	array( 'jquery' ),
-		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/price-filter.js' ),
-		// 	true
-		// );
-		//
-		// wp_enqueue_script(
-		// 	'wcapf-scripts',
-		// 	WCAPF_PLUGIN_URL . 'assets/js/scripts.js',
-		// 	array( 'jquery' ),
-		// 	filemtime( WCAPF_PLUGIN_DIR . '/assets/js/scripts.js' ),
-		// 	true
-		// );
 	}
 
 	/**
