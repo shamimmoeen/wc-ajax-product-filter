@@ -40,7 +40,9 @@ class WCAPF_Field_Product_Status extends WCAPF_Field {
 				'columns'  => array(
 					array(
 						array(
-							'type'     => 'hidden',
+							'type'     => 'hidden_manual_options',
+							'table'    => '.product-status-options-table',
+							'tmpl'     => 'wcapf-product-status-option',
 							'id'       => 'product_status_options',
 							'name'     => 'product_status_options',
 							'position' => 20,

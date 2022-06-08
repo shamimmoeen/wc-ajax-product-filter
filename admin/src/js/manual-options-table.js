@@ -68,7 +68,7 @@ function initManualOptionsTable( tableIdentifier, valueIdentifier, rowTemplateId
 		} );
 
 		const rawValues = encodeURIComponent( JSON.stringify( _rows ) );
-		$valueHolder.val( rawValues );
+		$valueHolder.val( rawValues ).trigger( 'change' );
 	}
 
 	function triggerRemoveOption( $field ) {
