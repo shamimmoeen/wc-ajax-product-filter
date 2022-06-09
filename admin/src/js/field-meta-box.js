@@ -7,11 +7,10 @@
  * @author     Mainul Hassan Main
  */
 
-const fieldStates = {};
-
 jQuery( document ).ready( function( $ ) {
 
 	const fieldWrapper = $( '#chosen_field_wrapper' );
+	const fieldStates  = {};
 
 	function storeFieldState() {
 		const fieldType = fieldWrapper.find( '#field_data' ).attr( 'data-field-type' );
@@ -26,38 +25,73 @@ jQuery( document ).ready( function( $ ) {
 			const $input = $( this );
 			const type   = $input.attr( 'type' );
 			const name   = $input.attr( 'name' );
+			const value  = $input.val();
 
 			if ( 'checkbox' === type || 'radio' === type ) {
 				if ( $input.is( ':checked' ) ) {
-					fieldValues[ name ] = $input.val();
+					fieldValues[ name ] = value;
 				}
 			} else {
-				fieldValues[ name ] = $input.val();
+				fieldValues[ name ] = value;
 			}
 		} );
 
-		if ( fieldWrapper.find( '.manual_options' ) ) {
-			const raw = fieldWrapper.find( '.manual_options' ).val();
+		const manualOptions = {};
 
-			if ( raw ) {
-				fieldValues[ 'manual_options' ] = raw;
-			}
-		}
+		fieldWrapper.find( '.manual_options' ).each( function() {
+			const $input = $( this );
+			const name   = $input.attr( 'name' );
+
+			manualOptions[ name ] = $input.val();
+		} );
+
+		fieldValues[ 'manual_options' ] = manualOptions;
 
 		fieldStates[ fieldType ] = fieldValues;
+	}
+
+	function updateFieldState( $elm ) {
+		const fieldType  = fieldWrapper.find( '#field_data' ).attr( 'data-field-type' );
+		const fieldState = fieldStates[ fieldType ];
+
+		const name  = $elm.attr( 'name' );
+		const type  = $elm.attr( 'type' );
+		const value = $elm.val();
+
+		if ( $elm.hasClass( 'manual_options' ) ) {
+			const manual_options = fieldState[ 'manual_options' ] || {};
+
+			manual_options[ name ] = value;
+
+			fieldState[ 'manual_options' ] = manual_options;
+		} else {
+			if ( 'checkbox' === type || 'radio' === type ) {
+				const $input = fieldWrapper.find( '[name="' + name + '"]' );
+
+				if ( $input.is( ':checked' ) ) {
+					fieldState[ name ] = value;
+				} else {
+					delete fieldState[ name ];
+				}
+			} else {
+				fieldState[ name ] = value;
+			}
+		}
 	}
 
 	// Store the initial field state.
 	storeFieldState();
 
 	fieldWrapper.find( '[name]' ).on( 'change', function() {
-		storeFieldState();
+		const $this = $( this );
+
+		updateFieldState( $this );
 	} );
 
 	function applyFieldState( fieldType ) {
 		const fieldState = fieldStates[ fieldType ];
 
-		fieldWrapper.find( '[name]' ).each( function() {
+		fieldWrapper.find( '[name]:not(.manual_options)' ).each( function() {
 			const $input = $( this );
 			const type   = $input.attr( 'type' );
 			const name   = $input.attr( 'name' );
@@ -80,71 +114,69 @@ jQuery( document ).ready( function( $ ) {
 
 		// Process the manual options.
 		if ( 'manual_options' in fieldState ) {
-			const raw = fieldState[ 'manual_options' ];
+			const rawOptions = fieldState[ 'manual_options' ];
 
-			if ( ! raw ) {
-				return;
-			}
+			$.each( rawOptions, function( inputName, raw ) {
+				const $rawInput = fieldWrapper.find( '[name="' + inputName + '"]' );
 
-			const $rawInput = fieldWrapper.find( '.manual_options' );
+				$rawInput.val( raw );
 
-			$rawInput.val( raw );
+				const manualOptions = JSON.parse( decodeURIComponent( raw ) );
 
-			const manualOptions = JSON.parse( decodeURIComponent( raw ) );
-
-			if ( ! manualOptions ) {
-				return;
-			}
-
-			const tableIdentifier = $rawInput.attr( 'data-table' );
-			const rowTemplateId   = $rawInput.attr( 'data-tmpl' );
-
-			// Bail out if no tmpl found for the type.
-			if ( ! jQuery( '#tmpl-' + rowTemplateId ).length ) {
-				return;
-			}
-
-			const fieldIdentifier = '.wcapf-form-field';
-			const rowsIdentifier  = '.field-table-body-rows';
-			const rowIdentifier   = '.row-item';
-
-			const $field = fieldWrapper.find( fieldIdentifier );
-			const $table = $field.find( tableIdentifier );
-			const $rows  = $table.find( rowsIdentifier );
-
-			$.each( manualOptions, function( i, option ) {
-				const template = wp.template( rowTemplateId );
-
-				let rowDefaultOptions = {};
-
-				if ( '.manual-options-table' === tableIdentifier ) {
-					rowDefaultOptions = {
-						'value': '',
-						'label': '',
-					};
+				if ( ! manualOptions.length ) {
+					return;
 				}
 
-				const rendered = template( rowDefaultOptions );
+				const tableIdentifier = $rawInput.attr( 'data-table' );
+				const rowTemplateId   = $rawInput.attr( 'data-tmpl' );
 
-				$rows.append( rendered );
+				// Bail out if no tmpl found for the type.
+				if ( ! jQuery( '#tmpl-' + rowTemplateId ).length ) {
+					return;
+				}
 
-				const $lastRow = $rows.find( rowIdentifier ).last();
+				const rowsIdentifier = '.field-table-body-rows';
+				const rowIdentifier  = '.row-item';
 
-				$lastRow.find( '[data-name]' ).each( function() {
-					const $this = $( this );
-					const name  = $this.attr( 'data-name' );
-					const value = option[ name ];
+				const $table = fieldWrapper.find( tableIdentifier );
+				const $rows  = $table.find( rowsIdentifier );
 
-					$this.val( value );
+				$.each( manualOptions, function( i, option ) {
+					const template = wp.template( rowTemplateId );
 
-					if ( 'image_url' === name && value ) {
-						$lastRow.find( '.wp-image-picker-container' ).addClass( 'active' );
-						$lastRow.find( 'img' ).attr( 'src', value );
+					let rowDefaultOptions = {};
+
+					if ( '.manual-options-table' === tableIdentifier ) {
+						rowDefaultOptions = {
+							'value': '',
+							'label': '',
+						};
 					}
+
+					const rendered = template( rowDefaultOptions );
+
+					$rows.append( rendered );
+
+					const $lastRow = $rows.find( rowIdentifier ).last();
+
+					$lastRow.find( '[data-name]' ).each( function() {
+						const $this = $( this );
+						const name  = $this.attr( 'data-name' );
+						const value = option[ name ];
+
+						$this.val( value );
+
+						if ( 'image_url' === name && value ) {
+							$lastRow.find( '.wp-image-picker-container' ).addClass( 'active' );
+							$lastRow.find( 'img' ).attr( 'src', value );
+						}
+					} );
 				} );
+
+				$table.addClass( 'has-options' );
 			} );
 
-			$table.addClass( 'has-options' );
+			const $field = fieldWrapper.find( '.wcapf-form-field' );
 
 			fieldWrapper.trigger( 'new_option_added', [ $field ] );
 		}
@@ -188,7 +220,9 @@ jQuery( document ).ready( function( $ ) {
 		fieldWrapper.trigger( 'field_added' );
 
 		fieldWrapper.find( '[name]' ).on( 'change', function() {
-			storeFieldState();
+			const $this = $( this );
+
+			updateFieldState( $this );
 		} );
 	} );
 
