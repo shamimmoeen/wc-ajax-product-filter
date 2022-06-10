@@ -796,6 +796,8 @@ abstract class WCAPF_Field {
 		if ( $show_title ) {
 			echo '<h4 class="wcapf-field-title">' . esc_html( $filter_title ) . '</h4>';
 		}
+
+		echo '<div class="wcapf-field-inner">';
 	}
 
 	/**
@@ -821,6 +823,8 @@ abstract class WCAPF_Field {
 		 * The hook to insert html content before ending the field.
 		 */
 		do_action( 'wcapf_content_before_ending_field', $this->get_instance() );
+
+		echo '</div>';
 
 		echo '</div>';
 	}
