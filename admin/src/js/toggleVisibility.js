@@ -283,12 +283,12 @@ jQuery( document ).ready( function( $ ) {
 		},
 		{
 			'handler': '.wcapf-form-sub-field-enable_accordion input',
-			'handlerType': 'radio',
+			'handlerType': 'checkbox',
 			'event': 'change',
 			'dependant': [
 				{
 					'selector': '.wcapf-form-sub-field-accordion_default_state',
-					'value': [ 'yes' ],
+					'value': [ '1' ],
 				},
 			],
 		},
@@ -322,6 +322,11 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ '1' ],
 				},
 			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-show_title input',
+			'handlerType': 'checkbox',
+			'event': 'change',
 		},
 	];
 

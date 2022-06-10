@@ -43,7 +43,7 @@ jQuery( document ).ready(
 			function() {
 				const $field         = $( this );
 				const id             = $field.attr( 'data-id' );
-				const $wrapper       = $field.children( 'div' );
+				const $wrapper       = $field.find( '.wcapf-field-inner > div' );
 				const filterKey      = $wrapper.attr( 'data-filter-key' );
 				const multipleFilter = parseInt( $wrapper.attr( 'data-multiple-filter' ) );
 
@@ -338,8 +338,10 @@ jQuery( document ).ready(
 						function( id ) {
 							const fieldID    = '[data-id="' + id + '"]';
 							const $field     = $( fieldID );
+							const $inner     = $field.find( '.wcapf-field-inner' );
 							const _field     = $data.find( fieldID );
 							const fieldClass = $( _field ).attr( 'class' );
+							const _html      = _field.find( '.wcapf-field-inner' );
 
 							// When called from history back or forward request then rerender all fields.
 							if ( forceReRender ) {
@@ -348,7 +350,7 @@ jQuery( document ).ready(
 								$field.attr( 'class', fieldClass );
 
 								// update field
-								$field.html( _field.html() );
+								$inner.html( _html );
 
 							} else {
 
@@ -359,7 +361,7 @@ jQuery( document ).ready(
 									$field.attr( 'class', fieldClass );
 
 									// update field
-									$field.html( _field.html() );
+									$inner.html( _html );
 
 								}
 
