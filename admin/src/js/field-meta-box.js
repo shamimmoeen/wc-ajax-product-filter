@@ -10,7 +10,15 @@
 jQuery( document ).ready( function( $ ) {
 
 	const fieldWrapper = $( '#chosen_field_wrapper' );
+	const fieldInput   = '[name]:not(.manual_options):not(.field_key)';
 	const fieldStates  = {};
+
+	const typesHavingSeparateFieldKeys = {
+		'attribute': '.wcapf-form-sub-field-taxonomy select',
+		'custom-taxonomy': '.wcapf-form-sub-field-taxonomy select',
+		'post-meta': '.wcapf-form-sub-field-meta_key select',
+		'post-property': '.wcapf-form-sub-field-post_property select',
+	};
 
 	function storeFieldState() {
 		const fieldType = fieldWrapper.find( '#field_data' ).attr( 'data-field-type' );
@@ -21,7 +29,7 @@ jQuery( document ).ready( function( $ ) {
 
 		const fieldValues = {};
 
-		fieldWrapper.find( '[name]:not(.manual_options)' ).each( function() {
+		fieldWrapper.find( fieldInput ).each( function() {
 			const $input = $( this );
 			const type   = $input.attr( 'type' );
 			const name   = $input.attr( 'name' );
@@ -36,6 +44,27 @@ jQuery( document ).ready( function( $ ) {
 			}
 		} );
 
+		// Handle filter keys.
+		if ( fieldWrapper.find( '.field_key' ).length ) {
+			if ( fieldType in typesHavingSeparateFieldKeys ) {
+				const $fieldKeyInput = fieldWrapper.find( typesHavingSeparateFieldKeys[ fieldType ] );
+				const fieldKeyFor    = $fieldKeyInput.val();
+
+				const fieldKeys = {};
+
+				if ( fieldKeyFor ) {
+					fieldKeys[ fieldKeyFor ] = fieldKeyFor;
+				} else {
+					fieldKeys[ 'default' ] = fieldWrapper.find( '.field_key' ).val();
+				}
+
+				fieldValues[ 'field_key' ] = fieldKeys;
+			} else {
+				fieldValues[ 'field_key' ] = fieldWrapper.find( '.field_key' ).val();
+			}
+		}
+
+		// Handle manual options.
 		const manualOptions = {};
 
 		fieldWrapper.find( '.manual_options' ).each( function() {
@@ -58,7 +87,20 @@ jQuery( document ).ready( function( $ ) {
 		const type  = $elm.attr( 'type' );
 		const value = $elm.val();
 
-		if ( $elm.hasClass( 'manual_options' ) ) {
+		if ( $elm.hasClass( 'field_key' ) ) {
+			if ( fieldType in typesHavingSeparateFieldKeys ) {
+				const $fieldKeyInput = fieldWrapper.find( typesHavingSeparateFieldKeys[ fieldType ] );
+				const fieldKeyFor    = $fieldKeyInput.val();
+
+				if ( fieldKeyFor ) {
+					fieldState[ 'field_key' ][ fieldKeyFor ] = value;
+				} else {
+					fieldState[ 'field_key' ][ 'default' ] = value;
+				}
+			} else {
+				fieldState[ 'field_key' ] = fieldWrapper.find( '.field_key' ).val();
+			}
+		} else if ( $elm.hasClass( 'manual_options' ) ) {
 			const manual_options = fieldState[ 'manual_options' ] || {};
 
 			manual_options[ name ] = value;
@@ -91,7 +133,7 @@ jQuery( document ).ready( function( $ ) {
 	function applyFieldState( fieldType ) {
 		const fieldState = fieldStates[ fieldType ];
 
-		fieldWrapper.find( '[name]:not(.manual_options)' ).each( function() {
+		fieldWrapper.find( fieldInput ).each( function() {
 			const $input = $( this );
 			const type   = $input.attr( 'type' );
 			const name   = $input.attr( 'name' );
@@ -111,6 +153,24 @@ jQuery( document ).ready( function( $ ) {
 				$input.val( value );
 			}
 		} );
+
+		// Process filter keys.
+		const $filterKey = fieldWrapper.find( '.field_key' );
+
+		if ( $filterKey.length ) {
+			if ( fieldType in typesHavingSeparateFieldKeys ) {
+				const $fieldKeyInput = fieldWrapper.find( typesHavingSeparateFieldKeys[ fieldType ] );
+				const fieldKeyFor    = $fieldKeyInput.val();
+
+				if ( fieldKeyFor ) {
+					$filterKey.val( fieldState[ 'field_key' ][ fieldKeyFor ] );
+				} else {
+					$filterKey.val( fieldState[ 'field_key' ][ 'default' ] );
+				}
+			} else {
+				$filterKey.val( fieldState[ 'field_key' ] );
+			}
+		}
 
 		// Process the manual options.
 		if ( 'manual_options' in fieldState ) {
@@ -224,6 +284,37 @@ jQuery( document ).ready( function( $ ) {
 
 			updateFieldState( $this );
 		} );
+	} );
+
+	// Update the filter key.
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, fieldKeyFor, $field ) {
+		if ( Object.values( typesHavingSeparateFieldKeys ).includes( handler ) ) {
+			const fieldType  = $field.closest( '[data-field-type]' ).attr( 'data-field-type' );
+			const fieldState = fieldStates[ fieldType ];
+			const fieldKeys  = fieldState[ 'field_key' ];
+
+			const $fieldKey  = $field.find( '.wcapf-form-sub-field-field_key input[type="text"]' );
+			const defaultKey = $fieldKey.attr( 'data-default-field-key' );
+			let _fieldKey;
+
+			if ( ! fieldKeyFor ) {
+				fieldKeyFor = 'default';
+				_fieldKey   = defaultKey;
+			} else {
+				// Prepend dash to avoid conflicting with the registered taxonomies and post types.
+				_fieldKey = '_' + fieldKeyFor;
+			}
+
+			let fieldKey;
+
+			if ( fieldKeyFor in fieldKeys ) {
+				fieldKey = fieldKeys[ fieldKeyFor ];
+			} else {
+				fieldKey = _fieldKey;
+			}
+
+			$fieldKey.val( fieldKey ).trigger( 'change' );
+		}
 	} );
 
 } );
