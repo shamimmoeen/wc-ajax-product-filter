@@ -466,28 +466,18 @@ abstract class WCAPF_Field {
 		$id    = $data['id'];
 		$name  = $data['name'];
 		$value = $data['value'];
-
-		$classes = 'widefat';
-		$attr    = '';
-
-		if ( 'field_key' === $data['_name'] ) {
-			$classes = 'widefat field_key';
-
-			$attr .= 'data-default-field-key="' . esc_attr( $this->get_default_field_key() ) . '"';
-			$attr .= ' autocomplete="off"';
-		}
 		?>
 		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
 			<?php $this->field_label( $data ); ?>
 
 			<div class="wcapf-wrapper">
 				<input
-					class="<?php echo esc_attr( $classes ); ?>"
+					class="widefat"
 					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
 					type="text"
 					value="<?php echo esc_attr( $value ); ?>"
-					<?php echo $attr; ?>
+					<?php echo 'field_key' === $data['_name'] ? 'autocomplete="off"' : ''; ?>
 				>
 			</div>
 		</div>
