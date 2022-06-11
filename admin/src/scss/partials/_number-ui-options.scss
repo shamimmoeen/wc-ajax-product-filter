@@ -1,7 +1,15 @@
+@import "../mixins";
+
 .column-start.row.ui-options-row {
-	display: flex;
-	gap: 2em;
+	@include clearfix;
+
 	margin: 0 0 15px;
+	max-width: calc(3 * 16.5em);
+
+	> .column {
+		float: left;
+		width: calc(100% / 3);
+	}
 
 	.wcapf-form-sub-field {
 		align-items: flex-start;
@@ -19,12 +27,14 @@
 		}
 	}
 
+	// todo: check it where it is used.
 	> .wcapf-form-sub-field {
-		flex: 0 0 15em;
+		//flex: 0 0 15em;
 	}
 
 	.column-start.column {
-		flex: 0 0 15em;
+		display: flex;
+		flex-direction: column;
 
 		.wcapf-form-sub-field ~ .wcapf-form-sub-field {
 			align-items: center;

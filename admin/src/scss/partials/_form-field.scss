@@ -1,16 +1,35 @@
+@import "../mixins";
+
+.wcapf-form-field {
+	.column-start {
+		&.row:not(.ui-options-row) {
+			@include clearfix;
+
+			.column {
+				@media (min-width: 640px) {
+					float: left;
+
+					&:not(:only-child):first-child {
+						width: 516px;
+					}
+				}
+
+				&:only-child {
+					float: none;
+				}
+
+				&:not(:last-child) {
+					margin-right: 48px;
+				}
+			}
+		}
+	}
+}
+
 .wcapf-form-field {
 	margin: 12px 0 0;
 
 	.column-start {
-		&.row {
-			display: flex;
-			gap: 3em;
-		}
-
-		&.column {
-			flex: 0 0 40em;
-		}
-
 		&.separator-top {
 			border-top: 1px solid #ddd;
 			margin-top: .8em;
@@ -28,15 +47,6 @@
 		margin-top: 0;
 	}
 
-	.wcapf-form-sub-field {
-		margin: 0 0 20px;
-		min-width: 445px;
-
-		&.wcapf-form-sub-field-wcapf-hidden {
-			display: none;
-		}
-	}
-
 	.widefat {
 		max-width: 300px;
 		width: unset;
@@ -44,6 +54,18 @@
 
 	.widefat[type="text"] {
 		width: 100%;
+	}
+
+	.wcapf-form-sub-field {
+		margin: 0 0 20px;
+
+		@media (min-width: 640px) {
+			min-width: 445px;
+		}
+
+		&.wcapf-form-sub-field-wcapf-hidden {
+			display: none;
+		}
 	}
 
 	.wcapf-form-sub-field {
@@ -55,6 +77,10 @@
 			display: flex;
 			justify-content: flex-start;
 			width: 200px;
+
+			@media (max-width: 639px) {
+				width: 120px;
+			}
 		}
 
 		.wcapf-wrapper {
