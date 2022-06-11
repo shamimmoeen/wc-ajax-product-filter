@@ -621,6 +621,11 @@ abstract class WCAPF_Field {
 		$value     = $data['value'];
 		$options   = $data['options'];
 		$increment = 0;
+
+		if ( ! $value ) {
+			$keys  = array_keys( $options );
+			$value = isset( $keys[0] ) ? $keys[0] : '';
+		}
 		?>
 		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
 			<?php $this->field_label( $data ); ?>
