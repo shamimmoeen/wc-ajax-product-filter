@@ -2,7 +2,7 @@
 
 .wcapf-form-field {
 	.column-start {
-		&.row:not(.ui-options-row) {
+		&.row:not(.ui-options-row):not(.date-ui-options-row) {
 			@include clearfix;
 
 			.column {
@@ -47,13 +47,15 @@
 		margin-top: 0;
 	}
 
-	.widefat {
-		max-width: 300px;
-		width: unset;
-	}
+	@media (min-width: 640px) {
+		.widefat {
+			max-width: 300px;
+			width: unset;
+		}
 
-	.widefat[type="text"] {
-		width: 100%;
+		.widefat[type="text"] {
+			width: 100%;
+		}
 	}
 
 	.wcapf-form-sub-field {
@@ -98,7 +100,7 @@
 			gap: 10px;
 		}
 
-		&.wcapf-form-sub-field-radio-row {
+		@mixin radio {
 			align-items: flex-start;
 
 			.wcapf-form-sub-field-label {
@@ -108,6 +110,14 @@
 			.wcapf-wrapper {
 				flex-direction: column;
 			}
+		}
+
+		&.wcapf-form-sub-field-radio-row {
+			@include radio;
+		}
+
+		@media (max-width: 639px) {
+			@include radio;
 		}
 	}
 
