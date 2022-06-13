@@ -63,7 +63,6 @@ abstract class WCAPF_Field {
 
 		echo '<div class="wcapf-form-field wcapf-form-field-' . esc_attr( $type ) . '">';
 
-		// TODO: Add hook.
 		do_action( 'wcapf_before_render_field_subfields', $type, $instance );
 
 		if ( $groups ) {
@@ -107,9 +106,6 @@ abstract class WCAPF_Field {
 
 					echo '<div class="' . $row_classes . '">';
 
-					// TODO: Add hook.
-					do_action( 'wcapf_before_render_field_row', $type, $instance );
-
 					foreach ( $group_columns as $columns ) {
 						$columns = wp_list_sort( $columns, 'position' );
 
@@ -117,9 +113,6 @@ abstract class WCAPF_Field {
 						$this->render_sub_fields( $columns );
 						echo '</div>';
 					}
-
-					// TODO: Add hook.
-					do_action( 'wcapf_after_render_field_row', $type, $instance );
 
 					echo '</div>';
 				}
@@ -133,7 +126,6 @@ abstract class WCAPF_Field {
 			echo '</p>';
 		}
 
-		// TODO: Add hook.
 		do_action( 'wcapf_after_render_field_subfields', $type, $instance );
 
 		$this->get_field_type_input();
@@ -756,43 +748,46 @@ abstract class WCAPF_Field {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$this->before_filter_form( $classes );
+		$this->before_filter_form( $classes, $field_instance );
 		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		$this->after_filter_form();
+		$this->after_filter_form( $field_instance );
 	}
 
 	/**
 	 * Renders the field's start markup.
 	 *
-	 * @param array $classes The field classes.
+	 * @param array                $classes        The field classes.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return void
 	 */
-	protected function before_filter_form( $classes ) {
+	protected function before_filter_form( $classes, $field_instance ) {
 		array_unshift( $classes, 'wcapf-single-filter' );
 
 		$classes[] = 'wcapf-' . $this->type() . '-filter';
 
-		$instance = $this->get_instance();
-		$classes  = apply_filters( 'wcapf_field_classes', $classes, $instance );
+		$classes = apply_filters( 'wcapf_field_classes', $classes, $field_instance );
 
 		$field_classes = implode( ' ', $classes );
 		$show_title    = $this->get_sub_field_value( 'show_title' );
 		$filter_id     = $this->get_sub_field_value( 'field_id' );
 		$filter_title  = get_the_title( $filter_id );
 
-		/**
-		 * The hook to insert html content after the field title.
-		 */
-		do_action( 'wcapf_content_after_field_title', $instance );
-
 		echo '<div class="' . esc_attr( $field_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
+		do_action( 'wcapf_content_field_inner_start', $field_instance );
+
+		$heading = '';
+
 		if ( $show_title ) {
-			echo '<h4 class="wcapf-field-title">' . esc_html( $filter_title ) . '</h4>';
+			$heading = '<h4 class="wcapf-field-title">' . esc_html( $filter_title ) . '</h4>';
 		}
 
-		echo '<div class="wcapf-field-inner">';
+		echo apply_filters( 'wcapf_field_heading', $heading, $field_instance );
+
+		$field_inner_attributes = apply_filters( 'wcapf_field_inner_attributes', '', $field_instance );
+
+		echo '<div class="wcapf-field-inner"' . $field_inner_attributes . '>';
 	}
 
 	/**
@@ -811,15 +806,14 @@ abstract class WCAPF_Field {
 	/**
 	 * Renders the field's end markup.
 	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
 	 * @return void
 	 */
-	protected function after_filter_form() {
-		/**
-		 * The hook to insert html content before ending the field.
-		 */
-		do_action( 'wcapf_content_before_ending_field', $this->get_instance() );
+	protected function after_filter_form( $field_instance ) {
+		echo '</div>'; // Ends .wcapf-field-inner
 
-		echo '</div>';
+		do_action( 'wcapf_content_field_inner_end', $field_instance );
 
 		echo '</div>';
 	}

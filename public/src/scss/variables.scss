@@ -1,9 +1,16 @@
 :root {
+	--wcapf-active-filters-group-bottom-margin: 1em;
+	--wcapf-filter-base-bottom-margin: 2em;
 	--wcapf-filter-checked-outline-color: #333;
+	--wcapf-filter-inner-top-margin: 1em;
 	--wcapf-filter-outline-color: #ddd;
-	--wcapf-filter-title-base-margin-bottom: 1.5em;
 	--wcapf-hierarchy-accordion-toggle-bg-color: #ddd;
 	--wcapf-hierarchy-accordion-toggle-size: 14px;
+	--wcapf-labeled-nav-margin: 4px;
+	--wcapf-layered-nav-list-bottom-margin: 6px;
+	--wcapf-layered-nav-list-child-left-margin: 1.618em;
 	--wcapf-nouislider-input-field-margin-bottom: 15px;
 	--wcapf-nouislider-plain-text-margin-bottom: 10px;
+	--wcapf-range-slider-bottom-margin: .8em;
+	--wcapf-reset-filter-btn-top-margin: 1em;
 }

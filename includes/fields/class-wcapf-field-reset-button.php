@@ -59,6 +59,8 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 	}
 
 	protected function render_filter_form() {
+		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
+
 		$btn_title     = $this->get_sub_field_value( 'btn_title' );
 		$show_if_empty = $this->get_sub_field_value( 'show_if_empty' );
 
@@ -70,11 +72,11 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$this->before_filter_form( $classes );
+		$this->before_filter_form( $classes, $field_instance );
 		WCAPF_Template_Loader::get_instance()->load(
 			'public/field-reset-filters',
 			array( 'btn_title' => $btn_title )
 		);
-		$this->after_filter_form();
+		$this->after_filter_form( $field_instance );
 	}
 }
