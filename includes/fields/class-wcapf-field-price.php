@@ -63,7 +63,7 @@ class WCAPF_Field_Price extends WCAPF_Field {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$this->before_filter_form( $classes );
+		$this->before_filter_form( $classes, $field_instance );
 
 		if ( in_array( $display_type, $range_number_filters ) ) {
 			$this->render_range_number_filter( $field_instance, $items );
@@ -71,7 +71,7 @@ class WCAPF_Field_Price extends WCAPF_Field {
 			echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
 
-		$this->after_filter_form();
+		$this->after_filter_form( $field_instance );
 	}
 
 }

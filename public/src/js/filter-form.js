@@ -341,7 +341,7 @@ jQuery( document ).ready(
 							const $inner     = $field.find( '.wcapf-field-inner' );
 							const _field     = $data.find( fieldID );
 							const fieldClass = $( _field ).attr( 'class' );
-							const _html      = _field.find( '.wcapf-field-inner' );
+							const _html      = _field.find( '.wcapf-field-inner' ).html();
 
 							// When called from history back or forward request then rerender all fields.
 							if ( forceReRender ) {
@@ -362,6 +362,11 @@ jQuery( document ).ready(
 
 									// update field
 									$inner.html( _html );
+
+								} else {
+
+									// We need to update the fields' classes always.
+									$field.attr( 'class', fieldClass );
 
 								}
 
@@ -863,6 +868,19 @@ jQuery( document ).ready(
 				}, delay ) );
 			}
 		}
+
+		$wcapfSingleFilters.on( 'clear_filter', function() {
+			const $field    = $( this );
+			const fieldID   = $field.attr( 'data-id' );
+			const fieldData = fields[ fieldID ];
+			const filterKey = fieldData.filterKey;
+
+			const query = wcapfRemoveQueryStringParameter( filterKey );
+			history.pushState( {}, '', query );
+
+			// filter products
+			wcapfFilterProducts( true );
+		} );
 
 		// history back and forward request handling
 		$( window ).bind( 'popstate', function() {
