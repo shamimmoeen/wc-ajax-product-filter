@@ -574,7 +574,10 @@ class WCAPF_Walker {
 		$count = $item['count'];
 
 		if ( $this->show_count && '-1' !== $count ) {
-			$option .= ' (' . $item['count'] . ')';
+			$count_before = apply_filters( 'wcapf_dropdown_item_count_before', ' (' );
+			$count_after  = apply_filters( 'wcapf_dropdown_item_count_after', ')' );
+
+			$option .= $count_before . $item['count'] . $count_after;
 		}
 
 		$option .= '</option>';
