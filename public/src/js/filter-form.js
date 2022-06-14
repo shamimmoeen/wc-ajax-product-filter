@@ -22,6 +22,8 @@ const wcapf_params = wcapf_params || {
 jQuery( document ).ready(
 	function( $ ) {
 
+		const $body = $( 'body' );
+
 		const rangeValuesSeparator = '~';
 
 		// return false if wcapf_params variable is not found
@@ -187,12 +189,10 @@ jQuery( document ).ready(
 						$maxValue.val( maxValue );
 					}
 
-					$( 'body' ).trigger( 'wcapf-nouislider-update', [ $item, values ] );
+					$body.trigger( 'wcapf-nouislider-update', [ $item, values ] );
 				} );
 
 				function filterProductsAccordingToSlider( values ) {
-					const $body = $( 'body' );
-
 					$body.trigger( 'wcapf-nouislider-before-filter-products', [ $item, values ] );
 
 					const minValue = parseFloat( values[ 0 ] );
@@ -307,7 +307,7 @@ jQuery( document ).ready(
 
 		// show a loading indicator
 		function wcapfBeforeUpdate() {
-			$( 'body' ).trigger( 'wcapf_before_update_filters' );
+			$body.trigger( 'wcapf_before_update_filters' );
 		}
 
 		// scroll to top
@@ -317,7 +317,7 @@ jQuery( document ).ready(
 			initNoUISlider();
 			initDatepicker();
 
-			$( 'body' ).trigger( 'wcapf_after_update_filters' );
+			$body.trigger( 'wcapf_after_update_filters' );
 		}
 
 		// filter the products
@@ -794,31 +794,18 @@ jQuery( document ).ready(
 			wcapfFilterProducts( true );
 		}
 
-		// clear all filters
-		$wcapfNavFilters.on(
-			'click',
-			'.wcapf-active-filters .wcapf-reset-filters-btn',
-			function( event ) {
-				event.preventDefault();
+		// clear/reset all filters
+		$body.on( 'wcapf-reset-filters', function( e, $button ) {
+			resetFilters( $button );
+		} );
 
-				const $button = $( this );
+		$wcapfNavFilters.on( 'click', '.wcapf-reset-filters-btn', function( event ) {
+			event.preventDefault();
 
-				resetFilters( $button );
-			}
-		);
+			const $button = $( this );
 
-		// reset filters
-		$wcapfNavFilters.on(
-			'click',
-			'.wcapf-reset-filters-btn',
-			function( event ) {
-				event.preventDefault();
-
-				const $button = $( this );
-
-				resetFilters( $button );
-			}
-		);
+			$body.trigger( 'wcapf-reset-filters', [ $button ] );
+		} );
 
 		function filterByDate( $input ) {
 			const $wcapfDateFilter = $input.closest( '.wcapf-date-input' );
@@ -869,7 +856,7 @@ jQuery( document ).ready(
 			}
 		}
 
-		$wcapfSingleFilters.on( 'clear_filter', function() {
+		$wcapfSingleFilters.on( 'wcapf-clear-filter', function() {
 			const $field    = $( this );
 			const fieldID   = $field.attr( 'data-id' );
 			const fieldData = fields[ fieldID ];
