@@ -30,9 +30,9 @@ class WCAPF_Field_Active_Filters extends WCAPF_Field {
 					array(
 						array(
 							'type'     => 'radio',
-							'id'       => 'layout',
+							'id'       => 'active_filters_layout',
 							'label'    => __( 'Layout', 'wc-ajax-product-filter' ),
-							'name'     => 'layout',
+							'name'     => 'active_filters_layout',
 							'options'  => array(
 								'simple'   => __( 'Simple', 'wc-ajax-product-filter' ),
 								'extended' => __( 'Extended (group by filter)', 'wc-ajax-product-filter' ),
@@ -86,7 +86,7 @@ class WCAPF_Field_Active_Filters extends WCAPF_Field {
 	protected function render_filter_form() {
 		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
 
-		$layout               = $this->get_sub_field_value( 'layout' );
+		$layout               = $this->get_sub_field_value( 'active_filters_layout' );
 		$clear_btn_title      = $this->get_sub_field_value( 'clear_all_btn_title' );
 		$show_if_empty        = $this->get_sub_field_value( 'show_if_empty' );
 		$empty_filter_message = $this->get_sub_field_value( 'empty_filter_message' );
@@ -102,7 +102,7 @@ class WCAPF_Field_Active_Filters extends WCAPF_Field {
 		$this->before_filter_form( $classes, $field_instance );
 
 		WCAPF_Template_Loader::get_instance()->load(
-			'public/field-chosen-filters',
+			'public/field-active-filters',
 			array(
 				'layout'               => $layout,
 				'all_filters'          => $all_filters,
