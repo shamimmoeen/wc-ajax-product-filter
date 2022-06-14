@@ -86,6 +86,8 @@ class WCAPF_Field_Active_Filters extends WCAPF_Field {
 	protected function render_filter_form() {
 		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
 
+		$field_id = $field_instance->filter_id;
+
 		$layout               = $this->get_sub_field_value( 'active_filters_layout' );
 		$clear_btn_title      = $this->get_sub_field_value( 'clear_all_btn_title' );
 		$show_if_empty        = $this->get_sub_field_value( 'show_if_empty' );
@@ -104,6 +106,7 @@ class WCAPF_Field_Active_Filters extends WCAPF_Field {
 		WCAPF_Template_Loader::get_instance()->load(
 			'public/field-active-filters',
 			array(
+				'field_id'             => $field_id,
 				'layout'               => $layout,
 				'all_filters'          => $all_filters,
 				'clear_btn_title'      => $clear_btn_title,

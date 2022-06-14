@@ -4,6 +4,7 @@
  */
 
 /**
+ * @var int    $field_id             The field id.
  * @var string $layout               The layout, simple or extended.
  * @var array  $all_filters          All active filters array.
  * @var string $clear_btn_title      The clear all button title.
@@ -11,12 +12,9 @@
  */
 
 $helper = new WCAPF_Helper;
-
-$classes = 'wcapf-active-filters';
-$classes .= $all_filters && ! $clear_btn_title ? ' no-clear-button' : '';
 ?>
 
-<div class="<?php echo esc_attr( $classes ); ?>">
+<div class="wcapf-active-filters">
 	<?php if ( 'simple' === $layout ) : ?>
 		<?php if ( $all_filters ) : ?>
 			<div class="active-items">
