@@ -600,14 +600,9 @@ abstract class WCAPF_Field {
 	private function field_radio( $data ) {
 		$id        = $data['id'];
 		$name      = $data['name'];
-		$value     = $data['value'];
+		$value     = $data['value'] ?: $data['default'];
 		$options   = $data['options'];
 		$increment = 0;
-
-		if ( ! $value ) {
-			$keys  = array_keys( $options );
-			$value = isset( $keys[0] ) ? $keys[0] : '';
-		}
 		?>
 		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
 			<?php $this->field_label( $data ); ?>

@@ -290,6 +290,10 @@ jQuery( document ).ready( function( $ ) {
 					'selector': '.wcapf-form-sub-field-accordion_default_state',
 					'value': [ '1' ],
 				},
+				{
+					'selector': '.wcapf-form-sub-field-move_clear_filters_button_in_accordion_heading',
+					'value': [ '1' ],
+				},
 			],
 		},
 		{
@@ -327,6 +331,32 @@ jQuery( document ).ready( function( $ ) {
 			'handler': '.wcapf-form-sub-field-show_title input',
 			'handlerType': 'checkbox',
 			'event': 'change',
+		},
+		{
+			'handler': '.wcapf-form-sub-field-enable_active_filters_soft_limit input',
+			'handlerType': 'radio',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.active-filters-soft-limit-fields',
+					'value': [ 'enable' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-active_filters_layout input',
+			'handlerType': 'radio',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-soft_limit',
+					'value': [ 'simple' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-soft_limit_filter_groups',
+					'value': [ 'extended' ],
+				},
+			],
 		},
 	];
 
