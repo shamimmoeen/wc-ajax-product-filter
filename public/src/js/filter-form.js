@@ -265,6 +265,55 @@ jQuery( document ).ready(
 
 		initNoUISlider();
 
+		function filterByDate( $input ) {
+			const $wcapfDateFilter = $input.closest( '.wcapf-date-input' );
+			const filterKey        = $wcapfDateFilter.attr( 'data-filter-key' );
+			const isRange          = $wcapfDateFilter.attr( 'data-is-range' );
+
+			let filterValue = '';
+			let runFilter   = false;
+
+			// Clear any previously set timer before setting a fresh one
+			clearTimeout( $wcapfDateFilter.data( 'timer' ) );
+
+			if ( isRange ) {
+				const from = $wcapfDateFilter.find( '.date-from-input' ).val();
+				const to   = $wcapfDateFilter.find( '.date-to-input' ).val();
+
+				if ( from && to ) {
+					filterValue = from + rangeValuesSeparator + to;
+					runFilter   = true;
+				} else if ( ! from && ! to ) {
+					runFilter = true;
+				}
+			} else {
+				const from = $wcapfDateFilter.find( '.date-from-input' ).val();
+
+				if ( from ) {
+					filterValue = from;
+					runFilter   = true;
+				} else {
+					runFilter = true;
+				}
+			}
+
+			if ( runFilter ) {
+				$wcapfDateFilter.data( 'timer', setTimeout( function() {
+					$wcapfDateFilter.removeData( 'timer' );
+
+					if ( filterValue ) {
+						wcapfUpdateQueryStringParameter( filterKey, filterValue );
+					} else {
+						const query = wcapfRemoveQueryStringParameter( filterKey );
+						history.pushState( {}, '', query );
+					}
+
+					// filter products
+					wcapfFilterProducts();
+				}, delay ) );
+			}
+		}
+
 		function initDatepicker() {
 			if ( ! jQuery().datepicker ) {
 				return;
@@ -807,55 +856,6 @@ jQuery( document ).ready(
 			$body.trigger( 'wcapf-reset-filters', [ $button ] );
 		} );
 
-		function filterByDate( $input ) {
-			const $wcapfDateFilter = $input.closest( '.wcapf-date-input' );
-			const filterKey        = $wcapfDateFilter.attr( 'data-filter-key' );
-			const isRange          = $wcapfDateFilter.attr( 'data-is-range' );
-
-			let filterValue = '';
-			let runFilter   = false;
-
-			// Clear any previously set timer before setting a fresh one
-			clearTimeout( $wcapfDateFilter.data( 'timer' ) );
-
-			if ( isRange ) {
-				const from = $wcapfDateFilter.find( '.date-from-input' ).val();
-				const to   = $wcapfDateFilter.find( '.date-to-input' ).val();
-
-				if ( from && to ) {
-					filterValue = from + rangeValuesSeparator + to;
-					runFilter   = true;
-				} else if ( ! from && ! to ) {
-					runFilter = true;
-				}
-			} else {
-				const from = $wcapfDateFilter.find( '.date-from-input' ).val();
-
-				if ( from ) {
-					filterValue = from;
-					runFilter   = true;
-				} else {
-					runFilter = true;
-				}
-			}
-
-			if ( runFilter ) {
-				$wcapfDateFilter.data( 'timer', setTimeout( function() {
-					$wcapfDateFilter.removeData( 'timer' );
-
-					if ( filterValue ) {
-						wcapfUpdateQueryStringParameter( filterKey, filterValue );
-					} else {
-						const query = wcapfRemoveQueryStringParameter( filterKey );
-						history.pushState( {}, '', query );
-					}
-
-					// filter products
-					wcapfFilterProducts();
-				}, delay ) );
-			}
-		}
-
 		$wcapfSingleFilters.on( 'wcapf-clear-filter', function() {
 			const $field    = $( this );
 			const fieldID   = $field.attr( 'data-id' );
@@ -867,6 +867,10 @@ jQuery( document ).ready(
 
 			// filter products
 			wcapfFilterProducts( true );
+		} );
+
+		$body.on( 'wcapf-run-filter-products', function( e, forceReRender ) {
+			wcapfFilterProducts( forceReRender );
 		} );
 
 		// history back and forward request handling
