@@ -404,12 +404,18 @@ class WCAPF_Helper {
 			$keys = '';
 		}
 
+		$attrs = 'data-keys="' . esc_attr( $keys ) . '"';
+
+		if ( ! $filter_keys ) {
+			$attrs .= 'disabled="disabled"';
+		}
+
 		if ( 'a' === $tag ) {
-			$html = '<a role="button" tabindex="0" class="wcapf-reset-filters-btn" data-keys="' . esc_attr( $keys ) . '">';
+			$html = '<a role="button" tabindex="0" class="wcapf-reset-filters-btn" ' . $attrs . '>';
 			$html .= $btn_title;
 			$html .= '</a>';
 		} else {
-			$html = '<button type="button" class="wcapf-reset-filters-btn" data-keys="' . esc_attr( $keys ) . '">';
+			$html = '<button type="button" class="wcapf-reset-filters-btn" ' . $attrs . '>';
 			$html .= $btn_title;
 			$html .= '</button>';
 		}
