@@ -59,7 +59,7 @@ class WCAPF_Field_Group_Number extends WCAPF_Field_Group {
 						array(
 							'type'     => 'checkbox',
 							'id'       => 'align_values_at_the_end',
-							'label'    => __( 'Disable separator', 'wc-ajax-product-filter' ),
+							'label'    => __( 'Align values left and right', 'wc-ajax-product-filter' ),
 							'name'     => 'align_values_at_the_end',
 							'default'  => '1',
 							'position' => 25,
