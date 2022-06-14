@@ -199,6 +199,14 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'input_date', 'input_date_range' ],
 				},
 				{
+					'selector': '.wcapf-form-sub-field-show_date_inputs_inline',
+					'value': [ 'input_date_range' ],
+				},
+				{
+					'selector': '.date-picker-fields',
+					'value': [ 'input_date', 'input_date_range' ],
+				},
+				{
 					'selector': '.wcapf-form-sub-field-time_period_query_type',
 					'value': [ 'time_period_checkbox', 'time_period_multiselect' ],
 				},
