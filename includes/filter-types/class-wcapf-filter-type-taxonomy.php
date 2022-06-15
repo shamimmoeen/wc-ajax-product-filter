@@ -119,66 +119,17 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		if ( 'attribute' == $field_type && WCAPF_Helper::filtering_via_lookup_table_is_active() ) {
 			$filtered_count = $this->get_filtered_term_product_counts_using_lookup_table( $term_ids );
 		} else {
-			$filtered_count = $this->get_filtered_term_product_not_counts_using_lookup_table( $term_ids );
+			if ( is_taxonomy_hierarchical( $this->taxonomy ) ) {
+				$filtered_count = $this->get_hierarchical_term_product_counts( $term_ids );
+			} else {
+				$filtered_count = $this->get_non_hierarchical_term_product_counts( $term_ids );
+			}
 		}
 
 		foreach ( $terms as $term_id => $term ) {
 			$term['count'] = isset( $filtered_count[ $term_id ] ) ? $filtered_count[ $term_id ] : 0;
 
 			$updated_count[ $term_id ] = $term;
-		}
-
-		// The pad count logic should only run for hierarchical taxonomies like product categories.
-		if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
-			return $updated_count;
-		}
-
-		/**
-		 * Pad count logic starts.
-		 *
-		 * @see _pad_term_counts
-		 */
-
-		// Touch every ancestor's lookup row for each post in each term.
-		foreach ( $term_ids as $term_id ) {
-			$child     = $term_id;
-			$ancestors = array();
-
-			// phpcs:ignore Generic.Files.LineLength.TooLong, WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-			while ( ! empty( $updated_count[ $child ] ) && $parent = $updated_count[ $child ]['parent_id'] ) {
-				$ancestors[] = $child;
-
-				if ( ! empty( $filtered_count[ $term_id ] ) ) {
-					if ( is_array( $filtered_count[ $term_id ] ) ) {
-						foreach ( $filtered_count[ $term_id ] as $parent_child_term_id => $parent_child_term_count ) {
-							$filtered_count[ $parent ][ $parent_child_term_id ] = $parent_child_term_count;
-						}
-					} else {
-						if ( isset( $filtered_count[ $parent ] ) && ! is_array( $filtered_count[ $parent ] ) ) {
-							$filtered_count[ $parent ] = array( $filtered_count[ $parent ] );
-						}
-
-						$filtered_count[ $parent ][ $term_id ] = $filtered_count[ $term_id ];
-					}
-				}
-
-				$child = $parent;
-
-				if ( in_array( $parent, $ancestors, true ) ) {
-					break;
-				}
-			}
-		}
-
-		// Transfer the touched cells.
-		foreach ( $filtered_count as $id => $count ) {
-			if ( isset( $updated_count[ $id ] ) ) {
-				if ( is_array( $count ) ) {
-					$count = array_sum( $count );
-				}
-
-				$updated_count[ $id ]['count'] = $count;
-			}
 		}
 
 		return $updated_count;
@@ -264,6 +215,104 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
 	}
 
+	private function get_hierarchical_term_product_counts( $term_ids ) {
+		global $wpdb;
+
+		$helper = new WCAPF_Helper;
+		$utils  = new WCAPF_Product_Filter_Utils();
+
+		$post_statuses = $helper::filterable_post_statuses();
+		$update_count  = $this->auto_count_enabled();
+
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data();
+
+		$query = array();
+		$join  = '';
+		$where = '';
+
+		// query all terms
+		$_all_terms = get_terms(
+			array(
+				'taxonomy'   => $this->taxonomy,
+				'hide_empty' => false,
+				'fields'     => 'ids',
+			)
+		);
+
+		$_clauses = array();
+
+		foreach ( $_all_terms as $term_id ) {
+			if ( ! in_array( $term_id, $term_ids ) ) {
+				continue;
+			}
+
+			$child_terms = get_term_children( $term_id, $this->taxonomy );
+			$term_ids_in = array();
+
+			if ( $child_terms ) {
+				$_child_terms = array();
+
+				foreach ( $child_terms as $child_term ) {
+					if ( ! in_array( $child_term, $term_ids ) ) {
+						continue;
+					}
+
+					$_child_terms[] = $child_term;
+				}
+
+				$term_ids_in = array_merge( array( $term_id ), $_child_terms );
+			} else {
+				$term_ids_in[] = $term_id;
+			}
+
+			$ids_in = WCAPF_Product_Filter_Utils::get_ids_sql( $term_ids_in );
+
+			$clauses = "COUNT";
+			$clauses .= "(";
+			$clauses .= "DISTINCT CASE WHEN terms.term_id IN $ids_in";
+			$clauses .= " THEN $wpdb->posts.ID END";
+			$clauses .= ") AS `$term_id`";
+
+			$_clauses[] = $clauses;
+		}
+
+		$clauses = implode( ', ', $_clauses );
+
+		$query['select'] = "SELECT $clauses";
+
+		$query['from'] = "FROM $wpdb->posts";
+
+		$join .= "INNER JOIN $wpdb->term_relationships AS term_relationships ON $wpdb->posts.ID = term_relationships.object_id";
+		$join .= " INNER JOIN $wpdb->term_taxonomy AS term_taxonomy USING(term_taxonomy_id)";
+		$join .= " INNER JOIN $wpdb->terms AS terms USING(term_id)";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		if ( $update_count ) {
+			$join .= $utils::get_join_clause();
+		}
+
+		$query['join'] = $join;
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
+
+		if ( $update_count ) {
+			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
+		}
+
+		$query['where'] = $where;
+
+		$query = apply_filters( 'wcapf_hierarchical_term_product_counts', $query, $this->field, $term_ids );
+		$query = implode( ' ', $query );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		return $wpdb->get_row( $query, ARRAY_A );
+	}
+
 	/**
 	 * Count products within certain terms, taking the main WP query into
 	 * consideration.
@@ -275,7 +324,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	 *
 	 * @return array The filtered term product counts.
 	 */
-	private function get_filtered_term_product_not_counts_using_lookup_table( $term_ids ) {
+	private function get_non_hierarchical_term_product_counts( $term_ids ) {
 		global $wpdb;
 
 		$helper = new WCAPF_Helper;
@@ -325,7 +374,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$query['group_by'] = 'GROUP BY terms.term_id';
 
-		$query = apply_filters( 'wcapf_term_product_counts_query_not_using_lookup_table', $query, $this->field, $term_ids );
+		$query = apply_filters( 'wcapf_hierarchical_term_product_counts', $query, $this->field, $term_ids );
 		$query = implode( ' ', $query );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
