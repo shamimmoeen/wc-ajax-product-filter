@@ -284,7 +284,8 @@ class WCAPF_Product_Filter {
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
-		$term_ids = $this->get_chosen_term_ids( $filter_values, $field_instance );
+		$term_ids   = $this->get_chosen_term_ids( $filter_values, $field_instance );
+		$_terms_ids = $term_ids;
 
 		$is_hierarchical  = is_taxonomy_hierarchical( $taxonomy );
 		$include_children = apply_filters( 'wcapf_taxonomy_include_children', true, $field_instance );
@@ -341,7 +342,7 @@ class WCAPF_Product_Filter {
 		$active_ancestors = array();
 
 		if ( $is_hierarchical ) {
-			$active_ancestors = $this->get_ancestors_of_active_terms( $term_ids, $field_instance );
+			$active_ancestors = $this->get_ancestors_of_active_terms( $_terms_ids, $field_instance );
 		}
 
 		$active_filters = $this->active_terms_filter_data( $filter_values, $field_instance );

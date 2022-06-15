@@ -457,7 +457,6 @@ class WCAPF_Walker {
 	 * @return bool
 	 */
 	private function item_active_as_ancestor( $item ) {
-		// Ancestors are coming as int, and we don't compare it in strict mode.
 		if ( in_array( $item['id'], $this->active_ancestors ) ) {
 			return true;
 		}
