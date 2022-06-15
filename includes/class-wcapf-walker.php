@@ -247,6 +247,7 @@ class WCAPF_Walker {
 					'id'    => '',
 					'name'  => $this->all_items_label,
 					'count' => '-1',
+					'depth' => 1,
 				)
 			);
 
