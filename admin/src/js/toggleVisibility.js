@@ -55,10 +55,6 @@ jQuery( document ).ready( function( $ ) {
 					'value': [ 'select', 'multi-select' ],
 				},
 				{
-					'selector': '.hierarchical-fields',
-					'value': [ 'checkbox', 'radio', 'select', 'multi-select' ],
-				},
-				{
 					'selector': '.wcapf-form-sub-field-use_category_images',
 					'value': [ 'image' ],
 				},
@@ -87,12 +83,6 @@ jQuery( document ).ready( function( $ ) {
 			'handler': '.wcapf-form-sub-field-hierarchical input',
 			'handlerType': 'checkbox',
 			'event': 'change',
-			'dependant': [
-				{
-					'selector': '.wcapf-form-sub-field-enable_hierarchy_accordion',
-					'value': [ '1' ],
-				},
-			],
 		},
 		{
 			'handler': '.wcapf-form-sub-field-value_decimal input',
