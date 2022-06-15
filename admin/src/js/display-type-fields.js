@@ -11,6 +11,49 @@ jQuery( document ).ready( function( $ ) {
 
 	const fieldWrapper = $( '#chosen_field_wrapper' );
 
+	// Hierarchical field's toggle visibility when text display type is changed.
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-display_type select' === handler ) {
+			const $hrFields       = $field.find( '.hierarchical-fields' );
+			const $hierarchical   = $field.find( '.wcapf-form-sub-field-hierarchical' );
+			const useHierarchical = $hierarchical.find( 'input' ).is( ':checked' );
+			const $hrAccordion    = $field.find( '.wcapf-form-sub-field-enable_hierarchy_accordion' );
+
+			if ( 'checkbox' === value || 'radio' === value ) {
+				$hrFields.show();
+
+				if ( useHierarchical ) {
+					$hrAccordion.show();
+				} else {
+					$hrAccordion.hide();
+				}
+			} else if ( 'select' === value || 'multi-select' === value ) {
+				$hrFields.show();
+				$hrAccordion.hide();
+			} else {
+				$hrFields.hide();
+			}
+		}
+	} );
+
+	// Hierarchical accordion field toggle visibility when show hierarchy is changed.
+	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
+		if ( '.wcapf-form-sub-field-hierarchical input' === handler ) {
+			const displayType  = $field.find( '.wcapf-form-sub-field-display_type select' ).val();
+			const $hrAccordion = $field.find( '.wcapf-form-sub-field-enable_hierarchy_accordion' );
+
+			if ( '1' === value ) {
+				if ( 'checkbox' === displayType || 'radio' === displayType ) {
+					$hrAccordion.show();
+				} else {
+					$hrAccordion.hide();
+				}
+			} else {
+				$hrAccordion.hide();
+			}
+		}
+	} );
+
 	// Override no-results-message, all-items-label field's toggle visibility when text display type is changed.
 	fieldWrapper.on( 'after_toggle_request', function( e, handler, value, $field ) {
 		if ( '.wcapf-form-sub-field-display_type select' === handler ) {
