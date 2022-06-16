@@ -739,6 +739,10 @@ abstract class WCAPF_Field {
 
 		$classes = array( 'wcapf-nav-filter' );
 
+		if ( $field_instance->hierarchical && $field_instance->enable_hierarchy_accordion ) {
+			$classes[] = 'hierarchy-accordion';
+		}
+
 		if ( ! $items ) {
 			$classes[] = 'wcapf-field-hidden';
 		}

@@ -8,5 +8,8 @@
  */
 
 $btn_title = $btn_title ?: __( 'Reset', 'wc-ajax-product-filter' );
+?>
 
-echo WCAPF_Helper::get_reset_filters_button_markup( $btn_title );
+<div class="wcapf-reset-filters">
+	<?php echo WCAPF_Helper::get_reset_filters_button_markup( $btn_title ); ?>
+</div>

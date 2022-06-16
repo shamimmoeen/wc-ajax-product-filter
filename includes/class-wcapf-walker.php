@@ -267,10 +267,6 @@ class WCAPF_Walker {
 			$wrapper_classes = 'wcapf-labeled-nav display-type-' . $display_type;
 		}
 
-		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
-			$wrapper_classes .= ' hierarchy-accordion';
-		}
-
 		if ( $show_count ) {
 			$wrapper_classes .= ' show-count';
 		}
@@ -299,9 +295,12 @@ class WCAPF_Walker {
 	/**
 	 * Build the hierarchical menu.
 	 *
-	 * @param array $tree The tree as multidimensional array.
+	 * @param array $tree   The tree as multidimensional array.
+	 * @param array $parent The parent item data.
+	 *
+	 * @return string
 	 */
-	private function build_hierarchical_menu( $tree ) {
+	private function build_hierarchical_menu( $tree, $parent = array() ) {
 		$html = '';
 
 		if ( $tree ) {
@@ -314,9 +313,7 @@ class WCAPF_Walker {
 				$depth = $item['depth'];
 
 				if ( 1 === $increment ) {
-					$parent_wrapper_class = apply_filters( 'wcapf_tree_parent_wrapper_class', 'with-children', $depth );
-
-					$html .= '<ul class="' . esc_attr( $parent_wrapper_class ) . '">';
+					$html .= $this->hierarchical_menu_start_markup( $parent );
 				}
 
 				$html .= '<li>';
@@ -324,7 +321,7 @@ class WCAPF_Walker {
 
 				if ( isset( $item['children'] ) ) {
 					$html .= $this->get_hierarchy_accordion_html( $item );
-					$html .= $this->build_hierarchical_menu( $item['children'] );
+					$html .= $this->build_hierarchical_menu( $item['children'], $item );
 				}
 
 				$html .= '</li>';
@@ -336,6 +333,46 @@ class WCAPF_Walker {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Hierarchical menu's start markup.
+	 *
+	 * @param array $parent The parent item.
+	 *
+	 * @return string
+	 */
+	private function hierarchical_menu_start_markup( $parent ) {
+		$attrs = '';
+
+		if ( $parent ) {
+			$attrs .= ' class="item-children"';
+
+			if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
+				if ( $this->item_active_as_ancestor( $parent ) ) {
+					$attrs .= ' style="display: block;"';
+				} else {
+					$attrs .= ' style="display: none;"';
+				}
+			}
+		}
+
+		return '<ul' . $attrs . '>';
+	}
+
+	/**
+	 * Checks if the given item is active as ancestor.
+	 *
+	 * @param array $item The item data.
+	 *
+	 * @return bool
+	 */
+	private function item_active_as_ancestor( $item ) {
+		if ( in_array( $item['id'], $this->active_ancestors ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -447,21 +484,6 @@ class WCAPF_Walker {
 		}
 
 		return $html;
-	}
-
-	/**
-	 * Checks if the given item is active as ancestor.
-	 *
-	 * @param array $item The item data.
-	 *
-	 * @return bool
-	 */
-	private function item_active_as_ancestor( $item ) {
-		if ( in_array( $item['id'], $this->active_ancestors ) ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

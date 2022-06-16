@@ -10,6 +10,8 @@
 const wcapf_params = wcapf_params || {
 	'filter_input_delay': '',
 	'chosen_lib_search_threshold': '',
+	'preserve_hierarchy_accordion_state': '',
+	'enable_animation_for_hierarchy_accordion': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '', // todo
@@ -87,7 +89,16 @@ jQuery( document ).ready(
 		// Initialize hierarchy accordion
 		function initHierarchyAccordion() {
 			$wcapfNavFilters.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
-				$( this ).toggleClass( 'active' );
+				const $this  = $( this );
+				const $child = $this.parent( 'li' ).children( 'ul' );
+
+				$this.toggleClass( 'active' );
+
+				if ( wcapf_params.enable_animation_for_hierarchy_accordion ) {
+					$child.slideToggle();
+				} else {
+					$child.toggle();
+				}
 			} );
 		}
 
@@ -390,13 +401,29 @@ jQuery( document ).ready(
 							const $inner     = $field.find( '.wcapf-field-inner' );
 							const _field     = $data.find( fieldID );
 							const fieldClass = $( _field ).attr( 'class' );
-							const _html      = _field.find( '.wcapf-field-inner' ).html();
+
+							// Preserve hierarchy accordion state.
+							if ( wcapf_params.preserve_hierarchy_accordion_state ) {
+								if ( $field.hasClass( 'hierarchy-accordion' ) ) {
+									$field.find( '.hierarchy-accordion-toggle.active' ).each( function() {
+										const itemValue      = $( this ).parent().children( 'input' ).val();
+										const toggleSelector = 'input[value="' + itemValue + '"] ~ .hierarchy-accordion-toggle';
+										const ulSelector     = 'input[value="' + itemValue + '"] ~ ul';
+										const _classes       = 'hierarchy-accordion-toggle active';
+
+										_field.find( toggleSelector ).attr( 'class', _classes );
+										_field.find( ulSelector ).show();
+									} );
+								}
+							}
+
+							const _html = _field.find( '.wcapf-field-inner' ).html();
+
+							// Update the field's class.
+							$field.attr( 'class', fieldClass );
 
 							// When called from history back or forward request then rerender all fields.
 							if ( forceReRender ) {
-
-								// update class
-								$field.attr( 'class', fieldClass );
 
 								// update field
 								$inner.html( _html );
@@ -406,16 +433,8 @@ jQuery( document ).ready(
 								// Selectively rerender the fields.
 								if ( $field.hasClass( 'wcapf-nav-filter' ) ) {
 
-									// update class
-									$field.attr( 'class', fieldClass );
-
 									// update field
 									$inner.html( _html );
-
-								} else {
-
-									// We need to update the fields' classes always.
-									$field.attr( 'class', fieldClass );
 
 								}
 
