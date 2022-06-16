@@ -254,8 +254,10 @@ class WCAPF {
 	 */
 	private function get_js_params() {
 		$params = array(
-			'filter_input_delay'          => 800, // In milliseconds.
-			'chosen_lib_search_threshold' => 10,
+			'filter_input_delay'                       => 800, // In milliseconds.
+			'chosen_lib_search_threshold'              => 10,
+			'preserve_hierarchy_accordion_state'       => true,
+			'enable_animation_for_hierarchy_accordion' => true,
 		);
 
 		$params = array_merge( $params, WCAPF_Helper::get_settings() );
