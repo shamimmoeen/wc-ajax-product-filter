@@ -480,7 +480,9 @@ class WCAPF_Walker {
 				$classes .= ' active';
 			}
 
-			$html .= '<span class="' . esc_attr( $classes ) . '" tabindex="0"></span>';
+			$toggle_content = apply_filters( 'wcapf_hierarchy_accordion_toggle_content', '' );
+
+			$html .= '<span class="' . esc_attr( $classes ) . '" tabindex="0">' . $toggle_content . '</span>';
 		}
 
 		return $html;
