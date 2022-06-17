@@ -426,6 +426,8 @@ jQuery( document ).ready( function( $ ) {
 					}
 
 				}
+
+				$field.trigger( 'wcapf-field-updated', [ _field ] );
 			} );
 
 			// Replace old shop loop with new one.
