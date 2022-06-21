@@ -287,13 +287,12 @@ class WCAPF_Product_Filter {
 		$term_ids   = $this->get_chosen_term_ids( $filter_values, $field_instance );
 		$_terms_ids = $term_ids;
 
-		$is_hierarchical  = is_taxonomy_hierarchical( $taxonomy );
-		$include_children = apply_filters( 'wcapf_taxonomy_include_children', true, $field_instance );
+		$is_hierarchical = is_taxonomy_hierarchical( $taxonomy );
 
 		$join = "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
 
 		if ( 'or' === $query_type ) {
-			if ( $is_hierarchical && $include_children ) {
+			if ( $is_hierarchical ) {
 				$with_children = array();
 
 				foreach ( $term_ids as $term_id ) {
@@ -314,7 +313,7 @@ class WCAPF_Product_Filter {
 			$clauses = array();
 
 			foreach ( $term_ids as $term_id ) {
-				if ( $is_hierarchical && $include_children ) {
+				if ( $is_hierarchical ) {
 					$with_children = get_term_children( $term_id, $taxonomy );
 
 					$and_term_id = array_merge( array( $term_id ), $with_children );
