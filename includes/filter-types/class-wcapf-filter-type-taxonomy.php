@@ -242,10 +242,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$_clauses = array();
 
 		foreach ( $_all_terms as $term_id ) {
-			if ( ! in_array( $term_id, $term_ids ) ) {
-				continue;
-			}
-
 			$child_terms = get_term_children( $term_id, $this->taxonomy );
 			$term_ids_in = array();
 
@@ -253,10 +249,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 				$_child_terms = array();
 
 				foreach ( $child_terms as $child_term ) {
-					if ( ! in_array( $child_term, $term_ids ) ) {
-						continue;
-					}
-
 					$_child_terms[] = $child_term;
 				}
 
@@ -385,6 +377,8 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 	/**
 	 * Builds the taxonomy tree.
+	 *
+	 * @source https://stackoverflow.com/a/8587437
 	 *
 	 * @param array   $terms     The terms.
 	 * @param integer $parent_id The parent identifier.

@@ -275,7 +275,11 @@ jQuery( document ).ready( function( $ ) {
 				},
 				{
 					'selector': '.wcapf-form-sub-field-limit_values_by_id',
-					'value': [ 'include', 'exclude' ],
+					'value': [ 'include' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-exclude_values_id',
+					'value': [ 'exclude' ],
 				},
 			],
 		},
