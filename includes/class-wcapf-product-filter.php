@@ -289,7 +289,18 @@ class WCAPF_Product_Filter {
 
 		$is_hierarchical = is_taxonomy_hierarchical( $taxonomy );
 
-		$join = "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
+		$join = '';
+
+		if ( 'or' === $query_type ) {
+			$join .= "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
+		} else {
+			foreach ( $term_ids as $index => $value ) {
+				$postfix    = $index + 1;
+				$join_alias = $filter_key . $postfix;
+
+				$join .= " LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
+			}
+		}
 
 		if ( 'or' === $query_type ) {
 			if ( $is_hierarchical ) {
@@ -312,7 +323,7 @@ class WCAPF_Product_Filter {
 		} else {
 			$clauses = array();
 
-			foreach ( $term_ids as $term_id ) {
+			foreach ( $term_ids as $index => $term_id ) {
 				if ( $is_hierarchical ) {
 					$with_children = get_term_children( $term_id, $taxonomy );
 
@@ -321,8 +332,12 @@ class WCAPF_Product_Filter {
 					$and_term_id = array( $term_id );
 				}
 
-				$id_sql    = $utils::get_ids_sql( $and_term_id );
-				$clauses[] = "$filter_key.term_taxonomy_id IN $id_sql";
+				$id_sql = $utils::get_ids_sql( $and_term_id );
+
+				$postfix    = $index + 1;
+				$join_alias = $filter_key . $postfix;
+
+				$clauses[] = "$join_alias.term_taxonomy_id IN $id_sql";
 			}
 
 			if ( $clauses ) {
