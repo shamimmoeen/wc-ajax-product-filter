@@ -72,54 +72,11 @@ class WCAPF_Hooks {
 		// print_r( WCAPF_Helper::get_chosen_filters());
 		// echo '</pre>';
 
-		$args = array(
-			'post_type' => 'product',
-			'fields'    => 'ids',
-			'nopaging'  => true,
-			// 'tax_query' => array(
-			// 	'relation' => 'AND',
-			// 	array(
-			// 		'taxonomy' => 'product_cat',
-			// 		'field'    => 'id',
-			// 		'terms'    => '25',
-			// 	),
-			// 	array(
-			// 		'taxonomy' => 'product_cat',
-			// 		'field'    => 'id',
-			// 		'terms'    => '34',
-			// 	),
-			// ),
-			'meta_query' => array(
-				// 'relation' => 'OR',
-				array(
-					'key' => '_unique_id',
-					'value'    => 'id',
-				),
-				array(
-					'key' => '_unique_id',
-					'value'    => 'id',
-				),
-			),
-		);
+		// global $wp_query;
 
-		$query = new WP_Query( $args );
-
-		$products = $query->get_posts();
-
-		echo '<pre>';
-		print_r( $products );
-		echo '</pre>';
-
-		echo '<pre>';
-		print_r( $query->request );
-		echo '</pre>';
-
-
-		global $wp_query;
-
-		echo '<pre>';
-		print_r( $wp_query->request );
-		echo '</pre>';
+		// echo '<pre>';
+		// print_r( $wp_query->request );
+		// echo '</pre>';
 	}
 
 	/**
