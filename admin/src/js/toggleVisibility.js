@@ -335,6 +335,11 @@ jQuery( document ).ready( function( $ ) {
 			'event': 'change',
 		},
 		{
+			'handler': '.wcapf-form-sub-field-order_terms_by select',
+			'handlerType': 'select',
+			'event': 'change',
+		},
+		{
 			'handler': '.wcapf-form-sub-field-enable_active_filters_soft_limit input',
 			'handlerType': 'radio',
 			'event': 'change',
