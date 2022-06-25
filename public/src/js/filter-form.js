@@ -12,12 +12,15 @@ const wcapf_params = wcapf_params || {
 	'chosen_lib_search_threshold': '',
 	'preserve_hierarchy_accordion_state': '',
 	'enable_animation_for_hierarchy_accordion': '',
+	'show_results_loading': '',
+	'scroll_to_top_speed': '',
+	'scroll_to_top_easing': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '', // todo
 	'sorting_control': '', // todo
-	'scroll_to_top': '', // todo
-	'scroll_to_top_offset': '', // todo
+	'scroll_to_top': '',
+	'scroll_to_top_offset': '',
 	'custom_scripts': '',
 };
 
@@ -358,6 +361,45 @@ jQuery( document ).ready( function( $ ) {
 	// Things are done before applying the filter like showing a loading indicator.
 	function wcapfBeforeUpdate() {
 		$body.trigger( 'wcapf_before_update_filters' );
+
+		let container;
+
+		if ( $( wcapf_params.shop_loop_container.length ) ) {
+			container = wcapf_params.shop_loop_container;
+		} else if ( $( wcapf_params.not_found_container ).length ) {
+			container = wcapf_params.not_found_container;
+		}
+
+		// Show loading image.
+		if ( wcapf_params.show_results_loading ) {
+			const loadingMarkup = '<div class="wcapf-shop-loop-loading"></div>';
+			$( loadingMarkup ).prependTo( container );
+		}
+
+		// Scroll to top.
+		if ( wcapf_params.scroll_to_top ) {
+			let adjustingOffset, offset;
+
+			if ( wcapf_params.scroll_to_top_offset ) {
+				adjustingOffset = parseInt( wcapf_params.scroll_to_top_offset );
+			}
+
+			const $container = $( container );
+
+			if ( $container.length ) {
+				offset = $container.offset().top - adjustingOffset;
+
+				if ( offset < 0 ) {
+					offset = 0;
+				}
+
+				$( 'html, body' ).stop().animate(
+					{ scrollTop: offset },
+					wcapf_params.scroll_to_top_speed,
+					wcapf_params.scroll_to_top_easing,
+				);
+			}
+		}
 	}
 
 	// Things are done after applying the filter like scroll to top.

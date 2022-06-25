@@ -258,6 +258,9 @@ class WCAPF {
 			'chosen_lib_search_threshold'              => 10,
 			'preserve_hierarchy_accordion_state'       => true,
 			'enable_animation_for_hierarchy_accordion' => true,
+			'show_results_loading'                     => true,
+			'scroll_to_top_speed'                      => 'normal',
+			'scroll_to_top_easing'                     => 'easeOutQuad',
 		);
 
 		$params = array_merge( $params, WCAPF_Helper::get_settings() );
