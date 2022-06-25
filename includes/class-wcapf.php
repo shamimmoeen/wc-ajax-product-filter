@@ -232,10 +232,15 @@ class WCAPF {
 			true
 		);
 
+		$deps = array(
+			'jquery',
+			'jquery-effects-core', // @source https://stackoverflow.com/a/27598883
+		);
+
 		wp_enqueue_script(
 			'wc-ajax-product-filter-public-scripts',
 			WCAPF_PLUGIN_URL . 'public/js/wc-ajax-product-filter-public-scripts' . $ext,
-			array( 'jquery' ),
+			$deps,
 			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
 			true
 		);
