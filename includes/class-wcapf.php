@@ -264,7 +264,9 @@ class WCAPF {
 			'preserve_hierarchy_accordion_state'       => true,
 			'enable_animation_for_hierarchy_accordion' => true,
 			'show_results_loading'                     => true,
-			'scroll_to_top_speed'                      => 'normal',
+			'hierarchy_accordion_animation_speed'      => 400,
+			'hierarchy_accordion_animation_easing'     => 'swing',
+			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 		);
 

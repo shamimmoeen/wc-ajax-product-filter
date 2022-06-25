@@ -13,6 +13,8 @@ const wcapf_params = wcapf_params || {
 	'preserve_hierarchy_accordion_state': '',
 	'enable_animation_for_hierarchy_accordion': '',
 	'show_results_loading': '',
+	'hierarchy_accordion_animation_speed': '',
+	'hierarchy_accordion_animation_easing': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
 	'shop_loop_container': '',
@@ -90,7 +92,10 @@ jQuery( document ).ready( function( $ ) {
 			$this.toggleClass( 'active' );
 
 			if ( wcapf_params.enable_animation_for_hierarchy_accordion ) {
-				$child.slideToggle();
+				$child.slideToggle(
+					wcapf_params.hierarchy_accordion_animation_speed,
+					wcapf_params.hierarchy_accordion_animation_easing
+				);
 			} else {
 				$child.toggle();
 			}
@@ -396,7 +401,7 @@ jQuery( document ).ready( function( $ ) {
 				$( 'html, body' ).stop().animate(
 					{ scrollTop: offset },
 					wcapf_params.scroll_to_top_speed,
-					wcapf_params.scroll_to_top_easing,
+					wcapf_params.scroll_to_top_easing
 				);
 			}
 		}
