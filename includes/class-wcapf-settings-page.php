@@ -272,7 +272,7 @@ class WCAPF_Settings_Page {
 			'pagination_container' => '.woocommerce-pagination',
 			'sorting_control'      => '1',
 			'scroll_to_top'        => '1',
-			'scroll_to_top_offset' => '0',
+			'scroll_to_top_offset' => '100',
 			'custom_scripts'       => '',
 			'filter_relationships' => 'and',
 			'update_count'         => '1',

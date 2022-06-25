@@ -1,0 +1,15 @@
+.wcapf-before-products {
+	position: relative;
+	z-index: 1;
+
+	.wcapf-shop-loop-loading {
+		background-color: var(--wcapf-shop-loop-loading-bg-color);
+		background-image: url('../../assets/images/loader.gif');
+		background-position: 50% 10%;
+		background-repeat: no-repeat;
+		height: 100%;
+		position: absolute;
+		width: 100%;
+		z-index: 2;
+	}
+}
