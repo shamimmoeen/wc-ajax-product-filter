@@ -111,13 +111,15 @@ class WCAPF_Admin {
 	public function plugin_action_links( $links ) {
 		$settings_page_url = WCAPF_Helper::settings_page_url();
 
-		$links[] = sprintf(
+		$new_links = array();
+
+		$new_links[] = sprintf(
 			'<a href="%1$s">%2$s</a>',
 			esc_url( $settings_page_url ),
 			__( 'Settings', 'wc-ajax-product-filter' )
 		);
 
-		return $links;
+		return array_merge( $new_links, $links );
 	}
 
 }
