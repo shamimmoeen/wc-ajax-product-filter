@@ -375,7 +375,7 @@ class WCAPF_Helper {
 			$attrs = 'class="item"';
 			$attrs .= ' tabindex="0"';
 			$attrs .= ' data-filter-key="' . esc_attr( $filter_key ) . '"';
-			$attrs .= ' data-value="' . esc_attr( $value ) . '"';
+			$attrs .= ' data-value="' . esc_attr( rawurlencode( $value ) ) . '"';
 
 			$label = apply_filters( 'wcapf_active_filter_label', $label, $layout, $filter_type, $filter_id, $filter_key );
 
