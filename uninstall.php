@@ -12,14 +12,15 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-$settings = WCAPF_Helper::get_settings();
+$option_key = 'wcapf_settings';
+$settings   = get_option( $option_key );
 
 if ( ! $settings['remove_data'] ) {
 	return;
 }
 
 // Delete the plugin settings.
-delete_option( WCAPF_Helper::settings_option_key() );
+delete_option( $option_key );
 
 // Delete posts + data.
 $wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type = 'wcapf-filter';" );
