@@ -20,7 +20,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top_easing': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
-	'pagination_container': '', // todo
+	'pagination_container': '',
 	'sorting_control': '',
 	'scroll_to_top': '',
 	'scroll_to_top_offset': '',
@@ -461,9 +461,6 @@ jQuery( document ).ready( function( $ ) {
 		initDatepicker();
 		initDefaultOrderBy();
 
-		// todo
-		// init pagination
-
 		$body.trigger( 'wcapf_after_update_filters' );
 	}
 
@@ -720,6 +717,24 @@ jQuery( document ).ready( function( $ ) {
 		history.pushState( {}, '', query );
 
 		wcapfFilterProducts();
+	}
+
+	// Handle the pagination request via ajax.
+	if ( wcapf_params.pagination_container ) {
+		const $container = $( wcapf_params.shop_loop_container );
+		const selector   = wcapf_params.pagination_container + ' a';
+
+		if ( $container.length ) {
+			$container.on( 'click', selector, function( e ) {
+				e.preventDefault();
+
+				const location = $( this ).attr( 'href' );
+
+				history.pushState( {}, '', location );
+
+				wcapfFilterProducts();
+			} );
+		}
 	}
 
 	// The function to handle the common filter requests.
