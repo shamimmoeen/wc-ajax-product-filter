@@ -270,6 +270,7 @@ class WCAPF_Settings_Page {
 			'custom_scripts'       => '',
 			'filter_relationships' => 'and',
 			'update_count'         => '1',
+			'remove_data'          => '',
 		);
 	}
 
