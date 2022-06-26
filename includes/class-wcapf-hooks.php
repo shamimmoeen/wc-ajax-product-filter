@@ -80,14 +80,10 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 * HTML wrapper to insert after the not found product loops.
-	 *
-	 * @param string $template_name The template name.
+	 * HTML wrapper to insert before the shop loop.
 	 */
-	public function insert_after_no_products( $template_name ) {
-		if ( 'loop/no-products-found.php' === $template_name ) {
-			echo '</div>';
-		}
+	public function insert_before_shop_loop() {
+		echo '<div class="wcapf-before-products">';
 	}
 
 	/**
@@ -109,10 +105,14 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 * HTML wrapper to insert before the shop loop.
+	 * HTML wrapper to insert after the not found product loops.
+	 *
+	 * @param string $template_name The template name.
 	 */
-	public function insert_before_shop_loop() {
-		echo '<div class="wcapf-before-products">';
+	public function insert_after_no_products( $template_name ) {
+		if ( 'loop/no-products-found.php' === $template_name ) {
+			echo '</div>';
+		}
 	}
 
 	/**
