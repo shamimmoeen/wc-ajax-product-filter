@@ -19,6 +19,8 @@ if ( ! $settings['remove_data'] ) {
 	return;
 }
 
+global $wpdb;
+
 // Delete the plugin settings.
 delete_option( $option_key );
 
