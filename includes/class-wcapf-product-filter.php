@@ -109,6 +109,8 @@ class WCAPF_Product_Filter {
 
 		$chosen['product-status'] = $statuses;
 
+		$chosen = $this->set_default_sorting_data( $chosen );
+
 		// TODO: Maybe redundant.
 		$remaining_filters = array();
 
@@ -576,6 +578,50 @@ class WCAPF_Product_Filter {
 		}
 
 		return apply_filters( 'wcapf_active_product_status_filter_data', $filter_data, $field_instance );
+	}
+
+	/**
+	 * Sets data for the default sorting.
+	 *
+	 * @param array $chosen The chosen filters array.
+	 *
+	 * @return array
+	 */
+	private function set_default_sorting_data( $chosen ) {
+		$settings = WCAPF_Helper::get_settings();
+
+		$sorting_control = $settings['sorting_control'];
+
+		$enable_in_active_filters = apply_filters( 'wcapf_show_default_sorting_in_active_filters', $sorting_control );
+
+		if ( ! $enable_in_active_filters ) {
+			return $chosen;
+		}
+
+		if ( isset( $_GET['orderby'] ) ) {
+			$values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( sanitize_key( $_GET['orderby'] ) );
+
+			$active_filters = array();
+
+			$label = apply_filters(
+				'wcapf_active_filter_label_for_default_sorting',
+				__( 'Sort By: ', 'wc-ajax-product-filter' )
+			);
+
+			foreach ( $values as $value ) {
+				$active_filters[ $value ] = $label . $value;
+			}
+
+			$data = array(
+				'values'         => $values,
+				'filter_key'     => 'orderby',
+				'active_filters' => $active_filters,
+			);
+
+			$chosen['filters_data']['orderby'] = $data;
+		}
+
+		return $chosen;
 	}
 
 	public function get_full_where_clause() {
