@@ -117,12 +117,6 @@ class WCAPF_Settings_Page {
 			),
 			array(
 				'type'  => 'checkbox',
-				'id'    => 'use_transients',
-				'label' => __( 'Use transients', 'wc-ajax-product-filter' ),
-				'desc'  => __( 'Frequently accessed query data will be stored in transients - this sometimes helps on sites with larger numbers of products and filters/options.', 'wc-ajax-product-filter' ),
-			),
-			array(
-				'type'  => 'checkbox',
 				'id'    => 'remove_data',
 				'label' => __( 'Remove data', 'wc-ajax-product-filter' ),
 				'desc'  => __( 'Enable this setting to remove all data when uninstalling WC Ajax Product Filter via the `plugins` page.', 'wc-ajax-product-filter' ),

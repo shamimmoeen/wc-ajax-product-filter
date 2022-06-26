@@ -88,11 +88,6 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 
 			$sql = implode( ' ', $query );
 
-			/**
-			 * Run the sql query.
-			 *
-			 * TODO: Cache the results.
-			 */
 			$count = $wpdb->get_var( $sql );
 
 			$items[ $id ]['count'] = $count;

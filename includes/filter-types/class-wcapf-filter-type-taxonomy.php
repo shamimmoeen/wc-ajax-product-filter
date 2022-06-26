@@ -47,18 +47,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function prepare_items() {
-		$args = apply_filters(
-			'wcapf_get_terms_args',
-			array(
-				'taxonomy'               => $this->taxonomy,
-				'hide_empty'             => false,
-				'count'                  => true,
-				'update_term_meta_cache' => false,
-				// TODO: The order and order_by args should go here.
-			),
-			$this->field
+		$default = array(
+			'taxonomy'               => $this->taxonomy,
+			'hide_empty'             => false,
+			'count'                  => true,
+			'update_term_meta_cache' => false,
 		);
 
+		$args   = apply_filters( 'wcapf_get_terms_args', $default, $this->field );
 		$_terms = get_terms( $args );
 		$terms  = array();
 
