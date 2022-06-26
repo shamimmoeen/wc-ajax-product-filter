@@ -1,6 +1,7 @@
 <?php
 /**
- * todo
+ * @var string $value
+ * @var string $label
  */
 
 $value = isset( $value ) ? $value : '';

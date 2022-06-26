@@ -47,36 +47,6 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
-		add_action( 'woocommerce_update_product', array( $this, 'delete_transients' ) );
-		add_action( 'storefront_before_content', array( $this, 'show_query' ), 80 );
-	}
-
-	// TODO: Remove this.
-	public function show_query() {
-		$args = array(
-			'paginate' => true,
-			'page'     => 1,
-			'limit'    => 50,
-		);
-
-		// TODO: Check if the filter query also work with other wp queries.
-		$results = wc_get_products( $args );
-
-		// global $wpdb;
-
-		// echo '<pre>';
-		// print_r( $wpdb->last_query );
-		// echo '</pre>';
-
-		// echo '<pre>';
-		// print_r( WCAPF_Helper::get_chosen_filters());
-		// echo '</pre>';
-
-		// global $wp_query;
-
-		// echo '<pre>';
-		// print_r( $wp_query->request );
-		// echo '</pre>';
 	}
 
 	/**
@@ -113,21 +83,6 @@ class WCAPF_Hooks {
 		if ( 'loop/no-products-found.php' === $template_name ) {
 			echo '</div>';
 		}
-	}
-
-	/**
-	 * Delete transients when product gets updated.
-	 *
-	 * @param int $post_id The post id.
-	 *
-	 * TODO: Remove this.
-	 */
-	public function delete_transients( $post_id ) {
-		if ( ! $post_id ) {
-			return;
-		}
-
-		delete_transient( 'wcapf_term_product_counts_product_cat' );
 	}
 
 }
