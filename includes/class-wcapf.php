@@ -261,6 +261,7 @@ class WCAPF {
 		$params = array(
 			'filter_input_delay'                       => 800, // In milliseconds.
 			'chosen_lib_search_threshold'              => 10,
+			'enable_chosen_for_default_sorting'        => false,
 			'preserve_hierarchy_accordion_state'       => true,
 			'enable_animation_for_hierarchy_accordion' => true,
 			'show_results_loading'                     => true,

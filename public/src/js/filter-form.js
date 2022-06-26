@@ -10,6 +10,7 @@
 const wcapf_params = wcapf_params || {
 	'filter_input_delay': '',
 	'chosen_lib_search_threshold': '',
+	'enable_chosen_for_default_sorting': '',
 	'preserve_hierarchy_accordion_state': '',
 	'enable_animation_for_hierarchy_accordion': '',
 	'show_results_loading': '',
@@ -20,7 +21,7 @@ const wcapf_params = wcapf_params || {
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '', // todo
-	'sorting_control': '', // todo
+	'sorting_control': '',
 	'scroll_to_top': '',
 	'scroll_to_top_offset': '',
 	'custom_scripts': '',
@@ -407,16 +408,61 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
+	function initDefaultOrderBy() {
+		const $container = $( wcapf_params.shop_loop_container );
+
+		// Attach chosen.
+		if ( wcapf_params.enable_chosen_for_default_sorting ) {
+			if ( jQuery().chosen ) {
+				$container.find( '.woocommerce-ordering select.orderby' ).chosen( {
+					'disable_search_threshold': 15,
+				} );
+			}
+		}
+
+		if ( ! wcapf_params.sorting_control ) {
+			$container.find( '.woocommerce-ordering' ).each( function() {
+				const $orderingForm = $( this );
+
+				$orderingForm.on( 'change', 'select.orderby', function() {
+					$orderingForm.submit();
+				} );
+			} );
+
+			return;
+		}
+
+		$container.find( '.woocommerce-ordering' ).each( function() {
+			const $orderingForm = $( this );
+
+			$orderingForm.on( 'submit', function( e ) {
+				e.preventDefault();
+			} );
+
+			$orderingForm.on( 'change', 'select.orderby', function( e ) {
+				e.preventDefault();
+
+				const order      = $( this ).val();
+				const filter_key = 'orderby';
+
+				wcapfUpdateQueryStringParameter( filter_key, order );
+				wcapfFilterProducts();
+			} );
+		} );
+	}
+
+	initDefaultOrderBy();
+
 	// Things are done after applying the filter like scroll to top.
 	function wcapfAfterUpdate() {
 		initChosen();
 		initHierarchyAccordion();
 		initNoUISlider();
 		initDatepicker();
+		initDefaultOrderBy();
 
 		// todo
-		// reinitialize ordering
-		// wcapfInitOrder();
+		// init pagination
 
 		$body.trigger( 'wcapf_after_update_filters' );
 	}
