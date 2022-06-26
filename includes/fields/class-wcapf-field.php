@@ -151,10 +151,12 @@ abstract class WCAPF_Field {
 		return apply_filters( 'wcapf_field_group_fields', $group_fields, $this->type() );
 	}
 
-	// TODO: Make it abstract.
-	protected function field_groups() {
-		return array();
-	}
+	/**
+	 * Abstract method to set the field groups from the child classes.
+	 *
+	 * @return array
+	 */
+	abstract protected function field_groups();
 
 	/**
 	 * The title group fields.
@@ -688,7 +690,9 @@ abstract class WCAPF_Field {
 	 * @return void
 	 */
 	public function filter_form() {
-		// TODO: Maybe show the preview in the backend also.
+		/**
+		 * TODO: Maybe show the preview in the backend also.
+		 */
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}

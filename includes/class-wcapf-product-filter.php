@@ -111,7 +111,6 @@ class WCAPF_Product_Filter {
 
 		$chosen = $this->set_default_sorting_data( $chosen );
 
-		// TODO: Maybe redundant.
 		$remaining_filters = array();
 
 		foreach ( array_keys( $filters_data ) as $_filter_key ) {
