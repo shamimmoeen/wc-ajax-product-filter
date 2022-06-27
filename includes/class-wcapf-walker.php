@@ -642,32 +642,7 @@ class WCAPF_Walker {
 	}
 
 	private function labeled_item( $item ) {
-		$style = '';
-
-		$display_type = $this->display_type;
-
-		$id = $item['id'];
-
-		if ( 'color' === $display_type ) {
-			$color = '#fff'; // Default color.
-
-			if ( 'manual_entry' === $this->get_options ) {
-				if ( ! empty( $item['color'] ) ) {
-					$color = $item['color'];
-				}
-			} else {
-				$appearance_options = isset( $this->custom_appearance_options[ $id ] )
-					? $this->custom_appearance_options[ $id ]
-					: array();
-
-				if ( ! empty( $appearance_options['color'] ) ) {
-					$color = $appearance_options['color'];
-				}
-			}
-
-			$style .= ' style="background-color: ' . $color . ';"';
-		}
-
+		$attrs   = '';
 		$classes = 'item';
 
 		if ( $this->item_active( $item ) ) {
@@ -676,7 +651,6 @@ class WCAPF_Walker {
 
 		$item_value = rawurlencode( $item['id'] );
 
-		$attrs = $style;
 		$attrs .= ' data-value="' . esc_attr( $item_value ) . '"';
 		$attrs .= ' tabindex="0"';
 
@@ -684,36 +658,8 @@ class WCAPF_Walker {
 
 		$html = '<div class="' . $classes . '"' . $attrs . '>';
 
-		$html .= wp_kses_post( apply_filters( 'wcapf_before_labeled_item', '', $item, $this ) );
-
-		if ( 'color' !== $display_type && 'image' !== $display_type ) {
-			$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
-			$html  .= wp_kses_post( $label );
-		}
-
-		if ( 'image' === $display_type ) {
-			$image_url = '';
-
-			if ( 'manual_entry' === $this->get_options ) {
-				if ( ! empty( $item['image_url'] ) ) {
-					$image_url = $item['image_url'];
-				}
-			} else {
-				$appearance_options = isset( $this->custom_appearance_options[ $id ] )
-					? $this->custom_appearance_options[ $id ]
-					: array();
-
-				if ( ! empty( $appearance_options['image_url'] ) ) {
-					$image_url = $appearance_options['image_url'];
-				}
-			}
-
-			if ( $image_url ) {
-				$html .= '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $item['name'] ) . '">';
-			}
-		}
-
-		$html .= wp_kses_post( apply_filters( 'wcapf_after_labeled_item', '', $item, $this ) );
+		$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
+		$html  .= wp_kses_post( $label );
 
 		if ( $this->show_count ) {
 			$html .= '<span class="count">' . $item['count'] . '</span>';
@@ -721,17 +667,7 @@ class WCAPF_Walker {
 
 		$html .= '</div>';
 
-		$inner = apply_filters( 'wcapf_labeled_item', $html, $item, $this );
-
-		$children = isset( $item['children'] ) ? $item['children'] : array();
-
-		if ( $children ) {
-			foreach ( $children as $child_item ) {
-				$inner .= $this->labeled_item( $child_item );
-			}
-		}
-
-		return $inner;
+		return $html;
 	}
 
 	/**
