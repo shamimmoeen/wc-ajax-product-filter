@@ -46,7 +46,9 @@ $helper = new WCAPF_Helper;
 	<?php endif; ?>
 
 	<?php if ( ! $all_filters ) : ?>
-		<div class="empty-filter-message"><?php echo esc_html( $empty_filter_message ); ?></div>
+		<div class="active-items">
+			<div class="empty-filter-message"><?php echo esc_html( $empty_filter_message ); ?></div>
+		</div>
 	<?php endif; ?>
 
 	<?php
