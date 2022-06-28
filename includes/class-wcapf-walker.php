@@ -121,6 +121,27 @@ class WCAPF_Walker {
 	public $custom_appearance_options;
 
 	/**
+	 * Enable tooltip.
+	 *
+	 * @var string
+	 */
+	public $enable_tooltip;
+
+	/**
+	 * Enable tooltip.
+	 *
+	 * @var string
+	 */
+	public $show_count_in_tooltip;
+
+	/**
+	 * Tooltip position.
+	 *
+	 * @var string
+	 */
+	public $tooltip_position;
+
+	/**
 	 * The active filters.
 	 *
 	 * @var array
@@ -171,6 +192,9 @@ class WCAPF_Walker {
 			'filter_id'                  => '',
 			'get_options'                => '',
 			'custom_appearance_options'  => array(),
+			'enable_tooltip'             => '',
+			'show_count_in_tooltip'      => '',
+			'tooltip_position'           => '',
 		);
 
 		foreach ( $default_properties as $key => $value ) {

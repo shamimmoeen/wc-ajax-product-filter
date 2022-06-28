@@ -365,6 +365,21 @@ jQuery( document ).ready( function( $ ) {
 				},
 			],
 		},
+		{
+			'handler': '.wcapf-form-sub-field-enable_tooltip input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-show_count_in_tooltip',
+					'value': [ '1' ],
+				},
+				{
+					'selector': '.wcapf-form-sub-field-tooltip_position',
+					'value': [ '1' ],
+				},
+			],
+		},
 	];
 
 	function _handleToggleRequest( data, currentSelector, value ) {
