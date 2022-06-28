@@ -52,7 +52,7 @@ class WCAPF_Rating_Filter {
 		add_filter( 'wcapf_taxonomy_filter_values', array( $this, 'set_rating_filter_values' ), 10, 2 );
 		add_filter( 'wcapf_active_taxonomy_filter_data', array( $this, 'set_rating_filter_data' ), 10, 3 );
 
-		add_filter( 'wcapf_tree_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
+		add_filter( 'wcapf_menu_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
 		add_filter( 'wcapf_labeled_item_name', array( $this, 'set_labeled_item_name' ), 10, 3 );
 		add_filter( 'wcapf_dropdown_item_name', array( $this, 'set_dropdown_item_name' ), 10, 3 );
 	}

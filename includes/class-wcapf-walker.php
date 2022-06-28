@@ -235,9 +235,9 @@ class WCAPF_Walker {
 	/**
 	 * Build the menu.
 	 *
-	 * @param array $tree The tree as multidimensional array.
+	 * @param array $items The array of items.
 	 */
-	public function build_menu( $tree ) {
+	public function build_menu( $items ) {
 		$display_type = $this->display_type;
 		$show_count   = $this->show_count;
 
@@ -251,10 +251,10 @@ class WCAPF_Walker {
 				)
 			);
 
-			$tree = array_merge( $all_items, $tree );
+			$items = array_merge( $all_items, $items );
 		}
 
-		$tree = apply_filters( 'wcapf_menu_items', $tree, $this );
+		$items = apply_filters( 'wcapf_menu_items', $items, $this );
 
 		$list_types     = array( 'checkbox', 'radio' );
 		$dropdown_types = array( 'select', 'multiselect' );
@@ -273,14 +273,14 @@ class WCAPF_Walker {
 
 		if ( in_array( $display_type, $list_types ) ) {
 			if ( $this->hierarchical ) {
-				$html = $this->build_hierarchical_menu( $tree );
+				$html = $this->build_hierarchical_menu( $items );
 			} else {
-				$html = $this->build_non_hierarchical_menu( $tree );
+				$html = $this->build_non_hierarchical_menu( $items );
 			}
 		} elseif ( in_array( $display_type, $dropdown_types ) ) {
-			$html = $this->build_dropdown_menu( $tree );
+			$html = $this->build_dropdown_menu( $items );
 		} else {
-			$html = $this->build_labeled_nav( $tree );
+			$html = $this->build_labeled_nav( $items );
 		}
 
 		$attrs = $this->get_wrapper_attrs();
@@ -295,19 +295,19 @@ class WCAPF_Walker {
 	/**
 	 * Build the hierarchical menu.
 	 *
-	 * @param array $tree   The tree as multidimensional array.
+	 * @param array $items  The array of items.
 	 * @param array $parent The parent item data.
 	 *
 	 * @return string
 	 */
-	private function build_hierarchical_menu( $tree, $parent = array() ) {
+	private function build_hierarchical_menu( $items, $parent = array() ) {
 		$html = '';
 
-		if ( $tree ) {
-			$size      = count( $tree );
+		if ( $items ) {
+			$size      = count( $items );
 			$increment = 0;
 
-			foreach ( $tree as $item ) {
+			foreach ( $items as $item ) {
 				$increment ++;
 
 				$depth = $item['depth'];
@@ -317,7 +317,7 @@ class WCAPF_Walker {
 				}
 
 				$html .= '<li>';
-				$html .= $this->tree_item( $item, $depth );
+				$html .= $this->menu_item( $item, $depth );
 
 				if ( isset( $item['children'] ) ) {
 					$html .= $this->get_hierarchy_accordion_html( $item );
@@ -376,14 +376,14 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * Tree/Menu item.
+	 * Menu item.
 	 *
 	 * @param array $item  The item array.
 	 * @param int   $depth The item depth.
 	 *
 	 * @return string
 	 */
-	private function tree_item( $item, $depth ) {
+	private function menu_item( $item, $depth ) {
 		$html         = '';
 		$checked      = '';
 		$input_markup = '';
@@ -408,7 +408,7 @@ class WCAPF_Walker {
 		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
 		$input_markup .= $checked . '>';
 
-		$inner = $this->tree_item_inner( $item, $unique_id, $depth );
+		$inner = $this->menu_item_inner( $item, $unique_id, $depth );
 
 		$html .= $input_markup;
 		$html .= $inner;
@@ -440,17 +440,17 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * Tree/Menu item inner content.
+	 * Menu item inner content.
 	 *
 	 * @param array $item  The item array.
 	 * @param mixed $depth The item depth.
 	 *
 	 * @return string
 	 */
-	private function tree_item_inner( $item, $unique_id, $depth = null ) {
+	private function menu_item_inner( $item, $unique_id, $depth = null ) {
 		$inner = '<label for="' . esc_attr( $unique_id ) . '">';
 
-		$name = apply_filters( 'wcapf_tree_item_name', $item['name'], $item, $this );
+		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
 
 		$inner .= '<span>' . wp_kses_post( $name ) . '</span>';
 
@@ -491,33 +491,24 @@ class WCAPF_Walker {
 	/**
 	 * Build non-hierarchical menu.
 	 *
-	 * @param array $tree      The tree as multidimensional array.
-	 * @param bool  $wrap_with Determine if we wrap with 'ul' or not.
+	 * @param array $items The array of items.
 	 */
-	private function build_non_hierarchical_menu( $tree, $wrap_with = true ) {
+	private function build_non_hierarchical_menu( $items ) {
 		$html  = '';
 		$depth = 0;
 
-		if ( ! $tree ) {
+		if ( ! $items ) {
 			return $html;
 		}
 
-		if ( $wrap_with ) {
-			$html .= '<ul>';
-		}
+		$html .= '<ul>';
 
-		foreach ( $tree as $item ) {
+		foreach ( $items as $item ) {
 			$html .= '<li>';
-			$html .= $this->tree_item( $item, $depth );
-
-			if ( isset( $item['children'] ) ) {
-				$html .= $this->build_non_hierarchical_menu( $item['children'], false );
-			}
+			$html .= $this->menu_item( $item, $depth );
 		}
 
-		if ( $wrap_with ) {
-			$html .= '</ul>';
-		}
+		$html .= '</ul>';
 
 		return $html;
 	}
@@ -525,9 +516,9 @@ class WCAPF_Walker {
 	/**
 	 * Build the dropdown menu.
 	 *
-	 * @param array $tree The tree as multidimensional array.
+	 * @param array $items The array of items.
 	 */
-	private function build_dropdown_menu( $tree ) {
+	private function build_dropdown_menu( $items ) {
 		$display_type   = $this->display_type;
 		$input_name     = $this->filter_key;
 		$input_multiple = '';
@@ -562,7 +553,7 @@ class WCAPF_Walker {
 		$html .= $input_multiple;
 		$html .= '>';
 
-		foreach ( $tree as $item ) {
+		foreach ( $items as $item ) {
 			$html .= $this->dropdown_item( $item );
 		}
 
@@ -588,7 +579,7 @@ class WCAPF_Walker {
 		$option .= '<option value="' . esc_attr( $item_value ) . '"' . $selected . '>';
 
 		if ( $this->hierarchical ) {
-			$option .= $this->dropdown_item_depth( $item );
+			$option .= $this->dropdown_item_indent( $item );
 		}
 
 		$inner = $item['name'];
@@ -619,22 +610,35 @@ class WCAPF_Walker {
 		return $inner;
 	}
 
-	private function dropdown_item_depth( $item ) {
-		$spaces = '';
-		$depth  = $item['depth'];
+	/**
+	 * Indent for hierarchy in dropdown.
+	 *
+	 * @param array $item The item array.
+	 *
+	 * @return string
+	 */
+	private function dropdown_item_indent( $item ) {
+		$indent  = '';
+		$_indent = apply_filters( 'wcapf_dropdown_item_indent_content', '&nbsp;&nbsp;&nbsp;' );
+		$depth   = $item['depth'];
 
 		while ( $depth > 1 ) {
-			$spaces .= '&nbsp;&nbsp;&nbsp;';
+			$indent .= $_indent;
 			$depth --;
 		}
 
-		return $spaces;
+		return $indent;
 	}
 
-	private function build_labeled_nav( $tree ) {
+	/**
+	 * Build the labeled nav menu.
+	 *
+	 * @param array $items The array of items.
+	 */
+	private function build_labeled_nav( $items ) {
 		$html = '';
 
-		foreach ( $tree as $item ) {
+		foreach ( $items as $item ) {
 			$html .= $this->labeled_item( $item );
 		}
 
