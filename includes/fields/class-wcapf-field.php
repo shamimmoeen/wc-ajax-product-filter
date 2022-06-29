@@ -751,7 +751,7 @@ abstract class WCAPF_Field {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$this->before_filter_form( $classes, $field_instance );
+		$this->before_filter_form( $classes, $field_instance, $items );
 		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		$this->after_filter_form( $field_instance );
 	}
@@ -761,15 +761,16 @@ abstract class WCAPF_Field {
 	 *
 	 * @param array                $classes        The field classes.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                $items          The filter items.
 	 *
 	 * @return void
 	 */
-	protected function before_filter_form( $classes, $field_instance ) {
+	protected function before_filter_form( $classes, $field_instance, $items = array() ) {
 		array_unshift( $classes, 'wcapf-single-filter' );
 
 		$classes[] = 'wcapf-' . $this->type() . '-filter';
 
-		$classes = apply_filters( 'wcapf_field_classes', $classes, $field_instance );
+		$classes = apply_filters( 'wcapf_field_classes', $classes, $field_instance, $items );
 
 		$field_classes = implode( ' ', $classes );
 		$show_title    = $this->get_sub_field_value( 'show_title' );

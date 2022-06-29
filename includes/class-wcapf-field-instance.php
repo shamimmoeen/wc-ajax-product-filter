@@ -26,9 +26,6 @@ class WCAPF_Field_Instance {
 	public $get_options;
 	public $manual_options;
 	public $custom_appearance_options;
-	public $enable_tooltip;
-	public $show_count_in_tooltip;
-	public $tooltip_position;
 	public $type;
 	public $filter_id;
 	public $filter_key;
@@ -178,10 +175,6 @@ class WCAPF_Field_Instance {
 		$this->post_property = $this->get_sub_field_value( 'post_property' );
 
 		$this->custom_appearance_options = $this->get_appearance_data();
-
-		$this->enable_tooltip        = $this->get_sub_field_value( 'enable_tooltip' );
-		$this->show_count_in_tooltip = $this->get_sub_field_value( 'show_count_in_tooltip' );
-		$this->tooltip_position      = $this->get_sub_field_value( 'tooltip_position' );
 	}
 
 	/**

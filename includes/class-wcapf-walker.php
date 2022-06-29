@@ -121,25 +121,11 @@ class WCAPF_Walker {
 	public $custom_appearance_options;
 
 	/**
-	 * Enable tooltip.
+	 * The property for the extra field data.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	public $enable_tooltip;
-
-	/**
-	 * Enable tooltip.
-	 *
-	 * @var string
-	 */
-	public $show_count_in_tooltip;
-
-	/**
-	 * Tooltip position.
-	 *
-	 * @var string
-	 */
-	public $tooltip_position;
+	public $field_data;
 
 	/**
 	 * The active filters.
@@ -175,6 +161,11 @@ class WCAPF_Walker {
 		$this->active_ancestors = $this->active_ancestors();
 	}
 
+	/**
+	 * @param WCAPF_Field_Instance $field The field instance.
+	 *
+	 * @return void
+	 */
 	private function set_properties( $field ) {
 		$default_properties = array(
 			'display_type'               => '',
@@ -192,9 +183,6 @@ class WCAPF_Walker {
 			'filter_id'                  => '',
 			'get_options'                => '',
 			'custom_appearance_options'  => array(),
-			'enable_tooltip'             => '',
-			'show_count_in_tooltip'      => '',
-			'tooltip_position'           => '',
 		);
 
 		foreach ( $default_properties as $key => $value ) {
@@ -206,6 +194,8 @@ class WCAPF_Walker {
 
 			$this->$key = $property_value;
 		}
+
+		$this->field_data = apply_filters( 'wcapf_walker_field_data', array(), $field );
 	}
 
 	/**
@@ -313,7 +303,7 @@ class WCAPF_Walker {
 		$menu .= $html;
 		$menu .= '</div>';
 
-		return apply_filters( 'wcapf_walker_menu', $menu, $this );
+		return apply_filters( 'wcapf_walker_menu', $menu, $items, $this );
 	}
 
 	/**
@@ -520,6 +510,7 @@ class WCAPF_Walker {
 	private function build_non_hierarchical_menu( $items ) {
 		$html  = '';
 		$depth = 0;
+		$index = 0;
 
 		if ( ! $items ) {
 			return $html;
@@ -528,7 +519,10 @@ class WCAPF_Walker {
 		$html .= '<ul>';
 
 		foreach ( $items as $item ) {
-			$html .= '<li>';
+			$index ++;
+			$attrs = apply_filters( 'wcapf_non_hierarchical_menu_item_attrs', '', $index, $this, $item );
+
+			$html .= '<li' . $attrs . '>';
 			$html .= $this->menu_item( $item, $depth );
 		}
 
@@ -660,16 +654,18 @@ class WCAPF_Walker {
 	 * @param array $items The array of items.
 	 */
 	private function build_labeled_nav( $items ) {
-		$html = '';
+		$html  = '';
+		$index = 0;
 
 		foreach ( $items as $item ) {
-			$html .= $this->labeled_item( $item );
+			$index ++;
+			$html .= $this->labeled_item( $item, $index );
 		}
 
 		return $html;
 	}
 
-	private function labeled_item( $item ) {
+	private function labeled_item( $item, $index ) {
 		$attrs   = '';
 		$classes = 'item';
 
@@ -682,7 +678,8 @@ class WCAPF_Walker {
 		$attrs .= ' data-value="' . esc_attr( $item_value ) . '"';
 		$attrs .= ' tabindex="0"';
 
-		$attrs = apply_filters( 'wcapf_labeled_item_attrs', $attrs, $item, $this );
+		$classes = apply_filters( 'wcapf_labeled_item_classes', $classes, $index, $this, $item );
+		$attrs   = apply_filters( 'wcapf_labeled_item_attrs', $attrs, $item, $this );
 
 		$html = '<div class="' . $classes . '"' . $attrs . '>';
 

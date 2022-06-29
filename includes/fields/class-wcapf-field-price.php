@@ -63,7 +63,7 @@ class WCAPF_Field_Price extends WCAPF_Field {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$this->before_filter_form( $classes, $field_instance );
+		$this->before_filter_form( $classes, $field_instance, $items );
 
 		if ( in_array( $display_type, $range_number_filters ) ) {
 			$this->render_range_number_filter( $field_instance, $items );

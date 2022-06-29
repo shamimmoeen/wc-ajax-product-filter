@@ -235,12 +235,12 @@ jQuery( document ).ready( function( $ ) {
 		},
 		{
 			'handler': '.wcapf-form-sub-field-enable_soft_limit input',
-			'handlerType': 'radio',
+			'handlerType': 'checkbox',
 			'event': 'change',
 			'dependant': [
 				{
 					'selector': '.wcapf-form-sub-field-soft_limit',
-					'value': [ 'enable' ],
+					'value': [ '1' ],
 				},
 			],
 		},
@@ -340,28 +340,28 @@ jQuery( document ).ready( function( $ ) {
 			'event': 'change',
 		},
 		{
-			'handler': '.wcapf-form-sub-field-enable_active_filters_soft_limit input',
-			'handlerType': 'radio',
-			'event': 'change',
-			'dependant': [
-				{
-					'selector': '.active-filters-soft-limit-fields',
-					'value': [ 'enable' ],
-				},
-			],
-		},
-		{
 			'handler': '.wcapf-form-sub-field-active_filters_layout input',
 			'handlerType': 'radio',
 			'event': 'change',
 			'dependant': [
 				{
-					'selector': '.wcapf-form-sub-field-soft_limit',
+					'selector': '.simple-layout-soft-fields-start',
 					'value': [ 'simple' ],
 				},
 				{
-					'selector': '.wcapf-form-sub-field-soft_limit_filter_groups',
+					'selector': '.extended-layout-soft-fields-start',
 					'value': [ 'extended' ],
+				},
+			],
+		},
+		{
+			'handler': '.wcapf-form-sub-field-enable_soft_limit_for_extended_layout input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-soft_limit_for_extended_layout',
+					'value': [ '1' ],
 				},
 			],
 		},
