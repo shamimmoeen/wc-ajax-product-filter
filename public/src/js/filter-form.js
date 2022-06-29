@@ -477,7 +477,7 @@ jQuery( document ).ready( function( $ ) {
 				const $field     = $( fieldID );
 				const $inner     = $field.find( '.wcapf-field-inner' );
 				const _field     = $data.find( fieldID );
-				const fieldClass = $( _field ).attr( 'class' );
+				let fieldClasses = $( _field ).attr( 'class' );
 
 				// Preserve hierarchy accordion state.
 				if ( wcapf_params.preserve_hierarchy_accordion_state ) {
@@ -496,8 +496,19 @@ jQuery( document ).ready( function( $ ) {
 
 				const _html = _field.find( '.wcapf-field-inner' ).html();
 
+				// Show soft limit items.
+				const softLimitSelector = 'show-hidden-items';
+
+				if ( $field.hasClass( softLimitSelector ) ) {
+					if ( ! _field.hasClass( softLimitSelector ) ) {
+						fieldClasses += ' ' + softLimitSelector;
+					}
+				} else {
+					fieldClasses = fieldClasses.replace( softLimitSelector, '' );
+				}
+
 				// Update the field's class.
-				$field.attr( 'class', fieldClass );
+				$field.attr( 'class', fieldClasses.trim() );
 
 				// When called from history back or forward request then rerender all fields.
 				if ( forceReRender ) {

@@ -61,7 +61,7 @@ class WCAPF_Field_Rating extends WCAPF_Field {
 			$classes[] = 'wcapf-field-hidden';
 		}
 
-		$this->before_filter_form( $classes, $field_instance );
+		$this->before_filter_form( $classes, $field_instance, $items );
 		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		$this->after_filter_form( $field_instance );
 	}
