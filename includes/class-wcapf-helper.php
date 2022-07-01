@@ -361,18 +361,25 @@ class WCAPF_Helper {
 	 * @param array  $filter_data Active filters data.
 	 * @param string $filter_key  The filter key.
 	 * @param string $layout      The layout, simple or extended.
+	 * @param string $extra_class Markup extra class.
 	 *
 	 * @return string
 	 */
-	public static function get_active_filters_markup( $filter_data, $filter_key, $layout ) {
+	public static function get_active_filters_markup( $filter_data, $filter_key, $layout, $extra_class = '' ) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : array();
 		$filter_id      = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : array();
 
 		$html = '';
 
+		$classes = 'item';
+
+		if ( $extra_class ) {
+			$classes .= ' ' . $extra_class;
+		}
+
 		foreach ( $active_filters as $value => $label ) {
-			$attrs = 'class="item"';
+			$attrs = 'class="' . $classes . '"';
 			$attrs .= ' tabindex="0"';
 			$attrs .= ' data-filter-key="' . esc_attr( $filter_key ) . '"';
 			$attrs .= ' data-value="' . esc_attr( rawurlencode( $value ) ) . '"';
@@ -386,15 +393,11 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @param string $btn_title Button title.
+	 * @param string $button_label The label for button.
 	 *
 	 * @return string
 	 */
-	public static function get_reset_filters_button_markup( $btn_title, $tag = 'button' ) {
-		if ( ! $btn_title ) {
-			return '';
-		}
-
+	public static function get_reset_filters_button_markup( $button_label, $tag = 'button' ) {
 		$active_filters = self::get_active_filters_data();
 		$filter_keys    = array_keys( $active_filters );
 
@@ -412,11 +415,11 @@ class WCAPF_Helper {
 
 		if ( 'a' === $tag ) {
 			$html = '<a role="button" tabindex="0" class="wcapf-reset-filters-btn" ' . $attrs . '>';
-			$html .= $btn_title;
+			$html .= $button_label;
 			$html .= '</a>';
 		} else {
 			$html = '<button type="button" class="wcapf-reset-filters-btn" ' . $attrs . '>';
-			$html .= $btn_title;
+			$html .= $button_label;
 			$html .= '</button>';
 		}
 
@@ -426,7 +429,7 @@ class WCAPF_Helper {
 	/**
 	 * @return array
 	 */
-	public static function get_active_filters_data() {
+	public static function get_active_filters_data( $sort_by_value = false ) {
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 		$active_filters = array();
 
@@ -440,20 +443,41 @@ class WCAPF_Helper {
 					continue;
 				}
 
-				$active_filters[ $filter_key ] = array(
-					'filter_type'    => $filter_type,
-					'filter_id'      => $filter_id,
-					'active_filters' => $_active_filters,
-				);
+				if ( $sort_by_value ) {
+					foreach ( $_active_filters as $value => $label ) {
+						$active_filters[] = array(
+							'filter_key'     => $filter_key,
+							'filter_type'    => $filter_type,
+							'filter_id'      => $filter_id,
+							'active_filters' => array( $value => $label ),
+						);
+					}
+				} else {
+					$active_filters[ $filter_key ] = array(
+						'filter_type'    => $filter_type,
+						'filter_id'      => $filter_id,
+						'active_filters' => $_active_filters,
+					);
+				}
 			}
 		}
 
 		// Sort the data according to the order in $_GET variable.
 		$sorted = array();
 
-		foreach ( $_GET as $_key => $_value ) {
-			if ( array_key_exists( $_key, $active_filters ) ) {
-				$sorted[ $_key ] = $active_filters[ $_key ];
+		if ( $sort_by_value ) {
+			foreach ( $_GET as $_key => $_value ) {
+				foreach ( $active_filters as $active_filter ) {
+					if ( $_key === $active_filter['filter_key'] ) {
+						$sorted[] = $active_filter;
+					}
+				}
+			}
+		} else {
+			foreach ( $_GET as $_key => $_value ) {
+				if ( array_key_exists( $_key, $active_filters ) ) {
+					$sorted[ $_key ] = $active_filters[ $_key ];
+				}
 			}
 		}
 

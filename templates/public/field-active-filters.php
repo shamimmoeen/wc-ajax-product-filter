@@ -4,17 +4,17 @@
  */
 
 /**
- * @var int    $field_id             The field id.
- * @var string $layout               The layout, simple or extended.
- * @var array  $all_filters          All active filters array.
- * @var string $clear_btn_title      The clear all button title.
- * @var string $empty_filter_message No filter found message.
+ * @var WCAPF_Field_Instance $field_instance       The field instance.
+ * @var string               $layout               The layout, simple or extended.
+ * @var array                $all_filters          All active filters array.
+ * @var string               $clear_all_btn_label  The clear all button label.
+ * @var string               $empty_filter_message No filter found message.
  */
 
 $helper = new WCAPF_Helper;
 ?>
 
-<div class="wcapf-active-filters">
+<div class="wcapf-active-filters active-filter-layout-<?php echo esc_attr( $layout ); ?>">
 	<?php if ( 'simple' === $layout ) : ?>
 		<?php if ( $all_filters ) : ?>
 			<div class="active-items">
@@ -50,10 +50,15 @@ $helper = new WCAPF_Helper;
 			<div class="empty-filter-message"><?php echo esc_html( $empty_filter_message ); ?></div>
 		</div>
 	<?php endif; ?>
-
-	<?php
-	if ( $all_filters ) {
-		echo $helper::get_reset_filters_button_markup( $clear_btn_title, 'a' );
-	}
-	?>
 </div>
+
+<?php
+// 'Clear All' button.
+$enable_clear_btn = $field_instance->get_sub_field_value( 'enable_clear_all_button' );
+
+if ( $all_filters && $enable_clear_btn ) {
+	echo '<span class="clear-all-button-wrapper">';
+	echo $helper::get_reset_filters_button_markup( $clear_all_btn_label, 'a' );
+	echo '</span>';
+}
+?>
