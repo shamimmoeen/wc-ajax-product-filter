@@ -182,6 +182,16 @@ class WCAPF_Filter_Meta_Box {
 			}
 		}
 
+		// Set default label for the 'Clear All' button in active filters field.
+		if ( isset( $parsed_field['clear_all_button_label'] ) && empty( $parsed_field['clear_all_button_label'] ) ) {
+			$parsed_field['clear_all_button_label'] = __( 'Clear All', 'wc-ajax-product-filter' );
+		}
+
+		// Set default label for the reset filters button.
+		if ( isset( $parsed_field['reset_button_label'] ) && empty( $parsed_field['reset_button_label'] ) ) {
+			$parsed_field['reset_button_label'] = __( 'Reset', 'wc-ajax-product-filter' );
+		}
+
 		// Store the field key as sanitized.
 		$parsed_field['field_key'] = $filter_key;
 

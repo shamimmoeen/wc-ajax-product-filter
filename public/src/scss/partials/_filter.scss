@@ -174,9 +174,7 @@ a.wcapf-reset-filters-btn {
 	}
 
 	.wcapf-active-filter-group {
-		&:not(:last-child) {
-			margin: 0 0 var(--wcapf-active-filters-group-bottom-margin);
-		}
+		margin: 0 0 var(--wcapf-active-filters-group-bottom-margin);
 	}
 
 	.active-items {
@@ -207,12 +205,8 @@ a.wcapf-reset-filters-btn {
 		}
 	}
 
-	.wcapf-reset-filters-btn {
+	&.active-filter-layout-simple ~ .clear-all-button-wrapper {
 		display: inline-block;
-		margin: var(--wcapf-reset-filter-btn-top-margin) 0 0;
-	}
-
-	.wcapf-active-filter-group ~ .wcapf-reset-filters-btn {
-		margin-top: 0;
+		margin-top: var(--wcapf-clear-all-btn-top-margin);
 	}
 }

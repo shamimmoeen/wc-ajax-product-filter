@@ -292,10 +292,6 @@ jQuery( document ).ready( function( $ ) {
 					'selector': '.wcapf-form-sub-field-accordion_default_state',
 					'value': [ '1' ],
 				},
-				{
-					'selector': '.wcapf-form-sub-field-move_clear_filters_button_in_accordion_heading',
-					'value': [ '1' ],
-				},
 			],
 		},
 		{
@@ -319,6 +315,17 @@ jQuery( document ).ready( function( $ ) {
 			'event': 'change',
 		},
 		{
+			'handler': '.wcapf-form-sub-field-enable_clear_all_button input',
+			'handlerType': 'checkbox',
+			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.clear-all-button-fields-start',
+					'value': [ '1' ],
+				},
+			],
+		},
+		{
 			'handler': '.wcapf-form-sub-field-show_if_empty input',
 			'handlerType': 'checkbox',
 			'event': 'change',
@@ -333,6 +340,12 @@ jQuery( document ).ready( function( $ ) {
 			'handler': '.wcapf-form-sub-field-show_title input',
 			'handlerType': 'checkbox',
 			'event': 'change',
+			'dependant': [
+				{
+					'selector': '.wcapf-form-sub-field-move_clear_all_button_in_title',
+					'value': [ '1' ],
+				},
+			],
 		},
 		{
 			'handler': '.wcapf-form-sub-field-order_terms_by select',

@@ -4,12 +4,10 @@
  */
 
 /**
- * @var string $btn_title The button title.
+ * @var string $button_label The reset button label.
  */
-
-$btn_title = $btn_title ?: __( 'Reset', 'wc-ajax-product-filter' );
 ?>
 
 <div class="wcapf-reset-filters">
-	<?php echo WCAPF_Helper::get_reset_filters_button_markup( $btn_title ); ?>
+	<?php echo WCAPF_Helper::get_reset_filters_button_markup( $button_label ); ?>
 </div>

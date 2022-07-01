@@ -30,9 +30,9 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 					array(
 						array(
 							'type'     => 'text',
-							'id'       => 'btn_title',
-							'label'    => __( 'Button title', 'wc-ajax-product-filter' ),
-							'name'     => 'btn_title',
+							'id'       => 'reset_button_label',
+							'label'    => __( 'Button label', 'wc-ajax-product-filter' ),
+							'name'     => 'reset_button_label',
 							'default'  => __( 'Reset', 'wc-ajax-product-filter' ),
 							'position' => 20,
 						),
@@ -58,10 +58,15 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 		return 'reset-button';
 	}
 
+	/**
+	 * Output the field form.
+	 *
+	 * @return void
+	 */
 	protected function render_filter_form() {
 		$field_instance = new WCAPF_Field_Instance( $this->get_instance() );
 
-		$btn_title     = $this->get_sub_field_value( 'btn_title' );
+		$button_label  = $this->get_sub_field_value( 'reset_button_label' );
 		$show_if_empty = $this->get_sub_field_value( 'show_if_empty' );
 
 		$classes = array( 'wcapf-nav-filter' );
@@ -75,8 +80,9 @@ class WCAPF_Field_Reset_Button extends WCAPF_Field {
 		$this->before_filter_form( $classes, $field_instance );
 		WCAPF_Template_Loader::get_instance()->load(
 			'public/field-reset-filters',
-			array( 'btn_title' => $btn_title )
+			array( 'button_label' => $button_label )
 		);
 		$this->after_filter_form( $field_instance );
 	}
+
 }
