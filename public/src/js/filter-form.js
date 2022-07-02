@@ -215,14 +215,14 @@ jQuery( document ).ready( function( $ ) {
 				const maxValue = parseFloat( values[ 1 ] );
 
 				if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
-					const query = wcapfRemoveQueryStringParameter( filterKey );
+					const query = removeQueryStringParameter( filterKey );
 					history.pushState( {}, '', query );
 				} else {
 					const filterValString = minValue + rangeValuesSeparator + maxValue;
-					wcapfUpdateQueryStringParameter( filterKey, filterValString );
+					updateQueryStringParameter( filterKey, filterValString );
 				}
 
-				wcapfFilterProducts();
+				filterProducts();
 
 				$body.trigger( 'wcapf-nouislider-after-filter-products', [ $item, values ] );
 			}
@@ -317,13 +317,13 @@ jQuery( document ).ready( function( $ ) {
 				$wcapfDateFilter.removeData( 'timer' );
 
 				if ( filterValue ) {
-					wcapfUpdateQueryStringParameter( filterKey, filterValue );
+					updateQueryStringParameter( filterKey, filterValue );
 				} else {
-					const query = wcapfRemoveQueryStringParameter( filterKey );
+					const query = removeQueryStringParameter( filterKey );
 					history.pushState( {}, '', query );
 				}
 
-				wcapfFilterProducts();
+				filterProducts();
 			}, delay ) );
 		}
 	}
@@ -405,8 +405,8 @@ jQuery( document ).ready( function( $ ) {
 				const order      = $( this ).val();
 				const filter_key = 'orderby';
 
-				wcapfUpdateQueryStringParameter( filter_key, order );
-				wcapfFilterProducts();
+				updateQueryStringParameter( filter_key, order );
+				filterProducts();
 			} );
 		} );
 	}
@@ -536,7 +536,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// The main filter function.
-	function wcapfFilterProducts( forceReRender = false ) {
+	function filterProducts( forceReRender = false ) {
 		beforeFetchingProducts();
 
 		$.get( window.location.href, function( data ) {
@@ -631,7 +631,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// URL Parser
-	function wcapfGetUrlVars( url ) {
+	function getUrlVars( url ) {
 		let vars = {}, hash;
 
 		if ( typeof url === 'undefined' ) {
@@ -653,9 +653,9 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// everytime we apply the filter we set the current page to 1
-	function wcapfFixPagination() {
+	function fixPagination() {
 		let url                = window.location.href;
-		const params           = wcapfGetUrlVars( url );
+		const params           = getUrlVars( url );
 		const currentPageInUrl = parseInt( url.replace( /.+\/page\/(\d+)+/, '$1' ) );
 
 		if ( currentPageInUrl ) {
@@ -674,13 +674,13 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// update query string for categories, meta etc..
-	function wcapfUpdateQueryStringParameter( key, value, pushHistory, url ) {
+	function updateQueryStringParameter( key, value, pushHistory, url ) {
 		if ( typeof pushHistory === 'undefined' ) {
 			pushHistory = true;
 		}
 
 		if ( typeof url === 'undefined' ) {
-			url = wcapfFixPagination();
+			url = fixPagination();
 		}
 
 		const re        = new RegExp( '([?&])' + key + '=.*?(&|$)', 'i' );
@@ -701,12 +701,12 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// remove parameter from url
-	function wcapfRemoveQueryStringParameter( filterKey, url ) {
+	function removeQueryStringParameter( filterKey, url ) {
 		if ( typeof url === 'undefined' ) {
-			url = wcapfFixPagination();
+			url = fixPagination();
 		}
 
-		const oldParams         = wcapfGetUrlVars( url );
+		const oldParams         = getUrlVars( url );
 		const oldParamsLength   = Object.keys( oldParams ).length;
 		const startPosition     = url.indexOf( '?' );
 		const filterKeyPosition = url.indexOf( filterKey );
@@ -729,15 +729,15 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// take the key and value and make query
-	function wcapfMakeParameters( filterKey, filterValue, forceRerender = false, url ) {
+	function makeParameters( filterKey, filterValue, forceRerender = false, url ) {
 		const valueSeparator = ',';
 
 		let params, nextValues, emptyValue = false;
 
 		if ( typeof url !== 'undefined' ) {
-			params = wcapfGetUrlVars( url );
+			params = getUrlVars( url );
 		} else {
-			params = wcapfGetUrlVars();
+			params = getUrlVars();
 		}
 
 		if ( typeof params[ filterKey ] != 'undefined' ) {
@@ -773,29 +773,29 @@ jQuery( document ).ready( function( $ ) {
 
 		// update url and query string
 		if ( ! emptyValue ) {
-			wcapfUpdateQueryStringParameter( filterKey, nextValues );
+			updateQueryStringParameter( filterKey, nextValues );
 		} else {
-			const query = wcapfRemoveQueryStringParameter( filterKey );
+			const query = removeQueryStringParameter( filterKey );
 			history.pushState( {}, '', query );
 		}
 
-		wcapfFilterProducts( forceRerender );
+		filterProducts( forceRerender );
 	}
 
-	function wcapfSingleFilter( filterKey, filterValue ) {
-		const params = wcapfGetUrlVars();
+	function singleFilter( filterKey, filterValue ) {
+		const params = getUrlVars();
 		let query;
 
 		if ( typeof params[ filterKey ] !== 'undefined' && params[ filterKey ] === filterValue ) {
-			query = wcapfRemoveQueryStringParameter( filterKey );
+			query = removeQueryStringParameter( filterKey );
 		} else {
-			query = wcapfUpdateQueryStringParameter( filterKey, filterValue, false );
+			query = updateQueryStringParameter( filterKey, filterValue, false );
 		}
 
 		// update url
 		history.pushState( {}, '', query );
 
-		wcapfFilterProducts();
+		filterProducts();
 	}
 
 	// Handle the pagination request via ajax.
@@ -811,7 +811,7 @@ jQuery( document ).ready( function( $ ) {
 
 				history.pushState( {}, '', location );
 
-				wcapfFilterProducts();
+				filterProducts();
 			} );
 		}
 	}
@@ -829,18 +829,18 @@ jQuery( document ).ready( function( $ ) {
 		}
 
 		if ( ! filterValue.length ) {
-			const query = wcapfRemoveQueryStringParameter( filterKey );
+			const query = removeQueryStringParameter( filterKey );
 			history.pushState( {}, '', query );
 
-			wcapfFilterProducts();
+			filterProducts();
 
 			return;
 		}
 
 		if ( multipleFilter ) {
-			wcapfMakeParameters( filterKey, filterValue );
+			makeParameters( filterKey, filterValue );
 		} else {
-			wcapfSingleFilter( filterKey, filterValue );
+			singleFilter( filterKey, filterValue );
 		}
 	}
 
@@ -881,14 +881,14 @@ jQuery( document ).ready( function( $ ) {
 		const filterKey = fieldData.filterKey;
 
 		if ( ! filterValue.length ) {
-			const query = wcapfRemoveQueryStringParameter( filterKey );
+			const query = removeQueryStringParameter( filterKey );
 			history.pushState( {}, '', query );
 		} else {
 			const filterValString = filterValue.toString();
-			wcapfUpdateQueryStringParameter( filterKey, filterValString );
+			updateQueryStringParameter( filterKey, filterValString );
 		}
 
-		wcapfFilterProducts();
+		filterProducts();
 	} );
 
 	/**
@@ -957,14 +957,14 @@ jQuery( document ).ready( function( $ ) {
 			}
 
 			if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
-				const query = wcapfRemoveQueryStringParameter( filterKey );
+				const query = removeQueryStringParameter( filterKey );
 				history.pushState( {}, '', query );
 			} else {
 				const filterValString = minValue + rangeValuesSeparator + maxValue;
-				wcapfUpdateQueryStringParameter( filterKey, filterValString );
+				updateQueryStringParameter( filterKey, filterValString );
 			}
 
-			wcapfFilterProducts();
+			filterProducts();
 		}, delay ) );
 	} );
 
@@ -976,7 +976,7 @@ jQuery( document ).ready( function( $ ) {
 		const filterKey   = $item.attr( 'data-filter-key' );
 		const filterValue = $item.attr( 'data-value' );
 
-		wcapfMakeParameters( filterKey, filterValue, true );
+		makeParameters( filterKey, filterValue, true );
 	} );
 
 	function resetFilters( $button ) {
@@ -992,9 +992,9 @@ jQuery( document ).ready( function( $ ) {
 
 		$.each( filterKeys, function( i, filterKey ) {
 			if ( query ) {
-				query = wcapfRemoveQueryStringParameter( filterKey, query );
+				query = removeQueryStringParameter( filterKey, query );
 			} else {
-				query = wcapfRemoveQueryStringParameter( filterKey );
+				query = removeQueryStringParameter( filterKey );
 			}
 		} );
 
@@ -1009,7 +1009,7 @@ jQuery( document ).ready( function( $ ) {
 
 		history.pushState( {}, '', query );
 
-		wcapfFilterProducts( true );
+		filterProducts( true );
 	}
 
 	// Clear/Reset all filters.
@@ -1031,19 +1031,19 @@ jQuery( document ).ready( function( $ ) {
 		const fieldData = fields[ fieldID ];
 		const filterKey = fieldData.filterKey;
 
-		const query = wcapfRemoveQueryStringParameter( filterKey );
+		const query = removeQueryStringParameter( filterKey );
 		history.pushState( {}, '', query );
 
-		wcapfFilterProducts( true );
+		filterProducts( true );
 	} );
 
 	$body.on( 'wcapf-run-filter-products', function( e, forceReRender ) {
-		wcapfFilterProducts( forceReRender );
+		filterProducts( forceReRender );
 	} );
 
 	// History back and forward request handling.
 	$( window ).bind( 'popstate', function() {
-		wcapfFilterProducts( true );
+		filterProducts( true );
 	} );
 
 } );
