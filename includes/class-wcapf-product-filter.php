@@ -589,9 +589,7 @@ class WCAPF_Product_Filter {
 	private function set_default_sorting_data( $chosen ) {
 		$settings = WCAPF_Helper::get_settings();
 
-		$sorting_control = $settings['sorting_control'];
-
-		$enable_in_active_filters = apply_filters( 'wcapf_show_default_sorting_in_active_filters', $sorting_control );
+		$enable_in_active_filters = $settings['show_sorting_data_in_active_filters'];
 
 		if ( ! $enable_in_active_filters ) {
 			return $chosen;

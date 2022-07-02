@@ -261,14 +261,13 @@ class WCAPF {
 		$params = array(
 			'filter_input_delay'                       => 800, // In milliseconds.
 			'chosen_lib_search_threshold'              => 10,
-			'enable_chosen_for_default_sorting'        => false,
 			'preserve_hierarchy_accordion_state'       => true,
 			'enable_animation_for_hierarchy_accordion' => true,
-			'show_results_loading'                     => true,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
+			'is_mobile'                                => wp_is_mobile(),
 		);
 
 		$params = array_merge( $params, WCAPF_Helper::get_settings() );
