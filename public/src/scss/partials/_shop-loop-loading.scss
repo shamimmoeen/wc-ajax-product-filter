@@ -1,6 +1,6 @@
 .wcapf-before-products {
 	position: relative;
-	z-index: 1;
+	z-index: 100;
 
 	.wcapf-shop-loop-loading {
 		background-color: var(--wcapf-shop-loop-loading-bg-color);
@@ -10,6 +10,28 @@
 		height: 100%;
 		position: absolute;
 		width: 100%;
-		z-index: 2;
+		z-index: 1000;
+	}
+}
+
+.wcapf-results-loading {
+	position: relative;
+
+	.wcapf-shop-loop-loading {
+		background-color: rgba(255, 255, 255, 0.7);
+		height: 100%;
+		position: fixed;
+		width: 100%;
+		z-index: 1000;
+
+		.loading-img {
+			background-image: url('../../assets/images/loader.gif');
+			background-repeat: no-repeat;
+			height: 120px;
+			left: calc(50% - 120px);
+			position: absolute;
+			top: calc(50% - 120px);
+			width: 120px;
+		}
 	}
 }
