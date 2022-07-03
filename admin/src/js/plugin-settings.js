@@ -56,6 +56,7 @@ jQuery( document ).ready( function( $ ) {
 			$( '.scroll-window-dependent-fields, .settings-table-scroll_to_top_offset' ).show();
 			$( '.scroll-window-custom-element-input' ).hide();
 		} else if ( 'custom' === value ) {
+			$( '.scroll-window-dependent-fields, .settings-table-scroll_to_top_offset' ).show();
 			$( '.scroll-window-custom-element-input' ).show();
 		} else {
 			$( dependentFields ).show();

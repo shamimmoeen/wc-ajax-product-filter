@@ -232,10 +232,14 @@ class WCAPF {
 			true
 		);
 
-		$deps = array(
-			'jquery',
-			'jquery-effects-core', // @source https://stackoverflow.com/a/27598883
-		);
+		$deps = array( 'jquery' );
+
+		/**
+		 * Required for the scrollTo, slideToggle animations.
+		 *
+		 * @source https://stackoverflow.com/a/27598883
+		 */
+		$deps[] = 'jquery-effects-core';
 
 		wp_enqueue_script(
 			'wc-ajax-product-filter-public-scripts',
@@ -258,6 +262,8 @@ class WCAPF {
 	 * @return array
 	 */
 	private function get_js_params() {
+		$apply_filters_on_browser_history_change = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
+
 		$params = array(
 			'filter_input_delay'                       => 800, // In milliseconds.
 			'chosen_lib_search_threshold'              => 10,
@@ -265,9 +271,11 @@ class WCAPF {
 			'enable_animation_for_hierarchy_accordion' => true,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
+			'loading_element_class'                    => 'wcapf-shop-loop-loading',
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),
+			'apply_filters_on_browser_history_change'  => $apply_filters_on_browser_history_change,
 		);
 
 		$params = array_merge( $params, WCAPF_Helper::get_settings() );

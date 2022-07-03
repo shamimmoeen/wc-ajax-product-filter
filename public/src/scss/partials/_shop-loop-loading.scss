@@ -3,7 +3,8 @@
 	z-index: 100;
 
 	.wcapf-shop-loop-loading {
-		background-color: var(--wcapf-shop-loop-loading-bg-color);
+		background-color: var(--wcapf-results-container-loading-bg-color);
+		//noinspection CssUnknownTarget
 		background-image: url('../../assets/images/loader.gif');
 		background-position: 50% 10%;
 		background-repeat: no-repeat;
@@ -18,20 +19,25 @@
 	position: relative;
 
 	.wcapf-shop-loop-loading {
-		background-color: rgba(255, 255, 255, 0.7);
+		background-color: var(--wcapf-results-loading-body-bg-color);
 		height: 100%;
 		position: fixed;
 		width: 100%;
 		z-index: 1000;
 
 		.loading-img {
+			$size: 120px;
+
+			//noinspection CssUnknownTarget
 			background-image: url('../../assets/images/loader.gif');
 			background-repeat: no-repeat;
-			height: 120px;
-			left: calc(50% - 120px);
+			height: $size;
+			left: 50%;
+			margin-left: -#{$size / 2};
+			margin-top: -#{$size / 2};
 			position: absolute;
-			top: calc(50% - 120px);
-			width: 120px;
+			top: 50%;
+			width: $size;
 		}
 	}
 }

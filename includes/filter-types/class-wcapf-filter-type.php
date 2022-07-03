@@ -121,14 +121,10 @@ abstract class WCAPF_Filter_Type {
 	 */
 	protected function auto_count_enabled() {
 		$settings = WCAPF_Helper::get_settings();
-		$enabled  = true;
+		$enabled  = false;
 
-		if ( ! isset( $settings['update_count'] ) ) {
-			$enabled = false;
-		}
-
-		if ( ! $settings['update_count'] ) {
-			$enabled = false;
+		if ( isset( $settings['update_count'] ) && $settings['update_count'] ) {
+			$enabled = true;
 		}
 
 		return apply_filters( 'wcapf_filter_update_count', $enabled, $this->field );
