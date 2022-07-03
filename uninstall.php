@@ -2,10 +2,13 @@
 /**
  * Uninstalling WC Ajax Product Filter deletes the plugin settings, filter post types.
  *
- * @since      3.0.0
- * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes
- * @author     Mainul Hassan Main
+ * @since        3.0.0
+ * @package      wc-ajax-product-filter
+ * @subpackage   wc-ajax-product-filter/includes
+ * @author       Mainul Hassan Main
+ *
+ * @noinspection SqlNoDataSourceInspection
+ * @noinspection SqlDialectInspection
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
