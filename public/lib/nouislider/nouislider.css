@@ -8,6 +8,7 @@
   --wcapf-nouislider-handle-bg-color: #3ea8ff;
   --wcapf-nouislider-handle-hr-size: 4px;
   --wcapf-nouislider-handle-vr-size: 20px;
+  --wcapf-nouislider-disabled-opacity: 0.5;
 }
 /* Functional styling;
  * These styles are required for noUiSlider to function.
@@ -143,8 +144,9 @@
 }
 /* Disabled state;
  */
+[disabled] .wcapf-noui-handle,
 [disabled] .wcapf-noui-connect {
-  background: #B8B8B8;
+  opacity: var(--wcapf-nouislider-disabled-opacity);
 }
 [disabled].wcapf-noui-target,
 [disabled].wcapf-noui-handle,
