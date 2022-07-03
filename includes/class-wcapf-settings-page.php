@@ -179,9 +179,8 @@ class WCAPF_Settings_Page {
 		$this->field_select_tr( array(
 			'id'      => 'scroll_window_when',
 			'options' => array(
-				'initial' => __( 'Immediately', 'wc-ajax-product-filter' ),
-				'before'  => __( 'Before updating the results', 'wc-ajax-product-filter' ),
-				'after'   => __( 'After updating the results', 'wc-ajax-product-filter' ),
+				'immediately' => __( 'Immediately', 'wc-ajax-product-filter' ),
+				'after'       => __( 'After updating the results', 'wc-ajax-product-filter' ),
 			),
 		), $settings );
 
@@ -447,10 +446,10 @@ class WCAPF_Settings_Page {
 			'sorting_control'                     => '1',
 			'show_sorting_data_in_active_filters' => '1',
 			'attach_chosen_on_sorting'            => '',
-			'loading_animation_on'                => 'results',
+			'loading_animation_on'                => 'body',
 			'scroll_window'                       => 'results',
 			'scroll_window_for'                   => 'both',
-			'scroll_window_when'                  => 'initial',
+			'scroll_window_when'                  => 'after',
 			'scroll_window_custom_element'        => '',
 			'scroll_to_top_offset'                => '100',
 			'filter_relationships'                => 'and',

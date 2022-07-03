@@ -278,6 +278,7 @@ class WCAPF_Helper {
 	public static function get_settings() {
 		$option_name = self::settings_option_key();
 		$db_options  = get_option( $option_name );
+		$db_options  = $db_options ?: array();
 
 		if ( has_filter( $option_name ) ) {
 			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );

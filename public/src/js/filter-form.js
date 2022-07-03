@@ -14,9 +14,11 @@ const wcapf_params = wcapf_params || {
 	'enable_animation_for_hierarchy_accordion': '',
 	'hierarchy_accordion_animation_speed': '',
 	'hierarchy_accordion_animation_easing': '',
+	'loading_element_class': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
 	'is_mobile': '',
+	'apply_filters_on_browser_history_change': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'enable_pagination_via_ajax': '',
@@ -416,7 +418,7 @@ jQuery( document ).ready( function( $ ) {
 	function showLoadingAnimation() {
 		let container;
 
-		if ( $( wcapf_params.shop_loop_container.length ) ) {
+		if ( $( wcapf_params.shop_loop_container ).length ) {
 			container = wcapf_params.shop_loop_container;
 		} else if ( $( wcapf_params.not_found_container ).length ) {
 			container = wcapf_params.not_found_container;
@@ -430,15 +432,20 @@ jQuery( document ).ready( function( $ ) {
 
 		// Show loading image.
 		if ( 'none' !== wcapf_params.loading_animation_on ) {
-			const loadingMarkup = '<div class="wcapf-shop-loop-loading"><span class="loading-img"></span></div>';
+			const loadingMarkup = '<div class="' + wcapf_params.loading_element_class + '">' +
+				'<span class="loading-img"></span>' +
+				'</div>';
+
 			$( loadingMarkup ).prependTo( container );
 		}
 	}
 
 	function resetLoadingAnimation() {
 		if ( 'body' === wcapf_params.loading_animation_on ) {
-			$( wcapf_params.loading_animation_on ).addClass( 'wcapf-results-loading' );
-			$( wcapf_params.loading_animation_on ).find( '.wcapf-shop-loop-loading' ).remove();
+			$( wcapf_params.loading_animation_on ).removeClass( 'wcapf-results-loading' );
+
+			const selector = '.' + wcapf_params.loading_element_class;
+			$( wcapf_params.loading_animation_on ).find( selector ).remove();
 		}
 	}
 
@@ -471,7 +478,7 @@ jQuery( document ).ready( function( $ ) {
 
 		let container;
 
-		if ( $( wcapf_params.shop_loop_container.length ) ) {
+		if ( $( wcapf_params.shop_loop_container ).length ) {
 			container = wcapf_params.shop_loop_container;
 		} else if ( $( wcapf_params.not_found_container ).length ) {
 			container = wcapf_params.not_found_container;
@@ -502,7 +509,7 @@ jQuery( document ).ready( function( $ ) {
 	function beforeFetchingProducts() {
 		showLoadingAnimation();
 
-		if ( 'initial' === wcapf_params.scroll_window_when ) {
+		if ( 'immediately' === wcapf_params.scroll_window_when ) {
 			scrollTo();
 		}
 
@@ -510,9 +517,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function beforeUpdatingProducts() {
-		if ( 'before' === wcapf_params.scroll_window_when ) {
-			scrollTo();
-		}
+		resetLoadingAnimation();
 
 		$body.trigger( 'wcapf_before_updating_products' );
 	}
@@ -528,9 +533,6 @@ jQuery( document ).ready( function( $ ) {
 		if ( 'after' === wcapf_params.scroll_window_when ) {
 			scrollTo();
 		}
-
-		// todo: where do we place it?
-		resetLoadingAnimation();
 
 		$body.trigger( 'wcapf_after_updating_products' );
 	}
@@ -799,7 +801,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	// Handle the pagination request via ajax.
-	if ( wcapf_params.pagination_container ) {
+	if ( wcapf_params.enable_pagination_via_ajax && wcapf_params.pagination_container ) {
 		const $container = $( wcapf_params.shop_loop_container );
 		const selector   = wcapf_params.pagination_container + ' a';
 
@@ -1041,9 +1043,12 @@ jQuery( document ).ready( function( $ ) {
 		filterProducts( forceReRender );
 	} );
 
-	// History back and forward request handling.
-	$( window ).bind( 'popstate', function() {
-		filterProducts( true );
-	} );
+	if ( $( wcapf_params.shop_loop_container ).length || $( wcapf_params.not_found_container ).length ) {
+		if ( wcapf_params.apply_filters_on_browser_history_change ) {
+			$( window ).bind( 'popstate', function() {
+				filterProducts( true );
+			} );
+		}
+	}
 
 } );
