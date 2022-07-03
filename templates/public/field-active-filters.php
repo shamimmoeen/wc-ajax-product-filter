@@ -1,6 +1,11 @@
 <?php
 /**
  * The template to show the active filters.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/templates/public
+ * @author     Mainul Hassan Main
  */
 
 /**

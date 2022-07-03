@@ -4,7 +4,7 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/templates
+ * @subpackage wc-ajax-product-filter/templates/admin
  * @author     Mainul Hassan Main
  */
 
