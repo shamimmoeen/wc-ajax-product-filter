@@ -19,7 +19,9 @@ $helper = new WCAPF_Helper;
 		<?php if ( $all_filters ) : ?>
 			<div class="active-items">
 				<?php
-				foreach ( $all_filters as $filter_key => $filter_data ) {
+				foreach ( $all_filters as $filter_data ) {
+					$filter_key = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
+
 					echo $helper::get_active_filters_markup( $filter_data, $filter_key, $layout );
 				}
 				?>
