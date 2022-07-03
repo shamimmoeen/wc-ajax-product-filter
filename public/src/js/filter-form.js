@@ -18,6 +18,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
 	'is_mobile': '',
+	'disable_inputs_while_fetching_results': '',
 	'apply_filters_on_browser_history_change': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
@@ -48,6 +49,7 @@ jQuery( document ).ready( function( $ ) {
 	const $wcapfSingleFilters      = $( '.wcapf-single-filter' );
 	const $wcapfNavFilters         = $( '.wcapf-nav-filter' );
 	const $wcapfNumberRangeFilters = $( '.wcapf-number-range-filter' );
+	const $wcapfDateFilters        = $( '.wcapf-date-range-filter' );
 
 	$wcapfSingleFilters.each( function() {
 		const $field         = $( this );
@@ -229,7 +231,7 @@ jQuery( document ).ready( function( $ ) {
 				$body.trigger( 'wcapf-nouislider-after-filter-products', [ $item, values ] );
 			}
 
-			slider.noUiSlider.on( 'set', function( values ) {
+			slider.noUiSlider.on( 'change', function( values ) {
 				// Clear any previously set timer before setting a fresh one
 				clearTimeout( $item.data( 'timer' ) );
 
@@ -335,8 +337,7 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
-		const $wcapfDateFilters = $( '.wcapf-date-range-filter' );
-		const $wcapfDateFilter  = $wcapfDateFilters.find( '.wcapf-date-input' );
+		const $wcapfDateFilter = $wcapfDateFilters.find( '.wcapf-date-input' );
 
 		const format        = $wcapfDateFilter.attr( 'data-date-format' );
 		const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
@@ -440,6 +441,59 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
+	function disableNoUiSliders() {
+		if ( 'undefined' === typeof noUiSlider ) {
+			return;
+		}
+
+		$wcapfNumberRangeFilters.find( '.wcapf-noui-slider' ).each( function( e, element ) {
+			element.setAttribute( 'disabled', true );
+		} );
+	}
+
+	function disableLabels() {
+		const selectors = '.wcapf-labeled-nav .item, .wcapf-active-filters .item';
+
+		$wcapfSingleFilters.find( selectors ).addClass( 'disabled' );
+	}
+
+	function disableInputs() {
+		if ( ! wcapf_params.disable_inputs_while_fetching_results ) {
+			return;
+		}
+
+		const inputs = 'input, select';
+
+		$wcapfSingleFilters.find( inputs ).attr( 'disabled', 'disabled' );
+		$wcapfSingleFilters.find( inputs ).trigger( 'chosen:updated' );
+
+		disableNoUiSliders();
+		disableLabels();
+	}
+
+	function enableNoUiSliders() {
+		if ( 'undefined' === typeof noUiSlider ) {
+			return;
+		}
+
+		$wcapfNumberRangeFilters.find( '.wcapf-noui-slider' ).each( function( e, element ) {
+			element.removeAttribute( 'disabled' );
+		} );
+	}
+
+	function enableInputs() {
+		if ( ! wcapf_params.disable_inputs_while_fetching_results ) {
+			return;
+		}
+
+		const inputs = 'input';
+
+		$wcapfNumberRangeFilters.find( inputs ).removeAttr( 'disabled' );
+		$wcapfDateFilters.find( inputs ).removeAttr( 'disabled' );
+
+		enableNoUiSliders();
+	}
+
 	function resetLoadingAnimation() {
 		if ( 'body' === wcapf_params.loading_animation_on ) {
 			$( wcapf_params.loading_animation_on ).removeClass( 'wcapf-results-loading' );
@@ -507,6 +561,7 @@ jQuery( document ).ready( function( $ ) {
 
 	// Things are done before fetching the products like showing a loading indicator.
 	function beforeFetchingProducts() {
+		disableInputs();
 		showLoadingAnimation();
 
 		if ( 'immediately' === wcapf_params.scroll_window_when ) {
@@ -529,6 +584,7 @@ jQuery( document ).ready( function( $ ) {
 		initNoUISlider();
 		initDatepicker();
 		initDefaultOrderBy();
+		enableInputs();
 
 		if ( 'after' === wcapf_params.scroll_window_when ) {
 			scrollTo();
@@ -861,7 +917,7 @@ jQuery( document ).ready( function( $ ) {
 	);
 
 	// Handle the filter request for labeled item.
-	$wcapfNavFilters.on( 'click', '.wcapf-labeled-nav .item', function( event ) {
+	$wcapfNavFilters.on( 'click', '.wcapf-labeled-nav .item:not(.disabled)', function( event ) {
 		event.preventDefault();
 
 		const $item       = $( this );
@@ -971,7 +1027,7 @@ jQuery( document ).ready( function( $ ) {
 	} );
 
 	// Handle removing the active filters.
-	$wcapfNavFilters.on( 'click', '.wcapf-active-filters .item', function( event ) {
+	$wcapfNavFilters.on( 'click', '.wcapf-active-filters .item:not(.disabled)', function( event ) {
 		event.preventDefault();
 
 		const $item       = $( this );

@@ -66,7 +66,7 @@
 .wcapf-labeled-nav {
 	&:not(.display-type-color):not(.display-type-image) {
 		.count {
-			opacity: 0.6;
+			opacity: .6;
 
 			&::before {
 				content: ' (';
@@ -94,10 +94,20 @@
 	}
 }
 
+@mixin label_disable {
+	&.disabled {
+		cursor: var(--wcapf-layered-nav-item-disabled-cursor);
+		opacity: var(--wcapf-layered-nav-item-disabled-opacity);
+		user-select: none;
+	}
+}
+
 .wcapf-labeled-nav {
 	> div {
 		cursor: pointer;
 		display: inline-block;
+
+		@include label_disable;
 	}
 
 	&.display-type-label {
@@ -191,6 +201,8 @@ a.wcapf-reset-filters-btn {
 				content: '\00D7';
 				margin: 0 0 0 5px;
 			}
+
+			@include label_disable;
 		}
 
 		.empty-filter-message {

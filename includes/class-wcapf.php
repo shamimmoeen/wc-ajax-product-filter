@@ -262,7 +262,16 @@ class WCAPF {
 	 * @return array
 	 */
 	private function get_js_params() {
-		$apply_filters_on_browser_history_change = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
+		$settings = WCAPF_Helper::get_settings();
+
+		$disable_inputs = true;
+
+		if ( isset( $settings['loading_animation_on'] ) && 'body' === $settings['loading_animation_on'] ) {
+			$disable_inputs = false;
+		}
+
+		$disable_inputs   = apply_filters( 'wcapf_disable_inputs_while_fetching_results', $disable_inputs );
+		$history_popstate = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
 
 		$params = array(
 			'filter_input_delay'                       => 800, // In milliseconds.
@@ -275,10 +284,11 @@ class WCAPF {
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),
-			'apply_filters_on_browser_history_change'  => $apply_filters_on_browser_history_change,
+			'disable_inputs_while_fetching_results'    => $disable_inputs,
+			'apply_filters_on_browser_history_change'  => $history_popstate,
 		);
 
-		$params = array_merge( $params, WCAPF_Helper::get_settings() );
+		$params = array_merge( $params, $settings );
 
 		return apply_filters( 'wcapf_js_params', $params );
 	}
