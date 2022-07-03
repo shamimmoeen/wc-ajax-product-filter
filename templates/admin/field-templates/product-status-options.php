@@ -1,5 +1,14 @@
 <?php
 /**
+ * Product status options template.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/templates/admin/field-templates
+ * @author     Mainul Hassan Main
+ */
+
+/**
  * @var array $instance
  */
 

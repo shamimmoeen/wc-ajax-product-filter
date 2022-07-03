@@ -1,5 +1,14 @@
 <?php
 /**
+ * The template to show the range number filter.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/templates/public
+ * @author     Mainul Hassan Main
+ */
+
+/**
  * @var string $filter_key
  * @var string $range_min_value
  * @var string $range_max_value
