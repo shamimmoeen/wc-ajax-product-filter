@@ -6,6 +6,7 @@
 .eslintignore export-ignore
 .eslintrc export-ignore
 .git export-ignore
+.eslintrc export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .github export-ignore
@@ -29,6 +30,7 @@ phpunit.xml.dist export-ignore
 multisite.xml export-ignore
 multisite.xml.dist export-ignore
 .phpcs.xml export-ignore
+.prettierrc export-ignore
 phpcs.xml export-ignore
 .phpcs.xml.dist export-ignore
 phpcs.xml.dist export-ignore
@@ -42,6 +44,11 @@ node_modules export-ignore
 *.sql export-ignore
 *.tar.gz export-ignore
 *.zip export-ignore
+
+# Ignore source codes.
+admin/src export-ignore
+public/lib/nouislider/less export-ignore
+public/src export-ignore
 
 yarn.lock -diff
 package-lock.json -diff
