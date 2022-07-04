@@ -20,7 +20,7 @@ class WCAPF_Filter_Widget extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description'           => __( 'Display a filter.', 'wc-ajax-product-filter' ),
+			'description'           => __( 'Display a list, dropdown, slider or input field(s) to filter products in your store.', 'wc-ajax-product-filter' ),
 			'show_instance_in_rest' => true,
 		);
 
