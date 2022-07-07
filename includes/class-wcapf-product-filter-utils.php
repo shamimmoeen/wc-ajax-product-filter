@@ -359,4 +359,18 @@ class WCAPF_Product_Filter_Utils {
 		return apply_filters( 'wcapf_label_for_number_range', $label, $field_instance );
 	}
 
+	/**
+	 * Create a unique alias when joining on MySQL table.
+	 *
+	 * @param int    $index      The index number.
+	 * @param string $filter_key The filter key.
+	 *
+	 * @return string
+	 */
+	public static function get_post_meta_table_join_alias( $index, $filter_key ) {
+		$postfix = $index + 1;
+
+		return '`' . $filter_key . $postfix . '`';
+	}
+
 }
