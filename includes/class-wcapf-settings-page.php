@@ -263,15 +263,10 @@ class WCAPF_Settings_Page {
 				'label' => __( 'Attach jquery chosen on sorting', 'wc-ajax-product-filter' ),
 			),
 			array(
-				'type'    => 'select',
-				'id'      => 'loading_animation_on',
-				'label'   => __( 'Loading animation', 'wc-ajax-product-filter' ),
-				'options' => array(
-					'results' => __( 'On results container', 'wc-ajax-product-filter' ),
-					'body'    => __( 'On body', 'wc-ajax-product-filter' ),
-					'none'    => __( 'None', 'wc-ajax-product-filter' ),
-				),
-				'desc'    => __( 'Show an animation while the results are fetching.', 'wc-ajax-product-filter' ),
+				'type'  => 'checkbox',
+				'id'    => 'loading_animation',
+				'label' => __( 'Loading animation', 'wc-ajax-product-filter' ),
+				'desc'  => __( 'Show an animation while the results are fetching.', 'wc-ajax-product-filter' ),
 			),
 			array(
 				'type'  => 'scroll_window',
@@ -446,7 +441,7 @@ class WCAPF_Settings_Page {
 			'sorting_control'                     => '1',
 			'show_sorting_data_in_active_filters' => '1',
 			'attach_chosen_on_sorting'            => '',
-			'loading_animation_on'                => 'body',
+			'loading_animation'                   => '1',
 			'scroll_window'                       => 'results',
 			'scroll_window_for'                   => 'both',
 			'scroll_window_when'                  => 'after',

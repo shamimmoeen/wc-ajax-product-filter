@@ -14,7 +14,7 @@ const wcapf_params = wcapf_params || {
 	'enable_animation_for_hierarchy_accordion': '',
 	'hierarchy_accordion_animation_speed': '',
 	'hierarchy_accordion_animation_easing': '',
-	'loading_element_class': '',
+	'loading_overlay_options': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
 	'is_mobile': '',
@@ -26,7 +26,7 @@ const wcapf_params = wcapf_params || {
 	'pagination_container': '',
 	'sorting_control': '',
 	'attach_chosen_on_sorting': '',
-	'loading_animation_on': '',
+	'loading_animation': '',
 	'scroll_window': '',
 	'scroll_window_for': '',
 	'scroll_window_when': '',
@@ -417,28 +417,11 @@ jQuery( document ).ready( function( $ ) {
 	initDefaultOrderBy();
 
 	function showLoadingAnimation() {
-		let container;
-
-		if ( $( wcapf_params.shop_loop_container ).length ) {
-			container = wcapf_params.shop_loop_container;
-		} else if ( $( wcapf_params.not_found_container ).length ) {
-			container = wcapf_params.not_found_container;
+		if ( ! wcapf_params.loading_animation ) {
+			return;
 		}
 
-		if ( 'body' === wcapf_params.loading_animation_on ) {
-			container = wcapf_params.loading_animation_on;
-
-			$( container ).addClass( 'wcapf-results-loading' );
-		}
-
-		// Show loading image.
-		if ( 'none' !== wcapf_params.loading_animation_on ) {
-			const loadingMarkup = '<div class="' + wcapf_params.loading_element_class + '">' +
-				'<span class="loading-img"></span>' +
-				'</div>';
-
-			$( loadingMarkup ).prependTo( container );
-		}
+		$.LoadingOverlay( 'show', wcapf_params.loading_overlay_options );
 	}
 
 	function disableNoUiSliders() {
@@ -495,12 +478,11 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function resetLoadingAnimation() {
-		if ( 'body' === wcapf_params.loading_animation_on ) {
-			$( wcapf_params.loading_animation_on ).removeClass( 'wcapf-results-loading' );
-
-			const selector = '.' + wcapf_params.loading_element_class;
-			$( wcapf_params.loading_animation_on ).find( selector ).remove();
+		if ( ! wcapf_params.loading_animation ) {
+			return;
 		}
+
+		$.LoadingOverlay( 'hide' );
 	}
 
 	function scrollTo() {
