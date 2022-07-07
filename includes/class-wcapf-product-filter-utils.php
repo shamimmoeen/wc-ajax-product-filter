@@ -362,12 +362,23 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * Create a unique alias when joining on MySQL table.
 	 *
+	 * @param string $filter_key The filter key.
+	 *
+	 * @return string
+	 */
+	public static function get_table_join_alias( $filter_key ) {
+		return '`' . $filter_key . '`';
+	}
+
+	/**
+	 * Create a unique alias when joining on MySQL table.
+	 *
 	 * @param int    $index      The index number.
 	 * @param string $filter_key The filter key.
 	 *
 	 * @return string
 	 */
-	public static function get_post_meta_table_join_alias( $index, $filter_key ) {
+	public static function get_table_join_alias_for_query_type_and( $index, $filter_key ) {
 		$postfix = $index + 1;
 
 		return '`' . $filter_key . $postfix . '`';
