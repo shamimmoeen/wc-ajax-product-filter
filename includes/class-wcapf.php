@@ -232,6 +232,14 @@ class WCAPF {
 			true
 		);
 
+		wp_enqueue_script(
+			'wcapf-loadingoverlay',
+			WCAPF_PLUGIN_URL . 'public/lib/loadingoverlay/loadingoverlay.min.js',
+			array( 'jquery' ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/loadingoverlay/loadingoverlay.min.js' ),
+			true
+		);
+
 		$deps = array( 'jquery' );
 
 		/**
@@ -266,7 +274,7 @@ class WCAPF {
 
 		$disable_inputs = true;
 
-		if ( isset( $settings['loading_animation_on'] ) && 'body' === $settings['loading_animation_on'] ) {
+		if ( isset( $settings['loading_animation'] ) && $settings['loading_animation'] ) {
 			$disable_inputs = false;
 		}
 
@@ -280,7 +288,7 @@ class WCAPF {
 			'enable_animation_for_hierarchy_accordion' => true,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
-			'loading_element_class'                    => 'wcapf-shop-loop-loading',
+			'loading_overlay_options'                  => array(),
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),
