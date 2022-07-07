@@ -296,7 +296,7 @@ class WCAPF_Product_Filter {
 			$join .= "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
 		} else {
 			foreach ( $term_ids as $index => $value ) {
-				$join_alias = $utils::get_post_meta_table_join_alias( $index, $filter_key );
+				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
 
 				$join .= " LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
 			}
@@ -334,7 +334,7 @@ class WCAPF_Product_Filter {
 
 				$id_sql = $utils::get_ids_sql( $and_term_id );
 
-				$join_alias = $utils::get_post_meta_table_join_alias( $index, $filter_key );
+				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
 
 				$clauses[] = "$join_alias.term_taxonomy_id IN $id_sql";
 			}
