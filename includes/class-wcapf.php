@@ -281,6 +281,17 @@ class WCAPF {
 		$disable_inputs   = apply_filters( 'wcapf_disable_inputs_while_fetching_results', $disable_inputs );
 		$history_popstate = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
 
+		$loading_overlay_options = array();
+
+		if ( isset( $settings['loading_image'] ) && $settings['loading_image'] ) {
+			$image     = wp_get_attachment_image_src( $settings['loading_image'] );
+			$image_src = $image[0];
+
+			$loading_overlay_options = array(
+				'image' => $image_src,
+			);
+		}
+
 		$params = array(
 			'filter_input_delay'                       => 800, // In milliseconds.
 			'chosen_lib_search_threshold'              => 10,
@@ -288,7 +299,7 @@ class WCAPF {
 			'enable_animation_for_hierarchy_accordion' => true,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
-			'loading_overlay_options'                  => array(),
+			'loading_overlay_options'                  => $loading_overlay_options,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),

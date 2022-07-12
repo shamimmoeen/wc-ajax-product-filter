@@ -85,6 +85,10 @@ class WCAPF_Settings_Page {
 				$this->field_select_tr( $data, $settings );
 				break;
 
+			case 'media-upload':
+				$this->field_media_uploader( $data, $settings );
+				break;
+
 			case 'scroll_window':
 				$this->field_scroll_window_tr( $data, $settings );
 				break;
@@ -146,6 +150,45 @@ class WCAPF_Settings_Page {
 				</option>
 			<?php endforeach; ?>
 		</select>
+		<?php
+	}
+
+	private function field_media_uploader( $data, $settings ) {
+		$id          = $data['id'];
+		$image_id    = isset( $settings[ $id ] ) ? $settings[ $id ] : '';
+		$modal_title = isset( $data['modal_title'] ) ? $data['modal_title'] : '';
+		$image_alt   = __( 'Loading image', 'wc-ajax-product-filter' );
+		$image_src   = '';
+
+		if ( $image_id ) {
+			$image     = wp_get_attachment_image_src( $image_id );
+			$image_src = $image[0];
+		}
+		?>
+		<div class="media-upload<?php echo ! $image_id ? ' no-image' : ''; ?>">
+			<img
+				class="image-src"
+				src="<?php echo esc_url( $image_src ); ?>"
+				alt="<?php echo esc_attr( $image_alt ); ?>"
+			>
+			<div>
+				<input
+					type="hidden"
+					name="<?php echo esc_attr( $id ); ?>"
+					id="<?php echo esc_attr( $id ); ?>"
+					class="image-id"
+					value="<?php echo esc_attr( $image_id ); ?>"
+				>
+				<button
+					type="button"
+					class="upload-image-button button"
+					data-modal-title="<?php echo esc_attr( $modal_title ); ?>"
+				>
+					<?php esc_html_e( 'Upload', 'wc-ajax-product-filter' ); ?>
+				</button>
+				<button type="button" class="remove-image-button button">&times;</button>
+			</div>
+		</div>
 		<?php
 	}
 
@@ -267,6 +310,13 @@ class WCAPF_Settings_Page {
 				'id'    => 'loading_animation',
 				'label' => __( 'Loading animation', 'wc-ajax-product-filter' ),
 				'desc'  => __( 'Show an animation while the results are fetching.', 'wc-ajax-product-filter' ),
+			),
+			array(
+				'type'        => 'media-upload',
+				'id'          => 'loading_image',
+				'label'       => __( 'Loading image', 'wc-ajax-product-filter' ),
+				'modal_title' => __( 'Loading animation image', 'wc-ajax-product-filter' ),
+				'desc'        => __( 'Change the default loading image.', 'wc-ajax-product-filter' ),
 			),
 			array(
 				'type'  => 'scroll_window',
