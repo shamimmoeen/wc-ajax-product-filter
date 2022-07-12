@@ -9,3 +9,12 @@
 #scroll_to_top_offset {
 	max-width: 80px;
 }
+
+.media-upload {
+	&.no-image {
+		img,
+		.remove-image-button {
+			display: none;
+		}
+	}
+}
