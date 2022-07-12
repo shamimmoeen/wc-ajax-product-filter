@@ -27,6 +27,11 @@ if ( isset( $submenu[ $parent_slug ] ) ) {
 			continue;
 		}
 
+		// Ignore "Account" coming from freemius.
+		if ( 'wc-ajax-product-filter-account' === $sub_item[2] ) {
+			continue;
+		}
+
 		// Define tab.
 		$tab = array(
 			'text' => $sub_item[0],
@@ -73,7 +78,7 @@ $found_pro_version = $helper::found_pro_version();
 			'<a class="wcapf-tab%s" href="%s">%s</a>',
 			! empty( $tab['is_active'] ) ? ' is-active' : '',
 			esc_url( $tab['url'] ),
-			esc_html( $tab['text'] )
+			wp_kses_post( $tab['text'] )
 		);
 	}
 	?>
