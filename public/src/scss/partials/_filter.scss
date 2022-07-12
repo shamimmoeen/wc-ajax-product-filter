@@ -115,6 +115,7 @@
 
 		> div {
 			border: var(--wcapf-labeled-nav-border-size) solid var(--wcapf-filter-outline-color);
+			border-radius: var(--wcapf-labeled-nav-border-radius);
 			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
 			padding: var(--wcapf-labeled-nav-vr-padding) var(--wcapf-labeled-nav-hr-padding);
 
@@ -191,7 +192,8 @@ a.wcapf-reset-filters-btn {
 		margin: 0 0 calc(var(--wcapf-labeled-nav-margin) * -1);
 
 		> div {
-			border: var(--wcapf-active-filters-nav-border-size) solid var(--wcapf-filter-outline-color);
+			border: var(--wcapf-labeled-nav-border-size) solid var(--wcapf-filter-outline-color);
+			border-radius: var(--wcapf-labeled-nav-border-radius);
 			cursor: pointer;
 			display: inline-block;
 			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
