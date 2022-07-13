@@ -5,7 +5,7 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/templates/admin
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 
 $wcapf_settings_instance = WCAPF_Settings_Page::get_instance();
