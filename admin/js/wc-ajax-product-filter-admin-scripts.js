@@ -6,7 +6,7 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function ($) {
   var fieldWrapper = $('#chosen_field_wrapper');
@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function ($) {
   var fieldWrapper = $('#chosen_field_wrapper'); // Hierarchical field's toggle visibility when text display type is changed.
@@ -145,7 +145,7 @@ jQuery(document).ready(function ($) {
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function ($) {
   var fieldWrapper = $('#chosen_field_wrapper');
@@ -342,7 +342,7 @@ jQuery(document).ready(function ($) {
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 
 /**
@@ -475,7 +475,7 @@ function initManualOptionsTable(tableIdentifier, valueIdentifier, rowTemplateId)
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function ($) {
   var fieldWrapper = $('#chosen_field_wrapper');
@@ -538,7 +538,7 @@ jQuery(document).ready(function ($) {
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function ($) {
   if (!$('body').hasClass('wcapf-filter_page_wcapf-settings')) {
@@ -667,7 +667,7 @@ jQuery(document).ready(function ($) {
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function () {
   var tableIdentifier = '.product-status-options-table';
@@ -685,7 +685,7 @@ jQuery(document).ready(function () {
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/admin/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 jQuery(document).ready(function ($) {
   var fieldWrapper = $('#chosen_field_wrapper');

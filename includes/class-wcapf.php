@@ -5,14 +5,14 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 
 /**
  * WC Ajax Product Filter main class.
  *
  * @since  3.0.0
- * @author Mainul Hassan Main
+ * @author wptools.io
  */
 class WCAPF {
 

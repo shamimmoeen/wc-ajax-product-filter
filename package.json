@@ -2,7 +2,7 @@
   "name": "wc-ajax-product-filter",
   "version": "3.0.0",
   "main": "Gruntfile.js",
-  "author": "Mainul Hassan Main",
+  "author": "wptools.io",
   "scripts": {
     "start": "grunt default",
     "readme": "grunt readme",

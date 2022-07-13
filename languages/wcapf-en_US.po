@@ -295,7 +295,7 @@ msgid "A plugin to filter woocommerce products with AJAX request."
 msgstr ""
 
 #. Author of the plugin
-msgid "Mainul Hassan Main"
+msgid "wptools.io"
 msgstr ""
 
 #. Author URI of the plugin

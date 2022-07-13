@@ -4,7 +4,7 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/public/src/js
- * @author     Mainul Hassan Main
+ * @author     wptools.io
  */
 
 const wcapf_params = wcapf_params || {
