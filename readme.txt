@@ -8,7 +8,7 @@ Requires PHP: 5.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-WooCommerce Ajax Product Filter - adds advanced products filtering to your shop.
+WooCommerce Ajax Product Filter - adds advanced product filtering to your shop.
 
 == Description ==
 
