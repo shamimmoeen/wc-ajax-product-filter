@@ -1,0 +1,127 @@
+@import "../mixins";
+
+.wcapf-form-field {
+	.column-start {
+		&.row:not(.ui-options-row):not(.date-ui-options-row) {
+			@include clearfix;
+
+			.column {
+				@media (min-width: 640px) {
+					float: left;
+
+					&:not(:only-child):first-child {
+						width: 516px;
+					}
+				}
+
+				&:only-child {
+					float: none;
+				}
+
+				&:not(:last-child) {
+					margin-right: 48px;
+				}
+			}
+		}
+	}
+}
+
+.wcapf-form-field {
+	margin: 12px 0 0;
+
+	.column-start {
+		&.separator-top {
+			border-top: 1px solid #ddd;
+			margin-top: .8em;
+			padding-top: 2em;
+		}
+
+		&.separator-bottom {
+			border-bottom: 1px solid #ddd;
+			margin-bottom: 2em;
+			padding-bottom: .8em;
+		}
+	}
+
+	.no-top-margin {
+		margin-top: 0;
+	}
+
+	@media (min-width: 640px) {
+		.widefat {
+			max-width: 300px;
+			width: unset;
+		}
+
+		.widefat[type="text"] {
+			width: 100%;
+		}
+	}
+
+	.wcapf-form-sub-field {
+		margin: 0 0 20px;
+
+		@media (min-width: 640px) {
+			min-width: 445px;
+		}
+
+		&.wcapf-form-sub-field-wcapf-hidden {
+			display: none;
+		}
+	}
+
+	.wcapf-form-sub-field {
+		align-items: center;
+		display: flex;
+		gap: 15px;
+
+		.wcapf-form-sub-field-label {
+			display: flex;
+			justify-content: flex-start;
+			width: 200px;
+
+			@media (max-width: 639px) {
+				width: 120px;
+			}
+		}
+
+		.wcapf-wrapper {
+			flex: 1;
+		}
+
+		&.wcapf-form-sub-field-hidden {
+			display: none;
+		}
+	}
+
+	.wcapf-form-sub-field-radio {
+		.wcapf-wrapper {
+			display: flex;
+			gap: 10px;
+		}
+
+		@mixin radio {
+			align-items: flex-start;
+
+			.wcapf-form-sub-field-label {
+				margin-top: 4px;
+			}
+
+			.wcapf-wrapper {
+				flex-direction: column;
+			}
+		}
+
+		&.wcapf-form-sub-field-radio-row {
+			@include radio;
+		}
+
+		@media (max-width: 639px) {
+			@include radio;
+		}
+	}
+
+	label.disabled {
+		opacity: 0.7;
+	}
+}

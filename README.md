@@ -1,80 +1,146 @@
-# WC Ajax Product Filter
+# WC Ajax Product Filter #
+**Contributors:** shamimmoeen  
+**Tags:** product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter  
+**Requires at least:** 4.0  
+**Tested up to:** 6.0.1  
+**Stable tag:** 3.0.0  
+**Requires PHP:** 5.5  
+**License:** GPLv3  
+**License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
 
-WooCommerce Ajax Product Filter - adds advanced products filtering to your shop.
+WooCommerce Ajax Product Filter - adds advanced product filtering to your shop.
 
-## Description
+## Description ##
 
-WooCommerce Ajax Product Filter - is a plugin that allows you to filter your products easily by categories, attributes, prices. Your can sort products, navigate to next and previous pages without reloading the page.
+WooCommerce Ajax Product Filter – is a plugin that allows you to filter your products easily by categories, attributes, prices, and post metas. You can sort products, and navigate to the next and previous pages without reloading the page.
 
-Features:
+[Free Demo](https://demos.wptools.io/wc-ajax-product-filter/) | [Paid Demo](https://demos.wptools.io/wc-ajax-product-filter-pro/)
 
-* Filter by category, attribute, price
-* Sort products via Ajax
+### Features: ###
+
+* Filter by category, tag, attribute, price, rating
+* Filter by product status (featured, on-sale)
+* Unlimited filters
+* Option to set the filter key
+* Display the filter using shortcode
+* Display filter values using checkbox, radio, select, multi-select, label
+* Display categories as hierarchical tree
+* Option to enable/disable accordion in hierarchy tree
+* Updates the product count according to the applied filters
+* Option to exclude the filter items having no product
+* Sort products via ajax
+* Display the active filters
+* Reset filters button
+* Ajax pagination
+* jQuery chosen plugin for select boxes
 * Fastest filtering
 * SEO friendly url (HTML5 pushstate)
-* Compatible with woocommerce currency switcher plugin
-* Recount products after filtering
-* Show active filters and remove active filters
-* Ajax pagination
-* Two type of display type, list and dropdown
-* Choose filter type, single or multiple
-* Enable hierarchy both for category and attribute filters
-* Fully customizable
-* Minimal design but could be instantly made modern
 * Works with caching plugins and all majority of themes
+* Fully responsive
 * Easy to modify the CSS to better fit your theme style
-* Minimalist, lightweight, and efficient code means that your users won’t notice any hiccups
-* Developer friendly - Useful filter is included! So you can use it in your themes
+* Developer friendly - contains useful hooks and filters
 
-## Installation
+### Pro Features: ###
 
-* Once you have installed the plugin, you just need to activate the plugin in order to enable it.
-* Drop the widgets in the sidebar
+* Filter by custom taxonomy
+* Filter by post meta
+* Filter by post property (author, date, modified)
+* Filter to sort the products using post table columns and meta value
+* Products per page filter
+* Display the filter values using color, image
+* Display the price ranges using checkbox, radio, select, multi-select, label
+* Use term slug as the filter value
+* Display the child terms for the specific parent term
+* Option to include/exclude terms
+* Limit terms using child term only
+* Choose the ordering of terms
+* Display filters in accordion
+* Clear button in filter title
+* Show more/show less button in filter items to minimize the filter height
 
-## Frequently Asked Questions
+[Get the pro version](https://wptools.io/wc-ajax-product-filter/)
 
-= Incorrect number of products =
+## Frequently Asked Questions ##
 
-Go to settings page. You will see a checkbox to clear transients.
+### How do I create a filter? ###
 
-= Active filters doesn't update =
+Once the plugin is activated, go to **WCAPF** > **Add New** from WordPress admin. Chose a filter from the available filters, give a unique filter key, configure the filter settings and publish the filter.
 
-Maybe your widgets don't have ids. See this support. https://wordpress.org/support/topic/active-filters-doesnt-update/
+### How do I display the filters to the store? ###
 
-= Can I add custom scripts to load after updating shop loop? =
+The filters can be displayed using both shortcode and widget. The shortcode is `[wcapf_filter id="*"]`, where id is the filter post id.
 
-Yes, you can. Go to settings page. You will see a text field to put your custom scripts.
+### Why does the filter not working? ###
 
-= Can I change the overlay background color? =
+If you have problems with the work of the plugin you should follow these steps:
 
-Yes, you can. Go to settings page. You will see a text field to chage the overlay background color.
+* Ensure that WordPress and WooCommerce versions are met the plugin’s minimum required versions.
+* Test the plugin with a default WordPress theme. If the plugin works with the default themes then the issue is coming from the theme that you are using.
+* Deactivate all your plugins and then re-activate them one by one, checking your site for the problem after each reactivation.
 
-## Screenshots
+## Screenshots ##
 
-1. Plugin frontend
-2. WC Ajax Product Filter by Attribute widget settings
-3. WC Ajax Product Filter by Price display type list widget settings
-4. Backend settings
+### 1. Demo (Free Version) ###
+![Demo (Free Version)](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-1.png)
 
-## Changelog
+### 2. Demo (Pro Version) ###
+![Demo (Pro Version)](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-2.png)
 
-= 2.0.3 =
+### 3. Filters list (admin view) ###
+![Filters list (admin view)](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-3.png)
 
-* Fixed bug - 'wcapf_get_term_objects' funtion was working incorrectly
+### 4. Active filters settings ###
+![Active filters settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-4.png)
 
-= 2.0.2 =
+### 5. Category filter settings ###
+![Category filter settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-5.png)
+
+### 6. Tag filter settings ###
+![Tag filter settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-6.png)
+
+### 7. Attribute filter settings ###
+![Attribute filter settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-7.png)
+
+### 8. Price filter settings ###
+![Price filter settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-8.png)
+
+### 9. Rating filter settings ###
+![Rating filter settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-9.png)
+
+### 10. Product status filter settings ###
+![Product status filter settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-10.png)
+
+### 11. Reset filters button settings ###
+![Reset filters button settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-11.png)
+
+### 12. Plugin settings ###
+![Plugin settings](http://ps.w.org/wc-ajax-product-filter/assets/screenshot-12.png)
+
+
+## Changelog ##
+
+### 3.0.0 ###
+
+* Release pro version
+* Refactor the plugin
+
+### 2.0.3 ###
+
+* Fixed bug - 'wcapf_get_term_objects' function was working incorrectly
+
+### 2.0.2 ###
 
 * Added option to disable transients
 * Added option to clear transients
 
-= 2.0.1 =
+### 2.0.1 ###
 
 * Fixed filtering bugs on product taxonomy pages
 * Added more functionality to price filter display type list widget
 * Added option to enable/disable font awesome
 * Updated localization
 
-= 2.0 =
+### 2.0 ###
 
 * Fixed PHP version related issue
 * Fixed translation and localization issue
@@ -82,6 +148,6 @@ Yes, you can. Go to settings page. You will see a text field to chage the overla
 * Added functionality to filter products by price list
 * Added functionality to clear all active filters with one click
 
-= 1.0 =
+### 1.0 ###
 
 * Initial release

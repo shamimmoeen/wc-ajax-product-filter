@@ -1,0 +1,226 @@
+.wcapf-field-title {
+	margin: 0;
+}
+
+.wcapf-single-filter {
+	margin: 0 0 var(--wcapf-filter-base-bottom-margin);
+}
+
+.wcapf-field-title ~ .wcapf-field-inner > div {
+	padding-top: var(--wcapf-filter-inner-top-padding);
+}
+
+.wcapf-layered-nav {
+	ul {
+		list-style-type: none;
+		margin: 0;
+	}
+
+	> ul {
+		padding: 0;
+		width: 100%;
+	}
+
+	li {
+		margin: 0;
+		padding: var(--wcapf-layered-nav-list-vertical-spacing) 0;
+
+		ul {
+			padding: 0 0 0 var(--wcapf-layered-nav-list-child-left-padding);
+		}
+	}
+
+	.item-children {
+		> li:first-child {
+			padding-top: calc(var(--wcapf-layered-nav-list-vertical-spacing) * 2);
+		}
+
+		> li:last-child {
+			padding-bottom: 0;
+		}
+	}
+
+	.hierarchy-accordion-toggle {
+		background-color: var(--wcapf-hierarchy-accordion-toggle-bg-color);
+		cursor: pointer;
+		display: inline-block;
+		line-height: var(--wcapf-hierarchy-accordion-toggle-size);
+		margin-left: var(--wcapf-hierarchy-accordion-toggle-space);
+		text-align: center;
+		user-select: none;
+		width: var(--wcapf-hierarchy-accordion-toggle-size);
+
+		&::before {
+			content: '+';
+		}
+
+		&.active {
+			&::before {
+				content: '-';
+			}
+		}
+	}
+}
+
+.wcapf-layered-nav,
+.wcapf-labeled-nav {
+	&:not(.display-type-color):not(.display-type-image) {
+		.count {
+			opacity: .6;
+
+			&::before {
+				content: ' (';
+			}
+
+			&::after {
+				content: ')';
+			}
+		}
+	}
+}
+
+.wcapf-dropdown-nav {
+	select {
+		width: 100%;
+	}
+
+	.chosen-container {
+		width: 100% !important; // Important is required to make the 'chosen' element full-width.
+
+		a {
+			font-weight: normal;
+			text-decoration: none;
+		}
+	}
+}
+
+@mixin label_disable {
+	&.disabled {
+		cursor: var(--wcapf-layered-nav-item-disabled-cursor);
+		opacity: var(--wcapf-layered-nav-item-disabled-opacity);
+		user-select: none;
+	}
+}
+
+.wcapf-labeled-nav {
+	> div {
+		cursor: pointer;
+		display: inline-block;
+
+		@include label_disable;
+	}
+
+	&.display-type-label {
+		margin-bottom: calc(var(--wcapf-labeled-nav-margin) * -1);
+
+		> div {
+			border: var(--wcapf-labeled-nav-border-size) solid var(--wcapf-filter-outline-color);
+			border-radius: var(--wcapf-labeled-nav-border-radius);
+			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
+			padding: var(--wcapf-labeled-nav-vr-padding) var(--wcapf-labeled-nav-hr-padding);
+
+			&.checked {
+				background-color: var(--wcapf-filter-outline-color);
+
+				.count {
+					opacity: var(--wcapf-labeled-nav-count-opacity);
+				}
+			}
+		}
+	}
+}
+
+.wcapf-range-number,
+.wcapf-range-slider {
+	.range-wrapper {
+		> span {
+			align-items: center;
+			display: inline-flex; // Remove extra whitespace between span elements
+		}
+	}
+}
+
+.wcapf-range-number {
+	input[type="number"] {
+		max-width: var(--wcapf-range-filter-input-max-width);
+	}
+}
+
+.wcapf-range-slider {
+	padding-bottom: var(--wcapf-range-slider-bottom-padding);
+
+	input[type="text"] {
+		max-width: var(--wcapf-range-filter-input-max-width);
+	}
+
+	.range-wrapper {
+		&.display-values-as-input_field {
+			margin-bottom: var(--wcapf-nouislider-input-field-margin-bottom);
+		}
+
+		&.display-values-as-plain_text {
+			margin-bottom: var(--wcapf-nouislider-plain-text-margin-bottom);
+		}
+
+		&.align-values-end-without-separator {
+			align-items: center;
+			display: flex;
+			justify-content: space-between;
+
+			.wcapf-range-separator {
+				display: none;
+			}
+		}
+	}
+}
+
+a.wcapf-reset-filters-btn {
+	cursor: pointer;
+}
+
+.wcapf-active-filters {
+	h5 {
+		font-size: 1em;
+		margin: 0 0 .5em;
+	}
+
+	.wcapf-active-filter-group {
+		margin: 0 0 var(--wcapf-active-filters-group-bottom-margin);
+	}
+
+	.active-items {
+		margin: 0 0 calc(var(--wcapf-labeled-nav-margin) * -1);
+
+		> div {
+			border: var(--wcapf-labeled-nav-border-size) solid var(--wcapf-filter-outline-color);
+			border-radius: var(--wcapf-labeled-nav-border-radius);
+			cursor: pointer;
+			display: inline-block;
+			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
+			padding: var(--wcapf-active-filters-nav-vr-padding) var(--wcapf-active-filters-nav-hr-padding);
+
+			&::after {
+				content: '\00D7';
+				margin: 0 0 0 5px;
+			}
+
+			@include label_disable;
+		}
+
+		.empty-filter-message {
+			border-color: transparent;
+			cursor: unset;
+			padding-left: unset;
+			padding-right: unset;
+
+			&::after {
+				content: none;
+			}
+		}
+	}
+
+	&.active-filter-layout-simple ~ .clear-all-button-wrapper {
+		display: inline-block;
+		margin-top: var(--wcapf-clear-all-btn-top-margin);
+	}
+}

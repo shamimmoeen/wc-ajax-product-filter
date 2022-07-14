@@ -1,0 +1,36 @@
+#chosen_field_wrapper {
+	@mixin loading {
+		.inside {
+			position: relative;
+			max-height: 300px;
+			overflow: hidden;
+
+			&::before {
+				content: '';
+				//noinspection CssUnknownTarget
+				background: url("../images/loader.gif");
+				width: 120px;
+				height: 120px;
+				position: absolute;
+				z-index: 2;
+				left: calc(50% - 60px);
+				top: calc(50% - 60px);
+			}
+
+			&::after {
+				content: '';
+				position: absolute;
+				z-index: 1;
+				background: rgba(255, 255, 255, 1);
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+			}
+		}
+	}
+
+	&:not(.loaded) {
+		@include loading;
+	}
+}
