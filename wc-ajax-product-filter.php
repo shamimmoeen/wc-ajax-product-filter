@@ -1,11 +1,13 @@
 <?php
 /**
  * Plugin Name: WC Ajax Product Filter
- * Plugin URI: https://wordpress.org/plugins/wc-ajax-product-filter
- * Description: A plugin to filter woocommerce products with AJAX request.
+ * Plugin URI: https://wptools.io/wc-ajax-product-filter
+ * Description: A plugin to filter WooCommerce products with AJAX request.
  * Version: 3.0.0
- * Author: Mainul Hassan Main
- * Author URI: http://mainulhassan.info
+ * Requires at least: 4.0
+ * Requires PHP: 5.5
+ * Author: wptools.io
+ * Author URI: https://wptools.io
  * Text Domain: wc-ajax-product-filter
  * Domain Path: /languages
  *
@@ -19,8 +21,8 @@
  *
  * @since     3.0.0
  * @package   wc-ajax-product-filter
- * @copyright Copyright (c) 2018, Mainul Hassan Main
- * @author    Mainul Hassan Main
+ * @copyright Copyright (c) 2018, wptools.io
+ * @author    wptools.io
  * @license   https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -28,10 +30,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-/**
- * TODO: Define the constants inside the loader class.
- */
 
 // Defines constant WCAPF_SLUG
 if ( ! defined( 'WCAPF_SLUG' ) ) {
@@ -48,13 +46,28 @@ if ( ! defined( 'WCAPF_PLUGIN_FILE' ) ) {
 	define( 'WCAPF_PLUGIN_FILE', __FILE__ );
 }
 
+// Defines constant WCAPF_PLUGIN_DIR
+if ( ! defined( 'WCAPF_PLUGIN_DIR' ) ) {
+	define( 'WCAPF_PLUGIN_DIR', __DIR__ );
+}
+
+// Defines constant WCAPF_PLUGIN_URL
+if ( ! defined( 'WCAPF_PLUGIN_URL' ) ) {
+	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
+// Defines constant WCAPF_CACHE_TIME
+if ( ! defined( 'WCAPF_CACHE_TIME' ) ) {
+	define( 'WCAPF_CACHE_TIME', 60 * 60 * 12 );
+}
+
 /**
  * The code that runs during plugin activation.
  *
  * @since 3.0.0
  */
 function wcapf_activate() {
-	require_once plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'includes/class-wcapf-activator.php';
+	require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-activator.php';
 	WCAPF_Activator::activate();
 }
 
@@ -64,7 +77,7 @@ function wcapf_activate() {
  * @since 3.0.0
  */
 function wcapf_deactivate() {
-	require_once plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'includes/class-wcapf-deactivator.php';
+	require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-deactivator.php';
 	WCAPF_Deactivator::deactivate();
 }
 
@@ -72,7 +85,7 @@ register_activation_hook( WCAPF_PLUGIN_FILE, 'wcapf_activate' );
 register_deactivation_hook( WCAPF_PLUGIN_FILE, 'wcapf_deactivate' );
 
 // Include the WCAPF main class
-require_once plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'includes/class-wcapf.php';
+require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf.php';
 
 /**
  * Instantiate the main class.
