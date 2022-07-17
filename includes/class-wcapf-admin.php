@@ -10,6 +10,8 @@
 
 /**
  * WCAPF_Admin class.
+ *
+ * @since 3.0.0
  */
 class WCAPF_Admin {
 
@@ -21,10 +23,10 @@ class WCAPF_Admin {
 		add_filter( 'admin_footer_text', array( $this, 'footer_text' ) );
 		add_filter( 'in_admin_header', array( $this, 'render_header_navigation' ) );
 
-		add_filter(
-			'plugin_action_links_' . plugin_basename( WCAPF_PLUGIN_FILE ),
-			array( $this, 'plugin_action_links' )
-		);
+		$plugin_file = plugin_basename( WCAPF_PLUGIN_FILE );
+		add_filter( 'plugin_action_links_' . $plugin_file, array( $this, 'plugin_action_links' ) );
+
+		add_action( 'admin_footer-widgets.php', array( $this, 'js_scripts_for_legacy_widget' ) );
 	}
 
 	/**
@@ -93,7 +95,7 @@ class WCAPF_Admin {
 	public function render_header_navigation() {
 		global $typenow;
 
-		if ( 'wcapf-filter' !== $typenow ) {
+		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow ) {
 			return;
 		}
 
@@ -120,6 +122,40 @@ class WCAPF_Admin {
 		);
 
 		return array_merge( $new_links, $links );
+	}
+
+	/**
+	 * Run the js scripts when the 'widget-added' event is triggered.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return void
+	 */
+	public function js_scripts_for_legacy_widget() {
+		?>
+		<!--suppress ES6ConvertVarToLetConst -->
+		<script>
+			( function( $ ) {
+				$( document ).on( 'widget-added', function( e, $control ) {
+					$control.find( '.wcapf-widget-dropdown-field' ).on( 'change', function() {
+						var $dropdown        = $( this );
+						var $selectedOption  = $( this ).find( 'option:selected' );
+						var editLink         = $selectedOption.attr( 'data-edit-link' );
+						var $editLink        = $dropdown.closest( '.widget-content' ).find( '.edit-link' );
+						var $editLinkWrapper = $editLink.parent();
+
+						$( $editLink.attr( 'href', editLink ) );
+
+						if ( ! editLink.length ) {
+							$editLinkWrapper.hide();
+						} else {
+							$editLinkWrapper.show();
+						}
+					} );
+				} );
+			} )( jQuery );
+		</script>
+		<?php
 	}
 
 }

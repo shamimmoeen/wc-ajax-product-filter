@@ -129,22 +129,27 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-settings-page.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-meta-box.php';
 
+		// Loads the meta boxes.
+		require_once WCAPF_PLUGIN_DIR . '/includes/meta-boxes/class-wcapf-filter-meta-box.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/meta-boxes/class-wcapf-filter-form-meta-box.php';
+
+		// Loads the filter types.
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-product-status.php';
 
+		// Loads the field groups.
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-text.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-number.php';
 
+		// Loads the fields.
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-active-filters.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-taxonomy.php';
@@ -156,11 +161,18 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-product-status.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
 
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-price-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-rating-filter.php';
+		// Loads the hooks.
+		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-hooks.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-price-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-rating-filter.php';
 
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-shortcode.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-filter-widget.php';
+		// Loads the shortcodes.
+		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-shortcode.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-form-shortcode.php';
+
+		// Loads the widgets.
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-filter-widget.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-filter-form-widget.php';
 	}
 
 	/**
@@ -322,7 +334,7 @@ class WCAPF {
 
 		global $typenow;
 
-		if ( 'wcapf-filter' !== $typenow ) {
+		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow ) {
 			return;
 		}
 
