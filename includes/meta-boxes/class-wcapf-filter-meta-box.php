@@ -4,7 +4,7 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes
+ * @subpackage wc-ajax-product-filter/includes/meta-boxes
  * @author     wptools.io
  */
 
@@ -47,7 +47,6 @@ class WCAPF_Filter_Meta_Box {
 		add_filter( 'redirect_post_location', array( $this, 'meta_validation_redirect_location' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'validation_error_admin_notice' ) );
 		add_action( 'edit_form_advanced', array( $this, 'render_meta_box' ) );
-		add_action( 'add_meta_boxes', array( $this, 'remove_slug_meta_box' ) );
 		add_action( 'admin_footer', array( $this, 'render_tmpl_templates' ) );
 		add_action( 'admin_footer', array( $this, 'render_product_status_option_placeholder_template' ) );
 	}
@@ -289,15 +288,6 @@ class WCAPF_Filter_Meta_Box {
 			'admin/admin-notice',
 			array( 'msg_type' => 'error', 'message' => $error_message )
 		);
-	}
-
-	/**
-	 * Removes the slug meta box from the 'wcapf-filter' post type.
-	 *
-	 * @return void
-	 */
-	public function remove_slug_meta_box() {
-		remove_meta_box( 'slugdiv', 'wcapf-filter', 'normal' );
 	}
 
 	/**

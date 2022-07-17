@@ -52,7 +52,7 @@ public/src export-ignore
 
 yarn.lock -diff
 package-lock.json -diff
-composer.lock
+composer.lock -diff
 admin/css/* -diff
 admin/js/* -diff
 public/css/* -diff

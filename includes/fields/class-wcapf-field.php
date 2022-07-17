@@ -777,6 +777,9 @@ abstract class WCAPF_Field {
 		$filter_id     = $this->get_sub_field_value( 'field_id' );
 		$filter_title  = get_the_title( $filter_id );
 
+		$form_id   = $this->get_sub_field_value( 'form_id' );
+		$filter_id .= $form_id ? '-' . $form_id : '';
+
 		echo '<div class="' . esc_attr( $field_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
 		do_action( 'wcapf_content_field_inner_start', $field_instance );

@@ -44,11 +44,13 @@ class WCAPF_Post_Type {
 	 */
 	private function init_hooks() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
+		add_action( 'add_meta_boxes', array( $this, 'remove_slug_meta_box' ) );
 		add_filter( 'post_row_actions', array( $this, 'remove_row_actions' ) );
 		add_filter( 'manage_wcapf-filter_posts_columns', array( $this, 'set_filter_posts_table_columns' ) );
+		add_filter( 'manage_wcapf-form_posts_columns', array( $this, 'set_form_posts_table_columns' ) );
 		add_action( 'manage_wcapf-filter_posts_custom_column', array( $this, 'set_filter_posts_column_data' ), 10, 2 );
+		add_action( 'manage_wcapf-form_posts_custom_column', array( $this, 'set_form_posts_column_data' ), 10, 2 );
 		add_action( 'admin_init', array( $this, 'action_admin_init' ) );
-		add_filter( 'enter_title_here', array( $this, 'set_filter_post_title_placeholder' ), 10, 2 );
 		add_filter( 'post_updated_messages', array( $this, 'set_filter_updated_messages' ) );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'change_bulk_post_updated_message' ), 10, 2 );
 	}
@@ -99,6 +101,57 @@ class WCAPF_Post_Type {
 		);
 
 		register_post_type( 'wcapf-filter', $args );
+
+		$labels = array(
+			'name'               => _x( 'Filter Forms', 'Post type general name', 'wc-ajax-product-filter' ),
+			'singular_name'      => _x( 'Filter Form', 'Post type singular name', 'wc-ajax-product-filter' ),
+			'name_admin_bar'     => _x( 'Filter Form', 'Add New on Toolbar', 'wc-ajax-product-filter' ),
+			'add_new'            => __( 'Add New', 'wc-ajax-product-filter' ),
+			'add_new_item'       => __( 'Add New Filter Form', 'wc-ajax-product-filter' ),
+			'new_item'           => __( 'New Filter Form', 'wc-ajax-product-filter' ),
+			'edit_item'          => __( 'Edit Filter Form', 'wc-ajax-product-filter' ),
+			'view_item'          => __( 'View Filter Form', 'wc-ajax-product-filter' ),
+			'all_items'          => __( 'Filter Forms', 'wc-ajax-product-filter' ),
+			'search_items'       => __( 'Search Filter Forms', 'wc-ajax-product-filter' ),
+			'parent_item_colon'  => __( 'Parent Filter Forms:', 'wc-ajax-product-filter' ),
+			'not_found'          => __( 'No filter forms found.', 'wc-ajax-product-filter' ),
+			'not_found_in_trash' => __( 'No filter forms found in Trash.', 'wc-ajax-product-filter' ),
+		);
+
+		$args = array(
+			'labels'            => $labels,
+			'public'            => false,
+			'show_ui'           => true,
+			'show_in_nav_menus' => false,
+			'show_in_menu'      => 'edit.php?post_type=wcapf-filter',
+			'show_in_admin_bar' => false,
+			'query_var'         => true,
+			'rewrite'           => array( 'slug' => 'wcapf-form' ),
+			'supports'          => array( 'title' ),
+			'menu_position'     => 100,
+			'capabilities'      => array(
+				'edit_post'          => 'manage_options',
+				'read_post'          => 'manage_options',
+				'delete_post'        => 'manage_options',
+				'edit_posts'         => 'manage_options',
+				'edit_others_posts'  => 'manage_options',
+				'delete_posts'       => 'manage_options',
+				'publish_posts'      => 'manage_options',
+				'read_private_posts' => 'manage_options'
+			),
+		);
+
+		register_post_type( 'wcapf-form', $args );
+	}
+
+	/**
+	 * Removes the slug meta box from the post types.
+	 *
+	 * @return void
+	 */
+	public function remove_slug_meta_box() {
+		remove_meta_box( 'slugdiv', 'wcapf-filter', 'normal' );
+		remove_meta_box( 'slugdiv', 'wcapf-form', 'normal' );
 	}
 
 	/**
@@ -131,6 +184,21 @@ class WCAPF_Post_Type {
 		$columns['filter_key']       = __( 'Filter Key', 'wc-ajax-product-filter' );
 		$columns['filter_type']      = __( 'Filter Type', 'wc-ajax-product-filter' );
 		$columns['filter_shortcode'] = __( 'Shortcode', 'wc-ajax-product-filter' );
+
+		return $columns;
+	}
+
+	/**
+	 * Add the custom columns to the wcapf-form post type.
+	 *
+	 * @param array $columns The columns.
+	 *
+	 * @return array
+	 */
+	public function set_form_posts_table_columns( $columns ) {
+		unset( $columns['date'] );
+
+		$columns['form_shortcode'] = __( 'Shortcode', 'wc-ajax-product-filter' );
 
 		return $columns;
 	}
@@ -192,6 +260,24 @@ class WCAPF_Post_Type {
 	}
 
 	/**
+	 * Sets the custom columns' data for the wcapf-form post type.
+	 *
+	 * @param string $column  The column name.
+	 * @param int    $post_id The post id.
+	 *
+	 * @return void
+	 */
+	public function set_form_posts_column_data( $column, $post_id ) {
+		if ( $column == 'form_shortcode' ) {
+			if ( 'publish' === get_post_status( $post_id ) ) {
+				echo '<span class="wcapf-filter-form-shortcode">';
+				echo '[wcapf_filter_form id="' . esc_html( $post_id ) . '"]';
+				echo '</span>';
+			}
+		}
+	}
+
+	/**
 	 * Run admin init scripts.
 	 *
 	 * @return void
@@ -199,25 +285,9 @@ class WCAPF_Post_Type {
 	public function action_admin_init() {
 		global $typenow;
 
-		if ( 'wcapf-filter' === $typenow ) {
+		if ( 'wcapf-filter' === $typenow || 'wcapf-form' === $typenow ) {
 			add_filter( 'months_dropdown_results', '__return_empty_array' );
 		}
-	}
-
-	/**
-	 * Sets the 'wcapf-filter' post type placeholder.
-	 *
-	 * @param string  $placeholder The default placeholder.
-	 * @param WP_Post $post        The post object.
-	 *
-	 * @return string
-	 */
-	public function set_filter_post_title_placeholder( $placeholder, $post ) {
-		if ( 'wcapf-filter' === $post->post_type ) {
-			$placeholder = __( 'Filter title', 'wc-ajax-product-filter' );
-		}
-
-		return $placeholder;
 	}
 
 	/**
@@ -256,6 +326,32 @@ class WCAPF_Post_Type {
 			8  => __( 'Filter submitted.', 'wc-ajax-product-filter' ),
 			9  => $scheduled_message,
 			10 => __( 'Filter draft updated.', 'wc-ajax-product-filter' ),
+		);
+
+		$revision_message = isset( $_GET['revision'] ) ? sprintf(
+			__( 'Filter form restored to revision from %s', 'wc-ajax-product-filter' ),
+			wp_post_revision_title( (int) $_GET['revision'], false )
+		) : false;
+
+		$scheduled_message = sprintf(
+			__( 'Filter form scheduled for: <strong>%1$s</strong>.', 'wc-ajax-product-filter' ),
+			// translators: Publish box date format, see http://php.net/date
+			date_i18n( __( 'M j, Y @ G:i', 'wc-ajax-product-filter' ), strtotime( $post->post_date ) )
+		);
+
+		$messages['wcapf-form'] = array(
+			0  => '', // Unused. Messages start at index 1.
+			1  => __( 'Filter form updated.', 'wc-ajax-product-filter' ),
+			2  => __( 'Custom field updated.', 'wc-ajax-product-filter' ),
+			3  => __( 'Custom field deleted.', 'wc-ajax-product-filter' ),
+			4  => __( 'Filter form updated.', 'wc-ajax-product-filter' ),
+			/* translators: %s: date and time of the revision */
+			5  => $revision_message,
+			6  => __( 'Filter form published.', 'wc-ajax-product-filter' ),
+			7  => __( 'Filter form saved.', 'wc-ajax-product-filter' ),
+			8  => __( 'Filter form submitted.', 'wc-ajax-product-filter' ),
+			9  => $scheduled_message,
+			10 => __( 'Filter form draft updated.', 'wc-ajax-product-filter' ),
 		);
 
 		return $messages;

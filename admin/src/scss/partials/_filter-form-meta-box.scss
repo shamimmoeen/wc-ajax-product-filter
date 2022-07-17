@@ -1,0 +1,52 @@
+.available-filters-dropdown {
+	.inside {
+		margin-top: 8px;
+	}
+}
+
+#form_data {
+	.inside {
+		margin-bottom: -12px;
+		margin-top: 8px;
+	}
+
+	.widget {
+		.widget-inside {
+			border-top: none;
+			line-height: 1.23076923;
+			padding: 1px 15px 15px;
+
+			.widget-content {
+				min-height: 10px;
+			}
+		}
+
+		.filter-key {
+			color: #646970;
+
+			&:empty {
+				display: none;
+			}
+
+			&::before {
+				content: ': ';
+			}
+		}
+	}
+}
+
+.filter-form-menu {
+	a {
+		cursor: pointer;
+	}
+}
+
+//.tab-general,
+.tab-settings,
+.tab-customize {
+	display: none;
+}
+
+.tab-settings {
+	//display: block;
+}

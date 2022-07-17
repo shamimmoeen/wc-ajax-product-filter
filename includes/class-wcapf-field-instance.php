@@ -37,6 +37,7 @@ class WCAPF_Field_Instance {
 	public $meta_key;
 	public $post_property;
 	public $number_data_type;
+	public $form_id;
 
 	/**
 	 * The raw field instance.
@@ -175,6 +176,8 @@ class WCAPF_Field_Instance {
 		$this->post_property = $this->get_sub_field_value( 'post_property' );
 
 		$this->custom_appearance_options = $this->get_appearance_data();
+
+		$this->form_id = $this->get_sub_field_value( 'form_id' );
 	}
 
 	/**

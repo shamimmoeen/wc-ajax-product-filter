@@ -4,7 +4,7 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes
+ * @subpackage wc-ajax-product-filter/includes/hooks
  * @author     wptools.io
  */
 
