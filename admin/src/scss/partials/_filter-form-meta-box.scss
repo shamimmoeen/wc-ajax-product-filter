@@ -11,14 +11,29 @@
 	}
 
 	.widget {
-		.widget-inside {
-			border-top: none;
-			line-height: 1.23076923;
-			padding: 1px 15px 15px;
+		.widget-top {
+			align-items: center;
+			display: flex;
+			justify-content: space-between;
+		}
 
-			.widget-content {
-				min-height: 10px;
+		.widget-action-buttons {
+			display: flex;
+			gap: 10px;
+			padding-right: 15px;
+
+			.button-link {
+				opacity: .8;
+				text-decoration: none;
+
+				&:hover {
+					opacity: 1;
+				}
 			}
+		}
+
+		.widget-inside {
+			display: none;
 		}
 
 		.filter-key {
@@ -35,18 +50,117 @@
 	}
 }
 
-.filter-form-menu {
+#filter-form-menu {
 	a {
 		cursor: pointer;
 	}
 }
 
-//.tab-general,
+.meta-box-sortables {
+	.force-hide {
+		display: none !important;
+	}
+}
+
+.visibility-rules-meta-box {
+	.hide-on-field {
+		label {
+			margin-right: 15px;
+		}
+	}
+
+	.visibility-rules-field {
+		align-items: flex-start;
+
+		.wcapf-form-sub-field-label {
+			line-height: 33px;
+		}
+
+		&.disabled {
+			display: none;
+		}
+	}
+
+	.visibility-rules {
+		p {
+			margin: 0 0 5px;
+		}
+
+		.single-line-rule {
+			max-width: 650px;
+
+			@media screen and (max-width: 782px) {
+				max-width: 100%;
+
+				.button {
+					margin-bottom: 0;
+				}
+			}
+
+			select {
+				width: 100%;
+			}
+
+			td {
+				&:not(:last-child) {
+					padding-right: 4px;
+				}
+
+				&.param {
+					width: 30%;
+				}
+
+				&.operator {
+					width: 20%;
+				}
+
+				&.add {
+					width: 40px;
+				}
+
+				&.remove {
+					width: 28px;
+				}
+			}
+
+			tr {
+				&:hover {
+					.remove-single-line-rule-btn {
+						visibility: visible;
+					}
+				}
+			}
+
+		}
+
+		.visibility-rules-group .single-line-rule:only-child tbody tr:only-child {
+			.remove-single-line-rule-btn {
+				display: none;
+			}
+		}
+
+		.remove-single-line-rule-btn {
+			color: #dc3545;
+			cursor: pointer;
+			visibility: hidden;
+		}
+	}
+}
+
+.tab-general,
 .tab-settings,
 .tab-customize {
 	display: none;
 }
 
-.tab-settings {
-	//display: block;
+.tab-customize {
+	display: block;
+}
+
+#advanced-sortables {
+	display: none;
+}
+
+#wcapf-form-customize {
+	display: flex;
 }
