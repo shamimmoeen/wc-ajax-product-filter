@@ -64,10 +64,14 @@ class WCAPF_Filter_Form_Meta_Box {
 			return;
 		}
 
-		$filter_ids = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : array();
+		$filter_ids              = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : array();
+		$hide_on                 = isset( $_POST['hide_on'] ) ? $_POST['hide_on'] : array();
+		$enable_visibility_rules = isset( $_POST['enable_visibility_rules'] ) ? $_POST['enable_visibility_rules'] : '';
 
 		$parsed_data = array(
-			'filter_ids' => $filter_ids,
+			'filter_ids'              => $filter_ids,
+			'hide_on'                 => $hide_on,
+			'enable_visibility_rules' => $enable_visibility_rules,
 		);
 
 		$parsed_data = apply_filters( 'wcapf_parse_form_data', $parsed_data, $_POST );
@@ -102,7 +106,7 @@ class WCAPF_Filter_Form_Meta_Box {
 		);
 
 		WCAPF_Template_Loader::get_instance()->load(
-			'admin/filter-form/filter-form-meta-box',
+			'admin/filter-form-meta-box',
 			array(
 				'available_filters' => $available_filters,
 				'filter_ids'        => $filter_ids,

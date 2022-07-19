@@ -47,6 +47,7 @@
 
 									$field_data = get_post_meta( $filter_id, '_field_data', true );
 									$filter_key = isset( $field_data['field_key'] ) ? $field_data['field_key'] : '';
+									$edit_link  = get_edit_post_link( $filter_id );
 
 									if ( $filter_key ) {
 										$label .= ': ' . $filter_key;
@@ -58,6 +59,7 @@
 										value="<?php echo esc_attr( $filter_id ); ?>"
 										data-title="<?php echo $title; ?>"
 										data-filter-key="<?php echo $filter_key; ?>"
+										data-edit-link="<?php echo $edit_link; ?>"
 										<?php echo $disabled; ?>
 									>
 										<?php echo esc_html( $label ); ?>
@@ -65,8 +67,12 @@
 								<?php endforeach; ?>
 							</select>
 						</label>
-						<button type="button" id="add-filter-to-form-btn" class="button button-primary"
-								disabled="disabled">
+						<button
+							type="button"
+							id="add-filter-to-form-btn"
+							class="button button-primary"
+							disabled="disabled"
+						>
 							<?php esc_html_e( 'Add', 'wc-ajax-product-filter' ); ?>
 						</button>
 					</div>
@@ -109,6 +115,7 @@
 								$filter_title = get_the_title( $filter_id );
 								$field_data   = get_post_meta( $filter_id, '_field_data', true );
 								$filter_key   = isset( $field_data['field_key'] ) ? $field_data['field_key'] : '';
+								$edit_link    = get_edit_post_link( $filter_id );
 
 								WCAPF_Template_Loader::get_instance()->load(
 									'admin/filter-form/filter-form-item',
@@ -117,6 +124,7 @@
 										'filter_title' => $filter_title,
 										'filter_id'    => $filter_id,
 										'filter_key'   => $filter_key,
+										'edit_link'    => $edit_link,
 									)
 								);
 							}
@@ -127,14 +135,5 @@
 			</div>
 		</div>
 	<?php endif; ?>
-
-	<div class="postbox">
-		<div class="postbox-header">
-			<h2><?php esc_html_e( 'Visibility Conditions', 'wc-ajax-product-filter' ); ?></h2>
-		</div>
-		<div class="inside">
-			<p>Show the filter form if</p>
-		</div>
-	</div>
 
 </div>

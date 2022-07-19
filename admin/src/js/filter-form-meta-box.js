@@ -37,9 +37,10 @@ jQuery( document ).ready( function( $ ) {
 
 		const filterTitle = $selected.attr( 'data-title' );
 		const filterKey   = $selected.attr( 'data-filter-key' );
+		const editLink    = $selected.attr( 'data-edit-link' );
 
 		const template = wp.template( 'wcapf-filter-form-item' );
-		const rendered = template( { title: filterTitle, id: filterId, key: filterKey } );
+		const rendered = template( { title: filterTitle, id: filterId, key: filterKey, edit_link: editLink } );
 
 		formData.find( '#filter-form-items' ).prepend( rendered );
 
@@ -71,52 +72,16 @@ jQuery( document ).ready( function( $ ) {
 	sortable( '#form_data' );
 
 	/**
-	 * Toggle the filter.
-	 */
-	function toggleFilter( e ) {
-		const target       = e.target;
-		const widget       = $( this ).closest( '.widget' );
-		const toggleBtn    = widget.find( '.widget-action' );
-		const inside       = widget.children( '.widget-inside' );
-		const isExpand     = toggleBtn.attr( 'aria-expanded' );
-		const toggleExpand = 'true' === isExpand ? 'false' : 'true';
-
-		toggleBtn.attr( 'aria-expanded', toggleExpand );
-		$( inside ).slideToggle(
-			'fast',
-			function() {
-				widget.toggleClass( 'open' );
-				formData.trigger( 'widget-closed', [ target ] );
-			}
-		);
-	}
-
-	formData.on( 'click', '.widget-top', toggleFilter );
-	formData.on( 'click', '.widget-control-close', toggleFilter );
-
-	/**
-	 * Focus the form field's expand button.
-	 */
-	function focusField( e, target ) {
-		if ( target.classList.contains( 'widget-control-close' ) ) {
-			const widget = $( target ).closest( '.widget' );
-			const action = widget.find( '.widget-action' );
-
-			action.attr( 'aria-expanded', 'false' ).focus();
-		}
-	}
-
-	formData.on( 'widget-closed', focusField );
-
-	/**
 	 * Remove the field.
 	 */
 	function removeField() {
-		const widget = $( this ).closest( '.widget' );
+		const widget   = $( this ).closest( '.widget' );
+		const filterId = widget.find( '.filter-id' ).val();
 
 		$( widget ).slideUp(
 			'fast',
 			function() {
+				$dropdown.find( 'option[value="' + filterId + '"]' ).removeAttr( 'disabled' );
 				widget.remove();
 			}
 		);
@@ -127,17 +92,45 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Filter form menu.
 	 */
-	const $filterFormNavItem = $( '.filter-form-menu .nav-tab' );
+	const $filterFormMenu     = $( '#filter-form-menu' );
+	const $filterFormMenuItem = $( '#filter-form-menu .nav-tab' );
 
-	$filterFormNavItem.on( 'click', function() {
-		const $this    = $( this );
-		const $content = $( '.tab-' + $this.attr( 'data-for' ) );
+	$filterFormMenuItem.on( 'click', function() {
+		const $this      = $( this );
+		const identifier = $this.attr( 'data-for' );
+		const $content   = $( '.tab-' + identifier );
 
-		$filterFormNavItem.removeClass( 'nav-tab-active' );
+		$filterFormMenuItem.removeClass( 'nav-tab-active' );
+		$filterFormMenu.attr( 'data-active-nav', identifier );
 		$this.addClass( 'nav-tab-active' );
 
 		$( '.tab-content' ).hide();
 		$content.show();
+
+		$( document ).trigger( 'wcapf_filter_form_nav_changed', [ identifier ] );
+	} );
+
+	$( document ).on( 'wcapf_filter_form_nav_changed', function( e, identifier ) {
+		const $visibilityRulesMetaBox = $( '#wcapf_visibility_rules' );
+
+		if ( 'general' === identifier ) {
+			$visibilityRulesMetaBox.removeClass( 'force-hide' );
+		} else {
+			$visibilityRulesMetaBox.addClass( 'force-hide' );
+		}
+	} );
+
+	/**
+	 * Toggle visibility rules.
+	 */
+	$( '#enable_visibility_rules' ).on( 'change', function() {
+		const $fields = $( '.visibility-rules-field' );
+
+		if ( $( this ).is( ':checked' ) ) {
+			$fields.removeClass( 'disabled' );
+		} else {
+			$fields.addClass( 'disabled' );
+		}
 	} );
 
 } );
