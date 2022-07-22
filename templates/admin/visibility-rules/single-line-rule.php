@@ -8,6 +8,9 @@
  * @author     wptools.io
  */
 
+/**
+ * @var array $taxonomies The list of taxonomies.
+ */
 ?>
 
 <div class="single-line-rule">
@@ -15,10 +18,11 @@
 		<tbody>
 			<?php
 			WCAPF_Template_Loader::get_instance()->load(
-				'admin/visibility-rules/single-line-rule-row'
+				'admin/visibility-rules/single-line-rule-row',
+				array( 'taxonomies' => $taxonomies )
 			);
 			?>
 		</tbody>
 	</table>
-	<p>or</p>
+	<p><?php esc_html_e( 'or', 'wc-ajax-product-filter' ); ?></p>
 </div>
