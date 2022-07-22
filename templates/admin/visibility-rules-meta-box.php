@@ -13,6 +13,28 @@ $form_data = get_post_meta( get_the_ID(), '_form_data', true );
 $hide_on                 = isset( $form_data['hide_on'] ) ? $form_data['hide_on'] : array();
 $enable_visibility_rules = isset( $form_data['enable_visibility_rules'] ) ? $form_data['enable_visibility_rules'] : '';
 $visibility_rules        = isset( $form_data['visibility_rules'] ) ? $form_data['visibility_rules'] : array();
+
+// The list of all public taxonomies registered for post type product.
+$_taxonomies = get_taxonomies(
+	array(
+		'object_type' => array( 'product' ),
+		'public'      => true,
+	)
+);
+
+$taxonomies = array();
+
+foreach ( $_taxonomies as $taxonomy ) {
+	$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
+
+	if ( ! $terms ) {
+		continue;
+	}
+
+	$taxonomy_data = get_taxonomy( $taxonomy );
+
+	$taxonomies[ $taxonomy ] = $taxonomy_data->label;
+}
 ?>
 
 <div class="visibility-rules-meta-box">
@@ -79,7 +101,8 @@ $visibility_rules        = isset( $form_data['visibility_rules'] ) ? $form_data[
 					<div class="visibility-rules-group">
 						<?php
 						WCAPF_Template_Loader::get_instance()->load(
-							'admin/visibility-rules/single-line-rule'
+							'admin/visibility-rules/single-line-rule',
+							array( 'taxonomies' => $taxonomies )
 						);
 						?>
 					</div>

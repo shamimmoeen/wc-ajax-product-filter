@@ -123,7 +123,7 @@ class WCAPF_Filter_Form_Meta_Box {
 		if ( 'wcapf-form' === get_post_type() ) {
 			echo '<script type="text/html" id="tmpl-wcapf-filter-form-item">';
 			echo WCAPF_Template_Loader::get_instance()->load(
-				'admin/filter-form/filter-form-item',
+				'admin/filter-form-item',
 				array( 'for_tmpl' => true ),
 				false
 			);
