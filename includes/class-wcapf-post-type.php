@@ -54,6 +54,7 @@ class WCAPF_Post_Type {
 		add_filter( 'post_updated_messages', array( $this, 'set_filter_updated_messages' ) );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'change_bulk_post_updated_message' ), 10, 2 );
 		add_action( 'add_meta_boxes', array( $this, 'register_visibility_rules_meta_box' ) );
+		add_filter( 'screen_options_show_screen', array( $this, 'remove_screen_options' ), 10, 2 );
 	}
 
 	/**
@@ -429,6 +430,30 @@ class WCAPF_Post_Type {
 	 */
 	public function visibility_rules_meta_box_html() {
 		WCAPF_Template_Loader::get_instance()->load( 'admin/visibility-rules-meta-box' );
+	}
+
+	/**
+	 * Removes the screen option from custom post types.
+	 *
+	 * @param bool      $show   Whether to show Screen Options tab.
+	 * @param WP_Screen $screen Current WP_Screen instance.
+	 *
+	 * @return bool
+	 */
+	public function remove_screen_options( $show, $screen ) {
+		if ( 'wcapf-filter' === $screen->id ) {
+			$show = false;
+		}
+
+		if ( 'wcapf-form' === $screen->id ) {
+			$show = false;
+		}
+
+		if ( 'wcapf-filter_page_wcapf-settings' === $screen->id ) {
+			$show = false;
+		}
+
+		return $show;
 	}
 
 }
