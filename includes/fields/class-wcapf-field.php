@@ -697,7 +697,32 @@ abstract class WCAPF_Field {
 			return;
 		}
 
+		// Apply the visibility rules.
+		$visibility_rules = new WCAPF_Visibility_Rules(
+			$this->get_sub_field_value( 'enable_visibility_rules' ),
+			$this->get_sub_field_value( 'visibility_rules' )
+		);
+
+		$meet_rules = $visibility_rules->meet_rules();
+
+		if ( ! $meet_rules ) {
+			return;
+		}
+
 		$this->render_filter_form();
+	}
+
+	/**
+	 * Get the field's subfield value.
+	 *
+	 * @param string $name The subfield name.
+	 *
+	 * @return mixed
+	 */
+	protected function get_sub_field_value( $name ) {
+		$instance = $this->get_instance();
+
+		return isset( $instance[ $name ] ) ? $instance[ $name ] : '';
 	}
 
 	/**
@@ -795,19 +820,6 @@ abstract class WCAPF_Field {
 		$field_inner_attributes = apply_filters( 'wcapf_field_inner_attributes', '', $field_instance );
 
 		echo '<div class="wcapf-field-inner"' . $field_inner_attributes . '>';
-	}
-
-	/**
-	 * Get the field's subfield value.
-	 *
-	 * @param string $name The subfield name.
-	 *
-	 * @return mixed
-	 */
-	protected function get_sub_field_value( $name ) {
-		$instance = $this->get_instance();
-
-		return isset( $instance[ $name ] ) ? $instance[ $name ] : '';
 	}
 
 	/**

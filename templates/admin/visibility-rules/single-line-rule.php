@@ -10,6 +10,7 @@
 
 /**
  * @var array $taxonomies The list of taxonomies.
+ * @var array $rules      The rules array.
  */
 ?>
 
@@ -17,10 +18,19 @@
 	<table>
 		<tbody>
 			<?php
-			WCAPF_Template_Loader::get_instance()->load(
-				'admin/visibility-rules/single-line-rule-row',
-				array( 'taxonomies' => $taxonomies )
-			);
+			if ( $rules ) {
+				foreach ( $rules as $rule ) {
+					WCAPF_Template_Loader::get_instance()->load(
+						'admin/visibility-rules/single-line-rule-row',
+						array( 'taxonomies' => $taxonomies, 'rule' => $rule )
+					);
+				}
+			} else {
+				WCAPF_Template_Loader::get_instance()->load(
+					'admin/visibility-rules/single-line-rule-row',
+					array( 'taxonomies' => $taxonomies, 'rule' => array() )
+				);
+			}
 			?>
 		</tbody>
 	</table>

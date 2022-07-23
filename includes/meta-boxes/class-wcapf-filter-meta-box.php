@@ -197,6 +197,17 @@ class WCAPF_Filter_Meta_Box {
 		// Store the post id in the field data.
 		$parsed_field['field_id'] = $post_id;
 
+		// Visibility rules.
+		$enable_visibility_rules = isset( $_POST['enable_visibility_rules'] ) ? $_POST['enable_visibility_rules'] : '';
+		$visibility_rules        = isset( $_POST['visibility_rules'] ) ? $_POST['visibility_rules'] : '';
+
+		$decode           = rawurldecode( $visibility_rules );
+		$visibility_rules = json_decode( $decode, true );
+		$visibility_rules = is_array( $visibility_rules ) ? $visibility_rules : array();
+
+		$parsed_field['enable_visibility_rules'] = $enable_visibility_rules;
+		$parsed_field['visibility_rules']        = $visibility_rules;
+
 		$parsed_field = apply_filters( 'wcapf_parse_form_field_data', $parsed_field, $field_data );
 
 		update_post_meta( $post_id, '_field_data', $parsed_field );
