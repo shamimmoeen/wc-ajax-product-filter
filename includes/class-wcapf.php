@@ -134,6 +134,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-visibility-rules.php';
 
 		// Loads the meta boxes.
 		require_once WCAPF_PLUGIN_DIR . '/includes/meta-boxes/class-wcapf-filter-meta-box.php';

@@ -8,11 +8,14 @@
  * @author     wptools.io
  */
 
-$form_data = get_post_meta( get_the_ID(), '_form_data', true );
+if ( 'wcapf-filter' === get_post_type() ) {
+	$data = get_post_meta( get_the_ID(), '_field_data', true );
+} else {
+	$data = get_post_meta( get_the_ID(), '_form_data', true );
+}
 
-$hide_on                 = isset( $form_data['hide_on'] ) ? $form_data['hide_on'] : array();
-$enable_visibility_rules = isset( $form_data['enable_visibility_rules'] ) ? $form_data['enable_visibility_rules'] : '';
-$visibility_rules        = isset( $form_data['visibility_rules'] ) ? $form_data['visibility_rules'] : array();
+$enable_visibility_rules = isset( $data['enable_visibility_rules'] ) ? $data['enable_visibility_rules'] : '';
+$visibility_rules        = isset( $data['visibility_rules'] ) ? $data['visibility_rules'] : array();
 
 // The list of all public taxonomies registered for post type product.
 $_taxonomies = get_taxonomies(
@@ -39,41 +42,6 @@ foreach ( $_taxonomies as $taxonomy ) {
 
 <div class="visibility-rules-meta-box">
 	<div class="wcapf-form-field">
-		<div class="wcapf-form-sub-field hide-on-field">
-			<div class="wcapf-form-sub-field-label">
-				<?php esc_html_e( 'Hide on', 'wc-ajax-product-filter' ); ?>
-			</div>
-			<div class="wcapf-wrapper">
-				<label>
-					<input
-						type="checkbox"
-						name="hide_on[]"
-						value="mobile"
-						<?php echo in_array( 'mobile', $hide_on ) ? 'checked="checked"' : ''; ?>
-					>
-					<?php esc_html_e( 'Mobile', 'wc-ajax-product-filter' ); ?>
-				</label>
-				<label>
-					<input
-						type="checkbox"
-						name="hide_on[]"
-						value="tablet"
-						<?php echo in_array( 'tablet', $hide_on ) ? 'checked="checked"' : ''; ?>
-					>
-					<?php esc_html_e( 'Tablet', 'wc-ajax-product-filter' ); ?>
-				</label>
-				<label>
-					<input
-						type="checkbox"
-						name="hide_on[]"
-						value="desktop"
-						<?php echo in_array( 'desktop', $hide_on ) ? 'checked="checked"' : ''; ?>
-					>
-					<?php esc_html_e( 'Desktop', 'wc-ajax-product-filter' ); ?>
-				</label>
-			</div>
-		</div>
-
 		<div class="wcapf-form-sub-field enable-visibility-rules-field">
 			<div class="wcapf-form-sub-field-label">
 				<label for="enable_visibility_rules">
@@ -100,10 +68,19 @@ foreach ( $_taxonomies as $taxonomy ) {
 				<div class="visibility-rules">
 					<div class="visibility-rules-group">
 						<?php
-						WCAPF_Template_Loader::get_instance()->load(
-							'admin/visibility-rules/single-line-rule',
-							array( 'taxonomies' => $taxonomies )
-						);
+						if ( $visibility_rules ) {
+							foreach ( $visibility_rules as $visibility_rule ) {
+								WCAPF_Template_Loader::get_instance()->load(
+									'admin/visibility-rules/single-line-rule',
+									array( 'taxonomies' => $taxonomies, 'rules' => $visibility_rule )
+								);
+							}
+						} else {
+							WCAPF_Template_Loader::get_instance()->load(
+								'admin/visibility-rules/single-line-rule',
+								array( 'taxonomies' => $taxonomies, 'rules' => array() )
+							);
+						}
 						?>
 					</div>
 
@@ -116,4 +93,13 @@ foreach ( $_taxonomies as $taxonomy ) {
 			</div>
 		</div>
 	</div>
+
+	<?php $_visibility_rules = rawurlencode( json_encode( $visibility_rules ) ); ?>
+
+	<input
+		type="hidden"
+		id="visibility_rules"
+		name="visibility_rules"
+		value="<?php echo $_visibility_rules; ?>"
+	>
 </div>

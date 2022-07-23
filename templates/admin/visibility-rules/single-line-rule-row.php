@@ -10,8 +10,12 @@
 
 /**
  * @var array $taxonomies The list of taxonomies.
+ * @var array $rule       The rule array.
  */
 
+$selected_rule        = isset( $rule[0] ) ? $rule[0] : '';
+$selected_operator    = isset( $rule[1] ) ? $rule[1] : '';
+$selected_rule_option = isset( $rule[2] ) ? $rule[2] : '';
 ?>
 
 <!--suppress HtmlFormInputWithoutLabel -->
@@ -19,11 +23,15 @@
 <tr>
 	<td class="param">
 		<select class="rule">
-			<option value="page"><?php esc_html_e( 'Page', 'wc-ajax-product-filter' ); ?></option>
-			<optgroup label="<?php esc_attr_e( 'Taxonomy', 'wc-ajax-product-filter' ); ?>">
+			<option
+				value="page"
+				<?php echo 'page' === $selected_rule ? 'selected="selected"' : ''; ?>
+			><?php esc_html_e( 'Page', 'wc-ajax-product-filter' ); ?></option>
+			<optgroup label="<?php esc_attr_e( 'Archive', 'wc-ajax-product-filter' ); ?>">
 				<?php
 				foreach ( $taxonomies as $taxonomy_name => $taxonomy_label ) {
-					echo '<option value="' . $taxonomy_name . '">' . $taxonomy_label . '</option>';
+					$selected = $taxonomy_name === $selected_rule ? ' selected="selected"' : '';
+					echo '<option value="' . $taxonomy_name . '"' . $selected . '>' . $taxonomy_label . '</option>';
 				}
 				?>
 			</optgroup>
@@ -31,25 +39,43 @@
 	</td>
 	<td class="operator">
 		<select class="operator">
-			<option value="equal">
-				<?php esc_html_e( 'is equal to', 'wc-ajax-product-filter' ); ?>
-			</option>
-			<option value="not-equal">
-				<?php esc_html_e( 'is not equal to', 'wc-ajax-product-filter' ); ?>
-			</option>
+			<option
+				value="equal"
+				<?php echo 'equal' === $selected_operator ? 'selected="selected"' : ''; ?>
+			><?php esc_html_e( 'is equal to', 'wc-ajax-product-filter' ); ?></option>
+			<option
+				value="not-equal"
+				<?php echo 'not-equal' === $selected_operator ? 'selected="selected"' : ''; ?>
+			><?php esc_html_e( 'is not equal to', 'wc-ajax-product-filter' ); ?></option>
 		</select>
 	</td>
 	<td class="value">
-		<select class="for-page">
-			<option value="post"><?php esc_html_e( 'Shop', 'wc-ajax-product-filter' ); ?></option>
+		<?php
+		if ( ! $selected_rule || 'page' === $selected_rule ) {
+			$page_select_classes = 'for-page active';
+		} else {
+			$page_select_classes = 'for-page';
+		}
+		?>
+		<select class="<?php echo $page_select_classes; ?>">
+			<option value="shop"><?php esc_html_e( 'Shop', 'wc-ajax-product-filter' ); ?></option>
 		</select>
 		<?php
 		foreach ( $taxonomies as $taxonomy_name => $taxonomy_label ) {
+			$dropdown_classes = 'for-' . $taxonomy_name;
+
+			if ( $selected_rule === $taxonomy_name ) {
+				$dropdown_classes .= ' active';
+			}
+
 			wp_dropdown_categories(
 				array(
 					'taxonomy'     => $taxonomy_name,
 					'hierarchical' => true,
-					'hide_empty'   => false
+					'hide_empty'   => false,
+					'name'         => $taxonomy_name,
+					'class'        => $dropdown_classes,
+					'selected'     => $selected_rule_option,
 				)
 			);
 		}
