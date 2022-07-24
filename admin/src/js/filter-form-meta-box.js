@@ -89,48 +89,4 @@ jQuery( document ).ready( function( $ ) {
 
 	formData.on( 'click', '.widget-control-remove', removeField );
 
-	/**
-	 * Filter form menu.
-	 */
-	const $filterFormMenu     = $( '#filter-form-menu' );
-	const $filterFormMenuItem = $( '#filter-form-menu .nav-tab' );
-
-	$filterFormMenuItem.on( 'click', function() {
-		const $this      = $( this );
-		const identifier = $this.attr( 'data-for' );
-		const $content   = $( '.tab-' + identifier );
-
-		$filterFormMenuItem.removeClass( 'nav-tab-active' );
-		$filterFormMenu.attr( 'data-active-nav', identifier );
-		$this.addClass( 'nav-tab-active' );
-
-		$( '.tab-content' ).hide();
-		$content.show();
-
-		$( document ).trigger( 'wcapf_filter_form_nav_changed', [ identifier ] );
-	} );
-
-	$( document ).on( 'wcapf_filter_form_nav_changed', function( e, identifier ) {
-		const $visibilityRulesMetaBox = $( '#wcapf_visibility_rules' );
-
-		if ( 'general' === identifier ) {
-			$visibilityRulesMetaBox.removeClass( 'force-hide' );
-		} else {
-			$visibilityRulesMetaBox.addClass( 'force-hide' );
-		}
-	} );
-
-	/**
-	 * Toggle visibility rules.
-	 */
-	$( '#enable_visibility_rules' ).on( 'change', function() {
-		const $fields = $( '.visibility-rules-field' );
-
-		if ( $( this ).is( ':checked' ) ) {
-			$fields.removeClass( 'disabled' );
-		} else {
-			$fields.addClass( 'disabled' );
-		}
-	} );
-
 } );

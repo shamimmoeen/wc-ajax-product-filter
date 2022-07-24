@@ -53,8 +53,6 @@ class WCAPF_Post_Type {
 		add_action( 'admin_init', array( $this, 'action_admin_init' ) );
 		add_filter( 'post_updated_messages', array( $this, 'set_filter_updated_messages' ) );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'change_bulk_post_updated_message' ), 10, 2 );
-		add_action( 'add_meta_boxes', array( $this, 'register_visibility_rules_meta_box' ) );
-		add_filter( 'screen_options_show_screen', array( $this, 'remove_screen_options' ), 10, 2 );
 	}
 
 	/**
@@ -403,57 +401,6 @@ class WCAPF_Post_Type {
 		$bulk_messages['wcapf-filter']['untrashed'] = $untrashed_message;
 
 		return $bulk_messages;
-	}
-
-	/**
-	 * Register the visibility rules meta box.
-	 *
-	 * @return void
-	 */
-	public function register_visibility_rules_meta_box() {
-		$screens = array( 'wcapf-filter', 'wcapf-form' );
-
-		foreach ( $screens as $screen ) {
-			add_meta_box(
-				'wcapf_visibility_rules',
-				__( 'Visibility Rules', 'wc-ajax-product-filter' ),
-				array( $this, 'visibility_rules_meta_box_html' ),
-				$screen
-			);
-		}
-	}
-
-	/**
-	 * Visibility rules meta box html content.
-	 *
-	 * @return void
-	 */
-	public function visibility_rules_meta_box_html() {
-		WCAPF_Template_Loader::get_instance()->load( 'admin/visibility-rules-meta-box' );
-	}
-
-	/**
-	 * Removes the screen option from custom post types.
-	 *
-	 * @param bool      $show   Whether to show Screen Options tab.
-	 * @param WP_Screen $screen Current WP_Screen instance.
-	 *
-	 * @return bool
-	 */
-	public function remove_screen_options( $show, $screen ) {
-		if ( 'wcapf-filter' === $screen->id ) {
-			$show = false;
-		}
-
-		if ( 'wcapf-form' === $screen->id ) {
-			$show = false;
-		}
-
-		if ( 'wcapf-filter_page_wcapf-settings' === $screen->id ) {
-			$show = false;
-		}
-
-		return $show;
 	}
 
 }

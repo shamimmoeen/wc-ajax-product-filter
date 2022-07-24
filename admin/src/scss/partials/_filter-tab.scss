@@ -1,0 +1,19 @@
+#filter-nav-tab {
+	margin-bottom: 1em;
+
+	a {
+		cursor: pointer;
+	}
+}
+
+.tab-content {
+	&:not(.tab-general) {
+		display: none;
+	}
+}
+
+.tab-content-alt {
+	background-color: #ffffff;
+	border: 1px solid #c3c4c7;
+	padding: 12px;
+}
