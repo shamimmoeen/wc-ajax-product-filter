@@ -68,14 +68,19 @@ class WCAPF_Filter_Form_Meta_Box {
 		$enable_visibility_rules = isset( $_POST['enable_visibility_rules'] ) ? $_POST['enable_visibility_rules'] : '';
 		$visibility_rules        = isset( $_POST['visibility_rules'] ) ? $_POST['visibility_rules'] : array();
 
+		$reset_filter_visibility_rules = isset( $_POST['reset_filter_visibility_rules'] )
+			? $_POST['reset_filter_visibility_rules']
+			: '';
+
 		$decode           = rawurldecode( $visibility_rules );
 		$visibility_rules = json_decode( $decode, true );
 		$visibility_rules = is_array( $visibility_rules ) ? $visibility_rules : array();
 
 		$parsed_data = array(
-			'filter_ids'              => $filter_ids,
-			'enable_visibility_rules' => $enable_visibility_rules,
-			'visibility_rules'        => $visibility_rules,
+			'filter_ids'                    => $filter_ids,
+			'enable_visibility_rules'       => $enable_visibility_rules,
+			'visibility_rules'              => $visibility_rules,
+			'reset_filter_visibility_rules' => $reset_filter_visibility_rules,
 		);
 
 		$parsed_data = apply_filters( 'wcapf_parse_form_data', $parsed_data, $_POST );
