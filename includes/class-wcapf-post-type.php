@@ -53,10 +53,8 @@ class WCAPF_Post_Type {
 		add_action( 'admin_init', array( $this, 'action_admin_init' ) );
 		add_filter( 'post_updated_messages', array( $this, 'set_filter_updated_messages' ) );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'change_bulk_post_updated_message' ), 10, 2 );
-		// add_action( 'add_meta_boxes', array( $this, 'register_visibility_rules_meta_box' ) );
+		add_action( 'add_meta_boxes', array( $this, 'register_visibility_rules_meta_box' ) );
 		add_filter( 'screen_options_show_screen', array( $this, 'remove_screen_options' ), 10, 2 );
-		add_filter( 'admin_body_class', array( $this, 'add_admin_body_class' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'load_frontend_styles_for_preview' ) );
 	}
 
 	/**
@@ -89,7 +87,7 @@ class WCAPF_Post_Type {
 			'show_in_admin_bar' => false,
 			'query_var'         => true,
 			'rewrite'           => array( 'slug' => 'wcapf-filter' ),
-			'supports'          => array( '' ),
+			'supports'          => array( 'title' ),
 			'menu_icon'         => 'dashicons-filter',
 			'menu_position'     => 100,
 			'capabilities'      => array(
@@ -131,7 +129,7 @@ class WCAPF_Post_Type {
 			'show_in_admin_bar' => false,
 			'query_var'         => true,
 			'rewrite'           => array( 'slug' => 'wcapf-form' ),
-			'supports'          => array( '' ),
+			'supports'          => array( 'title' ),
 			'menu_position'     => 100,
 			'capabilities'      => array(
 				'edit_post'          => 'manage_options',
@@ -156,8 +154,6 @@ class WCAPF_Post_Type {
 	public function remove_slug_meta_box() {
 		remove_meta_box( 'slugdiv', 'wcapf-filter', 'normal' );
 		remove_meta_box( 'slugdiv', 'wcapf-form', 'normal' );
-		remove_meta_box( 'submitdiv', 'wcapf-filter', 'normal' );
-		remove_meta_box( 'submitdiv', 'wcapf-form', 'normal' );
 	}
 
 	/**
@@ -458,61 +454,6 @@ class WCAPF_Post_Type {
 		}
 
 		return $show;
-	}
-
-	/**
-	 * Adds a class to hide the poststuff.
-	 *
-	 * @param string $classes A space-separated string of class names.
-	 *
-	 * @return string
-	 */
-	public function add_admin_body_class( $classes ) {
-		$screen = get_current_screen();
-
-		if ( 'wcapf-filter' === $screen->id || 'wcapf-form' === $screen->id ) {
-			$classes .= ' hide-poststuff';
-		}
-
-		return $classes;
-	}
-
-	public function load_frontend_styles_for_preview() {
-		$screen = get_current_screen();
-
-		if ( 'wcapf-filter' === $screen->id || 'wcapf-form' === $screen->id ) {
-			wp_enqueue_style(
-				'wcapf-icons',
-				WCAPF_PLUGIN_URL . 'public/icons/icons.css',
-				array(),
-				filemtime( WCAPF_PLUGIN_DIR . '/public/icons/icons.css' )
-			);
-
-			$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
-				? '.min.css'
-				: '.css';
-
-			wp_enqueue_style(
-				'wcapf-chosen',
-				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
-				array(),
-				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
-			);
-
-			wp_enqueue_style(
-				'wcapf-nouislider',
-				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
-				array(),
-				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext )
-			);
-
-			wp_enqueue_style(
-				'wc-ajax-product-filter-public-styles',
-				WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-public-styles' . $ext,
-				array(),
-				filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
-			);
-		}
 	}
 
 }
