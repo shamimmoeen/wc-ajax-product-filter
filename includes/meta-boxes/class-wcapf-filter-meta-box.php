@@ -46,7 +46,7 @@ class WCAPF_Filter_Meta_Box {
 		add_action( 'save_post', array( $this, 'save_filter' ) );
 		add_filter( 'redirect_post_location', array( $this, 'meta_validation_redirect_location' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'validation_error_admin_notice' ) );
-		add_action( 'edit_form_advanced', array( $this, 'render_meta_box' ) );
+		add_action( 'edit_form_top', array( $this, 'render_filter_admin_form_ui' ) );
 		add_action( 'admin_footer', array( $this, 'render_tmpl_templates' ) );
 		add_action( 'admin_footer', array( $this, 'render_product_status_option_placeholder_template' ) );
 	}
@@ -302,13 +302,13 @@ class WCAPF_Filter_Meta_Box {
 	}
 
 	/**
-	 * Renders the meta box.
+	 * Renders the filter admin form ui.
 	 *
 	 * @param WP_Post $post The post object.
 	 *
 	 * @return void
 	 */
-	public function render_meta_box( $post ) {
+	public function render_filter_admin_form_ui( $post ) {
 		if ( 'wcapf-filter' !== get_post_type() ) {
 			return;
 		}
