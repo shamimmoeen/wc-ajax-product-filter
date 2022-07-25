@@ -65,6 +65,10 @@ class WCAPF_Filter_Form_Meta_Box {
 		}
 
 		$filter_ids              = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : array();
+		$show_title              = isset( $_POST['show_title'] ) ? $_POST['show_title'] : '';
+		$enable_accordion        = isset( $_POST['enable_accordion'] ) ? $_POST['enable_accordion'] : '';
+		$accordion_default_state = isset( $_POST['accordion_default_state'] ) ? $_POST['accordion_default_state'] : '';
+		$show_clear_button       = isset( $_POST['show_clear_button'] ) ? $_POST['show_clear_button'] : '';
 		$enable_visibility_rules = isset( $_POST['enable_visibility_rules'] ) ? $_POST['enable_visibility_rules'] : '';
 		$visibility_rules        = isset( $_POST['visibility_rules'] ) ? $_POST['visibility_rules'] : array();
 
@@ -78,6 +82,10 @@ class WCAPF_Filter_Form_Meta_Box {
 
 		$parsed_data = array(
 			'filter_ids'                    => $filter_ids,
+			'show_title'                    => $show_title,
+			'enable_accordion'              => $enable_accordion,
+			'accordion_default_state'       => $accordion_default_state,
+			'show_clear_button'             => $show_clear_button,
 			'enable_visibility_rules'       => $enable_visibility_rules,
 			'visibility_rules'              => $visibility_rules,
 			'reset_filter_visibility_rules' => $reset_filter_visibility_rules,
@@ -115,7 +123,7 @@ class WCAPF_Filter_Form_Meta_Box {
 		);
 
 		WCAPF_Template_Loader::get_instance()->load(
-			'admin/filter-form-meta-box',
+			'admin/meta-box/filter-form',
 			array(
 				'available_filters' => $available_filters,
 				'filter_ids'        => $filter_ids,
@@ -132,7 +140,7 @@ class WCAPF_Filter_Form_Meta_Box {
 		if ( 'wcapf-form' === get_post_type() ) {
 			echo '<script type="text/html" id="tmpl-wcapf-filter-form-item">';
 			echo WCAPF_Template_Loader::get_instance()->load(
-				'admin/filter-form-item',
+				'admin/meta-box/filter-form-item',
 				array( 'for_tmpl' => true ),
 				false
 			);

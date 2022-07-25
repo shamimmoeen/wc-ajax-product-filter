@@ -4,7 +4,7 @@
  *
  * @since      3.1.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/templates/admin/filter-form
+ * @subpackage wc-ajax-product-filter/templates/admin/meta-box
  * @author     wptools.io
  */
 

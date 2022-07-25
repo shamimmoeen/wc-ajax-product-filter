@@ -698,14 +698,10 @@ abstract class WCAPF_Field {
 		}
 
 		// Apply the visibility rules.
-		$visibility_rules = new WCAPF_Visibility_Rules(
-			$this->get_sub_field_value( 'enable_visibility_rules' ),
-			$this->get_sub_field_value( 'visibility_rules' )
-		);
+		$enable_visibility_rules = $this->get_sub_field_value( 'enable_visibility_rules' );
+		$visibility_rules        = $this->get_sub_field_value( 'visibility_rules' );
 
-		$meet_rules = $visibility_rules->meet_rules();
-
-		if ( ! $meet_rules ) {
+		if ( $enable_visibility_rules && ! WCAPF_Visibility_Rules::meet_rules( $visibility_rules ) ) {
 			return;
 		}
 

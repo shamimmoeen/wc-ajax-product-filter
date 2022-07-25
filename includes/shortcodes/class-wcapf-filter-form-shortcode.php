@@ -58,6 +58,26 @@ class WCAPF_Filter_Form_Shortcode {
 			return '';
 		}
 
+		$enable_visibility_rules = isset( $form_data['enable_visibility_rules'] )
+			? $form_data['enable_visibility_rules']
+			: '';
+
+		$visibility_rules = isset( $form_data['visibility_rules'] ) ? $form_data['visibility_rules'] : array();
+
+		// Apply the visibility rules.
+		if ( $enable_visibility_rules && ! WCAPF_Visibility_Rules::meet_rules( $visibility_rules ) ) {
+			return '';
+		}
+
+		$reset_filter_visibility_rules = isset( $form_data['reset_filter_visibility_rules'] )
+			? $form_data['reset_filter_visibility_rules']
+			: '';
+
+		$show_title              = isset( $form_data['show_title'] ) ? $form_data['show_title'] : '';
+		$enable_accordion        = isset( $form_data['enable_accordion'] ) ? $form_data['enable_accordion'] : '';
+		$accordion_default_state = isset( $form_data['accordion_default_state'] ) ? $form_data['accordion_default_state'] : '';
+		$show_clear_button       = isset( $form_data['show_clear_button'] ) ? $form_data['show_clear_button'] : '';
+
 		ob_start();
 
 		echo '<div class="wcapf-filter-form preset-2 form-' . $id . '">';
@@ -73,6 +93,27 @@ class WCAPF_Filter_Form_Shortcode {
 			}
 
 			$field_data['form_id'] = $id;
+
+			if ( $reset_filter_visibility_rules ) {
+				$field_data['enable_visibility_rules'] = '';
+				$field_data['visibility_rules']        = array();
+			}
+
+			if ( 'do_not_override' !== $show_title ) {
+				$field_data['show_title'] = 'yes' === $show_title ? '1' : '';
+			}
+
+			if ( 'do_not_override' !== $enable_accordion ) {
+				$field_data['enable_accordion'] = 'yes' === $enable_accordion ? '1' : '';
+
+				if ( 'do_not_override' !== $accordion_default_state ) {
+					$field_data['accordion_default_state'] = $accordion_default_state;
+				}
+			}
+
+			if ( 'do_not_override' !== $show_clear_button ) {
+				$field_data['show_clear_button'] = 'yes' === $show_clear_button ? '1' : '';
+			}
 
 			$field = WCAPF_Helper::get_field_instance( $field_type, $field_data );
 			$field->filter_form();

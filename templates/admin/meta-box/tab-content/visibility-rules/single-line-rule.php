@@ -4,7 +4,7 @@
  *
  * @since      3.1.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/templates/admin/visibility-rules
+ * @subpackage wc-ajax-product-filter/templates/admin/meta-box/tab-content/visibility-rules
  * @author     wptools.io
  */
 
@@ -21,13 +21,13 @@
 			if ( $rules ) {
 				foreach ( $rules as $rule ) {
 					WCAPF_Template_Loader::get_instance()->load(
-						'admin/visibility-rules/single-line-rule-row',
+						'admin/meta-box/tab-content/visibility-rules/single-line-rule-row',
 						array( 'taxonomies' => $taxonomies, 'rule' => $rule )
 					);
 				}
 			} else {
 				WCAPF_Template_Loader::get_instance()->load(
-					'admin/visibility-rules/single-line-rule-row',
+					'admin/meta-box/tab-content/visibility-rules/single-line-rule-row',
 					array( 'taxonomies' => $taxonomies, 'rule' => array() )
 				);
 			}

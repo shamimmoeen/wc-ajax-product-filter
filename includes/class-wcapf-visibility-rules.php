@@ -16,34 +16,20 @@
 class WCAPF_Visibility_Rules {
 
 	/**
-	 * @var bool
-	 */
-	private $apply_rules;
-
-	/**
-	 * @var array
-	 */
-	private $rules;
-
-	/**
 	 * Constructor.
-	 *
-	 * @param bool  $enable_visibility_rules Determines if we apply the visibility rules or not.
-	 * @param array $visibility_rules        The array of rules.
 	 */
-	public function __construct( $enable_visibility_rules, $visibility_rules ) {
-		$this->apply_rules = $enable_visibility_rules;
-
-		$this->rules = is_array( $visibility_rules ) ? $visibility_rules : array();
+	private function __construct() {
 	}
 
 	/**
 	 * Checks if the visibility rules are met.
 	 *
+	 * @param array $rules The array of rules.
+	 *
 	 * @return bool
 	 */
-	public function meet_rules() {
-		if ( ! $this->apply_rules ) {
+	public static function meet_rules( $rules ) {
+		if ( ! $rules ) {
 			return true;
 		}
 
@@ -54,7 +40,7 @@ class WCAPF_Visibility_Rules {
 		$single_line_rule_index = 0;
 		// end
 
-		foreach ( $this->rules as $single_line_rule ) {
+		foreach ( $rules as $single_line_rule ) {
 			$and_clauses = array();
 
 			// start
@@ -72,7 +58,7 @@ class WCAPF_Visibility_Rules {
 				$operator = $and_clause[1];
 				$value    = $and_clause[2];
 
-				$and_clauses[] = $this->meet_rule( $rule, $operator, $value );
+				$and_clauses[] = self::meet_rule( $rule, $operator, $value );
 
 				// start
 				if ( 0 < $and_clause_index ) {
@@ -121,7 +107,16 @@ class WCAPF_Visibility_Rules {
 		return $or_clauses_matches;
 	}
 
-	private function meet_rule( $rule, $operator, $value ) {
+	/**
+	 * Check if the visibility rule is met.
+	 *
+	 * @param string $rule     The rule to check.
+	 * @param string $operator The operator, equal or not-equal.
+	 * @param string $value    The value to compare.
+	 *
+	 * @return bool
+	 */
+	public static function meet_rule( $rule, $operator, $value ) {
 		if ( 'page' === $rule ) {
 			$match = is_shop();
 		} else {
@@ -132,7 +127,7 @@ class WCAPF_Visibility_Rules {
 			$match = ! $match;
 		}
 
-		return apply_filters( 'header_footer_scripts_meet_rule', $match, $rule, $operator, $value );
+		return apply_filters( 'wcapf_meet_visibility_rule', $match, $rule, $operator, $value );
 	}
 
 }

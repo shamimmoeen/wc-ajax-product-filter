@@ -4,7 +4,7 @@
  *
  * @since      3.1.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/templates/admin/visibility-rules
+ * @subpackage wc-ajax-product-filter/templates/admin/meta-box/tab-content/visibility-rules
  * @author     wptools.io
  */
 

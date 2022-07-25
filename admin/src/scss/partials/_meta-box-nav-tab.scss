@@ -1,4 +1,4 @@
-#filter-nav-tab {
+#meta-box-nav-tab {
 	margin-bottom: 1em;
 
 	a {
@@ -16,4 +16,10 @@
 	background-color: #ffffff;
 	border: 1px solid #c3c4c7;
 	padding: 12px;
+}
+
+.tab-content {
+	.wcapf-form-sub-field.disabled {
+		display: none;
+	}
 }
