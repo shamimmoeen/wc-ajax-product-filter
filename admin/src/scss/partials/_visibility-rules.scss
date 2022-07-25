@@ -1,27 +1,17 @@
-.visibility-rules {
-	.value {
-		select:not(.active) {
-			display: none;
-		}
-	}
-}
-
-.visibility-rules-meta-box {
-	.hide-on-field {
-		label {
-			margin-right: 15px;
-		}
-	}
-
+.tab-visibility-rules {
 	.visibility-rules-field {
 		align-items: flex-start;
 
 		.wcapf-form-sub-field-label {
 			line-height: 33px;
 		}
+	}
 
-		&.disabled {
-			display: none;
+	.visibility-rules {
+		.value {
+			select:not(.active) {
+				display: none;
+			}
 		}
 	}
 

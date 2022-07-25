@@ -10,18 +10,16 @@
 jQuery( document ).ready( function( $ ) {
 
 	/**
-	 * Filter nav tab.
+	 * Meta box nav.
 	 */
-	const $filterNavTab     = $( '#filter-nav-tab' );
-	const $filterNavTabItem = $( '#filter-nav-tab .nav-tab' );
+	const $metaBoxNavItem = $( '#meta-box-nav-tab .nav-tab' );
 
-	$filterNavTabItem.on( 'click', function() {
+	$metaBoxNavItem.on( 'click', function() {
 		const $this      = $( this );
 		const identifier = $this.attr( 'data-for' );
 		const $content   = $( '.tab-' + identifier );
 
-		$filterNavTabItem.removeClass( 'nav-tab-active' );
-		$filterNavTab.attr( 'data-active-nav', identifier );
+		$metaBoxNavItem.removeClass( 'nav-tab-active' );
 		$this.addClass( 'nav-tab-active' );
 
 		$( '.tab-content' ).hide();

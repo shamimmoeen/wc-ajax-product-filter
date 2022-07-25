@@ -89,4 +89,17 @@ jQuery( document ).ready( function( $ ) {
 
 	formData.on( 'click', '.widget-control-remove', removeField );
 
+	/**
+	 * Toggle accordion default state.
+	 */
+	$( '#enable_accordion' ).on( 'change', function() {
+		const $fields = $( '.accordion-default-state' );
+
+		if ( 'yes' === $( this ).val() ) {
+			$fields.removeClass( 'disabled' );
+		} else {
+			$fields.addClass( 'disabled' );
+		}
+	} );
+
 } );

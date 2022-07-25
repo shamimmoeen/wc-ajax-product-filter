@@ -332,7 +332,7 @@ class WCAPF_Filter_Meta_Box {
 		}
 
 		WCAPF_Template_Loader::get_instance()->load(
-			'admin/filter-meta-box',
+			'admin/meta-box/filter',
 			array(
 				'available_fields'  => $available_fields,
 				'field_type'        => $field_type,
