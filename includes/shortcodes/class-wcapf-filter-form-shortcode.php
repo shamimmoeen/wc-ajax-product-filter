@@ -82,6 +82,8 @@ class WCAPF_Filter_Form_Shortcode {
 
 		echo '<div class="wcapf-filter-form preset-2 form-' . $id . '">';
 
+		echo '<h3 style="margin-bottom: 1.5em;">Filter by</h3>';
+
 		foreach ( $filter_ids as $filter_id ) {
 			$field_data = get_post_meta( $filter_id, '_field_data', true );
 
@@ -118,6 +120,8 @@ class WCAPF_Filter_Form_Shortcode {
 			$field = WCAPF_Helper::get_field_instance( $field_type, $field_data );
 			$field->filter_form();
 		}
+
+		echo '<button type="button">Apply Filters</button>';
 
 		echo '</div>';
 
