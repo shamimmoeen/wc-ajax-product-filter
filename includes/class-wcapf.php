@@ -393,6 +393,8 @@ class WCAPF {
 			'wcapf_admin_params',
 			$this->admin_js_params()
 		);
+
+		wp_enqueue_media();
 	}
 
 	/**

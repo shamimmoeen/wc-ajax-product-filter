@@ -372,19 +372,17 @@ jQuery( document ).ready( function( $ ) {
 	initDatepicker();
 
 	function initDefaultOrderBy() {
-		const $container = $( wcapf_params.shop_loop_container );
-
 		// Attach chosen.
 		if ( wcapf_params.attach_chosen_on_sorting ) {
 			if ( jQuery().chosen ) {
-				$container.find( '.woocommerce-ordering select.orderby' ).chosen( {
+				$body.find( '.woocommerce-ordering select.orderby' ).chosen( {
 					'disable_search_threshold': 15,
 				} );
 			}
 		}
 
 		if ( ! wcapf_params.sorting_control ) {
-			$container.find( '.woocommerce-ordering' ).each( function() {
+			$body.find( '.woocommerce-ordering' ).each( function() {
 				const $orderingForm = $( this );
 
 				$orderingForm.on( 'change', 'select.orderby', function() {
@@ -395,7 +393,7 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
-		$container.find( '.woocommerce-ordering' ).each( function() {
+		$body.find( '.woocommerce-ordering' ).each( function() {
 			const $orderingForm = $( this );
 
 			$orderingForm.on( 'submit', function( e ) {
@@ -415,6 +413,18 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	initDefaultOrderBy();
+
+	function updateProductsCountResult( $results ) {
+		const selector = '.woocommerce-result-count';
+
+		if ( $( wcapf_params.shop_loop_container ).find( selector ).length ) {
+			return;
+		}
+
+		const newProductCount = $results.find( selector ).html();
+
+		$body.find( selector ).html( newProductCount );
+	}
 
 	function showLoadingAnimation() {
 		if ( ! wcapf_params.loading_animation ) {
@@ -553,26 +563,27 @@ jQuery( document ).ready( function( $ ) {
 		$body.trigger( 'wcapf_before_fetching_products' );
 	}
 
-	function beforeUpdatingProducts() {
+	function beforeUpdatingProducts( $results ) {
 		resetLoadingAnimation();
 
-		$body.trigger( 'wcapf_before_updating_products' );
+		$body.trigger( 'wcapf_before_updating_products', [ $results ] );
 	}
 
 	// Things are done after applying the filter like scroll to top.
-	function afterUpdatingProducts() {
+	function afterUpdatingProducts( $results ) {
 		initChosen();
 		initHierarchyAccordion();
 		initNoUISlider();
 		initDatepicker();
 		initDefaultOrderBy();
+		updateProductsCountResult( $results );
 		enableInputs();
 
 		if ( 'after' === wcapf_params.scroll_window_when ) {
 			scrollTo();
 		}
 
-		$body.trigger( 'wcapf_after_updating_products' );
+		$body.trigger( 'wcapf_after_updating_products', [ $results ] );
 	}
 
 	// The main filter function.
@@ -642,7 +653,7 @@ jQuery( document ).ready( function( $ ) {
 				$field.trigger( 'wcapf-field-updated', [ _field ] );
 			} );
 
-			beforeUpdatingProducts();
+			beforeUpdatingProducts( $data );
 
 			// Replace old shop loop with new one.
 			const $shopLoopContainer = $data.find( wcapf_params.shop_loop_container );
@@ -666,7 +677,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 			}
 
-			afterUpdatingProducts();
+			afterUpdatingProducts( $data );
 		} );
 	}
 

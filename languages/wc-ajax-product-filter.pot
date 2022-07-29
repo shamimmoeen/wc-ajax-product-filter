@@ -1,165 +1,73 @@
-#, fuzzy
+# Copyright (C) 2022 wptools.io
+# This file is distributed under the same license as the WC Ajax Product Filter plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WC Ajax Product Filter\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-14 10:41+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: WC Ajax Product Filter 3.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-ajax-product-filter-dev\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: \n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.2; wp-6.0.1\n"
-"X-Domain: wc-ajax-product-filter"
+"POT-Creation-Date: 2022-07-29T18:07:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.5.0\n"
+"X-Domain: wc-ajax-product-filter\n"
 
-#: includes/class-wcapf-settings-page.php:236
-msgid "#id or .class"
+#. Plugin Name of the plugin
+#: includes/class-wcapf-admin.php:81
+#: includes/class-wcapf-filter-widget.php:29
+#: includes/class-wcapf.php:94
+#: includes/class-wcapf.php:104
+#: templates/admin/header-navigation.php:71
+msgid "WC Ajax Product Filter"
 msgstr ""
 
-#. our plugin, minimum woocommerce version, current woocommerce version
-#: includes/class-wcapf.php:100
-#, php-format
-msgid "%1$s requires WooCommerce %2$s (you are using %3$s)."
-msgstr ""
-
-#. our plugin, required plugins
-#: includes/class-wcapf.php:93
-#, php-format
-msgid "%1$s requires you to install %2$s."
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:284
-#, php-format
-msgid "%s filter moved to the Trash."
-msgid_plural "%s filters moved to the Trash."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-wcapf-post-type.php:274
-#, php-format
-msgid "%s filter permanently deleted."
-msgid_plural "%s filters permanently deleted."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-wcapf-post-type.php:294
-#, php-format
-msgid "%s filter restored from the Trash."
-msgid_plural "%s filters restored from the Trash."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-wcapf-filter-widget.php:79
-#: includes/fields/class-wcapf-field-taxonomy.php:63
-msgid "-- Choose --"
+#. Plugin URI of the plugin
+msgid "https://wptools.io/wc-ajax-product-filter"
 msgstr ""
 
 #. Description of the plugin
 msgid "A plugin to filter WooCommerce products with AJAX request."
 msgstr ""
 
-#: includes/class-wcapf-helper.php:68
-msgid "Active Filters"
+#. Author of the plugin
+msgid "wptools.io"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:65
-msgid "Add New"
+#. Author URI of the plugin
+msgid "https://wptools.io"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:66
-msgid "Add New Filter"
+#: includes/class-wcapf-admin.php:38
+msgid "WC Ajax Product Filter Settings"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:64
-msgctxt "Add New on Toolbar"
-msgid "Filter"
+#: includes/class-wcapf-admin.php:39
+#: includes/class-wcapf-admin.php:119
+#: templates/admin/settings-page.php:18
+msgid "Settings"
 msgstr ""
 
-#: templates/admin/field-templates/product-status-options.php:46
-msgid "Add Option"
+#: includes/class-wcapf-admin.php:75
+msgid "give a rating"
 msgstr ""
 
-#: templates/admin/field-templates/product-status-options.php:21
-msgid "Add the options that will be available to this field."
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:63
-msgctxt "Admin Menu text"
-msgid "WCAPF"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:226
-msgid "After updating the results"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:62
-msgid "Align values left and right"
+#. translators: plugin name, plugin review page link
+#: includes/class-wcapf-admin.php:80
+msgid "Thank you for using %1$s! Would you mind taking a few seconds to give it a 5-star rating on WordPress?, %2$s."
 msgstr ""
 
 #: includes/class-wcapf-field-instance.php:259
 msgid "All categories"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:70
-msgid "All Filters"
-msgstr ""
-
-#: includes/class-wcapf-field-instance.php:272
-msgid "All items"
-msgstr ""
-
 #: includes/class-wcapf-field-instance.php:263
 msgid "All tags"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:337
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:85
-msgid "AND"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:306
-msgid "Attach jquery chosen on sorting"
-msgstr ""
-
-#: includes/fields/class-wcapf-field-attribute.php:33
-msgid "Attribute"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:104
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:121
-msgid "Auto Detect"
-msgstr ""
-
-#: templates/admin/filter-meta-box.php:21
-msgid "Available Filters"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:216
-msgid "Both in desktop and mobile"
-msgstr ""
-
-#: includes/fields/class-wcapf-field-reset-button.php:34
-msgid "Button label"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:94
-msgid "Change All Items Label"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:319
-msgid "Change the default loading image."
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:58
-msgid "Checkbox"
-msgstr ""
-
-#: includes/class-wcapf-filter-widget.php:73
-msgid "Choose a filter:"
+#: includes/class-wcapf-field-instance.php:272
+msgid "All items"
 msgstr ""
 
 #: includes/class-wcapf-filter-meta-box.php:187
@@ -167,314 +75,90 @@ msgstr ""
 msgid "Clear All"
 msgstr ""
 
-#: includes/fields/class-wcapf-field-active-filters.php:61
-msgid "Clear All button label"
-msgstr ""
-
-#: templates/admin/field-templates/product-status-options.php:51
-msgid "Clear All Options"
-msgstr ""
-
-#: includes/class-wcapf-filter-widget.php:94
-msgid "Create a filter"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:206
-msgid "Custom element"
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:250
-msgid "Custom field deleted."
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:249
-msgid "Custom field updated."
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:194
-msgid "Decimal Places"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:213
-msgid "Decimal Separator"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:217
-msgid "Desktop only"
-msgstr ""
-
-#: includes/class-wcapf-filter-widget.php:23
-msgid ""
-"Display a list, dropdown, slider or input field(s) to filter products in "
-"your store."
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:73
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:39
-msgid "Display Type"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:50
-msgid "Display values as"
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:68
-msgid "Edit Filter"
-msgstr ""
-
-#: includes/fields/class-wcapf-field-active-filters.php:82
-msgid "Empty filter message"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:345
-msgid "Enable auto count"
-msgstr ""
-
-#: includes/fields/class-wcapf-field-active-filters.php:46
-msgid "Enable button to clear all filters"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:159
-msgid "Enable hierarchy accordion"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:115
-msgid "Enable Multiple Filter"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:285
-msgid "Enable pagination via ajax"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:352
-msgid ""
-"Enable this setting to remove all data when uninstalling WC Ajax Product "
-"Filter via the `plugins` page."
-msgstr ""
-
-#: includes/fields/class-wcapf-field-active-filters.php:38
-msgid "Extended (group by filter)"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:213
-msgid "Featured"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:83
-msgid "Filter by Attribute"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:73
-msgid "Filter by Category"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:88
-msgid "Filter by Price"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:98
-msgid "Filter by Product Status"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:93
-msgid "Filter by Rating"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:78
-msgid "Filter by Tag"
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:258
-msgid "Filter draft updated."
-msgstr ""
-
-#: templates/admin/settings-page.php:29
-msgid "Filter has been applied and that may modify the settings below."
+#: includes/class-wcapf-filter-meta-box.php:192
+#: includes/fields/class-wcapf-field-reset-button.php:36
+msgid "Reset"
 msgstr ""
 
 #: includes/class-wcapf-filter-meta-box.php:267
 msgid "Filter is required."
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:131
-#: includes/fields/class-wcapf-field.php:219
-msgid "Filter Key"
+#: includes/class-wcapf-filter-meta-box.php:269
+msgid "Invalid filter type."
 msgstr ""
 
 #: includes/class-wcapf-filter-meta-box.php:271
 msgid "Filter key is required."
 msgstr ""
 
-#. %s: date and time of the revision
-#: includes/class-wcapf-post-type.php:254
-msgid "Filter published."
+#: includes/class-wcapf-filter-meta-box.php:273
+msgid "The filter key is already in use on another filter."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:335
-msgid "Filter relationships"
+#: includes/class-wcapf-filter-meta-box.php:275
+msgid "There is a taxonomy exists with the filter key."
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:236
-#, php-format
-msgid "Filter restored to revision from %s"
+#: includes/class-wcapf-filter-widget.php:23
+msgid "Display a list, dropdown, slider or input field(s) to filter products in your store."
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:255
-msgid "Filter saved."
+#: includes/class-wcapf-filter-widget.php:73
+msgid "Choose a filter:"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:241
-#, php-format
-msgid "Filter scheduled for: <strong>%1$s</strong>."
+#: includes/class-wcapf-filter-widget.php:79
+#: includes/fields/class-wcapf-field-taxonomy.php:63
+msgid "-- Choose --"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:256
-msgid "Filter submitted."
+#: includes/class-wcapf-filter-widget.php:89
+msgid "There is no filter to choose from."
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:217
-msgid "Filter title"
+#: includes/class-wcapf-filter-widget.php:94
+msgid "Create a filter"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:132
-msgid "Filter Type"
+#: includes/class-wcapf-helper.php:68
+msgid "Active Filters"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:248
-#: includes/class-wcapf-post-type.php:251
-msgid "Filter updated."
+#: includes/class-wcapf-helper.php:73
+msgid "Filter by Category"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:75
-msgid "give a rating"
+#: includes/class-wcapf-helper.php:78
+msgid "Filter by Tag"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:186
-msgid "Hide empty"
+#: includes/class-wcapf-helper.php:83
+msgid "Filter by Attribute"
 msgstr ""
 
-#. Author URI of the plugin
-msgid "https://wptools.io"
+#: includes/class-wcapf-helper.php:88
+msgid "Filter by Price"
 msgstr ""
 
-#. URI of the plugin
-msgid "https://wptools.io/wc-ajax-product-filter"
+#: includes/class-wcapf-helper.php:93
+msgid "Filter by Rating"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:225
-msgid "Immediately"
+#: includes/class-wcapf-helper.php:98
+msgid "Filter by Product Status"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:54
-msgid "Input Field"
+#: includes/class-wcapf-helper.php:103
+msgid "Reset Button"
 msgstr ""
 
-#: includes/class-wcapf-filter-meta-box.php:269
-msgid "Invalid filter type."
-msgstr ""
-
-#: templates/admin/field-templates/product-status-options.php:25
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:62
-msgid "Label"
-msgstr ""
-
-#: includes/fields/class-wcapf-field-active-filters.php:34
-msgid "Layout"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:311
-msgid "Loading animation"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:318
-msgid "Loading animation image"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:160
-#: includes/class-wcapf-settings-page.php:317
-msgid "Loading image"
-msgstr ""
-
-#. Publish box date format, see http://php.net/date
-#: includes/class-wcapf-post-type.php:243
-msgid "M j, Y @ G:i"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:113
-msgid "Max Value"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:96
-msgid "Min Value"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:218
-msgid "Mobile only"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:61
-msgid "Multi select"
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:67
-msgid "New Filter"
-msgstr ""
-
-#: includes/fields/class-wcapf-field-active-filters.php:84
-msgid "No filter is applied."
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:74
-msgid "No filters found in Trash."
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:73
-msgid "No filters found."
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:279
-msgid "No products container"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:108
-msgid "No results message"
-msgstr ""
-
-#: includes/fields/class-wcapf-field.php:125
-msgid "No settings are required."
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:395
-msgid "Nonce verification failed."
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:207
-msgid "None"
+#: includes/class-wcapf-helper.php:213
+msgid "Featured"
 msgstr ""
 
 #: includes/class-wcapf-helper.php:214
 msgid "On sale"
-msgstr ""
-
-#: templates/admin/field-templates/product-status-options.php:19
-msgid "Options"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:338
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:86
-msgid "OR"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:290
-msgid "Pagination container"
-msgstr ""
-
-#: includes/class-wcapf-post-type.php:72
-msgid "Parent Filters:"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:53
-msgid "Plain Text"
 msgstr ""
 
 #: includes/class-wcapf-post-type.php:61
@@ -487,94 +171,320 @@ msgctxt "Post type singular name"
 msgid "Filter"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:296
-msgid "Product sorting via ajax"
+#: includes/class-wcapf-post-type.php:63
+msgctxt "Admin Menu text"
+msgid "WCAPF"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:82
-msgid "Query Type"
+#: includes/class-wcapf-post-type.php:64
+msgctxt "Add New on Toolbar"
+msgid "Filter"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:59
-msgid "Radio"
+#: includes/class-wcapf-post-type.php:65
+msgid "Add New"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:43
-msgid "Range - Number"
+#: includes/class-wcapf-post-type.php:66
+msgid "Add New Filter"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:42
-msgid "Range - Slider"
+#: includes/class-wcapf-post-type.php:67
+msgid "New Filter"
 msgstr ""
 
-#: templates/admin/field-templates/product-status-option-row.php:53
-msgid "Remove"
+#: includes/class-wcapf-post-type.php:68
+msgid "Edit Filter"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:351
-msgid "Remove data"
+#: includes/class-wcapf-post-type.php:69
+msgid "View Filter"
 msgstr ""
 
-#: includes/class-wcapf-filter-meta-box.php:192
-#: includes/fields/class-wcapf-field-reset-button.php:36
-msgid "Reset"
-msgstr ""
-
-#: includes/class-wcapf-helper.php:103
-msgid "Reset Button"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:205
-msgid "Results container"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:329
-msgid "Scroll to top offset"
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:324
-msgid "Scroll window to"
+#: includes/class-wcapf-post-type.php:70
+msgid "All Filters"
 msgstr ""
 
 #: includes/class-wcapf-post-type.php:71
 msgid "Search Filters"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:60
-msgid "Select"
+#: includes/class-wcapf-post-type.php:72
+msgid "Parent Filters:"
 msgstr ""
 
-#: templates/admin/filter-meta-box.php:27
-msgid "Select any of these filters to start building the filter."
+#: includes/class-wcapf-post-type.php:73
+msgid "No filters found."
 msgstr ""
 
-#: includes/class-wcapf-admin.php:39 includes/class-wcapf-admin.php:119
-#: templates/admin/settings-page.php:18
-msgid "Settings"
+#: includes/class-wcapf-post-type.php:74
+msgid "No filters found in Trash."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:398
-msgid "Settings saved."
+#: includes/class-wcapf-post-type.php:131
+#: includes/fields/class-wcapf-field.php:219
+msgid "Filter Key"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:273
-msgid "Shop loop container"
+#: includes/class-wcapf-post-type.php:132
+msgid "Filter Type"
 msgstr ""
 
 #: includes/class-wcapf-post-type.php:133
 msgid "Shortcode"
 msgstr ""
 
+#: includes/class-wcapf-post-type.php:217
+msgid "Filter title"
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:236
+msgid "Filter restored to revision from %s"
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:241
+msgid "Filter scheduled for: <strong>%1$s</strong>."
+msgstr ""
+
+#. translators: Publish box date format, see http://php.net/date
+#: includes/class-wcapf-post-type.php:243
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:248
+#: includes/class-wcapf-post-type.php:251
+msgid "Filter updated."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:249
+msgid "Custom field updated."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:250
+msgid "Custom field deleted."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:254
+msgid "Filter published."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:255
+msgid "Filter saved."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:256
+msgid "Filter submitted."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:258
+msgid "Filter draft updated."
+msgstr ""
+
+#: includes/class-wcapf-post-type.php:274
+msgid "%s filter permanently deleted."
+msgid_plural "%s filters permanently deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wcapf-post-type.php:284
+msgid "%s filter moved to the Trash."
+msgid_plural "%s filters moved to the Trash."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wcapf-post-type.php:294
+msgid "%s filter restored from the Trash."
+msgid_plural "%s filters restored from the Trash."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wcapf-product-filter.php:605
+msgid "Sort By: "
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:160
+#: includes/class-wcapf-settings-page.php:317
+msgid "Loading image"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:187
+msgid "Upload"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:205
+msgid "Results container"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:206
+msgid "Custom element"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:207
+msgid "None"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:216
+msgid "Both in desktop and mobile"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:217
+msgid "Desktop only"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:218
+msgid "Mobile only"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:225
+msgid "Immediately"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:226
+msgid "After updating the results"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:236
+msgid "#id or .class"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:273
+msgid "Shop loop container"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:274
+msgid "The element selector that is holding the shop loop. In most cases, you don't need to change this."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:279
+msgid "No products container"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:280
+msgid "The element selector that is holding the no products found message. In most cases, you don't need to change this."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:285
+msgid "Enable pagination via ajax"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:290
+msgid "Pagination container"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:291
+msgid "The element selector that is holding the pagination. In most cases, you don't need to change this."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:296
+msgid "Product sorting via ajax"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:301
+msgid "Show sorting data in active filters"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:306
+msgid "Attach jquery chosen on sorting"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:311
+msgid "Loading animation"
+msgstr ""
+
 #: includes/class-wcapf-settings-page.php:312
 msgid "Show an animation while the results are fetching."
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:179
-msgid "Show count"
+#: includes/class-wcapf-settings-page.php:318
+msgid "Loading animation image"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:152
-msgid "Show hierarchy"
+#: includes/class-wcapf-settings-page.php:319
+msgid "Change the default loading image."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:324
+msgid "Scroll window to"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:329
+msgid "Scroll to top offset"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:330
+msgid "You can change this value to adjust the scroll to position, eg: 100"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:335
+msgid "Filter relationships"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:337
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:85
+msgid "AND"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:338
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:86
+msgid "OR"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:340
+msgid "The relationship between filters. AND - products shown will match all filters, OR - products shown will match any of the filters."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:345
+msgid "Enable auto count"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:346
+msgid "Update the count number according to the applied filters."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:351
+msgid "Remove data"
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:352
+msgid "Enable this setting to remove all data when uninstalling WC Ajax Product Filter via the `plugins` page."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:395
+msgid "Nonce verification failed."
+msgstr ""
+
+#: includes/class-wcapf-settings-page.php:398
+msgid "Settings saved."
+msgstr ""
+
+#. translators: our plugin, required plugins
+#: includes/class-wcapf.php:93
+msgid "%1$s requires you to install %2$s."
+msgstr ""
+
+#. translators: our plugin, minimum woocommerce version, current woocommerce version
+#: includes/class-wcapf.php:100
+msgid "%1$s requires WooCommerce %2$s (you are using %3$s)."
+msgstr ""
+
+#: includes/fields/class-wcapf-field-active-filters.php:34
+msgid "Layout"
+msgstr ""
+
+#: includes/fields/class-wcapf-field-active-filters.php:37
+msgid "Simple"
+msgstr ""
+
+#: includes/fields/class-wcapf-field-active-filters.php:38
+msgid "Extended (group by filter)"
+msgstr ""
+
+#: includes/fields/class-wcapf-field-active-filters.php:46
+msgid "Enable button to clear all filters"
+msgstr ""
+
+#: includes/fields/class-wcapf-field-active-filters.php:61
+msgid "Clear All button label"
 msgstr ""
 
 #: includes/fields/class-wcapf-field-active-filters.php:75
@@ -582,134 +492,201 @@ msgstr ""
 msgid "Show if no filter is applied"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:301
-msgid "Show sorting data in active filters"
+#: includes/fields/class-wcapf-field-active-filters.php:82
+msgid "Empty filter message"
+msgstr ""
+
+#: includes/fields/class-wcapf-field-active-filters.php:84
+msgid "No filter is applied."
+msgstr ""
+
+#: includes/fields/class-wcapf-field-attribute.php:33
+msgid "Attribute"
+msgstr ""
+
+#: includes/fields/class-wcapf-field-reset-button.php:34
+msgid "Button label"
+msgstr ""
+
+#: includes/fields/class-wcapf-field.php:125
+msgid "No settings are required."
 msgstr ""
 
 #: includes/fields/class-wcapf-field.php:188
 msgid "Show Title"
 msgstr ""
 
-#: includes/fields/class-wcapf-field-active-filters.php:37
-msgid "Simple"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:39
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:73
+msgid "Display Type"
 msgstr ""
 
-#: includes/class-wcapf-product-filter.php:605
-msgid "Sort By: "
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:42
+msgid "Range - Slider"
 msgstr ""
 
-#: templates/admin/field-templates/product-status-options.php:24
-msgid "Status"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:43
+msgid "Range - Number"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:130
-msgid "Step"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:50
+msgid "Display values as"
 msgstr ""
 
-#. plugin name, plugin review page link
-#: includes/class-wcapf-admin.php:80
-#, php-format
-msgid ""
-"Thank you for using %1$s! Would you mind taking a few seconds to give it a 5-"
-"star rating on WordPress?, %2$s."
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:53
+msgid "Plain Text"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:280
-msgid ""
-"The element selector that is holding the no products found message. In most "
-"cases, you don't need to change this."
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:54
+msgid "Input Field"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:291
-msgid ""
-"The element selector that is holding the pagination. In most cases, you "
-"don't need to change this."
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:274
-msgid ""
-"The element selector that is holding the shop loop. In most cases, you don't "
-"need to change this."
-msgstr ""
-
-#: includes/class-wcapf-filter-meta-box.php:273
-msgid "The filter key is already in use on another filter."
-msgstr ""
-
-#: includes/class-wcapf-settings-page.php:340
-msgid ""
-"The relationship between filters. AND - products shown will match all "
-"filters, OR - products shown will match any of the filters."
-msgstr ""
-
-#: templates/admin/field-templates/product-status-options.php:39
-msgid "There are no options."
-msgstr ""
-
-#: includes/class-wcapf-filter-meta-box.php:275
-msgid "There is a taxonomy exists with the filter key."
-msgstr ""
-
-#: includes/class-wcapf-filter-widget.php:89
-msgid "There is no filter to choose from."
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:204
-msgid "Thousand Separator"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:62
+msgid "Align values left and right"
 msgstr ""
 
 #: includes/fields/field-groups/class-wcapf-field-group-number.php:77
 msgid "UI Options"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:346
-msgid "Update the count number according to the applied filters."
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:96
+msgid "Min Value"
 msgstr ""
 
-#: templates/admin/header-navigation.php:90
-msgid "Upgrade to Pro"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:104
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:121
+msgid "Auto Detect"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:187
-msgid "Upload"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:113
+msgid "Max Value"
 msgstr ""
 
-#: includes/fields/field-groups/class-wcapf-field-group-text.php:101
-msgid "Use jQuery Chosen Library"
-msgstr ""
-
-#: includes/fields/field-groups/class-wcapf-field-group-number.php:162
-msgid "Value Postfix"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:130
+msgid "Step"
 msgstr ""
 
 #: includes/fields/field-groups/class-wcapf-field-group-number.php:153
 msgid "Value Prefix"
 msgstr ""
 
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:162
+msgid "Value Postfix"
+msgstr ""
+
 #: includes/fields/field-groups/class-wcapf-field-group-number.php:171
 msgid "Values Separator"
 msgstr ""
 
-#: includes/class-wcapf-post-type.php:69
-msgid "View Filter"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:194
+msgid "Decimal Places"
 msgstr ""
 
-#. Base ID
-#. Name of the plugin
-#: includes/class-wcapf-admin.php:81 includes/class-wcapf.php:94
-#: includes/class-wcapf.php:104 includes/class-wcapf-filter-widget.php:29
-#: templates/admin/header-navigation.php:71
-msgid "WC Ajax Product Filter"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:204
+msgid "Thousand Separator"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:38
-msgid "WC Ajax Product Filter Settings"
+#: includes/fields/field-groups/class-wcapf-field-group-number.php:213
+msgid "Decimal Separator"
 msgstr ""
 
-#. Author of the plugin
-msgid "wptools.io"
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:58
+msgid "Checkbox"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:330
-msgid "You can change this value to adjust the scroll to position, eg: 100"
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:59
+msgid "Radio"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:60
+msgid "Select"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:61
+msgid "Multi select"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:62
+#: templates/admin/field-templates/product-status-options.php:25
+msgid "Label"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:82
+msgid "Query Type"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:94
+msgid "Change All Items Label"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:101
+msgid "Use jQuery Chosen Library"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:108
+msgid "No results message"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:115
+msgid "Enable Multiple Filter"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:152
+msgid "Show hierarchy"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:159
+msgid "Enable hierarchy accordion"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:179
+msgid "Show count"
+msgstr ""
+
+#: includes/fields/field-groups/class-wcapf-field-group-text.php:186
+msgid "Hide empty"
+msgstr ""
+
+#: templates/admin/field-templates/product-status-option-row.php:53
+msgid "Remove"
+msgstr ""
+
+#: templates/admin/field-templates/product-status-options.php:19
+msgid "Options"
+msgstr ""
+
+#: templates/admin/field-templates/product-status-options.php:21
+msgid "Add the options that will be available to this field."
+msgstr ""
+
+#: templates/admin/field-templates/product-status-options.php:24
+msgid "Status"
+msgstr ""
+
+#: templates/admin/field-templates/product-status-options.php:39
+msgid "There are no options."
+msgstr ""
+
+#: templates/admin/field-templates/product-status-options.php:46
+msgid "Add Option"
+msgstr ""
+
+#: templates/admin/field-templates/product-status-options.php:51
+msgid "Clear All Options"
+msgstr ""
+
+#: templates/admin/filter-meta-box.php:21
+msgid "Available Filters"
+msgstr ""
+
+#: templates/admin/filter-meta-box.php:27
+msgid "Select any of these filters to start building the filter."
+msgstr ""
+
+#: templates/admin/header-navigation.php:90
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: templates/admin/settings-page.php:29
+msgid "Filter has been applied and that may modify the settings below."
 msgstr ""
