@@ -84,7 +84,7 @@ $found_pro_version = $helper::found_pro_version();
 	?>
 
 	<?php if ( $show_pro_offer && ! $found_pro_version ) : ?>
-		<a target="_blank" href="https://wptools.io/wc-ajax-product-filter/?utm_source=wcapf-free" class="btn-upgrade">
+		<a target="_blank" href="https://wptools.io/wc-ajax-product-filter/?utm_source=WCAPF+Free&utm_medium=inside+plugin&utm_campaign=WCAPF+Pro+Upgrade" class="btn-upgrade">
 			<span>
 				<img src="<?php echo WCAPF_PLUGIN_URL . '/admin/images/pro-icon.png'; ?>" alt="pro-icon">
 				<?php _e( 'Upgrade to Pro', 'wc-ajax-product-filter' ); ?>

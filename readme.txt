@@ -3,7 +3,7 @@ Contributors: shamimmoeen
 Tags: product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter
 Requires at least: 4.0
 Tested up to: 6.0.1
-Stable tag: 3.0.0
+Stable tag: 3.1.0
 Requires PHP: 5.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -16,7 +16,7 @@ WooCommerce Ajax Product Filter – is a plugin that allows you to filter your p
 
 [Free Demo](https://demos.wptools.io/wc-ajax-product-filter/) | [Paid Demo](https://demos.wptools.io/wc-ajax-product-filter-pro/)
 
-= Features: =
+== Features: ==
 
 * Filter by category, tag, attribute, price, rating
 * Filter by product status (featured, on-sale)
@@ -40,7 +40,7 @@ WooCommerce Ajax Product Filter – is a plugin that allows you to filter your p
 * Easy to modify the CSS to better fit your theme style
 * Developer friendly - contains useful hooks and filters
 
-= Pro Features: =
+== Pro Features: ==
 
 * Filter by custom taxonomy
 * Filter by post meta
@@ -58,7 +58,7 @@ WooCommerce Ajax Product Filter – is a plugin that allows you to filter your p
 * Clear button in filter title
 * Show more/show less button in filter items to minimize the filter height
 
-[Get the pro version](https://wptools.io/wc-ajax-product-filter/)
+[Get the pro version](https://wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Pro+Upgrade)
 
 == Frequently Asked Questions ==
 
@@ -94,6 +94,12 @@ If you have problems with the work of the plugin you should follow these steps:
 12. Plugin settings
 
 == Changelog ==
+
+= 3.1.0 =
+
+* Fix - loading image upload button js issue
+* Fix - product sorting via ajax issue
+* Fix - products count result not updating issue
 
 = 3.0.0 =
 
