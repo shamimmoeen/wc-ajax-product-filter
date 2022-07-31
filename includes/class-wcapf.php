@@ -163,6 +163,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
 
 		// Loads the hooks.
+		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-api.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-price-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-rating-filter.php';
