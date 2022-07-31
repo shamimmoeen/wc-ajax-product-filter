@@ -1,4 +1,4 @@
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { ReactSortable } from 'react-sortablejs';
 import FormFilter from './FormFilter';
 import AvailableFilters from './AvailableFilters';
@@ -26,6 +26,14 @@ export const FormFilters = ({ availableFilters, setAvailableFilters }) => {
 			editLink: '#',
 		},
 	]);
+
+	useEffect(() => {
+		const _filters = [];
+
+		// const _filters = availableFilters.map((_filter) => {});
+
+		console.log('added');
+	}, [availableFilters]);
 
 	return (
 		<div className={'__filters_drop_zone'}>

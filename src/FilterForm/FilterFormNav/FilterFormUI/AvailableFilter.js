@@ -6,8 +6,7 @@ const AvailableFilter = ({ item, handleAddFilter }) => {
 		<div
 			style={{
 				padding: 10,
-				border: '1px solid #c3c4c7',
-				marginBottom: '.5em',
+				borderBottom: '1px solid #c3c4c7',
 				display: 'flex',
 				justifyContent: 'space-between',
 				alignItems: 'center',
@@ -15,7 +14,11 @@ const AvailableFilter = ({ item, handleAddFilter }) => {
 		>
 			<div>
 				<span style={{ fontWeight: 500 }}>{item.title}</span>
-				{item.filterKey ? ': ' + item.filterKey : ''}
+				{item.filterKey ? (
+					<span style={{ color: '#646970' }}>: {item.filterKey}</span>
+				) : (
+					''
+				)}
 			</div>
 			<div
 				style={{
@@ -26,7 +29,8 @@ const AvailableFilter = ({ item, handleAddFilter }) => {
 				<Button
 					style={{ padding: 0, height: 20 }}
 					variant='secondary'
-					onClick={handleAddFilter}
+					onClick={() => handleAddFilter(item)}
+					disabled={'added' === item.status}
 				>
 					<Icon icon={plus} size='20' />
 				</Button>
