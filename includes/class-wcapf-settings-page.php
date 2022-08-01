@@ -161,8 +161,13 @@ class WCAPF_Settings_Page {
 		$image_src   = '';
 
 		if ( $image_id ) {
-			$image     = wp_get_attachment_image_src( $image_id );
-			$image_src = $image[0];
+			$image = wp_get_attachment_image_src( $image_id, 'full' );
+
+			if ( $image ) {
+				$image_src = $image[0];
+			} else {
+				$image_id = '';
+			}
 		}
 		?>
 		<div class="media-upload<?php echo ! $image_id ? ' no-image' : ''; ?>">
@@ -170,6 +175,7 @@ class WCAPF_Settings_Page {
 				class="image-src"
 				src="<?php echo esc_url( $image_src ); ?>"
 				alt="<?php echo esc_attr( $image_alt ); ?>"
+				width="60"
 			>
 			<div>
 				<input
