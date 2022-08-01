@@ -1,35 +1,43 @@
-import { Fragment, useState, useEffect } from '@wordpress/element';
+import { Fragment, useEffect } from '@wordpress/element';
 import FilterFormSettings from './FilterFormSettings';
 import FilterFormPreview from './FilterFormPreview';
+import { useFilterForm } from './FilterFormContext';
 import axios from 'axios';
+import FilterFormSaveButton from './FilterFormSaveButton';
 
-function FilterForm() {
-	const [availableFiltersLoading, setAvailableFiltersLoading] =
-		useState(true);
-
-	const [availableFilters, setAvailableFilters] = useState([]);
+const FilterForm = () => {
+	const { dispatch } = useFilterForm();
 
 	useEffect(async () => {
 		const data = {
 			action: 'get_available_filters',
 		};
 
-		const fetchFilters = await axios.get(wcapf_admin_params.ajaxurl, {
-			params: data,
-		});
+		try {
+			const fetchFilters = await axios.get(wcapf_admin_params.ajaxurl, {
+				params: data,
+			});
 
-		const response = fetchFilters.data;
+			const response = fetchFilters.data;
 
-		setAvailableFilters(response.data);
-		setAvailableFiltersLoading(false);
+			dispatch({
+				type: 'SET_BACKUP_AVAILABLE_FILTERS',
+				payload: response.data,
+			});
+			dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: response.data });
+			dispatch({ type: 'SET_AVAILABLE_FILTERS_LOADING', payload: false });
+		} catch (err) {
+			console.log(err.message);
+		}
 	}, []);
 
 	return (
 		<Fragment>
 			<FilterFormSettings />
 			<FilterFormPreview />
+			<FilterFormSaveButton />
 		</Fragment>
 	);
-}
+};
 
 export default FilterForm;

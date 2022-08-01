@@ -1,12 +1,31 @@
 import { Button } from '@wordpress/components';
 import { Icon, plus } from '@wordpress/icons';
+import { useFilterForm } from '../../FilterFormContext';
 
-const AvailableFilter = ({ item, handleAddFilter }) => {
+const AvailableFilter = ({ item }) => {
+	const {
+		state: { availableFilters },
+		dispatch,
+	} = useFilterForm();
+
+	const handleAddFilter = () => {
+		const _availableFilters = availableFilters.map((_item) => {
+			if (_item.id === item.id) {
+				_item.status = 'added';
+			}
+
+			return _item;
+		});
+
+		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
+		dispatch({ type: 'ADD_FORM_FILTER', payload: item });
+	};
+
 	return (
 		<div
 			style={{
 				padding: 10,
-				borderBottom: '1px solid #c3c4c7',
+				borderBottom: '1px solid #e2e2e2',
 				display: 'flex',
 				justifyContent: 'space-between',
 				alignItems: 'center',
@@ -29,7 +48,7 @@ const AvailableFilter = ({ item, handleAddFilter }) => {
 				<Button
 					style={{ padding: 0, height: 20 }}
 					variant='secondary'
-					onClick={() => handleAddFilter(item)}
+					onClick={handleAddFilter}
 					disabled={'added' === item.status}
 				>
 					<Icon icon={plus} size='20' />

@@ -1,25 +1,39 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Flex, FlexItem } from '@wordpress/components';
-import { useState, useRef } from '@wordpress/element';
+import { Button, ExternalLink, Flex, FlexItem } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
+import { useFilterForm } from '../../FilterFormContext';
 
 const FormFilter = ({ data }) => {
-	const [expanded, setExpanded] = useState(false);
-	const toggleRef = useRef('');
+	const {
+		state: { availableFilters, formFilters },
+		dispatch,
+	} = useFilterForm();
 
-	function toggleExpand(focus = false) {
+	const [expanded, setExpanded] = useState(false);
+
+	const toggleExpand = () => {
 		const _expanded = !expanded;
 		setExpanded(_expanded);
-
-		if (focus) {
-			toggleRef.current.focus();
-		}
-	}
+	};
 
 	const toggleIcon = expanded ? chevronUp : chevronDown;
 
 	function deleteFilter() {
-		console.log('delete the filter item');
+		const _availableFilters = availableFilters.map((item) => {
+			if (item.id === data.id) {
+				item.status = '';
+			}
+
+			return item;
+		});
+
+		const _formFilters = formFilters.filter((item) => {
+			return item.id !== data.id;
+		});
+
+		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
+		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: _formFilters });
 	}
 
 	return (
@@ -58,8 +72,7 @@ const FormFilter = ({ data }) => {
 				>
 					<Button
 						isSmall={true}
-						onClick={() => toggleExpand()}
-						ref={toggleRef}
+						onClick={toggleExpand}
 						style={{ borderRadius: '100%' }}
 					>
 						<Icon icon={toggleIcon} />
@@ -71,7 +84,9 @@ const FormFilter = ({ data }) => {
 					className='inside'
 					style={{ padding: 15, borderTop: '1px solid #c3c4c7' }}
 				>
-					Display Type
+					<div style={{ marginBottom: '1em' }}>
+						Override the filter settings
+					</div>
 					<div style={{ marginTop: 20 }}>
 						<button
 							type='button'
@@ -82,14 +97,9 @@ const FormFilter = ({ data }) => {
 							{__('Delete', 'wc-ajax-product-filter')}
 						</button>
 						{` | `}
-						<button
-							type='button'
-							className='button-link'
-							style={{ fontSize: 13 }}
-							onClick={() => toggleExpand(true)}
-						>
-							{__('Done', 'wc-ajax-product-filter')}
-						</button>
+						<ExternalLink href={data.editLink}>
+							{__('Edit', 'wc-ajax-product-filter')}
+						</ExternalLink>
 					</div>
 				</div>
 			) : (

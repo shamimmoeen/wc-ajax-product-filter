@@ -1,6 +1,23 @@
 import { __ } from '@wordpress/i18n';
+import { useFilterForm } from '../../FilterFormContext';
 
 const SearchInput = () => {
+	const {
+		state: { _availableFilters },
+		dispatch,
+	} = useFilterForm();
+
+	const limitAvailableFilters = (e) => {
+		const keyword = e.target.value;
+
+		// https://stackoverflow.com/a/59675652
+		const searchResults = _availableFilters.filter((item) => {
+			return item.query.toLowerCase().includes(keyword.toLowerCase());
+		});
+
+		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: searchResults });
+	};
+
 	return (
 		<input
 			type={'text'}
@@ -16,6 +33,7 @@ const SearchInput = () => {
 				marginBottom: '1em',
 				backgroundColor: 'transparent',
 			}}
+			onChange={limitAvailableFilters}
 			autoFocus
 		/>
 	);
