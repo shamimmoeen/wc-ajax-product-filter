@@ -3,50 +3,55 @@ import { ReactSortable } from 'react-sortablejs';
 import FormFilter from './FormFilter';
 import AvailableFilters from './AvailableFilters';
 import FormFiltersTitle from './FormFiltersTitle';
+import { useFilterForm } from '../../FilterFormContext';
+import { __ } from '@wordpress/i18n';
 
-export const FormFilters = ({ availableFilters, setAvailableFilters }) => {
-	const [searchFilterActive, setSearchFilterActive] = useState(true);
-	const [filtersState, setFiltersState] = useState([
-		{
-			id: '1',
-			title: 'Weight',
-			filterKey: '_weight',
-			editLink: '#',
-		},
-		{
-			id: '2',
-			title: 'Reset Filters',
-			filterKey: '',
-			editLink: '#',
-		},
-		{
-			id: '3',
-			title: 'Active Filters',
-			filterKey: '',
-			editLink: '#',
-		},
-	]);
+export const FormFilters = () => {
+	const {
+		state: { formFilters, _availableFilters },
+		dispatch,
+	} = useFilterForm();
+
+	const [searchFilterActive, setSearchFilterActive] = useState(false);
+	const [filtersState, setFiltersState] = useState(formFilters);
 
 	useEffect(() => {
-		const _filters = [];
+		if (!searchFilterActive) {
+			dispatch({
+				type: 'SET_AVAILABLE_FILTERS',
+				payload: _availableFilters,
+			});
+		}
+	}, [searchFilterActive]);
 
-		// const _filters = availableFilters.map((_filter) => {});
+	useEffect(() => {
+		setFiltersState(formFilters);
+	}, [formFilters]);
 
-		console.log('added');
-	}, [availableFilters]);
+	const handleSort = () => {
+		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: filtersState });
+	};
 
-	return (
+	return !_availableFilters.length ? (
+		<p className='description'>
+			{__(
+				'No filters found, create some filters before starting the filter form.',
+				'wc-ajax-product-filter'
+			)}
+		</p>
+	) : (
 		<div className={'__filters_drop_zone'}>
 			<FormFiltersTitle
 				searchFilterActive={searchFilterActive}
 				setSearchFilterActive={setSearchFilterActive}
 			/>
 
-			{searchFilterActive ? (
-				<AvailableFilters
-					availableFilters={availableFilters}
-					setAvailableFilters={setAvailableFilters}
-				/>
+			{searchFilterActive ? <AvailableFilters /> : ''}
+
+			{!formFilters.length ? (
+				<p className='description'>
+					{__('The filter form is empty.', 'wc-ajax-product-filter')}
+				</p>
 			) : (
 				''
 			)}
@@ -56,9 +61,10 @@ export const FormFilters = ({ availableFilters, setAvailableFilters }) => {
 				setList={setFiltersState}
 				direction={'vertical'}
 				handle='.__fz_drag_handler'
+				onSort={handleSort}
 			>
-				{filtersState.map((item, key) => (
-					<FormFilter key={key} data={item} />
+				{filtersState.map((item) => (
+					<FormFilter key={item.id} data={item} />
 				))}
 			</ReactSortable>
 		</div>

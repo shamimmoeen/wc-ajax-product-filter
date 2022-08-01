@@ -1,20 +1,16 @@
 import { Spinner } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
+import { useFilterForm } from '../../FilterFormContext';
 import FormFilters from './FormFilters';
 
 const FilterFormUI = () => {
-	const loading = true;
+	const {
+		state: { availableFiltersLoading },
+	} = useFilterForm();
 
 	return (
 		<Fragment>
-			{loading ? (
-				<Spinner />
-			) : (
-				<FormFilters
-					availableFilters={availableFilters}
-					setAvailableFilters={setAvailableFilters}
-				/>
-			)}
+			{availableFiltersLoading ? <Spinner /> : <FormFilters />}
 		</Fragment>
 	);
 };

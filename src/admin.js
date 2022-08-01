@@ -1,6 +1,15 @@
 import './admin.scss';
 import { render } from '@wordpress/element';
 import FilterForm from './FilterForm';
+import { FilterFormProvider } from './FilterForm/FilterFormContext';
+
+const App = () => {
+	return (
+		<FilterFormProvider>
+			<FilterForm />
+		</FilterFormProvider>
+	);
+};
 
 document.addEventListener('DOMContentLoaded', () => {
 	const renderElementInstance = document.getElementById(
@@ -8,6 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	);
 
 	if (renderElementInstance) {
-		render(<FilterForm />, renderElementInstance);
+		render(<App />, renderElementInstance);
 	}
 });

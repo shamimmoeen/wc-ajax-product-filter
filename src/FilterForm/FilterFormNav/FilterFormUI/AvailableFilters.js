@@ -1,21 +1,13 @@
-import { Flex, FlexItem } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import AvailableFilter from './AvailableFilter';
 import SearchInput from './SearchInput';
 import { __experimentalScrollable as Scrollable } from '@wordpress/components';
+import { useFilterForm } from '../../FilterFormContext';
 
-const AvailableFilters = ({ availableFilters, setAvailableFilters }) => {
-	const handleAddFilter = (item) => {
-		const _availableFilters = availableFilters.map((_item) => {
-			if (_item.id === item.id) {
-				_item.status = 'added';
-			}
-
-			return _item;
-		});
-
-		setAvailableFilters(_availableFilters);
-	};
+const AvailableFilters = () => {
+	const {
+		state: { availableFilters },
+	} = useFilterForm();
 
 	return (
 		<div style={{ marginBottom: '2em' }} justify={'center'}>
@@ -24,17 +16,30 @@ const AvailableFilters = ({ availableFilters, setAvailableFilters }) => {
 			<Scrollable
 				style={{
 					maxHeight: 200,
-					boxShadow: '0 3px 6px rgb(0 0 0 / 18%)',
+					boxShadow: '0 3px 6px rgb(0 0 0 / 10%)',
+					backgroundColor: '#fff',
 				}}
 			>
 				<div>
-					{availableFilters.map((item, key) => (
-						<AvailableFilter
-							item={item}
-							handleAddFilter={handleAddFilter}
-							key={key}
-						/>
-					))}
+					{availableFilters.length ? (
+						availableFilters.map((item) => (
+							<AvailableFilter item={item} key={item.id} />
+						))
+					) : (
+						<div
+							style={{
+								display: 'flex',
+								padding: '0 10px',
+								lineHeight: '40px',
+								borderBottom: '1px solid #e2e2e2',
+							}}
+						>
+							{__(
+								'No matching results found.',
+								'wc-ajax-product-filter'
+							)}
+						</div>
+					)}
 				</div>
 			</Scrollable>
 		</div>
