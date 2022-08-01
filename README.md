@@ -3,7 +3,7 @@
 **Tags:** product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter  
 **Requires at least:** 4.0  
 **Tested up to:** 6.0.1  
-**Stable tag:** 3.1.0  
+**Stable tag:** 3.2.0  
 **Requires PHP:** 5.5  
 **License:** GPLv3  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
@@ -118,6 +118,10 @@ If you have problems with the work of the plugin you should follow these steps:
 
 
 ## Changelog ##
+
+### 3.2.0 ###
+
+* Fix - custom loading image issue
 
 ### 3.1.0 ###
 

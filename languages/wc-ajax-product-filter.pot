@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the WC Ajax Product Filter plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WC Ajax Product Filter 3.1.0\n"
+"Project-Id-Version: WC Ajax Product Filter 3.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-ajax-product-filter-dev\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-07-29T18:07:33+00:00\n"
+"POT-Creation-Date: 2022-08-01T10:05:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: wc-ajax-product-filter\n"
@@ -303,157 +303,157 @@ msgid "Sort By: "
 msgstr ""
 
 #: includes/class-wcapf-settings-page.php:160
-#: includes/class-wcapf-settings-page.php:317
+#: includes/class-wcapf-settings-page.php:323
 msgid "Loading image"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:187
+#: includes/class-wcapf-settings-page.php:193
 msgid "Upload"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:205
+#: includes/class-wcapf-settings-page.php:211
 msgid "Results container"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:206
+#: includes/class-wcapf-settings-page.php:212
 msgid "Custom element"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:207
+#: includes/class-wcapf-settings-page.php:213
 msgid "None"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:216
+#: includes/class-wcapf-settings-page.php:222
 msgid "Both in desktop and mobile"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:217
+#: includes/class-wcapf-settings-page.php:223
 msgid "Desktop only"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:218
+#: includes/class-wcapf-settings-page.php:224
 msgid "Mobile only"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:225
+#: includes/class-wcapf-settings-page.php:231
 msgid "Immediately"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:226
+#: includes/class-wcapf-settings-page.php:232
 msgid "After updating the results"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:236
+#: includes/class-wcapf-settings-page.php:242
 msgid "#id or .class"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:273
+#: includes/class-wcapf-settings-page.php:279
 msgid "Shop loop container"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:274
+#: includes/class-wcapf-settings-page.php:280
 msgid "The element selector that is holding the shop loop. In most cases, you don't need to change this."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:279
+#: includes/class-wcapf-settings-page.php:285
 msgid "No products container"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:280
+#: includes/class-wcapf-settings-page.php:286
 msgid "The element selector that is holding the no products found message. In most cases, you don't need to change this."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:285
+#: includes/class-wcapf-settings-page.php:291
 msgid "Enable pagination via ajax"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:290
+#: includes/class-wcapf-settings-page.php:296
 msgid "Pagination container"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:291
+#: includes/class-wcapf-settings-page.php:297
 msgid "The element selector that is holding the pagination. In most cases, you don't need to change this."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:296
+#: includes/class-wcapf-settings-page.php:302
 msgid "Product sorting via ajax"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:301
+#: includes/class-wcapf-settings-page.php:307
 msgid "Show sorting data in active filters"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:306
+#: includes/class-wcapf-settings-page.php:312
 msgid "Attach jquery chosen on sorting"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:311
+#: includes/class-wcapf-settings-page.php:317
 msgid "Loading animation"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:312
+#: includes/class-wcapf-settings-page.php:318
 msgid "Show an animation while the results are fetching."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:318
+#: includes/class-wcapf-settings-page.php:324
 msgid "Loading animation image"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:319
+#: includes/class-wcapf-settings-page.php:325
 msgid "Change the default loading image."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:324
+#: includes/class-wcapf-settings-page.php:330
 msgid "Scroll window to"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:329
+#: includes/class-wcapf-settings-page.php:335
 msgid "Scroll to top offset"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:330
+#: includes/class-wcapf-settings-page.php:336
 msgid "You can change this value to adjust the scroll to position, eg: 100"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:335
+#: includes/class-wcapf-settings-page.php:341
 msgid "Filter relationships"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:337
+#: includes/class-wcapf-settings-page.php:343
 #: includes/fields/field-groups/class-wcapf-field-group-text.php:85
 msgid "AND"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:338
+#: includes/class-wcapf-settings-page.php:344
 #: includes/fields/field-groups/class-wcapf-field-group-text.php:86
 msgid "OR"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:340
+#: includes/class-wcapf-settings-page.php:346
 msgid "The relationship between filters. AND - products shown will match all filters, OR - products shown will match any of the filters."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:345
+#: includes/class-wcapf-settings-page.php:351
 msgid "Enable auto count"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:346
+#: includes/class-wcapf-settings-page.php:352
 msgid "Update the count number according to the applied filters."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:351
+#: includes/class-wcapf-settings-page.php:357
 msgid "Remove data"
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:352
+#: includes/class-wcapf-settings-page.php:358
 msgid "Enable this setting to remove all data when uninstalling WC Ajax Product Filter via the `plugins` page."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:395
+#: includes/class-wcapf-settings-page.php:401
 msgid "Nonce verification failed."
 msgstr ""
 
-#: includes/class-wcapf-settings-page.php:398
+#: includes/class-wcapf-settings-page.php:404
 msgid "Settings saved."
 msgstr ""
 

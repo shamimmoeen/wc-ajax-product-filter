@@ -284,12 +284,17 @@ class WCAPF {
 		$loading_overlay_options = array();
 
 		if ( isset( $settings['loading_image'] ) && $settings['loading_image'] ) {
-			$image     = wp_get_attachment_image_src( $settings['loading_image'] );
-			$image_src = $image[0];
+			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
 
-			$loading_overlay_options = array(
-				'image' => $image_src,
-			);
+			if ( $image ) {
+				$image_src = $image[0];
+
+				$loading_overlay_options = array(
+					'image'          => $image_src,
+					'imageAnimation' => '',
+					'imageClass'     => 'wcapf-loading-overlay-img'
+				);
+			}
 		}
 
 		$params = array(
