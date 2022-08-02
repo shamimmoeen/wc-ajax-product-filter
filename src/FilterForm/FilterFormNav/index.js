@@ -21,14 +21,19 @@ const FilterFormNav = () => {
 					className: 'filter_form_ui',
 				},
 				{
-					name: 'filter_settings',
-					title: __('Filter Settings', 'wc-ajax-product-filter'),
-					className: 'filter_settings',
+					name: 'visibility_rules',
+					title: __('Visibility Rules', 'wc-ajax-product-filter'),
+					className: 'visibility_rules',
 				},
 				{
-					name: 'form_settings',
-					title: __('Form Settings', 'wc-ajax-product-filter'),
-					className: 'form_settings',
+					name: 'settings',
+					title: __('Settings', 'wc-ajax-product-filter'),
+					className: 'settings',
+				},
+				{
+					name: 'customize',
+					title: __('Customize', 'wc-ajax-product-filter'),
+					className: 'customize',
 				},
 			]}
 		>
@@ -37,8 +42,12 @@ const FilterFormNav = () => {
 					return <FilterFormUI />;
 				} else if (tab.name === 'filter_settings') {
 					return <FilterSettings />;
-				} else if (tab.name === 'form_settings') {
+				} else if (tab.name === 'visibility_rules') {
+					return 'Visbility Ruels';
+				} else if (tab.name === 'settings') {
 					return <FormSettings />;
+				} else if (tab.name === 'customize') {
+					return 'Customize Form';
 				}
 			}}
 		</TabPanel>

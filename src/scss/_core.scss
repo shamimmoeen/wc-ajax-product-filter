@@ -24,8 +24,16 @@ $preview_width: 400px;
 	right: 0;
 	top: 0;
 	width: $preview_width;
-	z-index: 99;
+	z-index: 200;
 	overflow-y: auto;
+
+	.__title {
+		font-size: 2.2em;
+		line-height: 1;
+		font-weight: 400;
+		margin-bottom: 1.4em;
+		margin-top: 0;
+	}
 
 	.__inner {
 		padding: 0 50px 50px;
@@ -94,95 +102,18 @@ $preview_width: 400px;
 	}
 }
 
-.__filters_drop_zone {
-	// background-color: #e8e9ec;
-	// background-color: #f6f8fa;
-	// padding: 2em;
-	// border: 1px solid hsla(210,18%,87%,1);
-
-	.__fz_item {
-		// background-color: #fff;
-		// background-color: #f6f7f7;
-		border: 1px solid #ddd;
-		box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
-		color: #1d2327;
-		font-size: 13px;
-		// font-weight: 600;
-
-		line-height: 1.4em;
-
-		&:not(:last-child) {
-			margin: 0 0 10px;
-		}
-
-		button {
-			padding: 0;
-		}
-
-		.__fz_mover {
-			button {
-				height: 10px;
-			}
-		}
-
-		.__inner {
-			border-top: 1px solid #ddd;
-			padding: 15px;
-		}
-	}
-
-	.__fz_add_filter_btn {
-		&.active,
-		&.active:hover {
-			background-color: #1e1e1e;
-		}
-
-		svg {
-			transition: transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
-		}
-
-		&.active svg {
-			transform: rotate(45deg);
-		}
-	}
-
-	.__fz_add_filter_input {
-		&:focus {
-			box-shadow: none;
-		}
-	}
-}
-
-.__available_filters_dropdown {
-	background-color: #ffffff;
-	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-
-	.__item {
-		border-bottom: 1px solid #e2e2e2;
-	}
-
-	.__item:last-child {
-		border-bottom: none;
-	}
-}
-
-.__dropdown_filters {
-	display: flex;
-	gap: .5em;
-	margin: 1em 0 2em;
-}
-
 .__save_post {
+	$size: 56px;
+
 	position: fixed;
 	box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 	bottom: 20px;
-    // right: calc(#{$preview_width} - 28px);
-	right: 20px;
-    z-index: 100;
+    right: calc(#{$preview_width} + #{$size / 2});
+    z-index: 300;
 	border-radius: 100%;
 	display: flex;
-	height: 56px;
-	width: 56px;
+	height: $size;
+	width: $size;
 	align-items: center;
 	justify-content: center;
 
@@ -200,8 +131,4 @@ $preview_width: 400px;
 	.components-snackbar {
 		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 	}
-}
-
-.wcapf-single-filter {
-	font-size: 16px;
 }

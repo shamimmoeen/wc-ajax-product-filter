@@ -25,14 +25,7 @@ const EditorPreview = () => {
 	return (
 		<div className={'editor-preview'}>
 			<div className={'__inner'}>
-				<h3
-					style={{
-						fontSize: 24,
-						fontWeight: 400,
-						borderBottom: '1px solid #ddd',
-						paddingBottom: '.8em',
-					}}
-				>
+				<h3 className='__title'>
 					{__('Preview', 'wc-ajax-product-filter	')}
 				</h3>
 				{isLoading ? (

@@ -2933,7 +2933,8 @@ const FormFilter = _ref => {
     className: "top",
     style: {
       display: 'flex',
-      padding: '10px 15px'
+      padding: '10px 15px',
+      userSelect: 'none'
     },
     onClick: toggleExpand
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Flex, {
@@ -3036,7 +3037,8 @@ const FormFilters = () => {
   const {
     state: {
       formFilters,
-      _availableFilters
+      _availableFilters,
+      availableFilters
     },
     dispatch
   } = (0,_FilterFormContext__WEBPACK_IMPORTED_MODULE_5__.useFilterForm)();
@@ -3064,6 +3066,22 @@ const FormFilters = () => {
     });
   };
 
+  const handleDeleteFilters = () => {
+    const _availableFilters = availableFilters.map(filter => {
+      filter.status = '';
+      return filter;
+    });
+
+    dispatch({
+      type: 'SET_AVAILABLE_FILTERS',
+      payload: _availableFilters
+    });
+    dispatch({
+      type: 'UPDATE_FORM_FILTERS',
+      payload: []
+    });
+  };
+
   return !_availableFilters.length ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('No filters found, create some filters before starting the filter form.', 'wc-ajax-product-filter')) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -3082,7 +3100,14 @@ const FormFilters = () => {
   }, filtersState.map(item => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FormFilter__WEBPACK_IMPORTED_MODULE_2__["default"], {
     key: item.id,
     data: item
-  }))));
+  }))), formFilters.length ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      marginTop: '1.5em'
+    }
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+    variant: "primary",
+    onClick: handleDeleteFilters
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Delete All Filters', 'wc-ajax-product-filter'))) : '');
 };
 /* harmony default export */ __webpack_exports__["default"] = (FormFilters);
 
@@ -3311,21 +3336,29 @@ const FilterFormNav = () => {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter Form UI', 'wc-ajax-product-filter'),
       className: 'filter_form_ui'
     }, {
-      name: 'filter_settings',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter Settings', 'wc-ajax-product-filter'),
-      className: 'filter_settings'
+      name: 'visibility_rules',
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Visibility Rules', 'wc-ajax-product-filter'),
+      className: 'visibility_rules'
     }, {
-      name: 'form_settings',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Form Settings', 'wc-ajax-product-filter'),
-      className: 'form_settings'
+      name: 'settings',
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Settings', 'wc-ajax-product-filter'),
+      className: 'settings'
+    }, {
+      name: 'customize',
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Customize', 'wc-ajax-product-filter'),
+      className: 'customize'
     }]
   }, tab => {
     if (tab.name === 'filter_form_ui') {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterFormUI__WEBPACK_IMPORTED_MODULE_3__["default"], null);
     } else if (tab.name === 'filter_settings') {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterSettings__WEBPACK_IMPORTED_MODULE_4__["default"], null);
-    } else if (tab.name === 'form_settings') {
+    } else if (tab.name === 'visibility_rules') {
+      return 'Visbility Ruels';
+    } else if (tab.name === 'settings') {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FormSettings__WEBPACK_IMPORTED_MODULE_5__["default"], null);
+    } else if (tab.name === 'customize') {
+      return 'Customize Form';
     }
   });
 };
@@ -3382,12 +3415,7 @@ const EditorPreview = () => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: '__inner'
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
-    style: {
-      fontSize: 24,
-      fontWeight: 400,
-      borderBottom: '1px solid #ddd',
-      paddingBottom: '.8em'
-    }
+    className: "__title"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Preview', 'wc-ajax-product-filter	')), isLoading ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, null) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     dangerouslySetInnerHTML: {
       __html: preview
