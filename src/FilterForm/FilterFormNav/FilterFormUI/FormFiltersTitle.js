@@ -13,7 +13,7 @@ const FormFiltersTitle = ({ searchFilterActive, setSearchFilterActive }) => {
 		: '__fz_add_filter_btn';
 
 	return (
-		<Flex style={{ marginBottom: '1em' }}>
+		<Flex style={{ marginBottom: '1.5em' }}>
 			<FlexItem>
 				<h3 style={{ margin: 0, fontWeight: 500 }}>
 					{__('Filters', 'wc-ajax-product-filter')}

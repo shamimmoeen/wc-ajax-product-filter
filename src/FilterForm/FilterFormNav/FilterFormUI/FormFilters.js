@@ -42,6 +42,7 @@ export const FormFilters = () => {
 
 		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
 		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: [] });
+		dispatch({ type: 'SET_DIRTY' });
 	};
 
 	return !_availableFilters.length ? (
@@ -82,7 +83,11 @@ export const FormFilters = () => {
 
 			{formFilters.length ? (
 				<div style={{ marginTop: '1.5em' }}>
-					<Button variant='primary' onClick={handleDeleteFilters}>
+					<Button
+						variant='tertiary'
+						isDestructive
+						onClick={handleDeleteFilters}
+					>
 						{__('Delete All Filters', 'wc-ajax-product-filter')}
 					</Button>
 				</div>

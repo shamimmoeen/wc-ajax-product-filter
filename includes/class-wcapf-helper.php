@@ -419,7 +419,7 @@ class WCAPF_Helper {
 			$html .= $button_label;
 			$html .= '</a>';
 		} else {
-			$html = '<button type="button" class="wcapf-reset-filters-btn" ' . $attrs . '>';
+			$html = '<button type="button" class="button wcapf-reset-filters-btn" ' . $attrs . '>';
 			$html .= $button_label;
 			$html .= '</button>';
 		}

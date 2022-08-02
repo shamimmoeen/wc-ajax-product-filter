@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import AvailableFilter from './AvailableFilter';
-import SearchInput from './SearchInput';
+import SearchControl from './SearchControl';
 import { __experimentalScrollable as Scrollable } from '@wordpress/components';
 import { useFilterForm } from '../../FilterFormContext';
 
@@ -11,7 +11,7 @@ const AvailableFilters = () => {
 
 	return (
 		<div style={{ marginBottom: '2em' }} justify={'center'}>
-			<SearchInput />
+			<SearchControl />
 
 			<Scrollable
 				style={{ maxHeight: 200 }}

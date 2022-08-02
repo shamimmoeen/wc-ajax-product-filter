@@ -3,7 +3,7 @@ import FilterFormSettings from './FilterFormSettings';
 import FilterFormPreview from './FilterFormPreview';
 import { useFilterForm } from './FilterFormContext';
 import axios from 'axios';
-import FilterFormSaveButton from './FilterFormSaveButton';
+import SaveButton from './SaveButton';
 import Notifications from './Notifications';
 
 const FilterForm = () => {
@@ -92,7 +92,7 @@ const FilterForm = () => {
 			<FilterFormSettings />
 			<FilterFormPreview />
 			<Notifications />
-			<FilterFormSaveButton />
+			<SaveButton />
 		</Fragment>
 	);
 };
