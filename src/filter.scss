@@ -1,0 +1,20 @@
+@import "./scss/core";
+@import "./scss/preview.scss";
+@import "./scss/filter-form.scss";
+
+#wcapf-filter-admin-ui {
+	margin-left: -20px;
+	padding: 20px;
+}
+
+#wpbody-content {
+	padding-bottom: 0;
+}
+
+#wpfooter {
+	display: none;
+}
+
+body {
+	background-color: #ffffff;
+}

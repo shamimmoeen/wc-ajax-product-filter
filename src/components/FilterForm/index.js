@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import FilterFormSettings from './FilterFormSettings';
 import FilterFormPreview from './FilterFormPreview';
 import { useFilterForm } from './FilterFormContext';
@@ -88,12 +88,12 @@ const FilterForm = () => {
 	}, []);
 
 	return (
-		<Fragment>
+		<>
 			<FilterFormSettings />
 			<FilterFormPreview />
 			<Notifications />
 			<SaveButton />
-		</Fragment>
+		</>
 	);
 };
 

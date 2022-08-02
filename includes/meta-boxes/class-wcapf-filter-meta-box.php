@@ -49,6 +49,78 @@ class WCAPF_Filter_Meta_Box {
 		add_action( 'edit_form_advanced', array( $this, 'render_meta_box' ) );
 		add_action( 'admin_footer', array( $this, 'render_tmpl_templates' ) );
 		add_action( 'admin_footer', array( $this, 'render_product_status_option_placeholder_template' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_admin_ui_scripts' ) );
+		add_action( 'admin_menu', array( $this, 'register_filter_custom_edit_page' ) );
+	}
+
+	public function register_filter_custom_edit_page() {
+		add_submenu_page(
+			'edit.php?post_type=wcapf-filter',
+			__( 'Edit Filter', 'wc-ajax-product-filter' ),
+			__( 'Edit Filter', 'wc-ajax-product-filter' ),
+			'manage_options',
+			'edit-filter',
+			array( $this, 'edit_filter_page' )
+		);
+	}
+
+	public function edit_filter_page() {
+		echo '<div id="wcapf-filter-admin-ui"></div>';
+	}
+
+	public function enqueue_filter_admin_ui_scripts() {
+		$screen = get_current_screen();
+
+		if ( 'wcapf-filter_page_edit-filter' !== $screen->id ) {
+			return;
+		}
+
+		$script_asset_path = WCAPF_PLUGIN_DIR . '/build/filter.asset.php';
+
+		if ( ! file_exists( $script_asset_path ) ) {
+			/** @noinspection PhpMultipleClassDeclarationsInspection */
+			throw new Error(
+				'You need to run `npm start` or `npm run build` for the filter admin ui'
+			);
+		}
+
+		$admin_js     = 'build/filter.js';
+		$script_asset = require( $script_asset_path );
+
+		wp_enqueue_script(
+			'wcapf-filter-admin-ui-js',
+			plugins_url( $admin_js, WCAPF_PLUGIN_FILE ),
+			$script_asset['dependencies'],
+			$script_asset['version']
+		);
+
+		$admin_css = 'build/filter.css';
+
+		wp_enqueue_style(
+			'wcapf-filter-admin-ui-css',
+			plugins_url( $admin_css, WCAPF_PLUGIN_FILE ),
+			[ 'wp-components' ],
+			filemtime( WCAPF_PLUGIN_DIR . '/' . $admin_css )
+		);
+
+		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
+			? '.min.css'
+			: '.css';
+
+		wp_enqueue_style(
+			'wc-ajax-product-filter-public-styles',
+			WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-public-styles' . $ext,
+			array(),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
+		);
+
+		// TODO: Move to 'pro'.
+		wp_enqueue_style(
+			'wc-ajax-product-filter-pro-public-styles',
+			WCAPF_PRO_PLUGIN_URL . 'public/css/wc-ajax-product-filter-pro-public-styles' . $ext,
+			array( 'wc-ajax-product-filter-public-styles' ),
+			filemtime( WCAPF_PRO_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-pro-public-styles' . $ext )
+		);
 	}
 
 	/**

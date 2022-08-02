@@ -1,7 +1,7 @@
-import './admin.scss';
+import './filter-form.scss';
 import { render } from '@wordpress/element';
-import FilterForm from './FilterForm';
-import { FilterFormProvider } from './FilterForm/FilterFormContext';
+import FilterForm from './components/FilterForm';
+import { FilterFormProvider } from './components/FilterForm/FilterFormContext';
 
 const App = () => {
 	return (
@@ -13,7 +13,7 @@ const App = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 	const renderElementInstance = document.getElementById(
-		'wcapf-filter-admin-ui'
+		'wcapf-filter-form-admin-ui'
 	);
 
 	if (renderElementInstance) {
