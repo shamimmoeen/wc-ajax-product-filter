@@ -46,7 +46,7 @@ class WCAPF_Filter_Form_Meta_Box {
 		add_action( 'save_post', array( $this, 'save_form' ) );
 		add_action( 'edit_form_advanced', array( $this, 'render_meta_box' ) );
 		add_action( 'admin_footer', array( $this, 'render_tmpl_templates' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_admin_ui_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_form_admin_ui_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'register_filter_form_custom_edit_page' ) );
 	}
 
@@ -62,17 +62,17 @@ class WCAPF_Filter_Form_Meta_Box {
 	}
 
 	public function edit_filter_form_page() {
-		echo '<div id="wcapf-filter-admin-ui"></div>';
+		echo '<div id="wcapf-filter-form-admin-ui"></div>';
 	}
 
-	public function enqueue_filter_admin_ui_scripts() {
+	public function enqueue_filter_form_admin_ui_scripts() {
 		$screen = get_current_screen();
 
 		if ( 'wcapf-filter_page_edit-filter-form' !== $screen->id ) {
 			return;
 		}
 
-		$script_asset_path = WCAPF_PLUGIN_DIR . '/build/admin.asset.php';
+		$script_asset_path = WCAPF_PLUGIN_DIR . '/build/filter-form.asset.php';
 
 		if ( ! file_exists( $script_asset_path ) ) {
 			/** @noinspection PhpMultipleClassDeclarationsInspection */
@@ -81,20 +81,20 @@ class WCAPF_Filter_Form_Meta_Box {
 			);
 		}
 
-		$admin_js     = 'build/admin.js';
+		$admin_js     = 'build/filter-form.js';
 		$script_asset = require( $script_asset_path );
 
 		wp_enqueue_script(
-			'wcapf-filter-admin-ui-js',
+			'wcapf-filter-form-admin-ui-js',
 			plugins_url( $admin_js, WCAPF_PLUGIN_FILE ),
 			$script_asset['dependencies'],
 			$script_asset['version']
 		);
 
-		$admin_css = 'build/admin.css';
+		$admin_css = 'build/filter-form.css';
 
 		wp_enqueue_style(
-			'wcapf-filter-admin-ui-css',
+			'wcapf-filter-form-admin-ui-css',
 			plugins_url( $admin_css, WCAPF_PLUGIN_FILE ),
 			[ 'wp-components' ],
 			filemtime( WCAPF_PLUGIN_DIR . '/' . $admin_css )
@@ -111,6 +111,7 @@ class WCAPF_Filter_Form_Meta_Box {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
 		);
 
+		// TODO: Move to 'pro'.
 		wp_enqueue_style(
 			'wc-ajax-product-filter-pro-public-styles',
 			WCAPF_PRO_PLUGIN_URL . 'public/css/wc-ajax-product-filter-pro-public-styles' . $ext,
