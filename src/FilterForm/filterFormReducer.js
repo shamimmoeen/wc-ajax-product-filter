@@ -4,6 +4,8 @@ export const initialState = {
 	availableFiltersLoading: true,
 	formFilters: [],
 	formPreviewLoading: true,
+	title: '',
+	isDirty: false,
 };
 
 const filterFormReducer = (state, action) => {
@@ -25,6 +27,18 @@ const filterFormReducer = (state, action) => {
 
 		case 'UPDATE_FORM_FILTERS':
 			return { ...state, formFilters: action.payload };
+
+		case 'SET_FORM_DATA':
+			return state;
+
+		case 'SET_TITLE':
+			return { ...state, title: action.payload };
+
+		case 'SET_DIRTY':
+			return { ...state, isDirty: true };
+
+		case 'UNSET_DIRTY':
+			return { ...state, isDirty: false };
 
 		default:
 			return state;

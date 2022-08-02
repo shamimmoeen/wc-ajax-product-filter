@@ -19,13 +19,14 @@ const AvailableFilter = ({ item }) => {
 
 		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
 		dispatch({ type: 'ADD_FORM_FILTER', payload: item });
+		dispatch({ type: 'SET_DIRTY' });
 	};
 
 	return (
 		<div
+			className='__item'
 			style={{
 				padding: 10,
-				borderBottom: '1px solid #e2e2e2',
 				display: 'flex',
 				justifyContent: 'space-between',
 				alignItems: 'center',

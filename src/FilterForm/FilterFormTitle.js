@@ -1,15 +1,24 @@
 import { TextControl } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { useFilterForm } from './FilterFormContext';
 
 const FilterFormTitle = () => {
-	const [className, setClassName] = useState('');
+	const {
+		state: { title },
+		dispatch,
+	} = useFilterForm();
+
+	const handleChange = (value) => {
+		dispatch({ type: 'SET_TITLE', payload: value });
+		dispatch({ type: 'SET_DIRTY' });
+	};
 
 	return (
 		<TextControl
 			label={__('Filter Form Title', 'wc-ajax-product-filter')}
-			value={className}
-			onChange={(value) => setClassName(value)}
+			value={title}
+			onChange={(value) => handleChange(value)}
+			onBlur={console.log('onblur')}
 			className={'__title'}
 		/>
 	);

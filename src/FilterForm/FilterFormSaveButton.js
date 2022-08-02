@@ -2,37 +2,48 @@ import { Button, Icon, Spinner } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { cloudUpload } from '@wordpress/icons';
 import axios from 'axios';
+import { useFilterForm } from './FilterFormContext';
+import { store as noticesStore } from '@wordpress/notices';
+import { useDispatch } from '@wordpress/data';
 
 const FilterFormSaveButton = () => {
-	const [isLoading, setLoading] = useState(false);
-	const [isModified, setModified] = useState(true);
+	const {
+		state: { isDirty, title, formFilters },
+		dispatch,
+	} = useFilterForm();
 
-	const handleSaveFilterForm = async () => {
+	const [isLoading, setLoading] = useState(false);
+
+	const { createErrorNotice } = useDispatch(noticesStore);
+
+	const handleSaveFilterForm = () => {
 		setLoading(true);
 
-		const data = {
-			action: 'save_filter_form',
-		};
+		// https://stackoverflow.com/a/62939225
+		const formData = new FormData();
 
-		try {
-			const fetchFilters = await axios.get(wcapf_admin_params.ajaxurl, {
-				params: data,
+		formData.append('action', 'save_filter_form');
+		formData.append('form_filters', JSON.stringify(formFilters));
+		formData.append('post_title', title);
+
+		axios
+			.post(wcapf_admin_params.ajaxurl, formData)
+			.then(() => {
+				setLoading(false);
+				dispatch({ type: 'UNSET_DIRTY' });
+			})
+			.catch((err) => {
+				setLoading(false);
+				createErrorNotice(err.message, {
+					type: 'snackbar',
+					icon: '🔥',
+				});
 			});
-
-			const response = fetchFilters.data;
-
-			console.log(response);
-		} catch (err) {
-			console.log(err.message);
-		}
-
-		setLoading(false);
-		setModified(false);
 	};
 
 	let _disabled = false;
 
-	if (!isModified) {
+	if (!isDirty) {
 		_disabled = true;
 	} else if (isLoading) {
 		_disabled = true;

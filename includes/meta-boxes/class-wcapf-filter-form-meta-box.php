@@ -62,7 +62,7 @@ class WCAPF_Filter_Form_Meta_Box {
 	}
 
 	public function edit_filter_form_page() {
-		echo '<div id="wcapf-filter-admin-ui"><h1>Hello World</h1></div>';
+		echo '<div id="wcapf-filter-admin-ui"></div>';
 	}
 
 	public function enqueue_filter_admin_ui_scripts() {

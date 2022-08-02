@@ -14,11 +14,8 @@ const AvailableFilters = () => {
 			<SearchInput />
 
 			<Scrollable
-				style={{
-					maxHeight: 200,
-					boxShadow: '0 3px 6px rgb(0 0 0 / 10%)',
-					backgroundColor: '#fff',
-				}}
+				style={{ maxHeight: 200 }}
+				className='__available_filters_dropdown'
 			>
 				<div>
 					{availableFilters.length ? (
@@ -27,11 +24,11 @@ const AvailableFilters = () => {
 						))
 					) : (
 						<div
+							className='__item'
 							style={{
 								display: 'flex',
 								padding: '0 10px',
 								lineHeight: '40px',
-								borderBottom: '1px solid #e2e2e2',
 							}}
 						>
 							{__(
