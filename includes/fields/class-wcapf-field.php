@@ -694,7 +694,7 @@ abstract class WCAPF_Field {
 		 * TODO: Maybe show the preview in the backend also.
 		 */
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
-			return;
+			// return;
 		}
 
 		// Apply the visibility rules.

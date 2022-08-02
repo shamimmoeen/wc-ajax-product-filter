@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, ExternalLink, Flex, FlexItem } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useRef, useState } from '@wordpress/element';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
 import { useFilterForm } from '../../FilterFormContext';
 
@@ -11,8 +11,13 @@ const FormFilter = ({ data }) => {
 	} = useFilterForm();
 
 	const [expanded, setExpanded] = useState(false);
+	const dragHandleRef = useRef('');
 
-	const toggleExpand = () => {
+	const toggleExpand = (e) => {
+		if (dragHandleRef.current.contains(e.target)) {
+			return;
+		}
+
 		const _expanded = !expanded;
 		setExpanded(_expanded);
 	};
@@ -34,6 +39,7 @@ const FormFilter = ({ data }) => {
 
 		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
 		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: _formFilters });
+		dispatch({ type: 'SET_DIRTY' });
 	}
 
 	return (
@@ -41,10 +47,12 @@ const FormFilter = ({ data }) => {
 			<div
 				className='top'
 				style={{ display: 'flex', padding: '10px 15px' }}
+				onClick={toggleExpand}
 			>
 				<Flex justify={''}>
 					<FlexItem
 						style={{ display: 'inline-flex', alignItems: 'center' }}
+						ref={dragHandleRef}
 					>
 						<Icon
 							icon={dragHandle}
@@ -70,20 +78,13 @@ const FormFilter = ({ data }) => {
 				<FlexItem
 					style={{ display: 'inline-flex', alignItems: 'center' }}
 				>
-					<Button
-						isSmall={true}
-						onClick={toggleExpand}
-						style={{ borderRadius: '100%' }}
-					>
+					<Button isSmall={true} style={{ borderRadius: '100%' }}>
 						<Icon icon={toggleIcon} />
 					</Button>
 				</FlexItem>
 			</div>
 			{expanded ? (
-				<div
-					className='inside'
-					style={{ padding: 15, borderTop: '1px solid #c3c4c7' }}
-				>
+				<div className='__inner'>
 					<div style={{ marginBottom: '1em' }}>
 						Override the filter settings
 					</div>

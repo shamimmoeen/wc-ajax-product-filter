@@ -5,6 +5,7 @@ import AvailableFilters from './AvailableFilters';
 import FormFiltersTitle from './FormFiltersTitle';
 import { useFilterForm } from '../../FilterFormContext';
 import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 
 export const FormFilters = () => {
 	const {
@@ -30,6 +31,7 @@ export const FormFilters = () => {
 
 	const handleSort = () => {
 		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: filtersState });
+		dispatch({ type: 'SET_DIRTY' });
 	};
 
 	return !_availableFilters.length ? (

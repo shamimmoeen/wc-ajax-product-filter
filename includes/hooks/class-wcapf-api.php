@@ -43,10 +43,10 @@ class WCAPF_API {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_action( 'wp_ajax_nopriv_get_available_filters', array( $this, 'get_available_filters' ) );
-		add_action( 'wp_ajax_get_available_filters', array( $this, 'get_available_filters' ) ); // todo
-		add_action( 'wp_ajax_nopriv_save_filter_form', array( $this, 'save_filter_form' ) );
-		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) ); // todo
+		add_action( 'wp_ajax_get_available_filters', array( $this, 'get_available_filters' ) );
+		add_action( 'wp_ajax_get_filter_form_data', array( $this, 'get_filter_form_data' ) );
+		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
+		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
 	}
 
 	public function get_available_filters() {
@@ -77,8 +77,73 @@ class WCAPF_API {
 		wp_send_json_success( $results );
 	}
 
+	public function get_filter_form_data() {
+		$post_id   = 242; // TODO
+		$form_data = get_post_meta( $post_id, '_form_data', true );
+		$response  = array( 'post_title' => get_the_title( $post_id ) );
+
+		$filters_data = array();
+
+		if ( $form_data ) {
+			$filter_ids = isset( $form_data['filter_ids'] ) ? $form_data['filter_ids'] : array();
+
+			foreach ( $filter_ids as $field_id ) {
+				$field_data = get_post_meta( $field_id, '_field_data', true );
+				$field_key  = $field_data['field_key'];
+
+				$filters_data[] = array(
+					'id'        => $field_id,
+					'title'     => get_the_title( $field_id ),
+					'filterKey' => $field_key,
+					'editLink'  => get_edit_post_link( $field_id, '' ),
+				);
+			}
+		}
+
+		$response['filters_data'] = $filters_data;
+
+		wp_send_json_success( $response );
+	}
+
 	public function save_filter_form() {
-		wp_send_json_success('hello aurin');
+		$post_id       = 242; // TODO
+		$_form_filters = isset( $_POST['form_filters'] ) ? $_POST['form_filters'] : '';
+		$post_title    = isset( $_POST['post_title'] ) ? $_POST['post_title'] : '';
+		$form_filters  = stripslashes( $_form_filters );
+		$form_filters  = json_decode( $form_filters, true );
+
+		// Update post data.
+		$post_data = array(
+			'ID'         => $post_id,
+			'post_title' => $post_title,
+		);
+
+		wp_update_post( $post_data );
+
+		$filter_ids = array();
+
+		foreach ( $form_filters as $filter_data ) {
+			$filter_ids[] = $filter_data['id'];
+		}
+
+		$parsed_data = array( 'filter_ids' => $filter_ids );
+
+		update_post_meta( $post_id, '_form_data', $parsed_data );
+
+
+		wp_send_json_success( __( 'Updated successfully', 'wc-ajax-product-filter' ) );
+	}
+
+	public function get_filter_form_preview() {
+		$post_id = 242; // TODO
+
+		ob_start();
+
+		echo do_shortcode( '[wcapf_filter_form id=' . $post_id . ']' );
+
+		$preview = ob_get_clean();
+
+		wp_send_json_success( $preview );
 	}
 
 }
