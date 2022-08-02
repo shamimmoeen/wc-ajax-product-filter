@@ -1,4 +1,6 @@
-@import "./scss/editor";
+@import "./scss/core";
+@import "./scss/preview.scss";
+@import "./scss/filter-form.scss";
 
 #wcapf-filter-admin-ui {
 	margin-left: -20px;

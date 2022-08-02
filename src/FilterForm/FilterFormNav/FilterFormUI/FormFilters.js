@@ -9,7 +9,7 @@ import { Button } from '@wordpress/components';
 
 export const FormFilters = () => {
 	const {
-		state: { formFilters, _availableFilters },
+		state: { formFilters, _availableFilters, availableFilters },
 		dispatch,
 	} = useFilterForm();
 
@@ -32,6 +32,16 @@ export const FormFilters = () => {
 	const handleSort = () => {
 		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: filtersState });
 		dispatch({ type: 'SET_DIRTY' });
+	};
+
+	const handleDeleteFilters = () => {
+		const _availableFilters = availableFilters.map((filter) => {
+			filter.status = '';
+			return filter;
+		});
+
+		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
+		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: [] });
 	};
 
 	return !_availableFilters.length ? (
@@ -69,6 +79,16 @@ export const FormFilters = () => {
 					<FormFilter key={item.id} data={item} />
 				))}
 			</ReactSortable>
+
+			{formFilters.length ? (
+				<div style={{ marginTop: '1.5em' }}>
+					<Button variant='primary' onClick={handleDeleteFilters}>
+						{__('Delete All Filters', 'wc-ajax-product-filter')}
+					</Button>
+				</div>
+			) : (
+				''
+			)}
 		</div>
 	);
 };

@@ -46,7 +46,11 @@ const FormFilter = ({ data }) => {
 		<div className={'__fz_item'}>
 			<div
 				className='top'
-				style={{ display: 'flex', padding: '10px 15px' }}
+				style={{
+					display: 'flex',
+					padding: '10px 15px',
+					userSelect: 'none',
+				}}
 				onClick={toggleExpand}
 			>
 				<Flex justify={''}>
