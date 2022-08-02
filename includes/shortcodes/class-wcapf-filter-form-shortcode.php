@@ -121,7 +121,7 @@ class WCAPF_Filter_Form_Shortcode {
 			$field->filter_form();
 		}
 
-		echo '<button type="button">Apply Filters</button>';
+		echo '<button type="button" class="button">Apply Filters</button>';
 
 		echo '</div>';
 

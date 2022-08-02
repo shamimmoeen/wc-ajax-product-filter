@@ -152,16 +152,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$update_count   = $this->auto_count_enabled();
 		$hide_stock_out = $helper::hide_stock_out_items();
 
-		$tax_query    = WC_Query::get_main_tax_query();
-		$meta_query   = WC_Query::get_main_meta_query();
-		$search_query = WC_Query::get_main_search_query_sql();
-
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
-		$meta_query     = new WP_Meta_Query( $meta_query );
-		$tax_query      = new WP_Tax_Query( $tax_query );
-		$meta_query_sql = $meta_query->get_sql( 'post', $lookup_table_name, 'product_or_parent_id' );
-		$tax_query_sql  = $tax_query->get_sql( $lookup_table_name, 'product_or_parent_id' );
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data( $lookup_table_name );
 
 		$query = array();
 		$join  = '';

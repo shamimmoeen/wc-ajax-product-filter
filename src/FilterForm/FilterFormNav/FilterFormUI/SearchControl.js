@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useFilterForm } from '../../FilterFormContext';
 
-const SearchInput = () => {
+const SearchControl = () => {
 	const {
 		state: { _availableFilters },
 		dispatch,
@@ -32,6 +32,7 @@ const SearchInput = () => {
 				width: '100%',
 				marginBottom: '1em',
 				backgroundColor: 'transparent',
+				padding: '3px 8px',
 			}}
 			onChange={limitAvailableFilters}
 			autoFocus
@@ -39,4 +40,4 @@ const SearchInput = () => {
 	);
 };
 
-export default SearchInput;
+export default SearchControl;
