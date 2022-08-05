@@ -1,6 +1,18 @@
 /*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/filter-form.scss ***!
   \*****************************************************************************************************************************************************************************************************************************************************************************/
+#wpbody-content {
+  padding-bottom: 0;
+}
+
+#wpfooter {
+  display: none;
+}
+
+body {
+  background-color: #ffffff;
+}
+
 #wpcontent .wcapf-admin-toolbar {
   position: relative;
   z-index: 100;
@@ -8,6 +20,12 @@
 
 #wcapf-filter-admin-ui {
   position: relative;
+}
+
+#wcapf-filter-admin-ui,
+#wcapf-filter-form-admin-ui {
+  margin-left: -20px;
+  padding: 20px;
 }
 
 .editor-control {
@@ -78,7 +96,7 @@
   font-size: 14px;
 }
 .my-tab-panel .components-tab-panel__tabs-item:focus, .my-tab-panel .components-tab-panel__tabs-item.active-tab {
-  box-shadow: inset 0 -2px var(--wp-admin-theme-color);
+  box-shadow: inset 0 -3px var(--wp-admin-theme-color);
 }
 .my-tab-panel .components-tab-panel__tab-content {
   padding: 2em;
@@ -112,7 +130,7 @@
   width: auto;
   position: fixed;
   right: calc(400px + 20px);
-  bottom: 100px;
+  bottom: 85px;
 }
 .components-snackbar-list .components-snackbar {
   box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
@@ -167,23 +185,6 @@
   display: flex;
   gap: 0.5em;
   margin: 1em 0 2em;
-}
-
-#wcapf-filter-admin-ui {
-  margin-left: -20px;
-  padding: 20px;
-}
-
-#wpbody-content {
-  padding-bottom: 0;
-}
-
-#wpfooter {
-  display: none;
-}
-
-body {
-  background-color: #ffffff;
 }
 
 /*# sourceMappingURL=filter-form.css.map*/

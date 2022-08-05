@@ -1,3 +1,16 @@
+#wpbody-content {
+	padding-bottom: 0;
+}
+
+#wpfooter {
+	display: none;
+}
+
+body {
+	background-color: #ffffff;
+}
+
+
 #wpcontent .wcapf-admin-toolbar {
 	position: relative;
 	z-index: 100;
@@ -6,6 +19,13 @@
 #wcapf-filter-admin-ui {
 	position: relative;
 }
+
+#wcapf-filter-admin-ui,
+#wcapf-filter-form-admin-ui {
+	margin-left: -20px;
+	padding: 20px;
+}
+
 
 $preview_width: 400px;
 
@@ -91,7 +111,7 @@ $preview_width: 400px;
 
 		&:focus,
 		&.active-tab {
-			box-shadow: inset 0 -2px var(--wp-admin-theme-color);
+			box-shadow: inset 0 -3px var(--wp-admin-theme-color);
 		}
 	}
 
@@ -132,7 +152,7 @@ $preview_width: 400px;
 	width: auto;
 	position: fixed;
 	right: calc(#{$preview_width} + 20px);
-	bottom: 100px;
+	bottom: 85px;
 	
 	.components-snackbar {
 		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);

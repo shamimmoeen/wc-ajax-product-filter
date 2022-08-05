@@ -1,6 +1,18 @@
-/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/filter-form.scss ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/filter.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************/
+#wpbody-content {
+  padding-bottom: 0;
+}
+
+#wpfooter {
+  display: none;
+}
+
+body {
+  background-color: #ffffff;
+}
+
 #wpcontent .wcapf-admin-toolbar {
   position: relative;
   z-index: 100;
@@ -8,6 +20,12 @@
 
 #wcapf-filter-admin-ui {
   position: relative;
+}
+
+#wcapf-filter-admin-ui,
+#wcapf-filter-form-admin-ui {
+  margin-left: -20px;
+  padding: 20px;
 }
 
 .editor-control {
@@ -78,7 +96,7 @@
   font-size: 14px;
 }
 .my-tab-panel .components-tab-panel__tabs-item:focus, .my-tab-panel .components-tab-panel__tabs-item.active-tab {
-  box-shadow: inset 0 -2px var(--wp-admin-theme-color);
+  box-shadow: inset 0 -3px var(--wp-admin-theme-color);
 }
 .my-tab-panel .components-tab-panel__tab-content {
   padding: 2em;
@@ -112,7 +130,7 @@
   width: auto;
   position: fixed;
   right: calc(400px + 20px);
-  bottom: 100px;
+  bottom: 85px;
 }
 .components-snackbar-list .components-snackbar {
   box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
@@ -122,68 +140,97 @@
   font-size: 14px;
 }
 
-.__filters_drop_zone .__fz_item {
+.__available_filters {
   border: 1px solid #ddd;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
-  color: #1d2327;
-  font-size: 13px;
-  line-height: 1.4em;
+  margin-bottom: 1.5em;
 }
-.__filters_drop_zone .__fz_item:not(:last-child) {
-  margin: 0 0 10px;
-}
-.__filters_drop_zone .__fz_item button {
-  padding: 0;
-}
-.__filters_drop_zone .__fz_item .__fz_mover button {
-  height: 10px;
-}
-.__filters_drop_zone .__fz_item .__inner {
-  border-top: 1px solid #ddd;
-  padding: 15px;
-}
-.__filters_drop_zone .__fz_add_filter_btn.active, .__filters_drop_zone .__fz_add_filter_btn.active:hover {
-  background-color: #1e1e1e;
-}
-.__filters_drop_zone .__fz_add_filter_btn svg {
-  transition: transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
-}
-.__filters_drop_zone .__fz_add_filter_btn.active svg {
-  transform: rotate(45deg);
-}
-
-.__available_filters_dropdown {
-  background-color: #ffffff;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-}
-.__available_filters_dropdown .__item {
-  border-bottom: 1px solid #e2e2e2;
-}
-.__available_filters_dropdown .__item:last-child {
-  border-bottom: none;
-}
-
-.__dropdown_filters {
+.__available_filters .__title {
+  align-items: center;
+  border-bottom: 1px solid #ddd;
   display: flex;
-  gap: 0.5em;
-  margin: 1em 0 2em;
+  height: 48px;
+  padding: 0 16px;
+}
+.__available_filters h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+.__available_filters .__inner {
+  padding: 10px 16px 6px;
+}
+.__available_filters .__filters::before,
+.__available_filters .__filters::after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.__available_filters .__filters {
+  margin-top: 10px;
+}
+.__available_filters .__filters .__item {
+  border-radius: 0;
+  border: 1px solid #e2e2e2;
+  color: #1d2327;
+  cursor: pointer;
+  float: left;
+  font-weight: 500;
+  margin: 0 10px 10px 0;
+  padding: 0 10px;
+}
+.__available_filters .__filters .__item:disabled {
+  cursor: default;
+  opacity: 1;
+  color: #777;
+}
+.__available_filters .__filters .__item:disabled .__pro_tag {
+  --gradient-start: #a16bfe;
+  --gradient-start-text: "#A16BFE";
+  --gradient-end: #deb0df;
+  --gradient-end-text: "#DEB0DF";
+}
+.__available_filters .__filters .__item:disabled .__pro_tag::before {
+  content: "PRO";
+  color: #fff;
+  background: linear-gradient(-60deg, #c6d3f8, #dee3ff);
+  background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin: 0 0 0 4px;
+  font-size: 12px;
+}
+.__available_filters .__filters .__item:focus {
+  box-shadow: none;
+  outline-color: var(--wp-admin-theme-color);
+  outline-style: solid;
+  outline-width: 1px;
+}
+.__available_filters .__filters .__item.active {
+  background-color: var(--wp-admin-theme-color);
+  border-color: var(--wp-admin-theme-color);
+  color: #fff;
 }
 
-#wcapf-filter-admin-ui {
-  margin-left: -20px;
-  padding: 20px;
+.__filter_settings_panel .components-panel__header h2 {
+  color: #1d2327;
+  font-size: 14px;
+  font-weight: 500;
+}
+.__filter_settings_panel .components-panel__row {
+  width: 100%;
 }
 
-#wpbody-content {
-  padding-bottom: 0;
+.__form_control {
+  margin: 0 0 15px;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  gap: 15px;
 }
-
-#wpfooter {
-  display: none;
-}
-
-body {
-  background-color: #ffffff;
+.__form_control .__label {
+  width: 150px;
 }
 
 /*# sourceMappingURL=filter.css.map*/

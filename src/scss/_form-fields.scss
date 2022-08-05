@@ -1,0 +1,11 @@
+.__form_control {
+	margin: 0 0 15px;
+	display: flex;
+	align-items: center;
+	min-height: 30px;
+	gap: 15px;
+
+	.__label {
+		width: 150px;
+	}
+}

@@ -1,4 +1,9 @@
 export const initialState = {
+	filterType: 'attribute',
+	filterTypeLabel: 'Attribute',
+	filterKey: {
+		category: '_color',
+	},
 	title: '',
 	isDirty: false,
 };
@@ -13,6 +18,12 @@ const filterReducer = (state, action) => {
 
 		case 'UNSET_DIRTY':
 			return { ...state, isDirty: false };
+
+		case 'SET_FILTER_TYPE':
+			return { ...state, filterType: action.payload };
+
+		case 'SET_FILTER_TYPE_LABEL':
+			return { ...state, filterTypeLabel: action.payload };
 
 		default:
 			return state;

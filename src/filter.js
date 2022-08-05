@@ -1,4 +1,4 @@
-import './filter-form.scss';
+import './filter.scss';
 import { render } from '@wordpress/element';
 import Filter from './components/Filter';
 import { FilterProvider } from './components/Filter/FilterContext';

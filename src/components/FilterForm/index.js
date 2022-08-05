@@ -3,8 +3,8 @@ import FilterFormSettings from './FilterFormSettings';
 import FilterFormPreview from './FilterFormPreview';
 import { useFilterForm } from './FilterFormContext';
 import axios from 'axios';
-import SaveButton from './SaveButton';
-import Notifications from './Notifications';
+import FilterFormSaveButton from './FilterFormSaveButton';
+import Notifications from '../Notifications';
 
 const FilterForm = () => {
 	const { dispatch } = useFilterForm();
@@ -90,9 +90,9 @@ const FilterForm = () => {
 	return (
 		<>
 			<FilterFormSettings />
+			<FilterFormSaveButton />
 			<FilterFormPreview />
 			<Notifications />
-			<SaveButton />
 		</>
 	);
 };

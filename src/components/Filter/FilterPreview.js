@@ -3,14 +3,14 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 
-const FilterFormPreview = () => {
+const FilterPreview = () => {
 	const [preview, setPreview] = useState('');
 	const [isLoading, setLoading] = useState(true);
 
 	useEffect(() => {
 		axios
 			.get(wcapf_admin_params.ajaxurl, {
-				params: { action: 'get_filter_form_preview' },
+				params: { action: 'get_filter_preview' },
 			})
 			.then(({ data: { data } }) => {
 				setPreview(data);
@@ -39,4 +39,4 @@ const FilterFormPreview = () => {
 	);
 };
 
-export default FilterFormPreview;
+export default FilterPreview;

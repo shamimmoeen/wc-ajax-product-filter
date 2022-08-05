@@ -47,6 +47,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_form_data', array( $this, 'get_filter_form_data' ) );
 		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
 		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
+		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 	}
 
 	public function get_available_filters() {
@@ -140,6 +141,18 @@ class WCAPF_API {
 		ob_start();
 
 		echo do_shortcode( '[wcapf_filter_form id=' . $post_id . ']' );
+
+		$preview = ob_get_clean();
+
+		wp_send_json_success( $preview );
+	}
+
+	public function get_filter_preview() {
+		$post_id = 65; // TODO
+
+		ob_start();
+
+		echo do_shortcode( '[wcapf_filter id=' . $post_id . ']' );
 
 		$preview = ob_get_clean();
 
