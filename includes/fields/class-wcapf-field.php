@@ -702,7 +702,7 @@ abstract class WCAPF_Field {
 		$visibility_rules        = $this->get_sub_field_value( 'visibility_rules' );
 
 		if ( $enable_visibility_rules && ! WCAPF_Visibility_Rules::meet_rules( $visibility_rules ) ) {
-			return;
+			// return;
 		}
 
 		$this->render_filter_form();

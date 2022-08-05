@@ -1,29 +1,22 @@
 import { TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import FilterFormUI from './FilterFormUI';
-import FilterSettings from './FilterSettings';
-import FormSettings from './FormSettings';
+import FilterUI from './FilterUI';
 
-const FilterFormNav = () => {
+const FilterNav = () => {
 	return (
 		<TabPanel
 			className='my-tab-panel'
 			activeClass='active-tab'
 			tabs={[
 				{
-					name: 'filter_form_ui',
-					title: __('Filter Form UI', 'wc-ajax-product-filter'),
-					className: 'filter_form_ui',
+					name: 'filter_ui',
+					title: __('Filter UI', 'wc-ajax-product-filter'),
+					className: 'filter_ui',
 				},
 				{
 					name: 'visibility_rules',
 					title: __('Visibility Rules', 'wc-ajax-product-filter'),
 					className: 'visibility_rules',
-				},
-				{
-					name: 'settings',
-					title: __('Settings', 'wc-ajax-product-filter'),
-					className: 'settings',
 				},
 				{
 					name: 'customize',
@@ -33,14 +26,10 @@ const FilterFormNav = () => {
 			]}
 		>
 			{(tab) => {
-				if (tab.name === 'filter_form_ui') {
-					return <FilterFormUI />;
-				} else if (tab.name === 'filter_settings') {
-					return <FilterSettings />;
+				if (tab.name === 'filter_ui') {
+					return <FilterUI />;
 				} else if (tab.name === 'visibility_rules') {
 					return 'Visbility Ruels';
-				} else if (tab.name === 'settings') {
-					return <FormSettings />;
 				} else if (tab.name === 'customize') {
 					return 'Customize Form';
 				}
@@ -49,4 +38,4 @@ const FilterFormNav = () => {
 	);
 };
 
-export default FilterFormNav;
+export default FilterNav;

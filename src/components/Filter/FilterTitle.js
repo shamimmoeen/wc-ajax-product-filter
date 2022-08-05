@@ -1,12 +1,12 @@
 import { __ } from '@wordpress/i18n';
-import { useFilterForm } from './FilterFormContext';
+import { useFilter } from './FilterContext';
 import Title from '../Title';
 
-const FilterFormTitle = () => {
+const FilterTitle = () => {
 	const {
 		state: { title },
 		dispatch,
-	} = useFilterForm();
+	} = useFilter();
 
 	const handleChange = (value) => {
 		dispatch({ type: 'SET_TITLE', payload: value });
@@ -15,11 +15,11 @@ const FilterFormTitle = () => {
 
 	return (
 		<Title
-			label={__('Filter Form Title', 'wc-ajax-product-filter')}
+			label={__('Filter Title', 'wc-ajax-product-filter')}
 			value={title}
 			handleChange={handleChange}
 		/>
 	);
 };
 
-export default FilterFormTitle;
+export default FilterTitle;
