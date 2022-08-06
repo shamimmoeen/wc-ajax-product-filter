@@ -17,14 +17,10 @@ const AvaialableFilters = () => {
 
 	return (
 		<div className='__available_filters'>
-			<div className='__title'>
-				<h3>{__('Avaialable Filters', 'wc-ajax-product-filter')}</h3>
-			</div>
-
 			<div className='__inner'>
 				<p className='description'>
 					{__(
-						'Select any of these filters to start building the filter.',
+						'Select a component to start building the filter.',
 						'wc-ajax-product-filter'
 					)}
 				</p>

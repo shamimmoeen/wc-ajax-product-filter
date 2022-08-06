@@ -3300,7 +3300,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const FilterFormNav = () => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TabPanel, {
-    className: "my-tab-panel",
+    className: "__tab_panel",
     activeClass: "active-tab",
     tabs: [{
       name: 'filter_form_ui',

@@ -1,12 +1,26 @@
+import { useState } from '@wordpress/element';
 import { TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import FilterUI from './FilterUI';
 
 const FilterNav = () => {
+	const [activeTab, setActiveTab] = useState('filter_ui');
+
+	const handleSelect = (tabName) => {
+		setActiveTab(tabName);
+	};
+
+	let tabPanelClasses = '__tab_panel';
+
+	if ('filter_ui' === activeTab) {
+		tabPanelClasses += ' filter_ui';
+	}
+
 	return (
 		<TabPanel
-			className='my-tab-panel'
+			className={tabPanelClasses}
 			activeClass='active-tab'
+			onSelect={handleSelect}
 			tabs={[
 				{
 					name: 'filter_ui',

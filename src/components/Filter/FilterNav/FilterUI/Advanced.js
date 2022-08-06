@@ -1,5 +1,5 @@
 const Advanced = () => {
-	return <div></div>;
+	return <div>Advanced</div>;
 };
 
 export default Advanced;

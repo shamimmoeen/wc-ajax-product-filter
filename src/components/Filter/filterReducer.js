@@ -1,9 +1,10 @@
 export const initialState = {
-	filterType: 'attribute',
-	filterTypeLabel: 'Attribute',
+	filterType: '',
+	filterTypeLabel: '',
 	filterKey: {
 		category: '_color',
 	},
+	activeUIStep: '',
 	title: '',
 	isDirty: false,
 };
@@ -24,6 +25,9 @@ const filterReducer = (state, action) => {
 
 		case 'SET_FILTER_TYPE_LABEL':
 			return { ...state, filterTypeLabel: action.payload };
+
+		case 'SET_ACTIVE_UI_STEP':
+			return { ...state, activeUIStep: action.payload };
 
 		default:
 			return state;
