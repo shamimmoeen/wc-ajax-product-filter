@@ -7,7 +7,7 @@ import FormSettings from './FormSettings';
 const FilterFormNav = () => {
 	return (
 		<TabPanel
-			className='my-tab-panel'
+			className='__tab_panel'
 			activeClass='active-tab'
 			tabs={[
 				{

@@ -10,7 +10,6 @@ body {
 	background-color: #ffffff;
 }
 
-
 #wpcontent .wcapf-admin-toolbar {
 	position: relative;
 	z-index: 100;
@@ -25,7 +24,6 @@ body {
 	margin-left: -20px;
 	padding: 20px;
 }
-
 
 $preview_width: 400px;
 
@@ -93,7 +91,7 @@ $preview_width: 400px;
 	}
 }
 
-.my-tab-panel {
+.__tab_panel {
 	margin-left: -20px;
 	margin-right: -20px;
 	margin-top: 2em;
@@ -102,7 +100,7 @@ $preview_width: 400px;
 		box-shadow: 0 10px 10px rgb(0 0 0 / 2%);
 		padding-left: 20px;
 		padding-right: 20px;
-		border-bottom: 1px solid #EDEDED;
+		border-bottom: 1px solid #ededed;
 		justify-content: center;
 	}
 
@@ -115,10 +113,12 @@ $preview_width: 400px;
 		}
 	}
 
-	.components-tab-panel__tab-content {
-		padding: 2em;
-		max-width: 60em;
-		margin: 0 auto;
+	&:not(.filter_ui) {
+		.components-tab-panel__tab-content {
+			padding: 2em;
+			margin: 0 auto;
+			max-width: 60em;
+		}
 	}
 }
 
@@ -126,18 +126,19 @@ $preview_width: 400px;
 	$size: 56px;
 
 	position: fixed;
-	box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
+	box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
+		0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 	bottom: 20px;
-    right: calc(#{$preview_width} + 20px);
-    z-index: 300;
+	right: calc(#{$preview_width} + 20px);
+	z-index: 300;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 106px;
-    height: 44px;
-    font-size: 16px;
-    text-transform: uppercase;
-    font-weight: 500;
+	height: 44px;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-weight: 500;
 
 	.components-spinner {
 		margin: 0;
@@ -153,8 +154,9 @@ $preview_width: 400px;
 	position: fixed;
 	right: calc(#{$preview_width} + 20px);
 	bottom: 85px;
-	
+
 	.components-snackbar {
-		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
+		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
+			0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 	}
 }

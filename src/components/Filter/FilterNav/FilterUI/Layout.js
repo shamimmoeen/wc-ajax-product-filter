@@ -1,14 +1,8 @@
 import { __ } from '@wordpress/i18n';
-import Toggle from '../../../../Field/Toggle';
-import Select from '../../../../Field/Select';
-import Text from '../../../../Field/Text';
-import { useFilter } from '../../../FilterContext';
+import Toggle from '../../../Field/Toggle';
+import Select from '../../../Field/Select';
 
 const Layout = () => {
-	const {
-		state: { filterType },
-	} = useFilter();
-
 	const displayTypeOptions = [
 		{
 			label: __('Checkbox', 'wc-ajax-product-filter'),
@@ -42,6 +36,11 @@ const Layout = () => {
 
 	return (
 		<div>
+			<Toggle
+				id={'show_title'}
+				label={__('Show Title', 'wc-ajax-product-filter')}
+			/>
+
 			<Select
 				id={'display_type'}
 				label={__('Display Type', 'wc-ajax-product-filter')}

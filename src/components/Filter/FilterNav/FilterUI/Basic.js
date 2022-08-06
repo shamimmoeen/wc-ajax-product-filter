@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
-import Toggle from '../../../../Field/Toggle';
-import Select from '../../../../Field/Select';
-import Text from '../../../../Field/Text';
-import { useFilter } from '../../../FilterContext';
+import Text from '../../../Field/Text';
+import Select from '../../../Field/Select';
+import AvaialableFilters from './AvailableFilters';
+import { useFilter } from '../../FilterContext';
 
 const Basic = () => {
 	const {
@@ -36,14 +36,17 @@ const Basic = () => {
 
 	return (
 		<div>
-			<Toggle
-				id={'show_title'}
-				label={__('Show Title', 'wc-ajax-product-filter')}
-			/>
+			<AvaialableFilters />
 
-			{taxonomyField}
+			{filterType ? (
+				<>
+					{taxonomyField}
 
-			{filterKeyField}
+					{filterKeyField}
+				</>
+			) : (
+				''
+			)}
 		</div>
 	);
 };
