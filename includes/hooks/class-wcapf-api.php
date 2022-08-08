@@ -47,6 +47,8 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_form_data', array( $this, 'get_filter_form_data' ) );
 		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
 		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
+		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
+		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 	}
 
@@ -145,6 +147,84 @@ class WCAPF_API {
 		$preview = ob_get_clean();
 
 		wp_send_json_success( $preview );
+	}
+
+	public function get_filter_data() {
+		$post_id = 66; // TODO
+
+		$field_data = get_post_meta( $post_id, '_field_data', true );
+
+		$response  = array(
+			'post_title' => get_the_title( $post_id ),
+			'field_data' => $field_data,
+		);
+
+		// $response = array();
+
+		wp_send_json_success( $response );
+	}
+
+	public function get_filter_additional_data() {
+		$response = array();
+
+		// Attributes.
+		$_attributes = wc_get_attribute_taxonomy_names();
+		$attributes  = $this->get_taxonomy_options( $_attributes );
+
+		$response['attributes'] = $attributes;
+
+		// Custom Taxonomies.
+		$taxonomies = array();
+
+		if ( class_exists( 'WCAPF_PRO_Helper' ) ) {
+			$_taxonomies = WCAPF_PRO_Helper::get_custom_taxonomies();
+			$taxonomies  = $this->get_taxonomy_options( $_taxonomies );
+		}
+
+		$response['custom_taxonomies'] = $taxonomies;
+
+		// Custom Post Metas.
+		$post_metas = array();
+
+		if ( class_exists( 'WCAPF_PRO_Helper' ) ) {
+			$meta_keys = WCAPF_PRO_Helper::get_meta_keys();
+
+			foreach ( $meta_keys as $meta_key ) {
+				$post_metas[ $meta_key ] = $meta_key;
+			}
+		}
+
+		$response['meta_keys'] = $post_metas;
+
+		// Post Properties.
+		$post_properties = array();
+
+		if ( class_exists( 'WCAPF_PRO_Helper' ) ) {
+			$post_properties = WCAPF_PRO_Helper::get_post_properties();
+		}
+
+		$response['post_properties'] = $post_properties;
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Gets an array of taxonomy name and label, name => label.
+	 *
+	 * @param array $taxonomies The taxonomies array.
+	 *
+	 * @return array
+	 */
+	private function get_taxonomy_options( $taxonomies ) {
+		$options = array();
+
+		foreach ( $taxonomies as $_taxonomy ) {
+			$taxonomy_data = get_taxonomy( $_taxonomy );
+
+			$options[ $_taxonomy ] = $taxonomy_data->labels->singular_name;
+		}
+
+		return $options;
 	}
 
 	public function get_filter_preview() {

@@ -1,18 +1,59 @@
 import { useFilter } from '../../FilterContext';
 import { __ } from '@wordpress/i18n';
-import { getAvailableFilters } from '../../utils';
-import { Button } from '@wordpress/components';
+import {
+	foundProVersion,
+	getAvailableFilters,
+	getFilterDefaultData,
+} from '../../utils';
+import { NavigableMenu, Button } from '@wordpress/components';
 
 const AvaialableFilters = () => {
 	const {
-		state: { filterType },
+		state: { filterType, filtersData, activeFilterData },
 		dispatch,
 	} = useFilter();
 
 	const handleSetFilterType = (filter) => {
-		dispatch({ type: 'SET_FILTER_TYPE', payload: filter.type });
-		dispatch({ type: 'SET_FILTER_TYPE_LABEL', payload: filter.title });
+		const _filterType = filter.type;
+
+		dispatch({ type: 'SET_FILTER_TYPE', payload: _filterType });
 		dispatch({ type: 'SET_DIRTY' });
+
+		let filterData = filtersData[_filterType];
+
+		if (!filterData) {
+			filterData = getFilterDefaultData(_filterType);
+		}
+
+		dispatch({ type: 'SET_ACTIVE_FILTER_DATA', payload: filterData });
+
+		const _filtersData = { ...filtersData, [filterType]: activeFilterData };
+
+		dispatch({ type: 'SET_FILTERS_DATA', payload: _filtersData });
+	};
+
+	const componentDisabled = (isProFeature) => {
+		if (foundProVersion()) {
+			return false;
+		}
+
+		if (!isProFeature) {
+			return false;
+		}
+
+		return true;
+	};
+
+	const proTag = (isProFeature) => {
+		if (foundProVersion()) {
+			return '';
+		}
+
+		if (!isProFeature) {
+			return '';
+		}
+
+		return <span className='__pro_tag' />;
 	};
 
 	return (
@@ -26,29 +67,27 @@ const AvaialableFilters = () => {
 				</p>
 
 				<div className='__filters'>
-					{getAvailableFilters().map((filter) => {
-						let _classes = '__item';
+					<NavigableMenu role={'menu'} orientation='horizontal'>
+						{getAvailableFilters().map((filter) => {
+							let _classes = '__item';
 
-						if (filterType === filter.type) {
-							_classes += ' active';
-						}
+							if (filterType === filter.type) {
+								_classes += ' active';
+							}
 
-						return (
-							<Button
-								className={_classes}
-								key={filter.type}
-								onClick={() => handleSetFilterType(filter)}
-								disabled={filter.isPro}
-							>
-								{filter.title}
-								{filter.isPro ? (
-									<span className='__pro_tag' />
-								) : (
-									''
-								)}
-							</Button>
-						);
-					})}
+							return (
+								<Button
+									className={_classes}
+									key={filter.type}
+									onClick={() => handleSetFilterType(filter)}
+									disabled={componentDisabled(filter.isPro)}
+								>
+									{filter.title}
+									{proTag(filter.isPro)}
+								</Button>
+							);
+						})}
+					</NavigableMenu>
 				</div>
 			</div>
 		</div>

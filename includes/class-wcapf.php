@@ -418,7 +418,8 @@ class WCAPF {
 	 */
 	private function admin_js_params() {
 		$params = array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'ajaxurl'  => admin_url( 'admin-ajax.php' ),
+			'foundPro' => true,
 		);
 
 		return apply_filters( 'wcapf_admin_js_params', $params );

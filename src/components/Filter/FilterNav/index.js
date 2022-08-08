@@ -1,9 +1,14 @@
 import { useState } from '@wordpress/element';
-import { TabPanel } from '@wordpress/components';
+import { Flex, Spinner, TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import FilterUI from './FilterUI';
+import VisibilityRules from '../../VisibilityRules';
+import { useFilter } from '../FilterContext';
 
 const FilterNav = () => {
+	const {
+		state: { isLoading },
+	} = useFilter();
 	const [activeTab, setActiveTab] = useState('filter_ui');
 
 	const handleSelect = (tabName) => {
@@ -40,12 +45,20 @@ const FilterNav = () => {
 			]}
 		>
 			{(tab) => {
-				if (tab.name === 'filter_ui') {
-					return <FilterUI />;
-				} else if (tab.name === 'visibility_rules') {
-					return 'Visbility Ruels';
-				} else if (tab.name === 'customize') {
-					return 'Customize Form';
+				if (isLoading) {
+					return (
+						<Flex justify={'center'} style={{ margin: '2em 0' }}>
+							<Spinner />
+						</Flex>
+					);
+				} else {
+					if (tab.name === 'filter_ui') {
+						return <FilterUI />;
+					} else if (tab.name === 'visibility_rules') {
+						return <VisibilityRules />;
+					} else if (tab.name === 'customize') {
+						return 'Customize Form';
+					}
 				}
 			}}
 		</TabPanel>

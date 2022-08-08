@@ -8,4 +8,45 @@
 	.__label {
 		width: 150px;
 	}
+
+	.components-text-control__input {
+		border-color: #ddd;
+	}
+
+	// react-dropdown-select
+	.__custom_select_control {
+		min-height: 30px;
+		border-color: #ddd;
+		transition: box-shadow 0.1s linear;
+		min-width: 150px;
+		padding-left: 8px;
+
+		&:hover {
+			border-color: #ddd;
+		}
+
+		&:focus,
+		&:focus-within {
+			border-color: var(--wp-admin-theme-color);
+			box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+			outline: 2px solid transparent;
+		}
+
+		@media (min-width: 600px) {
+			.react-dropdown-select-input {
+				font-size: 13px;
+				line-height: normal;
+			}
+		}
+
+		.react-dropdown-select-content {
+			.react-dropdown-select-input:only-child {
+				margin-left: 0;
+			}
+		}
+
+		.react-dropdown-select-separator {
+			height: 20px;
+		}
+	}
 }

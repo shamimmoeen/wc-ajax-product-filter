@@ -3663,23 +3663,23 @@ const FilterForm = () => {
     dispatch
   } = (0,_FilterFormContext__WEBPACK_IMPORTED_MODULE_3__.useFilterForm)();
 
-  function getAvailableFilters() {
+  const getAvailableFilters = () => {
     const data = {
       action: 'get_available_filters'
     };
     return axios__WEBPACK_IMPORTED_MODULE_4___default().get(wcapf_admin_params.ajaxurl, {
       params: data
     });
-  }
+  };
 
-  function getFormFilters() {
+  const getFormFilters = () => {
     const data = {
       action: 'get_filter_form_data'
     };
     return axios__WEBPACK_IMPORTED_MODULE_4___default().get(wcapf_admin_params.ajaxurl, {
       params: data
     });
-  }
+  };
 
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     Promise.all([getAvailableFilters(), getFormFilters()]).then(results => {
