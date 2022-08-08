@@ -9,7 +9,7 @@ import Notifications from '../Notifications';
 const FilterForm = () => {
 	const { dispatch } = useFilterForm();
 
-	function getAvailableFilters() {
+	const getAvailableFilters = () => {
 		const data = {
 			action: 'get_available_filters',
 		};
@@ -17,9 +17,9 @@ const FilterForm = () => {
 		return axios.get(wcapf_admin_params.ajaxurl, {
 			params: data,
 		});
-	}
+	};
 
-	function getFormFilters() {
+	const getFormFilters = () => {
 		const data = {
 			action: 'get_filter_form_data',
 		};
@@ -27,7 +27,7 @@ const FilterForm = () => {
 		return axios.get(wcapf_admin_params.ajaxurl, {
 			params: data,
 		});
-	}
+	};
 
 	useEffect(() => {
 		Promise.all([getAvailableFilters(), getFormFilters()])

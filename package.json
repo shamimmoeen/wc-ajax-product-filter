@@ -48,6 +48,7 @@
     "@wordpress/icons": "^9.5.0",
     "axios": "^0.27.2",
     "postcss": "^8.4.14",
+    "react-dropdown-select": "^4.9.0",
     "react-sortablejs": "^6.1.4",
     "sortablejs": "^1.15.0"
   }

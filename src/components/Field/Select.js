@@ -1,13 +1,20 @@
-import { SelectControl } from '@wordpress/components';
+import CustomSelect from 'react-dropdown-select';
 
-const Select = ({ label, id, options }) => {
+const Select = ({ label, id, values, options, onChange }) => {
 	return (
 		<div className='__form_control'>
 			<div className='__label'>
 				<label htmlFor={id}>{label}</label>
 			</div>
 			<div className='__wrapper'>
-				<SelectControl options={options} id={id} />
+				<CustomSelect
+					id={id}
+					options={options}
+					values={values}
+					className='__custom_select_control'
+					separator={true}
+					onChange={onChange}
+				/>
 			</div>
 		</div>
 	);

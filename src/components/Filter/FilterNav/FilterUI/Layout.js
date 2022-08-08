@@ -27,10 +27,12 @@ const Layout = () => {
 		{
 			label: __('Color', 'wc-ajax-product-filter'),
 			value: 'color',
+			isPro: true,
 		},
 		{
 			label: __('Image', 'wc-ajax-product-filter'),
 			value: 'image',
+			isPro: true,
 		},
 	];
 

@@ -1,5 +1,5 @@
-import { TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import CustomTabPanel from '../../../CustomTabPanel';
 import { useFilter } from '../../FilterContext';
 import Advanced from './Advanced';
 import Basic from './Basic';
@@ -8,7 +8,7 @@ import Options from './Options';
 
 const FilterUI = () => {
 	const {
-		state: { activeUIStep },
+		state: { activeUIStep, filterType },
 		dispatch,
 	} = useFilter();
 
@@ -22,8 +22,10 @@ const FilterUI = () => {
 		initialTabName = activeUIStep;
 	}
 
+	const disableTabItem = !filterType.length ? true : false;
+
 	return (
-		<TabPanel
+		<CustomTabPanel
 			className='__filter_ui_tab_panel'
 			activeClass='active-tab'
 			orientation='vertical'
@@ -39,17 +41,19 @@ const FilterUI = () => {
 					name: 'layout',
 					title: __('Layout', 'wc-ajax-product-filter'),
 					className: 'layout',
-					isDisabled: true,
+					isDisabled: disableTabItem,
 				},
 				{
 					name: 'options',
 					title: __('Options', 'wc-ajax-product-filter'),
 					className: 'options',
+					isDisabled: disableTabItem,
 				},
 				{
 					name: 'advanced',
 					title: __('Advanced', 'wc-ajax-product-filter'),
 					className: 'advanced',
+					isDisabled: disableTabItem,
 				},
 			]}
 		>
@@ -64,7 +68,7 @@ const FilterUI = () => {
 					return <Advanced />;
 				}
 			}}
-		</TabPanel>
+		</CustomTabPanel>
 	);
 };
 

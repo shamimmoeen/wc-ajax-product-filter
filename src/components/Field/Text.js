@@ -1,4 +1,4 @@
-const Text = ({ label, id, type = 'text' }) => {
+const Text = ({ label, id, value, onChange, type = 'text', ...rest }) => {
 	return (
 		<div className='__form_control'>
 			<div className='__label'>
@@ -9,6 +9,9 @@ const Text = ({ label, id, type = 'text' }) => {
 					type={type}
 					id={id}
 					className='components-text-control__input'
+					value={value}
+					onChange={onChange}
+					{...rest}
 				/>
 			</div>
 		</div>

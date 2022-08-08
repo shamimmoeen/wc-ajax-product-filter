@@ -1,4 +1,9 @@
 /**
+ * @wordpress/components '^19.16.0'
+ * @wordpress/scripts '^23.5.0'
+ */
+
+/**
  * External dependencies
  */
 import classnames from 'classnames';
@@ -13,25 +18,32 @@ import { useInstanceId } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
-import { NavigableMenu } from '../navigable-container';
-import Button from '../button';
+import { NavigableMenu, Button } from '@wordpress/components';
 
 const noop = () => {};
 
-const TabButton = ({ tabId, onClick, children, selected, ...rest }) => (
+const TabButton = ({
+	tabId,
+	onClick,
+	isDisabled,
+	children,
+	selected,
+	...rest
+}) => (
 	<Button
 		role='tab'
 		tabIndex={selected ? null : -1}
 		aria-selected={selected}
 		id={tabId}
 		onClick={onClick}
+		disabled={isDisabled}
 		{...rest}
 	>
 		{children}
 	</Button>
 );
 
-export default function TabPanel({
+export default function CustomTabPanel({
 	className,
 	children,
 	tabs,
@@ -40,7 +52,7 @@ export default function TabPanel({
 	activeClass = 'is-active',
 	onSelect = noop,
 }) {
-	const instanceId = useInstanceId(TabPanel, 'tab-panel');
+	const instanceId = useInstanceId(CustomTabPanel, 'tab-panel');
 	const [selected, setSelected] = useState(null);
 
 	const handleClick = (tabKey) => {
@@ -85,6 +97,7 @@ export default function TabPanel({
 						selected={tab.name === selected}
 						key={tab.name}
 						onClick={partial(handleClick, tab.name)}
+						isDisabled={tab.isDisabled}
 					>
 						{tab.title}
 					</TabButton>
