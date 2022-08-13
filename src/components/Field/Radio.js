@@ -1,0 +1,51 @@
+import classnames from 'classnames';
+
+const Radio = ({
+	label,
+	id,
+	value,
+	options,
+	isVertical,
+	onChange,
+	description,
+}) => {
+	return (
+		<div className='__form_control'>
+			<div className='__inner'>
+				<div className='__label'>
+					<label htmlFor={id}>{label}</label>
+				</div>
+				<div
+					className={classnames('__wrapper', 'radio-group', {
+						'radio-group-vertical': isVertical,
+					})}
+				>
+					<div className='__input_wrapper'>
+						{options.map((option, index) => (
+							<div
+								key={`${id}-${index}`}
+								className='components-radio-control__option'
+							>
+								<input
+									id={`${id}-${index}`}
+									className='components-radio-control__input'
+									type='radio'
+									name={id}
+									value={option.value}
+									onChange={onChange}
+									checked={option.value === value}
+								/>
+								<label htmlFor={`${id}-${index}`}>
+									{option.label}
+								</label>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+			{description ? <p className='description'>{description}</p> : ''}
+		</div>
+	);
+};
+
+export default Radio;

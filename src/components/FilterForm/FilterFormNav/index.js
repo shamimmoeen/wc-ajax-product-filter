@@ -1,10 +1,15 @@
-import { TabPanel } from '@wordpress/components';
+import { Flex, Spinner, TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { useFilterForm } from '../FilterFormContext';
 import FilterFormUI from './FilterFormUI';
 import FilterSettings from './FilterSettings';
 import FormSettings from './FormSettings';
 
 const FilterFormNav = () => {
+	const {
+		state: { availableFiltersLoading },
+	} = useFilterForm();
+
 	return (
 		<TabPanel
 			className='__tab_panel'
@@ -33,16 +38,24 @@ const FilterFormNav = () => {
 			]}
 		>
 			{(tab) => {
-				if (tab.name === 'filter_form_ui') {
-					return <FilterFormUI />;
-				} else if (tab.name === 'filter_settings') {
-					return <FilterSettings />;
-				} else if (tab.name === 'visibility_rules') {
-					return 'Visbility Ruels';
-				} else if (tab.name === 'settings') {
-					return <FormSettings />;
-				} else if (tab.name === 'customize') {
-					return 'Customize Form';
+				if (availableFiltersLoading) {
+					return (
+						<Flex justify={'center'} style={{ margin: '2em 0' }}>
+							<Spinner />
+						</Flex>
+					);
+				} else {
+					if (tab.name === 'filter_form_ui') {
+						return <FilterFormUI />;
+					} else if (tab.name === 'filter_settings') {
+						return <FilterSettings />;
+					} else if (tab.name === 'visibility_rules') {
+						return 'Visbility Ruels';
+					} else if (tab.name === 'settings') {
+						return <FormSettings />;
+					} else if (tab.name === 'customize') {
+						return 'Customize Form';
+					}
 				}
 			}}
 		</TabPanel>

@@ -1,27 +1,18 @@
-const Text = ({
-	label,
-	id,
-	value,
-	onChange,
-	description,
-	type = 'text',
-	...rest
-}) => {
+import { CheckboxControl } from '@wordpress/components';
+
+const Checkbox = ({ id, label, isChecked, onChange, description }) => {
 	return (
-		<div className='__form_control'>
+		<div className='__form_control __checkbox_toggle'>
 			<div className='__inner'>
 				<div className='__label'>
 					<label htmlFor={id}>{label}</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
-						<input
-							type={type}
+						<CheckboxControl
+							checked={isChecked}
 							id={id}
-							className='components-text-control__input'
-							value={value}
 							onChange={onChange}
-							{...rest}
 						/>
 					</div>
 				</div>
@@ -31,4 +22,4 @@ const Text = ({
 	);
 };
 
-export default Text;
+export default Checkbox;

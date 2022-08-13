@@ -168,3 +168,35 @@ $preview_width: 400px;
 			0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 	}
 }
+
+.__pro_tag {
+	--gradient-start: #a16bfe;
+	--gradient-start-text: '#A16BFE';
+	--gradient-end: #deb0df;
+	--gradient-end-text: '#DEB0DF';
+
+	&::before {
+		content: 'PRO';
+		// color: var(--wp-admin-theme-color);
+		// color: #078cd6;
+		color: #fff;
+		// background-color: #dee3ff;
+		background: linear-gradient(-60deg, #c6d3f8, #dee3ff);
+		// background: linear-gradient(
+		// 	-60deg,
+		// 	rgb(138, 185, 255) 50%,
+		// 	rgb(69, 103, 178) 50%
+		// );
+		background: linear-gradient(
+			33deg,
+			var(--gradient-start),
+			var(--gradient-end)
+		);
+		font-weight: 500;
+		letter-spacing: 0.5px;
+		padding: 2px 4px;
+		border-radius: 4px;
+		margin: 0 0 0 4px;
+		font-size: 12px;
+	}
+}

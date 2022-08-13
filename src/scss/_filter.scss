@@ -64,52 +64,22 @@
 		.__item {
 			border-radius: 0;
 			border: 1px solid #e2e2e2;
-			color: #1d2327;
-			cursor: pointer;
+			// color: #1d2327;
+			// color: #3c434a;
+			// cursor: pointer;
 			float: left;
 			font-weight: 500;
 			margin: 0 10px 10px 0;
 			padding: 0 10px;
 
 			&:disabled {
-				cursor: default;
+				// cursor: default;
 				opacity: 1;
 				color: #777;
-
-				.__pro_tag {
-					--gradient-start: #a16bfe;
-					--gradient-start-text: '#A16BFE';
-					--gradient-end: #deb0df;
-					--gradient-end-text: '#DEB0DF';
-
-					&::before {
-						content: 'PRO';
-						// color: var(--wp-admin-theme-color);
-						// color: #078cd6;
-						color: #fff;
-						// background-color: #dee3ff;
-						background: linear-gradient(-60deg, #c6d3f8, #dee3ff);
-						// background: linear-gradient(
-						// 	-60deg,
-						// 	rgb(138, 185, 255) 50%,
-						// 	rgb(69, 103, 178) 50%
-						// );
-						background: linear-gradient(
-							33deg,
-							var(--gradient-start),
-							var(--gradient-end)
-						);
-						font-weight: 500;
-						letter-spacing: 0.5px;
-						padding: 2px 4px;
-						border-radius: 4px;
-						margin: 0 0 0 4px;
-						font-size: 12px;
-					}
-				}
 			}
 
 			&:focus {
+				// color: var(--wp-admin-theme-color);
 				border-color: var(--wp-admin-theme-color);
 				box-shadow: none;
 				outline-color: var(--wp-admin-theme-color);

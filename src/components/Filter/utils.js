@@ -1,39 +1,40 @@
 import { __ } from '@wordpress/i18n';
 import { find } from 'lodash';
 
-function filterDefaultData() {
+export function filterDefaultData() {
 	return {
-		show_title: true,
+		show_title: '1',
 		field_key: '',
 		taxonomy: '',
-		display_type: '',
-		query_type: '',
+		display_type: 'checkbox',
+		query_type: 'and',
 		all_items_label: '',
-		use_chosen: false,
+		use_chosen: '',
 		chosen_no_results_message: '',
-		enable_multiple_filter: false,
-		show_count: false,
-		hide_empty: false,
-		enable_tooltip: false,
-		show_count_in_tooltip: false,
+		enable_multiple_filter: '',
+		show_count: '',
+		hide_empty: '',
+		enable_tooltip: '',
+		show_count_in_tooltip: '',
 		tooltip_position: '',
 		custom_appearance_options: {},
-		use_term_slug_in_url: false,
+		use_term_slug_in_url: '',
 		limit_options: 'off',
 		parent_term: '',
 		limit_values_by_id: '',
 		exclude_values_id: '',
-		show_clear_button: true,
+		show_clear_button: '1',
 		order_terms_by: 'name',
 		order_terms_dir: 'asc',
-		enable_accordion: false,
+		enable_accordion: '',
 		accordion_default_state: 'expanded',
-		enable_soft_limit: false,
+		enable_soft_limit: '',
 		soft_limit: '',
 		type: '',
 		field_id: '',
-		enable_visibility_rules: false,
+		enable_visibility_rules: '',
 		visibility_rules: [],
+		get_options: 'manual_entry',
 	};
 }
 
@@ -119,6 +120,53 @@ export function getAvailableFilters() {
 	];
 }
 
-export function foundProVersion() {
-	return wcapf_admin_params.foundPro;
+export function getLimitByOptions() {
+	return [
+		{
+			label: __('Child terms of', 'wc-ajax-product-filter'),
+			value: 'child_only',
+		},
+		{
+			label: __('Show only these terms', 'wc-ajax-product-filter'),
+			value: 'name',
+		},
+		{
+			label: __('Exclude these terms', 'wc-ajax-product-filter'),
+			value: 'slug',
+		},
+	];
+}
+
+export function getOrderByOptions() {
+	return [
+		{
+			label: __('ID', 'wc-ajax-product-filter'),
+			value: 'id',
+		},
+		{
+			label: __('Name', 'wc-ajax-product-filter'),
+			value: 'name',
+		},
+		{
+			label: __('Slug', 'wc-ajax-product-filter'),
+			value: 'slug',
+		},
+		{
+			label: __('Count', 'wc-ajax-product-filter'),
+			value: 'count',
+		},
+	];
+}
+
+export function getOrderDirectionOptions() {
+	return [
+		{
+			label: __('ASC', 'wc-ajax-product-filter'),
+			value: 'asc',
+		},
+		{
+			label: __('DESC', 'wc-ajax-product-filter'),
+			value: 'desc',
+		},
+	];
 }

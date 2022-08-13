@@ -1,5 +1,5 @@
 import './filter.scss';
-import { render } from '@wordpress/element';
+import { render, StrictMode } from '@wordpress/element';
 import Filter from './components/Filter';
 import { FilterProvider } from './components/Filter/FilterContext';
 
@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	);
 
 	if (renderElementInstance) {
-		render(<App />, renderElementInstance);
+		render(
+			<StrictMode>
+				<App />
+			</StrictMode>,
+			renderElementInstance
+		);
 	}
 });

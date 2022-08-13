@@ -1,5 +1,5 @@
 import './filter-form.scss';
-import { render } from '@wordpress/element';
+import { render, StrictMode } from '@wordpress/element';
 import FilterForm from './components/FilterForm';
 import { FilterFormProvider } from './components/FilterForm/FilterFormContext';
 
@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	);
 
 	if (renderElementInstance) {
-		render(<App />, renderElementInstance);
+		render(
+			<StrictMode>
+				<App />
+			</StrictMode>,
+			renderElementInstance
+		);
 	}
 });

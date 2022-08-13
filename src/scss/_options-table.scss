@@ -1,0 +1,131 @@
+@import './variables';
+
+.__options_table {
+	.__heading {
+		margin: 0 0 8px;
+		font-weight: 500;
+		display: flex;
+		min-height: 30px;
+		align-items: center;
+	}
+
+	.wp-list-table.widefat {
+		border: none;
+		box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+		margin-top: 1em;
+
+		thead {
+			th {
+				border-color: #ddd;
+				font-weight: 500;
+			}
+		}
+
+		.components-text-control__input {
+			border-color: $inputBorderColor;
+			max-width: 150px;
+
+			&:focus {
+				border-color: var(--wp-admin-theme-color);
+			}
+		}
+
+		.components-checkbox-control__input {
+			border-color: $inputBorderColor;
+		}
+
+		th {
+			&.__drag_handle {
+				width: 20px;
+			}
+
+			&.__action {
+				text-align: center;
+				width: 40px;
+			}
+		}
+
+		td {
+			vertical-align: middle;
+
+			> div {
+				display: flex;
+			}
+		}
+
+		.__option_value {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.slug,
+		.id {
+			font-size: 12px;
+
+			span {
+				color: rgba(0, 0, 0, 0.3);
+			}
+		}
+
+		.__drag_handler {
+			cursor: grab;
+		}
+
+		.button-link-delete {
+			svg {
+				fill: $linkDeleteColor;
+				opacity: 0.2;
+				transition: opacity 0.1s linear;
+			}
+
+			&:hover {
+				svg {
+					opacity: 0.8;
+				}
+			}
+		}
+	}
+
+	.__description {
+		font-weight: 500;
+	}
+
+	.__button_group {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 1em;
+	}
+}
+
+.__options_table_modal {
+	.components-modal__content {
+		width: 80em;
+
+		.components-checkbox-control__input {
+			border-color: $inputBorderColor;
+		}
+
+		.components-checkbox-control {
+			.components-base-control__field {
+				margin-bottom: 0;
+			}
+		}
+
+		.__options {
+			margin: 1em 0;
+
+			.components-base-control {
+				background-color: #fafafa;
+				border: 1px solid #eeeeee;
+				display: inline-block;
+				margin-bottom: 10px;
+				margin-right: 10px;
+				padding: 7px 10px;
+
+				.components-checkbox-control__input {
+					margin-right: 12px;
+				}
+			}
+		}
+	}
+}

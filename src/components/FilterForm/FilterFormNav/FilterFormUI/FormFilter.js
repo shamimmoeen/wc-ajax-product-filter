@@ -33,9 +33,7 @@ const FormFilter = ({ data }) => {
 			return item;
 		});
 
-		const _formFilters = formFilters.filter((item) => {
-			return item.id !== data.id;
-		});
+		const _formFilters = formFilters.filter((item) => item.id !== data.id);
 
 		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
 		dispatch({ type: 'UPDATE_FORM_FILTERS', payload: _formFilters });
