@@ -4,9 +4,9 @@ import Notifications from '../Notifications';
 import FilterSaveButton from './FilterSaveButton';
 import { useFilter } from './FilterContext';
 import { useEffect } from '@wordpress/element';
-import { getAvailableFilters } from './utils';
+import { filterDefaultData, getAvailableFilters } from './utils';
 import axios from 'axios';
-import { isEmpty } from 'lodash';
+import { isEmpty, merge } from 'lodash';
 
 const Filter = () => {
 	const { dispatch } = useFilter();
@@ -55,7 +55,11 @@ const Filter = () => {
 						payload: filterData['post_title'],
 					});
 
-					activeFilterData = filterData['field_data'];
+					activeFilterData = merge(
+						filterDefaultData(),
+						filterData['field_data']
+					);
+
 					filterType = activeFilterData['type'];
 					filterKey = activeFilterData['field_key'];
 
@@ -70,6 +74,28 @@ const Filter = () => {
 				dispatch({
 					type: 'SET_ADDITIONAL_DATA',
 					payload: additionalData,
+				});
+
+				/**
+				 * TODO: Sets the filter options.
+				 */
+				const filterOptions = [
+					{
+						term_id: 18,
+						name: 'Blue',
+						slug: 'blue',
+					},
+					{
+						term_id: 28,
+						name: 'Gray',
+						slug: 'gray',
+						status: 'added',
+					},
+				];
+
+				dispatch({
+					type: 'SET_FILTERS_OPTIONS',
+					payload: filterOptions,
 				});
 
 				/**

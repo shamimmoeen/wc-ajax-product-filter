@@ -1,11 +1,8 @@
 import { useFilter } from '../../FilterContext';
 import { __ } from '@wordpress/i18n';
-import {
-	foundProVersion,
-	getAvailableFilters,
-	getFilterDefaultData,
-} from '../../utils';
+import { getAvailableFilters, getFilterDefaultData } from '../../utils';
 import { NavigableMenu, Button } from '@wordpress/components';
+import { isProFeature, proTag } from '../../../utils';
 
 const AvaialableFilters = () => {
 	const {
@@ -32,30 +29,6 @@ const AvaialableFilters = () => {
 		dispatch({ type: 'SET_FILTERS_DATA', payload: _filtersData });
 	};
 
-	const componentDisabled = (isProFeature) => {
-		if (foundProVersion()) {
-			return false;
-		}
-
-		if (!isProFeature) {
-			return false;
-		}
-
-		return true;
-	};
-
-	const proTag = (isProFeature) => {
-		if (foundProVersion()) {
-			return '';
-		}
-
-		if (!isProFeature) {
-			return '';
-		}
-
-		return <span className='__pro_tag' />;
-	};
-
 	return (
 		<div className='__available_filters'>
 			<div className='__inner'>
@@ -80,7 +53,7 @@ const AvaialableFilters = () => {
 									className={_classes}
 									key={filter.type}
 									onClick={() => handleSetFilterType(filter)}
-									disabled={componentDisabled(filter.isPro)}
+									disabled={isProFeature(filter.isPro)}
 								>
 									{filter.title}
 									{proTag(filter.isPro)}

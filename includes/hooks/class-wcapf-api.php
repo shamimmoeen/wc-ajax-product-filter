@@ -50,6 +50,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
+		add_action( 'wp_ajax_get_taxonomy_filter_options', array( $this, 'get_taxonomy_filter_options' ) );
 	}
 
 	public function get_available_filters() {
@@ -154,7 +155,7 @@ class WCAPF_API {
 
 		$field_data = get_post_meta( $post_id, '_field_data', true );
 
-		$response  = array(
+		$response = array(
 			'post_title' => get_the_title( $post_id ),
 			'field_data' => $field_data,
 		);
@@ -237,6 +238,31 @@ class WCAPF_API {
 		$preview = ob_get_clean();
 
 		wp_send_json_success( $preview );
+	}
+
+	public function get_taxonomy_filter_options() {
+		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
+
+		$args = array(
+			'taxonomy'   => $taxonomy,
+			'hide_empty' => false,
+		);
+
+		$terms = get_terms( $args );
+
+		$response = array();
+
+		if ( $terms ) {
+			foreach ( $terms as $term ) {
+				$response[] = array(
+					'term_id' => $term->term_id,
+					'name'    => $term->name,
+					'slug'    => $term->slug,
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
 	}
 
 }

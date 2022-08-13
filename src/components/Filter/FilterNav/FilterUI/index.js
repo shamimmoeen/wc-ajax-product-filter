@@ -16,7 +16,7 @@ const FilterUI = () => {
 		dispatch({ type: 'SET_ACTIVE_UI_STEP', payload: tabName });
 	};
 
-	let initialTabName = '';
+	let initialTabName = 'options';
 
 	if (activeUIStep) {
 		initialTabName = activeUIStep;

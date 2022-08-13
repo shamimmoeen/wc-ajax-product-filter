@@ -1,28 +1,51 @@
+@import './variables';
+
 .__form_control {
-	margin: 0 0 15px;
-	display: flex;
-	align-items: center;
-	min-height: 30px;
-	gap: 15px;
+	margin: 0 0 2em;
+
+	.__inner {
+		display: flex;
+		align-items: center;
+		min-height: 30px;
+		gap: 15px;
+	}
 
 	.__label {
 		width: 150px;
+
+		label {
+			font-weight: 500;
+		}
 	}
 
-	.components-text-control__input {
-		border-color: #ddd;
+	.__wrapper {
+		flex: 1;
+
+		.__input_wrapper {
+			display: inline-flex;
+		}
+	}
+
+	.description {
+		margin-top: 8px;
+	}
+
+	.components-text-control__input,
+	.components-checkbox-control__input,
+	.components-radio-control__input {
+		border-color: $inputBorderColor;
 	}
 
 	// react-dropdown-select
 	.__custom_select_control {
 		min-height: 30px;
-		border-color: #ddd;
+		border-color: $inputBorderColor;
 		transition: box-shadow 0.1s linear;
 		min-width: 150px;
 		padding-left: 8px;
 
 		&:hover {
-			border-color: #ddd;
+			border-color: $inputBorderColor;
 		}
 
 		&:focus,
@@ -30,6 +53,10 @@
 			border-color: var(--wp-admin-theme-color);
 			box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
 			outline: 2px solid transparent;
+		}
+
+		.react-dropdown-select-input:read-only {
+			background-color: transparent;
 		}
 
 		@media (min-width: 600px) {
@@ -47,6 +74,59 @@
 
 		.react-dropdown-select-separator {
 			height: 20px;
+		}
+	}
+
+	// Radio
+	.radio-group {
+		&:not(.radio-group-vertical) {
+			.components-radio-control__option {
+				display: inline;
+
+				&:not(:last-child) {
+					margin: 0 10px 0 0;
+				}
+			}
+		}
+	}
+
+	// Checkbox
+	&.__checkbox_toggle {
+		.components-base-control__field {
+			margin: 0;
+		}
+	}
+}
+
+// Overrides for display type field.
+.__form_control {
+	&.display-type {
+		.__inner {
+			align-items: flex-start;
+		}
+
+		.__label {
+			min-height: 30px;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.__wrapper .__input_wrapper {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+
+			> div {
+				display: flex;
+				gap: 15px;
+			}
+		}
+
+		.components-radio-control__option.disabled {
+			input,
+			label {
+				cursor: default;
+			}
 		}
 	}
 }
