@@ -19,7 +19,7 @@ export function filterDefaultData() {
 		tooltip_position: '',
 		custom_appearance_options: {},
 		use_term_slug_in_url: '',
-		limit_options: 'off',
+		limit_options: '',
 		parent_term: '',
 		limit_values_by_id: '',
 		exclude_values_id: '',
@@ -34,7 +34,7 @@ export function filterDefaultData() {
 		field_id: '',
 		enable_visibility_rules: '',
 		visibility_rules: [],
-		get_options: 'manual_entry',
+		get_options: 'automatically',
 	};
 }
 
@@ -120,19 +120,23 @@ export function getAvailableFilters() {
 	];
 }
 
-export function getLimitByOptions() {
+export function getTaxonomyLimitByOptions() {
 	return [
 		{
+			label: __('Off', 'wc-ajax-product-filter'),
+			value: 'off',
+		},
+		{
 			label: __('Child terms of', 'wc-ajax-product-filter'),
-			value: 'child_only',
+			value: 'child',
 		},
 		{
 			label: __('Show only these terms', 'wc-ajax-product-filter'),
-			value: 'name',
+			value: 'include',
 		},
 		{
 			label: __('Exclude these terms', 'wc-ajax-product-filter'),
-			value: 'slug',
+			value: 'exclude',
 		},
 	];
 }
