@@ -149,15 +149,27 @@ const OptionsTable = ({ openModal }) => {
 		<>
 			{'manual_entry' === get_options && (
 				<div className='__options_table'>
-					<p className='__heading'>
-						{__('Filter Options', 'wc-ajax-product-filter')}
-					</p>
-					<p className='description'>
-						{__(
-							'Add the options that will be available to the filter.',
-							'wc-ajax-product-filter'
-						)}
-					</p>
+					<div className='__form_control'>
+						<div className='__inner'>
+							<div className='__label'>
+								<label>
+									{__(
+										'Filter Options',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__wrapper'>
+								<div className='__input_wrapper' />
+							</div>
+						</div>
+						<p className='description'>
+							{__(
+								'Add the options that will be available to the filter.',
+								'wc-ajax-product-filter'
+							)}
+						</p>
+					</div>
 					{!isEmpty(rows) && table()}
 					<div className='__button_group'>
 						<Button variant='secondary' onClick={openModal}>

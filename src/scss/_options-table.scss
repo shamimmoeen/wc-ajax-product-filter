@@ -1,18 +1,13 @@
 @import './variables';
 
 .__options_table {
-	.__heading {
-		margin: 0 0 8px;
-		font-weight: 500;
-		display: flex;
-		min-height: 30px;
-		align-items: center;
+	.__form_control {
+		margin-bottom: 1.5em;
 	}
 
 	.wp-list-table.widefat {
 		border: none;
 		box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
-		margin-top: 1em;
 
 		thead {
 			th {
@@ -93,7 +88,7 @@
 	.__button_group {
 		display: flex;
 		justify-content: space-between;
-		margin-top: 1em;
+		margin-top: 1.5em;
 	}
 }
 

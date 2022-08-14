@@ -13,10 +13,12 @@ const FilterUI = () => {
 	} = useFilter();
 
 	const handleSelect = (tabName) => {
-		dispatch({ type: 'SET_ACTIVE_UI_STEP', payload: tabName });
+		if (activeUIStep !== tabName) {
+			dispatch({ type: 'SET_ACTIVE_UI_STEP', payload: tabName });
+		}
 	};
 
-	let initialTabName = 'options';
+	let initialTabName = 'advanced';
 
 	if (activeUIStep) {
 		initialTabName = activeUIStep;

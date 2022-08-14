@@ -174,9 +174,9 @@ body {
   align-items: flex-start;
 }
 .__filter_ui_tab_panel .components-tab-panel__tabs {
-  padding: 0;
-  box-shadow: none;
+  border: none;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  padding: 0;
 }
 @media (min-width: 992px) {
   .__filter_ui_tab_panel .components-tab-panel__tabs {
@@ -326,6 +326,18 @@ body {
 .__form_control.__checkbox_toggle .components-base-control__field {
   margin: 0;
 }
+.__form_control #soft_limit {
+  max-width: 60px;
+}
+.__form_control .components-button-group .components-button {
+  height: 30px;
+}
+.__form_control .components-button-group .components-button:not(:focus) {
+  box-shadow: inset 0 0 0 1px #ddd;
+}
+.__form_control .components-button-group .components-button:not(:focus).is-primary {
+  box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
+}
 
 .__form_control.display-type .__inner {
   align-items: flex-start;
@@ -349,17 +361,12 @@ body {
   cursor: default;
 }
 
-.__options_table .__heading {
-  margin: 0 0 8px;
-  font-weight: 500;
-  display: flex;
-  min-height: 30px;
-  align-items: center;
+.__options_table .__form_control {
+  margin-bottom: 1.5em;
 }
 .__options_table .wp-list-table.widefat {
   border: none;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
-  margin-top: 1em;
 }
 .__options_table .wp-list-table.widefat thead th {
   border-color: #ddd;
@@ -418,7 +425,7 @@ body {
 .__options_table .__button_group {
   display: flex;
   justify-content: space-between;
-  margin-top: 1em;
+  margin-top: 1.5em;
 }
 
 .__options_table_modal .components-modal__content {

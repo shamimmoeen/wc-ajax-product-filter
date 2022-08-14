@@ -1,4 +1,5 @@
 import CustomSelect from 'react-dropdown-select';
+import { isProFeature, proTag } from '../utils';
 
 const Select = ({
 	label,
@@ -9,12 +10,16 @@ const Select = ({
 	description,
 	placeholder,
 	searchable,
+	isPro,
 }) => {
 	return (
 		<div className='__form_control'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={id}>{label}</label>
+					<label htmlFor={id}>
+						{label}
+						{proTag(isPro)}
+					</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
@@ -23,6 +28,7 @@ const Select = ({
 							options={options}
 							values={values}
 							className='__custom_select_control'
+							disabled={isProFeature(isPro)}
 							separator={true}
 							onChange={onChange}
 							placeholder={placeholder}
