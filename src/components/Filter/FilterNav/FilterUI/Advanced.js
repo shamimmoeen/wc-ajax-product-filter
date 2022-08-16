@@ -131,7 +131,11 @@ const Advanced = () => {
 				<Text
 					id={'soft_limit'}
 					label={__(
-						'Show the toggle after this many options',
+						'Count of visible options',
+						'wc-ajax-product-filter	'
+					)}
+					description={__(
+						'Show the toggle after this many options.',
 						'wc-ajax-product-filter	'
 					)}
 					value={soft_limit}

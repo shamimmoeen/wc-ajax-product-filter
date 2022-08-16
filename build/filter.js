@@ -4093,7 +4093,8 @@ const Advanced = () => {
     isPro: true
   }), enable_soft_limit && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'soft_limit',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show the toggle after this many options', 'wc-ajax-product-filter	'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Count of visible options', 'wc-ajax-product-filter	'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show the toggle after this many options.', 'wc-ajax-product-filter	'),
     value: soft_limit,
     onChange: e => handleTextChange(e, 'soft_limit'),
     type: 'number',
@@ -4148,6 +4149,11 @@ const AvaialableFilters = () => {
 
   const handleSetFilterType = filter => {
     const _filterType = filter.type;
+
+    if (_filterType === filterType) {
+      return;
+    }
+
     dispatch({
       type: 'SET_FILTER_TYPE',
       payload: _filterType
@@ -4325,7 +4331,8 @@ const BasicFields = () => {
         id: 'taxonomy',
         options: options,
         values: values,
-        onChange: handleTaxonomyChange
+        onChange: handleTaxonomyChange,
+        searchable: false
       });
     }
   };
@@ -4437,7 +4444,8 @@ const BasicFields = () => {
         id: 'post_property',
         options: options,
         values: values,
-        onChange: handlePostPropertyChange
+        onChange: handlePostPropertyChange,
+        searchable: false
       });
     }
   };
@@ -6438,11 +6446,13 @@ function getAvailableFilters() {
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort by', 'wc-ajax-product-filter'),
     type: 'sort-by',
-    defaultFilterKey: '_sort-by'
+    defaultFilterKey: '_sort-by',
+    isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Per page', 'wc-ajax-product-filter'),
     type: 'per-page',
-    defaultFilterKey: '_per-page'
+    defaultFilterKey: '_per-page',
+    isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset Button', 'wc-ajax-product-filter'),
     type: 'reset-button'

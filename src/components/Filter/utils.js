@@ -104,11 +104,13 @@ export function getAvailableFilters() {
 			title: __('Sort by', 'wc-ajax-product-filter'),
 			type: 'sort-by',
 			defaultFilterKey: '_sort-by',
+			isPro: true,
 		},
 		{
 			title: __('Per page', 'wc-ajax-product-filter'),
 			type: 'per-page',
 			defaultFilterKey: '_per-page',
+			isPro: true,
 		},
 		{
 			title: __('Reset Button', 'wc-ajax-product-filter'),
