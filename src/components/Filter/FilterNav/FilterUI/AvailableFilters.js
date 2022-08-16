@@ -13,6 +13,10 @@ const AvaialableFilters = () => {
 	const handleSetFilterType = (filter) => {
 		const _filterType = filter.type;
 
+		if (_filterType === filterType) {
+			return;
+		}
+
 		dispatch({ type: 'SET_FILTER_TYPE', payload: _filterType });
 		dispatch({ type: 'SET_DIRTY' });
 

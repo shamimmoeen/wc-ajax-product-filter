@@ -75,6 +75,7 @@ const BasicFields = () => {
 					options={options}
 					values={values}
 					onChange={handleTaxonomyChange}
+					searchable={false}
 				/>
 			);
 		}
@@ -193,6 +194,7 @@ const BasicFields = () => {
 					options={options}
 					values={values}
 					onChange={handlePostPropertyChange}
+					searchable={false}
 				/>
 			);
 		}
