@@ -2,7 +2,7 @@ import { useFilter } from '../../FilterContext';
 import { __ } from '@wordpress/i18n';
 import { getAvailableFilters, getFilterDefaultData } from '../../utils';
 import { NavigableMenu, Button } from '@wordpress/components';
-import { isProFeature, proTag } from '../../../utils';
+import { proTag } from '../../../utils';
 
 const AvaialableFilters = () => {
 	const {
@@ -53,7 +53,6 @@ const AvaialableFilters = () => {
 									className={_classes}
 									key={filter.type}
 									onClick={() => handleSetFilterType(filter)}
-									disabled={isProFeature(filter.isPro)}
 								>
 									{filter.title}
 									{proTag(filter.isPro)}

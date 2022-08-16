@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { isProFeature, proTag } from '../../../utils';
+import { proTag } from '../../../utils';
 import { useFilter } from '../../FilterContext';
 
 const DisplayTypeField = () => {
@@ -70,8 +70,7 @@ const DisplayTypeField = () => {
 					<div
 						key={option.value}
 						className={classnames(
-							'components-radio-control__option',
-							{ disabled: isProFeature(option.isPro) }
+							'components-radio-control__option'
 						)}
 					>
 						<input
@@ -82,7 +81,6 @@ const DisplayTypeField = () => {
 							value={option.value}
 							onChange={handleDisplayTypeChange}
 							checked={option.value === display_type}
-							disabled={isProFeature(option.isPro)}
 						/>
 						<label htmlFor={option.value}>
 							{option.label}

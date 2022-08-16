@@ -338,6 +338,13 @@ body {
 .__form_control .components-button-group .components-button:not(:focus).is-primary {
   box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
 }
+.__form_control .components-radio-control__option.disabled input,
+.__form_control .components-radio-control__option.disabled label {
+  cursor: default;
+}
+.__form_control .components-radio-control__option.disabled label {
+  color: #777;
+}
 
 .__form_control.display-type .__inner {
   align-items: flex-start;
@@ -355,10 +362,6 @@ body {
 .__form_control.display-type .__wrapper .__input_wrapper > div {
   display: flex;
   gap: 15px;
-}
-.__form_control.display-type .components-radio-control__option.disabled input,
-.__form_control.display-type .components-radio-control__option.disabled label {
-  cursor: default;
 }
 
 .__options_table .__form_control {

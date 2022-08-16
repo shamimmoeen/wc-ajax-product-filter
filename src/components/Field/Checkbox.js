@@ -1,5 +1,5 @@
 import { CheckboxControl } from '@wordpress/components';
-import { isProFeature, proTag } from '../utils';
+import { proTag } from '../utils';
 
 const Checkbox = ({ id, label, isChecked, onChange, description, isPro }) => {
 	return (
@@ -17,7 +17,6 @@ const Checkbox = ({ id, label, isChecked, onChange, description, isPro }) => {
 							checked={isChecked}
 							id={id}
 							onChange={onChange}
-							disabled={isProFeature(isPro)}
 						/>
 					</div>
 				</div>

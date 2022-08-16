@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { isProFeature, proTag } from '../utils';
+import { proTag } from '../utils';
 
 const Radio = ({
 	label,
@@ -30,8 +30,7 @@ const Radio = ({
 							<div
 								key={`${id}-${index}`}
 								className={classnames(
-									'components-radio-control__option',
-									{ disabled: isProFeature(option.isPro) }
+									'components-radio-control__option'
 								)}
 							>
 								<input
@@ -42,10 +41,6 @@ const Radio = ({
 									value={option.value}
 									onChange={onChange}
 									checked={option.value === value}
-									disabled={
-										isProFeature(option.isPro) ||
-										isProFeature(isPro)
-									}
 								/>
 								<label htmlFor={`${id}-${index}`}>
 									{option.label}
