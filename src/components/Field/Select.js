@@ -10,6 +10,7 @@ const Select = ({
 	description,
 	placeholder,
 	searchable,
+	clearable,
 	isPro,
 }) => {
 	return (
@@ -33,6 +34,7 @@ const Select = ({
 							onChange={onChange}
 							placeholder={placeholder}
 							searchable={searchable}
+							clearable={clearable}
 						/>
 					</div>
 				</div>

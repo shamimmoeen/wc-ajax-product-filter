@@ -4,6 +4,7 @@ import Radio from '../../../Field/Radio';
 import Text from '../../../Field/Text';
 import DisplayTypeField from './DisplayTypeField';
 import { useFilter } from '../../FilterContext';
+import TooltipPosition from './TooltipPosition';
 
 const Layout = () => {
 	const {
@@ -23,7 +24,6 @@ const Layout = () => {
 		hide_empty,
 		enable_tooltip,
 		show_count_in_tooltip,
-		tooltip_position,
 	} = activeFilterData;
 
 	const handleCheckboxChange = (key, value) => {
@@ -68,8 +68,9 @@ const Layout = () => {
 			return (
 				<Checkbox
 					id={'enable_multiple_filter'}
-					label={__(
-						'Enable Multiple Filter',
+					label={__('Multiple Selection', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines if the user can select multiple options when filtering products.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={enable_multiple_filter}
@@ -100,6 +101,10 @@ const Layout = () => {
 				<Radio
 					id={'query_type'}
 					label={__('Query Type', 'wc-ajax-product-filter')}
+					description={__(
+						'AND: products that have both options, OR: products that matched any option.',
+						'wc-ajax-product-filter'
+					)}
 					options={[
 						{
 							label: __('AND', 'wc-ajax-product-filter'),
@@ -128,8 +133,9 @@ const Layout = () => {
 			return (
 				<Text
 					id={'all_items_label'}
-					label={__(
-						'Change All Items Label',
+					label={__('All Items Label', 'wc-ajax-product-filter')}
+					description={__(
+						'Change the default option label.',
 						'wc-ajax-product-filter'
 					)}
 					value={all_items_label}
@@ -152,8 +158,9 @@ const Layout = () => {
 			return (
 				<Checkbox
 					id={'use_chosen'}
-					label={__(
-						'Use jQuery Chosen Library',
+					label={__('Enable Combobox', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to use jQuery Chosen library instead of the native select element.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={use_chosen}
@@ -203,7 +210,11 @@ const Layout = () => {
 			return (
 				<Text
 					id={'chosen_no_results_message'}
-					label={__('No results message', 'wc-ajax-product-filter')}
+					label={__('No Matches Message', 'wc-ajax-product-filter')}
+					description={__(
+						'This message is usually displayed when no options match the search term. Leave blank to show the default message.',
+						'wc-ajax-product-filter'
+					)}
 					value={chosen_no_results_message}
 					onChange={(e) =>
 						handleTextFieldChange(e, 'chosen_no_results_message')
@@ -225,36 +236,13 @@ const Layout = () => {
 				<Checkbox
 					id={'enable_tooltip'}
 					label={__('Enable Tooltip', 'wc-ajax-product-filter')}
+					description={__(
+						'Display additional information in a tooltip when users hover over the option.',
+						'wc-ajax-product-filter'
+					)}
 					isChecked={enable_tooltip}
 					onChange={(value) =>
 						handleCheckboxChange('enable_tooltip', value)
-					}
-				/>
-			);
-		}
-	};
-
-	const showCountInTooltipField = () => {
-		let showField = false;
-
-		if (
-			('color' === display_type || 'image' === display_type) &&
-			enable_tooltip
-		) {
-			showField = true;
-		}
-
-		if (showField) {
-			return (
-				<Checkbox
-					id={'show_count_in_tooltip'}
-					label={__(
-						'Show count in tooltip',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={show_count_in_tooltip}
-					onChange={(value) =>
-						handleCheckboxChange('show_count_in_tooltip', value)
 					}
 				/>
 			);
@@ -272,30 +260,33 @@ const Layout = () => {
 		}
 
 		if (showField) {
+			return <TooltipPosition />;
+		}
+	};
+
+	const showCountInTooltipField = () => {
+		let showField = false;
+
+		if (
+			('color' === display_type || 'image' === display_type) &&
+			enable_tooltip
+		) {
+			showField = true;
+		}
+
+		if (showField) {
 			return (
-				<Radio
-					id={'tooltip_position'}
-					label={__('Tooltip position', 'wc-ajax-product-filter')}
-					value={tooltip_position}
-					onChange={(e) => handleRadioChange(e, 'tooltip_position')}
-					options={[
-						{
-							label: __('Top', 'wc-ajax-product-filter'),
-							value: 'top',
-						},
-						{
-							label: __('Right', 'wc-ajax-product-filter'),
-							value: 'right',
-						},
-						{
-							label: __('Bottom', 'wc-ajax-product-filter'),
-							value: 'bottom',
-						},
-						{
-							label: __('Left', 'wc-ajax-product-filter'),
-							value: 'left',
-						},
-					]}
+				<Checkbox
+					id={'show_count_in_tooltip'}
+					label={__('Count in tooltip', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to show the product count in tooltip.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={show_count_in_tooltip}
+					onChange={(value) =>
+						handleCheckboxChange('show_count_in_tooltip', value)
+					}
 				/>
 			);
 		}
@@ -309,7 +300,7 @@ const Layout = () => {
 				isChecked={show_title}
 				onChange={(value) => handleCheckboxChange('show_title', value)}
 				description={__(
-					'Whether to show the filter title or not.',
+					'Whether to show the filter title before the options.',
 					'wc-ajax-product-filter'
 				)}
 			/>
@@ -328,25 +319,33 @@ const Layout = () => {
 
 			{noResultsMessageField()}
 
-			{enableTooltipField()}
-
-			{tooltipPositionField()}
-
-			{showCountInTooltipField()}
-
 			<Checkbox
 				id={'show_count'}
-				label={__('Show count', 'wc-ajax-product-filter')}
+				label={__('Show Count', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to show the product count in options.',
+					'wc-ajax-product-filter'
+				)}
 				isChecked={show_count}
 				onChange={(value) => handleCheckboxChange('show_count', value)}
 			/>
 
 			<Checkbox
 				id={'hide_empty'}
-				label={__('Hide empty', 'wc-ajax-product-filter')}
+				label={__('Remove Empty', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to remove the options that show empty results.',
+					'wc-ajax-product-filter'
+				)}
 				isChecked={hide_empty}
 				onChange={(value) => handleCheckboxChange('hide_empty', value)}
 			/>
+
+			{enableTooltipField()}
+
+			{tooltipPositionField()}
+
+			{showCountInTooltipField()}
 		</div>
 	);
 };

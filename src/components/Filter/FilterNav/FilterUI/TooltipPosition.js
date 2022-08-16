@@ -1,28 +1,26 @@
 import { __ } from '@wordpress/i18n';
 import { Button, ButtonGroup } from '@wordpress/components';
-import { useFilter } from '../../../FilterContext';
-import { getTaxonomyLimitByOptions } from '../../../utils';
-import { proTag } from '../../../../utils';
+import { getTooltipPositionOptions } from '../../utils';
+import { useFilter } from '../../FilterContext';
 
-const LimitBy = () => {
+const TooltipPosition = () => {
 	const {
 		state: { activeFilterData },
 		dispatch,
 	} = useFilter();
 
-	const { limit_options } = activeFilterData;
+	const { tooltip_position } = activeFilterData;
 
-	const id = 'limit_options';
-	const label = __('Limit Options', 'wc-ajax-product-filter');
+	const id = 'tooltip_position';
+	const label = __('Tooltip Position', 'wc-ajax-product-filter');
 	const description = __(
-		'Limit the filter options.',
+		'Determines on which side the tooltip will be placed.',
 		'wc-ajax-product-filter'
 	);
-	const options = getTaxonomyLimitByOptions();
-	const isPro = true;
+	const options = getTooltipPositionOptions();
 
 	const handleChange = (value) => {
-		if (value === limit_options) {
+		if (value === tooltip_position) {
 			return;
 		}
 
@@ -36,10 +34,7 @@ const LimitBy = () => {
 		<div className='__form_control'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={id}>
-						{label}
-						{proTag(isPro)}
-					</label>
+					<label htmlFor={id}>{label}</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
@@ -50,7 +45,7 @@ const LimitBy = () => {
 									key={`${id}-${option.value}`}
 									onClick={() => handleChange(option.value)}
 									variant={
-										limit_options === option.value
+										tooltip_position === option.value
 											? 'primary'
 											: ''
 									}
@@ -67,4 +62,4 @@ const LimitBy = () => {
 	);
 };
 
-export default LimitBy;
+export default TooltipPosition;

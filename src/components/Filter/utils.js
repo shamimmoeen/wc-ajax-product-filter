@@ -23,7 +23,7 @@ export function filterDefaultData() {
 		parent_term: '',
 		limit_values_by_id: '',
 		exclude_values_id: '',
-		show_clear_button: '1',
+		show_clear_button: '',
 		order_terms_by: 'name',
 		order_terms_dir: 'asc',
 		enable_accordion: '',
@@ -87,6 +87,10 @@ export function getAvailableFilters() {
 			defaultFilterKey: '_product-status',
 		},
 		{
+			title: __('Post Property', 'wc-ajax-product-filter'),
+			type: 'post-property',
+		},
+		{
 			title: __('Custom Taxonomy', 'wc-ajax-product-filter'),
 			type: 'custom-taxonomy',
 			isPro: true,
@@ -97,25 +101,39 @@ export function getAvailableFilters() {
 			isPro: true,
 		},
 		{
-			title: __('Post Property', 'wc-ajax-product-filter'),
-			type: 'post-property',
-			isPro: true,
-		},
-		{
 			title: __('Sort by', 'wc-ajax-product-filter'),
 			type: 'sort-by',
 			defaultFilterKey: '_sort-by',
-			isPro: true,
 		},
 		{
 			title: __('Per page', 'wc-ajax-product-filter'),
 			type: 'per-page',
 			defaultFilterKey: '_per-page',
-			isPro: true,
 		},
 		{
 			title: __('Reset Button', 'wc-ajax-product-filter'),
 			type: 'reset-button',
+		},
+	];
+}
+
+export function getTooltipPositionOptions() {
+	return [
+		{
+			label: __('Top', 'wc-ajax-product-filter'),
+			value: 'top',
+		},
+		{
+			label: __('Right', 'wc-ajax-product-filter'),
+			value: 'right',
+		},
+		{
+			label: __('Bottom', 'wc-ajax-product-filter'),
+			value: 'bottom',
+		},
+		{
+			label: __('Left', 'wc-ajax-product-filter'),
+			value: 'left',
 		},
 	];
 }
@@ -127,16 +145,17 @@ export function getTaxonomyLimitByOptions() {
 			value: 'off',
 		},
 		{
-			label: __('Child terms of', 'wc-ajax-product-filter'),
-			value: 'child',
-		},
-		{
-			label: __('Show only these terms', 'wc-ajax-product-filter'),
+			label: __('Include terms', 'wc-ajax-product-filter'),
 			value: 'include',
 		},
 		{
-			label: __('Exclude these terms', 'wc-ajax-product-filter'),
+			label: __('Exclude terms', 'wc-ajax-product-filter'),
 			value: 'exclude',
+		},
+		{
+			label: __('Child of', 'wc-ajax-product-filter'),
+			value: 'child',
+			isPro: true,
 		},
 	];
 }

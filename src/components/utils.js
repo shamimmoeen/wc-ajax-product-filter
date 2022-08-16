@@ -3,6 +3,7 @@ export function foundProVersion() {
 	return false;
 }
 
+// To disable the input element.
 export function isProFeature(isProFeature) {
 	if (foundProVersion()) {
 		return false;

@@ -115,6 +115,20 @@
 			}
 		}
 	}
+
+	// Disabled State.
+	.components-radio-control__option {
+		&.disabled {
+			input,
+			label {
+				cursor: default;
+			}
+
+			label {
+				color: $inputDisabledColor;
+			}
+		}
+	}
 }
 
 // Overrides for display type field.
@@ -138,13 +152,6 @@
 			> div {
 				display: flex;
 				gap: 15px;
-			}
-		}
-
-		.components-radio-control__option.disabled {
-			input,
-			label {
-				cursor: default;
 			}
 		}
 	}
