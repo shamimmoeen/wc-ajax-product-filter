@@ -12,55 +12,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-global $submenu, $parent_file, $submenu_file, $plugin_page, $pagenow;
+global $current_screen;
+$current_screen_id = $current_screen->id;
 
-// Vars.
-$parent_slug = 'edit.php?post_type=wcapf-filter';
-
-// Generate array of navigation items.
-$tabs = array();
-if ( isset( $submenu[ $parent_slug ] ) ) {
-	foreach ( $submenu[ $parent_slug ] as $i => $sub_item ) {
-
-		// Ignore "All Filters".
-		if ( 'edit.php?post_type=wcapf-filter' === $sub_item[2] ) {
-			continue;
-		}
-
-		// Ignore "All Filters".
-		if ( 'edit.php?post_type=wcapf-form' === $sub_item[2] ) {
-			continue;
-		}
-
-		// Ignore "Add New".
-		if ( 'post-new.php?post_type=wcapf-filter' === $sub_item[2] ) {
-			continue;
-		}
-
-		// Ignore "Account" coming from freemius.
-		if ( 'wc-ajax-product-filter-account' === $sub_item[2] ) {
-			continue;
-		}
-
-		// Define tab.
-		$tab = array(
-			'text' => $sub_item[0],
-			'url'  => $sub_item[2],
-		);
-
-		// Convert submenu slug "test" to "$parent_slug&page=test".
-		if ( ! strpos( $sub_item[2], '.php' ) ) {
-			$tab['url'] = add_query_arg( array( 'page' => $sub_item[2] ), $parent_slug );
-		}
-
-		// Detect active state.
-		if ( $submenu_file === $sub_item[2] || $plugin_page === $sub_item[2] ) {
-			$tab['is_active'] = true;
-		}
-
-		$tabs[] = $tab;
-	}
-}
+$tabs = array(
+	array(
+		'text'      => __( 'Filters', 'wc-ajax-product-filter' ),
+		'url'       => menu_page_url( 'wcapf-new', false ),
+		'is_active' => $current_screen_id === 'toplevel_page_wcapf-new',
+	),
+	array(
+		'text'      => __( 'Filter Forms', 'wc-ajax-product-filter' ),
+		'url'       => menu_page_url( 'new-filter-forms', false ),
+		'is_active' => $current_screen_id === 'wcapf_page_new-filter-forms',
+	),
+	array(
+		'text'      => __( 'Settings', 'wc-ajax-product-filter' ),
+		'url'       => menu_page_url( 'wcapf-new-settings', false ),
+		'is_active' => $current_screen_id === 'wcapf_page_wcapf-new-settings',
+	),
+);
 
 $tabs = apply_filters( 'wcapf_admin_navigation_tabs', $tabs );
 

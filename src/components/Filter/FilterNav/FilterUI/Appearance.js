@@ -183,8 +183,9 @@ const Layout = () => {
 			return (
 				<Text
 					id={'all_items_label'}
-					label={__(
-						'Change All Items Label',
+					label={__('All Items Label', 'wc-ajax-product-filter')}
+					description={__(
+						'Change the default option label.',
 						'wc-ajax-product-filter'
 					)}
 					value={all_items_label}

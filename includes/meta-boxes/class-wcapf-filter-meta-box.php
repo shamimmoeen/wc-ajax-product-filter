@@ -50,14 +50,14 @@ class WCAPF_Filter_Meta_Box {
 		add_action( 'admin_footer', array( $this, 'render_tmpl_templates' ) );
 		add_action( 'admin_footer', array( $this, 'render_product_status_option_placeholder_template' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_admin_ui_scripts' ) );
-		add_action( 'admin_menu', array( $this, 'register_filter_custom_edit_page' ) );
+		add_action( 'admin_menu', array( $this, 'register_filter_custom_edit_page' ), 5 );
 	}
 
 	public function register_filter_custom_edit_page() {
 		add_submenu_page(
 			'edit.php?post_type=wcapf-filter',
-			__( 'Edit Filter', 'wc-ajax-product-filter' ),
-			__( 'Edit Filter', 'wc-ajax-product-filter' ),
+			__( 'Filters', 'wc-ajax-product-filter' ),
+			__( 'Filters', 'wc-ajax-product-filter' ),
 			'manage_options',
 			'edit-filter',
 			array( $this, 'edit_filter_page' )
@@ -71,7 +71,17 @@ class WCAPF_Filter_Meta_Box {
 	public function enqueue_filter_admin_ui_scripts() {
 		$screen = get_current_screen();
 
-		if ( 'wcapf-filter_page_edit-filter' !== $screen->id ) {
+		$enqueue = false;
+
+		if ( 'wcapf-filter_page_edit-filter' === $screen->id ) {
+			$enqueue = true;
+		}
+
+		if ( 'toplevel_page_wcapf-new' === $screen->id && isset( $_GET['id'] ) ) {
+			$enqueue = true;
+		}
+
+		if ( ! $enqueue ) {
 			return;
 		}
 

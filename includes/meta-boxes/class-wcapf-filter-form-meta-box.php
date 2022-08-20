@@ -47,14 +47,14 @@ class WCAPF_Filter_Form_Meta_Box {
 		add_action( 'edit_form_advanced', array( $this, 'render_meta_box' ) );
 		add_action( 'admin_footer', array( $this, 'render_tmpl_templates' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_form_admin_ui_scripts' ) );
-		add_action( 'admin_menu', array( $this, 'register_filter_form_custom_edit_page' ) );
+		add_action( 'admin_menu', array( $this, 'register_filter_form_custom_edit_page' ), 5 );
 	}
 
 	public function register_filter_form_custom_edit_page() {
 		add_submenu_page(
 			'edit.php?post_type=wcapf-filter',
-			__( 'Edit Filter Form', 'wc-ajax-product-filter' ),
-			__( 'Edit Filter Form', 'wc-ajax-product-filter' ),
+			__( 'Filter Forms', 'wc-ajax-product-filter' ),
+			__( 'Filter Forms', 'wc-ajax-product-filter' ),
 			'manage_options',
 			'edit-filter-form',
 			array( $this, 'edit_filter_form_page' )

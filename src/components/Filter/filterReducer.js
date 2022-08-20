@@ -9,7 +9,6 @@ export const initialState = {
 	title: '',
 	isDirty: false,
 	isFilterOptionsLoading: true,
-	doneFetchingFilterOptions: false,
 	filterOptions: [],
 	filterModalOptions: [],
 };
@@ -48,9 +47,6 @@ const filterReducer = (state, action) => {
 
 		case 'SET_FILTERS_OPTIONS_LOADING':
 			return { ...state, isFilterOptionsLoading: action.payload };
-
-		case 'SET_FILTER_OPTIONS_FETCHED':
-			return { ...state, doneFetchingFilterOptions: action.payload };
 
 		case 'SET_FILTERS_MODAL_OPTIONS':
 			return { ...state, filterModalOptions: action.payload };
