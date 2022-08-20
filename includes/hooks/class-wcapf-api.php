@@ -51,6 +51,163 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_get_taxonomy_filter_options', array( $this, 'get_taxonomy_filter_options' ) );
+		add_action( 'wp_ajax_get_filters', array( $this, 'get_filters' ) );
+
+		add_action( 'admin_menu', array( $this, 'register_new_endpoint' ) );
+		add_action( 'admin_menu', array( $this, 'change_post_menu_label' ) );
+		add_filter( 'in_admin_header', array( $this, 'render_header_navigation' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filters_list_admin_ui_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_forms_list_admin_ui_scripts' ) );
+	}
+
+	public function enqueue_filters_list_admin_ui_scripts() {
+		$screen = get_current_screen();
+
+		if ( 'toplevel_page_wcapf-new' !== $screen->id ) {
+			return;
+		}
+
+		$script_asset_path = WCAPF_PLUGIN_DIR . '/build/list-filters.asset.php';
+
+		if ( ! file_exists( $script_asset_path ) ) {
+			/** @noinspection PhpMultipleClassDeclarationsInspection */
+			throw new Error(
+				'You need to run `npm start` or `npm run build` for the filter admin ui'
+			);
+		}
+
+		$admin_js     = 'build/list-filters.js';
+		$script_asset = require( $script_asset_path );
+
+		wp_enqueue_script(
+			'wcapf-list-filters-admin-ui-js',
+			plugins_url( $admin_js, WCAPF_PLUGIN_FILE ),
+			$script_asset['dependencies'],
+			$script_asset['version']
+		);
+
+		$admin_css = 'build/list-filters.css';
+
+		wp_enqueue_style(
+			'wcapf-list-filters-admin-ui-css',
+			plugins_url( $admin_css, WCAPF_PLUGIN_FILE ),
+			[ 'wp-components' ],
+			filemtime( WCAPF_PLUGIN_DIR . '/' . $admin_css )
+		);
+	}
+
+	public function enqueue_filter_forms_list_admin_ui_scripts() {
+		$screen = get_current_screen();
+
+		if ( 'wcapf_page_new-filter-forms' !== $screen->id ) {
+			return;
+		}
+
+		$script_asset_path = WCAPF_PLUGIN_DIR . '/build/list-filter-forms.asset.php';
+
+		if ( ! file_exists( $script_asset_path ) ) {
+			/** @noinspection PhpMultipleClassDeclarationsInspection */
+			throw new Error(
+				'You need to run `npm start` or `npm run build` for the filter admin ui'
+			);
+		}
+
+		$admin_js     = 'build/list-filter-forms.js';
+		$script_asset = require( $script_asset_path );
+
+		wp_enqueue_script(
+			'wcapf-list-filter-forms-admin-ui-js',
+			plugins_url( $admin_js, WCAPF_PLUGIN_FILE ),
+			$script_asset['dependencies'],
+			$script_asset['version']
+		);
+
+		$admin_css = 'build/list-filter-forms.css';
+
+		wp_enqueue_style(
+			'wcapf-list-filter-forms-admin-ui-css',
+			plugins_url( $admin_css, WCAPF_PLUGIN_FILE ),
+			[ 'wp-components' ],
+			filemtime( WCAPF_PLUGIN_DIR . '/' . $admin_css )
+		);
+	}
+
+	public function render_header_navigation() {
+		global $current_screen;
+
+		$valid_lists = array(
+			'toplevel_page_wcapf-new',
+			'wcapf_page_new-filter-forms',
+			'wcapf_page_wcapf-new-settings',
+		);
+
+		if ( ! in_array( $current_screen->id, $valid_lists ) ) {
+			return;
+		}
+
+		WCAPF_Template_Loader::get_instance()->load( 'admin/header-navigation-new' );
+	}
+
+	public function change_post_menu_label() {
+		global $submenu;
+
+		if ( isset( $submenu['wcapf-new'] ) ) {
+			$new_data = $submenu['wcapf-new'];
+
+			if ( isset( $new_data[0][0] ) ) {
+				$new_data[0][0] = 'Filters';
+			}
+
+			$submenu['wcapf-new'] = $new_data;
+		}
+	}
+
+	public function register_new_endpoint() {
+		add_menu_page(
+			'WCAPF',
+			'WCAPF',
+			'manage_options',
+			'wcapf-new',
+			array( $this, 'render_filter' ),
+			'dashicons-filter',
+			5
+		);
+
+		add_submenu_page(
+			'wcapf-new',
+			'Filter Forms',
+			'Filter Forms',
+			'manage_options',
+			'new-filter-forms',
+			array( $this, 'render_filter_form' )
+		);
+
+		add_submenu_page(
+			'wcapf-new',
+			'Settings',
+			'Settings',
+			'manage_options',
+			'wcapf-new-settings',
+			array( $this, 'render_settings' )
+		);
+	}
+
+	public function render_settings() {
+		echo 'plugin settings';
+	}
+
+	public function render_filter() {
+		if ( isset( $_GET['id'] ) ) {
+			$element = '<div id="wcapf-filter-admin-ui"></div>';
+		} else {
+			$element = '<div id="wcapf-filters-list-admin-ui"></div>';
+		}
+
+		echo $element;
+	}
+
+	public function render_filter_form() {
+		echo '<div id="wcapf-filter-forms-list-admin-ui"></div>';
 	}
 
 	public function get_available_filters() {
@@ -82,7 +239,7 @@ class WCAPF_API {
 	}
 
 	public function get_filter_form_data() {
-		$post_id   = 242; // TODO
+		$post_id   = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
 		$form_data = get_post_meta( $post_id, '_form_data', true );
 		$response  = array( 'post_title' => get_the_title( $post_id ) );
 
@@ -110,7 +267,7 @@ class WCAPF_API {
 	}
 
 	public function save_filter_form() {
-		$post_id       = 242; // TODO
+		$post_id       = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
 		$_form_filters = isset( $_POST['form_filters'] ) ? $_POST['form_filters'] : '';
 		$post_title    = isset( $_POST['post_title'] ) ? $_POST['post_title'] : '';
 		$form_filters  = stripslashes( $_form_filters );
@@ -134,12 +291,11 @@ class WCAPF_API {
 
 		update_post_meta( $post_id, '_form_data', $parsed_data );
 
-
 		wp_send_json_success( __( 'Updated successfully', 'wc-ajax-product-filter' ) );
 	}
 
 	public function get_filter_form_preview() {
-		$post_id = 242; // TODO
+		$post_id = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
 
 		ob_start();
 
@@ -151,16 +307,13 @@ class WCAPF_API {
 	}
 
 	public function get_filter_data() {
-		$post_id = 66; // TODO
-
+		$post_id    = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
 		$field_data = get_post_meta( $post_id, '_field_data', true );
 
 		$response = array(
 			'post_title' => get_the_title( $post_id ),
 			'field_data' => $field_data,
 		);
-
-		// $response = array();
 
 		wp_send_json_success( $response );
 	}
@@ -263,6 +416,35 @@ class WCAPF_API {
 		}
 
 		wp_send_json_success( $response );
+	}
+
+	public function get_filters() {
+		$args = array(
+			'post_type'   => 'wcapf-filter',
+			'nopaging'    => true,
+			'post_status' => 'any',
+			'fields'      => 'ids',
+		);
+
+		$filters = get_posts( $args );
+
+		$filters_data = array();
+
+		foreach ( $filters as $filter_id ) {
+			$field_data = get_post_meta( $filter_id, '_field_data', true );
+
+			$filters_data[] = array(
+				'id'            => $filter_id,
+				'field_key'     => $field_data['field_key'],
+				'type'          => $field_data['type'],
+				'taxonomy'      => isset( $field_data['taxonomy'] ) ? $field_data['taxonomy'] : '',
+				'meta_key'      => isset( $field_data['meta_key'] ) ? $field_data['meta_key'] : '',
+				'post_property' => isset( $field_data['post_property'] ) ? $field_data['post_property'] : '',
+				'title'         => get_the_title( $filter_id ),
+			);
+		}
+
+		wp_send_json_success( $filters_data );
 	}
 
 }

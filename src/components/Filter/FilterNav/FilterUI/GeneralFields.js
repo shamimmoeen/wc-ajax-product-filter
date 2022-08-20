@@ -4,7 +4,7 @@ import Select from '../../../Field/Select';
 import { useFilter } from '../../FilterContext';
 import { find } from 'lodash';
 
-const BasicFields = () => {
+const GeneralFields = () => {
 	const {
 		state: { filterType, activeFilterData, filterKeys, additionalData },
 		dispatch,
@@ -268,4 +268,4 @@ const BasicFields = () => {
 	return output;
 };
 
-export default BasicFields;
+export default GeneralFields;

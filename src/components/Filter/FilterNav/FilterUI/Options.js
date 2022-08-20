@@ -15,11 +15,7 @@ import LimitBy from './LimitFields';
 
 const Options = () => {
 	const {
-		state: {
-			activeFilterData,
-			isFilterOptionsLoading,
-			doneFetchingFilterOptions,
-		},
+		state: { activeFilterData, isFilterOptionsLoading },
 		dispatch,
 	} = useFilter();
 
@@ -38,10 +34,6 @@ const Options = () => {
 	const { createErrorNotice } = useDispatch(noticesStore);
 
 	useEffect(() => {
-		if (doneFetchingFilterOptions) {
-			return;
-		}
-
 		const data = {
 			action: 'get_taxonomy_filter_options',
 			taxonomy: 'pa_color',
@@ -60,11 +52,6 @@ const Options = () => {
 				});
 
 				dispatch({
-					type: 'SET_FILTER_OPTIONS_FETCHED',
-					payload: true,
-				});
-
-				dispatch({
 					type: 'SET_FILTERS_MODAL_OPTIONS',
 					payload: data,
 				});
@@ -75,11 +62,6 @@ const Options = () => {
 				dispatch({
 					type: 'SET_FILTERS_OPTIONS_LOADING',
 					payload: false,
-				});
-
-				dispatch({
-					type: 'SET_FILTER_OPTIONS_FETCHED',
-					payload: true,
 				});
 
 				createErrorNotice(

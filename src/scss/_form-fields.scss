@@ -147,9 +147,14 @@
 		.__wrapper .__input_wrapper {
 			display: flex;
 			flex-direction: column;
-			gap: 10px;
+			gap: 14px;
 
-			> div {
+			.components-radio-control__option {
+				margin: 0;
+			}
+
+			.__row1,
+			.__row2 {
 				display: flex;
 				gap: 15px;
 			}

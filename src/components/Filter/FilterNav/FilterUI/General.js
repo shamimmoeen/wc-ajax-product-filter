@@ -1,11 +1,11 @@
 import AvaialableFilters from './AvailableFilters';
-import BasicFields from './BasicFields';
+import GeneralFields from './GeneralFields';
 
 const Basic = () => {
 	return (
 		<>
 			<AvaialableFilters />
-			<BasicFields />
+			<GeneralFields />
 		</>
 	);
 };

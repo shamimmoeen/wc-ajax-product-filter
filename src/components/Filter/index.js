@@ -12,8 +12,15 @@ const Filter = () => {
 	const { dispatch } = useFilter();
 
 	const getFilterData = () => {
+		/**
+		 * @source https://stackoverflow.com/a/979995
+		 */
+		var query = new URL(window.location.href);
+		var id = query.searchParams.get('id');
+
 		const data = {
 			action: 'get_filter_data',
+			post_id: id,
 		};
 
 		return axios.get(wcapf_admin_params.ajaxurl, {
@@ -171,6 +178,10 @@ const Filter = () => {
 				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
 				dispatch({ type: 'SET_LOADING', payload: false });
+
+				/**
+				 * Set the filter options.
+				 */
 			})
 			.catch((err) => console.log(err));
 	}, []);

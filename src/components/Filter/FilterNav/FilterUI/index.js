@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 import CustomTabPanel from '../../../CustomTabPanel';
 import { useFilter } from '../../FilterContext';
 import Advanced from './Advanced';
-import Basic from './Basic';
-import Layout from './Layout';
+import General from './General';
+import Appearance from './Appearance';
 import Options from './Options';
 
 const FilterUI = () => {
@@ -18,7 +18,7 @@ const FilterUI = () => {
 		}
 	};
 
-	let initialTabName = 'advanced';
+	let initialTabName = 'general';
 
 	if (activeUIStep) {
 		initialTabName = activeUIStep;
@@ -35,14 +35,14 @@ const FilterUI = () => {
 			onSelect={handleSelect}
 			tabs={[
 				{
-					name: 'basic',
-					title: __('Basic', 'wc-ajax-product-filter'),
-					className: 'basic',
+					name: 'general',
+					title: __('General', 'wc-ajax-product-filter'),
+					className: 'general',
 				},
 				{
-					name: 'layout',
-					title: __('Layout', 'wc-ajax-product-filter'),
-					className: 'layout',
+					name: 'appearance',
+					title: __('Appearance', 'wc-ajax-product-filter'),
+					className: 'appearance',
 					isDisabled: disableTabItem,
 				},
 				{
@@ -60,10 +60,10 @@ const FilterUI = () => {
 			]}
 		>
 			{(tab) => {
-				if ('basic' === tab.name) {
-					return <Basic />;
-				} else if ('layout' === tab.name) {
-					return <Layout />;
+				if ('general' === tab.name) {
+					return <General />;
+				} else if ('appearance' === tab.name) {
+					return <Appearance />;
 				} else if ('options' === tab.name) {
 					return <Options />;
 				} else if ('advanced' === tab.name) {

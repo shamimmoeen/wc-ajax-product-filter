@@ -336,7 +336,15 @@ class WCAPF {
 
 		global $typenow;
 
-		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow ) {
+		global $current_screen;
+
+		$valid_lists = array(
+			'toplevel_page_wcapf-new',
+			'wcapf_page_new-filter-forms',
+			'wcapf_page_wcapf-new-settings',
+		);
+
+		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow && ! in_array( $current_screen->id, $valid_lists ) ) {
 			return;
 		}
 

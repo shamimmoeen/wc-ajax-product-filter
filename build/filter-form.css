@@ -161,6 +161,32 @@ body {
   font-size: 12px;
 }
 
+.__back_button_wrapper .__back_button {
+  scale: 2;
+}
+.__back_button_wrapper #__back_button_svg {
+  fill: #ddd;
+}
+.__back_button_wrapper .components-button {
+  width: 32px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: -15px;
+  margin-bottom: 8px;
+}
+.__back_button_wrapper .components-button:focus {
+  box-shadow: none;
+}
+.__back_button_wrapper .components-button:focus #__back_button_svg {
+  fill: var(--wp-admin-theme-color);
+}
+.__back_button_wrapper .components-button:focus #__back_button_svg, .__back_button_wrapper .components-button:hover #__back_button_svg {
+  fill: var(--wp-admin-theme-color);
+}
+
 .wcapf-single-filter {
   font-size: 14px;
 }
