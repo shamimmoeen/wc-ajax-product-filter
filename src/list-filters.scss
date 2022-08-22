@@ -1,5 +1,9 @@
-.__list_table_loading {
-	margin: 1.5em 0;
+@import './scss/core';
+@import './scss/variables';
+@import './scss/available-filters';
+
+#wcapf-filters-list-admin-ui {
+	padding-bottom: 4em;
 }
 
 .__list_table_search {
@@ -12,6 +16,7 @@
 			.components-search-control__input {
 				background-color: #fff;
 				height: 36px;
+				box-shadow: $inputBorderColor 0px 0px 0px 1px;
 			}
 		}
 
@@ -27,7 +32,9 @@ p.__list_table_results_count {
 
 table.__list_table {
 	border: none;
-	box-shadow: rgb(0 0 0 / 3%) 0px 0px 0px 1px;
+	// box-shadow: rgb(0 0 0 / 7%) 0px 0px 0px 1px;
+	// box-shadow: $inputBorderColor 0px 0px 0px 1px;
+	box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px;
 
 	.row-title {
 		font-weight: 500;
@@ -38,12 +45,77 @@ table.__list_table {
 		color: rgba(0, 0, 0, 0.3);
 	}
 
-	.__actions_row {
+	.__Actions {
 		width: 190px;
 	}
 
 	.__component_extra {
 		font-size: 12px;
 		color: rgba(0, 0, 0, 0.3);
+	}
+
+	.__action_buttons {
+		display: flex;
+		gap: 4px;
+	}
+
+	.__no_results {
+		background-color: transparent;
+	}
+}
+
+.__import_data {
+	box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px;
+	min-height: 250px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	.dashicon {
+		width: 40px;
+		height: 40px;
+		font-size: 40px;
+		color: #515151;
+	}
+
+	h3 {
+		font-weight: 500;
+	}
+
+	p {
+		margin: 0 0 2em;
+	}
+}
+
+.__delete_modal {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h3 {
+		font-weight: 500;
+	}
+
+	.description {
+		margin: 0 0 2em;
+	}
+
+	.__buttons {
+		display: flex;
+		gap: 5px;
+	}
+
+	svg {
+		fill: $svgDeleteColor;
+	}
+}
+
+.__add_filter_modal {
+	max-width: 784px;
+	width: 100%;
+
+	.__heading {
+		text-align: center;
 	}
 }

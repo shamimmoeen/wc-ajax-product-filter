@@ -1,55 +1,94 @@
 import { useState } from '@wordpress/element';
-import { Button, SearchControl, Spinner } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { Button, Icon, SearchControl, Spinner } from '@wordpress/components';
+import { __, sprintf, _n } from '@wordpress/i18n';
 import { useListFilters } from './ListFilters/ListFiltersContext';
 
-const PostTable = ({ title, addBtnTitle, headers, tbody }) => {
+const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 	const {
-		state: { isLoading },
+		state: { isLoading, filters },
 	} = useListFilters();
 	const [searchInput, setSearchInput] = useState('');
+
+	const filtersFound = filters.length;
+
+	let html;
+
+	if (isLoading) {
+		html = <Spinner />;
+	} else if (filtersFound) {
+		html = (
+			<>
+				<table className='wp-list-table widefat fixed striped __list_table'>
+					<thead>
+						<tr>
+							{headers.map((item) => (
+								<th
+									className={`__${item}`}
+									key={`posts-table-${item}`}
+								>
+									{item}
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>{tbody()}</tbody>
+				</table>
+
+				<p className='description __list_table_results_count'>
+					{sprintf(
+						_n(
+							'Showing %d result',
+							'Showing %d results',
+							filtersFound,
+							'wc-ajax-product-filter'
+						),
+						filtersFound
+					)}
+				</p>
+			</>
+		);
+	} else {
+		html = (
+			<div className='__import_data'>
+				<Icon icon={'filter'} />
+				<h3>
+					{__(
+						"You don't have any filters yet.",
+						'wc-ajax-product-filter'
+					)}
+				</h3>
+				<p className='description'>
+					{__(
+						'Do you want to import sample filters? Click on the button below.',
+						'wc-ajax-product-filter'
+					)}
+				</p>
+				<Button variant='primary'>
+					{__('Import Sample Filters', 'wc-ajax-product-filter')}
+				</Button>
+			</div>
+		);
+	}
 
 	return (
 		<div className='wrap'>
 			<h1>{title}</h1>
 
-			{isLoading ? (
-				<div className='__list_table_loading'>
-					<Spinner />
+			<div className='__list_table_search'>
+				<div className='__search_box'>
+					<SearchControl
+						value={searchInput}
+						onChange={setSearchInput}
+					/>
 				</div>
-			) : (
-				<>
-					<div className='__list_table_search'>
-						<div className='__search_box'>
-							<SearchControl
-								value={searchInput}
-								onChange={setSearchInput}
-							/>
-						</div>
-						<div className=''>
-							<Button variant='primary'>{addBtnTitle}</Button>
-						</div>
-					</div>
-					<table className='wp-list-table widefat fixed striped __list_table'>
-						<thead>
-							<tr>
-								{headers.map((item) => (
-									<th
-										className={`__${item}`}
-										key={`posts-table-${item}`}
-									>
-										{item}
-									</th>
-								))}
-							</tr>
-						</thead>
-						<tbody>{tbody()}</tbody>
-					</table>
-					<p className='description __list_table_results_count'>
-						{__('Showing 5 of 5 results', 'wc-ajax-product-filter')}
-					</p>
-				</>
-			)}
+				<div className=''>
+					<Button variant='primary' onClick={handleAddFilter}>
+						{addBtnTitle}
+					</Button>
+				</div>
+			</div>
+
+			{html}
 		</div>
 	);
 };
