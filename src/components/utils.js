@@ -1,5 +1,6 @@
 import { getAvailableFilters } from './Filter/utils';
 import { find } from 'lodash';
+import axios from 'axios';
 
 export function foundProVersion() {
 	// return wcapf_admin_params.foundPro;
@@ -29,6 +30,16 @@ export function proTag(isProFeature) {
 	}
 
 	return <span className='__pro_tag' />;
+}
+
+export function getAdditionalData() {
+	const data = {
+		action: 'get_filter_additional_data',
+	};
+
+	return axios.get(wcapf_admin_params.ajaxurl, {
+		params: data,
+	});
 }
 
 export function prepareFilterData(raw) {
@@ -89,4 +100,14 @@ export function removeParam(key, sourceURL) {
 	}
 
 	return rtn;
+}
+
+export function prepareMetaKeys(options) {
+	const _options = [];
+
+	for (const [value, label] of Object.entries(options)) {
+		_options.push({ label, value });
+	}
+
+	return _options;
 }

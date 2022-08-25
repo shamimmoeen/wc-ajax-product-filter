@@ -1,15 +1,15 @@
 import { __ } from '@wordpress/i18n';
 import Text from '../../../Field/Text';
 import Select from '../../../Field/Select';
-import { useFilter } from '../../FilterContext';
 import { find } from 'lodash';
 
-const GeneralFields = () => {
-	const {
-		state: { filterType, activeFilterData, filterKeys, additionalData },
-		dispatch,
-	} = useFilter();
-
+const GeneralFields = ({
+	filterType,
+	activeFilterData,
+	filterKeys,
+	additionalData,
+	dispatch,
+}) => {
 	const filterKey = activeFilterData['field_key'] ?? '';
 
 	const handleTaxonomyChange = (selected) => {
@@ -135,6 +135,7 @@ const GeneralFields = () => {
 					options={options}
 					values={values}
 					onChange={handleMetaKeyChange}
+					width={200}
 				/>
 			);
 		}
@@ -245,6 +246,10 @@ const GeneralFields = () => {
 				<Text
 					id={'filter_key'}
 					label={__('Filter Key', 'wc-ajax-product-filter')}
+					description={__(
+						'The unique key that will be used to identify the filter.',
+						'wc-ajax-product-filter'
+					)}
 					value={filterKey}
 					onChange={handleFilterKeyChange}
 				/>

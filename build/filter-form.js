@@ -4066,8 +4066,10 @@ const Title = _ref => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
+/* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
 /* harmony export */   "isProFeature": function() { return /* binding */ isProFeature; },
 /* harmony export */   "prepareFilterData": function() { return /* binding */ prepareFilterData; },
+/* harmony export */   "prepareMetaKeys": function() { return /* binding */ prepareMetaKeys; },
 /* harmony export */   "proTag": function() { return /* binding */ proTag; },
 /* harmony export */   "removeParam": function() { return /* binding */ removeParam; }
 /* harmony export */ });
@@ -4076,6 +4078,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Filter/utils */ "./src/components/Filter/utils.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+
 
 
 
@@ -4106,6 +4111,14 @@ function proTag(isProFeature) {
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "__pro_tag"
+  });
+}
+function getAdditionalData() {
+  const data = {
+    action: 'get_filter_additional_data'
+  };
+  return axios__WEBPACK_IMPORTED_MODULE_3___default().get(wcapf_admin_params.ajaxurl, {
+    params: data
   });
 }
 function prepareFilterData(raw) {
@@ -4169,6 +4182,18 @@ function removeParam(key, sourceURL) {
   }
 
   return rtn;
+}
+function prepareMetaKeys(options) {
+  const _options = [];
+
+  for (const [value, label] of Object.entries(options)) {
+    _options.push({
+      label,
+      value
+    });
+  }
+
+  return _options;
 }
 
 /***/ }),

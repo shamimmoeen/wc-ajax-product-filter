@@ -7,6 +7,7 @@ import { useEffect } from '@wordpress/element';
 import { filterDefaultData, getAvailableFilters } from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
+import { getAdditionalData } from '../utils';
 
 const Filter = () => {
 	const { dispatch } = useFilter();
@@ -21,16 +22,6 @@ const Filter = () => {
 		const data = {
 			action: 'get_filter_data',
 			post_id: id,
-		};
-
-		return axios.get(wcapf_admin_params.ajaxurl, {
-			params: data,
-		});
-	};
-
-	const getAdditionalData = () => {
-		const data = {
-			action: 'get_filter_additional_data',
 		};
 
 		return axios.get(wcapf_admin_params.ajaxurl, {
@@ -178,10 +169,6 @@ const Filter = () => {
 				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
 				dispatch({ type: 'SET_LOADING', payload: false });
-
-				/**
-				 * Set the filter options.
-				 */
 			})
 			.catch((err) => console.log(err));
 	}, []);
