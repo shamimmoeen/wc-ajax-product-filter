@@ -1,21 +1,12 @@
 import { __ } from '@wordpress/i18n';
-import {
-	Button,
-	Flex,
-	FlexItem,
-	Icon,
-	Modal,
-	NavigableMenu,
-	Spinner,
-} from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import PostTable from '../PostTable';
 import { useEffect, useState } from '@wordpress/element';
 import { useListFilters } from './ListFiltersContext';
 import axios from 'axios';
-import { prepareFilterData, proTag } from '../utils';
-import { trash } from '@wordpress/icons';
-import { getAvailableFilters } from '../Filter/utils';
-import Text from '../Field/Text';
+import { getAdditionalData, prepareFilterData } from '../utils';
+import DeleteModal from './DeleteModal';
+import AddNewModal from './AddNewModal';
 
 const ListFilters = () => {
 	const {
@@ -43,11 +34,18 @@ const ListFilters = () => {
 	};
 
 	useEffect(() => {
-		getFilters()
-			.then((res) => {
+		Promise.all([getFilters(), getAdditionalData()])
+			.then((results) => {
+				const resFiltes = results[0];
+				const resAdditionalData = results[1];
+
 				const {
 					data: { data: _filters },
-				} = res;
+				} = resFiltes;
+
+				const {
+					data: { data: additionalData },
+				} = resAdditionalData;
 
 				const newFilters = [];
 
@@ -56,6 +54,11 @@ const ListFilters = () => {
 				});
 
 				dispatch({ type: 'SET_FILTERS', payload: newFilters });
+
+				dispatch({
+					type: 'SET_ADDITIONAL_DATA',
+					payload: additionalData,
+				});
 
 				dispatch({ type: 'SET_LOADING', payload: false });
 			})
@@ -148,123 +151,15 @@ const ListFilters = () => {
 				tbody={getTableData}
 			/>
 
-			{addPostModalOpen && (
-				<Modal
-					className='__add_filter_modal'
-					onRequestClose={closeAddPostModal}
-					__experimentalHideHeader
-				>
-					<div className='__add_post_modal'>
-						<h3 className='__heading'>
-							{__('Add Filter', 'wc-ajax-product-filter')}
-						</h3>
+			<AddNewModal
+				isOpen={addPostModalOpen}
+				closeModal={closeAddPostModal}
+			/>
 
-						<p className='description'>
-							{__('Enter filter title', 'wc-ajax-product-filter')}
-						</p>
-
-						<div className='__available_filters'>
-							<div className='__inner'>
-								<p className='description'>
-									{__(
-										'Select a component to start building the filter.',
-										'wc-ajax-product-filter'
-									)}
-								</p>
-
-								<div className='__filters'>
-									<NavigableMenu
-										role={'menu'}
-										orientation='horizontal'
-									>
-										{getAvailableFilters().map((filter) => {
-											let _classes = '__item';
-
-											return (
-												<Button
-													className={_classes}
-													key={filter.type}
-												>
-													{filter.title}
-													{proTag(filter.isPro)}
-												</Button>
-											);
-										})}
-									</NavigableMenu>
-								</div>
-
-								<Text
-									id={'filter_title'}
-									label={__(
-										'Filter Title',
-										'wc-ajax-product-filter'
-									)}
-								/>
-
-								<Text
-									id={'filter_title'}
-									label={__(
-										'Filter Title',
-										'wc-ajax-product-filter'
-									)}
-								/>
-
-								<Flex>
-									<FlexItem>
-										<Button variant='secondary'>
-											{__(
-												'Cancel',
-												'wc-ajax-product-filter'
-											)}
-										</Button>
-									</FlexItem>
-									<FlexItem>
-										<Button variant='primary'>
-											{__(
-												'Next',
-												'wc-ajax-product-filter'
-											)}
-										</Button>
-									</FlexItem>
-								</Flex>
-							</div>
-						</div>
-					</div>
-				</Modal>
-			)}
-
-			{deletePostModalOpen && (
-				<Modal
-					onRequestClose={closeDeletePostModal}
-					__experimentalHideHeader
-				>
-					<div className='__delete_modal'>
-						<Icon icon={trash} size={40} />
-
-						<h3>{__('Are you sure?', 'wc-ajax-product-filter')}</h3>
-
-						<p className='description'>
-							{__(
-								'This will delete the filter permanently.',
-								'wc-ajax-product-filter'
-							)}
-						</p>
-
-						<div className='__buttons'>
-							<Button
-								variant='secondary'
-								onClick={closeDeletePostModal}
-								autoFocus
-							>
-								{__('Cancel', 'wc-ajax-product-filter')}
-							</Button>
-							<Button variant='primary'>
-								{__('Delete', 'wc-ajax-product-filter')}
-							</Button>
-						</div>
-					</div>
-				</Modal>
-			)}
+			<DeleteModal
+				isOpen={deletePostModalOpen}
+				closeModal={closeDeletePostModal}
+			/>
 		</>
 	);
 };

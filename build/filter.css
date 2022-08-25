@@ -194,11 +194,6 @@ body {
 .__available_filters {
   margin-bottom: 1.5em;
 }
-.__available_filters h3 {
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0;
-}
 .__available_filters .__inner {
   padding: 10px 0 6px;
 }
@@ -349,11 +344,11 @@ body {
 .__form_control .__wrapper {
   flex: 1;
 }
-.__form_control .__wrapper .__input_wrapper {
-  display: inline-flex;
-}
 .__form_control .description {
   margin-top: 8px;
+}
+.__form_control .components-text-control__input {
+  max-width: 220px;
 }
 .__form_control .components-text-control__input,
 .__form_control .components-checkbox-control__input,
@@ -364,7 +359,7 @@ body {
   min-height: 30px;
   border-color: #ddd;
   transition: box-shadow 0.1s linear;
-  min-width: 150px;
+  width: 150px;
   padding-left: 8px;
 }
 .__form_control .__custom_select_control:hover {
@@ -442,6 +437,32 @@ body {
 .__form_control.display-type .__wrapper .__input_wrapper .__row2 {
   display: flex;
   gap: 15px;
+}
+
+.__form_control_listbox .__inner {
+  align-items: flex-start;
+}
+.__form_control_listbox .__inner .__label {
+  line-height: 30px;
+}
+.__form_control_listbox .__form_input_listbox {
+  max-width: 200px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 2px;
+}
+.__form_control_listbox .__form_input_listbox .__item {
+  padding: 2px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #fff;
+}
+.__form_control_listbox .__form_input_listbox .__item:focus, .__form_control_listbox .__form_input_listbox .__item:hover {
+  background: rgba(0, 116, 217, 0.1);
+}
+.__form_control_listbox .__form_input_listbox .__item.active {
+  background-color: var(--wp-admin-theme-color);
+  color: #fff;
 }
 
 .__options_table .__form_control {

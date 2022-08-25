@@ -12,7 +12,10 @@ const Select = ({
 	searchable,
 	clearable,
 	isPro,
+	width,
 }) => {
+	const style = width ? { width } : {};
+
 	return (
 		<div className='__form_control'>
 			<div className='__inner'>
@@ -35,6 +38,7 @@ const Select = ({
 							placeholder={placeholder}
 							searchable={searchable}
 							clearable={clearable}
+							style={style}
 						/>
 					</div>
 				</div>

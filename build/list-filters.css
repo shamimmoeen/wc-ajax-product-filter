@@ -190,11 +190,6 @@ body {
 .__available_filters {
   margin-bottom: 1.5em;
 }
-.__available_filters h3 {
-  font-size: 14px;
-  font-weight: 500;
-  margin: 0;
-}
 .__available_filters .__inner {
   padding: 10px 0 6px;
 }
@@ -230,6 +225,172 @@ body {
   background-color: var(--wp-admin-theme-color);
   border-color: var(--wp-admin-theme-color);
   color: #fff;
+}
+
+.__form_control {
+  margin: 0 0 2em;
+}
+.__form_control .__inner {
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  gap: 15px;
+}
+.__form_control .__label {
+  width: 150px;
+}
+.__form_control .__label label {
+  font-weight: 500;
+}
+.__form_control .__wrapper {
+  flex: 1;
+}
+.__form_control .description {
+  margin-top: 8px;
+}
+.__form_control .components-text-control__input {
+  max-width: 220px;
+}
+.__form_control .components-text-control__input,
+.__form_control .components-checkbox-control__input,
+.__form_control .components-radio-control__input {
+  border-color: #ddd;
+}
+.__form_control .__custom_select_control {
+  min-height: 30px;
+  border-color: #ddd;
+  transition: box-shadow 0.1s linear;
+  width: 150px;
+  padding-left: 8px;
+}
+.__form_control .__custom_select_control:hover {
+  border-color: #ddd;
+}
+.__form_control .__custom_select_control:focus, .__form_control .__custom_select_control:focus-within {
+  border-color: var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+.__form_control .__custom_select_control .react-dropdown-select-input:-moz-read-only {
+  background-color: transparent;
+}
+.__form_control .__custom_select_control .react-dropdown-select-input:read-only {
+  background-color: transparent;
+}
+@media (min-width: 600px) {
+  .__form_control .__custom_select_control .react-dropdown-select-input {
+    font-size: 13px;
+    line-height: normal;
+  }
+}
+.__form_control .__custom_select_control .react-dropdown-select-content .react-dropdown-select-input:only-child {
+  margin-left: 0;
+}
+.__form_control .__custom_select_control .react-dropdown-select-separator {
+  height: 20px;
+}
+.__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option {
+  display: inline;
+}
+.__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option:not(:last-child) {
+  margin: 0 10px 0 0;
+}
+.__form_control.__checkbox_toggle .components-base-control__field {
+  margin: 0;
+}
+.__form_control #soft_limit {
+  max-width: 60px;
+}
+.__form_control .components-button-group .components-button {
+  height: 30px;
+}
+.__form_control .components-button-group .components-button:not(:focus) {
+  box-shadow: inset 0 0 0 1px #ddd;
+}
+.__form_control .components-button-group .components-button:not(:focus).is-primary {
+  box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
+}
+.__form_control .components-radio-control__option.disabled input,
+.__form_control .components-radio-control__option.disabled label {
+  cursor: default;
+}
+.__form_control .components-radio-control__option.disabled label {
+  color: #777;
+}
+
+.__form_control.display-type .__inner {
+  align-items: flex-start;
+}
+.__form_control.display-type .__label {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+}
+.__form_control.display-type .__wrapper .__input_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.__form_control.display-type .__wrapper .__input_wrapper .components-radio-control__option {
+  margin: 0;
+}
+.__form_control.display-type .__wrapper .__input_wrapper .__row1,
+.__form_control.display-type .__wrapper .__input_wrapper .__row2 {
+  display: flex;
+  gap: 15px;
+}
+
+.__form_control_listbox .__inner {
+  align-items: flex-start;
+}
+.__form_control_listbox .__inner .__label {
+  line-height: 30px;
+}
+.__form_control_listbox .__form_input_listbox {
+  max-width: 200px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 2px;
+}
+.__form_control_listbox .__form_input_listbox .__item {
+  padding: 2px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #fff;
+}
+.__form_control_listbox .__form_input_listbox .__item:focus, .__form_control_listbox .__form_input_listbox .__item:hover {
+  background: rgba(0, 116, 217, 0.1);
+}
+.__form_control_listbox .__form_input_listbox .__item.active {
+  background-color: var(--wp-admin-theme-color);
+  color: #fff;
+}
+
+.__progressbar .__progress {
+  display: flex;
+  height: 1em;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0;
+}
+.__progressbar .__progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--wp-admin-theme-color);
+  transition: width 0.6s ease;
+}
+.__progressbar .__progress-bar-animated {
+  -webkit-animation: progress-bar-stripes 1s linear infinite;
+          animation: progress-bar-stripes 1s linear infinite;
+}
+.__progressbar .__progress-bar-striped {
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 1rem 1rem;
 }
 
 #wcapf-filters-list-admin-ui {
@@ -321,11 +482,59 @@ table.__list_table .__no_results {
 }
 
 .__add_filter_modal {
-  max-width: 784px;
+  max-width: 800px;
   width: 100%;
+}
+.__add_filter_modal .components-modal__content {
+  padding: 32px;
 }
 .__add_filter_modal .__heading {
   text-align: center;
+  font-weight: 500;
+  margin-top: 0;
+}
+.__add_filter_modal .__step_inner {
+  margin: 2.5em 0;
+}
+.__add_filter_modal .__title_step .__inner {
+  flex-direction: column;
+  gap: 10px;
+}
+.__add_filter_modal .__title_step .__inner .__label {
+  width: 100%;
+}
+.__add_filter_modal .__title_step .__inner .__wrapper {
+  width: 100%;
+}
+.__add_filter_modal .__title_step .__inner .__wrapper .__input_wrapper {
+  display: flex;
+}
+.__add_filter_modal .__title_step .__inner .components-text-control__input {
+  max-width: unset;
+}
+.__add_filter_modal .__stepper {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+.__add_filter_modal .__stepper ._dots span {
+  width: 12px;
+  height: 12px;
+  margin: 0 4px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  display: inline-block;
+}
+.__add_filter_modal .__stepper ._dots span.active {
+  background-color: var(--wp-admin-theme-color);
+}
+.__add_filter_modal .__left,
+.__add_filter_modal .__right {
+  width: 80px;
+}
+.__add_filter_modal .__right {
+  display: flex;
+  justify-content: flex-end;
 }
 
 /*# sourceMappingURL=list-filters.css.map*/
