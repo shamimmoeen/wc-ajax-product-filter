@@ -3,7 +3,13 @@ import { Flex, FlexItem, Button } from '@wordpress/components';
 import { useListFilters } from '../ListFiltersContext';
 import classnames from 'classnames';
 
-const Footer = ({ step, setStep, totalStep, closeModal }) => {
+const Footer = ({
+	step,
+	setStep,
+	totalSteps,
+	closeModal,
+	handleFilterSubmit,
+}) => {
 	const {
 		state: { title, filterType },
 	} = useListFilters();
@@ -31,12 +37,12 @@ const Footer = ({ step, setStep, totalStep, closeModal }) => {
 	const nextButton = () => {
 		let content;
 
-		if (1 === step || (3 === totalStep && 2 === step)) {
+		if (1 === step || (3 === totalSteps && 2 === step)) {
 			let disabled = false;
 
 			if (1 === step && !title) {
 				disabled = true;
-			} else if (3 === totalStep && 2 === step && !filterType) {
+			} else if (3 === totalSteps && 2 === step && !filterType) {
 				disabled = true;
 			}
 
@@ -59,7 +65,7 @@ const Footer = ({ step, setStep, totalStep, closeModal }) => {
 			content = (
 				<Button
 					variant='primary'
-					onClick={() => console.log('create the filter')}
+					onClick={handleFilterSubmit}
 					disabled={disabled}
 				>
 					{__('Finish', 'wc-ajax-product-filter')}
@@ -83,7 +89,7 @@ const Footer = ({ step, setStep, totalStep, closeModal }) => {
 						active: 2 === step,
 					})}
 				/>
-				{3 === totalStep && (
+				{3 === totalSteps && (
 					<span
 						className={classnames({
 							active: 3 === step,

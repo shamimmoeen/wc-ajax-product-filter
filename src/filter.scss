@@ -2,12 +2,5 @@
 @import './scss/preview';
 @import './scss/filter';
 @import './scss/form-fields';
-@import './scss//options-table';
-
-.nav {
-	margin-bottom: 1em;
-
-	a {
-		margin: 0 15px;
-	}
-}
+@import './scss/available-filters';
+@import './scss/options-table';

@@ -67,6 +67,11 @@ class WCAPF_API {
 			return;
 		}
 
+		// For single filter we load another set of scripts.
+		if ( isset( $_GET['id'] ) ) {
+			return;
+		}
+
 		$script_asset_path = WCAPF_PLUGIN_DIR . '/build/list-filters.asset.php';
 
 		if ( ! file_exists( $script_asset_path ) ) {
