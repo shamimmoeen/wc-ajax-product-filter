@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import AvailableFilters from '../../AvailableFilters';
-import Listbox from '../../Field/Listbox';
 import Text from '../../Field/Text';
 import GeneralFields from '../../Filter/FilterNav/FilterUI/GeneralFields';
 import { useListFilters } from '../ListFiltersContext';
@@ -52,6 +51,10 @@ const Body = ({ step, setTotalSteps }) => {
 				<Text
 					id={'filter_title'}
 					label={__('Filter Title', 'wc-ajax-product-filter')}
+					placeholder={__(
+						'Enter filter title',
+						'wc-ajax-product-filter'
+					)}
 					value={title}
 					onChange={handleTitleChange}
 				/>
@@ -67,8 +70,6 @@ const Body = ({ step, setTotalSteps }) => {
 	} else if (3 === step) {
 		content = (
 			<div className='__step_inner'>
-				<Listbox />
-
 				<GeneralFields
 					filterType={filterType}
 					activeFilterData={activeFilterData}

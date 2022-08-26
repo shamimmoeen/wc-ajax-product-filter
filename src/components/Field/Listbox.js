@@ -1,43 +1,27 @@
 import { __experimentalScrollable as Scrollable } from '@wordpress/components';
-import { useEffect, useState } from '@wordpress/element';
+import { useLayoutEffect, useRef } from '@wordpress/element';
 import classnames from 'classnames';
-import { useListFilters } from '../ListFilters/ListFiltersContext';
-import { prepareMetaKeys } from '../utils';
 
-const Listbox = () => {
-	const {
-		state: {
-			additionalData: { meta_keys },
-		},
-	} = useListFilters();
+const Listbox = ({ id, label, description, options, value, onChange }) => {
+	const wrapperRef = useRef(null);
 
-	const [options, setOptions] = useState([]);
-
-	const id = 'meta_key';
-	const label = 'Meta Key';
-	const description = '';
-
-	useEffect(() => {
-		if (!meta_keys) {
+	useLayoutEffect(() => {
+		if (!wrapperRef || !wrapperRef.current) {
 			return;
 		}
 
-		setOptions(prepareMetaKeys(meta_keys));
-	}, [meta_keys]);
+		const target = wrapperRef.current.querySelector('.active');
 
-	const handleSetFocus = ({ value }) => {
-		const _options = options.map((_option) => {
-			if (value === _option.value) {
-				_option.active = true;
-			} else {
-				_option.active = false;
-			}
+		if (null === target) {
+			return;
+		}
 
-			return _option;
-		});
-
-		setOptions(_options);
-	};
+		/**
+		 * @source https://stackoverflow.com/a/11041376
+		 */
+		target.parentNode.parentNode.scrollTop =
+			target.offsetTop - target.parentNode.parentNode.offsetTop;
+	}, []);
 
 	return (
 		<div className='__form_control __form_control_listbox'>
@@ -49,16 +33,16 @@ const Listbox = () => {
 					<div className='__input_wrapper'>
 						<div className='__form_input_listbox'>
 							<Scrollable style={{ maxHeight: 90 }}>
-								<div>
+								<div ref={wrapperRef}>
 									{options.map((option, index) => (
 										<div
 											key={`listbox-${option.value}-${index}`}
 											className={classnames('__item', {
-												active: option.active,
+												active: option.value === value,
 											})}
 											tabIndex={0}
 											onClick={() =>
-												handleSetFocus(option)
+												onChange(option.value)
 											}
 										>
 											{option.label}

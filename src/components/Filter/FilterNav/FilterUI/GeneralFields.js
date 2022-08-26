@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import Text from '../../../Field/Text';
-import Select from '../../../Field/Select';
-import { find } from 'lodash';
+import Listbox from '../../../Field/Listbox';
 
 const GeneralFields = ({
 	filterType,
@@ -12,8 +11,8 @@ const GeneralFields = ({
 }) => {
 	const filterKey = activeFilterData['field_key'] ?? '';
 
-	const handleTaxonomyChange = (selected) => {
-		if (!selected.length) {
+	const handleTaxonomyChange = (value) => {
+		if (!value) {
 			const _activeFilterData = {
 				...activeFilterData,
 				field_key: '',
@@ -28,16 +27,13 @@ const GeneralFields = ({
 			return;
 		}
 
-		const _taxonomyData = selected[0];
-		const _taxonomy = _taxonomyData.value;
-
 		const type = activeFilterData['type'];
-		const filterKey = filterKeys[type][_taxonomy];
+		const filterKey = filterKeys[type][value];
 
 		const _activeFilterData = {
 			...activeFilterData,
 			field_key: filterKey,
-			taxonomy: _taxonomy,
+			taxonomy: value,
 		};
 
 		dispatch({
@@ -65,15 +61,12 @@ const GeneralFields = ({
 				options.push({ label, value });
 			}
 
-			const _values = find(options, { value: taxonomy });
-			const values = _values ? [_values] : [];
-
 			return (
-				<Select
+				<Listbox
 					label={taxonomyFieldLabel}
 					id={'taxonomy'}
 					options={options}
-					values={values}
+					value={taxonomy}
 					onChange={handleTaxonomyChange}
 					searchable={false}
 				/>
@@ -81,8 +74,8 @@ const GeneralFields = ({
 		}
 	};
 
-	const handleMetaKeyChange = (selected) => {
-		if (!selected.length) {
+	const handleMetaKeyChange = (value) => {
+		if (!value) {
 			const _activeFilterData = {
 				...activeFilterData,
 				field_key: '',
@@ -97,16 +90,13 @@ const GeneralFields = ({
 			return;
 		}
 
-		const _metaKeyData = selected[0];
-		const _metaKey = _metaKeyData.value;
-
 		const type = activeFilterData['type'];
-		const filterKey = filterKeys[type][_metaKey];
+		const filterKey = filterKeys[type][value];
 
 		const _activeFilterData = {
 			...activeFilterData,
 			field_key: filterKey,
-			meta_key: _metaKey,
+			meta_key: value,
 		};
 
 		dispatch({
@@ -125,24 +115,23 @@ const GeneralFields = ({
 				options.push({ label, value });
 			}
 
-			const _values = find(options, { value: metaKey });
-			const values = _values ? [_values] : [];
-
 			return (
-				<Select
-					label={__('Meta Key', 'wc-ajax-product-filter')}
-					id={'meta_key'}
-					options={options}
-					values={values}
-					onChange={handleMetaKeyChange}
-					width={200}
-				/>
+				<>
+					<Listbox
+						id={'meta_key'}
+						label={__('Meta Key', 'wc-ajax-product-filter')}
+						options={options}
+						value={metaKey}
+						onChange={handleMetaKeyChange}
+						visible={4}
+					/>
+				</>
 			);
 		}
 	};
 
-	const handlePostPropertyChange = (selected) => {
-		if (!selected.length) {
+	const handlePostPropertyChange = (value) => {
+		if (!value) {
 			const _activeFilterData = {
 				...activeFilterData,
 				field_key: '',
@@ -157,16 +146,13 @@ const GeneralFields = ({
 			return;
 		}
 
-		const _postPropertyData = selected[0];
-		const _postProperty = _postPropertyData.value;
-
 		const type = activeFilterData['type'];
-		const filterKey = filterKeys[type][_postProperty];
+		const filterKey = filterKeys[type][value];
 
 		const _activeFilterData = {
 			...activeFilterData,
 			field_key: filterKey,
-			post_property: _postProperty,
+			post_property: value,
 		};
 
 		dispatch({
@@ -185,15 +171,12 @@ const GeneralFields = ({
 				options.push({ label, value });
 			}
 
-			const _values = find(options, { value: postProperty });
-			const values = _values ? [_values] : [];
-
 			return (
-				<Select
+				<Listbox
 					label={__('Post Property', 'wc-ajax-product-filter')}
 					id={'post_property'}
 					options={options}
-					values={values}
+					value={postProperty}
 					onChange={handlePostPropertyChange}
 					searchable={false}
 				/>

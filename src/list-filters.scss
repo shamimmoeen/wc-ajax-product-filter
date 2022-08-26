@@ -1,8 +1,7 @@
 @import './scss/core';
 @import './scss/variables';
-@import './scss/available-filters';
 @import './scss/form-fields';
-@import './scss/progress-bar';
+@import './scss/available-filters';
 
 #wcapf-filters-list-admin-ui {
 	padding-bottom: 4em;
@@ -121,6 +120,16 @@ table.__list_table {
 		padding: 32px;
 	}
 
+	.__loader {
+		text-align: center;
+		margin: 4em 0;
+
+		svg {
+			width: 32px;
+			height: 32px;
+		}
+	}
+
 	.__heading {
 		text-align: center;
 		font-weight: 500;
@@ -183,5 +192,29 @@ table.__list_table {
 	.__right {
 		display: flex;
 		justify-content: flex-end;
+	}
+
+	.__filter_response {
+		text-align: center;
+
+		h4 {
+			font-weight: 500;
+			font-size: 1.2em;
+		}
+
+		svg {
+			fill: none;
+			stroke: $successCheckColor;
+		}
+
+		._buttons {
+			margin: 2em 0 1em;
+
+			button {
+				&:not(:last-child) {
+					margin-right: 1em;
+				}
+			}
+		}
 	}
 }
