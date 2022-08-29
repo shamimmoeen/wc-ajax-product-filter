@@ -46,14 +46,23 @@ const GeneralFields = ({
 		if ('custom-taxonomy' === filterType || 'attribute' === filterType) {
 			const taxonomy = activeFilterData['taxonomy'];
 			let taxonomyFieldLabel;
+			let taxonomyFieldDesc;
 			let data = {};
 			let options = [];
 
 			if ('custom-taxonomy' === filterType) {
 				taxonomyFieldLabel = __('Taxonomy', 'wc-ajax-product-filter');
+				taxonomyFieldDesc = __(
+					'Select the taxonomy that terms will be available as filter options.',
+					'wc-ajax-product-filter'
+				);
 				data = additionalData['custom_taxonomies'];
 			} else {
 				taxonomyFieldLabel = __('Attribute', 'wc-ajax-product-filter');
+				taxonomyFieldDesc = __(
+					'Select the attribute that values will be available as filter options.',
+					'wc-ajax-product-filter'
+				);
 				data = additionalData['attributes'];
 			}
 
@@ -64,6 +73,7 @@ const GeneralFields = ({
 			return (
 				<Listbox
 					label={taxonomyFieldLabel}
+					description={taxonomyFieldDesc}
 					id={'taxonomy'}
 					options={options}
 					value={taxonomy}
@@ -120,6 +130,10 @@ const GeneralFields = ({
 					<Listbox
 						id={'meta_key'}
 						label={__('Meta Key', 'wc-ajax-product-filter')}
+						description={__(
+							'Select the meta key that values will be available as filter options.',
+							'wc-ajax-product-filter'
+						)}
 						options={options}
 						value={metaKey}
 						onChange={handleMetaKeyChange}
@@ -174,6 +188,10 @@ const GeneralFields = ({
 			return (
 				<Listbox
 					label={__('Post Property', 'wc-ajax-product-filter')}
+					description={__(
+						'Select the post property that values will be available as filter options.',
+						'wc-ajax-product-filter'
+					)}
 					id={'post_property'}
 					options={options}
 					value={postProperty}

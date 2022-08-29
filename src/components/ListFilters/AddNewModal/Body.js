@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import AvailableFilters from '../../AvailableFilters';
 import Text from '../../Field/Text';
 import GeneralFields from '../../Filter/FilterNav/FilterUI/GeneralFields';
+import { getFilterDefaultData } from '../../Filter/utils';
 import { useListFilters } from '../ListFiltersContext';
 
 const Body = ({ step, setTotalSteps }) => {
@@ -12,6 +13,7 @@ const Body = ({ step, setTotalSteps }) => {
 			activeFilterData,
 			filterKeys,
 			additionalData,
+			filtersData,
 		},
 		dispatch,
 	} = useListFilters();
@@ -41,6 +43,18 @@ const Body = ({ step, setTotalSteps }) => {
 		}
 
 		dispatch({ type: 'SET_FILTER_TYPE', payload: _filterType });
+
+		let filterData = filtersData[_filterType];
+
+		if (!filterData) {
+			filterData = getFilterDefaultData(_filterType);
+		}
+
+		dispatch({ type: 'SET_ACTIVE_FILTER_DATA', payload: filterData });
+
+		const _filtersData = { ...filtersData, [filterType]: activeFilterData };
+
+		dispatch({ type: 'SET_FILTERS_DATA', payload: _filtersData });
 	};
 
 	let content;

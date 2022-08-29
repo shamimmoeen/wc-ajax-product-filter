@@ -521,6 +521,11 @@ table.__list_table .__no_results {
 .__add_filter_modal .__filter_response svg {
   fill: none;
   stroke: #4ab866;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  width: 100px;
+  height: 100px;
 }
 .__add_filter_modal .__filter_response ._buttons {
   margin: 2em 0 1em;
