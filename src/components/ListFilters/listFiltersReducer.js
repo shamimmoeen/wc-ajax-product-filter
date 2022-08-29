@@ -5,6 +5,7 @@ export const initialState = {
 	filterKeys: {},
 	additionalData: {},
 	activeFilterData: {},
+	filtersData: {},
 	filters: [],
 };
 
@@ -27,6 +28,9 @@ const listFiltersReducer = (state, action) => {
 
 		case 'SET_ADDITIONAL_DATA':
 			return { ...state, additionalData: action.payload };
+
+		case 'SET_FILTERS_DATA':
+			return { ...state, filtersData: action.payload };
 
 		case 'SET_FILTERS':
 			return { ...state, filters: action.payload };

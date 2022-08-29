@@ -7,6 +7,7 @@ import axios from 'axios';
 import { getAdditionalData, prepareFilterData } from '../utils';
 import DeleteModal from './DeleteModal';
 import AddNewModal from './AddNewModal';
+import { getAvailableFilters } from '../Filter/utils';
 
 const ListFilters = () => {
 	const {
@@ -15,7 +16,7 @@ const ListFilters = () => {
 	} = useListFilters();
 
 	const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
-	const [addPostModalOpen, setAddPostModalOpen] = useState(true);
+	const [addPostModalOpen, setAddPostModalOpen] = useState(false);
 	const [addPostModalStep, setAddPostModalStep] = useState(1);
 	const [addPostModalTotalSteps, setAddPostModalTotalSteps] = useState(2);
 	const [addPostModalLoading, setAddPostModalLoading] = useState(true);
@@ -63,6 +64,82 @@ const ListFilters = () => {
 					type: 'SET_ADDITIONAL_DATA',
 					payload: additionalData,
 				});
+
+				let activeFilterData = {};
+				let filterType = '';
+				let filterKey = '';
+
+				/**
+				 * Sets the default filter keys.
+				 */
+				const filterKeys = {};
+
+				getAvailableFilters().map((item) => {
+					const type = item.type;
+
+					if ('active-filters' === type || 'reset-button' === type) {
+						return false;
+					}
+
+					if (
+						'attribute' === type ||
+						'custom-taxonomy' === type ||
+						'post-meta' === type ||
+						'post-property' === type
+					) {
+						let data = {};
+
+						if ('attribute' === type) {
+							data = additionalData['attributes'];
+						} else if ('custom-taxonomy' === type) {
+							data = additionalData['custom_taxonomies'];
+						} else if ('post-meta' === type) {
+							data = additionalData['meta_keys'];
+						} else if ('post-property' === type) {
+							data = additionalData['post_properties'];
+						}
+
+						const _filterKeys = {};
+
+						for (const item in data) {
+							let _filterKey = `_${item}`;
+
+							if (filterType === type) {
+								let selected = '';
+
+								if (
+									'attribute' === type ||
+									'custom-taxonomy' === type
+								) {
+									selected = activeFilterData['taxonomy'];
+								} else if ('post-meta') {
+									selected = activeFilterData['meta_key'];
+								} else if ('post-property' === type) {
+									selected =
+										activeFilterData['post_property'];
+								}
+
+								if (item === selected) {
+									_filterKey = filterKey;
+								}
+							}
+
+							_filterKeys[item] = _filterKey;
+						}
+
+						filterKeys[type] = _filterKeys;
+					} else {
+						let defaultFilterKey = item.defaultFilterKey;
+
+						if (filterType === type) {
+							defaultFilterKey = filterKey;
+						}
+
+						filterKeys[type] = defaultFilterKey;
+					}
+				});
+
+				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
 				dispatch({ type: 'SET_LOADING', payload: false });
 			})
@@ -155,48 +232,39 @@ const ListFilters = () => {
 		return html;
 	};
 
+	const content = (
+		<div className='__filter_response'>
+			<Icon
+				icon={
+					<svg viewBox='0 0 24 24'>
+						<polyline points='20 6 9 17 4 12'></polyline>
+					</svg>
+				}
+			/>
+			<h4>{__('Filter was created', 'wc-ajax-product-filter')}</h4>
+			<p className='description'>
+				{__(
+					'Now you can edit all the settings of this filter.',
+					'wc-ajax-product-filter'
+				)}
+			</p>
+			<div className='_buttons'>
+				<Button variant='secondary' onClick={closeAddPostModal}>
+					{__('Maybe Later', 'wc-ajax-product-filter')}
+				</Button>
+				<Button variant='primary'>
+					{__('Edit Filter', 'wc-ajax-product-filter')}
+				</Button>
+			</div>
+		</div>
+	);
+
 	const handleFilterSubmit = () => {
 		console.log('submit filter');
 		setAddPostModalLoading(true);
 
 		setTimeout(() => {
-			setAddPostModalContent(
-				<div className='__filter_response'>
-					<Icon
-						icon={
-							<svg
-								width='100'
-								height='100'
-								viewBox='0 0 24 24'
-								// fill='none'
-								// stroke='#cbcbcb'
-								stroke-width='2'
-								stroke-linecap='round'
-								stroke-linejoin='round'
-							>
-								<polyline points='20 6 9 17 4 12'></polyline>
-							</svg>
-						}
-					/>
-					<h4>
-						{__('Filter was created', 'wc-ajax-product-filter')}
-					</h4>
-					<p className='description'>
-						{__(
-							'Now you can edit all the settings of this filter.',
-							'wc-ajax-product-filter'
-						)}
-					</p>
-					<div className='_buttons'>
-						<Button variant='secondary'>
-							{__('Maybe Later', 'wc-ajax-product-filter')}
-						</Button>
-						<Button variant='primary'>
-							{__('Edit Filter', 'wc-ajax-product-filter')}
-						</Button>
-					</div>
-				</div>
-			);
+			setAddPostModalContent(content);
 			setAddPostModalLoading(false);
 			setAddPostModalStep(addPostModalStep + 1);
 		}, 500);

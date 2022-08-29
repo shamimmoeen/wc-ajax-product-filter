@@ -3884,7 +3884,7 @@ const Listbox = _ref => {
     className: "__form_input_listbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalScrollable, {
     style: {
-      maxHeight: 90
+      maxHeight: 92
     }
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ref: wrapperRef
@@ -4814,14 +4814,17 @@ const GeneralFields = _ref => {
     if ('custom-taxonomy' === filterType || 'attribute' === filterType) {
       const taxonomy = activeFilterData['taxonomy'];
       let taxonomyFieldLabel;
+      let taxonomyFieldDesc;
       let data = {};
       let options = [];
 
       if ('custom-taxonomy' === filterType) {
         taxonomyFieldLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Taxonomy', 'wc-ajax-product-filter');
+        taxonomyFieldDesc = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the taxonomy that terms will be available as filter options.', 'wc-ajax-product-filter');
         data = additionalData['custom_taxonomies'];
       } else {
         taxonomyFieldLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Attribute', 'wc-ajax-product-filter');
+        taxonomyFieldDesc = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the attribute that values will be available as filter options.', 'wc-ajax-product-filter');
         data = additionalData['attributes'];
       }
 
@@ -4834,6 +4837,7 @@ const GeneralFields = _ref => {
 
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
         label: taxonomyFieldLabel,
+        description: taxonomyFieldDesc,
         id: 'taxonomy',
         options: options,
         value: taxonomy,
@@ -4884,6 +4888,7 @@ const GeneralFields = _ref => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
         id: 'meta_key',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Key', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the meta key that values will be available as filter options.', 'wc-ajax-product-filter'),
         options: options,
         value: metaKey,
         onChange: handleMetaKeyChange,
@@ -4934,6 +4939,7 @@ const GeneralFields = _ref => {
 
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Property', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the post property that values will be available as filter options.', 'wc-ajax-product-filter'),
         id: 'post_property',
         options: options,
         value: postProperty,

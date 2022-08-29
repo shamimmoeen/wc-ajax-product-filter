@@ -32,7 +32,7 @@ const Listbox = ({ id, label, description, options, value, onChange }) => {
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
 						<div className='__form_input_listbox'>
-							<Scrollable style={{ maxHeight: 90 }}>
+							<Scrollable style={{ maxHeight: 92 }}>
 								<div ref={wrapperRef}>
 									{options.map((option, index) => (
 										<div

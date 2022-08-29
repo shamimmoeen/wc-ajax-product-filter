@@ -205,6 +205,11 @@ table.__list_table {
 		svg {
 			fill: none;
 			stroke: $successCheckColor;
+			stroke-width: 2;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			width: 100px;
+			height: 100px;
 		}
 
 		._buttons {
