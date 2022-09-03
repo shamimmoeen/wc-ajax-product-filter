@@ -60,12 +60,12 @@ export function getAvailableFilters() {
 		{
 			title: __('Category', 'wc-ajax-product-filter'),
 			type: 'category',
-			defaultFilterKey: '_product-cat',
+			defaultFilterKey: '_product_cat',
 		},
 		{
 			title: __('Tag', 'wc-ajax-product-filter'),
 			type: 'tag',
-			defaultFilterKey: '_product-tag',
+			defaultFilterKey: '_product_tag',
 		},
 		{
 			title: __('Attribute', 'wc-ajax-product-filter'),
@@ -84,7 +84,7 @@ export function getAvailableFilters() {
 		{
 			title: __('Product Status', 'wc-ajax-product-filter'),
 			type: 'product-status',
-			defaultFilterKey: '_product-status',
+			defaultFilterKey: '_status',
 		},
 		{
 			title: __('Post Property', 'wc-ajax-product-filter'),
@@ -103,13 +103,13 @@ export function getAvailableFilters() {
 		{
 			title: __('Sort by', 'wc-ajax-product-filter'),
 			type: 'sort-by',
-			defaultFilterKey: '_sort-by',
+			defaultFilterKey: '_sort_by',
 			isPro: true,
 		},
 		{
 			title: __('Per page', 'wc-ajax-product-filter'),
 			type: 'per-page',
-			defaultFilterKey: '_per-page',
+			defaultFilterKey: '_per_page',
 			isPro: true,
 		},
 		{

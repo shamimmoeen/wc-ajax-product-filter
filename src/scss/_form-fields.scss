@@ -188,3 +188,17 @@
 		}
 	}
 }
+
+// Filter Key field.
+.__form_control {
+	&.__filter_key {
+		.__input_wrapper {
+			display: flex;
+			align-items: center;
+		}
+
+		.components-spinner {
+			margin-top: 0;
+		}
+	}
+}

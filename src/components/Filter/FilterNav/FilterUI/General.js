@@ -4,7 +4,13 @@ import GeneralFields from './GeneralFields';
 
 const Basic = () => {
 	const {
-		state: { filterType, activeFilterData, filterKeys, additionalData },
+		state: {
+			isFilterKeyChecking,
+			filterType,
+			activeFilterData,
+			filterKeys,
+			additionalData,
+		},
 		dispatch,
 	} = useFilter();
 
@@ -12,6 +18,7 @@ const Basic = () => {
 		<>
 			<AvaialableFilters />
 			<GeneralFields
+				isFilterKeyChecking={isFilterKeyChecking}
 				filterType={filterType}
 				activeFilterData={activeFilterData}
 				filterKeys={filterKeys}

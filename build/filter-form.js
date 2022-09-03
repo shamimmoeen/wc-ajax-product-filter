@@ -2708,11 +2708,11 @@ function getAvailableFilters() {
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Category', 'wc-ajax-product-filter'),
     type: 'category',
-    defaultFilterKey: '_product-cat'
+    defaultFilterKey: '_product_cat'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tag', 'wc-ajax-product-filter'),
     type: 'tag',
-    defaultFilterKey: '_product-tag'
+    defaultFilterKey: '_product_tag'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Attribute', 'wc-ajax-product-filter'),
     type: 'attribute'
@@ -2727,7 +2727,7 @@ function getAvailableFilters() {
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Product Status', 'wc-ajax-product-filter'),
     type: 'product-status',
-    defaultFilterKey: '_product-status'
+    defaultFilterKey: '_status'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Property', 'wc-ajax-product-filter'),
     type: 'post-property'
@@ -2742,12 +2742,12 @@ function getAvailableFilters() {
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort by', 'wc-ajax-product-filter'),
     type: 'sort-by',
-    defaultFilterKey: '_sort-by',
+    defaultFilterKey: '_sort_by',
     isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Per page', 'wc-ajax-product-filter'),
     type: 'per-page',
-    defaultFilterKey: '_per-page',
+    defaultFilterKey: '_per_page',
     isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset Button', 'wc-ajax-product-filter'),
@@ -4065,6 +4065,7 @@ const Title = _ref => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "disableFilterHandling": function() { return /* binding */ disableFilterHandling; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
 /* harmony export */   "isProFeature": function() { return /* binding */ isProFeature; },
@@ -4194,6 +4195,46 @@ function prepareMetaKeys(options) {
   }
 
   return _options;
+}
+function disableFilterHandling(activeFilterData) {
+  const {
+    type
+  } = activeFilterData;
+
+  if ('active-filters' === type || 'reset-button' === type) {
+    return false;
+  }
+
+  const {
+    field_key
+  } = activeFilterData;
+
+  if (!field_key) {
+    return true;
+  }
+
+  const {
+    taxonomy,
+    post_property,
+    meta_key
+  } = activeFilterData;
+  let disabled = false;
+
+  if ('attribute' === type || 'custom-taxonomy' === type) {
+    if (!taxonomy) {
+      disabled = true;
+    }
+  } else if ('post-property' === type) {
+    if (!post_property) {
+      disabled = true;
+    }
+  } else if ('post-meta' === type) {
+    if (!meta_key) {
+      disabled = true;
+    }
+  }
+
+  return disabled;
 }
 
 /***/ }),

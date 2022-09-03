@@ -320,6 +320,14 @@ body {
   gap: 15px;
 }
 
+.__form_control.__filter_key .__input_wrapper {
+  display: flex;
+  align-items: center;
+}
+.__form_control.__filter_key .components-spinner {
+  margin-top: 0;
+}
+
 .__available_filters {
   margin-bottom: 1.5em;
 }
@@ -363,6 +371,16 @@ body {
 #wcapf-filters-list-admin-ui {
   padding-bottom: 4em;
 }
+#wcapf-filters-list-admin-ui .components-snackbar-list {
+  width: auto;
+  position: fixed;
+  right: 20px;
+  bottom: -4em;
+  padding-bottom: calc(4em + 20px);
+}
+#wcapf-filters-list-admin-ui .components-snackbar-list .components-snackbar {
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+}
 
 .__list_table_search {
   display: flex;
@@ -378,7 +396,7 @@ body {
   margin: 0;
 }
 
-p.__list_table_results_count {
+.__list_table_footer {
   margin: 1em 0;
 }
 
@@ -394,15 +412,26 @@ table.__list_table .__post_id {
   color: rgba(0, 0, 0, 0.3);
 }
 table.__list_table .__Actions {
-  width: 190px;
-}
-table.__list_table .__component_extra {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.3);
+  width: 300px;
+  text-align: center;
 }
 table.__list_table .__action_buttons {
   display: flex;
   gap: 4px;
+  justify-content: center;
+}
+table.__list_table .__action_buttons .__primary {
+  color: var(--wp-admin-theme-color);
+}
+table.__list_table .__action_buttons .__destructive {
+  color: #d93e3e;
+}
+table.__list_table .__action_buttons .__contextual {
+  color: #50575e;
+}
+table.__list_table .__component_extra {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.3);
 }
 table.__list_table .__no_results {
   background-color: transparent;
