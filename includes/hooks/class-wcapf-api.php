@@ -52,6 +52,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_get_taxonomy_filter_options', array( $this, 'get_taxonomy_filter_options' ) );
 		add_action( 'wp_ajax_get_filters', array( $this, 'get_filters' ) );
+		add_action( 'wp_ajax_check_filter_key', array( $this, 'check_filter_key' ) );
 
 		add_action( 'admin_menu', array( $this, 'register_new_endpoint' ) );
 		add_action( 'admin_menu', array( $this, 'change_post_menu_label' ) );
@@ -450,6 +451,40 @@ class WCAPF_API {
 		}
 
 		wp_send_json_success( $filters_data );
+	}
+
+	public function check_filter_key() {
+		$filter_key = isset( $_GET['filter_key'] ) ? sanitize_title( $_GET['filter_key'] ) : '';
+
+		if ( ! $filter_key ) {
+			wp_send_json_error( __( 'Filter key is required.', 'wc-ajax-product-filter' ) );
+		}
+
+		// Check for existing filter.
+		$args = array(
+			'post_type'      => 'wcapf-filter',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'   => '_filter_key',
+					'value' => $filter_key,
+				),
+			),
+		);
+
+		$found = get_posts( $args );
+
+		if ( $found ) {
+			wp_send_json_error( __( 'The filter key is already in use on another filter.', 'wc-ajax-product-filter' ) );
+		}
+
+		if ( taxonomy_exists( $filter_key ) ) {
+			wp_send_json_error( __( 'There is a taxonomy exists with the filter key.', 'wc-ajax-product-filter' ) );
+		}
+
+		wp_send_json_success( 'available' );
 	}
 
 }

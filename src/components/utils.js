@@ -111,3 +111,37 @@ export function prepareMetaKeys(options) {
 
 	return _options;
 }
+
+export function disableFilterHandling(activeFilterData) {
+	const { type } = activeFilterData;
+
+	if ('active-filters' === type || 'reset-button' === type) {
+		return false;
+	}
+
+	const { field_key } = activeFilterData;
+
+	if (!field_key) {
+		return true;
+	}
+
+	const { taxonomy, post_property, meta_key } = activeFilterData;
+
+	let disabled = false;
+
+	if ('attribute' === type || 'custom-taxonomy' === type) {
+		if (!taxonomy) {
+			disabled = true;
+		}
+	} else if ('post-property' === type) {
+		if (!post_property) {
+			disabled = true;
+		}
+	} else if ('post-meta' === type) {
+		if (!meta_key) {
+			disabled = true;
+		}
+	}
+
+	return disabled;
+}

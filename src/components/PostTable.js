@@ -1,5 +1,12 @@
 import { useState } from '@wordpress/element';
-import { Button, Icon, SearchControl, Spinner } from '@wordpress/components';
+import {
+	Button,
+	Flex,
+	FlexItem,
+	Icon,
+	SearchControl,
+	Spinner,
+} from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import { useListFilters } from './ListFilters/ListFiltersContext';
 
@@ -34,17 +41,21 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 					<tbody>{tbody()}</tbody>
 				</table>
 
-				<p className='description __list_table_results_count'>
-					{sprintf(
-						_n(
-							'Showing %d result',
-							'Showing %d results',
-							filtersFound,
-							'wc-ajax-product-filter'
-						),
-						filtersFound
-					)}
-				</p>
+				<Flex className='__list_table_footer'>
+					<FlexItem>
+						<p className='description'>
+							{sprintf(
+								_n(
+									'Showing %d result',
+									'Showing %d results',
+									filtersFound,
+									'wc-ajax-product-filter'
+								),
+								filtersFound
+							)}
+						</p>
+					</FlexItem>
+				</Flex>
 			</>
 		);
 	} else {

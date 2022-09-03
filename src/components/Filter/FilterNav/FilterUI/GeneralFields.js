@@ -1,8 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import Text from '../../../Field/Text';
+import slugify from '@sindresorhus/slugify';
 import Listbox from '../../../Field/Listbox';
+import FilterKey from './FilterKey';
 
 const GeneralFields = ({
+	isFilterKeyChecking,
 	filterType,
 	activeFilterData,
 	filterKeys,
@@ -203,7 +205,16 @@ const GeneralFields = ({
 	};
 
 	const handleFilterKeyChange = (e) => {
-		const _filterKey = e.target.value;
+		// TODO: Check for default filter key change.
+
+		console.log('onChange event');
+
+		// Slugify the filter key.
+		const _filterKey = slugify(e.target.value, {
+			preserveLeadingUnderscore: true,
+			preserveTrailingDash: true,
+			separator: '_',
+		});
 
 		const _activeFilterData = {
 			...activeFilterData,
@@ -244,7 +255,7 @@ const GeneralFields = ({
 	const filterKeyField = () => {
 		if ('active-filters' !== filterType && 'reset-button' !== filterType) {
 			return (
-				<Text
+				<FilterKey
 					id={'filter_key'}
 					label={__('Filter Key', 'wc-ajax-product-filter')}
 					description={__(
@@ -253,6 +264,7 @@ const GeneralFields = ({
 					)}
 					value={filterKey}
 					onChange={handleFilterKeyChange}
+					isFilterKeyChecking={isFilterKeyChecking}
 				/>
 			);
 		}

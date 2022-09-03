@@ -8,6 +8,7 @@ import { useListFilters } from '../ListFiltersContext';
 const Body = ({ step, setTotalSteps }) => {
 	const {
 		state: {
+			isFilterKeyChecking,
 			title,
 			filterType,
 			activeFilterData,
@@ -85,6 +86,7 @@ const Body = ({ step, setTotalSteps }) => {
 		content = (
 			<div className='__step_inner'>
 				<GeneralFields
+					isFilterKeyChecking={isFilterKeyChecking}
 					filterType={filterType}
 					activeFilterData={activeFilterData}
 					filterKeys={filterKeys}

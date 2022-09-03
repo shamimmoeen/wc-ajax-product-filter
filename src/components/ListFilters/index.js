@@ -4,10 +4,12 @@ import PostTable from '../PostTable';
 import { useEffect, useState } from '@wordpress/element';
 import { useListFilters } from './ListFiltersContext';
 import axios from 'axios';
-import { getAdditionalData, prepareFilterData } from '../utils';
+import { prepareFilterData } from '../utils';
 import DeleteModal from './DeleteModal';
 import AddNewModal from './AddNewModal';
-import { getAvailableFilters } from '../Filter/utils';
+import { store as noticesStore } from '@wordpress/notices';
+import { useDispatch } from '@wordpress/data';
+import Notifications from '../Notifications';
 
 const ListFilters = () => {
 	const {
@@ -16,9 +18,15 @@ const ListFilters = () => {
 	} = useListFilters();
 
 	const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
+
 	const [addPostModalOpen, setAddPostModalOpen] = useState(false);
 	const [addPostModalStep, setAddPostModalStep] = useState(1);
 	const [addPostModalTotalSteps, setAddPostModalTotalSteps] = useState(2);
+
+	// const [addPostModalOpen, setAddPostModalOpen] = useState(true);
+	// const [addPostModalStep, setAddPostModalStep] = useState(3);
+	// const [addPostModalTotalSteps, setAddPostModalTotalSteps] = useState(3);
+
 	const [addPostModalLoading, setAddPostModalLoading] = useState(true);
 	const [addPostModalContent, setAddPostModalContent] = useState('');
 
@@ -27,6 +35,8 @@ const ListFilters = () => {
 
 	const openAddPostModal = () => setAddPostModalOpen(true);
 	const closeAddPostModal = () => setAddPostModalOpen(false);
+
+	const { createErrorNotice } = useDispatch(noticesStore);
 
 	const getFilters = () => {
 		const data = {
@@ -39,18 +49,11 @@ const ListFilters = () => {
 	};
 
 	useEffect(() => {
-		Promise.all([getFilters(), getAdditionalData()])
-			.then((results) => {
-				const resFiltes = results[0];
-				const resAdditionalData = results[1];
-
+		getFilters()
+			.then((res) => {
 				const {
 					data: { data: _filters },
-				} = resFiltes;
-
-				const {
-					data: { data: additionalData },
-				} = resAdditionalData;
+				} = res;
 
 				const newFilters = [];
 
@@ -59,88 +62,6 @@ const ListFilters = () => {
 				});
 
 				dispatch({ type: 'SET_FILTERS', payload: newFilters });
-
-				dispatch({
-					type: 'SET_ADDITIONAL_DATA',
-					payload: additionalData,
-				});
-
-				let activeFilterData = {};
-				let filterType = '';
-				let filterKey = '';
-
-				/**
-				 * Sets the default filter keys.
-				 */
-				const filterKeys = {};
-
-				getAvailableFilters().map((item) => {
-					const type = item.type;
-
-					if ('active-filters' === type || 'reset-button' === type) {
-						return false;
-					}
-
-					if (
-						'attribute' === type ||
-						'custom-taxonomy' === type ||
-						'post-meta' === type ||
-						'post-property' === type
-					) {
-						let data = {};
-
-						if ('attribute' === type) {
-							data = additionalData['attributes'];
-						} else if ('custom-taxonomy' === type) {
-							data = additionalData['custom_taxonomies'];
-						} else if ('post-meta' === type) {
-							data = additionalData['meta_keys'];
-						} else if ('post-property' === type) {
-							data = additionalData['post_properties'];
-						}
-
-						const _filterKeys = {};
-
-						for (const item in data) {
-							let _filterKey = `_${item}`;
-
-							if (filterType === type) {
-								let selected = '';
-
-								if (
-									'attribute' === type ||
-									'custom-taxonomy' === type
-								) {
-									selected = activeFilterData['taxonomy'];
-								} else if ('post-meta') {
-									selected = activeFilterData['meta_key'];
-								} else if ('post-property' === type) {
-									selected =
-										activeFilterData['post_property'];
-								}
-
-								if (item === selected) {
-									_filterKey = filterKey;
-								}
-							}
-
-							_filterKeys[item] = _filterKey;
-						}
-
-						filterKeys[type] = _filterKeys;
-					} else {
-						let defaultFilterKey = item.defaultFilterKey;
-
-						if (filterType === type) {
-							defaultFilterKey = filterKey;
-						}
-
-						filterKeys[type] = defaultFilterKey;
-					}
-				});
-
-				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
-
 				dispatch({ type: 'SET_LOADING', payload: false });
 			})
 			.catch((err) => console.log(err));
@@ -172,6 +93,17 @@ const ListFilters = () => {
 		console.log(filter);
 	};
 
+	const handleCopyShortcode = (filterId) => {
+		navigator.clipboard.writeText(`[wcapf_filter id="${filterId}"]`);
+
+		createErrorNotice(
+			__('Shortcode copied to clipboard', 'wc-ajax-product-filter'),
+			{
+				type: 'snackbar',
+			}
+		);
+	};
+
 	const getTableData = () => {
 		let html;
 
@@ -197,19 +129,23 @@ const ListFilters = () => {
 							</span>
 						)}
 					</td>
-					<td>{`[wcapf_filter id="${filter.id}"]`}</td>
 					<td>
 						<div className='__action_buttons'>
-							<Button variant='secondary' href={filter.permalink}>
-								{__('Edit', 'wc-ajax-product-filter')}
-							</Button>
 							<Button
-								variant='secondary'
-								isDestructive
+								icon={'edit'}
+								className='__primary'
+								href={filter.permalink}
+							/>
+							<Button
+								icon={'trash'}
+								className='__destructive'
 								onClick={() => handleDeleteFilter(filter)}
-							>
-								{__('Delete', 'wc-ajax-product-filter')}
-							</Button>
+							/>
+							<Button
+								icon={'shortcode'}
+								className='__contextual'
+								onClick={() => handleCopyShortcode(filter.id)}
+							/>
 						</div>
 					</td>
 				</tr>
@@ -280,7 +216,6 @@ const ListFilters = () => {
 					__('Title', 'wc-ajax-product-filter'),
 					__('Filter Key', 'wc-ajax-product-filter'),
 					__('Component', 'wc-ajax-product-filter'),
-					__('Shortcode', 'wc-ajax-product-filter'),
 					__('Actions', 'wc-ajax-product-filter'),
 				]}
 				tbody={getTableData}
@@ -303,6 +238,8 @@ const ListFilters = () => {
 				isOpen={deletePostModalOpen}
 				closeModal={closeDeletePostModal}
 			/>
+
+			<Notifications />
 		</>
 	);
 };
