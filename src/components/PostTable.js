@@ -28,14 +28,22 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 				<table className='wp-list-table widefat fixed striped __list_table'>
 					<thead>
 						<tr>
-							{headers.map((item) => (
-								<th
-									className={`__${item}`}
-									key={`posts-table-${item}`}
-								>
-									{item}
-								</th>
-							))}
+							{headers.map((item, index) => {
+								let _classes = `__${item}`;
+
+								if (0 === index) {
+									_classes = 'column-title column-primary';
+								}
+
+								return (
+									<th
+										className={_classes}
+										key={`posts-table-${item}`}
+									>
+										{item}
+									</th>
+								);
+							})}
 						</tr>
 					</thead>
 					<tbody>{tbody()}</tbody>

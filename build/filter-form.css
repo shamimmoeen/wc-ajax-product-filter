@@ -28,10 +28,6 @@ body {
   padding: 20px;
 }
 
-.editor-control {
-  width: calc(100% - 400px);
-}
-
 .editor-preview {
   background-color: #ffffff;
   bottom: 0;
@@ -39,7 +35,6 @@ body {
   position: fixed;
   right: 0;
   top: 0;
-  width: 400px;
   z-index: 200;
   overflow-y: auto;
 }
@@ -60,7 +55,6 @@ body {
   position: fixed;
   right: 0;
   top: 0;
-  width: 400px;
   z-index: -1;
 }
 
@@ -114,7 +108,6 @@ body {
   position: fixed;
   box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
   bottom: 20px;
-  right: calc(400px + 20px);
   z-index: 300;
   display: flex;
   align-items: center;
@@ -135,7 +128,6 @@ body {
 .components-snackbar-list {
   width: auto;
   position: fixed;
-  right: calc(400px + 20px);
   bottom: 85px;
 }
 .components-snackbar-list .components-snackbar {
@@ -187,6 +179,34 @@ body {
   fill: var(--wp-admin-theme-color);
 }
 
+@media (min-width: 1366px) {
+  .editor-control {
+    width: calc(100% - 400px);
+  }
+  .editor-preview {
+    width: 400px;
+  }
+  .editor-preview .__overlay {
+    width: 400px;
+  }
+  .__save_post {
+    right: calc(400px + 20px);
+  }
+  .components-snackbar-list {
+    right: calc(400px + 20px);
+  }
+}
+@media (max-width: 1365px) {
+  .editor-control {
+    width: 100%;
+  }
+  .editor-preview {
+    display: none;
+  }
+  .__save_post {
+    right: 2em;
+  }
+}
 .wcapf-single-filter {
   font-size: 14px;
 }
