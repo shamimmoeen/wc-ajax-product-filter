@@ -17,6 +17,12 @@
 		}
 	}
 
+	@media (max-width: 767px) {
+		.__inner {
+			flex-direction: column;
+		}
+	}
+
 	.__wrapper {
 		flex: 1;
 	}

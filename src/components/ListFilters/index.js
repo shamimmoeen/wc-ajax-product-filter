@@ -10,6 +10,7 @@ import AddNewModal from './AddNewModal';
 import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
 import Notifications from '../Notifications';
+import classnames from 'classnames';
 
 const ListFilters = () => {
 	const {
@@ -110,7 +111,10 @@ const ListFilters = () => {
 		if (filters.length) {
 			html = filters.map((filter) => (
 				<tr key={filter.id}>
-					<td>
+					<td
+						className='title column-primary'
+						data-colname={__('Title', 'wc-ajax-product-filter')}
+					>
 						<a href={filter.permalink} className='row-title'>
 							{filter.title}
 						</a>
@@ -119,8 +123,18 @@ const ListFilters = () => {
 							{filter.id}
 						</div>
 					</td>
-					<td>{filter.filter_key}</td>
-					<td>
+					<td
+						data-colname={__(
+							'Filter Key',
+							'wc-ajax-product-filter'
+						)}
+						className={classnames({ empty: !filter.filter_key })}
+					>
+						{filter.filter_key}
+					</td>
+					<td
+						data-colname={__('Component', 'wc-ajax-product-filter')}
+					>
 						{filter.component}
 						{filter.componentExtra && (
 							<span className='__component_extra'>
@@ -129,7 +143,10 @@ const ListFilters = () => {
 							</span>
 						)}
 					</td>
-					<td>
+					<td
+						data-colname={__('Actions', 'wc-ajax-product-filter')}
+						className='__action_buttons_column'
+					>
 						<div className='__action_buttons'>
 							<Button
 								icon={'edit'}

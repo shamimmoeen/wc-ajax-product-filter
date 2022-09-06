@@ -1,19 +1,19 @@
 import { __ } from '@wordpress/i18n';
-import Checkbox from '../../../Field/Checkbox';
-import Radio from '../../../Field/Radio';
-import Text from '../../../Field/Text';
-import DisplayTypeField from './DisplayTypeField';
-import { useFilter } from '../../FilterContext';
-import TooltipPosition from './TooltipPosition';
+import Checkbox from '../../../../Field/Checkbox';
+import Radio from '../../../../Field/Radio';
+import Text from '../../../../Field/Text';
+import DisplayTypeField from '../DisplayTypeField';
+import { useFilter } from '../../../FilterContext';
+import TooltipPosition from '../TooltipPosition';
+import useFilterData from '../../../useFilterData';
 
-const Layout = () => {
+const Others = () => {
 	const {
 		state: { activeFilterData },
 		dispatch,
 	} = useFilter();
 
 	const {
-		show_title,
 		display_type,
 		query_type,
 		all_items_label,
@@ -26,32 +26,8 @@ const Layout = () => {
 		show_count_in_tooltip,
 	} = activeFilterData;
 
-	const handleCheckboxChange = (key, value) => {
-		const _value = value ? '1' : '';
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: { ...activeFilterData, [key]: _value },
-		});
-	};
-
-	const handleRadioChange = (e, key) => {
-		const value = e.target.value;
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: { ...activeFilterData, [key]: value },
-		});
-	};
-
-	const handleTextFieldChange = (e, key) => {
-		const value = e.target.value;
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: { ...activeFilterData, [key]: value },
-		});
-	};
+	const [handleRadioChange, handleCheckboxChange, handleTextFieldChange] =
+		useFilterData(activeFilterData, dispatch);
 
 	const enableMultipleFilterField = () => {
 		let showField = false;
@@ -294,18 +270,7 @@ const Layout = () => {
 	};
 
 	return (
-		<div>
-			<Checkbox
-				id={'show_title'}
-				label={__('Show Title', 'wc-ajax-product-filter')}
-				isChecked={show_title}
-				onChange={(value) => handleCheckboxChange('show_title', value)}
-				description={__(
-					'Whether to show the filter title before the options.',
-					'wc-ajax-product-filter'
-				)}
-			/>
-
+		<>
 			<DisplayTypeField />
 
 			{enableMultipleFilterField()}
@@ -347,8 +312,8 @@ const Layout = () => {
 			{tooltipPositionField()}
 
 			{showCountInTooltipField()}
-		</div>
+		</>
 	);
 };
 
-export default Layout;
+export default Others;
