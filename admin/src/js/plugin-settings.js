@@ -26,15 +26,7 @@ jQuery( document ).ready( function( $ ) {
 			.on( 'select', function() {
 				const uploadedImage = image.state().get( 'selection' ).first();
 				const imageData     = uploadedImage.toJSON();
-
-				const { thumbnail } = imageData.sizes;
-				let imageUrl;
-
-				if ( thumbnail ) {
-					imageUrl = imageData.sizes.thumbnail.url;
-				} else {
-					imageUrl = imageData.url;
-				}
+				const imageUrl      = imageData.url;
 
 				$wrapper.find( '.image-id' ).val( imageData.id );
 				$wrapper.find( '.image-src' ).attr( 'src', imageUrl );
