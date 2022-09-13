@@ -384,4 +384,23 @@ class WCAPF_Product_Filter_Utils {
 		return '`' . $filter_key . $postfix . '`';
 	}
 
+	/**
+	 * Gets the user roles.
+	 *
+	 * @return array
+	 *
+	 * @since 3.3.0
+	 */
+	public static function get_user_roles() {
+		global $wp_roles;
+
+		if ( ! isset( $wp_roles ) ) {
+			$wp_roles = new WP_Roles();
+		}
+
+		$all_roles = $wp_roles->get_names();
+
+		return apply_filters( 'wcapf_user_roles', $all_roles );
+	}
+
 }
