@@ -92,6 +92,17 @@
 		&.wcapf-form-sub-field-hidden {
 			display: none;
 		}
+
+		&.wcapf-form-sub-field-user_roles {
+			align-items: flex-start;
+
+			.wcapf-wrapper {
+				label {
+					display: inline-block;
+					margin: 0 4px 6px 0;
+				}
+			}
+		}
 	}
 
 	.wcapf-form-sub-field-radio {
