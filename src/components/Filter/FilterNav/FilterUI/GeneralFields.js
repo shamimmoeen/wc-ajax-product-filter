@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import slugify from '@sindresorhus/slugify';
 import Listbox from '../../../Field/Listbox';
 import FilterKey from './FilterKey';
+import Radio from '../../../Field/Radio';
 
 const GeneralFields = ({
 	isFilterKeyChecking,
@@ -252,6 +253,39 @@ const GeneralFields = ({
 		}
 	};
 
+	const valueTypeField = () => {
+		if ('post-meta' === filterType) {
+			const { value_type } = activeFilterData;
+
+			return (
+				<Radio
+					id={'value_type'}
+					label={__('Value Type', 'wc-ajax-product-filter')}
+					description={__(
+						'AND: products that have both options, OR: products that matched any option.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('Text', 'wc-ajax-product-filter'),
+							value: 'text',
+						},
+						{
+							label: __('Number', 'wc-ajax-product-filter'),
+							value: 'number',
+						},
+						{
+							label: __('Date', 'wc-ajax-product-filter'),
+							value: 'date',
+						},
+					]}
+					onChange={(e) => console.log(e.target.value)}
+					value={value_type}
+				/>
+			);
+		}
+	};
+
 	const filterKeyField = () => {
 		if ('active-filters' !== filterType && 'reset-button' !== filterType) {
 			return (
@@ -276,8 +310,13 @@ const GeneralFields = ({
 		output = (
 			<>
 				{taxonomyField()}
+
 				{postMetaField()}
+
 				{postPropertyField()}
+
+				{valueTypeField()}
+
 				{filterKeyField()}
 			</>
 		);

@@ -89,6 +89,7 @@ export function getAvailableFilters() {
 		{
 			title: __('Post Property', 'wc-ajax-product-filter'),
 			type: 'post-property',
+			isPro: true,
 		},
 		{
 			title: __('Custom Taxonomy', 'wc-ajax-product-filter'),

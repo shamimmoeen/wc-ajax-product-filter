@@ -9,7 +9,7 @@ import useFilterData from '../../../useFilterData';
 
 const Others = () => {
 	const {
-		state: { activeFilterData },
+		state: { filterType, activeFilterData },
 		dispatch,
 	} = useFilter();
 
@@ -20,14 +20,103 @@ const Others = () => {
 		use_chosen,
 		chosen_no_results_message,
 		enable_multiple_filter,
+		hierarchical,
 		show_count,
 		hide_empty,
 		enable_tooltip,
 		show_count_in_tooltip,
 	} = activeFilterData;
 
-	const [handleRadioChange, handleCheckboxChange, handleTextFieldChange] =
+	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
 		useFilterData(activeFilterData, dispatch);
+
+	const displayTypeField = () => {
+		const segments = [];
+
+		const haveAllDisplayTypes = [
+			'category',
+			'tag',
+			'attribute',
+			'custom-taxonomy',
+			'product-status',
+			'post-meta',
+		];
+
+		if (haveAllDisplayTypes.includes(filterType)) {
+			segments.push([
+				{
+					label: __('Checkbox', 'wc-ajax-product-filter'),
+					value: 'checkbox',
+				},
+				{
+					label: __('Radio', 'wc-ajax-product-filter'),
+					value: 'radio',
+				},
+				{
+					label: __('Select', 'wc-ajax-product-filter'),
+					value: 'select',
+				},
+				{
+					label: __('Multi select', 'wc-ajax-product-filter'),
+					value: 'multi-select',
+				},
+			]);
+
+			segments.push([
+				{
+					label: __('Label', 'wc-ajax-product-filter'),
+					value: 'label',
+				},
+				{
+					label: __('Color', 'wc-ajax-product-filter'),
+					value: 'color',
+					isPro: true,
+				},
+				{
+					label: __('Image', 'wc-ajax-product-filter'),
+					value: 'image',
+					isPro: true,
+				},
+			]);
+		} else {
+			segments.push([
+				{
+					label: __('Checkbox', 'wc-ajax-product-filter'),
+					value: 'checkbox',
+				},
+				{
+					label: __('Radio', 'wc-ajax-product-filter'),
+					value: 'radio',
+				},
+				{
+					label: __('Select', 'wc-ajax-product-filter'),
+					value: 'select',
+				},
+				{
+					label: __('Multi select', 'wc-ajax-product-filter'),
+					value: 'multi-select',
+				},
+				{
+					label: __('Label', 'wc-ajax-product-filter'),
+					value: 'label',
+				},
+			]);
+		}
+
+		return (
+			<DisplayTypeField
+				id={'display_type'}
+				label={__('Display Type', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines how the filter will be shown on the frontend.',
+					'wc-ajax-product-filter'
+				)}
+				segments={segments}
+				value={display_type}
+				onChange={handleRadioChange}
+			/>
+		);
+	};
 
 	const enableMultipleFilterField = () => {
 		let showField = false;
@@ -111,7 +200,7 @@ const Others = () => {
 					id={'all_items_label'}
 					label={__('All Items Label', 'wc-ajax-product-filter')}
 					description={__(
-						'Change the default option label.',
+						'Change the default option label. Leave blank to show the default label.',
 						'wc-ajax-product-filter'
 					)}
 					value={all_items_label}
@@ -161,7 +250,7 @@ const Others = () => {
 					id={'all_items_label'}
 					label={__('All Items Label', 'wc-ajax-product-filter')}
 					description={__(
-						'Change the default option label.',
+						'Change the default option label. Leave blank to show the default label.',
 						'wc-ajax-product-filter'
 					)}
 					value={all_items_label}
@@ -195,6 +284,38 @@ const Others = () => {
 					value={chosen_no_results_message}
 					onChange={(e) =>
 						handleTextFieldChange(e, 'chosen_no_results_message')
+					}
+				/>
+			);
+		}
+	};
+
+	const hierarchyField = () => {
+		let showField = false;
+
+		const validDisplayTypes = [
+			'checkbox',
+			'radio',
+			'select',
+			'multi-select',
+		];
+
+		if (validDisplayTypes.includes(display_type)) {
+			showField = true;
+		}
+
+		if (showField) {
+			return (
+				<Checkbox
+					id={'hierarchical'}
+					label={__('Show hierarchy', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to show the filter options as hierarchical.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={hierarchical}
+					onChange={(value) =>
+						handleCheckboxChange('hierarchical', value)
 					}
 				/>
 			);
@@ -271,7 +392,7 @@ const Others = () => {
 
 	return (
 		<>
-			<DisplayTypeField />
+			{displayTypeField()}
 
 			{enableMultipleFilterField()}
 
@@ -284,6 +405,8 @@ const Others = () => {
 			{allItemsLabelFieldForUseChosen()}
 
 			{noResultsMessageField()}
+
+			{hierarchyField()}
 
 			<Checkbox
 				id={'show_count'}
