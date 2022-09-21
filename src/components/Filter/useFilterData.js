@@ -26,7 +26,11 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
-	return [handleRadioChange, handleCheckboxChange, handleTextFieldChange];
+	return {
+		handleRadioChange,
+		handleCheckboxChange,
+		handleTextFieldChange,
+	};
 };
 
 export default useFilterData;

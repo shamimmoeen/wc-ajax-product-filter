@@ -2730,7 +2730,8 @@ function getAvailableFilters() {
     defaultFilterKey: '_status'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Property', 'wc-ajax-product-filter'),
-    type: 'post-property'
+    type: 'post-property',
+    isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Taxonomy', 'wc-ajax-product-filter'),
     type: 'custom-taxonomy',

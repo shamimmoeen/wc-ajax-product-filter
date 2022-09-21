@@ -20,7 +20,7 @@ const ActiveFilters = () => {
 		empty_filter_message,
 	} = activeFilterData;
 
-	const [handleRadioChange, handleCheckboxChange, handleTextFieldChange] =
+	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
 		useFilterData(activeFilterData, dispatch);
 
 	return (

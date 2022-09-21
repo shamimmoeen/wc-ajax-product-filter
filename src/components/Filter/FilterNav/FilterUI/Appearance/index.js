@@ -4,6 +4,7 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import ActiveFilters from './ActiveFilters';
 import Others from './Others';
+import PriceFilter from './PriceFilter';
 
 const Appearance = () => {
 	const {
@@ -13,13 +14,15 @@ const Appearance = () => {
 
 	const { show_title } = activeFilterData;
 
-	const [handleCheckboxChange] = useFilterData(activeFilterData, dispatch);
+	const { handleCheckboxChange } = useFilterData(activeFilterData, dispatch);
 
 	const renderFields = () => {
 		let fields;
 
 		if ('active-filters' === filterType) {
 			fields = <ActiveFilters />;
+		} else if ('price' === filterType) {
+			fields = <PriceFilter />;
 		} else {
 			fields = <Others />;
 		}

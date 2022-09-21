@@ -4297,7 +4297,11 @@ const ActiveFilters = () => {
     show_if_empty,
     empty_filter_message
   } = activeFilterData;
-  const [handleRadioChange, handleCheckboxChange, handleTextFieldChange] = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  const {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleTextFieldChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'active_filters_layout',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'wc-ajax-product-filter'),
@@ -4380,6 +4384,7 @@ __webpack_require__.r(__webpack_exports__);
 const Others = () => {
   const {
     state: {
+      filterType,
       activeFilterData
     },
     dispatch
@@ -4391,12 +4396,76 @@ const Others = () => {
     use_chosen,
     chosen_no_results_message,
     enable_multiple_filter,
+    hierarchical,
     show_count,
     hide_empty,
     enable_tooltip,
     show_count_in_tooltip
   } = activeFilterData;
-  const [handleRadioChange, handleCheckboxChange, handleTextFieldChange] = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_8__["default"])(activeFilterData, dispatch);
+  const {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleTextFieldChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_8__["default"])(activeFilterData, dispatch);
+
+  const displayTypeField = () => {
+    const segments = [];
+    const haveAllDisplayTypes = ['category', 'tag', 'attribute', 'custom-taxonomy', 'product-status', 'post-meta'];
+
+    if (haveAllDisplayTypes.includes(filterType)) {
+      segments.push([{
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
+        value: 'checkbox'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
+        value: 'radio'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
+        value: 'select'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multi select', 'wc-ajax-product-filter'),
+        value: 'multi-select'
+      }]);
+      segments.push([{
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
+        value: 'label'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Color', 'wc-ajax-product-filter'),
+        value: 'color',
+        isPro: true
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image', 'wc-ajax-product-filter'),
+        value: 'image',
+        isPro: true
+      }]);
+    } else {
+      segments.push([{
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
+        value: 'checkbox'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
+        value: 'radio'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
+        value: 'select'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multi select', 'wc-ajax-product-filter'),
+        value: 'multi-select'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
+        value: 'label'
+      }]);
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DisplayTypeField__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      id: 'display_type',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
+      segments: segments,
+      value: display_type,
+      onChange: handleRadioChange
+    });
+  };
 
   const enableMultipleFilterField = () => {
     let showField = false;
@@ -4454,7 +4523,7 @@ const Others = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'all_items_label',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
         value: all_items_label,
         onChange: e => handleTextFieldChange(e, 'all_items_label')
       });
@@ -4490,7 +4559,7 @@ const Others = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'all_items_label',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
         value: all_items_label,
         onChange: e => handleTextFieldChange(e, 'all_items_label')
       });
@@ -4511,6 +4580,25 @@ const Others = () => {
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This message is usually displayed when no options match the search term. Leave blank to show the default message.', 'wc-ajax-product-filter'),
         value: chosen_no_results_message,
         onChange: e => handleTextFieldChange(e, 'chosen_no_results_message')
+      });
+    }
+  };
+
+  const hierarchyField = () => {
+    let showField = false;
+    const validDisplayTypes = ['checkbox', 'radio', 'select', 'multi-select'];
+
+    if (validDisplayTypes.includes(display_type)) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'hierarchical',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show hierarchy', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the filter options as hierarchical.', 'wc-ajax-product-filter'),
+        isChecked: hierarchical,
+        onChange: value => handleCheckboxChange('hierarchical', value)
       });
     }
   };
@@ -4563,7 +4651,7 @@ const Others = () => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DisplayTypeField__WEBPACK_IMPORTED_MODULE_5__["default"], null), enableMultipleFilterField(), queryTypeField(), allItemsLabelField(), useChosenField(), allItemsLabelFieldForUseChosen(), noResultsMessageField(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), enableMultipleFilterField(), queryTypeField(), allItemsLabelField(), useChosenField(), allItemsLabelFieldForUseChosen(), noResultsMessageField(), hierarchyField(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'show_count',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Count', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in options.', 'wc-ajax-product-filter'),
@@ -4579,6 +4667,284 @@ const Others = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Others);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/PriceFilter.js":
+/*!****************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/PriceFilter.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _DisplayTypeField__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../DisplayTypeField */ "./src/components/Filter/FilterNav/FilterUI/DisplayTypeField.js");
+
+
+
+
+
+
+
+
+
+const PriceFilter = () => {
+  const {
+    state: {
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
+  const {
+    number_display_type,
+    number_range_slider_display_values_as,
+    number_range_enable_multiple_filter,
+    number_range_query_type,
+    number_range_select_all_items_label,
+    number_range_use_chosen,
+    number_range_chosen_no_results_message,
+    number_range_show_count,
+    number_range_hide_empty
+  } = activeFilterData;
+  const {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleTextFieldChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+
+  const displayTypeField = () => {
+    const segments = [];
+    segments.push([{
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Slider', 'wc-ajax-product-filter'),
+      value: 'range_slider'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'wc-ajax-product-filter'),
+      value: 'range_number'
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
+      value: 'range_checkbox',
+      isPro: true
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
+      value: 'range_radio',
+      isPro: true
+    }]);
+    segments.push([{
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
+      value: 'range_select',
+      isPro: true
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiselect', 'wc-ajax-product-filter'),
+      value: 'range_multiselect',
+      isPro: true
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
+      value: 'range_label',
+      isPro: true
+    }]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DisplayTypeField__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      id: 'number_display_type',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
+      segments: segments,
+      value: number_display_type,
+      onChange: handleRadioChange
+    });
+  };
+
+  const displayValuesField = () => {
+    let showField = false;
+
+    if ('range_slider' === number_display_type || 'range_number' === number_display_type) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        id: 'number_range_slider_display_values_as',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display values as', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determinses how the range values will be shown on the frontend.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Plain Text', 'wc-ajax-product-filter'),
+          value: 'plain_text'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Input Field', 'wc-ajax-product-filter'),
+          value: 'input_field'
+        }],
+        onChange: e => handleRadioChange(e, 'number_range_slider_display_values_as'),
+        value: number_range_slider_display_values_as
+      });
+    }
+  };
+
+  const enableMultipleFilterField = () => {
+    let showField = false;
+
+    if ('range_label' === number_display_type) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'number_range_enable_multiple_filter',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if the user can select multiple options when filtering products.', 'wc-ajax-product-filter'),
+        isChecked: number_range_enable_multiple_filter,
+        onChange: value => handleCheckboxChange('number_range_enable_multiple_filter', value)
+      });
+    }
+  };
+
+  const queryTypeField = () => {
+    let showField = false;
+
+    if ('range_checkbox' === number_display_type || 'range_multiselect' === number_display_type) {
+      showField = true;
+    } else if ('range_label' === number_display_type && '1' === number_range_enable_multiple_filter) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        id: 'number_range_query_type',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Query Type', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND: products that have both options, OR: products that matched any option.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter'),
+          value: 'and'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR', 'wc-ajax-product-filter'),
+          value: 'or'
+        }],
+        onChange: e => handleRadioChange(e, 'number_range_query_type'),
+        value: number_range_query_type
+      });
+    }
+  };
+
+  const allItemsLabelField = () => {
+    let showField = false;
+
+    if ('range_radio' === number_display_type || 'range_select' === number_display_type) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: 'number_range_select_all_items_label',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
+        value: number_range_select_all_items_label,
+        onChange: e => handleTextFieldChange(e, 'number_range_select_all_items_label')
+      });
+    }
+  };
+
+  const useChosenField = () => {
+    let showField = false;
+
+    if ('range_select' === number_display_type || 'range_multiselect' === number_display_type) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'number_range_use_chosen',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Combobox', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use jQuery Chosen library instead of the native select element.', 'wc-ajax-product-filter'),
+        isChecked: number_range_use_chosen,
+        onChange: value => handleCheckboxChange('number_range_use_chosen', value)
+      });
+    }
+  };
+
+  const allItemsLabelFieldForUseChosen = () => {
+    let showField = false;
+
+    if ('range_multiselect' === number_display_type && '1' === number_range_use_chosen) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: 'number_range_select_all_items_label',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
+        value: number_range_select_all_items_label,
+        onChange: e => handleTextFieldChange(e, 'number_range_select_all_items_label')
+      });
+    }
+  };
+
+  const noResultsMessageField = () => {
+    let showField = false;
+
+    if (('range_select' === number_display_type || 'range_multiselect' === number_display_type) && number_range_use_chosen) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: 'number_range_chosen_no_results_message',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Matches Message', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This message is usually displayed when no options match the search term. Leave blank to show the default message.', 'wc-ajax-product-filter'),
+        value: number_range_chosen_no_results_message,
+        onChange: e => handleTextFieldChange(e, 'number_range_chosen_no_results_message')
+      });
+    }
+  };
+
+  const showCountField = () => {
+    let showField = false;
+    const validDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label'];
+
+    if (validDisplayTypes.includes(number_display_type)) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'number_range_show_count',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Count', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in options.', 'wc-ajax-product-filter'),
+        isChecked: number_range_show_count,
+        onChange: value => handleCheckboxChange('number_range_show_count', value)
+      });
+    }
+  };
+
+  const hideEmptyField = () => {
+    let showField = false;
+    const validDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label'];
+
+    if (validDisplayTypes.includes(number_display_type)) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'number_range_hide_empty',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove Empty', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to remove the options that show empty results.', 'wc-ajax-product-filter'),
+        isChecked: number_range_hide_empty,
+        onChange: value => handleCheckboxChange('number_range_hide_empty', value)
+      });
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), enableMultipleFilterField(), queryTypeField(), allItemsLabelField(), useChosenField(), allItemsLabelFieldForUseChosen(), noResultsMessageField(), showCountField(), hideEmptyField());
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (PriceFilter);
 
 /***/ }),
 
@@ -4599,6 +4965,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
 /* harmony import */ var _ActiveFilters__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ActiveFilters */ "./src/components/Filter/FilterNav/FilterUI/Appearance/ActiveFilters.js");
 /* harmony import */ var _Others__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Others */ "./src/components/Filter/FilterNav/FilterUI/Appearance/Others.js");
+/* harmony import */ var _PriceFilter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PriceFilter */ "./src/components/Filter/FilterNav/FilterUI/Appearance/PriceFilter.js");
+
 
 
 
@@ -4618,13 +4986,17 @@ const Appearance = () => {
   const {
     show_title
   } = activeFilterData;
-  const [handleCheckboxChange] = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  const {
+    handleCheckboxChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
 
   const renderFields = () => {
     let fields;
 
     if ('active-filters' === filterType) {
       fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ActiveFilters__WEBPACK_IMPORTED_MODULE_5__["default"], null);
+    } else if ('price' === filterType) {
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_PriceFilter__WEBPACK_IMPORTED_MODULE_7__["default"], null);
     } else {
       fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Others__WEBPACK_IMPORTED_MODULE_6__["default"], null);
     }
@@ -4731,67 +5103,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils */ "./src/components/utils.js");
-/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../FilterContext */ "./src/components/Filter/FilterContext.js");
 
 
 
 
 
+const DisplayTypeField = _ref => {
+  let {
+    id,
+    label,
+    description,
+    segments,
+    value,
+    onChange
+  } = _ref;
 
-const DisplayTypeField = () => {
-  const {
-    state: {
-      activeFilterData
-    },
-    dispatch
-  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_4__.useFilter)();
-  const {
-    display_type
-  } = activeFilterData;
-  const id = 'display_type';
-
-  const label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter');
-
-  const description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter');
-
-  const firstSegment = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
-    value: 'checkbox'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
-    value: 'radio'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
-    value: 'select'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multi select', 'wc-ajax-product-filter'),
-    value: 'multi-select'
-  }];
-  const secondSegment = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
-    value: 'label'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Color', 'wc-ajax-product-filter'),
-    value: 'color',
-    isPro: true
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image', 'wc-ajax-product-filter'),
-    value: 'image',
-    isPro: true
-  }];
-
-  const handleDisplayTypeChange = e => {
-    const value = e.target.value;
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        display_type: value
-      }
-    });
+  const renderSegments = () => {
+    return segments.map((options, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: `__row${index + 1}`,
+      key: `segment-${index}`
+    }, renderOptions(options)));
   };
 
   const renderOptions = options => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, options.map(option => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    return options.map(option => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       key: option.value,
       className: classnames__WEBPACK_IMPORTED_MODULE_2___default()('components-radio-control__option')
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
@@ -4800,11 +5135,11 @@ const DisplayTypeField = () => {
       type: "radio",
       name: id,
       value: option.value,
-      onChange: handleDisplayTypeChange,
-      checked: option.value === display_type
+      onChange: e => onChange(e, id),
+      checked: option.value === value
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
       htmlFor: option.value
-    }, option.label, (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(option.isPro)))));
+    }, option.label, (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(option.isPro))));
   };
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -4819,11 +5154,7 @@ const DisplayTypeField = () => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__input_wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__row1"
-  }, renderOptions(firstSegment)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__row2"
-  }, renderOptions(secondSegment))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }, renderSegments()))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, description) : '');
 };
@@ -4945,6 +5276,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sindresorhus_slugify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @sindresorhus/slugify */ "./node_modules/@sindresorhus/slugify/index.js");
 /* harmony import */ var _Field_Listbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Field/Listbox */ "./src/components/Field/Listbox.js");
 /* harmony import */ var _FilterKey__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FilterKey */ "./src/components/Filter/FilterNav/FilterUI/FilterKey.js");
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Field/Radio */ "./src/components/Field/Radio.js");
+
 
 
 
@@ -5172,6 +5505,31 @@ const GeneralFields = _ref => {
     }
   };
 
+  const valueTypeField = () => {
+    if ('post-meta' === filterType) {
+      const {
+        value_type
+      } = activeFilterData;
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        id: 'value_type',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Type', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND: products that have both options, OR: products that matched any option.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'wc-ajax-product-filter'),
+          value: 'text'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'wc-ajax-product-filter'),
+          value: 'number'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'wc-ajax-product-filter'),
+          value: 'date'
+        }],
+        onChange: e => console.log(e.target.value),
+        value: value_type
+      });
+    }
+  };
+
   const filterKeyField = () => {
     if ('active-filters' !== filterType && 'reset-button' !== filterType) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterKey__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -5188,7 +5546,7 @@ const GeneralFields = _ref => {
   let output = '';
 
   if (filterType) {
-    output = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, taxonomyField(), postMetaField(), postPropertyField(), filterKeyField());
+    output = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, taxonomyField(), postMetaField(), postPropertyField(), valueTypeField(), filterKeyField());
   }
 
   return output;
@@ -5977,7 +6335,7 @@ const FilterUI = () => {
     }
   };
 
-  let initialTabName = 'options';
+  let initialTabName = 'general';
 
   if (activeUIStep) {
     initialTabName = activeUIStep;
@@ -6658,7 +7016,11 @@ const useFilterData = (activeFilterData, dispatch) => {
     });
   };
 
-  return [handleRadioChange, handleCheckboxChange, handleTextFieldChange];
+  return {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleTextFieldChange
+  };
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (useFilterData);
@@ -6771,7 +7133,8 @@ function getAvailableFilters() {
     defaultFilterKey: '_status'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Property', 'wc-ajax-product-filter'),
-    type: 'post-property'
+    type: 'post-property',
+    isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Taxonomy', 'wc-ajax-product-filter'),
     type: 'custom-taxonomy',
