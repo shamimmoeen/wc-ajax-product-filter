@@ -4,12 +4,12 @@ import Radio from '../../../../Field/Radio';
 import Text from '../../../../Field/Text';
 import DisplayTypeField from '../DisplayTypeField';
 import { useFilter } from '../../../FilterContext';
-import TooltipPosition from '../TooltipPosition';
 import useFilterData from '../../../useFilterData';
+import ToggleGroup from '../../../../Field/ToggleGroup';
 
 const Others = () => {
 	const {
-		state: { filterType, activeFilterData },
+		state: { filterType, additionalData, activeFilterData },
 		dispatch,
 	} = useFilter();
 
@@ -24,11 +24,16 @@ const Others = () => {
 		show_count,
 		hide_empty,
 		enable_tooltip,
+		tooltip_position,
 		show_count_in_tooltip,
 	} = activeFilterData;
 
-	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, dispatch);
+	const {
+		handleRadioChange,
+		handleCheckboxChange,
+		handleTextFieldChange,
+		handleToggleGroupChange,
+	} = useFilterData(activeFilterData, dispatch);
 
 	const displayTypeField = () => {
 		const segments = [];
@@ -76,6 +81,17 @@ const Others = () => {
 					label: __('Image', 'wc-ajax-product-filter'),
 					value: 'image',
 					isPro: true,
+				},
+			]);
+		} else if ('sort-by' === filterType || 'per-page' === filterType) {
+			segments.push([
+				{
+					label: __('Radio', 'wc-ajax-product-filter'),
+					value: 'radio',
+				},
+				{
+					label: __('Select', 'wc-ajax-product-filter'),
+					value: 'select',
 				},
 			]);
 		} else {
@@ -200,7 +216,7 @@ const Others = () => {
 					id={'all_items_label'}
 					label={__('All Items Label', 'wc-ajax-product-filter')}
 					description={__(
-						'Change the default option label. Leave blank to show the default label.',
+						'Change the default option label.',
 						'wc-ajax-product-filter'
 					)}
 					value={all_items_label}
@@ -250,7 +266,7 @@ const Others = () => {
 					id={'all_items_label'}
 					label={__('All Items Label', 'wc-ajax-product-filter')}
 					description={__(
-						'Change the default option label. Leave blank to show the default label.',
+						'Change the default option label.',
 						'wc-ajax-product-filter'
 					)}
 					value={all_items_label}
@@ -291,6 +307,23 @@ const Others = () => {
 	};
 
 	const hierarchyField = () => {
+		let isHierarchical = false;
+
+		if ('category' === filterType) {
+			isHierarchical = true;
+		} else if ('custom-taxonomy' === filterType) {
+			const { taxonomy } = activeFilterData;
+			const { taxonomy_hierarchical_data } = additionalData;
+
+			if (taxonomy_hierarchical_data[taxonomy]) {
+				isHierarchical = true;
+			}
+		}
+
+		if (!isHierarchical) {
+			return;
+		}
+
 		let showField = false;
 
 		const validDisplayTypes = [
@@ -316,6 +349,60 @@ const Others = () => {
 					isChecked={hierarchical}
 					onChange={(value) =>
 						handleCheckboxChange('hierarchical', value)
+					}
+				/>
+			);
+		}
+	};
+
+	const showCountField = () => {
+		let showField = true;
+
+		const excludedFilterTypes = ['sort-by', 'per-page'];
+
+		if (excludedFilterTypes.includes(filterType)) {
+			showField = false;
+		}
+
+		if (showField) {
+			return (
+				<Checkbox
+					id={'show_count'}
+					label={__('Show Count', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to show the product count in options.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={show_count}
+					onChange={(value) =>
+						handleCheckboxChange('show_count', value)
+					}
+				/>
+			);
+		}
+	};
+
+	const removeEmptyField = () => {
+		let showField = true;
+
+		const excludedFilterTypes = ['sort-by', 'per-page'];
+
+		if (excludedFilterTypes.includes(filterType)) {
+			showField = false;
+		}
+
+		if (showField) {
+			return (
+				<Checkbox
+					id={'hide_empty'}
+					label={__('Remove Empty', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to remove the options that show empty results.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={hide_empty}
+					onChange={(value) =>
+						handleCheckboxChange('hide_empty', value)
 					}
 				/>
 			);
@@ -358,7 +445,36 @@ const Others = () => {
 		}
 
 		if (showField) {
-			return <TooltipPosition />;
+			return (
+				<ToggleGroup
+					id={'tooltip_position'}
+					label={__('Tooltip Position', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines on which side the tooltip will be placed.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('Top', 'wc-ajax-product-filter'),
+							value: 'top',
+						},
+						{
+							label: __('Right', 'wc-ajax-product-filter'),
+							value: 'right',
+						},
+						{
+							label: __('Bottom', 'wc-ajax-product-filter'),
+							value: 'bottom',
+						},
+						{
+							label: __('Left', 'wc-ajax-product-filter'),
+							value: 'left',
+						},
+					]}
+					onChange={handleToggleGroupChange}
+					value={tooltip_position}
+				/>
+			);
 		}
 	};
 
@@ -408,27 +524,9 @@ const Others = () => {
 
 			{hierarchyField()}
 
-			<Checkbox
-				id={'show_count'}
-				label={__('Show Count', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to show the product count in options.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={show_count}
-				onChange={(value) => handleCheckboxChange('show_count', value)}
-			/>
+			{showCountField()}
 
-			<Checkbox
-				id={'hide_empty'}
-				label={__('Remove Empty', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to remove the options that show empty results.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={hide_empty}
-				onChange={(value) => handleCheckboxChange('hide_empty', value)}
-			/>
+			{removeEmptyField()}
 
 			{enableTooltipField()}
 

@@ -322,6 +322,9 @@ body {
   background: var(--wp-admin-theme-color);
   color: #fff;
 }
+.__form_control.number .components-text-control__input {
+  max-width: 100px;
+}
 
 .__form_control.display-type .__inner {
   align-items: flex-start;

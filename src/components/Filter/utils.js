@@ -120,27 +120,6 @@ export function getAvailableFilters() {
 	];
 }
 
-export function getTooltipPositionOptions() {
-	return [
-		{
-			label: __('Top', 'wc-ajax-product-filter'),
-			value: 'top',
-		},
-		{
-			label: __('Right', 'wc-ajax-product-filter'),
-			value: 'right',
-		},
-		{
-			label: __('Bottom', 'wc-ajax-product-filter'),
-			value: 'bottom',
-		},
-		{
-			label: __('Left', 'wc-ajax-product-filter'),
-			value: 'left',
-		},
-	];
-}
-
 export function getTaxonomyLimitByOptions() {
 	return [
 		{
@@ -165,6 +144,10 @@ export function getTaxonomyLimitByOptions() {
 
 export function getOrderByOptions() {
 	return [
+		{
+			label: __('Default', 'wc-ajax-product-filter'),
+			value: 'default',
+		},
 		{
 			label: __('ID', 'wc-ajax-product-filter'),
 			value: 'id',

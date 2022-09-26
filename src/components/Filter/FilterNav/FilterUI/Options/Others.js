@@ -1,19 +1,21 @@
 import { __ } from '@wordpress/i18n';
-import Radio from '../../../Field/Radio';
-import Select from '../../../Field/Select';
-import { useFilter } from '../../FilterContext';
-import OptionsTable from './OptionsTable';
-import OptionsTableModal from './OptionsTableModal';
+import Radio from '../../../../Field/Radio';
+import Select from '../../../../Field/Select';
+import { useFilter } from '../../../FilterContext';
+import OptionsTable from '../OptionsTable';
+import OptionsTableModal from '../OptionsTableModal';
 import { useEffect, useState } from '@wordpress/element';
-import { getOrderByOptions, getOrderDirectionOptions } from '../../utils';
+import { getOrderByOptions, getOrderDirectionOptions } from '../../../utils';
 import { Spinner } from '@wordpress/components';
 import axios from 'axios';
 import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
-import { find, isEmpty } from 'lodash';
-import LimitBy from './LimitFields';
+import { isEmpty } from 'lodash';
+import LimitBy from '../LimitFields';
+import useFilterData from '../../../useFilterData';
+import ToggleGroup from '../../../../Field/ToggleGroup';
 
-const Options = () => {
+const Others = () => {
 	const {
 		state: { activeFilterData, isFilterOptionsLoading },
 		dispatch,
@@ -21,15 +23,13 @@ const Options = () => {
 
 	const [isOpen, setOpen] = useState(false);
 
-	const {
-		get_options,
-		limit_options,
-		parent_term,
-		limit_values_by_id,
-		exclude_values_id,
-		order_terms_by,
-		order_terms_dir,
-	} = activeFilterData;
+	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
+		activeFilterData,
+		dispatch
+	);
+
+	const { get_options, limit_options, order_terms_by, order_terms_dir } =
+		activeFilterData;
 
 	const { createErrorNotice } = useDispatch(noticesStore);
 
@@ -81,15 +81,6 @@ const Options = () => {
 
 	const closeModal = () => setOpen(false);
 
-	const handleRadioChange = (e, key) => {
-		const value = e.target.value;
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: { ...activeFilterData, [key]: value },
-		});
-	};
-
 	const handleSelectChange = (values, key) => {
 		if (isEmpty(values)) {
 			dispatch({
@@ -133,30 +124,24 @@ const Options = () => {
 
 	const orderByField = () => {
 		const options = getOrderByOptions();
-		const _value = find(options, { value: order_terms_by });
-		const value = _value ? [_value] : [];
 
 		return (
-			<Select
-				label={__('Order By', 'wc-ajax-product-filter')}
+			<ToggleGroup
 				id={'order_terms_by'}
-				options={options}
-				values={value}
-				onChange={(values) =>
-					handleSelectChange(values, 'order_terms_by')
-				}
-				placeholder={__('Default', 'wc-ajax-product-filter')}
-				searchable={false}
+				label={__('Order By', 'wc-ajax-product-filter')}
 				description={__(
 					'Field to order options by.',
 					'wc-ajax-product-filter'
 				)}
+				options={options}
+				onChange={handleToggleGroupChange}
+				value={order_terms_by}
 			/>
 		);
 	};
 
 	const orderDirectionField = () => {
-		if (order_terms_by) {
+		if ('default' !== order_terms_by) {
 			return (
 				<Radio
 					id={'order_terms_dir'}
@@ -249,7 +234,7 @@ const Options = () => {
 	};
 
 	return (
-		<div>
+		<>
 			{getOptionsField()}
 
 			{orderByField()}
@@ -276,8 +261,8 @@ const Options = () => {
 					/>
 				</>
 			)}
-		</div>
+		</>
 	);
 };
 
-export default Options;
+export default Others;

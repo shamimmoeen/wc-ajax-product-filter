@@ -18,13 +18,29 @@ const FilterUI = () => {
 		}
 	};
 
-	let initialTabName = 'general';
+	let initialTabName = 'options';
 
 	if (activeUIStep) {
 		initialTabName = activeUIStep;
 	}
 
-	const disableTabItem = !filterType.length ? true : false;
+	const isOptionsDisabled = () => {
+		let disabled = false;
+
+		if ('active-filters' === filterType) {
+			disabled = true;
+		} else if ('reset-button' === filterType) {
+			disabled = true;
+		}
+
+		return disabled;
+	};
+
+	const isAppearanceDisabled = () => {
+		let disabled = false;
+
+		return disabled;
+	};
 
 	return (
 		<CustomTabPanel
@@ -43,19 +59,18 @@ const FilterUI = () => {
 					name: 'appearance',
 					title: __('Appearance', 'wc-ajax-product-filter'),
 					className: 'appearance',
-					isDisabled: disableTabItem,
 				},
 				{
 					name: 'options',
 					title: __('Options', 'wc-ajax-product-filter'),
 					className: 'options',
-					isDisabled: disableTabItem,
+					isDisabled: isOptionsDisabled(),
 				},
 				{
 					name: 'advanced',
 					title: __('Advanced', 'wc-ajax-product-filter'),
 					className: 'advanced',
-					isDisabled: disableTabItem,
+					isDisabled: isAppearanceDisabled(),
 				},
 			]}
 		>

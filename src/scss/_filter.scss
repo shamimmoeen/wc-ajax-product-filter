@@ -112,3 +112,16 @@
 		width: 100%;
 	}
 }
+
+.number-ui-optionsd {
+	.cols-wrapper {
+		display: flex;
+
+		.__form_control {
+			.__inner {
+				flex-direction: column;
+				gap: 10px;
+			}
+		}
+	}
+}
