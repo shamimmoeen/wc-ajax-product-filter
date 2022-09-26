@@ -87,10 +87,7 @@ const PriceFilter = () => {
 	const displayValuesField = () => {
 		let showField = false;
 
-		if (
-			'range_slider' === number_display_type ||
-			'range_number' === number_display_type
-		) {
+		if ('range_slider' === number_display_type) {
 			showField = true;
 		}
 
@@ -100,7 +97,7 @@ const PriceFilter = () => {
 					id={'number_range_slider_display_values_as'}
 					label={__('Display values as', 'wc-ajax-product-filter')}
 					description={__(
-						'Determinses how the range values will be shown on the frontend.',
+						'Determinses how the slider values will be shown on the frontend.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
@@ -212,7 +209,7 @@ const PriceFilter = () => {
 					id={'number_range_select_all_items_label'}
 					label={__('All Items Label', 'wc-ajax-product-filter')}
 					description={__(
-						'Change the default option label. Leave blank to show the default label.',
+						'Change the default option label.',
 						'wc-ajax-product-filter'
 					)}
 					value={number_range_select_all_items_label}

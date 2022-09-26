@@ -26,10 +26,18 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
+	const handleToggleGroupChange = (value, key) => {
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: { ...activeFilterData, [key]: value },
+		});
+	};
+
 	return {
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
+		handleToggleGroupChange,
 	};
 };
 

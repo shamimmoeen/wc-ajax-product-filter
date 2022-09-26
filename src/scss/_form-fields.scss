@@ -162,6 +162,13 @@
 			}
 		}
 	}
+
+	// Number
+	&.number {
+		.components-text-control__input {
+			max-width: 100px;
+		}
+	}
 }
 
 // Overrides for display type field.

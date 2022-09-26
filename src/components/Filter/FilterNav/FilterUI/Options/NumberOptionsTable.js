@@ -1,15 +1,15 @@
 import { Button, Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useFilter } from '../../FilterContext';
 import { ReactSortable } from 'react-sortablejs';
 import { useState, useEffect } from '@wordpress/element';
 import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
+import { useFilter } from '../../../FilterContext';
 
-const OptionsTable = ({ openModal }) => {
+const NumberOptionsTable = () => {
 	const {
 		state: {
-			activeFilterData: { get_options, display_type },
+			activeFilterData: { number_get_options },
 			filterOptions,
 		},
 		dispatch,
@@ -37,6 +37,8 @@ const OptionsTable = ({ openModal }) => {
 		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: _filterOptions });
 	};
 
+	const addOption = () => {};
+
 	const handleLabelChange = () => {};
 
 	const table = () => {
@@ -45,22 +47,15 @@ const OptionsTable = ({ openModal }) => {
 				<thead>
 					<tr>
 						<th className='__drag_handle' />
-						<th className='__option'>
-							{__('Value', 'wc-ajax-product-filter')}
+						<th className='__value'>
+							{__('Min Value', 'wc-ajax-product-filter')}
+						</th>
+						<th className='__value'>
+							{__('Max Value', 'wc-ajax-product-filter')}
 						</th>
 						<th className='__label'>
 							{__('Label', 'wc-ajax-product-filter')}
 						</th>
-						{'color' === display_type ? (
-							<th className='__color'>
-								{__('Color', 'wc-ajax-product-filter')}
-							</th>
-						) : null}
-						{'image' === display_type ? (
-							<th className='__image'>
-								{__('Image', 'wc-ajax-product-filter')}
-							</th>
-						) : null}
 						<th className='__action' />
 					</tr>
 				</thead>
@@ -88,20 +83,13 @@ const OptionsTable = ({ openModal }) => {
 									</div>
 								</td>
 								<td>
-									<div className='__option_value'>
-										<span className='slug'>
-											{__(
-												'Slug',
-												'wc-ajax-product-filter'
-											)}
-											:{` `}
-											<span>{slug}</span>
-										</span>
-										<span className='id'>
-											{__('ID', 'wc-ajax-product-filter')}
-											:{` `}
-											<span>{term_id}</span>
-										</span>
+									<div>
+										<input
+											type='text'
+											value={label}
+											className='components-text-control__input'
+											onChange={handleLabelChange}
+										/>
 									</div>
 								</td>
 								<td>
@@ -114,16 +102,16 @@ const OptionsTable = ({ openModal }) => {
 										/>
 									</div>
 								</td>
-								{'color' === display_type ? (
-									<td>
-										<div>{color}</div>
-									</td>
-								) : null}
-								{'image' === display_type ? (
-									<td>
-										<div>{image}</div>
-									</td>
-								) : null}
+								<td>
+									<div>
+										<input
+											type='text'
+											value={label}
+											className='components-text-control__input'
+											onChange={handleLabelChange}
+										/>
+									</div>
+								</td>
 								<td>
 									<div>
 										<button
@@ -147,7 +135,7 @@ const OptionsTable = ({ openModal }) => {
 
 	return (
 		<>
-			{'manual_entry' === get_options && (
+			{'manual_entry' === number_get_options && (
 				<div className='__options_table'>
 					<div className='__form_control'>
 						<div className='__inner'>
@@ -172,8 +160,8 @@ const OptionsTable = ({ openModal }) => {
 					</div>
 					{!isEmpty(rows) && table()}
 					<div className='__button_group'>
-						<Button variant='secondary' onClick={openModal}>
-							{__('Browse Options', 'wc-ajax-product-filter')}
+						<Button variant='secondary' onClick={addOption}>
+							{__('Add Option', 'wc-ajax-product-filter')}
 						</Button>
 						{!isEmpty(rows) && (
 							<Button
@@ -191,4 +179,4 @@ const OptionsTable = ({ openModal }) => {
 	);
 };
 
-export default OptionsTable;
+export default NumberOptionsTable;

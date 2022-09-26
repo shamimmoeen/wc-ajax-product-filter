@@ -5,6 +5,7 @@ import useFilterData from '../../../useFilterData';
 import ActiveFilters from './ActiveFilters';
 import Others from './Others';
 import PriceFilter from './PriceFilter';
+import ResetFilter from './ResetFilter';
 
 const Appearance = () => {
 	const {
@@ -23,6 +24,8 @@ const Appearance = () => {
 			fields = <ActiveFilters />;
 		} else if ('price' === filterType) {
 			fields = <PriceFilter />;
+		} else if ('reset-button' === filterType) {
+			fields = <ResetFilter />;
 		} else {
 			fields = <Others />;
 		}

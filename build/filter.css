@@ -340,6 +340,14 @@ body {
   width: 100%;
 }
 
+.number-ui-optionsd .cols-wrapper {
+  display: flex;
+}
+.number-ui-optionsd .cols-wrapper .__form_control .__inner {
+  flex-direction: column;
+  gap: 10px;
+}
+
 .__form_control {
   margin: 0 0 2em;
 }
@@ -454,6 +462,9 @@ body {
 .__form_control .__form_input_listbox .__item.active {
   background: var(--wp-admin-theme-color);
   color: #fff;
+}
+.__form_control.number .components-text-control__input {
+  max-width: 100px;
 }
 
 .__form_control.display-type .__inner {

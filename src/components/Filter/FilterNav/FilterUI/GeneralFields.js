@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import slugify from '@sindresorhus/slugify';
 import Listbox from '../../../Field/Listbox';
 import FilterKey from './FilterKey';
-import Radio from '../../../Field/Radio';
+import ToggleGroup from '../../../Field/ToggleGroup';
 
 const GeneralFields = ({
 	isFilterKeyChecking,
@@ -253,16 +253,28 @@ const GeneralFields = ({
 		}
 	};
 
+	const handleValueTypeChange = (value) => {
+		const _activeFilterData = {
+			...activeFilterData,
+			value_type: value,
+		};
+
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: _activeFilterData,
+		});
+	};
+
 	const valueTypeField = () => {
 		if ('post-meta' === filterType) {
 			const { value_type } = activeFilterData;
 
 			return (
-				<Radio
+				<ToggleGroup
 					id={'value_type'}
 					label={__('Value Type', 'wc-ajax-product-filter')}
 					description={__(
-						'AND: products that have both options, OR: products that matched any option.',
+						'Determines the post meta value type.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
@@ -279,7 +291,7 @@ const GeneralFields = ({
 							value: 'date',
 						},
 					]}
-					onChange={(e) => console.log(e.target.value)}
+					onChange={handleValueTypeChange}
 					value={value_type}
 				/>
 			);

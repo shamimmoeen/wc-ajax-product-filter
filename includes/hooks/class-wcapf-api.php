@@ -324,6 +324,11 @@ class WCAPF_API {
 		wp_send_json_success( $response );
 	}
 
+	/**
+	 * TODO: Move the helper methods to free version.
+	 *
+	 * @return void
+	 */
 	public function get_filter_additional_data() {
 		$response = array();
 
@@ -364,6 +369,27 @@ class WCAPF_API {
 		}
 
 		$response['post_properties'] = $post_properties;
+
+		// Hierarchical Taxonomies.
+		$helper = new WCAPF_PRO_Helper;
+
+		$taxonomies    = $helper::get_custom_taxonomies();
+		$taxonomy_data = array();
+
+		foreach ( $taxonomies as $taxonomy ) {
+			$taxonomy_data[ $taxonomy ] = is_taxonomy_hierarchical( $taxonomy );
+		}
+
+		$response['taxonomy_hierarchical_data'] = $taxonomy_data;
+
+		$post_properties    = $helper::get_post_properties();
+		$post_property_data = array();
+
+		foreach ( $post_properties as $post_property => $_data ) {
+			$post_property_data[ $post_property ] = $_data['type'];
+		}
+
+		$response['post_property_data'] = $post_property_data;
 
 		wp_send_json_success( $response );
 	}
