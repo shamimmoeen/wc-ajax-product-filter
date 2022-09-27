@@ -1100,4 +1100,11 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
+	/**
+	 * Make it compatible with other plugins.
+	 */
+	$body.on( 'wcapf_after_updating_products', function() {
+		// woo-variation-swatches
+		$( document ).trigger( 'woo_variation_swatches_pro_init' );
+	} );
 } );
