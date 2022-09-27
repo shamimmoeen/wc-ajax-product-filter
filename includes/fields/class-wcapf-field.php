@@ -354,6 +354,10 @@ abstract class WCAPF_Field {
 				$this->field_limit_values( $data );
 				break;
 
+			case 'user_roles':
+				$this->field_user_roles( $data );
+				break;
+
 			case 'select':
 				$this->field_select( $data );
 				break;
@@ -523,6 +527,44 @@ abstract class WCAPF_Field {
 				<button type="button" class="button button-small limit-values-btn">
 					<span class="dashicons dashicons-search"></span>
 				</button>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders the HTML markup for the user roles field.
+	 *
+	 * @param array $data The field data.
+	 *
+	 * @return void
+	 *
+	 * @since 3.3.0
+	 */
+	private function field_user_roles( $data ) {
+		$id    = $data['id'];
+		$name  = $data['name'];
+		$value = $data['value'];
+		$value = is_array( $value ) ? $value : array();
+
+		$user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
+		?>
+		<div class="<?php echo esc_attr( $this->field_classes( $data ) ); ?>">
+			<?php $this->field_label( $data ); ?>
+
+			<div class="wcapf-wrapper">
+				<?php foreach ( $user_roles as $role => $label ) : ?>
+					<label>
+						<input
+							type="checkbox"
+							id="<?php echo esc_attr( $id ); ?>"
+							name="<?php echo esc_attr( $name ); ?>[]"
+							value="<?php echo esc_attr( $role ); ?>"
+							<?php echo in_array( $role, $value ) ? 'checked="checked"' : ''; ?>
+						>
+						<?php echo esc_html( $label ); ?>
+					</label>
+				<?php endforeach; ?>
 			</div>
 		</div>
 		<?php
