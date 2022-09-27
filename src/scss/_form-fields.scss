@@ -215,3 +215,24 @@
 		}
 	}
 }
+
+// Number min, max fields with auto detect.
+.__form_control {
+	&.with-checkbox {
+		.__input_wrapper {
+			display: flex;
+			gap: 12px;
+
+			.checkbox-wrapper {
+				display: flex;
+				align-items: center;
+
+				.components-checkbox-control {
+					.components-base-control__field {
+						margin: 0;
+					}
+				}
+			}
+		}
+	}
+}

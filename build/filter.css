@@ -497,6 +497,18 @@ body {
   margin-top: 0;
 }
 
+.__form_control.with-checkbox .__input_wrapper {
+  display: flex;
+  gap: 12px;
+}
+.__form_control.with-checkbox .__input_wrapper .checkbox-wrapper {
+  display: flex;
+  align-items: center;
+}
+.__form_control.with-checkbox .__input_wrapper .checkbox-wrapper .components-checkbox-control .components-base-control__field {
+  margin: 0;
+}
+
 .__available_filters {
   margin-bottom: 1.5em;
 }
@@ -594,6 +606,13 @@ body {
 }
 .__options_table .wp-list-table.widefat .button-link-delete:hover svg {
   opacity: 0.8;
+}
+.__options_table .wp-list-table.widefat .__min_value,
+.__options_table .wp-list-table.widefat .__max_value {
+  width: 100px;
+}
+.__options_table .wp-list-table.widefat .__range_label .components-text-control__input {
+  max-width: 180px;
 }
 .__options_table .__description {
   font-weight: 500;

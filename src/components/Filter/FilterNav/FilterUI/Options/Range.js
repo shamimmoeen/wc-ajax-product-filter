@@ -3,6 +3,7 @@ import Number from '../../../../Field/Number';
 import Radio from '../../../../Field/Radio';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
+import FieldNumber from './FieldNumber';
 import NumberOptionsTable from './NumberOptionsTable';
 
 const Range = () => {
@@ -11,18 +12,16 @@ const Range = () => {
 		dispatch,
 	} = useFilter();
 
-	const {
-		handleRadioChange,
-		handleCheckboxChange,
-		handleTextFieldChange,
-		handleToggleGroupChange,
-	} = useFilterData(activeFilterData, dispatch);
+	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
+		useFilterData(activeFilterData, dispatch);
 
 	const {
 		number_display_type,
 		number_get_options,
 		min_value,
+		min_value_auto_detect,
 		max_value,
+		max_value_auto_detect,
 		step,
 		value_prefix,
 		value_postfix,
@@ -89,31 +88,50 @@ const Range = () => {
 		}
 
 		if (showField) {
+			const minValueDisabled = min_value_auto_detect ? true : false;
+			const maxValueDisabled = max_value_auto_detect ? true : false;
+
 			return (
 				<div className='number-ui-options'>
 					<div className='cols-wrapper'>
-						<Number
+						<FieldNumber
 							id={'min_value'}
 							label={__('Min Value', 'wc-ajax-product-filter')}
 							description={__(
 								'The minimum value that a user can select.',
 								'wc-ajax-product-filter'
 							)}
+							disabled={minValueDisabled}
 							value={min_value}
 							onChange={(e) =>
 								handleTextFieldChange(e, 'min_value')
 							}
+							checkIsChecked={min_value_auto_detect}
+							onCheckChange={(value) =>
+								handleCheckboxChange(
+									'min_value_auto_detect',
+									value
+								)
+							}
 						/>
-						<Number
+						<FieldNumber
 							id={'max_value'}
 							label={__('Max Value', 'wc-ajax-product-filter')}
 							description={__(
 								'The maximum value that a user can select.',
 								'wc-ajax-product-filter'
 							)}
+							disabled={maxValueDisabled}
 							value={max_value}
 							onChange={(e) =>
 								handleTextFieldChange(e, 'max_value')
+							}
+							checkIsChecked={max_value_auto_detect}
+							onCheckChange={(value) =>
+								handleCheckboxChange(
+									'max_value_auto_detect',
+									value
+								)
 							}
 						/>
 						<Number
@@ -207,13 +225,36 @@ const Range = () => {
 		}
 	};
 
+	const manualOptions = () => {
+		let showField = false;
+
+		const validDisplayTypes = [
+			'range_checkbox',
+			'range_radio',
+			'range_select',
+			'range_multiselect',
+			'range_label',
+		];
+
+		if (
+			validDisplayTypes.includes(number_display_type) &&
+			'manual_entry' === number_get_options
+		) {
+			showField = true;
+		}
+
+		if (showField) {
+			return <NumberOptionsTable />;
+		}
+	};
+
 	return (
 		<>
 			{getOptionsField()}
 
 			{automaticRangeFields()}
 
-			<NumberOptionsTable />
+			{manualOptions()}
 		</>
 	);
 };

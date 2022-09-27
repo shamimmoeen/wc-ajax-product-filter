@@ -356,6 +356,18 @@ body {
   margin-top: 0;
 }
 
+.__form_control.with-checkbox .__input_wrapper {
+  display: flex;
+  gap: 12px;
+}
+.__form_control.with-checkbox .__input_wrapper .checkbox-wrapper {
+  display: flex;
+  align-items: center;
+}
+.__form_control.with-checkbox .__input_wrapper .checkbox-wrapper .components-checkbox-control .components-base-control__field {
+  margin: 0;
+}
+
 .__available_filters {
   margin-bottom: 1.5em;
 }
