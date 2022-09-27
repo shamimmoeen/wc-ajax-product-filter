@@ -281,6 +281,10 @@ jQuery( document ).ready( function( $ ) {
 					'selector': '.wcapf-form-sub-field-exclude_values_id',
 					'value': [ 'exclude' ],
 				},
+				{
+					'selector': '.wcapf-form-sub-field-include_user_roles',
+					'value': [ 'user_roles' ],
+				},
 			],
 		},
 		{
