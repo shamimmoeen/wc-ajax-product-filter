@@ -77,19 +77,25 @@ const Filter = () => {
 				/**
 				 * TODO: Sets the filter options.
 				 */
-				const filterOptions = [
-					{
-						term_id: 18,
-						name: 'Blue',
-						slug: 'blue',
-					},
-					{
-						term_id: 28,
-						name: 'Gray',
-						slug: 'gray',
-						status: 'added',
-					},
-				];
+				let filterOptions = [];
+
+				if ('price' === filterType) {
+					filterOptions = activeFilterData['number_manual_options'];
+				} else {
+					filterOptions = [
+						{
+							term_id: 18,
+							name: 'Blue',
+							slug: 'blue',
+						},
+						{
+							term_id: 28,
+							name: 'Gray',
+							slug: 'gray',
+							status: 'added',
+						},
+					];
+				}
 
 				dispatch({
 					type: 'SET_FILTERS_OPTIONS',

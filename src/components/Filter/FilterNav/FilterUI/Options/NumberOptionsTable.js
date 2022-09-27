@@ -21,6 +21,13 @@ const NumberOptionsTable = () => {
 		setRows(filterOptions);
 	}, [filterOptions]);
 
+	const handleAddOption = () => {
+		const newOption = { min_value: '', max_value: '', label: '' };
+		const _filterOptions = [...filterOptions, newOption];
+
+		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: _filterOptions });
+	};
+
 	const handleSort = () => {
 		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: rows });
 	};
@@ -29,17 +36,19 @@ const NumberOptionsTable = () => {
 		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: [] });
 	};
 
-	const handleRemove = (row) => {
-		const _filterOptions = filterOptions.filter(
-			(option) => option.term_id !== row.term_id
-		);
+	const handleRemove = (index) => {
+		const _filterOptions = [...filterOptions];
+		_filterOptions.splice(index, 1);
 
 		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: _filterOptions });
 	};
 
-	const addOption = () => {};
+	const handleInputChange = (e, index, key) => {
+		const _filterOptions = [...filterOptions];
+		_filterOptions[index][key] = e.target.value;
 
-	const handleLabelChange = () => {};
+		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: _filterOptions });
+	};
 
 	const table = () => {
 		return (
@@ -47,13 +56,13 @@ const NumberOptionsTable = () => {
 				<thead>
 					<tr>
 						<th className='__drag_handle' />
-						<th className='__value'>
+						<th className='__min_value'>
 							{__('Min Value', 'wc-ajax-product-filter')}
 						</th>
-						<th className='__value'>
+						<th className='__max_value'>
 							{__('Max Value', 'wc-ajax-product-filter')}
 						</th>
-						<th className='__label'>
+						<th className='__range_label'>
 							{__('Label', 'wc-ajax-product-filter')}
 						</th>
 						<th className='__action' />
@@ -68,9 +77,7 @@ const NumberOptionsTable = () => {
 					onSort={handleSort}
 				>
 					{rows.map((row, rowIndex) => {
-						const { term_id, slug, color, image } = row;
-
-						const label = row.label ? row.label : row.name;
+						const { min_value, max_value, label } = row;
 
 						return (
 							<tr key={`filter-option-${rowIndex}`}>
@@ -83,32 +90,50 @@ const NumberOptionsTable = () => {
 									</div>
 								</td>
 								<td>
-									<div>
+									<div className='__min_value'>
 										<input
 											type='text'
-											value={label}
+											value={min_value}
 											className='components-text-control__input'
-											onChange={handleLabelChange}
+											onChange={(e) =>
+												handleInputChange(
+													e,
+													rowIndex,
+													'min_value'
+												)
+											}
 										/>
 									</div>
 								</td>
 								<td>
-									<div>
+									<div className='__max_value'>
 										<input
 											type='text'
-											value={label}
+											value={max_value}
 											className='components-text-control__input'
-											onChange={handleLabelChange}
+											onChange={(e) =>
+												handleInputChange(
+													e,
+													rowIndex,
+													'max_value'
+												)
+											}
 										/>
 									</div>
 								</td>
 								<td>
-									<div>
+									<div className='__range_label'>
 										<input
 											type='text'
 											value={label}
 											className='components-text-control__input'
-											onChange={handleLabelChange}
+											onChange={(e) =>
+												handleInputChange(
+													e,
+													rowIndex,
+													'label'
+												)
+											}
 										/>
 									</div>
 								</td>
@@ -116,7 +141,9 @@ const NumberOptionsTable = () => {
 									<div>
 										<button
 											className='button-link button-link-delete'
-											onClick={() => handleRemove(row)}
+											onClick={() =>
+												handleRemove(rowIndex)
+											}
 										>
 											<Icon
 												icon={cancelCircleFilled}
@@ -160,7 +187,7 @@ const NumberOptionsTable = () => {
 					</div>
 					{!isEmpty(rows) && table()}
 					<div className='__button_group'>
-						<Button variant='secondary' onClick={addOption}>
+						<Button variant='secondary' onClick={handleAddOption}>
 							{__('Add Option', 'wc-ajax-product-filter')}
 						</Button>
 						{!isEmpty(rows) && (
