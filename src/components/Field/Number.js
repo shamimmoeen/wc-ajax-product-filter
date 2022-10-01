@@ -20,7 +20,7 @@ const Number = ({
 							id={id}
 							className='components-text-control__input'
 							value={value}
-							onChange={onChange}
+							onChange={(e) => onChange(e, id)}
 							{...rest}
 						/>
 					</div>

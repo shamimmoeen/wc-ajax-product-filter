@@ -391,6 +391,31 @@ class WCAPF_API {
 
 		$response['post_property_data'] = $post_property_data;
 
+		// Default date display formats.
+		$response['default_date_display_formats'] = array(
+			array(
+				'label' => current_time( 'd-m-Y' ) . ' (d-m-Y)',
+				'value' => 'dd-mm-yy',
+			),
+			array(
+				'label' => current_time( 'Y-m-d' ) . ' (Y-m-d)',
+				'value' => 'yy-mm-dd',
+			),
+		);
+
+		// Default time periods.
+		$_time_period_options = WCAPF_PRO_Helper::get_time_period_options();
+		$time_period_options  = array();
+
+		foreach ( $_time_period_options as $time_period_key => $time_period_label ) {
+			$time_period_options[] = array(
+				'name' => $time_period_label,
+				'key'  => $time_period_key,
+			);
+		}
+
+		$response['default_time_periods'] = $time_period_options;
+
 		wp_send_json_success( $response );
 	}
 

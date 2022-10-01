@@ -8,12 +8,11 @@ const FieldNumber = ({
 	onChange,
 	description,
 	type = 'text',
+	checkboxId,
 	checkIsChecked,
 	onCheckChange,
 	...rest
 }) => {
-	const checkboxId = `${id}-auto-detect`;
-
 	return (
 		<div className='__form_control number with-checkbox'>
 			<div className='__inner'>
@@ -28,7 +27,7 @@ const FieldNumber = ({
 								id={id}
 								className='components-text-control__input'
 								value={value}
-								onChange={onChange}
+								onChange={(e) => onChange(e, id)}
 								{...rest}
 							/>
 						</div>
@@ -36,7 +35,9 @@ const FieldNumber = ({
 							<CheckboxControl
 								checked={checkIsChecked}
 								id={checkboxId}
-								onChange={onCheckChange}
+								onChange={(checked) =>
+									onCheckChange(checked, checkboxId)
+								}
 							/>
 							<label htmlFor={checkboxId}>
 								{__('Auto Detect', 'wc-ajax-product-filter')}

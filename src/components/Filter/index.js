@@ -4,7 +4,11 @@ import Notifications from '../Notifications';
 import FilterSaveButton from './FilterSaveButton';
 import { useFilter } from './FilterContext';
 import { useEffect } from '@wordpress/element';
-import { filterDefaultData, getAvailableFilters } from './utils';
+import {
+	availableFilters,
+	filterDefaultData,
+	sanitizeFilterData,
+} from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
@@ -58,6 +62,13 @@ const Filter = () => {
 						filterData['field_data']
 					);
 
+					/**
+					 * Sanitize the filter data.
+					 *
+					 * TODO: Should be deprecated in future.
+					 */
+					activeFilterData = sanitizeFilterData(activeFilterData);
+
 					filterType = activeFilterData['type'];
 					filterKey = activeFilterData['field_key'];
 
@@ -79,8 +90,10 @@ const Filter = () => {
 				 */
 				let filterOptions = [];
 
-				if ('price' === filterType) {
+				if ('price' === filterType || 'rating' === filterType) {
 					filterOptions = activeFilterData['number_manual_options'];
+				} else if ('product-status' === filterType) {
+					filterOptions = activeFilterData['product_status_options'];
 				} else {
 					filterOptions = [
 						{
@@ -107,7 +120,7 @@ const Filter = () => {
 				 */
 				const filterKeys = {};
 
-				getAvailableFilters().map((item) => {
+				availableFilters().map((item) => {
 					const type = item.type;
 
 					if ('active-filters' === type || 'reset-button' === type) {

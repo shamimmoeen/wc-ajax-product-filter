@@ -5,15 +5,12 @@ import { useState, useEffect } from '@wordpress/element';
 import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
 import { useFilter } from '../../../FilterContext';
-import classnames from 'classnames';
+import { productStatusOptions } from '../../../utils';
+import DropdownSelect from '../../../../Field/DropdownSelect';
 
-const NumberOptionsTable = () => {
+const StatusOptions = () => {
 	const {
-		state: {
-			filterType,
-			activeFilterData: { number_get_options },
-			filterOptions,
-		},
+		state: { filterType, filterOptions },
 		dispatch,
 	} = useFilter();
 
@@ -53,18 +50,17 @@ const NumberOptionsTable = () => {
 	};
 
 	const table = () => {
+		const statusOptions = productStatusOptions();
+
 		return (
 			<table className='wp-list-table widefat fixed striped'>
 				<thead>
 					<tr>
 						<th className='__drag_handle' />
-						<th className='__min_value'>
-							{__('Min Value', 'wc-ajax-product-filter')}
+						<th className='__product_status'>
+							{__('Status', 'wc-ajax-product-filter')}
 						</th>
-						<th className='__max_value'>
-							{__('Max Value', 'wc-ajax-product-filter')}
-						</th>
-						<th className='__range_label'>
+						<th className='__label'>
 							{__('Label', 'wc-ajax-product-filter')}
 						</th>
 						<th className='__action' />
@@ -79,7 +75,12 @@ const NumberOptionsTable = () => {
 					onSort={handleSort}
 				>
 					{rows.map((row, rowIndex) => {
-						const { min_value, max_value, label } = row;
+						const { color, image_id, image_url, value, label } =
+							row;
+
+						const status = statusOptions.find(
+							(option) => option.key === value
+						);
 
 						return (
 							<tr key={`filter-option-${rowIndex}`}>
@@ -92,44 +93,15 @@ const NumberOptionsTable = () => {
 									</div>
 								</td>
 								<td>
-									<div className='__min_value'>
-										<input
-											type='text'
-											value={min_value}
-											className='components-text-control__input'
-											onChange={(e) =>
-												handleInputChange(
-													e,
-													rowIndex,
-													'min_value'
-												)
-											}
+									<div className='__product_status'>
+										<DropdownSelect
+											options={statusOptions}
+											value={status}
 										/>
 									</div>
 								</td>
 								<td>
-									<div className='__max_value'>
-										<input
-											type='text'
-											value={max_value}
-											className='components-text-control__input'
-											onChange={(e) =>
-												handleInputChange(
-													e,
-													rowIndex,
-													'max_value'
-												)
-											}
-										/>
-									</div>
-								</td>
-								<td>
-									<div
-										className={classnames('__range_label', {
-											__rating_label:
-												'rating' === filterType,
-										})}
-									>
+									<div className='__label'>
 										<input
 											type='text'
 											value={label}
@@ -167,57 +139,45 @@ const NumberOptionsTable = () => {
 		);
 	};
 
-	let description = __(
-		'Add the options that will be available to the filter.',
-		'wc-ajax-product-filter'
-	);
-
-	if ('rating' === filterType) {
-		description = __(
-			'Add the options that will be available to the filter. To show stars in the label, put [star] for filled star, [star-empty] for empty star and [star-half] for half star.',
-			'wc-ajax-product-filter'
-		);
-	}
-
 	return (
 		<>
-			{'manual_entry' === number_get_options && (
-				<div className='__options_table'>
-					<div className='__form_control'>
-						<div className='__inner'>
-							<div className='__label'>
-								<label>
-									{__(
-										'Filter Options',
-										'wc-ajax-product-filter'
-									)}
-								</label>
-							</div>
-							<div className='__wrapper'>
-								<div className='__input_wrapper' />
-							</div>
+			<div className='__options_table'>
+				<div className='__form_control'>
+					<div className='__inner'>
+						<div className='__label'>
+							<label>
+								{__('Filter Options', 'wc-ajax-product-filter')}
+							</label>
 						</div>
-						<p className='description'>{description}</p>
+						<div className='__wrapper'>
+							<div className='__input_wrapper' />
+						</div>
 					</div>
-					{!isEmpty(rows) && table()}
-					<div className='__button_group'>
-						<Button variant='secondary' onClick={handleAddOption}>
-							{__('Add Option', 'wc-ajax-product-filter')}
-						</Button>
-						{!isEmpty(rows) && (
-							<Button
-								variant='tertiary'
-								isDestructive
-								onClick={handleRemoveAll}
-							>
-								{__('Remove All', 'wc-ajax-product-filter')}
-							</Button>
+					<p className='description'>
+						{__(
+							'Add the options that will be available to the filter.',
+							'wc-ajax-product-filter'
 						)}
-					</div>
+					</p>
 				</div>
-			)}
+				{!isEmpty(rows) && table()}
+				<div className='__button_group'>
+					<Button variant='secondary' onClick={handleAddOption}>
+						{__('Add Option', 'wc-ajax-product-filter')}
+					</Button>
+					{!isEmpty(rows) && (
+						<Button
+							variant='tertiary'
+							isDestructive
+							onClick={handleRemoveAll}
+						>
+							{__('Remove All', 'wc-ajax-product-filter')}
+						</Button>
+					)}
+				</div>
+			</div>
 		</>
 	);
 };
 
-export default NumberOptionsTable;
+export default StatusOptions;

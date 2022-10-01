@@ -5,7 +5,7 @@ import { useFilter } from '../../../FilterContext';
 import OptionsTable from '../OptionsTable';
 import OptionsTableModal from '../OptionsTableModal';
 import { useEffect, useState } from '@wordpress/element';
-import { getOrderByOptions, getOrderDirectionOptions } from '../../../utils';
+import { termsOrderByOptions, orderDirectionOptions } from '../../../utils';
 import { Spinner } from '@wordpress/components';
 import axios from 'axios';
 import { store as noticesStore } from '@wordpress/notices';
@@ -15,7 +15,7 @@ import LimitBy from '../LimitFields';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
 
-const Others = () => {
+const TaxonomyOptions = () => {
 	const {
 		state: { activeFilterData, isFilterOptionsLoading },
 		dispatch,
@@ -102,8 +102,9 @@ const Others = () => {
 			<Radio
 				id={'get_options'}
 				label={__('Get Options', 'wc-ajax-product-filter')}
-				value={get_options}
-				onChange={(e) => handleRadioChange(e, 'get_options')}
+				description={__(
+					'Whether to get the options automatically or you want to add the options manually.'
+				)}
 				options={[
 					{
 						label: __('Automatically', 'wc-ajax-product-filter'),
@@ -115,15 +116,14 @@ const Others = () => {
 						isPro: true,
 					},
 				]}
-				description={__(
-					'Whether to get the options automatically or you want to add the options manually.'
-				)}
+				value={get_options}
+				onChange={handleRadioChange}
 			/>
 		);
 	};
 
 	const orderByField = () => {
-		const options = getOrderByOptions();
+		const options = termsOrderByOptions();
 
 		return (
 			<ToggleGroup
@@ -146,13 +146,13 @@ const Others = () => {
 				<Radio
 					id={'order_terms_dir'}
 					label={__('Order Direction', 'wc-ajax-product-filter')}
-					value={order_terms_dir}
-					onChange={(e) => handleRadioChange(e, 'order_terms_dir')}
-					options={getOrderDirectionOptions()}
 					description={__(
 						'Whether to order options in ascending or descending order.',
 						'wc-ajax-product-filter'
 					)}
+					options={orderDirectionOptions()}
+					value={order_terms_dir}
+					onChange={handleRadioChange}
 				/>
 			);
 		}
@@ -165,23 +165,23 @@ const Others = () => {
 	};
 
 	const parentTermField = () => {
-		const options = [];
-		const value = [];
-
 		if ('automatically' === get_options && 'child' === limit_options) {
+			const options = [];
+			const value = [];
+
 			return (
 				<Select
-					label={__('Parent Term', 'wc-ajax-product-filter')}
 					id={'parent_term'}
+					label={__('Parent Term', 'wc-ajax-product-filter')}
+					description={__(
+						'Only show the child terms of a parent term.',
+						'wc-ajax-product-filter'
+					)}
 					options={options}
 					values={value}
 					onChange={(values) =>
 						handleSelectChange(values, 'parent_term')
 					}
-					description={__(
-						'Only show the child terms of a parent term.',
-						'wc-ajax-product-filter'
-					)}
 				/>
 			);
 		}
@@ -194,17 +194,17 @@ const Others = () => {
 		if ('automatically' === get_options && 'include' === limit_options) {
 			return (
 				<Select
-					label={__('Terms to include', 'wc-ajax-product-filter')}
 					id={'limit_values_by_id'}
+					label={__('Terms to include', 'wc-ajax-product-filter')}
+					description={__(
+						'Select the terms that will be available to filter by.',
+						'wc-ajax-product-filter'
+					)}
 					options={options}
 					values={value}
 					onChange={(values) =>
 						handleSelectChange(values, 'limit_values_by_id')
 					}
-					description={__(
-						'Select the terms that will be available to filter by.',
-						'wc-ajax-product-filter'
-					)}
 				/>
 			);
 		}
@@ -217,17 +217,17 @@ const Others = () => {
 		if ('automatically' === get_options && 'exclude' === limit_options) {
 			return (
 				<Select
-					label={__('Terms to exclude', 'wc-ajax-product-filter')}
 					id={'exclude_values_id'}
+					label={__('Terms to exclude', 'wc-ajax-product-filter')}
+					description={__(
+						'Select the terms that will be excluded.',
+						'wc-ajax-product-filter'
+					)}
 					options={options}
 					values={value}
 					onChange={(values) =>
 						handleSelectChange(values, 'exclude_values_id')
 					}
-					description={__(
-						'Select the terms that will be excluded.',
-						'wc-ajax-product-filter'
-					)}
 				/>
 			);
 		}
@@ -265,4 +265,4 @@ const Others = () => {
 	);
 };
 
-export default Others;
+export default TaxonomyOptions;

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, ButtonGroup } from '@wordpress/components';
 import { useFilter } from '../../../FilterContext';
-import { getTaxonomyLimitByOptions } from '../../../utils';
+import { taxonomyLimitByOptions } from '../../../utils';
 import { proTag } from '../../../../utils';
 
 const LimitBy = () => {
@@ -18,7 +18,7 @@ const LimitBy = () => {
 		'Limit the filter options.',
 		'wc-ajax-product-filter'
 	);
-	const options = getTaxonomyLimitByOptions();
+	const options = taxonomyLimitByOptions();
 	const isPro = true;
 
 	const handleChange = (value) => {

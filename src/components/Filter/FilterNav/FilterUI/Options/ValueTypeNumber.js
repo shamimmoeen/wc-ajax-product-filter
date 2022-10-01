@@ -6,9 +6,9 @@ import useFilterData from '../../../useFilterData';
 import FieldNumber from './FieldNumber';
 import NumberOptionsTable from './NumberOptionsTable';
 
-const Range = () => {
+const ValueTypeNumber = () => {
 	const {
-		state: { filterType, additionalData, activeFilterData },
+		state: { activeFilterData },
 		dispatch,
 	} = useFilter();
 
@@ -51,8 +51,9 @@ const Range = () => {
 				<Radio
 					id={'number_get_options'}
 					label={__('Get Options', 'wc-ajax-product-filter')}
-					value={number_get_options}
-					onChange={(e) => handleRadioChange(e, 'number_get_options')}
+					description={__(
+						'Whether to get the options automatically or you want to add the options manually.'
+					)}
 					options={[
 						{
 							label: __(
@@ -66,9 +67,8 @@ const Range = () => {
 							value: 'manual_entry',
 						},
 					]}
-					description={__(
-						'Whether to get the options automatically or you want to add the options manually.'
-					)}
+					value={number_get_options}
+					onChange={handleRadioChange}
 				/>
 			);
 		}
@@ -88,9 +88,6 @@ const Range = () => {
 		}
 
 		if (showField) {
-			const minValueDisabled = min_value_auto_detect ? true : false;
-			const maxValueDisabled = max_value_auto_detect ? true : false;
-
 			return (
 				<div className='number-ui-options'>
 					<div className='cols-wrapper'>
@@ -101,18 +98,12 @@ const Range = () => {
 								'The minimum value that a user can select.',
 								'wc-ajax-product-filter'
 							)}
-							disabled={minValueDisabled}
+							disabled={'1' === min_value_auto_detect}
 							value={min_value}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'min_value')
-							}
+							onChange={handleTextFieldChange}
+							checkboxId={'min_value_auto_detect'}
 							checkIsChecked={min_value_auto_detect}
-							onCheckChange={(value) =>
-								handleCheckboxChange(
-									'min_value_auto_detect',
-									value
-								)
-							}
+							onCheckChange={handleCheckboxChange}
 						/>
 						<FieldNumber
 							id={'max_value'}
@@ -121,18 +112,12 @@ const Range = () => {
 								'The maximum value that a user can select.',
 								'wc-ajax-product-filter'
 							)}
-							disabled={maxValueDisabled}
+							disabled={'1' === max_value_auto_detect}
 							value={max_value}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'max_value')
-							}
+							onChange={handleTextFieldChange}
+							checkboxId={'max_value_auto_detect'}
 							checkIsChecked={max_value_auto_detect}
-							onCheckChange={(value) =>
-								handleCheckboxChange(
-									'max_value_auto_detect',
-									value
-								)
-							}
+							onCheckChange={handleCheckboxChange}
 						/>
 						<Number
 							id={'step'}
@@ -142,7 +127,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={step}
-							onChange={(e) => handleTextFieldChange(e, 'step')}
+							onChange={handleTextFieldChange}
 						/>
 					</div>
 					<div className='cols-wrapper'>
@@ -154,9 +139,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={value_prefix}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'value_prefix')
-							}
+							onChange={handleTextFieldChange}
 						/>
 						<Number
 							id={'value_postfix'}
@@ -169,9 +152,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={value_postfix}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'value_postfix')
-							}
+							onChange={handleTextFieldChange}
 						/>
 						<Number
 							id={'values_separator'}
@@ -180,9 +161,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={values_separator}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'values_separator')
-							}
+							onChange={handleTextFieldChange}
 						/>
 					</div>
 					<div className='cols-wrapper'>
@@ -193,9 +172,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={decimal_places}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'decimal_places')
-							}
+							onChange={handleTextFieldChange}
 						/>
 						<Number
 							id={'thousand_separator'}
@@ -204,9 +181,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={thousand_separator}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'thousand_separator')
-							}
+							onChange={handleTextFieldChange}
 						/>
 						<Number
 							id={'decimal_separator'}
@@ -215,9 +190,7 @@ const Range = () => {
 								'wc-ajax-product-filter'
 							)}
 							value={decimal_separator}
-							onChange={(e) =>
-								handleTextFieldChange(e, 'decimal_separator')
-							}
+							onChange={handleTextFieldChange}
 						/>
 					</div>
 				</div>
@@ -259,4 +232,4 @@ const Range = () => {
 	);
 };
 
-export default Range;
+export default ValueTypeNumber;

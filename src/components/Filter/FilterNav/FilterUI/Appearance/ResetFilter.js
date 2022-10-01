@@ -27,7 +27,7 @@ const ResetFilter = () => {
 					'wc-ajax-product-filter'
 				)}
 				value={reset_button_label}
-				onChange={(e) => handleTextFieldChange(e, 'reset_button_label')}
+				onChange={handleTextFieldChange}
 			/>
 
 			<Checkbox
@@ -38,9 +38,7 @@ const ResetFilter = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={show_if_empty}
-				onChange={(value) =>
-					handleCheckboxChange('show_if_empty', value)
-				}
+				onChange={handleCheckboxChange}
 			/>
 		</>
 	);

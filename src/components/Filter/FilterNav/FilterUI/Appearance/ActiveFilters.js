@@ -45,7 +45,7 @@ const ActiveFilters = () => {
 						value: 'extended',
 					},
 				]}
-				onChange={(e) => handleRadioChange(e, 'active_filters_layout')}
+				onChange={handleRadioChange}
 				value={active_filters_layout}
 			/>
 
@@ -57,9 +57,7 @@ const ActiveFilters = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={enable_clear_all_button}
-				onChange={(value) =>
-					handleCheckboxChange('enable_clear_all_button', value)
-				}
+				onChange={handleCheckboxChange}
 			/>
 
 			{'1' === enable_clear_all_button && (
@@ -72,9 +70,7 @@ const ActiveFilters = () => {
 							'wc-ajax-product-filter'
 						)}
 						value={clear_all_button_label}
-						onChange={(e) =>
-							handleTextFieldChange(e, 'clear_all_button_label')
-						}
+						onChange={handleTextFieldChange}
 					/>
 
 					<Checkbox
@@ -88,12 +84,7 @@ const ActiveFilters = () => {
 							'wc-ajax-product-filter'
 						)}
 						isChecked={move_clear_all_button_in_title}
-						onChange={(value) =>
-							handleCheckboxChange(
-								'move_clear_all_button_in_title',
-								value
-							)
-						}
+						onChange={handleCheckboxChange}
 					/>
 				</>
 			)}
@@ -106,9 +97,7 @@ const ActiveFilters = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={show_if_empty}
-				onChange={(value) =>
-					handleCheckboxChange('show_if_empty', value)
-				}
+				onChange={handleCheckboxChange}
 			/>
 
 			{'1' === show_if_empty && (
@@ -120,9 +109,7 @@ const ActiveFilters = () => {
 						'wc-ajax-product-filter'
 					)}
 					value={empty_filter_message}
-					onChange={(e) =>
-						handleTextFieldChange(e, 'empty_filter_message')
-					}
+					onChange={handleTextFieldChange}
 				/>
 			)}
 		</>
