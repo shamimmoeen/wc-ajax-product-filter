@@ -4,7 +4,7 @@ import { useEffect, useRef } from '@wordpress/element';
 import Footer from './Footer';
 import Body from './Body';
 import { useListFilters } from '../ListFiltersContext';
-import { getAvailableFilters } from '../../Filter/utils';
+import { availableFilters } from '../../Filter/utils';
 import { getAdditionalData } from '../../utils';
 
 const AddNewModal = ({
@@ -65,7 +65,7 @@ const AddNewModal = ({
 				 */
 				const filterKeys = {};
 
-				getAvailableFilters().map((item) => {
+				availableFilters().map((item) => {
 					const type = item.type;
 
 					if ('active-filters' === type || 'reset-button' === type) {

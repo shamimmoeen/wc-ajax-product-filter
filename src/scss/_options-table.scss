@@ -90,6 +90,21 @@
 				max-width: 180px;
 			}
 		}
+
+		.__rating_label {
+			.components-text-control__input {
+				max-width: 340px;
+			}
+		}
+
+		.__time_period {
+			.components-custom-select-control__menu {
+				$itemHeight: 30px;
+				$itemsToShow: 6;
+
+				max-height: calc(#{$itemHeight} * #{$itemsToShow});
+			}
+		}
 	}
 
 	.__description {

@@ -42,7 +42,7 @@
 	}
 
 	// react-dropdown-select
-	.__custom_select_control {
+	.__styled_select_control {
 		min-height: 30px;
 		border-color: $inputBorderColor;
 		transition: box-shadow 0.1s linear;
@@ -90,6 +90,14 @@
 
 				&:not(:last-child) {
 					margin: 0 10px 0 0;
+				}
+			}
+		}
+
+		&.radio-group-vertical {
+			.components-radio-control__option {
+				&:not(:last-child) {
+					margin-bottom: 8px;
 				}
 			}
 		}
@@ -169,6 +177,24 @@
 			max-width: 100px;
 		}
 	}
+
+	// Custom select control
+	.__custom_select_control_wrapper {
+		display: flex;
+
+		.__custom_select_control {
+			.components-custom-select-control__item {
+				display: flex;
+			}
+
+			&.date_display_type,
+			&.number_display_type {
+				.components-custom-select-control__button {
+					min-width: 200px;
+				}
+			}
+		}
+	}
 }
 
 // Overrides for display type field.
@@ -233,6 +259,25 @@
 					}
 				}
 			}
+		}
+	}
+}
+
+// Custom Select Control.
+.__custom_select_control {
+	.components-custom-select-control__button {
+		background-color: #fff;
+		border-color: $inputBorderColor;
+		font-size: unset;
+	}
+
+	.components-custom-select-control__menu {
+		margin: 5px 0;
+		border-color: $inputBorderColor;
+
+		.components-custom-select-control__item {
+			padding: 1px 8px;
+			margin: 0;
 		}
 	}
 }

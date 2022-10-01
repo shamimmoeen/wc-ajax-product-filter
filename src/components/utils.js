@@ -1,6 +1,6 @@
-import { getAvailableFilters } from './Filter/utils';
 import { find } from 'lodash';
 import axios from 'axios';
+import { availableFilters } from './Filter/utils';
 
 export function foundProVersion() {
 	// return wcapf_admin_params.foundPro;
@@ -48,9 +48,7 @@ export function prepareFilterData(raw) {
 
 	const shortcode = `[wcapf_filter id="${id}"]`;
 
-	const availableFilters = getAvailableFilters();
-
-	const _filterData = find(availableFilters, { type: type });
+	const _filterData = find(availableFilters(), { type: type });
 
 	const component = _filterData['title'];
 	let componentExtra = '';

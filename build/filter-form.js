@@ -2633,74 +2633,29 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "availableFilters": function() { return /* binding */ availableFilters; },
+/* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
-/* harmony export */   "getAvailableFilters": function() { return /* binding */ getAvailableFilters; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
-/* harmony export */   "getOrderByOptions": function() { return /* binding */ getOrderByOptions; },
-/* harmony export */   "getOrderDirectionOptions": function() { return /* binding */ getOrderDirectionOptions; },
-/* harmony export */   "getTaxonomyLimitByOptions": function() { return /* binding */ getTaxonomyLimitByOptions; }
+/* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
+/* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
+/* harmony export */   "orderDirectionOptions": function() { return /* binding */ orderDirectionOptions; },
+/* harmony export */   "orderTypeOptions": function() { return /* binding */ orderTypeOptions; },
+/* harmony export */   "productStatusOptions": function() { return /* binding */ productStatusOptions; },
+/* harmony export */   "sanitizeFilterData": function() { return /* binding */ sanitizeFilterData; },
+/* harmony export */   "taxonomyLimitByOptions": function() { return /* binding */ taxonomyLimitByOptions; },
+/* harmony export */   "termsOrderByOptions": function() { return /* binding */ termsOrderByOptions; },
+/* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
 
 
-function filterDefaultData() {
-  return {
-    show_title: '1',
-    field_key: '',
-    taxonomy: '',
-    display_type: 'checkbox',
-    query_type: 'and',
-    all_items_label: '',
-    use_chosen: '',
-    chosen_no_results_message: '',
-    enable_multiple_filter: '',
-    show_count: '',
-    hide_empty: '',
-    enable_tooltip: '',
-    show_count_in_tooltip: '',
-    tooltip_position: '',
-    custom_appearance_options: {},
-    use_term_slug_in_url: '',
-    limit_options: '',
-    parent_term: '',
-    limit_values_by_id: '',
-    exclude_values_id: '',
-    show_clear_button: '',
-    order_terms_by: 'name',
-    order_terms_dir: 'asc',
-    enable_accordion: '',
-    accordion_default_state: 'expanded',
-    enable_soft_limit: '',
-    soft_limit: '',
-    type: '',
-    field_id: '',
-    enable_visibility_rules: '',
-    visibility_rules: [],
-    get_options: 'automatically'
-  };
-}
-function getFilterDefaultData(type) {
-  const defaultData = filterDefaultData();
-  const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(getAvailableFilters(), {
-    type
-  });
-  const defaultFilterKey = filterData.defaultFilterKey;
 
-  if (defaultFilterKey) {
-    return { ...defaultData,
-      type,
-      field_key: defaultFilterKey
-    };
-  }
-
-  return { ...defaultData,
-    type
-  };
-}
-function getAvailableFilters() {
+function availableFilters() {
   return [{
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Filters', 'wc-ajax-product-filter'),
     type: 'active-filters'
@@ -2754,7 +2709,163 @@ function getAvailableFilters() {
     type: 'reset-button'
   }];
 }
-function getTaxonomyLimitByOptions() {
+function filterDefaultData() {
+  return {
+    // Taxonomy
+    show_title: '1',
+    field_key: '',
+    taxonomy: '',
+    display_type: 'checkbox',
+    query_type: 'and',
+    all_items_label: '',
+    use_chosen: '',
+    chosen_no_results_message: '',
+    enable_multiple_filter: '',
+    hierarchical: '',
+    enable_hierarchy_accordion: '',
+    show_count: '',
+    hide_empty: '',
+    enable_tooltip: '',
+    show_count_in_tooltip: '',
+    tooltip_position: 'top',
+    custom_appearance_options: [],
+    use_term_slug_in_url: '',
+    limit_options: 'off',
+    parent_term: '',
+    limit_values_by_id: '',
+    exclude_values_id: '',
+    show_clear_button: '',
+    order_terms_by: 'default',
+    order_terms_dir: 'asc',
+    enable_accordion: '',
+    accordion_default_state: 'expanded',
+    enable_soft_limit: '',
+    soft_limit: '5',
+    type: '',
+    field_id: '',
+    enable_visibility_rules: '',
+    visibility_rules: [],
+    get_options: 'automatically',
+    use_category_images: '',
+    // Active Filters
+    active_filters_layout: 'simple',
+    enable_clear_all_button: '1',
+    clear_all_button_label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Clear All', 'wc-ajax-product-filter'),
+    show_if_empty: '',
+    empty_filter_message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No filter is applied.', 'wc-ajax-product-filter'),
+    move_clear_all_button_in_title: '',
+    enable_soft_limit_for_extended_layout: '',
+    soft_limit_for_extended_layout: '5',
+    // Price Filter
+    number_display_type: 'range_slider',
+    number_range_slider_display_values_as: 'plain_text',
+    align_values_at_the_end: '1',
+    number_range_enable_multiple_filter: '',
+    number_range_query_type: 'and',
+    number_range_select_all_items_label: '',
+    number_range_use_chosen: '',
+    number_range_chosen_no_results_message: '',
+    number_range_show_count: '',
+    number_range_hide_empty: '',
+    number_get_options: 'automatically',
+    manual_options: [],
+    number_manual_options: [],
+    time_period_options: [],
+    min_value: '0',
+    min_value_auto_detect: '',
+    max_value: '1000',
+    max_value_auto_detect: '',
+    step: '10',
+    value_prefix: '',
+    value_postfix: '',
+    values_separator: '-',
+    decimal_places: '0',
+    thousand_separator: '',
+    decimal_separator: '.',
+    // Product Status
+    product_status_options: [],
+    // Post Meta
+    meta_key: '',
+    value_type: 'text',
+    value_decimal: '',
+    value_decimal_places: '2',
+    options_order_by: 'value',
+    options_order_dir: 'asc',
+    options_order_type: 'alphabetical',
+    // Post Meta - value type Date
+    date_display_type: 'input_date',
+    date_format: 'dd-mm-yy',
+    time_period_enable_multiple_filter: '',
+    time_period_query_type: 'and',
+    time_period_select_all_items_label: '',
+    time_period_use_chosen: '',
+    time_period_chosen_no_results_message: '',
+    show_date_inputs_inline: '',
+    time_period_show_count: '',
+    time_period_hide_empty: '',
+    date_picker_month_dropdown: '',
+    date_picker_year_dropdown: '',
+    date_from_prefix: '',
+    date_from_postfix: '',
+    date_from_placeholder: '',
+    date_to_prefix: '',
+    date_to_postfix: '',
+    date_to_placeholder: '',
+    // Post Property
+    post_property: '',
+    // Sort By
+    sort_by_options: [],
+    // Reset Button
+    reset_button_label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset', 'wc-ajax-product-filter')
+  };
+}
+
+function ratingDefaultData() {
+  return {
+    options_order_dir: 'desc'
+  };
+}
+
+function perPageDefaultData() {
+  return {
+    display_type: 'radio',
+    min_value: '25',
+    max_value: '100',
+    step: '25'
+  };
+} // Sanitize the filter data.
+
+
+function sanitizeFilterData(activeFilterData) {
+  if (!activeFilterData.options_order_dir) {
+    activeFilterData.options_order_dir = 'asc';
+  }
+
+  if (!activeFilterData.options_order_type) {
+    activeFilterData.options_order_type = 'alphabetical';
+  }
+
+  return activeFilterData;
+}
+function getFilterDefaultData(type) {
+  const defaultData = filterDefaultData();
+  const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(availableFilters(), {
+    type
+  });
+  const defaultFilterKey = filterData.defaultFilterKey;
+
+  if (defaultFilterKey) {
+    return { ...defaultData,
+      type,
+      field_key: defaultFilterKey
+    };
+  }
+
+  return { ...defaultData,
+    type
+  };
+}
+function taxonomyLimitByOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Off', 'wc-ajax-product-filter'),
     value: 'off'
@@ -2770,7 +2881,7 @@ function getTaxonomyLimitByOptions() {
     isPro: true
   }];
 }
-function getOrderByOptions() {
+function termsOrderByOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'wc-ajax-product-filter'),
     value: 'default'
@@ -2788,13 +2899,148 @@ function getOrderByOptions() {
     value: 'count'
   }];
 }
-function getOrderDirectionOptions() {
+function orderByOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'wc-ajax-product-filter'),
+    value: 'none'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
+    value: 'label'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Value', 'wc-ajax-product-filter'),
+    value: 'value'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Count', 'wc-ajax-product-filter'),
+    value: 'count'
+  }];
+}
+function orderDirectionOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('ASC', 'wc-ajax-product-filter'),
     value: 'asc'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('DESC', 'wc-ajax-product-filter'),
     value: 'desc'
+  }];
+}
+function orderTypeOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Alphabetical', 'wc-ajax-product-filter'),
+    value: 'alphabetical'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Numerical', 'wc-ajax-product-filter'),
+    value: 'numerical'
+  }];
+}
+function productStatusOptions() {
+  return [{
+    key: 'featured',
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Featured', 'wc-ajax-product-filter')
+  }, {
+    key: 'on_sale',
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('On Sale', 'wc-ajax-product-filter')
+  }];
+}
+function textDisplayTypes() {
+  let withPro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  const options = [{
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Checkbox', 'wc-ajax-product-filter'),
+    key: 'checkbox'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Radio', 'wc-ajax-product-filter'),
+    key: 'radio'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select', 'wc-ajax-product-filter'),
+    key: 'select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Multi select', 'wc-ajax-product-filter'),
+    key: 'multi-select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
+    key: 'label'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Color', 'wc-ajax-product-filter'),
+    key: 'color'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image', 'wc-ajax-product-filter'),
+    key: 'image'
+  }];
+
+  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
+    const proDisplayTypes = ['color', 'image'];
+    return options.map(option => {
+      if (!proDisplayTypes.includes(option.key)) {
+        return option;
+      } else {
+        option.__experimentalHint = 'Pro';
+        return option;
+      }
+    });
+  }
+
+  return options;
+}
+function numberDisplayTypes() {
+  let withPro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  const options = [{
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Slider', 'wc-ajax-product-filter'),
+    key: 'range_slider'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Number', 'wc-ajax-product-filter'),
+    key: 'range_number'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Checkbox', 'wc-ajax-product-filter'),
+    key: 'range_checkbox'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Radio', 'wc-ajax-product-filter'),
+    key: 'range_radio'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Select', 'wc-ajax-product-filter'),
+    key: 'range_select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Multiselect', 'wc-ajax-product-filter'),
+    key: 'range_multiselect'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Label', 'wc-ajax-product-filter'),
+    key: 'range_label'
+  }];
+
+  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
+    const allowed = ['range_slider', 'range_number'];
+    return options.map(option => {
+      if (allowed.includes(option.key)) {
+        return option;
+      } else {
+        option.__experimentalHint = 'Pro';
+        return option;
+      }
+    });
+  }
+
+  return options;
+}
+function dateDisplayTypes() {
+  return [{
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Input - Date', 'wc-ajax-product-filter'),
+    key: 'input_date'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Input - Date Range', 'wc-ajax-product-filter'),
+    key: 'input_date_range'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Checkbox', 'wc-ajax-product-filter'),
+    key: 'time_period_checkbox'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Radio', 'wc-ajax-product-filter'),
+    key: 'time_period_radio'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Select', 'wc-ajax-product-filter'),
+    key: 'time_period_select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Multi select', 'wc-ajax-product-filter'),
+    key: 'time_period_multiselect'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Label', 'wc-ajax-product-filter'),
+    key: 'time_period_label'
   }];
 }
 
@@ -4064,11 +4310,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Filter/utils */ "./src/components/Filter/utils.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Filter/utils */ "./src/components/Filter/utils.js");
 
 
 
@@ -4106,7 +4352,7 @@ function getAdditionalData() {
   const data = {
     action: 'get_filter_additional_data'
   };
-  return axios__WEBPACK_IMPORTED_MODULE_3___default().get(wcapf_admin_params.ajaxurl, {
+  return axios__WEBPACK_IMPORTED_MODULE_2___default().get(wcapf_admin_params.ajaxurl, {
     params: data
   });
 }
@@ -4121,9 +4367,8 @@ function prepareFilterData(raw) {
     title
   } = raw;
   const shortcode = `[wcapf_filter id="${id}"]`;
-  const availableFilters = (0,_Filter_utils__WEBPACK_IMPORTED_MODULE_1__.getAvailableFilters)();
 
-  const _filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_2__.find)(availableFilters, {
+  const _filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)((0,_Filter_utils__WEBPACK_IMPORTED_MODULE_3__.availableFilters)(), {
     type: type
   });
 

@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, NavigableMenu } from '@wordpress/components';
-import { getAvailableFilters } from './Filter/utils';
+import { availableFilters } from './Filter/utils';
 import { proTag } from './utils';
 
 const AvailableFilters = ({ filterType, handleSetFilterType }) => {
@@ -16,7 +16,7 @@ const AvailableFilters = ({ filterType, handleSetFilterType }) => {
 
 				<div className='__filters'>
 					<NavigableMenu role={'menu'} orientation='horizontal'>
-						{getAvailableFilters().map((filter) => {
+						{availableFilters().map((filter) => {
 							let _classes = '__item';
 
 							if (filterType === filter.type) {

@@ -386,7 +386,7 @@ class WCAPF {
 		);
 
 		$admin_scripts = apply_filters( 'wcapf_admin_scripts_before_main_script', array() );
-		$admin_scripts = array(); // TODO: Fix the issue.
+		// $admin_scripts = array(); // TODO: Fix the issue.
 
 		if ( $admin_scripts ) {
 			foreach ( $admin_scripts as $script ) {

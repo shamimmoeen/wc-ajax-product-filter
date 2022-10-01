@@ -16,7 +16,7 @@ const Checkbox = ({ id, label, isChecked, onChange, description, isPro }) => {
 						<CheckboxControl
 							checked={isChecked}
 							id={id}
-							onChange={onChange}
+							onChange={(value) => onChange(value, id)}
 						/>
 					</div>
 				</div>

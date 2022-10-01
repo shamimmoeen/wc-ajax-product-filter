@@ -159,12 +159,35 @@ body {
 	}
 }
 
+.components-custom-select-control__item .components-custom-select-control__item-hint,
 .__pro_tag {
 	--gradient-start: #a16bfe;
 	--gradient-start-text: '#A16BFE';
 	--gradient-end: #deb0df;
 	--gradient-end-text: '#DEB0DF';
+}
 
+// The hint is treated as the pro tag.
+.components-custom-select-control__item .components-custom-select-control__item-hint {
+	color: #fff;
+	background: linear-gradient(
+		33deg,
+		var(--gradient-start),
+		var(--gradient-end)
+	);
+	font-weight: 500;
+	letter-spacing: 0.5px;
+	padding: 0;
+	border-radius: 4px;
+	font-size: 12px;
+	text-align: center;
+	text-transform: uppercase;
+    line-height: 17px;
+    width: 34px;
+	margin: 0 0 0 6px;
+}
+
+.__pro_tag {
 	&::before {
 		content: 'PRO';
 		// color: var(--wp-admin-theme-color);

@@ -3,9 +3,10 @@ import Checkbox from '../../../../Field/Checkbox';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import ActiveFilters from './ActiveFilters';
-import Others from './Others';
-import PriceFilter from './PriceFilter';
+import ValueTypeText from './ValueTypeText';
+import ValueTypeNumber from './ValueTypeNumber';
 import ResetFilter from './ResetFilter';
+import ValueTypeDate from './ValueTypeDate';
 
 const Appearance = () => {
 	const {
@@ -13,7 +14,7 @@ const Appearance = () => {
 		dispatch,
 	} = useFilter();
 
-	const { show_title } = activeFilterData;
+	const { show_title, value_type } = activeFilterData;
 
 	const { handleCheckboxChange } = useFilterData(activeFilterData, dispatch);
 
@@ -23,11 +24,19 @@ const Appearance = () => {
 		if ('active-filters' === filterType) {
 			fields = <ActiveFilters />;
 		} else if ('price' === filterType) {
-			fields = <PriceFilter />;
+			fields = <ValueTypeNumber />;
+		} else if ('post-meta' === filterType) {
+			if ('text' === value_type) {
+				fields = <ValueTypeText />;
+			} else if ('number' === value_type) {
+				fields = <ValueTypeNumber />;
+			} else if ('date' === value_type) {
+				fields = <ValueTypeDate />;
+			}
 		} else if ('reset-button' === filterType) {
 			fields = <ResetFilter />;
 		} else {
-			fields = <Others />;
+			fields = <ValueTypeText />;
 		}
 
 		return fields;
@@ -39,7 +48,7 @@ const Appearance = () => {
 				id={'show_title'}
 				label={__('Show Title', 'wc-ajax-product-filter')}
 				isChecked={show_title}
-				onChange={(value) => handleCheckboxChange('show_title', value)}
+				onChange={handleCheckboxChange}
 				description={__(
 					'Whether to show the filter title before the options.',
 					'wc-ajax-product-filter'

@@ -3619,7 +3619,7 @@ const AvailableFilters = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.NavigableMenu, {
     role: 'menu',
     orientation: "horizontal"
-  }, (0,_Filter_utils__WEBPACK_IMPORTED_MODULE_3__.getAvailableFilters)().map(filter => {
+  }, (0,_Filter_utils__WEBPACK_IMPORTED_MODULE_3__.availableFilters)().map(filter => {
     let _classes = '__item';
 
     if (filterType === filter.type) {
@@ -3812,13 +3812,93 @@ const Checkbox = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
     checked: isChecked,
     id: id,
-    onChange: onChange
+    onChange: value => onChange(value, id)
   })))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, description) : '');
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Checkbox);
+
+/***/ }),
+
+/***/ "./src/components/Field/DropdownSelect.js":
+/*!************************************************!*\
+  !*** ./src/components/Field/DropdownSelect.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+const DropdownSelect = _ref => {
+  let {
+    label,
+    id,
+    description,
+    options,
+    value,
+    onChange,
+    renderAsFormField = false
+  } = _ref;
+  let html;
+
+  if (renderAsFormField) {
+    let customClasses = '__custom_select_control';
+    customClasses += ` ${id}`;
+    html = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "__form_control"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "__inner"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "__label"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: id
+    }, label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "__wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "__input_wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "__custom_select_control_wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CustomSelectControl, {
+      hideLabelFromVision: true,
+      options: options,
+      onChange: _ref2 => {
+        let {
+          selectedItem
+        } = _ref2;
+        return onChange(selectedItem, id);
+      },
+      value: value,
+      className: customClasses
+    }))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      className: "description"
+    }, description) : '');
+  } else {
+    html = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CustomSelectControl, {
+      hideLabelFromVision: true,
+      options: options,
+      onChange: _ref3 => {
+        let {
+          selectedItem
+        } = _ref3;
+        return onChange(selectedItem);
+      },
+      value: value,
+      className: "__custom_select_control"
+    });
+  }
+
+  return html;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (DropdownSelect);
 
 /***/ }),
 
@@ -3945,7 +4025,7 @@ const Number = _ref => {
     id: id,
     className: "components-text-control__input",
     value: value,
-    onChange: onChange
+    onChange: e => onChange(e, id)
   }, rest))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
     className: "description"
   }, description) : '');
@@ -4006,7 +4086,7 @@ const Radio = _ref => {
     type: "radio",
     name: id,
     value: option.value,
-    onChange: onChange,
+    onChange: e => onChange(e, id),
     checked: option.value === value
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: `${id}-${index}`
@@ -4068,7 +4148,7 @@ const Select = _ref => {
     id: id,
     options: options,
     values: values,
-    className: "__custom_select_control",
+    className: "__styled_select_control",
     disabled: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.isProFeature)(isPro),
     separator: true,
     onChange: onChange,
@@ -4126,7 +4206,7 @@ const Text = _ref => {
     id: id,
     className: "components-text-control__input",
     value: value,
-    onChange: onChange
+    onChange: e => onChange(e, id)
   }, rest))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
     className: "description"
   }, description) : '');
@@ -4438,715 +4518,42 @@ const ActiveFilters = () => {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Extended (group by filter)', 'wc-ajax-product-filter'),
       value: 'extended'
     }],
-    onChange: e => handleRadioChange(e, 'active_filters_layout'),
+    onChange: handleRadioChange,
     value: active_filters_layout
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'enable_clear_all_button',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Clear All Filters button', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show a button to clear all filters.', 'wc-ajax-product-filter'),
     isChecked: enable_clear_all_button,
-    onChange: value => handleCheckboxChange('enable_clear_all_button', value)
+    onChange: handleCheckboxChange
   }), '1' === enable_clear_all_button && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'clear_all_button_label',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Label', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the button default label.', 'wc-ajax-product-filter'),
     value: clear_all_button_label,
-    onChange: e => handleTextFieldChange(e, 'clear_all_button_label')
+    onChange: handleTextFieldChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'move_clear_all_button_in_title',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show button in heading', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the button in heading.', 'wc-ajax-product-filter'),
     isChecked: move_clear_all_button_in_title,
-    onChange: value => handleCheckboxChange('move_clear_all_button_in_title', value)
+    onChange: handleCheckboxChange
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'show_if_empty',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show if empty', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show a message when no filter is applied.', 'wc-ajax-product-filter'),
     isChecked: show_if_empty,
-    onChange: value => handleCheckboxChange('show_if_empty', value)
+    onChange: handleCheckboxChange
   }), '1' === show_if_empty && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'empty_filter_message',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Empty filter message', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default message.', 'wc-ajax-product-filter'),
     value: empty_filter_message,
-    onChange: e => handleTextFieldChange(e, 'empty_filter_message')
+    onChange: handleTextFieldChange
   }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ActiveFilters);
-
-/***/ }),
-
-/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/Others.js":
-/*!***********************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/Others.js ***!
-  \***********************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
-/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
-/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../Field/Text */ "./src/components/Field/Text.js");
-/* harmony import */ var _DisplayTypeField__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../DisplayTypeField */ "./src/components/Filter/FilterNav/FilterUI/DisplayTypeField.js");
-/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
-/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
-/* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
-
-
-
-
-
-
-
-
-
-
-const Others = () => {
-  const {
-    state: {
-      filterType,
-      additionalData,
-      activeFilterData
-    },
-    dispatch
-  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_6__.useFilter)();
-  const {
-    display_type,
-    query_type,
-    all_items_label,
-    use_chosen,
-    chosen_no_results_message,
-    enable_multiple_filter,
-    hierarchical,
-    show_count,
-    hide_empty,
-    enable_tooltip,
-    tooltip_position,
-    show_count_in_tooltip
-  } = activeFilterData;
-  const {
-    handleRadioChange,
-    handleCheckboxChange,
-    handleTextFieldChange,
-    handleToggleGroupChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, dispatch);
-
-  const displayTypeField = () => {
-    const segments = [];
-    const haveAllDisplayTypes = ['category', 'tag', 'attribute', 'custom-taxonomy', 'product-status', 'post-meta'];
-
-    if (haveAllDisplayTypes.includes(filterType)) {
-      segments.push([{
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
-        value: 'checkbox'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
-        value: 'radio'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
-        value: 'select'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multi select', 'wc-ajax-product-filter'),
-        value: 'multi-select'
-      }]);
-      segments.push([{
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
-        value: 'label'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Color', 'wc-ajax-product-filter'),
-        value: 'color',
-        isPro: true
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Image', 'wc-ajax-product-filter'),
-        value: 'image',
-        isPro: true
-      }]);
-    } else if ('sort-by' === filterType || 'per-page' === filterType) {
-      segments.push([{
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
-        value: 'radio'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
-        value: 'select'
-      }]);
-    } else {
-      segments.push([{
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
-        value: 'checkbox'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
-        value: 'radio'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
-        value: 'select'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multi select', 'wc-ajax-product-filter'),
-        value: 'multi-select'
-      }, {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
-        value: 'label'
-      }]);
-    }
-
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DisplayTypeField__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      id: 'display_type',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
-      segments: segments,
-      value: display_type,
-      onChange: handleRadioChange
-    });
-  };
-
-  const enableMultipleFilterField = () => {
-    let showField = false;
-
-    if ('label' === display_type || 'color' === display_type || 'image' === display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'enable_multiple_filter',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if the user can select multiple options when filtering products.', 'wc-ajax-product-filter'),
-        isChecked: enable_multiple_filter,
-        onChange: value => handleCheckboxChange('enable_multiple_filter', value)
-      });
-    }
-  };
-
-  const queryTypeField = () => {
-    let showField = false;
-
-    if ('checkbox' === display_type || 'multi-select' === display_type) {
-      showField = true;
-    } else if (('label' === display_type || 'color' === display_type || 'image' === display_type) && '1' === enable_multiple_filter) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: 'query_type',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Query Type', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND: products that have both options, OR: products that matched any option.', 'wc-ajax-product-filter'),
-        options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter'),
-          value: 'and'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR', 'wc-ajax-product-filter'),
-          value: 'or'
-        }],
-        onChange: e => handleRadioChange(e, 'query_type'),
-        value: query_type
-      });
-    }
-  };
-
-  const allItemsLabelField = () => {
-    let showField = false;
-
-    if ('radio' === display_type || 'select' === display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'all_items_label',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
-        value: all_items_label,
-        onChange: e => handleTextFieldChange(e, 'all_items_label')
-      });
-    }
-  };
-
-  const useChosenField = () => {
-    let showField = false;
-
-    if ('select' === display_type || 'multi-select' === display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'use_chosen',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Combobox', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use jQuery Chosen library instead of the native select element.', 'wc-ajax-product-filter'),
-        isChecked: use_chosen,
-        onChange: value => handleCheckboxChange('use_chosen', value)
-      });
-    }
-  };
-
-  const allItemsLabelFieldForUseChosen = () => {
-    let showField = false;
-
-    if ('multi-select' === display_type && '1' === use_chosen) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'all_items_label',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
-        value: all_items_label,
-        onChange: e => handleTextFieldChange(e, 'all_items_label')
-      });
-    }
-  };
-
-  const noResultsMessageField = () => {
-    let showField = false;
-
-    if (('select' === display_type || 'multi-select' === display_type) && use_chosen) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'chosen_no_results_message',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Matches Message', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This message is usually displayed when no options match the search term. Leave blank to show the default message.', 'wc-ajax-product-filter'),
-        value: chosen_no_results_message,
-        onChange: e => handleTextFieldChange(e, 'chosen_no_results_message')
-      });
-    }
-  };
-
-  const hierarchyField = () => {
-    let isHierarchical = false;
-
-    if ('category' === filterType) {
-      isHierarchical = true;
-    } else if ('custom-taxonomy' === filterType) {
-      const {
-        taxonomy
-      } = activeFilterData;
-      const {
-        taxonomy_hierarchical_data
-      } = additionalData;
-
-      if (taxonomy_hierarchical_data[taxonomy]) {
-        isHierarchical = true;
-      }
-    }
-
-    if (!isHierarchical) {
-      return;
-    }
-
-    let showField = false;
-    const validDisplayTypes = ['checkbox', 'radio', 'select', 'multi-select'];
-
-    if (validDisplayTypes.includes(display_type)) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'hierarchical',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show hierarchy', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the filter options as hierarchical.', 'wc-ajax-product-filter'),
-        isChecked: hierarchical,
-        onChange: value => handleCheckboxChange('hierarchical', value)
-      });
-    }
-  };
-
-  const showCountField = () => {
-    let showField = true;
-    const excludedFilterTypes = ['sort-by', 'per-page'];
-
-    if (excludedFilterTypes.includes(filterType)) {
-      showField = false;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'show_count',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Count', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in options.', 'wc-ajax-product-filter'),
-        isChecked: show_count,
-        onChange: value => handleCheckboxChange('show_count', value)
-      });
-    }
-  };
-
-  const removeEmptyField = () => {
-    let showField = true;
-    const excludedFilterTypes = ['sort-by', 'per-page'];
-
-    if (excludedFilterTypes.includes(filterType)) {
-      showField = false;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'hide_empty',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove Empty', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to remove the options that show empty results.', 'wc-ajax-product-filter'),
-        isChecked: hide_empty,
-        onChange: value => handleCheckboxChange('hide_empty', value)
-      });
-    }
-  };
-
-  const enableTooltipField = () => {
-    let showField = false;
-
-    if ('color' === display_type || 'image' === display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'enable_tooltip',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Tooltip', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display additional information in a tooltip when users hover over the option.', 'wc-ajax-product-filter'),
-        isChecked: enable_tooltip,
-        onChange: value => handleCheckboxChange('enable_tooltip', value)
-      });
-    }
-  };
-
-  const tooltipPositionField = () => {
-    let showField = false;
-
-    if (('color' === display_type || 'image' === display_type) && enable_tooltip) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_8__["default"], {
-        id: 'tooltip_position',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tooltip Position', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines on which side the tooltip will be placed.', 'wc-ajax-product-filter'),
-        options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Top', 'wc-ajax-product-filter'),
-          value: 'top'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Right', 'wc-ajax-product-filter'),
-          value: 'right'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bottom', 'wc-ajax-product-filter'),
-          value: 'bottom'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Left', 'wc-ajax-product-filter'),
-          value: 'left'
-        }],
-        onChange: handleToggleGroupChange,
-        value: tooltip_position
-      });
-    }
-  };
-
-  const showCountInTooltipField = () => {
-    let showField = false;
-
-    if (('color' === display_type || 'image' === display_type) && enable_tooltip) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'show_count_in_tooltip',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Count in tooltip', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in tooltip.', 'wc-ajax-product-filter'),
-        isChecked: show_count_in_tooltip,
-        onChange: value => handleCheckboxChange('show_count_in_tooltip', value)
-      });
-    }
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), enableMultipleFilterField(), queryTypeField(), allItemsLabelField(), useChosenField(), allItemsLabelFieldForUseChosen(), noResultsMessageField(), hierarchyField(), showCountField(), removeEmptyField(), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (Others);
-
-/***/ }),
-
-/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/PriceFilter.js":
-/*!****************************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/PriceFilter.js ***!
-  \****************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
-/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
-/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../Field/Text */ "./src/components/Field/Text.js");
-/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
-/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
-/* harmony import */ var _DisplayTypeField__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../DisplayTypeField */ "./src/components/Filter/FilterNav/FilterUI/DisplayTypeField.js");
-
-
-
-
-
-
-
-
-
-const PriceFilter = () => {
-  const {
-    state: {
-      activeFilterData
-    },
-    dispatch
-  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
-  const {
-    number_display_type,
-    number_range_slider_display_values_as,
-    number_range_enable_multiple_filter,
-    number_range_query_type,
-    number_range_select_all_items_label,
-    number_range_use_chosen,
-    number_range_chosen_no_results_message,
-    number_range_show_count,
-    number_range_hide_empty
-  } = activeFilterData;
-  const {
-    handleRadioChange,
-    handleCheckboxChange,
-    handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
-
-  const displayTypeField = () => {
-    const segments = [];
-    segments.push([{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Slider', 'wc-ajax-product-filter'),
-      value: 'range_slider'
-    }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'wc-ajax-product-filter'),
-      value: 'range_number'
-    }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Checkbox', 'wc-ajax-product-filter'),
-      value: 'range_checkbox',
-      isPro: true
-    }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Radio', 'wc-ajax-product-filter'),
-      value: 'range_radio',
-      isPro: true
-    }]);
-    segments.push([{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select', 'wc-ajax-product-filter'),
-      value: 'range_select',
-      isPro: true
-    }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiselect', 'wc-ajax-product-filter'),
-      value: 'range_multiselect',
-      isPro: true
-    }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Label', 'wc-ajax-product-filter'),
-      value: 'range_label',
-      isPro: true
-    }]);
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_DisplayTypeField__WEBPACK_IMPORTED_MODULE_7__["default"], {
-      id: 'number_display_type',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
-      segments: segments,
-      value: number_display_type,
-      onChange: handleRadioChange
-    });
-  };
-
-  const displayValuesField = () => {
-    let showField = false;
-
-    if ('range_slider' === number_display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: 'number_range_slider_display_values_as',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display values as', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determinses how the slider values will be shown on the frontend.', 'wc-ajax-product-filter'),
-        options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Plain Text', 'wc-ajax-product-filter'),
-          value: 'plain_text'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Input Field', 'wc-ajax-product-filter'),
-          value: 'input_field'
-        }],
-        onChange: e => handleRadioChange(e, 'number_range_slider_display_values_as'),
-        value: number_range_slider_display_values_as
-      });
-    }
-  };
-
-  const enableMultipleFilterField = () => {
-    let showField = false;
-
-    if ('range_label' === number_display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'number_range_enable_multiple_filter',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if the user can select multiple options when filtering products.', 'wc-ajax-product-filter'),
-        isChecked: number_range_enable_multiple_filter,
-        onChange: value => handleCheckboxChange('number_range_enable_multiple_filter', value)
-      });
-    }
-  };
-
-  const queryTypeField = () => {
-    let showField = false;
-
-    if ('range_checkbox' === number_display_type || 'range_multiselect' === number_display_type) {
-      showField = true;
-    } else if ('range_label' === number_display_type && '1' === number_range_enable_multiple_filter) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: 'number_range_query_type',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Query Type', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND: products that have both options, OR: products that matched any option.', 'wc-ajax-product-filter'),
-        options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter'),
-          value: 'and'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR', 'wc-ajax-product-filter'),
-          value: 'or'
-        }],
-        onChange: e => handleRadioChange(e, 'number_range_query_type'),
-        value: number_range_query_type
-      });
-    }
-  };
-
-  const allItemsLabelField = () => {
-    let showField = false;
-
-    if ('range_radio' === number_display_type || 'range_select' === number_display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'number_range_select_all_items_label',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
-        value: number_range_select_all_items_label,
-        onChange: e => handleTextFieldChange(e, 'number_range_select_all_items_label')
-      });
-    }
-  };
-
-  const useChosenField = () => {
-    let showField = false;
-
-    if ('range_select' === number_display_type || 'range_multiselect' === number_display_type) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'number_range_use_chosen',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Combobox', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use jQuery Chosen library instead of the native select element.', 'wc-ajax-product-filter'),
-        isChecked: number_range_use_chosen,
-        onChange: value => handleCheckboxChange('number_range_use_chosen', value)
-      });
-    }
-  };
-
-  const allItemsLabelFieldForUseChosen = () => {
-    let showField = false;
-
-    if ('range_multiselect' === number_display_type && '1' === number_range_use_chosen) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'number_range_select_all_items_label',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
-        value: number_range_select_all_items_label,
-        onChange: e => handleTextFieldChange(e, 'number_range_select_all_items_label')
-      });
-    }
-  };
-
-  const noResultsMessageField = () => {
-    let showField = false;
-
-    if (('range_select' === number_display_type || 'range_multiselect' === number_display_type) && number_range_use_chosen) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'number_range_chosen_no_results_message',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Matches Message', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This message is usually displayed when no options match the search term. Leave blank to show the default message.', 'wc-ajax-product-filter'),
-        value: number_range_chosen_no_results_message,
-        onChange: e => handleTextFieldChange(e, 'number_range_chosen_no_results_message')
-      });
-    }
-  };
-
-  const showCountField = () => {
-    let showField = false;
-    const validDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label'];
-
-    if (validDisplayTypes.includes(number_display_type)) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'number_range_show_count',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Count', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in options.', 'wc-ajax-product-filter'),
-        isChecked: number_range_show_count,
-        onChange: value => handleCheckboxChange('number_range_show_count', value)
-      });
-    }
-  };
-
-  const hideEmptyField = () => {
-    let showField = false;
-    const validDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label'];
-
-    if (validDisplayTypes.includes(number_display_type)) {
-      showField = true;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'number_range_hide_empty',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove Empty', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to remove the options that show empty results.', 'wc-ajax-product-filter'),
-        isChecked: number_range_hide_empty,
-        onChange: value => handleCheckboxChange('number_range_hide_empty', value)
-      });
-    }
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), enableMultipleFilterField(), queryTypeField(), allItemsLabelField(), useChosenField(), allItemsLabelFieldForUseChosen(), noResultsMessageField(), showCountField(), hideEmptyField());
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (PriceFilter);
 
 /***/ }),
 
@@ -5193,17 +4600,459 @@ const ResetFilter = () => {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Label', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default button label.', 'wc-ajax-product-filter'),
     value: reset_button_label,
-    onChange: e => handleTextFieldChange(e, 'reset_button_label')
+    onChange: handleTextFieldChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'show_if_empty',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show if empty', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the reset filter button when no filter is applied.', 'wc-ajax-product-filter'),
     isChecked: show_if_empty,
-    onChange: value => handleCheckboxChange('show_if_empty', value)
+    onChange: handleCheckboxChange
   }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ResetFilter);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeDate.js":
+/*!******************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeDate.js ***!
+  \******************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/DropdownSelect */ "./src/components/Field/DropdownSelect.js");
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
+/* harmony import */ var _useFields__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./useFields */ "./src/components/Filter/FilterNav/FilterUI/Appearance/useFields.js");
+
+
+
+
+
+
+
+
+
+
+const ValueTypeDate = () => {
+  const {
+    state: {
+      activeFilterData,
+      additionalData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
+  const {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleDropdownChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  const {
+    enableMultipleFilterField,
+    queryTypeField,
+    allItemsLabelField,
+    useChosenField,
+    allItemsLabelFieldForUseChosen,
+    noResultsMessageField,
+    showCountField,
+    removeEmptyField
+  } = (0,_useFields__WEBPACK_IMPORTED_MODULE_8__["default"])('date');
+  const {
+    date_display_type,
+    date_format,
+    show_date_inputs_inline,
+    date_picker_month_dropdown,
+    date_picker_year_dropdown
+  } = activeFilterData;
+
+  const displayTypeField = () => {
+    const options = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.dateDisplayTypes)();
+    const value = options.find(option => date_display_type === option.key);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      id: 'date_display_type',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
+      options: options,
+      value: value,
+      onChange: handleDropdownChange,
+      renderAsFormField: true
+    });
+  };
+
+  const dateFormatField = () => {
+    if ('input_date' === date_display_type || 'input_date_range' === date_display_type) {
+      const options = additionalData['default_date_display_formats'];
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: 'date_format',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date Format', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the date will be displayed in the frontend.', 'wc-ajax-product-filter'),
+        options: options,
+        onChange: handleRadioChange,
+        value: date_format,
+        isVertical: true
+      });
+    }
+  }; // TODO: Move to the customize section.
+
+
+  const dateInputsInlineField = () => {
+    if ('input_date_range' === date_display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'show_date_inputs_inline',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inlide Date Inputs', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the date input fields in a single line.', 'wc-ajax-product-filter'),
+        isChecked: show_date_inputs_inline,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const useDropdownMonthField = () => {
+    if ('input_date' === date_display_type || 'input_date_range' === date_display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_picker_month_dropdown',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use dropdown for Month', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the month dropdown in datepicker.', 'wc-ajax-product-filter'),
+        isChecked: date_picker_month_dropdown,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const useDropdownYearField = () => {
+    if ('input_date' === date_display_type || 'input_date_range' === date_display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_picker_year_dropdown',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use dropdown for Year', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the year dropdown in datepicker.', 'wc-ajax-product-filter'),
+        isChecked: date_picker_year_dropdown,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), dateFormatField(), dateInputsInlineField(), useDropdownMonthField(), useDropdownYearField(), enableMultipleFilterField('time_period_enable_multiple_filter'), queryTypeField('time_period_query_type'), allItemsLabelField('time_period_select_all_items_label'), useChosenField('time_period_use_chosen'), allItemsLabelFieldForUseChosen('time_period_select_all_items_label'), noResultsMessageField('time_period_chosen_no_results_message'), showCountField('time_period_show_count'), removeEmptyField('time_period_hide_empty'));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ValueTypeDate);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeNumber.js":
+/*!********************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeNumber.js ***!
+  \********************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/DropdownSelect */ "./src/components/Field/DropdownSelect.js");
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
+/* harmony import */ var _useFields__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./useFields */ "./src/components/Filter/FilterNav/FilterUI/Appearance/useFields.js");
+
+
+
+
+
+
+
+
+
+
+const ValueTypeNumber = () => {
+  const {
+    state: {
+      filterType,
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
+  const {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleDropdownChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  const {
+    enableMultipleFilterField,
+    queryTypeField,
+    allItemsLabelField,
+    useChosenField,
+    allItemsLabelFieldForUseChosen,
+    noResultsMessageField,
+    showCountField,
+    removeEmptyField
+  } = (0,_useFields__WEBPACK_IMPORTED_MODULE_8__["default"])('number');
+  const {
+    number_display_type,
+    number_range_slider_display_values_as,
+    align_values_at_the_end
+  } = activeFilterData;
+
+  const displayTypeField = () => {
+    let options = [];
+
+    if ('price' === filterType) {
+      options = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.numberDisplayTypes)(true);
+    } else {
+      options = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.numberDisplayTypes)();
+    }
+
+    const value = options.find(option => number_display_type === option.key);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      id: 'number_display_type',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
+      options: options,
+      value: value,
+      onChange: handleDropdownChange,
+      renderAsFormField: true
+    });
+  };
+
+  const displayValuesField = () => {
+    if ('range_slider' === number_display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: 'number_range_slider_display_values_as',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display values as', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determinses how the slider values will be shown on the frontend.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Plain Text', 'wc-ajax-product-filter'),
+          value: 'plain_text'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Input Field', 'wc-ajax-product-filter'),
+          value: 'input_field'
+        }],
+        onChange: handleRadioChange,
+        value: number_range_slider_display_values_as
+      });
+    }
+  }; // TODO: Move to the customize section.
+
+
+  const alignValuesField = () => {
+    if ('range_slider' === number_display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'align_values_at_the_end',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Align values', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to align the slider values in the line; first item is on the start line, last item on the end line.', 'wc-ajax-product-filter'),
+        isChecked: align_values_at_the_end,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), alignValuesField(), enableMultipleFilterField('number_range_enable_multiple_filter'), queryTypeField('number_range_query_type'), allItemsLabelField('number_range_select_all_items_label'), useChosenField('number_range_use_chosen'), allItemsLabelFieldForUseChosen('number_range_select_all_items_label'), noResultsMessageField('number_range_chosen_no_results_message'), showCountField('number_range_show_count'), removeEmptyField('number_range_hide_empty'));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ValueTypeNumber);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeText.js":
+/*!******************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeText.js ***!
+  \******************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
+/* harmony import */ var _Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../Field/DropdownSelect */ "./src/components/Field/DropdownSelect.js");
+/* harmony import */ var _useFields__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./useFields */ "./src/components/Filter/FilterNav/FilterUI/Appearance/useFields.js");
+
+
+
+
+
+
+
+
+
+
+const ValueTypeText = () => {
+  const {
+    state: {
+      filterType,
+      additionalData,
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
+  const {
+    handleCheckboxChange,
+    handleToggleGroupChange,
+    handleDropdownChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  const {
+    enableMultipleFilterField,
+    queryTypeField,
+    allItemsLabelField,
+    useChosenField,
+    allItemsLabelFieldForUseChosen,
+    noResultsMessageField,
+    showCountField,
+    removeEmptyField
+  } = (0,_useFields__WEBPACK_IMPORTED_MODULE_8__["default"])('text');
+  const {
+    display_type,
+    hierarchical,
+    enable_tooltip,
+    tooltip_position,
+    show_count_in_tooltip
+  } = activeFilterData;
+
+  const displayTypeField = () => {
+    const haveAllDisplayTypes = ['category', 'tag', 'attribute', 'custom-taxonomy', 'product-status', 'post-meta'];
+    let options = [];
+
+    if (haveAllDisplayTypes.includes(filterType)) {
+      const freeFilterTypes = ['category', 'tag', 'attribute', 'product-status'];
+
+      if (freeFilterTypes.includes(filterType)) {
+        options = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)(true);
+      } else {
+        options = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)();
+      }
+    } else if ('sort-by' === filterType || 'per-page' === filterType) {
+      const allOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)();
+      const allowed = ['radio', 'select'];
+      options = allOptions.filter(option => allowed.includes(option.key));
+    } else {
+      const allOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)();
+      const notAllowed = ['color', 'image'];
+      options = allOptions.filter(option => !notAllowed.includes(option.key));
+    }
+
+    const value = options.find(option => display_type === option.key);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      id: 'display_type',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
+      options: options,
+      value: value,
+      onChange: handleDropdownChange,
+      renderAsFormField: true
+    });
+  };
+
+  const hierarchyField = () => {
+    let isHierarchical = false;
+
+    if ('category' === filterType) {
+      isHierarchical = true;
+    } else if ('custom-taxonomy' === filterType) {
+      const {
+        taxonomy
+      } = activeFilterData;
+      const {
+        taxonomy_hierarchical_data
+      } = additionalData;
+
+      if (taxonomy_hierarchical_data[taxonomy]) {
+        isHierarchical = true;
+      }
+    }
+
+    if (!isHierarchical) {
+      return;
+    }
+
+    let showField = false;
+    const validDisplayTypes = ['checkbox', 'radio', 'select', 'multi-select'];
+
+    if (validDisplayTypes.includes(display_type)) {
+      showField = true;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'hierarchical',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show hierarchy', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the filter options as hierarchical.', 'wc-ajax-product-filter'),
+        isChecked: hierarchical,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const enableTooltipField = () => {
+    if ('color' === display_type || 'image' === display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'enable_tooltip',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Tooltip', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display additional information in a tooltip when users hover over the option.', 'wc-ajax-product-filter'),
+        isChecked: enable_tooltip,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const tooltipPositionField = () => {
+    if (('color' === display_type || 'image' === display_type) && '1' === enable_tooltip) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        id: 'tooltip_position',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tooltip Position', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines on which side the tooltip will be placed.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Top', 'wc-ajax-product-filter'),
+          value: 'top'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Right', 'wc-ajax-product-filter'),
+          value: 'right'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bottom', 'wc-ajax-product-filter'),
+          value: 'bottom'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Left', 'wc-ajax-product-filter'),
+          value: 'left'
+        }],
+        onChange: handleToggleGroupChange,
+        value: tooltip_position
+      });
+    }
+  };
+
+  const showCountInTooltipField = () => {
+    if (('color' === display_type || 'image' === display_type) && '1' === enable_tooltip) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'show_count_in_tooltip',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Count in tooltip', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in tooltip.', 'wc-ajax-product-filter'),
+        isChecked: show_count_in_tooltip,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), useChosenField('use_chosen'), allItemsLabelFieldForUseChosen('all_items_label'), noResultsMessageField('chosen_no_results_message'), hierarchyField(), showCountField('show_count'), removeEmptyField('hide_empty'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ValueTypeText);
 
 /***/ }),
 
@@ -5223,9 +5072,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
 /* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
 /* harmony import */ var _ActiveFilters__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ActiveFilters */ "./src/components/Filter/FilterNav/FilterUI/Appearance/ActiveFilters.js");
-/* harmony import */ var _Others__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Others */ "./src/components/Filter/FilterNav/FilterUI/Appearance/Others.js");
-/* harmony import */ var _PriceFilter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PriceFilter */ "./src/components/Filter/FilterNav/FilterUI/Appearance/PriceFilter.js");
+/* harmony import */ var _ValueTypeText__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ValueTypeText */ "./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeText.js");
+/* harmony import */ var _ValueTypeNumber__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./ValueTypeNumber */ "./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeNumber.js");
 /* harmony import */ var _ResetFilter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ResetFilter */ "./src/components/Filter/FilterNav/FilterUI/Appearance/ResetFilter.js");
+/* harmony import */ var _ValueTypeDate__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ValueTypeDate */ "./src/components/Filter/FilterNav/FilterUI/Appearance/ValueTypeDate.js");
+
 
 
 
@@ -5245,7 +5096,8 @@ const Appearance = () => {
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
   const {
-    show_title
+    show_title,
+    value_type
   } = activeFilterData;
   const {
     handleCheckboxChange
@@ -5257,11 +5109,19 @@ const Appearance = () => {
     if ('active-filters' === filterType) {
       fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ActiveFilters__WEBPACK_IMPORTED_MODULE_5__["default"], null);
     } else if ('price' === filterType) {
-      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_PriceFilter__WEBPACK_IMPORTED_MODULE_7__["default"], null);
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeNumber__WEBPACK_IMPORTED_MODULE_7__["default"], null);
+    } else if ('post-meta' === filterType) {
+      if ('text' === value_type) {
+        fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeText__WEBPACK_IMPORTED_MODULE_6__["default"], null);
+      } else if ('number' === value_type) {
+        fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeNumber__WEBPACK_IMPORTED_MODULE_7__["default"], null);
+      } else if ('date' === value_type) {
+        fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeDate__WEBPACK_IMPORTED_MODULE_9__["default"], null);
+      }
     } else if ('reset-button' === filterType) {
       fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ResetFilter__WEBPACK_IMPORTED_MODULE_8__["default"], null);
     } else {
-      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Others__WEBPACK_IMPORTED_MODULE_6__["default"], null);
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeText__WEBPACK_IMPORTED_MODULE_6__["default"], null);
     }
 
     return fields;
@@ -5271,12 +5131,281 @@ const Appearance = () => {
     id: 'show_title',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Title', 'wc-ajax-product-filter'),
     isChecked: show_title,
-    onChange: value => handleCheckboxChange('show_title', value),
+    onChange: handleCheckboxChange,
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the filter title before the options.', 'wc-ajax-product-filter')
   }), renderFields());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Appearance);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/useFields.js":
+/*!**************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/useFields.js ***!
+  \**************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+
+
+
+
+
+
+
+
+const useFields = type => {
+  const {
+    state: {
+      filterType,
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_6__.useFilter)();
+  const {
+    handleRadioChange,
+    handleCheckboxChange,
+    handleTextFieldChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, dispatch);
+  const {
+    display_type,
+    enable_multiple_filter,
+    use_chosen,
+    number_display_type,
+    number_range_enable_multiple_filter,
+    number_range_use_chosen,
+    date_display_type,
+    time_period_enable_multiple_filter,
+    time_period_use_chosen
+  } = activeFilterData;
+
+  const enableMultipleFilterField = id => {
+    let showField = false;
+
+    if ('text' === type) {
+      showField = 'label' === display_type || 'color' === display_type || 'image' === display_type;
+    } else if ('number' === type) {
+      showField = 'range_label' === number_display_type;
+    } else if ('date' === type) {
+      showField = 'time_period_label' === date_display_type;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple Selection', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if the user can select multiple options when filtering products.', 'wc-ajax-product-filter'),
+        isChecked: activeFilterData[id],
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const queryTypeField = id => {
+    let showField = false;
+
+    if ('text' === type) {
+      if ('checkbox' === display_type || 'multi-select' === display_type) {
+        showField = true;
+      } else if (('label' === display_type || 'color' === display_type || 'image' === display_type) && '1' === enable_multiple_filter) {
+        showField = true;
+      }
+    } else if ('number' === type) {
+      if ('range_checkbox' === number_display_type || 'range_multiselect' === number_display_type) {
+        showField = true;
+      } else if ('range_label' === number_display_type && '1' === number_range_enable_multiple_filter) {
+        showField = true;
+      }
+    } else if ('date' === type) {
+      if ('time_period_checkbox' === date_display_type || 'time_period_multiselect' === date_display_type) {
+        showField = true;
+      } else if ('time_period_label' === date_display_type && '1' === time_period_enable_multiple_filter) {
+        showField = true;
+      }
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Query Type', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND: products that have both options, OR: products that matched any option.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter'),
+          value: 'and'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR', 'wc-ajax-product-filter'),
+          value: 'or'
+        }],
+        onChange: handleRadioChange,
+        value: activeFilterData[id]
+      });
+    }
+  };
+
+  const allItemsLabelField = id => {
+    let showField = false;
+
+    if ('text' === type) {
+      showField = 'radio' === display_type || 'select' === display_type;
+    } else if ('number' === type) {
+      showField = 'range_radio' === number_display_type || 'range_select' === number_display_type;
+    } else if ('date' === type) {
+      showField = 'time_period_radio' === date_display_type || 'time_period_select' === date_display_type;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
+        value: activeFilterData[id],
+        onChange: handleTextFieldChange
+      });
+    }
+  };
+
+  const useChosenField = id => {
+    let showField = false;
+
+    if ('text' === type) {
+      showField = 'select' === display_type || 'multi-select' === display_type;
+    } else if ('number' === type) {
+      showField = 'range_select' === number_display_type || 'range_multiselect' === number_display_type;
+    } else if ('date' === type) {
+      showField = 'time_period_select' === date_display_type || 'time_period_multiselect' === date_display_type;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Combobox', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use jQuery Chosen library instead of the native select element.', 'wc-ajax-product-filter'),
+        isChecked: activeFilterData[id],
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const allItemsLabelFieldForUseChosen = id => {
+    let showField = false;
+
+    if ('text' === type) {
+      showField = 'multi-select' === display_type && '1' === use_chosen;
+    } else if ('number' === type) {
+      showField = 'range_multiselect' === number_display_type && '1' === number_range_use_chosen;
+    } else if ('date' === type) {
+      showField = 'time_period_multiselect' === date_display_type && '1' === time_period_use_chosen;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
+        value: activeFilterData[id],
+        onChange: handleTextFieldChange
+      });
+    }
+  };
+
+  const noResultsMessageField = id => {
+    let showField = false;
+
+    if ('text' === type) {
+      showField = ('select' === display_type || 'multi-select' === display_type) && '1' === use_chosen;
+    } else if ('number' === type) {
+      showField = ('range_select' === number_display_type || 'range_multiselect' === number_display_type) && '1' === number_range_use_chosen;
+    } else if ('date' === type) {
+      showField = ('time_period_select' === date_display_type || 'time_period_multiselect' === date_display_type) && '1' === time_period_use_chosen;
+    }
+
+    if (showField) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Matches Message', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This message is usually displayed when no options match the search term. Leave blank to show the default message.', 'wc-ajax-product-filter'),
+        value: activeFilterData[id],
+        onChange: handleTextFieldChange
+      });
+    }
+  };
+
+  const isCountEnabled = () => {
+    let enabled = false;
+
+    if ('text' === type) {
+      const excludedFilterTypes = ['sort-by', 'per-page'];
+
+      if (excludedFilterTypes.includes(filterType)) {
+        enabled = false;
+      } else {
+        enabled = true;
+      }
+    } else if ('number' === type) {
+      const validDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label'];
+
+      if (validDisplayTypes.includes(number_display_type)) {
+        enabled = true;
+      }
+    } else if ('date' === type) {
+      const validDisplayTypes = ['time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label'];
+
+      if (validDisplayTypes.includes(date_display_type)) {
+        enabled = true;
+      }
+    }
+
+    return enabled;
+  };
+
+  const showCountField = id => {
+    if (isCountEnabled()) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Count', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the product count in options.', 'wc-ajax-product-filter'),
+        isChecked: activeFilterData[id],
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const removeEmptyField = id => {
+    if (isCountEnabled()) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: id,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove Empty', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to remove the options that show empty results.', 'wc-ajax-product-filter'),
+        isChecked: activeFilterData[id],
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  return {
+    enableMultipleFilterField,
+    queryTypeField,
+    allItemsLabelField,
+    useChosenField,
+    allItemsLabelFieldForUseChosen,
+    noResultsMessageField,
+    showCountField,
+    removeEmptyField
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (useFields);
 
 /***/ }),
 
@@ -5348,81 +5477,6 @@ const AvaialableFilters = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (AvaialableFilters);
-
-/***/ }),
-
-/***/ "./src/components/Filter/FilterNav/FilterUI/DisplayTypeField.js":
-/*!**********************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/DisplayTypeField.js ***!
-  \**********************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils */ "./src/components/utils.js");
-
-
-
-
-
-const DisplayTypeField = _ref => {
-  let {
-    id,
-    label,
-    description,
-    segments,
-    value,
-    onChange
-  } = _ref;
-
-  const renderSegments = () => {
-    return segments.map((options, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `__row${index + 1}`,
-      key: `segment-${index}`
-    }, renderOptions(options)));
-  };
-
-  const renderOptions = options => {
-    return options.map(option => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      key: option.value,
-      className: classnames__WEBPACK_IMPORTED_MODULE_2___default()('components-radio-control__option')
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-      id: option.value,
-      className: "components-radio-control__input",
-      type: "radio",
-      name: id,
-      value: option.value,
-      onChange: e => onChange(e, id),
-      checked: option.value === value
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-      htmlFor: option.value
-    }, option.label, (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(option.isPro))));
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__form_control display-type"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__inner"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    htmlFor: id
-  }, label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__input_wrapper"
-  }, renderSegments()))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "description"
-  }, description) : '');
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (DisplayTypeField);
 
 /***/ }),
 
@@ -5540,6 +5594,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_Listbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Field/Listbox */ "./src/components/Field/Listbox.js");
 /* harmony import */ var _FilterKey__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FilterKey */ "./src/components/Filter/FilterNav/FilterUI/FilterKey.js");
 /* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _Field_Number__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Field/Number */ "./src/components/Field/Number.js");
+
+
+
 
 
 
@@ -5558,6 +5618,16 @@ const GeneralFields = _ref => {
     additionalData,
     dispatch
   } = _ref;
+  const {
+    handleCheckboxChange,
+    handleToggleGroupChange,
+    handleTextFieldChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, dispatch);
+  const {
+    value_type,
+    value_decimal,
+    value_decimal_places
+  } = activeFilterData;
   const filterKey = (_activeFilterData$fie = activeFilterData['field_key']) !== null && _activeFilterData$fie !== void 0 ? _activeFilterData$fie : '';
 
   const handleTaxonomyChange = value => {
@@ -5768,41 +5838,6 @@ const GeneralFields = _ref => {
     }
   };
 
-  const handleValueTypeChange = value => {
-    const _activeFilterData = { ...activeFilterData,
-      value_type: value
-    };
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: _activeFilterData
-    });
-  };
-
-  const valueTypeField = () => {
-    if ('post-meta' === filterType) {
-      const {
-        value_type
-      } = activeFilterData;
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
-        id: 'value_type',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Type', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the post meta value type.', 'wc-ajax-product-filter'),
-        options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'wc-ajax-product-filter'),
-          value: 'text'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'wc-ajax-product-filter'),
-          value: 'number'
-        }, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'wc-ajax-product-filter'),
-          value: 'date'
-        }],
-        onChange: handleValueTypeChange,
-        value: value_type
-      });
-    }
-  };
-
   const filterKeyField = () => {
     if ('active-filters' !== filterType && 'reset-button' !== filterType) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterKey__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -5816,10 +5851,56 @@ const GeneralFields = _ref => {
     }
   };
 
+  const valueTypeField = () => {
+    if ('post-meta' === filterType) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        id: 'value_type',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Type', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the meta value type.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'wc-ajax-product-filter'),
+          value: 'text'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'wc-ajax-product-filter'),
+          value: 'number'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Date', 'wc-ajax-product-filter'),
+          value: 'date'
+        }],
+        onChange: handleToggleGroupChange,
+        value: value_type
+      });
+    }
+  };
+
+  const valueIsDecimalField = () => {
+    if ('post-meta' === filterType && 'number' === value_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        id: 'value_decimal',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value is decimal', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether the meta values have decimal places.', 'wc-ajax-product-filter'),
+        isChecked: value_decimal,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const decimalPlacesField = () => {
+    if ('post-meta' === filterType && 'number' === value_type && '1' === value_decimal) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_8__["default"], {
+        id: 'value_decimal_places',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Places', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the number of decimal places in meta values.', 'wc-ajax-product-filter'),
+        value: value_decimal_places,
+        onChange: handleTextFieldChange
+      });
+    }
+  };
+
   let output = '';
 
   if (filterType) {
-    output = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, taxonomyField(), postMetaField(), postPropertyField(), valueTypeField(), filterKeyField());
+    output = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, taxonomyField(), postMetaField(), postPropertyField(), filterKeyField(), valueTypeField(), valueIsDecimalField(), decimalPlacesField());
   }
 
   return output;
@@ -5869,7 +5950,7 @@ const LimitBy = () => {
 
   const description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Limit the filter options.', 'wc-ajax-product-filter');
 
-  const options = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.getTaxonomyLimitByOptions)();
+  const options = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.taxonomyLimitByOptions)();
   const isPro = true;
 
   const handleChange = value => {
@@ -5939,11 +6020,11 @@ const FieldNumber = _ref => {
     onChange,
     description,
     type = 'text',
+    checkboxId,
     checkIsChecked,
     onCheckChange,
     ...rest
   } = _ref;
-  const checkboxId = `${id}-auto-detect`;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
     className: "__form_control number with-checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
@@ -5961,13 +6042,13 @@ const FieldNumber = _ref => {
     id: id,
     className: "components-text-control__input",
     value: value,
-    onChange: onChange
+    onChange: e => onChange(e, id)
   }, rest))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
     className: "checkbox-wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
     checked: checkIsChecked,
     id: checkboxId,
-    onChange: onCheckChange
+    onChange: checked => onCheckChange(checked, checkboxId)
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
     htmlFor: checkboxId
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Auto Detect', 'wc-ajax-product-filter')))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
@@ -5976,6 +6057,248 @@ const FieldNumber = _ref => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (FieldNumber);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/FilterOptions.js":
+/*!***************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/FilterOptions.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_sortablejs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-sortablejs */ "./node_modules/react-sortablejs/dist/index.js");
+/* harmony import */ var react_sortablejs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_sortablejs__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/drag-handle.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cancel-circle-filled.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../Field/DropdownSelect */ "./src/components/Field/DropdownSelect.js");
+
+
+
+
+
+
+
+
+
+const FilterOptions = () => {
+  const {
+    state: {
+      filterType,
+      activeFilterData,
+      additionalData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
+  const {
+    default_time_periods
+  } = additionalData;
+
+  const getOptionsKey = () => {
+    let key;
+
+    if ('post-meta' === filterType) {
+      if ('date' === value_type) {
+        key = 'time_period_options';
+      }
+    }
+
+    return key;
+  };
+
+  const {
+    value_type
+  } = activeFilterData;
+  const rows = activeFilterData[getOptionsKey()];
+
+  const emptyRow = () => {
+    let row;
+
+    if ('post-meta' === filterType) {
+      if ('date' === value_type) {
+        const firstOption = default_time_periods[0];
+        const value = firstOption.key;
+        row = {
+          value,
+          label: ''
+        };
+      }
+    }
+
+    return row;
+  };
+
+  const setRows = _rows => {
+    const _activeFilterData = { ...activeFilterData,
+      [getOptionsKey()]: _rows
+    };
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: _activeFilterData
+    });
+  };
+
+  const handleAddOption = () => {
+    const _activeFilterData = { ...activeFilterData,
+      [getOptionsKey()]: [...rows, emptyRow()]
+    };
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: _activeFilterData
+    });
+  };
+
+  const handleRemoveAll = () => {
+    const _activeFilterData = { ...activeFilterData,
+      [getOptionsKey()]: []
+    };
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: _activeFilterData
+    });
+  };
+
+  const handleRemove = index => {
+    const _rows = [...rows];
+
+    _rows.splice(index, 1);
+
+    const _activeFilterData = { ...activeFilterData,
+      [getOptionsKey()]: _rows
+    };
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: _activeFilterData
+    });
+  };
+
+  const handleChange = (value, index, key) => {
+    const _rows = [...rows];
+    _rows[index][key] = value;
+    const _activeFilterData = { ...activeFilterData,
+      [getOptionsKey()]: _rows
+    };
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: _activeFilterData
+    });
+  };
+
+  const handleSelectChange = (value, index, key) => {
+    handleChange(value.key, index, key);
+  };
+
+  const handleInputChange = (e, index, key) => {
+    handleChange(e.target.value, index, key);
+  };
+
+  const tableHeader = () => {
+    if ('post-meta' === filterType) {
+      if ('date' === value_type) {
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+          className: "__time_period"
+        }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Period', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+          className: "__time_period_label"
+        }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Label', 'wc-ajax-product-filter')));
+      }
+    }
+  };
+
+  const tableBody = (row, rowIndex) => {
+    if ('post-meta' === filterType) {
+      if ('date' === value_type) {
+        const {
+          value,
+          label
+        } = row;
+        const options = default_time_periods;
+        let selected = options.find(option => value === option.key);
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "__time_period"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_6__["default"], {
+          options: options,
+          value: selected,
+          onChange: _value => handleSelectChange(_value, rowIndex, 'value')
+        }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "__time_period_label"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+          type: "text",
+          value: label,
+          className: "components-text-control__input",
+          onChange: e => handleInputChange(e, rowIndex, 'label')
+        }))));
+      }
+    }
+  };
+
+  const table = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
+      className: "wp-list-table widefat fixed striped"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+      className: "__drag_handle"
+    }), tableHeader(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+      className: "__action"
+    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_sortablejs__WEBPACK_IMPORTED_MODULE_3__.ReactSortable, {
+      list: rows,
+      setList: setRows,
+      tag: 'tbody',
+      direction: 'vertical',
+      handle: ".__drag_handler"
+    }, rows.map((row, rowIndex) => {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
+        key: `filter-option-${rowIndex}`
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+        className: "__drag_handler"
+      }))), tableBody(row, rowIndex), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        className: "button-link button-link-delete",
+        onClick: () => handleRemove(rowIndex)
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+        size: 20
+      })))));
+    })));
+  };
+
+  let description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add the options that will be available to the filter.', 'wc-ajax-product-filter');
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__options_table"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__form_control"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__inner"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__label"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter Options', 'wc-ajax-product-filter'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__input_wrapper"
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description"
+  }, description)), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rows) && table(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__button_group"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    variant: "secondary",
+    onClick: handleAddOption
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add Option', 'wc-ajax-product-filter')), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rows) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    variant: "tertiary",
+    isDestructive: true,
+    onClick: handleRemoveAll
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove All', 'wc-ajax-product-filter'))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (FilterOptions);
 
 /***/ }),
 
@@ -5995,11 +6318,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_sortablejs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-sortablejs */ "./node_modules/react-sortablejs/dist/index.js");
 /* harmony import */ var react_sortablejs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_sortablejs__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/drag-handle.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cancel-circle-filled.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/drag-handle.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cancel-circle-filled.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_6__);
+
 
 
 
@@ -6012,6 +6338,7 @@ __webpack_require__.r(__webpack_exports__);
 const NumberOptionsTable = () => {
   const {
     state: {
+      filterType,
       activeFilterData: {
         number_get_options
       },
@@ -6100,7 +6427,7 @@ const NumberOptionsTable = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
         key: `filter-option-${rowIndex}`
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
         className: "__drag_handler"
       }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "__min_value"
@@ -6117,7 +6444,9 @@ const NumberOptionsTable = () => {
         className: "components-text-control__input",
         onChange: e => handleInputChange(e, rowIndex, 'max_value')
       }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-        className: "__range_label"
+        className: classnames__WEBPACK_IMPORTED_MODULE_6___default()('__range_label', {
+          __rating_label: 'rating' === filterType
+        })
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
         type: "text",
         value: label,
@@ -6127,13 +6456,281 @@ const NumberOptionsTable = () => {
         className: "button-link button-link-delete",
         onClick: () => handleRemove(rowIndex)
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
         size: 20
       })))));
     })));
   };
 
+  let description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add the options that will be available to the filter.', 'wc-ajax-product-filter');
+
+  if ('rating' === filterType) {
+    description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add the options that will be available to the filter. To show stars in the label, put [star] for filled star, [star-empty] for empty star and [star-half] for half star.', 'wc-ajax-product-filter');
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, 'manual_entry' === number_get_options && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__options_table"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__form_control"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__inner"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__label"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter Options', 'wc-ajax-product-filter'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__input_wrapper"
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description"
+  }, description)), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rows) && table(), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__button_group"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    variant: "secondary",
+    onClick: handleAddOption
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add Option', 'wc-ajax-product-filter')), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rows) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    variant: "tertiary",
+    isDestructive: true,
+    onClick: handleRemoveAll
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove All', 'wc-ajax-product-filter')))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (NumberOptionsTable);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/RatingOptions.js":
+/*!***************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/RatingOptions.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
+/* harmony import */ var _NumberOptionsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NumberOptionsTable */ "./src/components/Filter/FilterNav/FilterUI/Options/NumberOptionsTable.js");
+
+
+
+
+
+
+
+
+const RatingOptions = () => {
+  const {
+    state: {
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
+  const {
+    handleRadioChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  const {
+    number_get_options,
+    options_order_dir
+  } = activeFilterData;
+
+  const getOptionsField = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      id: 'number_get_options',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Get Options', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to get the options automatically or you want to add the options manually.'),
+      options: [{
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Automatically', 'wc-ajax-product-filter'),
+        value: 'automatically'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Manual Entry', 'wc-ajax-product-filter'),
+        value: 'manual_entry'
+      }],
+      value: number_get_options,
+      onChange: handleRadioChange
+    });
+  };
+
+  const orderDirectionField = () => {
+    if ('automatically' === number_get_options) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'options_order_dir',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order Direction', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to order options in ascending or descending order.', 'wc-ajax-product-filter'),
+        options: (0,_utils__WEBPACK_IMPORTED_MODULE_5__.orderDirectionOptions)(),
+        value: options_order_dir,
+        onChange: handleRadioChange
+      });
+    }
+  };
+
+  const manualOptions = () => {
+    if ('manual_entry' === number_get_options) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_NumberOptionsTable__WEBPACK_IMPORTED_MODULE_6__["default"], null);
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, getOptionsField(), orderDirectionField(), manualOptions());
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (RatingOptions);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/StatusOptions.js":
+/*!***************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/StatusOptions.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_sortablejs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-sortablejs */ "./node_modules/react-sortablejs/dist/index.js");
+/* harmony import */ var react_sortablejs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_sortablejs__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/drag-handle.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cancel-circle-filled.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
+/* harmony import */ var _Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../Field/DropdownSelect */ "./src/components/Field/DropdownSelect.js");
+
+
+
+
+
+
+
+
+
+
+
+const StatusOptions = () => {
+  const {
+    state: {
+      filterType,
+      filterOptions
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
+  const [rows, setRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(filterOptions);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setRows(filterOptions);
+  }, [filterOptions]);
+
+  const handleAddOption = () => {
+    const newOption = {
+      min_value: '',
+      max_value: '',
+      label: ''
+    };
+    const _filterOptions = [...filterOptions, newOption];
+    dispatch({
+      type: 'SET_FILTERS_OPTIONS',
+      payload: _filterOptions
+    });
+  };
+
+  const handleSort = () => {
+    dispatch({
+      type: 'SET_FILTERS_OPTIONS',
+      payload: rows
+    });
+  };
+
+  const handleRemoveAll = () => {
+    dispatch({
+      type: 'SET_FILTERS_OPTIONS',
+      payload: []
+    });
+  };
+
+  const handleRemove = index => {
+    const _filterOptions = [...filterOptions];
+
+    _filterOptions.splice(index, 1);
+
+    dispatch({
+      type: 'SET_FILTERS_OPTIONS',
+      payload: _filterOptions
+    });
+  };
+
+  const handleInputChange = (e, index, key) => {
+    const _filterOptions = [...filterOptions];
+    _filterOptions[index][key] = e.target.value;
+    dispatch({
+      type: 'SET_FILTERS_OPTIONS',
+      payload: _filterOptions
+    });
+  };
+
+  const table = () => {
+    const statusOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.productStatusOptions)();
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
+      className: "wp-list-table widefat fixed striped"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+      className: "__drag_handle"
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+      className: "__product_status"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Status', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+      className: "__label"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Label', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+      className: "__action"
+    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_sortablejs__WEBPACK_IMPORTED_MODULE_3__.ReactSortable, {
+      list: rows,
+      setList: setRows,
+      tag: 'tbody',
+      direction: 'vertical',
+      handle: ".__drag_handler",
+      onSort: handleSort
+    }, rows.map((row, rowIndex) => {
+      const {
+        color,
+        image_id,
+        image_url,
+        value,
+        label
+      } = row;
+      const status = statusOptions.find(option => option.key === value);
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
+        key: `filter-option-${rowIndex}`
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+        className: "__drag_handler"
+      }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "__product_status"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_DropdownSelect__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        options: statusOptions,
+        value: status
+      }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "__label"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+        type: "text",
+        value: label,
+        className: "components-text-control__input",
+        onChange: e => handleInputChange(e, rowIndex, 'label')
+      }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        className: "button-link button-link-delete",
+        onClick: () => handleRemove(rowIndex)
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+        size: 20
+      })))));
+    })));
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__options_table"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_control"
@@ -6159,14 +6756,14 @@ const NumberOptionsTable = () => {
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove All', 'wc-ajax-product-filter')))));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (NumberOptionsTable);
+/* harmony default export */ __webpack_exports__["default"] = (StatusOptions);
 
 /***/ }),
 
-/***/ "./src/components/Filter/FilterNav/FilterUI/Options/Others.js":
-/*!********************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/Options/Others.js ***!
-  \********************************************************************/
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/TaxonomyOptions.js":
+/*!*****************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/TaxonomyOptions.js ***!
+  \*****************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6212,7 +6809,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const Others = () => {
+const TaxonomyOptions = () => {
   const {
     state: {
       activeFilterData,
@@ -6293,8 +6890,7 @@ const Others = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
       id: 'get_options',
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Get Options', 'wc-ajax-product-filter'),
-      value: get_options,
-      onChange: e => handleRadioChange(e, 'get_options'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to get the options automatically or you want to add the options manually.'),
       options: [{
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Automatically', 'wc-ajax-product-filter'),
         value: 'automatically'
@@ -6303,12 +6899,13 @@ const Others = () => {
         value: 'manual_entry',
         isPro: true
       }],
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to get the options automatically or you want to add the options manually.')
+      value: get_options,
+      onChange: handleRadioChange
     });
   };
 
   const orderByField = () => {
-    const options = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getOrderByOptions)();
+    const options = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.termsOrderByOptions)();
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_15__["default"], {
       id: 'order_terms_by',
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order By', 'wc-ajax-product-filter'),
@@ -6324,10 +6921,10 @@ const Others = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'order_terms_dir',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order Direction', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to order options in ascending or descending order.', 'wc-ajax-product-filter'),
+        options: (0,_utils__WEBPACK_IMPORTED_MODULE_7__.orderDirectionOptions)(),
         value: order_terms_dir,
-        onChange: e => handleRadioChange(e, 'order_terms_dir'),
-        options: (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getOrderDirectionOptions)(),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to order options in ascending or descending order.', 'wc-ajax-product-filter')
+        onChange: handleRadioChange
       });
     }
   };
@@ -6339,17 +6936,16 @@ const Others = () => {
   };
 
   const parentTermField = () => {
-    const options = [];
-    const value = [];
-
     if ('automatically' === get_options && 'child' === limit_options) {
+      const options = [];
+      const value = [];
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Parent Term', 'wc-ajax-product-filter'),
         id: 'parent_term',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Parent Term', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only show the child terms of a parent term.', 'wc-ajax-product-filter'),
         options: options,
         values: value,
-        onChange: values => handleSelectChange(values, 'parent_term'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Only show the child terms of a parent term.', 'wc-ajax-product-filter')
+        onChange: values => handleSelectChange(values, 'parent_term')
       });
     }
   };
@@ -6360,12 +6956,12 @@ const Others = () => {
 
     if ('automatically' === get_options && 'include' === limit_options) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Terms to include', 'wc-ajax-product-filter'),
         id: 'limit_values_by_id',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Terms to include', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the terms that will be available to filter by.', 'wc-ajax-product-filter'),
         options: options,
         values: value,
-        onChange: values => handleSelectChange(values, 'limit_values_by_id'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the terms that will be available to filter by.', 'wc-ajax-product-filter')
+        onChange: values => handleSelectChange(values, 'limit_values_by_id')
       });
     }
   };
@@ -6376,12 +6972,12 @@ const Others = () => {
 
     if ('automatically' === get_options && 'exclude' === limit_options) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Terms to exclude', 'wc-ajax-product-filter'),
         id: 'exclude_values_id',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Terms to exclude', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the terms that will be excluded.', 'wc-ajax-product-filter'),
         options: options,
         values: value,
-        onChange: values => handleSelectChange(values, 'exclude_values_id'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the terms that will be excluded.', 'wc-ajax-product-filter')
+        onChange: values => handleSelectChange(values, 'exclude_values_id')
       });
     }
   };
@@ -6394,14 +6990,114 @@ const Others = () => {
   })));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Others);
+/* harmony default export */ __webpack_exports__["default"] = (TaxonomyOptions);
 
 /***/ }),
 
-/***/ "./src/components/Filter/FilterNav/FilterUI/Options/Range.js":
-/*!*******************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/Options/Range.js ***!
-  \*******************************************************************/
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeDate.js":
+/*!***************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeDate.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _FilterOptions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./FilterOptions */ "./src/components/Filter/FilterNav/FilterUI/Options/FilterOptions.js");
+
+
+
+
+
+
+
+const ValueTypeDate = () => {
+  const {
+    state: {
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
+  const {
+    handleTextFieldChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  const {
+    date_display_type,
+    date_from_prefix,
+    date_from_postfix,
+    date_from_placeholder,
+    date_to_prefix,
+    date_to_postfix,
+    date_to_placeholder
+  } = activeFilterData;
+
+  const inputFields = () => {
+    if ('input_date' === date_display_type || 'input_date_range' === date_display_type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_from_prefix',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('From Prefix', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the From field.', 'wc-ajax-product-filter'),
+        value: date_from_prefix,
+        onChange: handleTextFieldChange
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_from_postfix',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('From Postfix', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear after the From field.', 'wc-ajax-product-filter'),
+        value: date_from_postfix,
+        onChange: handleTextFieldChange
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_from_placeholder',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('From Placeholder', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The placeholder text to appear for the From field.', 'wc-ajax-product-filter'),
+        value: date_from_placeholder,
+        onChange: handleTextFieldChange
+      }), 'input_date_range' === date_display_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_to_prefix',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('To Prefix', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the To field.', 'wc-ajax-product-filter'),
+        value: date_to_prefix,
+        onChange: handleTextFieldChange
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_to_postfix',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('To Postfix', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear after the To field.', 'wc-ajax-product-filter'),
+        value: date_to_postfix,
+        onChange: handleTextFieldChange
+      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'date_to_placeholder',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('To Placeholder', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The placeholder text to appear for the To field.', 'wc-ajax-product-filter'),
+        value: date_to_placeholder,
+        onChange: handleTextFieldChange
+      })));
+    }
+  };
+
+  const optionsTable = () => {
+    const validDisplayTypes = ['time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label'];
+
+    if (validDisplayTypes.includes(date_display_type)) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterOptions__WEBPACK_IMPORTED_MODULE_5__["default"], null);
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, inputFields(), optionsTable());
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ValueTypeDate);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeNumber.js":
+/*!*****************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeNumber.js ***!
+  \*****************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6425,11 +7121,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const Range = () => {
+const ValueTypeNumber = () => {
   const {
     state: {
-      filterType,
-      additionalData,
       activeFilterData
     },
     dispatch
@@ -6467,8 +7161,7 @@ const Range = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_3__["default"], {
         id: 'number_get_options',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Get Options', 'wc-ajax-product-filter'),
-        value: number_get_options,
-        onChange: e => handleRadioChange(e, 'number_get_options'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to get the options automatically or you want to add the options manually.'),
         options: [{
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Automatically', 'wc-ajax-product-filter'),
           value: 'automatically'
@@ -6476,7 +7169,8 @@ const Range = () => {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Manual Entry', 'wc-ajax-product-filter'),
           value: 'manual_entry'
         }],
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to get the options automatically or you want to add the options manually.')
+        value: number_get_options,
+        onChange: handleRadioChange
       });
     }
   };
@@ -6494,8 +7188,6 @@ const Range = () => {
     }
 
     if (showField) {
-      const minValueDisabled = min_value_auto_detect ? true : false;
-      const maxValueDisabled = max_value_auto_detect ? true : false;
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "number-ui-options"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -6504,26 +7196,28 @@ const Range = () => {
         id: 'min_value',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Min Value', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The minimum value that a user can select.', 'wc-ajax-product-filter'),
-        disabled: minValueDisabled,
+        disabled: '1' === min_value_auto_detect,
         value: min_value,
-        onChange: e => handleTextFieldChange(e, 'min_value'),
+        onChange: handleTextFieldChange,
+        checkboxId: 'min_value_auto_detect',
         checkIsChecked: min_value_auto_detect,
-        onCheckChange: value => handleCheckboxChange('min_value_auto_detect', value)
+        onCheckChange: handleCheckboxChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FieldNumber__WEBPACK_IMPORTED_MODULE_6__["default"], {
         id: 'max_value',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Max Value', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The maximum value that a user can select.', 'wc-ajax-product-filter'),
-        disabled: maxValueDisabled,
+        disabled: '1' === max_value_auto_detect,
         value: max_value,
-        onChange: e => handleTextFieldChange(e, 'max_value'),
+        onChange: handleTextFieldChange,
+        checkboxId: 'max_value_auto_detect',
         checkIsChecked: max_value_auto_detect,
-        onCheckChange: value => handleCheckboxChange('max_value_auto_detect', value)
+        onCheckChange: handleCheckboxChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'step',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Step', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The step specifies the size of the increment.', 'wc-ajax-product-filter'),
         value: step,
-        onChange: e => handleTextFieldChange(e, 'step')
+        onChange: handleTextFieldChange
       })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "cols-wrapper"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -6531,35 +7225,35 @@ const Range = () => {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Prefix', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the values. Example: A currency symbol, $.', 'wc-ajax-product-filter'),
         value: value_prefix,
-        onChange: e => handleTextFieldChange(e, 'value_prefix')
+        onChange: handleTextFieldChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'value_postfix',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Postfix', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear after the values. Example: A currency symbol, €.', 'wc-ajax-product-filter'),
         value: value_postfix,
-        onChange: e => handleTextFieldChange(e, 'value_postfix')
+        onChange: handleTextFieldChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'values_separator',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Values Separator', 'wc-ajax-product-filter'),
         value: values_separator,
-        onChange: e => handleTextFieldChange(e, 'values_separator')
+        onChange: handleTextFieldChange
       })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "cols-wrapper"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'decimal_places',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Places', 'wc-ajax-product-filter'),
         value: decimal_places,
-        onChange: e => handleTextFieldChange(e, 'decimal_places')
+        onChange: handleTextFieldChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'thousand_separator',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Thousand Separator', 'wc-ajax-product-filter'),
         value: thousand_separator,
-        onChange: e => handleTextFieldChange(e, 'thousand_separator')
+        onChange: handleTextFieldChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'decimal_separator',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Separator', 'wc-ajax-product-filter'),
         value: decimal_separator,
-        onChange: e => handleTextFieldChange(e, 'decimal_separator')
+        onChange: handleTextFieldChange
       })));
     }
   };
@@ -6580,7 +7274,125 @@ const Range = () => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, getOptionsField(), automaticRangeFields(), manualOptions());
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Range);
+/* harmony default export */ __webpack_exports__["default"] = (ValueTypeNumber);
+
+/***/ }),
+
+/***/ "./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeText.js":
+/*!***************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeText.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
+/* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
+
+
+
+
+
+
+
+
+
+const ValueTypeText = () => {
+  const {
+    state: {
+      activeFilterData
+    },
+    dispatch
+  } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_4__.useFilter)();
+  const {
+    handleRadioChange,
+    handleToggleGroupChange
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, dispatch);
+  const {
+    get_options,
+    options_order_by,
+    options_order_dir,
+    options_order_type
+  } = activeFilterData;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if ('automatically' === get_options && 'label' === options_order_by) {
+      handleToggleGroupChange('none', 'options_order_by');
+    }
+  }, [get_options]);
+
+  const getOptionsField = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      id: 'get_options',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Get Options', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to get the options automatically or you want to add the options manually.'),
+      options: [{
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Automatically', 'wc-ajax-product-filter'),
+        value: 'automatically'
+      }, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Manual Entry', 'wc-ajax-product-filter'),
+        value: 'manual_entry'
+      }],
+      value: get_options,
+      onChange: handleRadioChange
+    });
+  };
+
+  const orderByField = () => {
+    let options = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.orderByOptions)();
+
+    if ('automatically' === get_options) {
+      options = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.orderByOptions)().filter(option => 'label' !== option.value);
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      id: 'options_order_by',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order By', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Field to order options by.', 'wc-ajax-product-filter'),
+      options: options,
+      onChange: handleToggleGroupChange,
+      value: options_order_by
+    });
+  };
+
+  const orderDirectionField = () => {
+    if ('none' !== options_order_by) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'options_order_dir',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order Direction', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to order options in ascending or descending order.', 'wc-ajax-product-filter'),
+        options: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.orderDirectionOptions)(),
+        value: options_order_dir,
+        onChange: handleRadioChange
+      });
+    }
+  };
+
+  const orderTypeField = () => {
+    const allowed = ['label', 'value'];
+
+    if (allowed.includes(options_order_by)) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'options_order_type',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Order Type', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to arrange the options in alphabetical or numerical order.', 'wc-ajax-product-filter'),
+        options: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.orderTypeOptions)(),
+        value: options_order_type,
+        onChange: handleRadioChange
+      });
+    }
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, getOptionsField(), orderByField(), orderDirectionField(), orderTypeField());
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (ValueTypeText);
 
 /***/ }),
 
@@ -6595,8 +7407,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../FilterContext */ "./src/components/Filter/FilterContext.js");
-/* harmony import */ var _Range__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Range */ "./src/components/Filter/FilterNav/FilterUI/Options/Range.js");
-/* harmony import */ var _Others__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Others */ "./src/components/Filter/FilterNav/FilterUI/Options/Others.js");
+/* harmony import */ var _ValueTypeNumber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ValueTypeNumber */ "./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeNumber.js");
+/* harmony import */ var _TaxonomyOptions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TaxonomyOptions */ "./src/components/Filter/FilterNav/FilterUI/Options/TaxonomyOptions.js");
+/* harmony import */ var _RatingOptions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RatingOptions */ "./src/components/Filter/FilterNav/FilterUI/Options/RatingOptions.js");
+/* harmony import */ var _StatusOptions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./StatusOptions */ "./src/components/Filter/FilterNav/FilterUI/Options/StatusOptions.js");
+/* harmony import */ var _ValueTypeText__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ValueTypeText */ "./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeText.js");
+/* harmony import */ var _ValueTypeDate__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./ValueTypeDate */ "./src/components/Filter/FilterNav/FilterUI/Options/ValueTypeDate.js");
+
+
+
+
 
 
 
@@ -6607,18 +7427,32 @@ const Options = () => {
     state: {
       filterType,
       activeFilterData
-    },
-    dispatch
+    }
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_1__.useFilter)();
 
   const renderFields = () => {
     let fields;
     const taxonomyFilterTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
+    const {
+      value_type
+    } = activeFilterData;
 
     if (taxonomyFilterTypes.includes(filterType)) {
-      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Others__WEBPACK_IMPORTED_MODULE_3__["default"], null);
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaxonomyOptions__WEBPACK_IMPORTED_MODULE_3__["default"], null);
     } else if ('price' === filterType) {
-      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Range__WEBPACK_IMPORTED_MODULE_2__["default"], null);
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeNumber__WEBPACK_IMPORTED_MODULE_2__["default"], null);
+    } else if ('rating' === filterType) {
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_RatingOptions__WEBPACK_IMPORTED_MODULE_4__["default"], null);
+    } else if ('product-status' === filterType) {
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_StatusOptions__WEBPACK_IMPORTED_MODULE_5__["default"], null);
+    } else if ('post-meta' === filterType) {
+      if ('text' === value_type) {
+        fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeText__WEBPACK_IMPORTED_MODULE_6__["default"], null);
+      } else if ('number' === value_type) {
+        fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeNumber__WEBPACK_IMPORTED_MODULE_2__["default"], null);
+      } else if ('date' === value_type) {
+        fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeDate__WEBPACK_IMPORTED_MODULE_7__["default"], null);
+      }
     }
 
     return fields;
@@ -7548,6 +8382,13 @@ const Filter = () => {
           payload: filterData['post_title']
         });
         activeFilterData = (0,lodash__WEBPACK_IMPORTED_MODULE_8__.merge)((0,_utils__WEBPACK_IMPORTED_MODULE_6__.filterDefaultData)(), filterData['field_data']);
+        /**
+         * Sanitize the filter data.
+         *
+         * TODO: Should be deprecated in future.
+         */
+
+        activeFilterData = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeFilterData)(activeFilterData);
         filterType = activeFilterData['type'];
         filterKey = activeFilterData['field_key'];
         dispatch({
@@ -7570,8 +8411,10 @@ const Filter = () => {
 
       let filterOptions = [];
 
-      if ('price' === filterType) {
+      if ('price' === filterType || 'rating' === filterType) {
         filterOptions = activeFilterData['number_manual_options'];
+      } else if ('product-status' === filterType) {
+        filterOptions = activeFilterData['product_status_options'];
       } else {
         filterOptions = [{
           term_id: 18,
@@ -7594,7 +8437,7 @@ const Filter = () => {
        */
 
       const filterKeys = {};
-      (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getAvailableFilters)().map(item => {
+      (0,_utils__WEBPACK_IMPORTED_MODULE_6__.availableFilters)().map(item => {
         const type = item.type;
 
         if ('active-filters' === type || 'reset-button' === type) {
@@ -7683,7 +8526,7 @@ const useFilterData = (activeFilterData, dispatch) => {
     });
   };
 
-  const handleCheckboxChange = (key, value) => {
+  const handleCheckboxChange = (value, key) => {
     const _value = value ? '1' : '';
 
     dispatch({
@@ -7713,11 +8556,21 @@ const useFilterData = (activeFilterData, dispatch) => {
     });
   };
 
+  const handleDropdownChange = (selectedItem, key) => {
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: { ...activeFilterData,
+        [key]: selectedItem.key
+      }
+    });
+  };
+
   return {
     handleRadioChange,
     handleCheckboxChange,
     handleTextFieldChange,
-    handleToggleGroupChange
+    handleToggleGroupChange,
+    handleDropdownChange
   };
 };
 
@@ -7734,74 +8587,29 @@ const useFilterData = (activeFilterData, dispatch) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "availableFilters": function() { return /* binding */ availableFilters; },
+/* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
-/* harmony export */   "getAvailableFilters": function() { return /* binding */ getAvailableFilters; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
-/* harmony export */   "getOrderByOptions": function() { return /* binding */ getOrderByOptions; },
-/* harmony export */   "getOrderDirectionOptions": function() { return /* binding */ getOrderDirectionOptions; },
-/* harmony export */   "getTaxonomyLimitByOptions": function() { return /* binding */ getTaxonomyLimitByOptions; }
+/* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
+/* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
+/* harmony export */   "orderDirectionOptions": function() { return /* binding */ orderDirectionOptions; },
+/* harmony export */   "orderTypeOptions": function() { return /* binding */ orderTypeOptions; },
+/* harmony export */   "productStatusOptions": function() { return /* binding */ productStatusOptions; },
+/* harmony export */   "sanitizeFilterData": function() { return /* binding */ sanitizeFilterData; },
+/* harmony export */   "taxonomyLimitByOptions": function() { return /* binding */ taxonomyLimitByOptions; },
+/* harmony export */   "termsOrderByOptions": function() { return /* binding */ termsOrderByOptions; },
+/* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
 
 
-function filterDefaultData() {
-  return {
-    show_title: '1',
-    field_key: '',
-    taxonomy: '',
-    display_type: 'checkbox',
-    query_type: 'and',
-    all_items_label: '',
-    use_chosen: '',
-    chosen_no_results_message: '',
-    enable_multiple_filter: '',
-    show_count: '',
-    hide_empty: '',
-    enable_tooltip: '',
-    show_count_in_tooltip: '',
-    tooltip_position: '',
-    custom_appearance_options: {},
-    use_term_slug_in_url: '',
-    limit_options: '',
-    parent_term: '',
-    limit_values_by_id: '',
-    exclude_values_id: '',
-    show_clear_button: '',
-    order_terms_by: 'name',
-    order_terms_dir: 'asc',
-    enable_accordion: '',
-    accordion_default_state: 'expanded',
-    enable_soft_limit: '',
-    soft_limit: '',
-    type: '',
-    field_id: '',
-    enable_visibility_rules: '',
-    visibility_rules: [],
-    get_options: 'automatically'
-  };
-}
-function getFilterDefaultData(type) {
-  const defaultData = filterDefaultData();
-  const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(getAvailableFilters(), {
-    type
-  });
-  const defaultFilterKey = filterData.defaultFilterKey;
 
-  if (defaultFilterKey) {
-    return { ...defaultData,
-      type,
-      field_key: defaultFilterKey
-    };
-  }
-
-  return { ...defaultData,
-    type
-  };
-}
-function getAvailableFilters() {
+function availableFilters() {
   return [{
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Filters', 'wc-ajax-product-filter'),
     type: 'active-filters'
@@ -7855,7 +8663,163 @@ function getAvailableFilters() {
     type: 'reset-button'
   }];
 }
-function getTaxonomyLimitByOptions() {
+function filterDefaultData() {
+  return {
+    // Taxonomy
+    show_title: '1',
+    field_key: '',
+    taxonomy: '',
+    display_type: 'checkbox',
+    query_type: 'and',
+    all_items_label: '',
+    use_chosen: '',
+    chosen_no_results_message: '',
+    enable_multiple_filter: '',
+    hierarchical: '',
+    enable_hierarchy_accordion: '',
+    show_count: '',
+    hide_empty: '',
+    enable_tooltip: '',
+    show_count_in_tooltip: '',
+    tooltip_position: 'top',
+    custom_appearance_options: [],
+    use_term_slug_in_url: '',
+    limit_options: 'off',
+    parent_term: '',
+    limit_values_by_id: '',
+    exclude_values_id: '',
+    show_clear_button: '',
+    order_terms_by: 'default',
+    order_terms_dir: 'asc',
+    enable_accordion: '',
+    accordion_default_state: 'expanded',
+    enable_soft_limit: '',
+    soft_limit: '5',
+    type: '',
+    field_id: '',
+    enable_visibility_rules: '',
+    visibility_rules: [],
+    get_options: 'automatically',
+    use_category_images: '',
+    // Active Filters
+    active_filters_layout: 'simple',
+    enable_clear_all_button: '1',
+    clear_all_button_label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Clear All', 'wc-ajax-product-filter'),
+    show_if_empty: '',
+    empty_filter_message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No filter is applied.', 'wc-ajax-product-filter'),
+    move_clear_all_button_in_title: '',
+    enable_soft_limit_for_extended_layout: '',
+    soft_limit_for_extended_layout: '5',
+    // Price Filter
+    number_display_type: 'range_slider',
+    number_range_slider_display_values_as: 'plain_text',
+    align_values_at_the_end: '1',
+    number_range_enable_multiple_filter: '',
+    number_range_query_type: 'and',
+    number_range_select_all_items_label: '',
+    number_range_use_chosen: '',
+    number_range_chosen_no_results_message: '',
+    number_range_show_count: '',
+    number_range_hide_empty: '',
+    number_get_options: 'automatically',
+    manual_options: [],
+    number_manual_options: [],
+    time_period_options: [],
+    min_value: '0',
+    min_value_auto_detect: '',
+    max_value: '1000',
+    max_value_auto_detect: '',
+    step: '10',
+    value_prefix: '',
+    value_postfix: '',
+    values_separator: '-',
+    decimal_places: '0',
+    thousand_separator: '',
+    decimal_separator: '.',
+    // Product Status
+    product_status_options: [],
+    // Post Meta
+    meta_key: '',
+    value_type: 'text',
+    value_decimal: '',
+    value_decimal_places: '2',
+    options_order_by: 'value',
+    options_order_dir: 'asc',
+    options_order_type: 'alphabetical',
+    // Post Meta - value type Date
+    date_display_type: 'input_date',
+    date_format: 'dd-mm-yy',
+    time_period_enable_multiple_filter: '',
+    time_period_query_type: 'and',
+    time_period_select_all_items_label: '',
+    time_period_use_chosen: '',
+    time_period_chosen_no_results_message: '',
+    show_date_inputs_inline: '',
+    time_period_show_count: '',
+    time_period_hide_empty: '',
+    date_picker_month_dropdown: '',
+    date_picker_year_dropdown: '',
+    date_from_prefix: '',
+    date_from_postfix: '',
+    date_from_placeholder: '',
+    date_to_prefix: '',
+    date_to_postfix: '',
+    date_to_placeholder: '',
+    // Post Property
+    post_property: '',
+    // Sort By
+    sort_by_options: [],
+    // Reset Button
+    reset_button_label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset', 'wc-ajax-product-filter')
+  };
+}
+
+function ratingDefaultData() {
+  return {
+    options_order_dir: 'desc'
+  };
+}
+
+function perPageDefaultData() {
+  return {
+    display_type: 'radio',
+    min_value: '25',
+    max_value: '100',
+    step: '25'
+  };
+} // Sanitize the filter data.
+
+
+function sanitizeFilterData(activeFilterData) {
+  if (!activeFilterData.options_order_dir) {
+    activeFilterData.options_order_dir = 'asc';
+  }
+
+  if (!activeFilterData.options_order_type) {
+    activeFilterData.options_order_type = 'alphabetical';
+  }
+
+  return activeFilterData;
+}
+function getFilterDefaultData(type) {
+  const defaultData = filterDefaultData();
+  const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(availableFilters(), {
+    type
+  });
+  const defaultFilterKey = filterData.defaultFilterKey;
+
+  if (defaultFilterKey) {
+    return { ...defaultData,
+      type,
+      field_key: defaultFilterKey
+    };
+  }
+
+  return { ...defaultData,
+    type
+  };
+}
+function taxonomyLimitByOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Off', 'wc-ajax-product-filter'),
     value: 'off'
@@ -7871,7 +8835,7 @@ function getTaxonomyLimitByOptions() {
     isPro: true
   }];
 }
-function getOrderByOptions() {
+function termsOrderByOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'wc-ajax-product-filter'),
     value: 'default'
@@ -7889,13 +8853,148 @@ function getOrderByOptions() {
     value: 'count'
   }];
 }
-function getOrderDirectionOptions() {
+function orderByOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'wc-ajax-product-filter'),
+    value: 'none'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
+    value: 'label'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Value', 'wc-ajax-product-filter'),
+    value: 'value'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Count', 'wc-ajax-product-filter'),
+    value: 'count'
+  }];
+}
+function orderDirectionOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('ASC', 'wc-ajax-product-filter'),
     value: 'asc'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('DESC', 'wc-ajax-product-filter'),
     value: 'desc'
+  }];
+}
+function orderTypeOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Alphabetical', 'wc-ajax-product-filter'),
+    value: 'alphabetical'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Numerical', 'wc-ajax-product-filter'),
+    value: 'numerical'
+  }];
+}
+function productStatusOptions() {
+  return [{
+    key: 'featured',
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Featured', 'wc-ajax-product-filter')
+  }, {
+    key: 'on_sale',
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('On Sale', 'wc-ajax-product-filter')
+  }];
+}
+function textDisplayTypes() {
+  let withPro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  const options = [{
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Checkbox', 'wc-ajax-product-filter'),
+    key: 'checkbox'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Radio', 'wc-ajax-product-filter'),
+    key: 'radio'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select', 'wc-ajax-product-filter'),
+    key: 'select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Multi select', 'wc-ajax-product-filter'),
+    key: 'multi-select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
+    key: 'label'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Color', 'wc-ajax-product-filter'),
+    key: 'color'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image', 'wc-ajax-product-filter'),
+    key: 'image'
+  }];
+
+  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
+    const proDisplayTypes = ['color', 'image'];
+    return options.map(option => {
+      if (!proDisplayTypes.includes(option.key)) {
+        return option;
+      } else {
+        option.__experimentalHint = 'Pro';
+        return option;
+      }
+    });
+  }
+
+  return options;
+}
+function numberDisplayTypes() {
+  let withPro = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  const options = [{
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Slider', 'wc-ajax-product-filter'),
+    key: 'range_slider'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Number', 'wc-ajax-product-filter'),
+    key: 'range_number'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Checkbox', 'wc-ajax-product-filter'),
+    key: 'range_checkbox'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Radio', 'wc-ajax-product-filter'),
+    key: 'range_radio'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Select', 'wc-ajax-product-filter'),
+    key: 'range_select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Multiselect', 'wc-ajax-product-filter'),
+    key: 'range_multiselect'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Range - Label', 'wc-ajax-product-filter'),
+    key: 'range_label'
+  }];
+
+  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
+    const allowed = ['range_slider', 'range_number'];
+    return options.map(option => {
+      if (allowed.includes(option.key)) {
+        return option;
+      } else {
+        option.__experimentalHint = 'Pro';
+        return option;
+      }
+    });
+  }
+
+  return options;
+}
+function dateDisplayTypes() {
+  return [{
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Input - Date', 'wc-ajax-product-filter'),
+    key: 'input_date'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Input - Date Range', 'wc-ajax-product-filter'),
+    key: 'input_date_range'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Checkbox', 'wc-ajax-product-filter'),
+    key: 'time_period_checkbox'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Radio', 'wc-ajax-product-filter'),
+    key: 'time_period_radio'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Select', 'wc-ajax-product-filter'),
+    key: 'time_period_select'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Multi select', 'wc-ajax-product-filter'),
+    key: 'time_period_multiselect'
+  }, {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Label', 'wc-ajax-product-filter'),
+    key: 'time_period_label'
   }];
 }
 
@@ -8099,11 +9198,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Filter/utils */ "./src/components/Filter/utils.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Filter/utils */ "./src/components/Filter/utils.js");
 
 
 
@@ -8141,7 +9240,7 @@ function getAdditionalData() {
   const data = {
     action: 'get_filter_additional_data'
   };
-  return axios__WEBPACK_IMPORTED_MODULE_3___default().get(wcapf_admin_params.ajaxurl, {
+  return axios__WEBPACK_IMPORTED_MODULE_2___default().get(wcapf_admin_params.ajaxurl, {
     params: data
   });
 }
@@ -8156,9 +9255,8 @@ function prepareFilterData(raw) {
     title
   } = raw;
   const shortcode = `[wcapf_filter id="${id}"]`;
-  const availableFilters = (0,_Filter_utils__WEBPACK_IMPORTED_MODULE_1__.getAvailableFilters)();
 
-  const _filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_2__.find)(availableFilters, {
+  const _filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)((0,_Filter_utils__WEBPACK_IMPORTED_MODULE_3__.availableFilters)(), {
     type: type
   });
 

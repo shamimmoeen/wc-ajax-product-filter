@@ -8,7 +8,7 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
-	const handleCheckboxChange = (key, value) => {
+	const handleCheckboxChange = (value, key) => {
 		const _value = value ? '1' : '';
 
 		dispatch({
@@ -33,11 +33,19 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
+	const handleDropdownChange = (selectedItem, key) => {
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: { ...activeFilterData, [key]: selectedItem.key },
+		});
+	};
+
 	return {
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
 		handleToggleGroupChange,
+		handleDropdownChange,
 	};
 };
 

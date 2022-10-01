@@ -39,7 +39,7 @@ const Radio = ({
 									type='radio'
 									name={id}
 									value={option.value}
-									onChange={onChange}
+									onChange={(e) => onChange(e, id)}
 									checked={option.value === value}
 								/>
 								<label htmlFor={`${id}-${index}`}>
