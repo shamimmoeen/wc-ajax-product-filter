@@ -462,12 +462,12 @@ class WCAPF_API {
 
 		$response = array();
 
-		if ( $terms ) {
+		if ( ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$response[] = array(
-					'term_id' => $term->term_id,
-					'name'    => $term->name,
-					'slug'    => $term->slug,
+					'value' => $term->term_id,
+					'label' => $term->name,
+					'slug'  => $term->slug,
 				);
 			}
 		}

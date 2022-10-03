@@ -4,25 +4,87 @@ import {
 	Flex,
 	FlexItem,
 	Modal,
+	Spinner,
 } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { sprintf, __ } from '@wordpress/i18n';
 import { useFilter } from '../../FilterContext';
-import { find, each } from 'lodash';
-import { useEffect } from '@wordpress/element';
+import { find, isEmpty } from 'lodash';
+import { useEffect, useState } from '@wordpress/element';
+import axios from 'axios';
+import { getOptionsTableModalData } from '../../utils';
 
 const OptionsTableModal = ({ isOpen, closeModal }) => {
 	const {
-		state: { filterOptions, filterModalOptions },
+		state: { filterType, activeFilterData },
 		dispatch,
 	} = useFilter();
+
+	const [loading, setLoading] = useState(true);
+	const [options, setOptions] = useState([]);
+	const [fetched, setFetched] = useState(false);
+	const [message, setMessage] = useState('');
+
+	const { keyword, optionsKey, ajaxParams } = getOptionsTableModalData(
+		filterType,
+		activeFilterData
+	);
 
 	useEffect(() => {
 		if (!isOpen) {
 			return;
 		}
 
-		const _filterModalOptions = filterModalOptions.map((option) => {
-			const found = find(filterOptions, { term_id: option.term_id });
+		if (fetched) {
+			return;
+		}
+
+		// Fetch the options.
+		axios
+			.get(wcapf_admin_params.ajaxurl, {
+				params: ajaxParams,
+			})
+			.then((res) => {
+				const data = res.data.data;
+				const synced = syncOptions(data);
+
+				setLoading(false);
+				setFetched(true);
+				setOptions(synced);
+			})
+			.catch((err) => {
+				setLoading(false);
+				setFetched(true);
+				setMessage(
+					__(
+						'There was an error fetching the filter options.',
+						'wc-ajax-product-filter'
+					)
+				);
+
+				console.log(err);
+			});
+	}, [isOpen]);
+
+	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
+		if (!fetched) {
+			return;
+		}
+
+		const unsynced = [...options];
+		const synced = syncOptions(unsynced);
+
+		setOptions(synced);
+	}, [isOpen]);
+
+	const syncOptions = (unsynced) => {
+		const addedOptions = activeFilterData[optionsKey];
+
+		const synced = unsynced.map((option) => {
+			const found = find(addedOptions, { value: option.value });
 
 			if (found) {
 				option['status'] = 'added';
@@ -33,98 +95,139 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 			return option;
 		});
 
-		dispatch({
-			type: 'SET_FILTERS_MODAL_OPTIONS',
-			payload: _filterModalOptions,
-		});
-	}, [isOpen]);
+		return synced;
+	};
 
 	const handleSelectAll = () => {
-		const _filterModalOptions = filterModalOptions.map((option) => {
+		const _options = options.map((option) => {
 			option['status'] = 'added';
 
 			return option;
 		});
 
-		dispatch({
-			type: 'SET_FILTERS_MODAL_OPTIONS',
-			payload: _filterModalOptions,
-		});
+		setOptions(_options);
 	};
 
 	const handleClearSelection = () => {
-		const _filterModalOptions = filterModalOptions.map((option) => {
+		const _options = options.map((option) => {
 			option['status'] = '';
 
 			return option;
 		});
 
-		dispatch({
-			type: 'SET_FILTERS_MODAL_OPTIONS',
-			payload: _filterModalOptions,
-		});
+		setOptions(_options);
+	};
+
+	const handleOptionChange = (value, index) => {
+		const _options = [...options];
+		_options[index]['status'] = value ? 'added' : '';
+
+		setOptions(_options);
 	};
 
 	const handleUpdateFilterOptions = () => {
-		let _filterOptions = [...filterOptions];
-
+		let addedOptions = [...activeFilterData[optionsKey]];
 		const removeIds = [];
 
-		each(filterModalOptions, (option) => {
+		options.forEach((option) => {
 			if ('added' === option.status) {
-				if (!find(_filterOptions, { term_id: option.term_id })) {
-					_filterOptions.push(option);
+				if (!find(addedOptions, { value: option.value })) {
+					addedOptions.push(option);
 				}
 			} else {
-				if (find(_filterOptions, { term_id: option.term_id })) {
-					removeIds.push(option.term_id);
+				if (find(addedOptions, { value: option.value })) {
+					removeIds.push(option.value);
 				}
 			}
 		});
 
 		if (removeIds.length) {
-			_filterOptions = _filterOptions.filter(
-				(option) => !removeIds.includes(option.term_id)
+			addedOptions = addedOptions.filter(
+				(option) => !removeIds.includes(option.value)
 			);
 		}
 
-		dispatch({ type: 'SET_FILTERS_OPTIONS', payload: _filterOptions });
-
-		closeModal();
-	};
-
-	const handleOptionChange = (value, option) => {
-		const _filterModalOptions = filterModalOptions.map((_option) => {
-			if (option.term_id === _option.term_id) {
-				_option['status'] = value ? 'added' : '';
-			}
-
-			return _option;
-		});
+		const _activeFilterData = {
+			...activeFilterData,
+			[optionsKey]: addedOptions,
+		};
 
 		dispatch({
-			type: 'SET_FILTERS_MODAL_OPTIONS',
-			payload: _filterModalOptions,
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: _activeFilterData,
 		});
+
+		closeModal();
 	};
 
 	const modalOptions = () => {
 		return (
 			<div className='__options'>
-				{filterModalOptions.map((option, index) => {
+				{options.map((option, index) => {
 					return (
 						<CheckboxControl
 							key={`modal-option-${index}`}
-							label={option.name}
+							label={option.label}
 							checked={'added' === option.status}
 							onChange={(value) =>
-								handleOptionChange(value, option)
+								handleOptionChange(value, index)
 							}
 						/>
 					);
 				})}
 			</div>
 		);
+	};
+
+	const modalLoader = () => {
+		if (loading) {
+			return (
+				<div className='__loader'>
+					<Spinner />
+				</div>
+			);
+		}
+	};
+
+	const modalInfo = () => {
+		let description = '';
+
+		if (loading) {
+			return;
+		}
+
+		if (fetched) {
+			if (message) {
+				description = message;
+			} else {
+				if (!isEmpty(options)) {
+					description = sprintf(
+						__(
+							'Found the following options for <strong>%s</strong>.',
+							'wc-ajax-product-filter'
+						),
+						keyword
+					);
+				} else {
+					description = sprintf(
+						__(
+							'No options found for <strong>%s</strong>.',
+							'wc-ajax-product-filter'
+						),
+						keyword
+					);
+				}
+			}
+		}
+
+		if (description) {
+			return (
+				<p
+					className='description'
+					dangerouslySetInnerHTML={{ __html: description }}
+				/>
+			);
+		}
 	};
 
 	return (
@@ -135,46 +238,45 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 					onRequestClose={closeModal}
 					className='__options_table_modal'
 				>
-					<p className='description'>
-						{__(
-							'Found the following options for',
-							'wc-ajax-product-filter'
-						)}
-						{` `}
-						<b>product category</b>.
-					</p>
+					{modalLoader()}
+					{modalInfo()}
 					{modalOptions()}
-					<Flex>
-						<FlexItem>
-							<Flex>
-								<Button
-									variant='secondary'
-									onClick={handleSelectAll}
-								>
-									{__('Select All', 'wc-ajax-product-filter')}
-								</Button>
-								<Button
-									variant='secondary'
-									onClick={handleClearSelection}
-								>
-									{__(
-										'Clear Selection',
-										'wc-ajax-product-filter'
-									)}
-								</Button>
-							</Flex>
-						</FlexItem>
-						<FlexItem>
-							<Flex>
-								<Button
-									variant='primary'
-									onClick={handleUpdateFilterOptions}
-								>
-									{__('Update', 'wc-ajax-product-filter')}
-								</Button>
-							</Flex>
-						</FlexItem>
-					</Flex>
+					{!loading && !isEmpty(options) && (
+						<Flex>
+							<FlexItem>
+								<Flex>
+									<Button
+										variant='secondary'
+										onClick={handleSelectAll}
+									>
+										{__(
+											'Select All',
+											'wc-ajax-product-filter'
+										)}
+									</Button>
+									<Button
+										variant='secondary'
+										onClick={handleClearSelection}
+									>
+										{__(
+											'Clear Selection',
+											'wc-ajax-product-filter'
+										)}
+									</Button>
+								</Flex>
+							</FlexItem>
+							<FlexItem>
+								<Flex>
+									<Button
+										variant='primary'
+										onClick={handleUpdateFilterOptions}
+									>
+										{__('Update', 'wc-ajax-product-filter')}
+									</Button>
+								</Flex>
+							</FlexItem>
+						</Flex>
+					)}
 				</Modal>
 			)}
 		</>

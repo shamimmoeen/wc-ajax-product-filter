@@ -2637,6 +2637,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
+/* harmony export */   "getOptionsTableModalData": function() { return /* binding */ getOptionsTableModalData; },
+/* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
+/* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
 /* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
 /* harmony export */   "orderDirectionOptions": function() { return /* binding */ orderDirectionOptions; },
@@ -2837,6 +2840,10 @@ function perPageDefaultData() {
 
 
 function sanitizeFilterData(activeFilterData) {
+  if (!activeFilterData.order_terms_dir) {
+    activeFilterData.order_terms_dir = 'asc';
+  }
+
   if (!activeFilterData.options_order_dir) {
     activeFilterData.options_order_dir = 'asc';
   }
@@ -3042,6 +3049,74 @@ function dateDisplayTypes() {
     name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Label', 'wc-ajax-product-filter'),
     key: 'time_period_label'
   }];
+}
+function isTaxonomyFilters(filterType) {
+  const taxonomyFilterTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
+  return taxonomyFilterTypes.includes(filterType);
+}
+function getTableData(filterType, activeFilterData) {
+  let type;
+  let optionsKey;
+  const {
+    value_type
+  } = activeFilterData;
+
+  if (isTaxonomyFilters(filterType)) {
+    type = 'taxonomy-options';
+    optionsKey = 'manual_options';
+  } else if ('price' === filterType || 'rating' === filterType) {
+    type = 'number-options';
+    optionsKey = 'number_manual_options';
+  } else if ('product-status' === filterType) {
+    type = 'product-status-options';
+    optionsKey = 'product_status_options';
+  } else if ('post-meta' === filterType) {
+    if ('text' === value_type) {
+      type = 'text-options';
+    } else if ('number' === value_type) {
+      type = 'number-options';
+      optionsKey = 'number_manual_options';
+    } else if ('date' === value_type) {
+      type = 'time-period-options';
+      optionsKey = 'time_period_options';
+    }
+  }
+
+  return {
+    type,
+    optionsKey
+  };
+}
+function getOptionsTableModalData(filterType, activeFilterData) {
+  let keyword;
+  let type;
+  let optionsKey;
+  let ajaxParams;
+
+  if (isTaxonomyFilters(filterType)) {
+    type = 'taxonomy';
+    optionsKey = 'manual_options';
+
+    if ('category' === filterType) {
+      keyword = 'product_cat';
+    } else if ('tag' === filterType) {
+      keyword = 'product_tag';
+    } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
+      keyword = activeFilterData.taxonomy;
+    }
+
+    ajaxParams = {
+      action: 'get_taxonomy_filter_options',
+      taxonomy: keyword
+    };
+  }
+
+  return {
+    keyword,
+    type,
+    optionsKey,
+    ajaxParams
+  };
 }
 
 /***/ }),

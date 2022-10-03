@@ -120,6 +120,12 @@ const ValueTypeText = () => {
 		}
 	};
 
+	const manualOptions = () => {
+		if ('manual_entry' === get_options) {
+			return <h2>Render the options table</h2>;
+		}
+	};
+
 	return (
 		<>
 			{getOptionsField()}
@@ -129,6 +135,8 @@ const ValueTypeText = () => {
 			{orderDirectionField()}
 
 			{orderTypeField()}
+
+			{manualOptions()}
 		</>
 	);
 };
