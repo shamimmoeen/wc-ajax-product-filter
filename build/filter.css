@@ -675,6 +675,13 @@ body {
 .__options_table_modal .components-modal__content {
   width: 80em;
 }
+.__options_table_modal .components-modal__content .__loader {
+  text-align: center;
+}
+.__options_table_modal .components-modal__content .__loader svg {
+  width: 32px;
+  height: 32px;
+}
 .__options_table_modal .components-modal__content .components-checkbox-control__input {
   border-color: #ddd;
 }

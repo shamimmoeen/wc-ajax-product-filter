@@ -7,6 +7,7 @@ import { useEffect } from '@wordpress/element';
 import {
 	availableFilters,
 	filterDefaultData,
+	isTaxonomyFilters,
 	sanitizeFilterData,
 } from './utils';
 import axios from 'axios';
@@ -72,6 +73,24 @@ const Filter = () => {
 					filterType = activeFilterData['type'];
 					filterKey = activeFilterData['field_key'];
 
+					/**
+					 * TODO: Sets the filter options.
+					 */
+					if (isTaxonomyFilters(filterType)) {
+						activeFilterData['manual_options'] = [
+							{
+								value: 35,
+								slug: 'health',
+								label: 'Health',
+							},
+							{
+								value: 26,
+								slug: 'music',
+								label: 'Music',
+							},
+						];
+					}
+
 					dispatch({
 						type: 'SET_ACTIVE_FILTER_DATA',
 						payload: activeFilterData,
@@ -83,36 +102,6 @@ const Filter = () => {
 				dispatch({
 					type: 'SET_ADDITIONAL_DATA',
 					payload: additionalData,
-				});
-
-				/**
-				 * TODO: Sets the filter options.
-				 */
-				let filterOptions = [];
-
-				if ('price' === filterType || 'rating' === filterType) {
-					filterOptions = activeFilterData['number_manual_options'];
-				} else if ('product-status' === filterType) {
-					filterOptions = activeFilterData['product_status_options'];
-				} else {
-					filterOptions = [
-						{
-							term_id: 18,
-							name: 'Blue',
-							slug: 'blue',
-						},
-						{
-							term_id: 28,
-							name: 'Gray',
-							slug: 'gray',
-							status: 'added',
-						},
-					];
-				}
-
-				dispatch({
-					type: 'SET_FILTERS_OPTIONS',
-					payload: filterOptions,
 				});
 
 				/**

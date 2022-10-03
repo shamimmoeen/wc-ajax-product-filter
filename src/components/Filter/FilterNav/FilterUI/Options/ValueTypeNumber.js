@@ -4,7 +4,7 @@ import Radio from '../../../../Field/Radio';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import FieldNumber from './FieldNumber';
-import NumberOptionsTable from './NumberOptionsTable';
+import ManualOptions from './ManualOptions';
 
 const ValueTypeNumber = () => {
 	const {
@@ -217,7 +217,7 @@ const ValueTypeNumber = () => {
 		}
 
 		if (showField) {
-			return <NumberOptionsTable />;
+			return <ManualOptions />;
 		}
 	};
 

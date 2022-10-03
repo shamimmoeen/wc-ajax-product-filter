@@ -12,6 +12,7 @@ const ActiveFilters = () => {
 	} = useFilter();
 
 	const {
+		show_title,
 		active_filters_layout,
 		enable_clear_all_button,
 		clear_all_button_label,
@@ -61,32 +62,32 @@ const ActiveFilters = () => {
 			/>
 
 			{'1' === enable_clear_all_button && (
-				<>
-					<Text
-						id={'clear_all_button_label'}
-						label={__('Button Label', 'wc-ajax-product-filter')}
-						description={__(
-							'Change the button default label.',
-							'wc-ajax-product-filter'
-						)}
-						value={clear_all_button_label}
-						onChange={handleTextFieldChange}
-					/>
+				<Text
+					id={'clear_all_button_label'}
+					label={__('Button Label', 'wc-ajax-product-filter')}
+					description={__(
+						'Change the button default label.',
+						'wc-ajax-product-filter'
+					)}
+					value={clear_all_button_label}
+					onChange={handleTextFieldChange}
+				/>
+			)}
 
-					<Checkbox
-						id={'move_clear_all_button_in_title'}
-						label={__(
-							'Show button in heading',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Whether to show the button in heading.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={move_clear_all_button_in_title}
-						onChange={handleCheckboxChange}
-					/>
-				</>
+			{'1' === enable_clear_all_button && '1' === show_title && (
+				<Checkbox
+					id={'move_clear_all_button_in_title'}
+					label={__(
+						'Clear button in title',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Whether to show the clear button in title.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={move_clear_all_button_in_title}
+					onChange={handleCheckboxChange}
+				/>
 			)}
 
 			<Checkbox

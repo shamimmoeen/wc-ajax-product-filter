@@ -3,7 +3,7 @@ import Radio from '../../../../Field/Radio';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { orderDirectionOptions } from '../../../utils';
-import NumberOptionsTable from './NumberOptionsTable';
+import ManualOptions from './ManualOptions';
 
 const RatingOptions = () => {
 	const {
@@ -59,7 +59,7 @@ const RatingOptions = () => {
 
 	const manualOptions = () => {
 		if ('manual_entry' === number_get_options) {
-			return <NumberOptionsTable />;
+			return <ManualOptions />;
 		}
 	};
 

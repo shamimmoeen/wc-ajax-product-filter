@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import Text from '../../../../Field/Text';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
-import FilterOptions from './FilterOptions';
+import ManualOptions from './ManualOptions';
 
 const ValueTypeDate = () => {
 	const {
@@ -118,7 +118,7 @@ const ValueTypeDate = () => {
 		];
 
 		if (validDisplayTypes.includes(date_display_type)) {
-			return <FilterOptions />;
+			return <ManualOptions />;
 		}
 	};
 

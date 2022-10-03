@@ -2,26 +2,22 @@ import { __ } from '@wordpress/i18n';
 import Radio from '../../../../Field/Radio';
 import Select from '../../../../Field/Select';
 import { useFilter } from '../../../FilterContext';
-import OptionsTable from '../OptionsTable';
 import OptionsTableModal from '../OptionsTableModal';
-import { useEffect, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { termsOrderByOptions, orderDirectionOptions } from '../../../utils';
-import { Spinner } from '@wordpress/components';
-import axios from 'axios';
-import { store as noticesStore } from '@wordpress/notices';
-import { useDispatch } from '@wordpress/data';
 import { isEmpty } from 'lodash';
 import LimitBy from '../LimitFields';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
+import ManualOptions from './ManualOptions';
 
 const TaxonomyOptions = () => {
 	const {
-		state: { activeFilterData, isFilterOptionsLoading },
+		state: { activeFilterData },
 		dispatch,
 	} = useFilter();
 
-	const [isOpen, setOpen] = useState(false);
+	const [isOpen, setOpen] = useState(true);
 
 	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
 		activeFilterData,
@@ -30,52 +26,6 @@ const TaxonomyOptions = () => {
 
 	const { get_options, limit_options, order_terms_by, order_terms_dir } =
 		activeFilterData;
-
-	const { createErrorNotice } = useDispatch(noticesStore);
-
-	useEffect(() => {
-		const data = {
-			action: 'get_taxonomy_filter_options',
-			taxonomy: 'pa_color',
-		};
-
-		axios
-			.get(wcapf_admin_params.ajaxurl, {
-				params: data,
-			})
-			.then((res) => {
-				const data = res.data.data;
-
-				dispatch({
-					type: 'SET_FILTERS_OPTIONS_LOADING',
-					payload: false,
-				});
-
-				dispatch({
-					type: 'SET_FILTERS_MODAL_OPTIONS',
-					payload: data,
-				});
-			})
-			.catch((err) => {
-				console.log(err);
-
-				dispatch({
-					type: 'SET_FILTERS_OPTIONS_LOADING',
-					payload: false,
-				});
-
-				createErrorNotice(
-					__(
-						'There was an error fetching the filter options',
-						'wc-ajax-product-filter'
-					),
-					{
-						type: 'snackbar',
-						icon: '🔥',
-					}
-				);
-			});
-	}, []);
 
 	const openModal = () => setOpen(true);
 
@@ -233,6 +183,16 @@ const TaxonomyOptions = () => {
 		}
 	};
 
+	const manualOptions = () => {
+		return (
+			<>
+				<ManualOptions openModal={openModal} />
+
+				<OptionsTableModal isOpen={isOpen} closeModal={closeModal} />
+			</>
+		);
+	};
+
 	return (
 		<>
 			{getOptionsField()}
@@ -249,18 +209,7 @@ const TaxonomyOptions = () => {
 
 			{excludeTermsField()}
 
-			{isFilterOptionsLoading ? (
-				<Spinner />
-			) : (
-				<>
-					<OptionsTable openModal={openModal} />
-
-					<OptionsTableModal
-						isOpen={isOpen}
-						closeModal={closeModal}
-					/>
-				</>
-			)}
+			{manualOptions()}
 		</>
 	);
 };
