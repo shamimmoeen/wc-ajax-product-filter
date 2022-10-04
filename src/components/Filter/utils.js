@@ -466,6 +466,19 @@ export function dateDisplayTypes() {
 	];
 }
 
+export function accordionStates() {
+	return [
+		{
+			label: __('Expanded', 'wc-ajax-product-filter'),
+			value: 'expanded',
+		},
+		{
+			label: __('Collapsed', 'wc-ajax-product-filter'),
+			value: 'collapsed',
+		},
+	];
+}
+
 export function isTaxonomyFilters(filterType) {
 	const taxonomyFilterTypes = [
 		'category',
