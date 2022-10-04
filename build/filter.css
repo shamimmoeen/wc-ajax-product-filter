@@ -398,6 +398,9 @@ body {
 .__form_control .components-radio-control__input {
   border-color: #ddd;
 }
+.__form_control.react_select .__custom_react_select.fixed-width {
+  max-width: 450px;
+}
 .__form_control .__styled_select_control {
   min-height: 30px;
   border-color: #ddd;
@@ -550,6 +553,22 @@ body {
 .__custom_select_control .components-custom-select-control__menu .components-custom-select-control__item {
   padding: 1px 8px;
   margin: 0;
+}
+
+.__custom_react_select .__react_select__control {
+  border-radius: 2px;
+}
+.__custom_react_select .__react_select__control,
+.__custom_react_select .__react_select__indicator-separator,
+.__custom_react_select .__react_select__dropdown-indicator {
+  border-color: #ddd;
+}
+.__custom_react_select .__react_select__input {
+  min-height: unset;
+}
+.__custom_react_select .__react_select__input,
+.__custom_react_select .__react_select__input:focus {
+  box-shadow: none;
 }
 
 .__available_filters {

@@ -452,10 +452,18 @@ class WCAPF_API {
 
 	public function get_taxonomy_filter_options() {
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
+		$keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		$page     = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+
+		$per_page = 5;
+		$offset   = ( $page - 1 ) * $per_page;
 
 		$args = array(
 			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
+			'search'     => $keyword,
+			'number'     => $per_page,
+			'offset'     => $offset,
 		);
 
 		$terms = get_terms( $args );
@@ -467,7 +475,7 @@ class WCAPF_API {
 				$response[] = array(
 					'value' => $term->term_id,
 					'label' => $term->name,
-					'slug'  => $term->slug,
+					'slug'  => $term->slug, // TODO: May be redundant.
 				);
 			}
 		}

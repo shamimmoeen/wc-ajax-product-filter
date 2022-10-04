@@ -2,14 +2,16 @@ import { __ } from '@wordpress/i18n';
 import Radio from '../../../../Field/Radio';
 import Select from '../../../../Field/Select';
 import { useFilter } from '../../../FilterContext';
-import OptionsTableModal from '../OptionsTableModal';
-import { useState } from '@wordpress/element';
-import { termsOrderByOptions, orderDirectionOptions } from '../../../utils';
+import {
+	termsOrderByOptions,
+	orderDirectionOptions,
+	taxonomyLimitByOptions,
+} from '../../../utils';
 import { isEmpty } from 'lodash';
-import LimitBy from '../LimitFields';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
-import ManualOptions from './ManualOptions';
+import SelectNew from '../../../../Field/SelectNew';
+import SelectNew2 from '../../../../Field/SelectNew2';
 
 const TaxonomyOptions = () => {
 	const {
@@ -17,19 +19,12 @@ const TaxonomyOptions = () => {
 		dispatch,
 	} = useFilter();
 
-	const [isOpen, setOpen] = useState(true);
-
 	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
 		activeFilterData,
 		dispatch
 	);
 
-	const { get_options, limit_options, order_terms_by, order_terms_dir } =
-		activeFilterData;
-
-	const openModal = () => setOpen(true);
-
-	const closeModal = () => setOpen(false);
+	const { limit_options, order_terms_by, order_terms_dir } = activeFilterData;
 
 	const handleSelectChange = (values, key) => {
 		if (isEmpty(values)) {
@@ -47,31 +42,6 @@ const TaxonomyOptions = () => {
 		}
 	};
 
-	const getOptionsField = () => {
-		return (
-			<Radio
-				id={'get_options'}
-				label={__('Get Options', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to get the options automatically or you want to add the options manually.'
-				)}
-				options={[
-					{
-						label: __('Automatically', 'wc-ajax-product-filter'),
-						value: 'automatically',
-					},
-					{
-						label: __('Manual Entry', 'wc-ajax-product-filter'),
-						value: 'manual_entry',
-						isPro: true,
-					},
-				]}
-				value={get_options}
-				onChange={handleRadioChange}
-			/>
-		);
-	};
-
 	const orderByField = () => {
 		const options = termsOrderByOptions();
 
@@ -86,6 +56,7 @@ const TaxonomyOptions = () => {
 				options={options}
 				onChange={handleToggleGroupChange}
 				value={order_terms_by}
+				isPro={true}
 			/>
 		);
 	};
@@ -109,39 +80,29 @@ const TaxonomyOptions = () => {
 	};
 
 	const limitOptionsField = () => {
-		if ('automatically' === get_options) {
-			return <LimitBy />;
-		}
-	};
+		const options = taxonomyLimitByOptions();
 
-	const parentTermField = () => {
-		if ('automatically' === get_options && 'child' === limit_options) {
-			const options = [];
-			const value = [];
-
-			return (
-				<Select
-					id={'parent_term'}
-					label={__('Parent Term', 'wc-ajax-product-filter')}
-					description={__(
-						'Only show the child terms of a parent term.',
-						'wc-ajax-product-filter'
-					)}
-					options={options}
-					values={value}
-					onChange={(values) =>
-						handleSelectChange(values, 'parent_term')
-					}
-				/>
-			);
-		}
+		return (
+			<ToggleGroup
+				id={'limit_options'}
+				label={__('Limit Options', 'wc-ajax-product-filter')}
+				description={__(
+					'Limit the filter options.',
+					'wc-ajax-product-filter'
+				)}
+				options={options}
+				onChange={handleToggleGroupChange}
+				value={limit_options}
+				isPro={true}
+			/>
+		);
 	};
 
 	const includeTermsField = () => {
 		const options = [];
 		const value = [];
 
-		if ('automatically' === get_options && 'include' === limit_options) {
+		if ('include' === limit_options) {
 			return (
 				<Select
 					id={'limit_values_by_id'}
@@ -161,55 +122,85 @@ const TaxonomyOptions = () => {
 	};
 
 	const excludeTermsField = () => {
-		const options = [];
-		const value = [];
+		const options = [
+			{
+				key: 'hello',
+				name: 'Hello',
+			},
+		];
 
-		if ('automatically' === get_options && 'exclude' === limit_options) {
+		const value = [{}];
+
+		if ('exclude' === limit_options) {
+			return (
+				<SelectNew2 />
+				// <SelectNew
+				// 	id={'exclude_values_id'}
+				// 	label={__('Terms to exclude', 'wc-ajax-product-filter')}
+				// 	description={__(
+				// 		'Select the terms that will be excluded from the filter by options.',
+				// 		'wc-ajax-product-filter'
+				// 	)}
+				// />
+				// <Select
+				// 	id={'exclude_values_id'}
+				// 	label={__('Terms to exclude', 'wc-ajax-product-filter')}
+				// 	description={__(
+				// 		'Select the terms that will be excluded from the filter by options.',
+				// 		'wc-ajax-product-filter'
+				// 	)}
+				// 	options={options}
+				// 	values={value}
+				// 	onChange={(values) => console.log(values)}
+				// 	// onChange={(values) =>
+				// 	// 	handleSelectChange(values, 'exclude_values_id')
+				// 	// }
+				// />
+			);
+		}
+	};
+
+	const parentTermField = () => {
+		if ('child' === limit_options) {
+			const options = [
+				{
+					key: 'hello',
+					name: 'Hello',
+				},
+			];
+			const value = [];
+
 			return (
 				<Select
-					id={'exclude_values_id'}
-					label={__('Terms to exclude', 'wc-ajax-product-filter')}
+					id={'parent_term'}
+					label={__('Parent Term', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the terms that will be excluded.',
+						'Select the parent term for which child terms will be available to filter the products.',
 						'wc-ajax-product-filter'
 					)}
 					options={options}
 					values={value}
 					onChange={(values) =>
-						handleSelectChange(values, 'exclude_values_id')
+						handleSelectChange(values, 'parent_term')
 					}
 				/>
 			);
 		}
 	};
 
-	const manualOptions = () => {
-		return (
-			<>
-				<ManualOptions openModal={openModal} />
-
-				<OptionsTableModal isOpen={isOpen} closeModal={closeModal} />
-			</>
-		);
-	};
-
 	return (
 		<>
-			{getOptionsField()}
-
 			{orderByField()}
 
 			{orderDirectionField()}
 
 			{limitOptionsField()}
 
-			{parentTermField()}
-
 			{includeTermsField()}
 
 			{excludeTermsField()}
 
-			{manualOptions()}
+			{parentTermField()}
 		</>
 	);
 };

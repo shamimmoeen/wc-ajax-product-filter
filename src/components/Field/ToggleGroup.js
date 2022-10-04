@@ -1,12 +1,24 @@
 import { __ } from '@wordpress/i18n';
 import { Button, ButtonGroup } from '@wordpress/components';
+import { proTag } from '../utils';
 
-const ToggleGroup = ({ label, id, value, options, onChange, description }) => {
+const ToggleGroup = ({
+	label,
+	id,
+	value,
+	options,
+	onChange,
+	description,
+	isPro,
+}) => {
 	return (
 		<div className='__form_control'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={id}>{label}</label>
+					<label htmlFor={id}>
+						{label}
+						{proTag(isPro)}
+					</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>

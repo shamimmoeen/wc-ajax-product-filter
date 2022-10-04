@@ -4,6 +4,7 @@ import Radio from '../../../Field/Radio';
 import Text from '../../../Field/Text';
 import { useFilter } from '../../FilterContext';
 import useFilterData from '../../useFilterData';
+import { accordionStates } from '../../utils';
 
 const Advanced = () => {
 	const {
@@ -35,9 +36,7 @@ const Advanced = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={enable_accordion}
-					onChange={(value) =>
-						handleCheckboxChange('enable_accordion', value)
-					}
+					onChange={handleCheckboxChange}
 				/>
 			);
 		}
@@ -56,20 +55,9 @@ const Advanced = () => {
 						'Determines how the accordion should appear initially.',
 						'wc-ajax-product-filter'
 					)}
+					options={accordionStates()}
 					value={accordion_default_state}
-					onChange={(e) =>
-						handleRadioChange(e, 'accordion_default_state')
-					}
-					options={[
-						{
-							label: __('Expanded', 'wc-ajax-product-filter'),
-							value: 'expanded',
-						},
-						{
-							label: __('Collapsed', 'wc-ajax-product-filter'),
-							value: 'collapsed',
-						},
-					]}
+					onChange={handleRadioChange}
 				/>
 			);
 		}
@@ -88,9 +76,7 @@ const Advanced = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={show_clear_button}
-					onChange={(value) =>
-						handleCheckboxChange('show_clear_button', value)
-					}
+					onChange={handleCheckboxChange}
 				/>
 			);
 		}
@@ -109,9 +95,7 @@ const Advanced = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={enable_soft_limit}
-					onChange={(value) =>
-						handleCheckboxChange('enable_soft_limit', value)
-					}
+					onChange={handleCheckboxChange}
 					isPro={true}
 				/>
 			);
@@ -134,7 +118,7 @@ const Advanced = () => {
 						'wc-ajax-product-filter	'
 					)}
 					value={soft_limit}
-					onChange={(e) => handleTextFieldChange(e, 'soft_limit')}
+					onChange={handleTextFieldChange}
 					type={'number'}
 					min={1}
 				/>
@@ -160,9 +144,7 @@ const Advanced = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={use_term_slug_in_url}
-					onChange={(value) =>
-						handleCheckboxChange('use_term_slug_in_url', value)
-					}
+					onChange={handleCheckboxChange}
 					isPro={true}
 				/>
 			);

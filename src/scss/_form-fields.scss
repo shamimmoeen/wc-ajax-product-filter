@@ -41,6 +41,13 @@
 		border-color: $inputBorderColor;
 	}
 
+	// react_select
+	&.react_select {
+		.__custom_react_select.fixed-width {
+			max-width: 450px;
+		}
+	}
+
 	// react-dropdown-select
 	.__styled_select_control {
 		min-height: 30px;
@@ -279,5 +286,27 @@
 			padding: 1px 8px;
 			margin: 0;
 		}
+	}
+}
+
+// Custom react select.
+.__custom_react_select {
+	.__react_select__control {
+		border-radius: 2px;
+	}
+
+	.__react_select__control,
+	.__react_select__indicator-separator,
+	.__react_select__dropdown-indicator {
+		border-color: $inputBorderColor;
+	}
+
+	.__react_select__input {
+		min-height: unset;
+	}
+
+	.__react_select__input,
+	.__react_select__input:focus {
+		box-shadow: none;
 	}
 }
