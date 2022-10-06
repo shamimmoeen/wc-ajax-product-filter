@@ -7,6 +7,7 @@ import { textDisplayTypes } from '../../../utils';
 import DropdownSelect from '../../../../Field/DropdownSelect';
 import useFields from './useFields';
 import CustomAppearance from './CustomAppearance';
+import SingleSelect from '../../../../Field/SingleSelect';
 
 const ValueTypeText = () => {
 	const {
@@ -89,19 +90,29 @@ const ValueTypeText = () => {
 		const value = options.find((option) => display_type === option.key);
 
 		return (
-			<DropdownSelect
-				id={'display_type'}
-				label={__('Display Type', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines how the filter will be shown on the frontend.',
-					'wc-ajax-product-filter'
-				)}
-				options={options}
-				value={value}
-				onChange={handleDropdownChange}
-				renderAsFormField={true}
-				childComponent={customAppearance}
-			/>
+			<>
+				<DropdownSelect
+					id={'display_type'}
+					label={__('Display Type', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines how the filter will be shown on the frontend.',
+						'wc-ajax-product-filter'
+					)}
+					options={options}
+					value={value}
+					onChange={handleDropdownChange}
+					renderAsFormField={true}
+					childComponent={customAppearance}
+				/>
+				<SingleSelect
+					id={'display_type'}
+					label={__('Display Type', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines how the filter will be shown on the frontend.',
+						'wc-ajax-product-filter'
+					)}
+				/>
+			</>
 		);
 	};
 

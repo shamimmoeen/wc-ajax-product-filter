@@ -16,7 +16,7 @@ const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
 
 const CustomAppearance = ({ type }) => {
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [fetched, setFetched] = useState(false);
 	const [options, setOptions] = useState([]);
@@ -127,6 +127,10 @@ const CustomAppearance = ({ type }) => {
 		}
 	};
 
+	const handleColorChange = (value) => {
+		console.log(value);
+	};
+
 	const handleUpdate = () => {
 		console.log(options.length);
 	};
@@ -174,7 +178,7 @@ const CustomAppearance = ({ type }) => {
 		const totalItems = options.length;
 
 		const info = sprintf(
-			__('Showing %d items of a total of %d', 'wc-ajax-product-filter'),
+			__('Showing %d of %d items', 'wc-ajax-product-filter'),
 			currentTotalItems,
 			totalItems
 		);
@@ -252,15 +256,25 @@ const CustomAppearance = ({ type }) => {
 									</span>
 								</button>
 								{index === colorPickerIndex && (
-									<div className='__color_picker_wrapper'>
-										<ColorPicker
-											color={color}
-											onChange={setColor}
-											enableAlpha
-											defaultValue='#000'
-											disableAlpha
-										/>
-									</div>
+									<>
+										<button>
+											{__(
+												'Clear',
+												'wc-ajax-product-filter'
+											)}
+										</button>
+										<div className='__color_picker_wrapper'>
+											<ColorPicker
+												color={color}
+												onChange={setColor}
+												defaultValue=''
+												disableAlpha
+												onChangeComplete={
+													handleColorChange
+												}
+											/>
+										</div>
+									</>
 								)}
 							</td>
 						)}
