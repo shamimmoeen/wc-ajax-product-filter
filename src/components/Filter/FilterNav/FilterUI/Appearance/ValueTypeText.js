@@ -6,6 +6,7 @@ import ToggleGroup from '../../../../Field/ToggleGroup';
 import { textDisplayTypes } from '../../../utils';
 import DropdownSelect from '../../../../Field/DropdownSelect';
 import useFields from './useFields';
+import CustomAppearance from './CustomAppearance';
 
 const ValueTypeText = () => {
 	const {
@@ -79,6 +80,12 @@ const ValueTypeText = () => {
 			);
 		}
 
+		let customAppearance;
+
+		if ('color' === display_type || 'image' === display_type) {
+			customAppearance = <CustomAppearance type={display_type} />;
+		}
+
 		const value = options.find((option) => display_type === option.key);
 
 		return (
@@ -93,6 +100,7 @@ const ValueTypeText = () => {
 				value={value}
 				onChange={handleDropdownChange}
 				renderAsFormField={true}
+				childComponent={customAppearance}
 			/>
 		);
 	};

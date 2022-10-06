@@ -257,9 +257,6 @@ body {
 .__form_control .components-radio-control__input {
   border-color: #ddd;
 }
-.__form_control.react_select .__custom_react_select.fixed-width {
-  max-width: 450px;
-}
 .__form_control .__styled_select_control {
   min-height: 30px;
   border-color: #ddd;
@@ -292,6 +289,14 @@ body {
 }
 .__form_control .__styled_select_control .react-dropdown-select-separator {
   height: 20px;
+}
+@media (min-width: 768px) {
+  .__form_control.react_select .__custom_react_select.full-width {
+    max-width: 95%;
+  }
+  .__form_control.react_select .__custom_react_select.fixed-width {
+    max-width: 300px;
+  }
 }
 .__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option {
   display: inline;
@@ -349,13 +354,20 @@ body {
   max-width: 100px;
 }
 .__form_control .__custom_select_control_wrapper {
-  display: flex;
+  display: inline-flex;
 }
 .__form_control .__custom_select_control_wrapper .__custom_select_control .components-custom-select-control__item {
   display: flex;
 }
 .__form_control .__custom_select_control_wrapper .__custom_select_control.date_display_type .components-custom-select-control__button, .__form_control .__custom_select_control_wrapper .__custom_select_control.number_display_type .components-custom-select-control__button {
   min-width: 200px;
+}
+.__form_control .__custom_appearance_wrapper {
+  display: inline-flex;
+  margin: 0 0 0 10px;
+}
+.__form_control .__custom_appearance_wrapper .components-button {
+  height: 30px;
 }
 
 .__form_control.display-type .__inner {
@@ -428,6 +440,17 @@ body {
 .__custom_react_select .__react_select__input,
 .__custom_react_select .__react_select__input:focus {
   box-shadow: none;
+}
+.__custom_react_select .__react_select__value-container--is-multi .__react_select__multi-value__label {
+  font-size: unset;
+}
+.__custom_react_select .__info {
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  margin: 0 0 0 4px;
+}
+.__custom_react_select .__react_select__option--is-selected .__info {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .__available_filters {

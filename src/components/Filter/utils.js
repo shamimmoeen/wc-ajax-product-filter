@@ -198,23 +198,6 @@ function perPageDefaultData() {
 	};
 }
 
-// Sanitize the filter data.
-export function sanitizeFilterData(activeFilterData) {
-	if (!activeFilterData.order_terms_dir) {
-		activeFilterData.order_terms_dir = 'asc';
-	}
-
-	if (!activeFilterData.options_order_dir) {
-		activeFilterData.options_order_dir = 'asc';
-	}
-
-	if (!activeFilterData.options_order_type) {
-		activeFilterData.options_order_type = 'alphabetical';
-	}
-
-	return activeFilterData;
-}
-
 export function getFilterDefaultData(type) {
 	const defaultData = filterDefaultData();
 
@@ -477,6 +460,20 @@ export function accordionStates() {
 			value: 'collapsed',
 		},
 	];
+}
+
+export function getTaxonomy(filterType, taxonomy) {
+	let _taxonomy;
+
+	if ('category' === filterType) {
+		_taxonomy = 'product_cat';
+	} else if ('tag' === filterType) {
+		_taxonomy = 'product_tag';
+	} else {
+		_taxonomy = taxonomy;
+	}
+
+	return _taxonomy;
 }
 
 export function isTaxonomyFilters(filterType) {

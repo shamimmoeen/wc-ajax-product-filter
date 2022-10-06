@@ -41,13 +41,6 @@
 		border-color: $inputBorderColor;
 	}
 
-	// react_select
-	&.react_select {
-		.__custom_react_select.fixed-width {
-			max-width: 450px;
-		}
-	}
-
 	// react-dropdown-select
 	.__styled_select_control {
 		min-height: 30px;
@@ -86,6 +79,21 @@
 
 		.react-dropdown-select-separator {
 			height: 20px;
+		}
+	}
+
+	// react_select
+	&.react_select {
+		@media (min-width: 768px) {
+			.__custom_react_select {
+				&.full-width {
+					max-width: 95%;
+				}
+
+				&.fixed-width {
+					max-width: 300px;
+				}
+			}
 		}
 	}
 
@@ -187,7 +195,7 @@
 
 	// Custom select control
 	.__custom_select_control_wrapper {
-		display: flex;
+		display: inline-flex;
 
 		.__custom_select_control {
 			.components-custom-select-control__item {
@@ -200,6 +208,16 @@
 					min-width: 200px;
 				}
 			}
+		}
+	}
+
+	// Custom Appearance Button.
+	.__custom_appearance_wrapper {
+		display: inline-flex;
+		margin: 0 0 0 10px;
+
+		.components-button {
+			height: 30px;
 		}
 	}
 }
@@ -308,5 +326,24 @@
 	.__react_select__input,
 	.__react_select__input:focus {
 		box-shadow: none;
+	}
+
+	.__react_select__value-container--is-multi {
+		.__react_select__multi-value__label {
+			font-size: unset;
+		}
+	}
+
+	// Style the info in option.
+	.__info {
+		color: rgba(0, 0, 0, 0.3);
+		font-size: 12px;
+		margin: 0 0 0 4px;
+	}
+
+	.__react_select__option--is-selected {
+		.__info {
+			color: rgba(255, 255, 255, 0.5);
+		}
 	}
 }

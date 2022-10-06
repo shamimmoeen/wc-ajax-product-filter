@@ -4,12 +4,7 @@ import Notifications from '../Notifications';
 import FilterSaveButton from './FilterSaveButton';
 import { useFilter } from './FilterContext';
 import { useEffect } from '@wordpress/element';
-import {
-	availableFilters,
-	filterDefaultData,
-	isTaxonomyFilters,
-	sanitizeFilterData,
-} from './utils';
+import { availableFilters, filterDefaultData } from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
@@ -63,33 +58,8 @@ const Filter = () => {
 						filterData['field_data']
 					);
 
-					/**
-					 * Sanitize the filter data.
-					 *
-					 * TODO: Should be deprecated in future.
-					 */
-					activeFilterData = sanitizeFilterData(activeFilterData);
-
 					filterType = activeFilterData['type'];
 					filterKey = activeFilterData['field_key'];
-
-					/**
-					 * TODO: Sets the filter options.
-					 */
-					if (isTaxonomyFilters(filterType)) {
-						activeFilterData['manual_options'] = [
-							{
-								value: 35,
-								slug: 'health',
-								label: 'Health',
-							},
-							{
-								value: 26,
-								slug: 'music',
-								label: 'Music',
-							},
-						];
-					}
 
 					dispatch({
 						type: 'SET_ACTIVE_FILTER_DATA',

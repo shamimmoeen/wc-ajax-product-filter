@@ -1,5 +1,7 @@
 import { CustomSelectControl } from '@wordpress/components';
 
+// TODO: Use a standard package like this package react-responsive-select.
+
 const DropdownSelect = ({
 	label,
 	id,
@@ -8,6 +10,7 @@ const DropdownSelect = ({
 	value,
 	onChange,
 	renderAsFormField = false,
+	childComponent,
 }) => {
 	let html;
 
@@ -34,6 +37,7 @@ const DropdownSelect = ({
 									className={customClasses}
 								/>
 							</div>
+							{childComponent}
 						</div>
 					</div>
 				</div>

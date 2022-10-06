@@ -2669,13 +2669,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
 /* harmony export */   "getOptionsTableModalData": function() { return /* binding */ getOptionsTableModalData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
+/* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
 /* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
 /* harmony export */   "orderDirectionOptions": function() { return /* binding */ orderDirectionOptions; },
 /* harmony export */   "orderTypeOptions": function() { return /* binding */ orderTypeOptions; },
 /* harmony export */   "productStatusOptions": function() { return /* binding */ productStatusOptions; },
-/* harmony export */   "sanitizeFilterData": function() { return /* binding */ sanitizeFilterData; },
 /* harmony export */   "taxonomyLimitByOptions": function() { return /* binding */ taxonomyLimitByOptions; },
 /* harmony export */   "termsOrderByOptions": function() { return /* binding */ termsOrderByOptions; },
 /* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; }
@@ -2866,24 +2866,8 @@ function perPageDefaultData() {
     max_value: '100',
     step: '25'
   };
-} // Sanitize the filter data.
-
-
-function sanitizeFilterData(activeFilterData) {
-  if (!activeFilterData.order_terms_dir) {
-    activeFilterData.order_terms_dir = 'asc';
-  }
-
-  if (!activeFilterData.options_order_dir) {
-    activeFilterData.options_order_dir = 'asc';
-  }
-
-  if (!activeFilterData.options_order_type) {
-    activeFilterData.options_order_type = 'alphabetical';
-  }
-
-  return activeFilterData;
 }
+
 function getFilterDefaultData(type) {
   const defaultData = filterDefaultData();
   const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(availableFilters(), {
@@ -3088,6 +3072,19 @@ function accordionStates() {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Collapsed', 'wc-ajax-product-filter'),
     value: 'collapsed'
   }];
+}
+function getTaxonomy(filterType, taxonomy) {
+  let _taxonomy;
+
+  if ('category' === filterType) {
+    _taxonomy = 'product_cat';
+  } else if ('tag' === filterType) {
+    _taxonomy = 'product_tag';
+  } else {
+    _taxonomy = taxonomy;
+  }
+
+  return _taxonomy;
 }
 function isTaxonomyFilters(filterType) {
   const taxonomyFilterTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
