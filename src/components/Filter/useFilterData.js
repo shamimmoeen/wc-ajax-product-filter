@@ -33,10 +33,18 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
+	// TODO: Maybe delete.
 	const handleDropdownChange = (selectedItem, key) => {
 		dispatch({
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: { ...activeFilterData, [key]: selectedItem.key },
+		});
+	};
+
+	const handleSingleSelectChange = (selectedItem, key) => {
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: { ...activeFilterData, [key]: selectedItem.value },
 		});
 	};
 
@@ -53,6 +61,7 @@ const useFilterData = (activeFilterData, dispatch) => {
 		handleTextFieldChange,
 		handleToggleGroupChange,
 		handleDropdownChange,
+		handleSingleSelectChange,
 		handleSelectTermChange,
 	};
 };

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../../../../Field/Checkbox';
-import DropdownSelect from '../../../../Field/DropdownSelect';
 import Radio from '../../../../Field/Radio';
+import SingleSelect from '../../../../Field/SingleSelect';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { numberDisplayTypes } from '../../../utils';
@@ -13,8 +13,11 @@ const ValueTypeNumber = () => {
 		dispatch,
 	} = useFilter();
 
-	const { handleRadioChange, handleCheckboxChange, handleDropdownChange } =
-		useFilterData(activeFilterData, dispatch);
+	const {
+		handleRadioChange,
+		handleCheckboxChange,
+		handleSingleSelectChange,
+	} = useFilterData(activeFilterData, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -43,11 +46,11 @@ const ValueTypeNumber = () => {
 		}
 
 		const value = options.find(
-			(option) => number_display_type === option.key
+			(option) => number_display_type === option.value
 		);
 
 		return (
-			<DropdownSelect
+			<SingleSelect
 				id={'number_display_type'}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
@@ -56,7 +59,7 @@ const ValueTypeNumber = () => {
 				)}
 				options={options}
 				value={value}
-				onChange={handleDropdownChange}
+				onChange={handleSingleSelectChange}
 				renderAsFormField={true}
 			/>
 		);

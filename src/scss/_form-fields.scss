@@ -193,6 +193,21 @@
 		}
 	}
 
+	// Single Select / Custom React Select.
+	.__custom_react_select_wrapper {
+		display: inline-flex;
+
+		.__custom_react_select {
+			min-width: 130px;
+
+			&.date_display_type,
+			&.number_display_type {
+				min-width: 200px;
+			}
+		}
+	}
+
+	// TODO: Maybe delete.
 	// Custom select control
 	.__custom_select_control_wrapper {
 		display: inline-flex;
@@ -310,7 +325,12 @@
 // Custom react select.
 .__custom_react_select {
 	.__react_select__control {
+		cursor: pointer;
 		border-radius: 2px;
+
+		&.__react_select__control--is-focused {
+			border-color: var(--wp-admin-theme-color);
+		}
 	}
 
 	.__react_select__control,
@@ -349,43 +369,38 @@
 
 	// Single Select.
 	&.__single_select {
-		.__react_select__dropdown-indicator {
-			padding: 0 4px;
-		}
-
 		.__react_select__control {
-			&.__react_select__control--is-focused {
-				// border-color: $inputBorderColor;
-				border-color: var(--wp-admin-theme-color);
+			&:not(.__react_select__control--is-focused) {
+				&:hover {
+					border-color: $inputBorderColor;
 
-				// &.__react_select__control--menu-is-open {
-				// 	box-shadow: none;
-					
-				// 	.__react_select__single-value {
-				// 		color: var(--wp-admin-theme-color);
-				// 	}
-		
-				// 	.__react_select__dropdown-indicator svg {
-				// 		fill: var(--wp-admin-theme-color);
-				// 	}
-				// }
+					.__react_select__single-value {
+						color: var(--wp-admin-theme-color);
+					}
 
-				// &:not(.__react_select__control--menu-is-open) {
-				// 	border-color: var(--wp-admin-theme-color);
-				// }
+					.__react_select__dropdown-indicator svg {
+						fill: var(--wp-admin-theme-color);
+					}
+				}
 			}
 		}
 
-		// .__react_select__control:hover {
-		// 	border-color: $inputBorderColor;
+		.__react_select__option {
+			&:active {
+				background-color: $inputBorderColor;
+			}
 
-		// 	.__react_select__single-value {
-		// 		color: var(--wp-admin-theme-color);
-		// 	}
+			.__wrapper {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+		}
 
-		// 	.__react_select__dropdown-indicator svg {
-		// 		fill: var(--wp-admin-theme-color);
-		// 	}
-		// }
+		.__pro_tag {
+			&::before {
+				margin-left: 6px;
+			}
+		}
 	}
 }

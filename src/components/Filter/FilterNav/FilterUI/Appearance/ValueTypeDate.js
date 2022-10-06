@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../../../../Field/Checkbox';
-import DropdownSelect from '../../../../Field/DropdownSelect';
 import Radio from '../../../../Field/Radio';
+import SingleSelect from '../../../../Field/SingleSelect';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { dateDisplayTypes } from '../../../utils';
@@ -13,8 +13,11 @@ const ValueTypeDate = () => {
 		dispatch,
 	} = useFilter();
 
-	const { handleRadioChange, handleCheckboxChange, handleDropdownChange } =
-		useFilterData(activeFilterData, dispatch);
+	const {
+		handleRadioChange,
+		handleCheckboxChange,
+		handleSingleSelectChange,
+	} = useFilterData(activeFilterData, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -38,11 +41,11 @@ const ValueTypeDate = () => {
 	const displayTypeField = () => {
 		const options = dateDisplayTypes();
 		const value = options.find(
-			(option) => date_display_type === option.key
+			(option) => date_display_type === option.value
 		);
 
 		return (
-			<DropdownSelect
+			<SingleSelect
 				id={'date_display_type'}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
@@ -51,7 +54,7 @@ const ValueTypeDate = () => {
 				)}
 				options={options}
 				value={value}
-				onChange={handleDropdownChange}
+				onChange={handleSingleSelectChange}
 				renderAsFormField={true}
 			/>
 		);

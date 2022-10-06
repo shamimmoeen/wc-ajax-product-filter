@@ -321,32 +321,32 @@ export function productStatusOptions() {
 export function textDisplayTypes(withPro = false) {
 	const options = [
 		{
-			name: __('Checkbox', 'wc-ajax-product-filter'),
-			key: 'checkbox',
+			label: __('Checkbox', 'wc-ajax-product-filter'),
+			value: 'checkbox',
 		},
 		{
-			name: __('Radio', 'wc-ajax-product-filter'),
-			key: 'radio',
+			label: __('Radio', 'wc-ajax-product-filter'),
+			value: 'radio',
 		},
 		{
-			name: __('Select', 'wc-ajax-product-filter'),
-			key: 'select',
+			label: __('Select', 'wc-ajax-product-filter'),
+			value: 'select',
 		},
 		{
-			name: __('Multi select', 'wc-ajax-product-filter'),
-			key: 'multi-select',
+			label: __('Multi select', 'wc-ajax-product-filter'),
+			value: 'multi-select',
 		},
 		{
-			name: __('Label', 'wc-ajax-product-filter'),
-			key: 'label',
+			label: __('Label', 'wc-ajax-product-filter'),
+			value: 'label',
 		},
 		{
-			name: __('Color', 'wc-ajax-product-filter'),
-			key: 'color',
+			label: __('Color', 'wc-ajax-product-filter'),
+			value: 'color',
 		},
 		{
-			name: __('Image', 'wc-ajax-product-filter'),
-			key: 'image',
+			label: __('Image', 'wc-ajax-product-filter'),
+			value: 'image',
 		},
 	];
 
@@ -354,10 +354,10 @@ export function textDisplayTypes(withPro = false) {
 		const proDisplayTypes = ['color', 'image'];
 
 		return options.map((option) => {
-			if (!proDisplayTypes.includes(option.key)) {
+			if (!proDisplayTypes.includes(option.value)) {
 				return option;
 			} else {
-				option.__experimentalHint = 'Pro';
+				option.isPro = true;
 
 				return option;
 			}
@@ -370,32 +370,32 @@ export function textDisplayTypes(withPro = false) {
 export function numberDisplayTypes(withPro = false) {
 	const options = [
 		{
-			name: __('Range - Slider', 'wc-ajax-product-filter'),
-			key: 'range_slider',
+			label: __('Range - Slider', 'wc-ajax-product-filter'),
+			value: 'range_slider',
 		},
 		{
-			name: __('Range - Number', 'wc-ajax-product-filter'),
-			key: 'range_number',
+			label: __('Range - Number', 'wc-ajax-product-filter'),
+			value: 'range_number',
 		},
 		{
-			name: __('Range - Checkbox', 'wc-ajax-product-filter'),
-			key: 'range_checkbox',
+			label: __('Range - Checkbox', 'wc-ajax-product-filter'),
+			value: 'range_checkbox',
 		},
 		{
-			name: __('Range - Radio', 'wc-ajax-product-filter'),
-			key: 'range_radio',
+			label: __('Range - Radio', 'wc-ajax-product-filter'),
+			value: 'range_radio',
 		},
 		{
-			name: __('Range - Select', 'wc-ajax-product-filter'),
-			key: 'range_select',
+			label: __('Range - Select', 'wc-ajax-product-filter'),
+			value: 'range_select',
 		},
 		{
-			name: __('Range - Multiselect', 'wc-ajax-product-filter'),
-			key: 'range_multiselect',
+			label: __('Range - Multiselect', 'wc-ajax-product-filter'),
+			value: 'range_multiselect',
 		},
 		{
-			name: __('Range - Label', 'wc-ajax-product-filter'),
-			key: 'range_label',
+			label: __('Range - Label', 'wc-ajax-product-filter'),
+			value: 'range_label',
 		},
 	];
 
@@ -403,10 +403,10 @@ export function numberDisplayTypes(withPro = false) {
 		const allowed = ['range_slider', 'range_number'];
 
 		return options.map((option) => {
-			if (allowed.includes(option.key)) {
+			if (allowed.includes(option.value)) {
 				return option;
 			} else {
-				option.__experimentalHint = 'Pro';
+				option.isPro = true;
 
 				return option;
 			}
@@ -419,32 +419,32 @@ export function numberDisplayTypes(withPro = false) {
 export function dateDisplayTypes() {
 	return [
 		{
-			name: __('Input - Date', 'wc-ajax-product-filter'),
-			key: 'input_date',
+			label: __('Input - Date', 'wc-ajax-product-filter'),
+			value: 'input_date',
 		},
 		{
-			name: __('Input - Date Range', 'wc-ajax-product-filter'),
-			key: 'input_date_range',
+			label: __('Input - Date Range', 'wc-ajax-product-filter'),
+			value: 'input_date_range',
 		},
 		{
-			name: __('Time Period - Checkbox', 'wc-ajax-product-filter'),
-			key: 'time_period_checkbox',
+			label: __('Time Period - Checkbox', 'wc-ajax-product-filter'),
+			value: 'time_period_checkbox',
 		},
 		{
-			name: __('Time Period - Radio', 'wc-ajax-product-filter'),
-			key: 'time_period_radio',
+			label: __('Time Period - Radio', 'wc-ajax-product-filter'),
+			value: 'time_period_radio',
 		},
 		{
-			name: __('Time Period - Select', 'wc-ajax-product-filter'),
-			key: 'time_period_select',
+			label: __('Time Period - Select', 'wc-ajax-product-filter'),
+			value: 'time_period_select',
 		},
 		{
-			name: __('Time Period - Multi select', 'wc-ajax-product-filter'),
-			key: 'time_period_multiselect',
+			label: __('Time Period - Multi select', 'wc-ajax-product-filter'),
+			value: 'time_period_multiselect',
 		},
 		{
-			name: __('Time Period - Label', 'wc-ajax-product-filter'),
-			key: 'time_period_label',
+			label: __('Time Period - Label', 'wc-ajax-product-filter'),
+			value: 'time_period_label',
 		},
 	];
 }
