@@ -1,20 +1,6 @@
 import { Icon } from '@wordpress/components';
-import { useEffect, useRef } from '@wordpress/element';
-import { chevronDown } from '@wordpress/icons';
+import { check, chevronDown } from '@wordpress/icons';
 import Select, { components } from 'react-select';
-
-const colourOptions = [
-	{ value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-	{ value: 'blue', label: 'Blue', color: '#0052CC', disabled: true },
-	{ value: 'purple', label: 'Purple', color: '#5243AA' },
-	{ value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
-	{ value: 'orange', label: 'Orange', color: '#FF8B00' },
-	{ value: 'yellow', label: 'Yellow', color: '#FFC400' },
-	{ value: 'green', label: 'Green', color: '#36B37E' },
-	{ value: 'forest', label: 'Forest', color: '#00875A' },
-	{ value: 'slate', label: 'Slate', color: '#253858' },
-	{ value: 'silver', label: 'Silver', color: '#666666' },
-];
 
 const customStyles = {
 	control: (base) => ({
@@ -24,8 +10,7 @@ const customStyles = {
 	}),
 	dropdownIndicator: (base) => ({
 		...base,
-		paddingTop: 0,
-		paddingBottom: 0,
+		padding: '0 4px 0 0',
 	}),
 	clearIndicator: (base) => ({
 		...base,
@@ -36,6 +21,31 @@ const customStyles = {
 		...base,
 		paddingTop: 0,
 		paddingBottom: 0,
+	}),
+	singleValue: (base) => ({
+		...base,
+		marginLeft: 0,
+		marginRight: 0,
+	}),
+	menu: (base) => ({
+		...base,
+		borderRadius: 2,
+		boxShadow: 'none',
+		border: '1px solid #ddd',
+		marginTop: 5,
+		marginBottom: 5,
+	}),
+	menuList: (base) => ({
+		...base,
+		padding: 0,
+		borderRadius: 2,
+	}),
+	option: (base, { isFocused }) => ({
+		...base,
+		padding: '1px 8px',
+		lineHeight: '28px',
+		backgroundColor: isFocused ? '#ddd' : 'transparent',
+		color: 'unset',
 	}),
 };
 
@@ -53,51 +63,127 @@ const DropdownIndicator = (props) => {
 	);
 };
 
-const SingleSelect = ({ id, label, description }) => {
-	const ref = useRef(null);
-
-	useEffect(() => {
-		ref.current.focus();
-	}, []);
+const Option = (props) => {
+	const { data, isSelected } = props;
+	const { label, isPro } = data;
 
 	return (
-		<div className='__form_control react_select'>
-			<div className='__inner'>
-				<div className='__label'>
-					<label htmlFor={id}>{label}</label>
+		<components.Option {...props}>
+			<div className='__wrapper'>
+				<div className='__option_label'>
+					{label}
+					{isPro && <span className='__pro_tag' />}
 				</div>
-				<div className='__wrapper'>
-					<div className='__input_wrapper'>
-						<div style={{ width: 130 }}>
-							<Select
-								ref={ref}
-								components={{
-									IndicatorSeparator,
-									DropdownIndicator,
-								}}
-								// menuIsOpen
-								isSearchable={false}
-								defaultValue={colourOptions[0]}
-								options={colourOptions}
-								styles={customStyles}
-								className='__custom_react_select __single_select'
-								classNamePrefix='__react_select'
-								theme={(theme) => ({
-									...theme,
-									borderRadius: 0,
-									colors: {
-										...theme.colors,
-										primary: '#007cba',
-									},
-								})}
-							/>
+				{isSelected && <Icon icon={check} className='__icon' />}
+			</div>
+		</components.Option>
+	);
+};
+
+const SingleValue = (props) => {
+	const { data } = props;
+	const { label, isPro } = data;
+
+	return (
+		<components.SingleValue {...props}>
+			{label}
+			{isPro && <span className='__pro_tag' />}
+		</components.SingleValue>
+	);
+};
+
+const SingleSelect = ({
+	id,
+	label,
+	description,
+	options,
+	value,
+	onChange,
+	renderAsFormField = false,
+	childComponent,
+}) => {
+	let html;
+
+	if (renderAsFormField) {
+		let customClasses = '__custom_react_select __single_select';
+		customClasses += ` ${id}`;
+
+		html = (
+			<div className='__form_control react_select'>
+				<div className='__inner'>
+					<div className='__label'>
+						<label htmlFor={id}>{label}</label>
+					</div>
+					<div className='__wrapper'>
+						<div className='__input_wrapper'>
+							<div className='__custom_react_select_wrapper'>
+								<Select
+									components={{
+										IndicatorSeparator,
+										DropdownIndicator,
+										Option,
+										SingleValue,
+									}}
+									isSearchable={false}
+									value={value}
+									options={options}
+									onChange={(selectedItem) =>
+										onChange(selectedItem, id)
+									}
+									styles={customStyles}
+									className={customClasses}
+									classNamePrefix='__react_select'
+									theme={(theme) => ({
+										...theme,
+										borderRadius: 0,
+										colors: {
+											...theme.colors,
+											primary: '#007cba',
+										},
+									})}
+								/>
+
+								{childComponent}
+							</div>
 						</div>
 					</div>
 				</div>
+				{description ? (
+					<p className='description'>{description}</p>
+				) : (
+					''
+				)}
 			</div>
-			{description ? <p className='description'>{description}</p> : ''}
-		</div>
-	);
+		);
+	} else {
+		html = (
+			<Select
+				components={{
+					IndicatorSeparator,
+					DropdownIndicator,
+					Option,
+					SingleValue,
+				}}
+				isSearchable={false}
+				value={value}
+				options={options}
+				onChange={(selectedItem) => onChange(selectedItem)}
+				styles={customStyles}
+				className={customClasses}
+				classNamePrefix='__react_select'
+				theme={(theme) => ({
+					...theme,
+					borderRadius: 0,
+					colors: {
+						...theme.colors,
+						primary: '#007cba',
+					},
+				})}
+			/>
+		);
+	}
+
+	return html;
 };
 
 export default SingleSelect;

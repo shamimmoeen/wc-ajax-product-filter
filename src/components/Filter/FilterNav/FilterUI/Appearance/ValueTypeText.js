@@ -4,7 +4,6 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
 import { textDisplayTypes } from '../../../utils';
-import DropdownSelect from '../../../../Field/DropdownSelect';
 import useFields from './useFields';
 import CustomAppearance from './CustomAppearance';
 import SingleSelect from '../../../../Field/SingleSelect';
@@ -18,7 +17,7 @@ const ValueTypeText = () => {
 	const {
 		handleCheckboxChange,
 		handleToggleGroupChange,
-		handleDropdownChange,
+		handleSingleSelectChange,
 	} = useFilterData(activeFilterData, dispatch);
 
 	const {
@@ -87,11 +86,11 @@ const ValueTypeText = () => {
 			customAppearance = <CustomAppearance type={display_type} />;
 		}
 
-		const value = options.find((option) => display_type === option.key);
+		const value = options.find((option) => display_type === option.value);
 
 		return (
 			<>
-				<DropdownSelect
+				<SingleSelect
 					id={'display_type'}
 					label={__('Display Type', 'wc-ajax-product-filter')}
 					description={__(
@@ -100,17 +99,9 @@ const ValueTypeText = () => {
 					)}
 					options={options}
 					value={value}
-					onChange={handleDropdownChange}
+					onChange={handleSingleSelectChange}
 					renderAsFormField={true}
 					childComponent={customAppearance}
-				/>
-				<SingleSelect
-					id={'display_type'}
-					label={__('Display Type', 'wc-ajax-product-filter')}
-					description={__(
-						'Determines how the filter will be shown on the frontend.',
-						'wc-ajax-product-filter'
-					)}
 				/>
 			</>
 		);
