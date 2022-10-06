@@ -10,46 +10,23 @@ import {
 import { isEmpty } from 'lodash';
 import axios from 'axios';
 import { MediaUpload } from '@wordpress/media-utils';
-import DropdownSelect from '../../../../Field/DropdownSelect';
-import ReactPaginate from 'react-paginate';
 
-const perPageOptions = [
-	{
-		key: 10,
-		name: 10,
-	},
-	{
-		key: 25,
-		name: 25,
-	},
-	{
-		key: 50,
-		name: 50,
-	},
-	{
-		key: 100,
-		name: 100,
-	},
-];
-
+const MAX_ALLOWED_ITEMS_TO_RENDER = 999;
 const ALLOWED_MEDIA_TYPES = ['image'];
+const modalInitialClass = '__custom_appearance_modal';
 
 const CustomAppearance = ({ type }) => {
 	const [open, setOpen] = useState(true);
 	const [loading, setLoading] = useState(true);
-	const [options, setOptions] = useState([]);
 	const [fetched, setFetched] = useState(false);
+	const [options, setOptions] = useState([]);
+	const [filteredOptions, setFilteredOptions] = useState([]);
 	const [message, setMessage] = useState('');
 	const [color, setColor] = useState('');
 	const [colorPickerIndex, setColorPickerIndex] = useState(null);
 	const [searchInput, setSearchInput] = useState('');
-	const [perPageData, setPerPageData] = useState(perPageOptions[1]);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [currentItems, setCurrentItems] = useState([]);
 	const [isFullScreen, setIsFullScreen] = useState(false);
-	const [modalClasses, setModalClasses] = useState(
-		'__custom_appearance_modal'
-	);
+	const [modalClasses, setModalClasses] = useState(modalInitialClass);
 
 	useEffect(() => {
 		if (!open) {
@@ -76,13 +53,13 @@ const CustomAppearance = ({ type }) => {
 				setLoading(false);
 				setFetched(true);
 				setOptions(data);
+
 				setIsFullScreen(true);
-				setModalClasses('__custom_appearance_modal options-fetched');
+				setModalClasses(`${modalInitialClass} options-fetched`);
 
-				const perPage = perPageData.key;
-				const splitted = data.slice(0, perPage);
+				const filtered = getFirstSafeItems(data);
 
-				setCurrentItems(splitted);
+				setFilteredOptions(filtered);
 			})
 			.catch((err) => {
 				setLoading(false);
@@ -98,6 +75,46 @@ const CustomAppearance = ({ type }) => {
 			});
 	}, [open]);
 
+	useEffect(() => {
+		let _options = [...options];
+
+		if (!searchInput.length) {
+			const filtered = getFirstSafeItems(_options);
+
+			setFilteredOptions(filtered);
+
+			return;
+		}
+
+		const _filtered = _options.filter((option) => {
+			const { label, value } = option;
+
+			return (
+				label.toLowerCase().includes(searchInput.toLowerCase()) ||
+				value
+					.toString()
+					.toLowerCase()
+					.includes(searchInput.toLowerCase())
+			);
+		});
+
+		const filtered = getFirstSafeItems(_filtered);
+
+		setFilteredOptions(filtered);
+	}, [searchInput]);
+
+	const getFirstSafeItems = (data) => {
+		let _filtered = [];
+
+		if (data.length > MAX_ALLOWED_ITEMS_TO_RENDER) {
+			_filtered = data.slice(0, MAX_ALLOWED_ITEMS_TO_RENDER);
+		} else {
+			_filtered = data;
+		}
+
+		return _filtered;
+	};
+
 	const openModal = () => setOpen(true);
 
 	const closeModal = () => setOpen(false);
@@ -110,12 +127,7 @@ const CustomAppearance = ({ type }) => {
 		}
 	};
 
-	const handlePageChange = ({ selected }) => {
-		setCurrentPage(selected + 1);
-	};
-
 	const handleUpdate = () => {
-		console.log(perPageData);
 		console.log(options.length);
 	};
 
@@ -158,15 +170,19 @@ const CustomAppearance = ({ type }) => {
 	};
 
 	const tableHeader = () => {
+		const currentTotalItems = filteredOptions.length;
+		const totalItems = options.length;
+
+		const info = sprintf(
+			__('Showing %d items of a total of %d', 'wc-ajax-product-filter'),
+			currentTotalItems,
+			totalItems
+		);
+
 		return (
 			<div className='__table_header'>
 				<div className='__per_page_dropdown'>
-					<span>{__('Show', 'wc-ajax-product-filter')}</span>
-					<DropdownSelect
-						options={perPageOptions}
-						onChange={setPerPageData}
-					/>
-					<span>{__('items', 'wc-ajax-product-filter')}</span>
+					<p className='description'>{info}</p>
 				</div>
 
 				<div className='__search_box'>
@@ -181,39 +197,99 @@ const CustomAppearance = ({ type }) => {
 
 	const tableFooter = () => {
 		const totalItems = options.length;
-		const perPage = perPageData.key;
-		const totalPages = Math.ceil(totalItems / perPage);
-		const startIndex = currentPage > 1 ? currentPage * perPage : 1;
-		const _endIndex = startIndex + (perPage - 1);
-		const endIndex = _endIndex >= totalItems ? totalItems : _endIndex;
 
-		const info = sprintf(
-			__('Showing %d to %d of %d items', 'wc-ajax-product-filter'),
-			startIndex,
-			endIndex,
-			totalItems
-		);
+		if (totalItems > MAX_ALLOWED_ITEMS_TO_RENDER) {
+			return (
+				<p className='description large-data-hint'>
+					{sprintf(
+						__(
+							"The number of total items is %d and rendering all of those might crash your browser. That's why we are showing the first %d items. Use the search field to find the items that were not rendered.",
+							'wc-ajax-product-filter'
+						),
+						totalItems,
+						MAX_ALLOWED_ITEMS_TO_RENDER
+					)}
+				</p>
+			);
+		}
+	};
 
-		return (
-			<div className='__table_footer'>
-				<div className='__total_items_info'>
-					<p
-						className='description'
-						dangerouslySetInnerHTML={{ __html: info }}
-					/>
-				</div>
+	const rows = () => {
+		if (isEmpty(filteredOptions)) {
+			return (
+				<tr>
+					<td colSpan={2}>
+						{__(
+							'No items matched your search value',
+							'wc-ajax-product-filter'
+						)}
+					</td>
+				</tr>
+			);
+		} else {
+			return filteredOptions.map((option, index) => {
+				const mediaId = '';
 
-				{totalPages > 1 && (
-					<div className='__pagination_wrapper'>
-						<ReactPaginate
-							pageCount={totalPages}
-							containerClassName='__pagination'
-							onPageChange={handlePageChange}
-						/>
-					</div>
-				)}
-			</div>
-		);
+				return (
+					<tr key={`custom-appearance-data-${index}`}>
+						<td className='__term'>
+							{option.label}
+							<br />
+							<span className='__info'>ID: {option.value}</span>
+						</td>
+
+						{'color' === type && (
+							<td className='__color'>
+								<button
+									className='__color_picker_button'
+									onClick={() => openColorPicker(index)}
+								>
+									<span className='__select_button'>
+										{__(
+											'Select Color',
+											'wc-ajax-product-filter'
+										)}
+									</span>
+								</button>
+								{index === colorPickerIndex && (
+									<div className='__color_picker_wrapper'>
+										<ColorPicker
+											color={color}
+											onChange={setColor}
+											enableAlpha
+											defaultValue='#000'
+											disableAlpha
+										/>
+									</div>
+								)}
+							</td>
+						)}
+
+						{'image' === type && (
+							<td className='__image'>
+								<MediaUpload
+									onSelect={(media) => console.log(media)}
+									allowedTypes={ALLOWED_MEDIA_TYPES}
+									value={mediaId}
+									render={({ open }) => (
+										<Button
+											className='__image_picker_button'
+											variant='secondary'
+											onClick={open}
+										>
+											{__(
+												'Select Image',
+												'wc-ajax-product-filter'
+											)}
+										</Button>
+									)}
+								/>
+							</td>
+						)}
+					</tr>
+				);
+			});
+		}
 	};
 
 	const modalContent = () => {
@@ -242,78 +318,7 @@ const CustomAppearance = ({ type }) => {
 								)}
 							</tr>
 						</thead>
-						<tbody>
-							{currentItems.map((option, index) => {
-								const mediaId = '';
-
-								return (
-									<tr key={`custom-appearance-data-${index}`}>
-										<td className='__term'>
-											{option.label}
-											<br />
-											<span className='__info'>
-												ID: {option.value}
-											</span>
-										</td>
-
-										{'color' === type && (
-											<td className='__color'>
-												<button
-													className='__color_picker_button'
-													onClick={() =>
-														openColorPicker(index)
-													}
-												>
-													<span className='__select_button'>
-														{__(
-															'Select Color',
-															'wc-ajax-product-filter'
-														)}
-													</span>
-												</button>
-												{index === colorPickerIndex && (
-													<div className='__color_picker_wrapper'>
-														<ColorPicker
-															color={color}
-															onChange={setColor}
-															enableAlpha
-															defaultValue='#000'
-															disableAlpha
-														/>
-													</div>
-												)}
-											</td>
-										)}
-
-										{'image' === type && (
-											<td className='__image'>
-												<MediaUpload
-													onSelect={(media) =>
-														console.log(media)
-													}
-													allowedTypes={
-														ALLOWED_MEDIA_TYPES
-													}
-													value={mediaId}
-													render={({ open }) => (
-														<Button
-															className='__image_picker_button'
-															variant='secondary'
-															onClick={open}
-														>
-															{__(
-																'Select Image',
-																'wc-ajax-product-filter'
-															)}
-														</Button>
-													)}
-												/>
-											</td>
-										)}
-									</tr>
-								);
-							})}
-						</tbody>
+						<tbody>{rows()}</tbody>
 					</table>
 
 					{tableFooter()}
