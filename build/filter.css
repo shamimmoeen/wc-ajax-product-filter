@@ -593,6 +593,12 @@ body {
 .__custom_react_select .__react_select__option--is-selected .__info {
   color: rgba(255, 255, 255, 0.5);
 }
+.__custom_react_select.__single_select .__react_select__dropdown-indicator {
+  padding: 0 4px;
+}
+.__custom_react_select.__single_select .__react_select__control.__react_select__control--is-focused {
+  border-color: var(--wp-admin-theme-color);
+}
 
 .__available_filters {
   margin-bottom: 1.5em;
