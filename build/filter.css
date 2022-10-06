@@ -815,7 +815,7 @@ body {
 }
 @media (max-width: 599px) {
   .__custom_appearance_modal .wp-list-table th.__term {
-    width: 100px;
+    width: 30%;
   }
 }
 .__custom_appearance_modal .wp-list-table .__term .__info {
@@ -848,6 +848,7 @@ body {
 }
 .__custom_appearance_modal .__color_picker_wrapper {
   margin-top: 10px;
+  overflow: auto;
 }
 .__custom_appearance_modal .striped > tbody > :nth-child(odd) .components-color-picker {
   background: #fff;
@@ -887,19 +888,16 @@ body {
   display: flex;
   justify-content: space-between;
 }
+@media (min-width: 768px) {
+  .__custom_appearance_modal .__table_header {
+    align-items: flex-end;
+  }
+}
 @media (max-width: 767px) {
   .__custom_appearance_modal .__table_header {
     flex-direction: column;
     gap: 1em;
   }
-}
-.__custom_appearance_modal .__table_header .__per_page_dropdown {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.__custom_appearance_modal .__table_header .__per_page_dropdown .__custom_select_control .components-custom-select-control__button {
-  min-width: 60px;
 }
 .__custom_appearance_modal .__table_header .__search_box {
   display: flex;
@@ -912,15 +910,9 @@ body {
   padding-bottom: 5px;
   height: 38px;
 }
-.__custom_appearance_modal .__table_footer {
-  display: flex;
-  justify-content: space-between;
-}
-@media (max-width: 767px) {
-  .__custom_appearance_modal .__table_footer {
-    flex-direction: column;
-    gap: 1em;
-  }
+.__custom_appearance_modal .large-data-hint {
+  font-weight: 500;
+  font-style: italic;
 }
 
 /*# sourceMappingURL=filter.css.map*/
