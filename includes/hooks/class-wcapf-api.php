@@ -50,6 +50,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
+		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) );
 		add_action( 'wp_ajax_get_taxonomy_filter_options', array( $this, 'get_taxonomy_filter_options' ) );
 		add_action( 'wp_ajax_get_filters', array( $this, 'get_filters' ) );
 		add_action( 'wp_ajax_check_filter_key', array( $this, 'check_filter_key' ) );
@@ -312,9 +313,101 @@ class WCAPF_API {
 		wp_send_json_success( $preview );
 	}
 
+	/**
+	 * Parse the field data.
+	 *
+	 * TODO: Might be deprecated in future.
+	 *
+	 * @param array $field_data The field data array.
+	 *
+	 * @return array
+	 */
+	private function parse_field_data( $field_data ) {
+		// Fill the term_ids with value and label.
+		$taxonomy_types = array( 'category', 'tag', 'attribute', 'custom-taxonomy' );
+		$filter_type    = isset( $field_data['type'] ) ? $field_data['type'] : '';
+
+		if ( in_array( $filter_type, $taxonomy_types ) ) {
+			$parent_term        = $field_data['parent_term'];
+			$limit_values_by_id = $field_data['limit_values_by_id'];
+			$exclude_values_id  = $field_data['exclude_values_id'];
+
+			if ( $parent_term ) {
+				$term = get_term( $parent_term );
+
+				$field_data['parent_term'] = array(
+					'value' => $term->term_id,
+					'label' => $term->name
+				);
+			}
+
+			$array = array(
+				'limit_values_by_id' => $limit_values_by_id,
+				'exclude_values_id'  => $exclude_values_id,
+			);
+
+			foreach ( $array as $key => $value ) {
+				if ( $value ) {
+					$values = explode( ',', $value );
+					$parsed = array();
+
+					foreach ( $values as $id ) {
+						$term = get_term( $id );
+
+						if ( $term && ! is_wp_error( $term ) ) {
+							$parsed[] = array(
+								'value' => $term->term_id,
+								'label' => $term->name,
+							);
+						}
+					}
+
+					$field_data[ $key ] = $parsed;
+				}
+			}
+		}
+
+		// Set the default values for the order settings.
+		$order_terms_dir    = isset( $field_data['order_terms_dir'] ) ? $field_data['order_terms_dir'] : '';
+		$options_order_dir  = isset( $field_data['options_order_dir'] ) ? $field_data['options_order_dir'] : '';
+		$options_order_type = isset( $field_data['options_order_type'] ) ? $field_data['options_order_type'] : '';
+
+		if ( ! $order_terms_dir ) {
+			$field_data['order_terms_dir'] = 'asc';
+		}
+
+		if ( ! $options_order_dir ) {
+			$field_data['options_order_dir'] = 'asc';
+		}
+
+		if ( ! $options_order_type ) {
+			$field_data['options_order_type'] = 'alphabetical';
+		}
+
+		// Parse custom appearance options.
+		$custom_appearance_options = isset( $field_data['custom_appearance_options'] )
+			? $field_data['custom_appearance_options']
+			: array();
+
+		if ( $custom_appearance_options ) {
+			$parsed = array();
+
+			foreach ( $custom_appearance_options as $id => $option ) {
+				$option['id'] = $id;
+
+				$parsed[] = $option;
+			}
+
+			$field_data['custom_appearance_options'] = $parsed;
+		}
+
+		return $field_data;
+	}
+
 	public function get_filter_data() {
 		$post_id    = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
 		$field_data = get_post_meta( $post_id, '_field_data', true );
+		$field_data = $this->parse_field_data( $field_data );
 
 		$response = array(
 			'post_title' => get_the_title( $post_id ),
@@ -450,12 +543,37 @@ class WCAPF_API {
 		wp_send_json_success( $preview );
 	}
 
-	public function get_taxonomy_filter_options() {
+	public function get_custom_appearance_data() {
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
-		$keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
-		$page     = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 
-		$per_page = 5;
+		$args = array(
+			'taxonomy'   => $taxonomy,
+			'hide_empty' => false,
+			'fields'     => 'id=>name',
+		);
+
+		$terms    = get_terms( $args );
+		$response = array();
+
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term_id => $term_name ) {
+				$response[] = array(
+					'value' => $term_id,
+					'label' => $term_name,
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	public function get_taxonomy_filter_options() {
+		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
+		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( $_GET['only_parent'] ) : '';
+		$keyword     = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		$page        = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+
+		$per_page = 20;
 		$offset   = ( $page - 1 ) * $per_page;
 
 		$args = array(
@@ -464,18 +582,40 @@ class WCAPF_API {
 			'search'     => $keyword,
 			'number'     => $per_page,
 			'offset'     => $offset,
+			'fields'     => 'id=>name',
 		);
+
+		if ( 'true' === $only_parent ) {
+			$includes = array();
+
+			$all_terms = get_terms(
+				array(
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => false,
+					'fields'     => 'ids',
+				)
+			);
+
+			if ( $all_terms && ! is_wp_error( $all_terms ) ) {
+				foreach ( $all_terms as $term_id ) {
+					if ( get_term_children( $term_id, $taxonomy ) ) {
+						$includes[] = $term_id;
+					}
+				}
+			}
+
+			$args['include'] = $includes;
+		}
 
 		$terms = get_terms( $args );
 
 		$response = array();
 
-		if ( ! is_wp_error( $terms ) ) {
-			foreach ( $terms as $term ) {
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term_id => $term_name ) {
 				$response[] = array(
-					'value' => $term->term_id,
-					'label' => $term->name,
-					'slug'  => $term->slug, // TODO: May be redundant.
+					'value' => $term_id,
+					'label' => $term_name,
 				);
 			}
 		}

@@ -40,12 +40,20 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
+	const handleSelectTermChange = (selected, key) => {
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: { ...activeFilterData, [key]: selected },
+		});
+	};
+
 	return {
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
 		handleToggleGroupChange,
 		handleDropdownChange,
+		handleSelectTermChange,
 	};
 };
 

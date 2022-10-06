@@ -1,46 +1,39 @@
 import { __ } from '@wordpress/i18n';
 import Radio from '../../../../Field/Radio';
-import Select from '../../../../Field/Select';
 import { useFilter } from '../../../FilterContext';
 import {
 	termsOrderByOptions,
 	orderDirectionOptions,
 	taxonomyLimitByOptions,
+	getTaxonomy,
 } from '../../../utils';
-import { isEmpty } from 'lodash';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
-import SelectNew from '../../../../Field/SelectNew';
-import SelectNew2 from '../../../../Field/SelectNew2';
+import SelectTerm from '../../../../Field/SelectTerm';
 
 const TaxonomyOptions = () => {
 	const {
-		state: { activeFilterData },
+		state: { filterType, activeFilterData },
 		dispatch,
 	} = useFilter();
 
-	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
-		activeFilterData,
-		dispatch
-	);
+	const {
+		handleRadioChange,
+		handleToggleGroupChange,
+		handleSelectTermChange,
+	} = useFilterData(activeFilterData, dispatch);
 
-	const { limit_options, order_terms_by, order_terms_dir } = activeFilterData;
+	const {
+		taxonomy,
+		order_terms_by,
+		order_terms_dir,
+		limit_options,
+		parent_term,
+		limit_values_by_id,
+		exclude_values_id,
+	} = activeFilterData;
 
-	const handleSelectChange = (values, key) => {
-		if (isEmpty(values)) {
-			dispatch({
-				type: 'SET_ACTIVE_FILTER_DATA',
-				payload: { ...activeFilterData, [key]: '' },
-			});
-		} else {
-			const { value } = values[0];
-
-			dispatch({
-				type: 'SET_ACTIVE_FILTER_DATA',
-				payload: { ...activeFilterData, [key]: value },
-			});
-		}
-	};
+	const taxonomyForSelectTerm = getTaxonomy(filterType, taxonomy);
 
 	const orderByField = () => {
 		const options = termsOrderByOptions();
@@ -99,90 +92,57 @@ const TaxonomyOptions = () => {
 	};
 
 	const includeTermsField = () => {
-		const options = [];
-		const value = [];
-
 		if ('include' === limit_options) {
 			return (
-				<Select
+				<SelectTerm
 					id={'limit_values_by_id'}
 					label={__('Terms to include', 'wc-ajax-product-filter')}
 					description={__(
 						'Select the terms that will be available to filter by.',
 						'wc-ajax-product-filter'
 					)}
-					options={options}
-					values={value}
-					onChange={(values) =>
-						handleSelectChange(values, 'limit_values_by_id')
-					}
+					taxonomy={taxonomyForSelectTerm}
+					isMultiple={true}
+					value={limit_values_by_id}
+					onChange={handleSelectTermChange}
 				/>
 			);
 		}
 	};
 
 	const excludeTermsField = () => {
-		const options = [
-			{
-				key: 'hello',
-				name: 'Hello',
-			},
-		];
-
-		const value = [{}];
-
 		if ('exclude' === limit_options) {
 			return (
-				<SelectNew2 />
-				// <SelectNew
-				// 	id={'exclude_values_id'}
-				// 	label={__('Terms to exclude', 'wc-ajax-product-filter')}
-				// 	description={__(
-				// 		'Select the terms that will be excluded from the filter by options.',
-				// 		'wc-ajax-product-filter'
-				// 	)}
-				// />
-				// <Select
-				// 	id={'exclude_values_id'}
-				// 	label={__('Terms to exclude', 'wc-ajax-product-filter')}
-				// 	description={__(
-				// 		'Select the terms that will be excluded from the filter by options.',
-				// 		'wc-ajax-product-filter'
-				// 	)}
-				// 	options={options}
-				// 	values={value}
-				// 	onChange={(values) => console.log(values)}
-				// 	// onChange={(values) =>
-				// 	// 	handleSelectChange(values, 'exclude_values_id')
-				// 	// }
-				// />
+				<SelectTerm
+					id={'exclude_values_id'}
+					label={__('Terms to exclude', 'wc-ajax-product-filter')}
+					description={__(
+						'Select the terms that will be excluded from the filter by options.',
+						'wc-ajax-product-filter'
+					)}
+					taxonomy={taxonomyForSelectTerm}
+					isMultiple={true}
+					value={exclude_values_id}
+					onChange={handleSelectTermChange}
+				/>
 			);
 		}
 	};
 
 	const parentTermField = () => {
 		if ('child' === limit_options) {
-			const options = [
-				{
-					key: 'hello',
-					name: 'Hello',
-				},
-			];
-			const value = [];
-
 			return (
-				<Select
+				<SelectTerm
 					id={'parent_term'}
 					label={__('Parent Term', 'wc-ajax-product-filter')}
 					description={__(
 						'Select the parent term for which child terms will be available to filter the products.',
 						'wc-ajax-product-filter'
 					)}
-					options={options}
-					values={value}
-					onChange={(values) =>
-						handleSelectChange(values, 'parent_term')
-					}
+					taxonomy={taxonomyForSelectTerm}
+					onlyParent={true}
+					value={parent_term}
+					onChange={handleSelectTermChange}
 				/>
 			);
 		}

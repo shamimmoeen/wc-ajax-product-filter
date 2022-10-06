@@ -62,21 +62,6 @@ class WCAPF_Filter_Shortcode {
 
 		$field = WCAPF_Helper::get_field_instance( $field_type, $field_data );
 
-		// $taxonomy = 'product_cat';
-		// $keyword = 'hea';
-		//
-		// $args = array(
-		// 	'taxonomy'   => $taxonomy,
-		// 	'hide_empty' => false,
-		// 	'search'     => $keyword,
-		// );
-		//
-		// $terms = get_terms( $args );
-		//
-		// echo '<pre>';
-		// print_r( $terms );
-		// echo '</pre>';
-
 		ob_start();
 
 		$field->filter_form();
