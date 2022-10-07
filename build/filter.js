@@ -5117,7 +5117,8 @@ const SingleValue = props => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_4__.c.SingleValue, props, label, (0,_utils__WEBPACK_IMPORTED_MODULE_2__.isProFeature)(isPro) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "__pro_tag"
   }));
-};
+}; // TODO: Make a separate component for the react-select.
+
 
 const SingleSelect = _ref2 => {
   let {
@@ -5136,7 +5137,7 @@ const SingleSelect = _ref2 => {
   if (renderAsFormField) {
     customClasses += ` ${id}`;
     html = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__form_control react_select"
+      className: "__form_control react_select_simple"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__inner"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -5147,8 +5148,6 @@ const SingleSelect = _ref2 => {
       className: "__wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__input_wrapper"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__custom_react_select_wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__["default"], {
       components: {
         IndicatorSeparator,
@@ -5169,7 +5168,7 @@ const SingleSelect = _ref2 => {
           primary: '#007cba'
         }
       })
-    }), childComponent)))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    }), childComponent))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "description"
     }, description) : '');
   } else {
@@ -5869,11 +5868,10 @@ const CustomAppearance = _ref => {
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update', 'wc-ajax-product-filter'))));
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__custom_appearance_wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     variant: "secondary",
-    onClick: openModal
+    onClick: openModal,
+    className: "__custom_appearance_modal_btn"
   }, buttonLabel), open && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Modal, {
     title: modalTitle,
     onRequestClose: closeModal,
@@ -5985,7 +5983,7 @@ const ValueTypeDate = () => {
   const {
     handleRadioChange,
     handleCheckboxChange,
-    handleSingleSelectChange
+    handleSelectChange
   } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
   const {
     enableMultipleFilterField,
@@ -6014,7 +6012,7 @@ const ValueTypeDate = () => {
       description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
       options: options,
       value: value,
-      onChange: handleSingleSelectChange,
+      onChange: handleSelectChange,
       renderAsFormField: true
     });
   };
@@ -6118,7 +6116,7 @@ const ValueTypeNumber = () => {
   const {
     handleRadioChange,
     handleCheckboxChange,
-    handleSingleSelectChange
+    handleSelectChange
   } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
   const {
     enableMultipleFilterField,
@@ -6152,7 +6150,7 @@ const ValueTypeNumber = () => {
       description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
       options: options,
       value: value,
-      onChange: handleSingleSelectChange,
+      onChange: handleSelectChange,
       renderAsFormField: true
     });
   };
@@ -6239,7 +6237,7 @@ const ValueTypeText = () => {
   const {
     handleCheckboxChange,
     handleToggleGroupChange,
-    handleSingleSelectChange
+    handleSelectChange
   } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
   const {
     enableMultipleFilterField,
@@ -6297,7 +6295,7 @@ const ValueTypeText = () => {
       description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
       options: options,
       value: value,
-      onChange: handleSingleSelectChange,
+      onChange: handleSelectChange,
       renderAsFormField: true,
       childComponent: customAppearance
     }));
@@ -9351,19 +9349,9 @@ const useFilterData = (activeFilterData, dispatch) => {
         [key]: value
       }
     });
-  }; // TODO: Maybe delete.
-
-
-  const handleDropdownChange = (selectedItem, key) => {
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: selectedItem.key
-      }
-    });
   };
 
-  const handleSingleSelectChange = (selectedItem, key) => {
+  const handleSelectChange = (selectedItem, key) => {
     dispatch({
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: { ...activeFilterData,
@@ -9386,8 +9374,7 @@ const useFilterData = (activeFilterData, dispatch) => {
     handleCheckboxChange,
     handleTextFieldChange,
     handleToggleGroupChange,
-    handleDropdownChange,
-    handleSingleSelectChange,
+    handleSelectChange,
     handleSelectTermChange
   };
 };

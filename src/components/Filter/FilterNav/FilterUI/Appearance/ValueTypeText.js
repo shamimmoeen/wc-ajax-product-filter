@@ -17,7 +17,7 @@ const ValueTypeText = () => {
 	const {
 		handleCheckboxChange,
 		handleToggleGroupChange,
-		handleSingleSelectChange,
+		handleSelectChange,
 	} = useFilterData(activeFilterData, dispatch);
 
 	const {
@@ -101,7 +101,7 @@ const ValueTypeText = () => {
 					)}
 					options={options}
 					value={value}
-					onChange={handleSingleSelectChange}
+					onChange={handleSelectChange}
 					renderAsFormField={true}
 					childComponent={customAppearance}
 				/>

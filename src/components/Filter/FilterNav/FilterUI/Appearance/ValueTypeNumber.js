@@ -13,11 +13,8 @@ const ValueTypeNumber = () => {
 		dispatch,
 	} = useFilter();
 
-	const {
-		handleRadioChange,
-		handleCheckboxChange,
-		handleSingleSelectChange,
-	} = useFilterData(activeFilterData, dispatch);
+	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
+		useFilterData(activeFilterData, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -59,7 +56,7 @@ const ValueTypeNumber = () => {
 				)}
 				options={options}
 				value={value}
-				onChange={handleSingleSelectChange}
+				onChange={handleSelectChange}
 				renderAsFormField={true}
 			/>
 		);

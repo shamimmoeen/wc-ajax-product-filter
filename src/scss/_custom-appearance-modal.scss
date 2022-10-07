@@ -1,6 +1,12 @@
 @import './variables';
 @import './pagination';
 
+// Custom Appearance Modal Button.
+.components-button.__custom_appearance_modal_btn {
+    height: 30px;
+    margin: 0 0 0 10px;
+}
+
 .__custom_appearance_modal {
     width: 800px;
 
