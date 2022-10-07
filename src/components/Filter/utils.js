@@ -528,6 +528,36 @@ export function getTableData(filterType, activeFilterData) {
 	return { type, optionsKey };
 }
 
+export function getCustomAppearanceModalData(filterType, activeFilterData) {
+	let taxonomy = '';
+	let type = '';
+
+	if (isTaxonomyFilters(filterType)) {
+		const {
+			display_type: _type,
+			taxonomy: _taxonomy,
+			use_category_images,
+		} = activeFilterData;
+
+		if ('color' === _type || ('image' === _type && !use_category_images)) {
+			if ('category' === filterType) {
+				taxonomy = 'product_cat';
+			} else if ('tag' === filterType) {
+				taxonomy = 'product_tag';
+			} else if (
+				'attribute' === filterType ||
+				'custom-taxonomy' === filterType
+			) {
+				taxonomy = _taxonomy;
+			}
+
+			type = _type;
+		}
+	}
+
+	return { type, taxonomy };
+}
+
 export function getOptionsTableModalData(filterType, activeFilterData) {
 	let keyword;
 	let type;

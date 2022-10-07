@@ -15,7 +15,7 @@ const MAX_ALLOWED_ITEMS_TO_RENDER = 999;
 const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
 
-const CustomAppearance = ({ type }) => {
+const CustomAppearanceModal = ({ type, taxonomy }) => {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [fetched, setFetched] = useState(false);
@@ -39,7 +39,7 @@ const CustomAppearance = ({ type }) => {
 
 		const ajaxParams = {
 			action: 'get_custom_appearance_data',
-			taxonomy: 'product_cat',
+			taxonomy,
 		};
 
 		// Fetch the options.
@@ -52,14 +52,17 @@ const CustomAppearance = ({ type }) => {
 
 				setLoading(false);
 				setFetched(true);
-				setOptions(data);
 
-				setIsFullScreen(true);
-				setModalClasses(`${modalInitialClass} options-fetched`);
+				if (!isEmpty(data)) {
+					setOptions(data);
 
-				const filtered = getFirstSafeItems(data);
+					setIsFullScreen(true);
+					setModalClasses(`${modalInitialClass} options-fetched`);
 
-				setFilteredOptions(filtered);
+					const filtered = getFirstSafeItems(data);
+
+					setFilteredOptions(filtered);
+				}
 			})
 			.catch((err) => {
 				setLoading(false);
@@ -392,4 +395,4 @@ const CustomAppearance = ({ type }) => {
 	);
 };
 
-export default CustomAppearance;
+export default CustomAppearanceModal;
