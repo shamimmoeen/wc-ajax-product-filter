@@ -13,11 +13,8 @@ const ValueTypeDate = () => {
 		dispatch,
 	} = useFilter();
 
-	const {
-		handleRadioChange,
-		handleCheckboxChange,
-		handleSingleSelectChange,
-	} = useFilterData(activeFilterData, dispatch);
+	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
+		useFilterData(activeFilterData, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -54,7 +51,7 @@ const ValueTypeDate = () => {
 				)}
 				options={options}
 				value={value}
-				onChange={handleSingleSelectChange}
+				onChange={handleSelectChange}
 				renderAsFormField={true}
 			/>
 		);

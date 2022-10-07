@@ -93,6 +93,8 @@ const SingleValue = (props) => {
 	);
 };
 
+// TODO: Make a separate component for the react-select.
+
 const SingleSelect = ({
 	id,
 	label,
@@ -110,42 +112,40 @@ const SingleSelect = ({
 		customClasses += ` ${id}`;
 
 		html = (
-			<div className='__form_control react_select'>
+			<div className='__form_control react_select_simple'>
 				<div className='__inner'>
 					<div className='__label'>
 						<label htmlFor={id}>{label}</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
-							<div className='__custom_react_select_wrapper'>
-								<Select
-									components={{
-										IndicatorSeparator,
-										DropdownIndicator,
-										Option,
-										SingleValue,
-									}}
-									isSearchable={false}
-									value={value}
-									options={options}
-									onChange={(selectedItem) =>
-										onChange(selectedItem, id)
-									}
-									styles={customStyles}
-									className={customClasses}
-									classNamePrefix='__react_select'
-									theme={(theme) => ({
-										...theme,
-										borderRadius: 0,
-										colors: {
-											...theme.colors,
-											primary: '#007cba',
-										},
-									})}
-								/>
+							<Select
+								components={{
+									IndicatorSeparator,
+									DropdownIndicator,
+									Option,
+									SingleValue,
+								}}
+								isSearchable={false}
+								value={value}
+								options={options}
+								onChange={(selectedItem) =>
+									onChange(selectedItem, id)
+								}
+								styles={customStyles}
+								className={customClasses}
+								classNamePrefix='__react_select'
+								theme={(theme) => ({
+									...theme,
+									borderRadius: 0,
+									colors: {
+										...theme.colors,
+										primary: '#007cba',
+									},
+								})}
+							/>
 
-								{childComponent}
-							</div>
+							{childComponent}
 						</div>
 					</div>
 				</div>

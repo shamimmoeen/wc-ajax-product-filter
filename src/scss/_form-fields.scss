@@ -41,62 +41,6 @@
 		border-color: $inputBorderColor;
 	}
 
-	// react-dropdown-select
-	.__styled_select_control {
-		min-height: 30px;
-		border-color: $inputBorderColor;
-		transition: box-shadow 0.1s linear;
-		width: 150px;
-		padding-left: 8px;
-
-		&:hover {
-			border-color: $inputBorderColor;
-		}
-
-		&:focus,
-		&:focus-within {
-			border-color: var(--wp-admin-theme-color);
-			box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
-			outline: 2px solid transparent;
-		}
-
-		.react-dropdown-select-input:read-only {
-			background-color: transparent;
-		}
-
-		@media (min-width: 600px) {
-			.react-dropdown-select-input {
-				font-size: 13px;
-				line-height: normal;
-			}
-		}
-
-		.react-dropdown-select-content {
-			.react-dropdown-select-input:only-child {
-				margin-left: 0;
-			}
-		}
-
-		.react-dropdown-select-separator {
-			height: 20px;
-		}
-	}
-
-	// react_select
-	&.react_select {
-		@media (min-width: 768px) {
-			.__custom_react_select {
-				&.full-width {
-					max-width: 95%;
-				}
-
-				&.fixed-width {
-					max-width: 300px;
-				}
-			}
-		}
-	}
-
 	// Radio
 	.radio-group {
 		&:not(.radio-group-vertical) {
@@ -193,82 +137,39 @@
 		}
 	}
 
-	// Single Select / Custom React Select.
-	.__custom_react_select_wrapper {
-		display: inline-flex;
+	// react-select (The simple version like CustomSelectControl).
+	&.react_select_simple {
+		.__input_wrapper {
+			display: flex;
 
-		.__custom_react_select {
-			min-width: 130px;
+			.display_type {
+				min-width: 130px;
+			}
 
-			&.date_display_type,
-			&.number_display_type {
+			.date_display_type,
+			.number_display_type {
 				min-width: 200px;
 			}
 		}
 	}
 
-	// TODO: Maybe delete.
-	// Custom select control
-	.__custom_select_control_wrapper {
-		display: inline-flex;
+	// react-select (The ajax dropdown version).
+	&.react_select {
+		@media (min-width: 768px) {
+			.__custom_react_select {
+				&.full-width {
+					max-width: 95%;
+				}
 
-		.__custom_select_control {
-			.components-custom-select-control__item {
-				display: flex;
-			}
-
-			&.date_display_type,
-			&.number_display_type {
-				.components-custom-select-control__button {
-					min-width: 200px;
+				&.fixed-width {
+					max-width: 300px;
 				}
 			}
-		}
-	}
-
-	// Custom Appearance Button.
-	.__custom_appearance_wrapper {
-		display: inline-flex;
-		margin: 0 0 0 10px;
-
-		.components-button {
-			height: 30px;
 		}
 	}
 }
 
 // TODO: Maybe delete.
-// Overrides for display type field.
-.__form_control {
-	&.display-type {
-		.__inner {
-			align-items: flex-start;
-		}
-
-		.__label {
-			min-height: 30px;
-			display: inline-flex;
-			align-items: center;
-		}
-
-		.__wrapper .__input_wrapper {
-			display: flex;
-			flex-direction: column;
-			gap: 14px;
-
-			.components-radio-control__option {
-				margin: 0;
-			}
-
-			.__row1,
-			.__row2 {
-				display: flex;
-				gap: 15px;
-			}
-		}
-	}
-}
-
 // Filter Key field.
 .__form_control {
 	&.__filter_key {
@@ -304,26 +205,11 @@
 	}
 }
 
-// Custom Select Control.
-.__custom_select_control {
-	.components-custom-select-control__button {
-		background-color: #fff;
-		border-color: $inputBorderColor;
-		font-size: unset;
-	}
-
-	.components-custom-select-control__menu {
-		margin: 5px 0;
-		border-color: $inputBorderColor;
-
-		.components-custom-select-control__item {
-			padding: 1px 8px;
-			margin: 0;
-		}
-	}
-}
-
-// Custom react select.
+/**
+* React Select
+*
+* v5.4.0
+*/
 .__custom_react_select {
 	.__react_select__control {
 		cursor: pointer;
@@ -355,7 +241,7 @@
 		}
 	}
 
-	// Style the info in option.
+	// Style the info(term_id, user_id) in option.
 	.__info {
 		color: rgba(0, 0, 0, 0.3);
 		font-size: 12px;

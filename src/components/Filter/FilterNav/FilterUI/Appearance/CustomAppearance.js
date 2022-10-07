@@ -362,8 +362,12 @@ const CustomAppearance = ({ type }) => {
 	};
 
 	return (
-		<div className='__custom_appearance_wrapper'>
-			<Button variant='secondary' onClick={openModal}>
+		<>
+			<Button
+				variant='secondary'
+				onClick={openModal}
+				className='__custom_appearance_modal_btn'
+			>
 				{buttonLabel}
 			</Button>
 			{open && (
@@ -384,7 +388,7 @@ const CustomAppearance = ({ type }) => {
 					{modalFooter()}
 				</Modal>
 			)}
-		</div>
+		</>
 	);
 };
 

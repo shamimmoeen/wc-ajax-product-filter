@@ -48,20 +48,6 @@
 			}
 		}
 
-		.__option_value {
-			display: flex;
-			flex-direction: column;
-		}
-
-		.slug,
-		.id {
-			font-size: 12px;
-
-			span {
-				color: rgba(0, 0, 0, 0.3);
-			}
-		}
-
 		.__drag_handler {
 			cursor: grab;
 		}
@@ -85,12 +71,6 @@
 			width: 100px;
 		}
 
-		.__range_label {
-			.components-text-control__input {
-				max-width: 180px;
-			}
-		}
-
 		.__rating_label {
 			.components-text-control__input {
 				max-width: 340px;
@@ -108,10 +88,6 @@
 				min-width: 150px;
 			}
 		}
-	}
-
-	.__description {
-		font-weight: 500;
 	}
 
 	.__action_buttons {
