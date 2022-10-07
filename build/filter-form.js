@@ -2671,6 +2671,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
+/* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
 /* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
 /* harmony export */   "orderDirectionOptions": function() { return /* binding */ orderDirectionOptions; },
@@ -2886,6 +2887,15 @@ function getFilterDefaultData(type) {
     type
   };
 }
+function methodsOfGettingOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatically', 'wc-ajax-product-filter'),
+    value: 'automatically'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Manual Entry', 'wc-ajax-product-filter'),
+    value: 'manual_entry'
+  }];
+}
 function taxonomyLimitByOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Off', 'wc-ajax-product-filter'),
@@ -2955,11 +2965,11 @@ function orderTypeOptions() {
 }
 function productStatusOptions() {
   return [{
-    key: 'featured',
-    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Featured', 'wc-ajax-product-filter')
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Featured', 'wc-ajax-product-filter'),
+    value: 'featured'
   }, {
-    key: 'on_sale',
-    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('On Sale', 'wc-ajax-product-filter')
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('On Sale', 'wc-ajax-product-filter'),
+    value: 'on_sale'
   }];
 }
 function textDisplayTypes() {
@@ -3097,10 +3107,7 @@ function getTableData(filterType, activeFilterData) {
     value_type
   } = activeFilterData;
 
-  if (isTaxonomyFilters(filterType)) {
-    type = 'taxonomy-options';
-    optionsKey = 'manual_options';
-  } else if ('price' === filterType || 'rating' === filterType) {
+  if ('price' === filterType || 'rating' === filterType) {
     type = 'number-options';
     optionsKey = 'number_manual_options';
   } else if ('product-status' === filterType) {
@@ -3109,6 +3116,7 @@ function getTableData(filterType, activeFilterData) {
   } else if ('post-meta' === filterType) {
     if ('text' === value_type) {
       type = 'text-options';
+      optionsKey = 'manual_options';
     } else if ('number' === value_type) {
       type = 'number-options';
       optionsKey = 'number_manual_options';
@@ -3128,6 +3136,10 @@ function getOptionsTableModalData(filterType, activeFilterData) {
   let type;
   let optionsKey;
   let ajaxParams;
+
+  if ('post-meta' === filterType) {
+    console.log('prepare');
+  }
 
   if (isTaxonomyFilters(filterType)) {
     type = 'taxonomy';

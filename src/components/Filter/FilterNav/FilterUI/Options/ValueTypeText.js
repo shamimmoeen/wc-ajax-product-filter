@@ -1,14 +1,11 @@
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import Radio from '../../../../Field/Radio';
-import ToggleGroup from '../../../../Field/ToggleGroup';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
-import {
-	orderTypeOptions,
-	orderByOptions,
-	orderDirectionOptions,
-} from '../../../utils';
+import { orderByOptions } from '../../../utils';
+import ManualOptions from './ManualOptions';
+import ManualOptionsModal from './ManualOptionsModal';
+import useFields from './useFields';
 
 const ValueTypeText = () => {
 	const {
@@ -16,17 +13,25 @@ const ValueTypeText = () => {
 		dispatch,
 	} = useFilter();
 
-	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
+	const { handleToggleGroupChange } = useFilterData(
 		activeFilterData,
 		dispatch
 	);
 
 	const {
-		get_options,
-		options_order_by,
-		options_order_dir,
-		options_order_type,
-	} = activeFilterData;
+		getOptionsField,
+		orderByField,
+		orderDirectionField,
+		orderTypeField,
+	} = useFields();
+
+	const [isOpen, setOpen] = useState(false);
+
+	const openModal = () => setOpen(true);
+
+	const closeModal = () => setOpen(false);
+
+	const { get_options, options_order_by } = activeFilterData;
 
 	useEffect(() => {
 		if ('automatically' === get_options && 'label' === options_order_by) {
@@ -34,31 +39,7 @@ const ValueTypeText = () => {
 		}
 	}, [get_options]);
 
-	const getOptionsField = () => {
-		return (
-			<Radio
-				id={'get_options'}
-				label={__('Get Options', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to get the options automatically or you want to add the options manually.'
-				)}
-				options={[
-					{
-						label: __('Automatically', 'wc-ajax-product-filter'),
-						value: 'automatically',
-					},
-					{
-						label: __('Manual Entry', 'wc-ajax-product-filter'),
-						value: 'manual_entry',
-					},
-				]}
-				value={get_options}
-				onChange={handleRadioChange}
-			/>
-		);
-	};
-
-	const orderByField = () => {
+	const _orderByField = () => {
 		let options = orderByOptions();
 
 		if ('automatically' === get_options) {
@@ -67,74 +48,47 @@ const ValueTypeText = () => {
 			);
 		}
 
-		return (
-			<ToggleGroup
-				id={'options_order_by'}
-				label={__('Order By', 'wc-ajax-product-filter')}
-				description={__(
-					'Field to order options by.',
-					'wc-ajax-product-filter'
-				)}
-				options={options}
-				onChange={handleToggleGroupChange}
-				value={options_order_by}
-			/>
-		);
+		return orderByField('options_order_by', options);
 	};
 
-	const orderDirectionField = () => {
+	const _orderDirectionField = () => {
 		if ('none' !== options_order_by) {
-			return (
-				<Radio
-					id={'options_order_dir'}
-					label={__('Order Direction', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to order options in ascending or descending order.',
-						'wc-ajax-product-filter'
-					)}
-					options={orderDirectionOptions()}
-					value={options_order_dir}
-					onChange={handleRadioChange}
-				/>
-			);
+			return orderDirectionField('options_order_dir');
 		}
 	};
 
-	const orderTypeField = () => {
+	const _orderTypeField = () => {
 		const allowed = ['label', 'value'];
 
 		if (allowed.includes(options_order_by)) {
-			return (
-				<Radio
-					id={'options_order_type'}
-					label={__('Order Type', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to arrange the options in alphabetical or numerical order.',
-						'wc-ajax-product-filter'
-					)}
-					options={orderTypeOptions()}
-					value={options_order_type}
-					onChange={handleRadioChange}
-				/>
-			);
+			return orderTypeField('options_order_type');
 		}
 	};
 
 	const manualOptions = () => {
 		if ('manual_entry' === get_options) {
-			return <h2>Render the options table</h2>;
+			return (
+				<>
+					<ManualOptions openModal={openModal} />
+
+					<ManualOptionsModal
+						isOpen={isOpen}
+						closeModal={closeModal}
+					/>
+				</>
+			);
 		}
 	};
 
 	return (
 		<>
-			{getOptionsField()}
+			{getOptionsField('get_options')}
 
-			{orderByField()}
+			{_orderByField()}
 
-			{orderDirectionField()}
+			{_orderDirectionField()}
 
-			{orderTypeField()}
+			{_orderTypeField()}
 
 			{manualOptions()}
 		</>

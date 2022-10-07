@@ -103,10 +103,10 @@ const SingleSelect = ({
 	renderAsFormField = false,
 	childComponent,
 }) => {
+	let customClasses = '__custom_react_select __single_select';
 	let html;
 
 	if (renderAsFormField) {
-		let customClasses = '__custom_react_select __single_select';
 		customClasses += ` ${id}`;
 
 		html = (
