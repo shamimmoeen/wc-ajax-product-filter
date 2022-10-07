@@ -5593,10 +5593,10 @@ const ActiveFilters = () => {
 
 /***/ }),
 
-/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/CustomAppearance.js":
-/*!*********************************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/CustomAppearance.js ***!
-  \*********************************************************************************/
+/***/ "./src/components/Filter/FilterNav/FilterUI/Appearance/CustomAppearanceModal.js":
+/*!**************************************************************************************!*\
+  !*** ./src/components/Filter/FilterNav/FilterUI/Appearance/CustomAppearanceModal.js ***!
+  \**************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5624,9 +5624,10 @@ const MAX_ALLOWED_ITEMS_TO_RENDER = 999;
 const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
 
-const CustomAppearance = _ref => {
+const CustomAppearanceModal = _ref => {
   let {
-    type
+    type,
+    taxonomy
   } = _ref;
   const [open, setOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [loading, setLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
@@ -5650,7 +5651,7 @@ const CustomAppearance = _ref => {
 
     const ajaxParams = {
       action: 'get_custom_appearance_data',
-      taxonomy: 'product_cat'
+      taxonomy
     }; // Fetch the options.
 
     axios__WEBPACK_IMPORTED_MODULE_4___default().get(wcapf_admin_params.ajaxurl, {
@@ -5659,11 +5660,14 @@ const CustomAppearance = _ref => {
       const data = res.data.data;
       setLoading(false);
       setFetched(true);
-      setOptions(data);
-      setIsFullScreen(true);
-      setModalClasses(`${modalInitialClass} options-fetched`);
-      const filtered = getFirstSafeItems(data);
-      setFilteredOptions(filtered);
+
+      if (!(0,lodash__WEBPACK_IMPORTED_MODULE_3__.isEmpty)(data)) {
+        setOptions(data);
+        setIsFullScreen(true);
+        setModalClasses(`${modalInitialClass} options-fetched`);
+        const filtered = getFirstSafeItems(data);
+        setFilteredOptions(filtered);
+      }
     }).catch(err => {
       setLoading(false);
       setFetched(true);
@@ -5881,7 +5885,7 @@ const CustomAppearance = _ref => {
   }, modalLoader(), modalInfo(), modalContent(), modalFooter()));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (CustomAppearance);
+/* harmony default export */ __webpack_exports__["default"] = (CustomAppearanceModal);
 
 /***/ }),
 
@@ -6211,8 +6215,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils */ "./src/components/Filter/utils.js");
 /* harmony import */ var _useFields__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./useFields */ "./src/components/Filter/FilterNav/FilterUI/Appearance/useFields.js");
-/* harmony import */ var _CustomAppearance__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./CustomAppearance */ "./src/components/Filter/FilterNav/FilterUI/Appearance/CustomAppearance.js");
-/* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../Field/Select */ "./src/components/Field/Select.js");
+/* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../Field/Select */ "./src/components/Field/Select.js");
+/* harmony import */ var _CustomAppearanceModal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./CustomAppearanceModal */ "./src/components/Filter/FilterNav/FilterUI/Appearance/CustomAppearanceModal.js");
 
 
 
@@ -6257,6 +6261,20 @@ const ValueTypeText = () => {
     show_count_in_tooltip
   } = activeFilterData;
 
+  const customAppearance = () => {
+    const {
+      type,
+      taxonomy
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getCustomAppearanceModalData)(filterType, activeFilterData);
+
+    if (type && taxonomy) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CustomAppearanceModal__WEBPACK_IMPORTED_MODULE_9__["default"], {
+        type: type,
+        taxonomy: taxonomy
+      });
+    }
+  };
+
   const displayTypeField = () => {
     const haveAllDisplayTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
     let options = [];
@@ -6279,16 +6297,8 @@ const ValueTypeText = () => {
       options = allOptions.filter(option => !notAllowed.includes(option.value));
     }
 
-    let customAppearance;
-
-    if ('color' === display_type || 'image' === display_type && !use_category_images) {
-      customAppearance = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CustomAppearance__WEBPACK_IMPORTED_MODULE_8__["default"], {
-        type: display_type
-      });
-    }
-
     const value = options.find(option => display_type === option.value);
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_8__["default"], {
       id: 'display_type',
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display Type', 'wc-ajax-product-filter'),
       description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filter will be shown on the frontend.', 'wc-ajax-product-filter'),
@@ -6296,7 +6306,7 @@ const ValueTypeText = () => {
       value: value,
       onChange: handleSelectChange,
       renderAsFormField: true,
-      childComponent: customAppearance
+      childComponent: customAppearance()
     }));
   };
 
@@ -8652,7 +8662,7 @@ const FilterUI = () => {
     }
   };
 
-  let initialTabName = 'options';
+  let initialTabName = 'appearance';
 
   if (activeUIStep) {
     initialTabName = activeUIStep;
@@ -9395,6 +9405,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "availableFilters": function() { return /* binding */ availableFilters; },
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
+/* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
 /* harmony export */   "getOptionsTableModalData": function() { return /* binding */ getOptionsTableModalData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
@@ -9858,6 +9869,35 @@ function getTableData(filterType, activeFilterData) {
   return {
     type,
     optionsKey
+  };
+}
+function getCustomAppearanceModalData(filterType, activeFilterData) {
+  let taxonomy = '';
+  let type = '';
+
+  if (isTaxonomyFilters(filterType)) {
+    const {
+      display_type: _type,
+      taxonomy: _taxonomy,
+      use_category_images
+    } = activeFilterData;
+
+    if ('color' === _type || 'image' === _type && !use_category_images) {
+      if ('category' === filterType) {
+        taxonomy = 'product_cat';
+      } else if ('tag' === filterType) {
+        taxonomy = 'product_tag';
+      } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
+        taxonomy = _taxonomy;
+      }
+
+      type = _type;
+    }
+  }
+
+  return {
+    type,
+    taxonomy
   };
 }
 function getOptionsTableModalData(filterType, activeFilterData) {

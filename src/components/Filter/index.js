@@ -154,8 +154,11 @@ const Filter = () => {
 	return (
 		<>
 			<FilterSettings />
+
 			<FilterSaveButton />
+
 			<FilterPreview />
+
 			<Notifications />
 		</>
 	);

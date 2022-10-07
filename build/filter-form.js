@@ -2666,6 +2666,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "availableFilters": function() { return /* binding */ availableFilters; },
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
+/* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
 /* harmony export */   "getOptionsTableModalData": function() { return /* binding */ getOptionsTableModalData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
@@ -3129,6 +3130,35 @@ function getTableData(filterType, activeFilterData) {
   return {
     type,
     optionsKey
+  };
+}
+function getCustomAppearanceModalData(filterType, activeFilterData) {
+  let taxonomy = '';
+  let type = '';
+
+  if (isTaxonomyFilters(filterType)) {
+    const {
+      display_type: _type,
+      taxonomy: _taxonomy,
+      use_category_images
+    } = activeFilterData;
+
+    if ('color' === _type || 'image' === _type && !use_category_images) {
+      if ('category' === filterType) {
+        taxonomy = 'product_cat';
+      } else if ('tag' === filterType) {
+        taxonomy = 'product_tag';
+      } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
+        taxonomy = _taxonomy;
+      }
+
+      type = _type;
+    }
+  }
+
+  return {
+    type,
+    taxonomy
   };
 }
 function getOptionsTableModalData(filterType, activeFilterData) {

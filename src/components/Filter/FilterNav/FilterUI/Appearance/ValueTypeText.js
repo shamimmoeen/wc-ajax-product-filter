@@ -3,10 +3,10 @@ import Checkbox from '../../../../Field/Checkbox';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
-import { textDisplayTypes } from '../../../utils';
+import { getCustomAppearanceModalData, textDisplayTypes } from '../../../utils';
 import useFields from './useFields';
-import CustomAppearance from './CustomAppearance';
 import Select from '../../../../Field/Select';
+import CustomAppearanceModal from './CustomAppearanceModal';
 
 const ValueTypeText = () => {
 	const {
@@ -39,6 +39,17 @@ const ValueTypeText = () => {
 		tooltip_position,
 		show_count_in_tooltip,
 	} = activeFilterData;
+
+	const customAppearance = () => {
+		const { type, taxonomy } = getCustomAppearanceModalData(
+			filterType,
+			activeFilterData
+		);
+
+		if (type && taxonomy) {
+			return <CustomAppearanceModal type={type} taxonomy={taxonomy} />;
+		}
+	};
 
 	const displayTypeField = () => {
 		const haveAllDisplayTypes = [
@@ -79,15 +90,6 @@ const ValueTypeText = () => {
 			);
 		}
 
-		let customAppearance;
-
-		if (
-			'color' === display_type ||
-			('image' === display_type && !use_category_images)
-		) {
-			customAppearance = <CustomAppearance type={display_type} />;
-		}
-
 		const value = options.find((option) => display_type === option.value);
 
 		return (
@@ -103,7 +105,7 @@ const ValueTypeText = () => {
 					value={value}
 					onChange={handleSelectChange}
 					renderAsFormField={true}
-					childComponent={customAppearance}
+					childComponent={customAppearance()}
 				/>
 			</>
 		);
