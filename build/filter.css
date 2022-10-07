@@ -753,6 +753,9 @@ body {
 .__custom_appearance_modal {
   width: 800px;
 }
+.__custom_appearance_modal.options-fetched {
+  min-height: 70%;
+}
 .__custom_appearance_modal .__loader {
   text-align: center;
 }
