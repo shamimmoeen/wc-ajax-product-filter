@@ -371,6 +371,7 @@ const CustomAppearance = ({ type }) => {
 					title={modalTitle}
 					onRequestClose={closeModal}
 					shouldCloseOnClickOutside={false}
+					shouldCloseOnEsc={false}
 					isFullScreen={isFullScreen}
 					className={modalClasses}
 				>

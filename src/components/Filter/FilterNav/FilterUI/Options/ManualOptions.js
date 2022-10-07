@@ -4,12 +4,8 @@ import { ReactSortable } from 'react-sortablejs';
 import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
 import { useFilter } from '../../../FilterContext';
-import DropdownSelect from '../../../../Field/DropdownSelect';
-import {
-	getTableData,
-	isTaxonomyFilters,
-	productStatusOptions,
-} from '../../../utils';
+import { getTableData, productStatusOptions } from '../../../utils';
+import SingleSelect from '../../../../Field/SingleSelect';
 
 const ManualOptions = ({ openModal }) => {
 	const {
@@ -26,18 +22,18 @@ const ManualOptions = ({ openModal }) => {
 	const emptyRow = () => {
 		let row;
 
-		if ('taxonomy-options' === type) {
-			row = { value, label: '', color: '', image_id: '', image_url: '' };
-		} else if ('product-status-options' === type) {
+		if ('product-status-options' === type) {
 			const firstOption = productStatusOptions()[0];
-			const value = firstOption.key;
+			const value = firstOption.value;
 
-			row = { value, label: '', color: '', image_id: '', image_url: '' };
+			row = { value, label: '' };
+		} else if ('text-options' === type) {
+			row = { value: '', label: '' };
 		} else if ('number-options' === type) {
 			row = { min_value: '', max_value: '', label: '' };
 		} else if ('time-period-options' === type) {
 			const firstOption = default_time_periods[0];
-			const value = firstOption.key;
+			const value = firstOption.value;
 
 			row = { value, label: '' };
 		}
@@ -111,44 +107,31 @@ const ManualOptions = ({ openModal }) => {
 		});
 	};
 
-	const handleSelectChange = (value, index, key) => {
-		handleChange(value.key, index, key);
+	const handleSelectChange = (selected, index, key) => {
+		handleChange(selected.value, index, key);
 	};
 
 	const handleInputChange = (e, index, key) => {
 		handleChange(e.target.value, index, key);
 	};
 
-	// TODO: Make it dynamic.
-	const display_type = 'checkbox';
-
 	const tableHeader = () => {
-		if ('taxonomy-options' === type) {
-			return (
-				<>
-					<th className='__option'>
-						{__('Term', 'wc-ajax-product-filter')}
-					</th>
-					<th className='__label'>
-						{__('Label', 'wc-ajax-product-filter')}
-					</th>
-					{'color' === display_type && (
-						<th className='__color'>
-							{__('Color', 'wc-ajax-product-filter')}
-						</th>
-					)}
-					{'image' === display_type && (
-						<th className='__image'>
-							{__('Image', 'wc-ajax-product-filter')}
-						</th>
-					)}
-				</>
-			);
-		} else if ('product-status-options' === type) {
+		if ('product-status-options' === type) {
 			return (
 				<>
 					<th className='__product_status'>
 						{__('Status', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+				</>
+			);
+		} else if ('text-options' === type) {
+			return (
+				<>
+					<th className='__value'>
+						{__('Value', 'wc-ajax-product-filter')}
 					</th>
 					<th className='__label'>
 						{__('Label', 'wc-ajax-product-filter')}
@@ -205,11 +188,11 @@ const ManualOptions = ({ openModal }) => {
 	const selectField = (wrapperClass, index, key, options, value) => {
 		return (
 			<div className={wrapperClass}>
-				<DropdownSelect
+				<SingleSelect
 					options={options}
 					value={value}
-					onChange={(_value) =>
-						handleSelectChange(_value, index, key)
+					onChange={(selected) =>
+						handleSelectChange(selected, index, key)
 					}
 				/>
 			</div>
@@ -217,40 +200,10 @@ const ManualOptions = ({ openModal }) => {
 	};
 
 	const tableBody = (row, rowIndex) => {
-		if ('taxonomy-options' === type) {
-			const { color, image_id, image_url, value, slug, label } = row;
-
-			return (
-				<>
-					<td>
-						<div className='__option_value'>
-							<span className='slug'>
-								{__('Slug', 'wc-ajax-product-filter')}:{` `}
-								<span>{slug}</span>
-							</span>
-							<span className='id'>
-								{__('ID', 'wc-ajax-product-filter')}:{` `}
-								<span>{value}</span>
-							</span>
-						</div>
-					</td>
-					<td>{inputField('__label', rowIndex, 'label', label)}</td>
-					{'color' === display_type && (
-						<td>
-							<div>{color}</div>
-						</td>
-					)}
-					{'image' === display_type && (
-						<td>
-							<div>{image}</div>
-						</td>
-					)}
-				</>
-			);
-		} else if ('product-status-options' === type) {
-			const { color, image_id, image_url, value, label } = row;
+		if ('product-status-options' === type) {
+			const { value, label } = row;
 			const options = productStatusOptions();
-			let selected = options.find((option) => value === option.key);
+			let selected = options.find((option) => value === option.value);
 
 			return (
 				<>
@@ -263,6 +216,15 @@ const ManualOptions = ({ openModal }) => {
 							selected
 						)}
 					</td>
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+				</>
+			);
+		} else if ('text-options' === type) {
+			const { value, label } = row;
+
+			return (
+				<>
+					<td>{inputField('__value', rowIndex, 'value', value)}</td>
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
@@ -299,7 +261,7 @@ const ManualOptions = ({ openModal }) => {
 		} else if ('time-period-options' === type) {
 			const { value, label } = row;
 			const options = default_time_periods;
-			let selected = options.find((option) => value === option.key);
+			let selected = options.find((option) => value === option.value);
 
 			return (
 				<>
@@ -370,19 +332,18 @@ const ManualOptions = ({ openModal }) => {
 		);
 	};
 
-	const footerButtons = () => {
+	const actionButtons = () => {
 		return (
-			<>
-				{isTaxonomyFilters(filterType) || 'text-options' === type ? (
+			<div>
+				<Button variant='secondary' onClick={handleAddOption}>
+					{__('Add Option', 'wc-ajax-product-filter')}
+				</Button>
+				{'text-options' === type && (
 					<Button variant='secondary' onClick={openModal}>
-						{__('Browse Options', 'wc-ajax-product-filter')}
-					</Button>
-				) : (
-					<Button variant='secondary' onClick={handleAddOption}>
-						{__('Add Option', 'wc-ajax-product-filter')}
+						{__('Browse Values', 'wc-ajax-product-filter')}
 					</Button>
 				)}
-			</>
+			</div>
 		);
 	};
 
@@ -419,8 +380,8 @@ const ManualOptions = ({ openModal }) => {
 				/>
 			</div>
 			{!isEmpty(rows) && table()}
-			<div className='__button_group'>
-				{footerButtons()}
+			<div className='__action_buttons'>
+				{actionButtons()}
 				{!isEmpty(rows) && (
 					<Button
 						variant='tertiary'

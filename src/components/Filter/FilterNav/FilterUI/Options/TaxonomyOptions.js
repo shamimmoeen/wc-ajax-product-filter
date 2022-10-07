@@ -1,15 +1,14 @@
 import { __ } from '@wordpress/i18n';
-import Radio from '../../../../Field/Radio';
 import { useFilter } from '../../../FilterContext';
 import {
 	termsOrderByOptions,
-	orderDirectionOptions,
 	taxonomyLimitByOptions,
 	getTaxonomy,
 } from '../../../utils';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
 import SelectTerm from '../../../../Field/SelectTerm';
+import useFields from './useFields';
 
 const TaxonomyOptions = () => {
 	const {
@@ -17,16 +16,16 @@ const TaxonomyOptions = () => {
 		dispatch,
 	} = useFilter();
 
-	const {
-		handleRadioChange,
-		handleToggleGroupChange,
-		handleSelectTermChange,
-	} = useFilterData(activeFilterData, dispatch);
+	const { handleToggleGroupChange, handleSelectTermChange } = useFilterData(
+		activeFilterData,
+		dispatch
+	);
+
+	const { orderByField, orderDirectionField } = useFields();
 
 	const {
 		taxonomy,
 		order_terms_by,
-		order_terms_dir,
 		limit_options,
 		parent_term,
 		limit_values_by_id,
@@ -35,40 +34,16 @@ const TaxonomyOptions = () => {
 
 	const taxonomyForSelectTerm = getTaxonomy(filterType, taxonomy);
 
-	const orderByField = () => {
+	const _orderByField = () => {
 		const options = termsOrderByOptions();
+		const isPro = true;
 
-		return (
-			<ToggleGroup
-				id={'order_terms_by'}
-				label={__('Order By', 'wc-ajax-product-filter')}
-				description={__(
-					'Field to order options by.',
-					'wc-ajax-product-filter'
-				)}
-				options={options}
-				onChange={handleToggleGroupChange}
-				value={order_terms_by}
-				isPro={true}
-			/>
-		);
+		return orderByField('order_terms_by', options, isPro);
 	};
 
-	const orderDirectionField = () => {
+	const _orderDirectionField = () => {
 		if ('default' !== order_terms_by) {
-			return (
-				<Radio
-					id={'order_terms_dir'}
-					label={__('Order Direction', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to order options in ascending or descending order.',
-						'wc-ajax-product-filter'
-					)}
-					options={orderDirectionOptions()}
-					value={order_terms_dir}
-					onChange={handleRadioChange}
-				/>
-			);
+			return orderDirectionField('order_terms_dir');
 		}
 	};
 
@@ -150,9 +125,9 @@ const TaxonomyOptions = () => {
 
 	return (
 		<>
-			{orderByField()}
+			{_orderByField()}
 
-			{orderDirectionField()}
+			{_orderDirectionField()}
 
 			{limitOptionsField()}
 

@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import Number from '../../../../Field/Number';
-import Radio from '../../../../Field/Radio';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import FieldNumber from './FieldNumber';
 import ManualOptions from './ManualOptions';
+import useFields from './useFields';
 
 const ValueTypeNumber = () => {
 	const {
@@ -12,8 +12,12 @@ const ValueTypeNumber = () => {
 		dispatch,
 	} = useFilter();
 
-	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, dispatch);
+	const { handleCheckboxChange, handleTextFieldChange } = useFilterData(
+		activeFilterData,
+		dispatch
+	);
+
+	const { getOptionsField } = useFields();
 
 	const {
 		number_display_type,
@@ -31,7 +35,7 @@ const ValueTypeNumber = () => {
 		decimal_separator,
 	} = activeFilterData;
 
-	const getOptionsField = () => {
+	const _getOptionsField = () => {
 		let showField = false;
 
 		const validDisplayTypes = [
@@ -47,30 +51,7 @@ const ValueTypeNumber = () => {
 		}
 
 		if (showField) {
-			return (
-				<Radio
-					id={'number_get_options'}
-					label={__('Get Options', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to get the options automatically or you want to add the options manually.'
-					)}
-					options={[
-						{
-							label: __(
-								'Automatically',
-								'wc-ajax-product-filter'
-							),
-							value: 'automatically',
-						},
-						{
-							label: __('Manual Entry', 'wc-ajax-product-filter'),
-							value: 'manual_entry',
-						},
-					]}
-					value={number_get_options}
-					onChange={handleRadioChange}
-				/>
-			);
+			return getOptionsField('number_get_options');
 		}
 	};
 
@@ -223,7 +204,7 @@ const ValueTypeNumber = () => {
 
 	return (
 		<>
-			{getOptionsField()}
+			{_getOptionsField()}
 
 			{automaticRangeFields()}
 

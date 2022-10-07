@@ -502,8 +502,8 @@ class WCAPF_API {
 
 		foreach ( $_time_period_options as $time_period_key => $time_period_label ) {
 			$time_period_options[] = array(
-				'name' => $time_period_label,
-				'key'  => $time_period_key,
+				'label' => $time_period_label,
+				'value' => $time_period_key,
 			);
 		}
 

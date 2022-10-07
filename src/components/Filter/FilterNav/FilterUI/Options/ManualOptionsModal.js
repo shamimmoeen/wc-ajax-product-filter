@@ -7,13 +7,13 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { sprintf, __ } from '@wordpress/i18n';
-import { useFilter } from '../../FilterContext';
+import { useFilter } from '../../../FilterContext';
 import { find, isEmpty } from 'lodash';
 import { useEffect, useState } from '@wordpress/element';
 import axios from 'axios';
-import { getOptionsTableModalData } from '../../utils';
+import { getOptionsTableModalData } from '../../../utils';
 
-const OptionsTableModal = ({ isOpen, closeModal }) => {
+const ManualOptionsModal = ({ isOpen, closeModal }) => {
 	const {
 		state: { filterType, activeFilterData },
 		dispatch,
@@ -56,7 +56,7 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 				setFetched(true);
 				setMessage(
 					__(
-						'There was an error fetching the filter options.',
+						'There was an error fetching the items.',
 						'wc-ajax-product-filter'
 					)
 				);
@@ -203,7 +203,7 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 				if (!isEmpty(options)) {
 					description = sprintf(
 						__(
-							'Found the following options for <strong>%s</strong>.',
+							'Found the following items for <strong>%s</strong>.',
 							'wc-ajax-product-filter'
 						),
 						keyword
@@ -211,7 +211,7 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 				} else {
 					description = sprintf(
 						__(
-							'No options found for <strong>%s</strong>.',
+							'No items found for <strong>%s</strong>.',
 							'wc-ajax-product-filter'
 						),
 						keyword
@@ -234,7 +234,7 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 		<>
 			{isOpen && (
 				<Modal
-					title={__('Add Filter Options', 'wc-ajax-product-filter')}
+					title={__('Add Options', 'wc-ajax-product-filter')}
 					onRequestClose={closeModal}
 					className='__options_table_modal'
 				>
@@ -283,4 +283,4 @@ const OptionsTableModal = ({ isOpen, closeModal }) => {
 	);
 };
 
-export default OptionsTableModal;
+export default ManualOptionsModal;

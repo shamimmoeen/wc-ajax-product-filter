@@ -211,6 +211,19 @@ export function getFilterDefaultData(type) {
 	return { ...defaultData, type };
 }
 
+export function methodsOfGettingOptions() {
+	return [
+		{
+			label: __('Automatically', 'wc-ajax-product-filter'),
+			value: 'automatically',
+		},
+		{
+			label: __('Manual Entry', 'wc-ajax-product-filter'),
+			value: 'manual_entry',
+		},
+	];
+}
+
 export function taxonomyLimitByOptions() {
 	return [
 		{
@@ -308,12 +321,12 @@ export function orderTypeOptions() {
 export function productStatusOptions() {
 	return [
 		{
-			key: 'featured',
-			name: __('Featured', 'wc-ajax-product-filter'),
+			label: __('Featured', 'wc-ajax-product-filter'),
+			value: 'featured',
 		},
 		{
-			key: 'on_sale',
-			name: __('On Sale', 'wc-ajax-product-filter'),
+			label: __('On Sale', 'wc-ajax-product-filter'),
+			value: 'on_sale',
 		},
 	];
 }
@@ -493,10 +506,7 @@ export function getTableData(filterType, activeFilterData) {
 
 	const { value_type } = activeFilterData;
 
-	if (isTaxonomyFilters(filterType)) {
-		type = 'taxonomy-options';
-		optionsKey = 'manual_options';
-	} else if ('price' === filterType || 'rating' === filterType) {
+	if ('price' === filterType || 'rating' === filterType) {
 		type = 'number-options';
 		optionsKey = 'number_manual_options';
 	} else if ('product-status' === filterType) {
@@ -505,6 +515,7 @@ export function getTableData(filterType, activeFilterData) {
 	} else if ('post-meta' === filterType) {
 		if ('text' === value_type) {
 			type = 'text-options';
+			optionsKey = 'manual_options';
 		} else if ('number' === value_type) {
 			type = 'number-options';
 			optionsKey = 'number_manual_options';
@@ -522,6 +533,10 @@ export function getOptionsTableModalData(filterType, activeFilterData) {
 	let type;
 	let optionsKey;
 	let ajaxParams;
+
+	if ('post-meta' === filterType) {
+		console.log('prepare');
+	}
 
 	if (isTaxonomyFilters(filterType)) {
 		type = 'taxonomy';
