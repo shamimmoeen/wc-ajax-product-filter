@@ -482,9 +482,6 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-.__custom_react_select.__single_select .__pro_tag::before {
-  margin-left: 6px;
-}
 
 .__available_filters {
   margin-bottom: 1.5em;
