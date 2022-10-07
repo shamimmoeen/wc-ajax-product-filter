@@ -10,6 +10,10 @@
 .__custom_appearance_modal {
     width: 800px;
 
+    &.options-fetched {
+        min-height: 70%;
+    }
+
     .__loader {
         text-align: center;
         

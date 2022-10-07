@@ -432,6 +432,9 @@ class WCAPF {
 			'foundPro' => true,
 		);
 
+		$params['max_items_in_custom_appearance_modal'] = 99;
+		$params['timeout_for_cleaning_wp_media_frames'] = 100;
+
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
 

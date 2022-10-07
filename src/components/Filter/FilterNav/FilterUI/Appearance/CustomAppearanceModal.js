@@ -11,12 +11,11 @@ import { isEmpty } from 'lodash';
 import axios from 'axios';
 import { MediaUpload } from '@wordpress/media-utils';
 
-const MAX_ALLOWED_ITEMS_TO_RENDER = 999;
 const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
 
 const CustomAppearanceModal = ({ type, taxonomy }) => {
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [fetched, setFetched] = useState(false);
 	const [options, setOptions] = useState([]);
@@ -25,8 +24,18 @@ const CustomAppearanceModal = ({ type, taxonomy }) => {
 	const [color, setColor] = useState('');
 	const [colorPickerIndex, setColorPickerIndex] = useState(null);
 	const [searchInput, setSearchInput] = useState('');
-	const [isFullScreen, setIsFullScreen] = useState(false);
 	const [modalClasses, setModalClasses] = useState(modalInitialClass);
+
+	const maxItems =
+		parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;
+
+	const MAX_ALLOWED_ITEMS_TO_RENDER = maxItems < 1 ? 99 : maxItems;
+
+	const timeout =
+		parseInt(wcapf_admin_params.timeout_for_cleaning_wp_media_frames) ||
+		100;
+
+	const TIMEOUT_FOR_CLEANING_WP_MEDIA_FRAMES = timeout < 99 ? 100 : timeout;
 
 	useEffect(() => {
 		if (!open) {
@@ -56,7 +65,6 @@ const CustomAppearanceModal = ({ type, taxonomy }) => {
 				if (!isEmpty(data)) {
 					setOptions(data);
 
-					setIsFullScreen(true);
 					setModalClasses(`${modalInitialClass} options-fetched`);
 
 					const filtered = getFirstSafeItems(data);
@@ -105,6 +113,21 @@ const CustomAppearanceModal = ({ type, taxonomy }) => {
 
 		setFilteredOptions(filtered);
 	}, [searchInput]);
+
+	useEffect(() => {
+		if (open) {
+			return;
+		}
+
+		const $ = jQuery;
+
+		$('body').children('button.browser').remove();
+		$('body').children('div[id^="__wp-uploader-id"]').remove();
+
+		setTimeout(() => {
+			$('body').children('div.wp-uploader-browser').remove();
+		}, TIMEOUT_FOR_CLEANING_WP_MEDIA_FRAMES);
+	}, [open]);
 
 	const getFirstSafeItems = (data) => {
 		let _filtered = [];
@@ -379,7 +402,6 @@ const CustomAppearanceModal = ({ type, taxonomy }) => {
 					onRequestClose={closeModal}
 					shouldCloseOnClickOutside={false}
 					shouldCloseOnEsc={false}
-					isFullScreen={isFullScreen}
 					className={modalClasses}
 				>
 					{modalLoader()}
