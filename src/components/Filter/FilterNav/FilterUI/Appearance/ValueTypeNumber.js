@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../../../../Field/Checkbox';
 import Radio from '../../../../Field/Radio';
-import SingleSelect from '../../../../Field/SingleSelect';
+import Select from '../../../../Field/Select';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { numberDisplayTypes } from '../../../utils';
@@ -47,7 +47,7 @@ const ValueTypeNumber = () => {
 		);
 
 		return (
-			<SingleSelect
+			<Select
 				id={'number_display_type'}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
