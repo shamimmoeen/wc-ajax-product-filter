@@ -5,7 +5,7 @@ import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
 import { useFilter } from '../../../FilterContext';
 import { getTableData, productStatusOptions } from '../../../utils';
-import SingleSelect from '../../../../Field/SingleSelect';
+import Select from '../../../../Field/Select';
 
 const ManualOptions = ({ openModal }) => {
 	const {
@@ -188,7 +188,7 @@ const ManualOptions = ({ openModal }) => {
 	const selectField = (wrapperClass, index, key, options, value) => {
 		return (
 			<div className={wrapperClass}>
-				<SingleSelect
+				<Select
 					options={options}
 					value={value}
 					onChange={(selected) =>

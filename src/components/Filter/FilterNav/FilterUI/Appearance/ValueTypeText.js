@@ -6,7 +6,7 @@ import ToggleGroup from '../../../../Field/ToggleGroup';
 import { textDisplayTypes } from '../../../utils';
 import useFields from './useFields';
 import CustomAppearance from './CustomAppearance';
-import SingleSelect from '../../../../Field/SingleSelect';
+import Select from '../../../../Field/Select';
 
 const ValueTypeText = () => {
 	const {
@@ -92,7 +92,7 @@ const ValueTypeText = () => {
 
 		return (
 			<>
-				<SingleSelect
+				<Select
 					id={'display_type'}
 					label={__('Display Type', 'wc-ajax-product-filter')}
 					description={__(

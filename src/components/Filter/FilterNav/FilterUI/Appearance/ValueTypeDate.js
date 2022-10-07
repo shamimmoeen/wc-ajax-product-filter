@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../../../../Field/Checkbox';
 import Radio from '../../../../Field/Radio';
-import SingleSelect from '../../../../Field/SingleSelect';
+import Select from '../../../../Field/Select';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { dateDisplayTypes } from '../../../utils';
@@ -42,7 +42,7 @@ const ValueTypeDate = () => {
 		);
 
 		return (
-			<SingleSelect
+			<Select
 				id={'date_display_type'}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
