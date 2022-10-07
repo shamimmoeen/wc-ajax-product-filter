@@ -33,6 +33,7 @@ const ValueTypeText = () => {
 
 	const {
 		display_type,
+		use_category_images,
 		hierarchical,
 		enable_tooltip,
 		tooltip_position,
@@ -45,8 +46,6 @@ const ValueTypeText = () => {
 			'tag',
 			'attribute',
 			'custom-taxonomy',
-			'product-status',
-			'post-meta',
 		];
 
 		let options = [];
@@ -69,20 +68,23 @@ const ValueTypeText = () => {
 			const allowed = ['radio', 'select'];
 
 			options = allOptions.filter((option) =>
-				allowed.includes(option.key)
+				allowed.includes(option.value)
 			);
 		} else {
 			const allOptions = textDisplayTypes();
 			const notAllowed = ['color', 'image'];
 
 			options = allOptions.filter(
-				(option) => !notAllowed.includes(option.key)
+				(option) => !notAllowed.includes(option.value)
 			);
 		}
 
 		let customAppearance;
 
-		if ('color' === display_type || 'image' === display_type) {
+		if (
+			'color' === display_type ||
+			('image' === display_type && !use_category_images)
+		) {
 			customAppearance = <CustomAppearance type={display_type} />;
 		}
 
@@ -105,6 +107,23 @@ const ValueTypeText = () => {
 				/>
 			</>
 		);
+	};
+
+	const useCategoryThumbnailField = () => {
+		if ('category' === filterType && 'image' === display_type) {
+			return (
+				<Checkbox
+					id={'use_category_images'}
+					label={__('Use Category Images', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to use the category images in options.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={use_category_images}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
 	};
 
 	const hierarchyField = () => {
@@ -232,6 +251,8 @@ const ValueTypeText = () => {
 	return (
 		<>
 			{displayTypeField()}
+
+			{useCategoryThumbnailField()}
 
 			{enableMultipleFilterField('enable_multiple_filter')}
 

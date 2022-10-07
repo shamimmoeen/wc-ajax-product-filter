@@ -218,11 +218,11 @@ export function taxonomyLimitByOptions() {
 			value: 'off',
 		},
 		{
-			label: __('Include terms', 'wc-ajax-product-filter'),
+			label: __('Include', 'wc-ajax-product-filter'),
 			value: 'include',
 		},
 		{
-			label: __('Exclude terms', 'wc-ajax-product-filter'),
+			label: __('Exclude', 'wc-ajax-product-filter'),
 			value: 'exclude',
 		},
 		{

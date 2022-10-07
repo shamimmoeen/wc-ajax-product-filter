@@ -1,6 +1,7 @@
 import { Icon } from '@wordpress/components';
 import { check, chevronDown } from '@wordpress/icons';
 import Select, { components } from 'react-select';
+import { isProFeature } from '../utils';
 
 const customStyles = {
 	control: (base) => ({
@@ -49,11 +50,11 @@ const customStyles = {
 	}),
 };
 
+const IndicatorSeparator = () => null;
+
 const CaretDownIcon = () => {
 	return <Icon icon={chevronDown} size={18} />;
 };
-
-const IndicatorSeparator = () => null;
 
 const DropdownIndicator = (props) => {
 	return (
@@ -72,7 +73,7 @@ const Option = (props) => {
 			<div className='__wrapper'>
 				<div className='__option_label'>
 					{label}
-					{isPro && <span className='__pro_tag' />}
+					{isProFeature(isPro) && <span className='__pro_tag' />}
 				</div>
 				{isSelected && <Icon icon={check} className='__icon' />}
 			</div>
@@ -87,7 +88,7 @@ const SingleValue = (props) => {
 	return (
 		<components.SingleValue {...props}>
 			{label}
-			{isPro && <span className='__pro_tag' />}
+			{isProFeature(isPro) && <span className='__pro_tag' />}
 		</components.SingleValue>
 	);
 };
