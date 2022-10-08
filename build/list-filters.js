@@ -3293,13 +3293,23 @@ const useFilterData = (activeFilterData, dispatch) => {
     });
   };
 
+  const setActiveFilterData = (key, value) => {
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: { ...activeFilterData,
+        [key]: value
+      }
+    });
+  };
+
   return {
     handleRadioChange,
     handleCheckboxChange,
     handleTextFieldChange,
     handleToggleGroupChange,
     handleSelectChange,
-    handleSelectTermChange
+    handleSelectTermChange,
+    setActiveFilterData
   };
 };
 
@@ -4903,10 +4913,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "disableFilterHandling": function() { return /* binding */ disableFilterHandling; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
+/* harmony export */   "getNoOfMaxTermsToRender": function() { return /* binding */ getNoOfMaxTermsToRender; },
+/* harmony export */   "getTimeoutForRemovingMediaFrames": function() { return /* binding */ getTimeoutForRemovingMediaFrames; },
 /* harmony export */   "isProFeature": function() { return /* binding */ isProFeature; },
 /* harmony export */   "prepareFilterData": function() { return /* binding */ prepareFilterData; },
 /* harmony export */   "prepareMetaKeys": function() { return /* binding */ prepareMetaKeys; },
 /* harmony export */   "proTag": function() { return /* binding */ proTag; },
+/* harmony export */   "removeMediaFrames": function() { return /* binding */ removeMediaFrames; },
 /* harmony export */   "removeParam": function() { return /* binding */ removeParam; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
@@ -5069,6 +5082,23 @@ function disableFilterHandling(activeFilterData) {
   }
 
   return disabled;
+}
+function getNoOfMaxTermsToRender() {
+  const maxItems = parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;
+  return maxItems < 1 ? 99 : maxItems;
+}
+function getTimeoutForRemovingMediaFrames() {
+  const timeout = parseInt(wcapf_admin_params.timeout_for_cleaning_wp_media_frames) || 100;
+  return timeout < 99 ? 100 : timeout;
+} // Causing too many media frame instances at every render.
+
+function removeMediaFrames(timeout) {
+  const $ = jQuery;
+  $('body').children('button.browser').remove();
+  $('body').children('div[id^="__wp-uploader-id"]').remove();
+  setTimeout(() => {
+    $('body').children('div.wp-uploader-browser').remove();
+  }, timeout);
 }
 
 /***/ }),

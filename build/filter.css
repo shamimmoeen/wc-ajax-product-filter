@@ -628,8 +628,12 @@ body {
   opacity: 0.2;
   transition: opacity 0.1s linear;
 }
-.__options_table .wp-list-table.widefat .button-link-delete:hover svg {
+.__options_table .wp-list-table.widefat .button-link-delete:hover svg, .__options_table .wp-list-table.widefat .button-link-delete:focus svg {
   opacity: 0.8;
+}
+.__options_table .wp-list-table.widefat .button-link-delete:focus {
+  box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
+  outline: 1px solid transparent;
 }
 .__options_table .wp-list-table.widefat .__min_value,
 .__options_table .wp-list-table.widefat .__max_value {
@@ -763,9 +767,6 @@ body {
   width: 32px;
   height: 32px;
 }
-.__custom_appearance_modal .wp-list-table {
-  margin-bottom: 1em;
-}
 @media (max-width: 599px) {
   .__custom_appearance_modal .wp-list-table th.__term {
     width: 30%;
@@ -775,33 +776,45 @@ body {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.3);
 }
-.__custom_appearance_modal .__color_picker_button {
+.__custom_appearance_modal .__responsive_table {
+  overflow-x: auto;
+}
+.__custom_appearance_modal .__responsive_table.color table {
+  min-width: 400px;
+}
+.__custom_appearance_modal .__color_picker_button,
+.__custom_appearance_modal .__color_picker_clear_button {
   height: 30px;
-  padding: 0 0 0 30px;
   font-size: 11px;
   border-radius: 3px;
   border: 1px solid var(--wp-admin-theme-color);
   background-color: transparent;
+  color: #50575e;
   cursor: pointer;
 }
-.__custom_appearance_modal .__color_picker_button:focus {
+.__custom_appearance_modal .__color_picker_button:focus,
+.__custom_appearance_modal .__color_picker_clear_button:focus {
   border-color: var(--wp-admin-theme-color);
   box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
   outline: 2px solid transparent;
 }
+.__custom_appearance_modal .__color_picker_button {
+  padding: 0 0 0 30px;
+}
 .__custom_appearance_modal .__color_picker_button .__select_button {
   background: #f6f7f7;
   border-left: 1px solid #c3c4c7;
-  color: #50575e;
   display: block;
   line-height: 2.54545455;
   padding: 0 6px;
   text-align: center;
-  margin: 0 1px 0 0;
+}
+.__custom_appearance_modal .__color_picker_clear_button {
+  padding: 0 8px;
+  margin-left: 4px;
 }
 .__custom_appearance_modal .__color_picker_wrapper {
   margin-top: 10px;
-  overflow: auto;
 }
 .__custom_appearance_modal .striped > tbody > :nth-child(odd) .components-color-picker {
   background: #fff;
@@ -811,6 +824,37 @@ body {
 }
 .__custom_appearance_modal .__image_picker_button {
   height: 30px;
+}
+.__custom_appearance_modal td.__image .__buttons_group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.__custom_appearance_modal td.__image .__buttons_group .__thumbnail {
+  padding: 0;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+}
+.__custom_appearance_modal td.__image .__buttons_group .__thumbnail span {
+  border-radius: 2px;
+  background-size: 40px 40px;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+}
+.__custom_appearance_modal .button-link-delete svg {
+  fill: #cc1818;
+  opacity: 0.2;
+  transition: opacity 0.1s linear;
+}
+.__custom_appearance_modal .button-link-delete:hover svg, .__custom_appearance_modal .button-link-delete:focus svg {
+  opacity: 0.8;
+}
+.__custom_appearance_modal .button-link-delete:focus {
+  box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
+  outline: 1px solid transparent;
 }
 .__custom_appearance_modal .components-modal__content::after {
   content: "";
@@ -863,6 +907,7 @@ body {
 .__custom_appearance_modal .large-data-hint {
   font-weight: 500;
   font-style: italic;
+  margin-top: 1em;
 }
 
 /*# sourceMappingURL=filter.css.map*/

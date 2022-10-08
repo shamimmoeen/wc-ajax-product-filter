@@ -433,7 +433,7 @@ class WCAPF {
 		);
 
 		$params['max_items_in_custom_appearance_modal'] = 99;
-		$params['timeout_for_cleaning_wp_media_frames'] = 100;
+		$params['timeout_for_cleaning_wp_media_frames'] = 300;
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}

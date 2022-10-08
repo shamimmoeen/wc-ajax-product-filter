@@ -33,6 +33,7 @@ const ValueTypeText = () => {
 
 	const {
 		display_type,
+		custom_appearance_options,
 		use_category_images,
 		hierarchical,
 		enable_tooltip,
@@ -47,7 +48,13 @@ const ValueTypeText = () => {
 		);
 
 		if (type && taxonomy) {
-			return <CustomAppearanceModal type={type} taxonomy={taxonomy} />;
+			return (
+				<CustomAppearanceModal
+					type={type}
+					taxonomy={taxonomy}
+					appearanceData={custom_appearance_options}
+				/>
+			);
 		}
 	};
 

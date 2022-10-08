@@ -1,4 +1,5 @@
 @import './variables';
+@import './mixins';
 
 .__options_table {
 	.__form_control {
@@ -52,19 +53,7 @@
 			cursor: grab;
 		}
 
-		.button-link-delete {
-			svg {
-				fill: $linkDeleteColor;
-				opacity: 0.2;
-				transition: opacity 0.1s linear;
-			}
-
-			&:hover {
-				svg {
-					opacity: 0.8;
-				}
-			}
-		}
+		@include button-link-delete;
 
 		.__min_value,
 		.__max_value {
