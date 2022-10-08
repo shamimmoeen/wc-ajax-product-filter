@@ -143,3 +143,30 @@ export function disableFilterHandling(activeFilterData) {
 
 	return disabled;
 }
+
+export function getNoOfMaxTermsToRender() {
+	const maxItems =
+		parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;
+
+	return maxItems < 1 ? 99 : maxItems;
+}
+
+export function getTimeoutForRemovingMediaFrames() {
+	const timeout =
+		parseInt(wcapf_admin_params.timeout_for_cleaning_wp_media_frames) ||
+		100;
+
+	return timeout < 99 ? 100 : timeout;
+}
+
+// Causing too many media frame instances at every render.
+export function removeMediaFrames(timeout) {
+	const $ = jQuery;
+
+	$('body').children('button.browser').remove();
+	$('body').children('div[id^="__wp-uploader-id"]').remove();
+
+	setTimeout(() => {
+		$('body').children('div.wp-uploader-browser').remove();
+	}, timeout);
+}
