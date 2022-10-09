@@ -2906,7 +2906,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _sindresorhus_slugify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @sindresorhus/slugify */ "./node_modules/@sindresorhus/slugify/index.js");
+/* harmony import */ var _wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../wp-fe-sanitize-title */ "./src/components/Filter/wp-fe-sanitize-title.js");
 /* harmony import */ var _Field_Listbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Field/Listbox */ "./src/components/Field/Listbox.js");
 /* harmony import */ var _FilterKey__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FilterKey */ "./src/components/Filter/FilterNav/FilterUI/FilterKey.js");
 /* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
@@ -3111,14 +3111,8 @@ const GeneralFields = _ref => {
   };
 
   const handleFilterKeyChange = e => {
-    // TODO: Check for default filter key change.
-    console.log('onChange event'); // Slugify the filter key.
-
-    const _filterKey = (0,_sindresorhus_slugify__WEBPACK_IMPORTED_MODULE_2__["default"])(e.target.value, {
-      preserveLeadingUnderscore: true,
-      preserveTrailingDash: true,
-      separator: '_'
-    });
+    // Slugify the filter key.
+    const _filterKey = (0,_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_2__.wpFeSanitizeTitle)(e.target.value);
 
     const _activeFilterData = { ...activeFilterData,
       field_key: _filterKey
@@ -3159,7 +3153,7 @@ const GeneralFields = _ref => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterKey__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'filter_key',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Key', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The unique key that will be used to identify the filter.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.', 'wc-ajax-product-filter'),
         value: filterKey,
         onChange: handleFilterKeyChange,
         isFilterKeyChecking: isFilterKeyChecking
@@ -3332,7 +3326,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
-/* harmony export */   "getOptionsTableModalData": function() { return /* binding */ getOptionsTableModalData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
@@ -3825,40 +3818,394 @@ function getCustomAppearanceModalData(filterType, activeFilterData) {
     taxonomy
   };
 }
-function getOptionsTableModalData(filterType, activeFilterData) {
-  let keyword;
-  let type;
-  let optionsKey;
-  let ajaxParams;
 
-  if ('post-meta' === filterType) {
-    console.log('prepare');
+/***/ }),
+
+/***/ "./src/components/Filter/wp-fe-sanitize-title.js":
+/*!*******************************************************!*\
+  !*** ./src/components/Filter/wp-fe-sanitize-title.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "wpFeSanitizeTitle": function() { return /* binding */ wpFeSanitizeTitle; }
+/* harmony export */ });
+/**
+ * Original Source: https://salferrarello.com/wordpress-sanitize-title-javascript/
+ *
+ * Version: 1.1.1
+ *
+ * JavaScript function to mimic the WordPress PHP function sanitize_title()
+ * See https://codex.wordpress.org/Function_Reference/sanitize_title
+ *
+ * Note: the WordPress PHP function sanitize_title() accepts two additional
+ * optional parameters. At this time, this function does not.
+ *
+ * @param string title The title to be santized.
+ * @return string The sanitized string.
+ */
+function wpFeSanitizeTitle(title) {
+  var diacriticsMap;
+  return removeSingleTrailingDash(replaceSpacesWithDash(removeHTMLEntities(removeAccents( // Strip any HTML tags.
+  title.replace(/<[^>]+>/gi, '')).toLowerCase() // Replace &nbsp;, &ndash;, and &mdash with a dash (-).
+  .replace(/&(?:(?:nbsp)|(?:ndash)|(?:mdash));/g, '-')) // Replace any forward slashes (/) or periods (.) with a dash (-).
+  .replace(/[\/\.]/g, '-') // Replace anything that is not a:
+  // word character
+  // space
+  // nor a dash (-)
+  // with an empty string (i.e. remove it).
+  .replace(/[^\w\s-]+/g, '')));
+  /**
+   * Replace all HTML Entities.
+   *
+   * The string to remove (replace with '')
+   * - start with an ampersand &
+   * - has 0 or more characters (non-greedy) .*?
+   * - ends in a semi-color ;
+   *
+   * @param str String that may contain HTML entities.
+   * @return String with HTML entities removed.
+   */
+
+  function removeHTMLEntities(str) {
+    return str.replace(/&.*?;/g, '');
   }
+  /**
+   * Replace one or more blank spaces (or repeated dashes) with a single dash.
+   *
+   * @param str String that may contain spaces or multiple dashes.
+   * @return String with spaces replaced by dashes and no more than one dash in a row.
+   */
 
-  if (isTaxonomyFilters(filterType)) {
-    type = 'taxonomy';
-    optionsKey = 'manual_options';
 
-    if ('category' === filterType) {
-      keyword = 'product_cat';
-    } else if ('tag' === filterType) {
-      keyword = 'product_tag';
-    } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
-      keyword = activeFilterData.taxonomy;
+  function replaceSpacesWithDash(str) {
+    return str // Replace one or more blank spaces with a single dash (-)
+    .replace(/ +/g, '-') // Replace two or more dashes (-) with a single dash (-).
+    .replace(/-{2,}/g, '-');
+  }
+  /**
+   * If the string end in a dash, remove it.
+   *
+   * @param string str The string which may or may not end in a dash.
+   * @return string The string without a dash on the end.
+   */
+
+
+  function removeSingleTrailingDash(str) {
+    if ('-' === str.substr(str.length - 1)) {
+      return str.substr(0, str.length - 1);
     }
 
-    ajaxParams = {
-      action: 'get_taxonomy_filter_options',
-      taxonomy: keyword
-    };
+    return str;
   }
+  /* Remove accents/diacritics in a string in JavaScript
+   * from https://stackoverflow.com/a/18391901
+   */
 
-  return {
-    keyword,
-    type,
-    optionsKey,
-    ajaxParams
-  };
+  /*
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+
+  function getDiacriticsRemovalMap() {
+    if (diacriticsMap) {
+      return diacriticsMap;
+    }
+
+    var defaultDiacriticsRemovalMap = [{
+      base: '-',
+      letters: '\u2013\u2014\u00A0'
+    }, {
+      base: 'A',
+      letters: '\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F'
+    }, {
+      base: 'AA',
+      letters: '\uA732'
+    }, {
+      base: 'AE',
+      letters: '\u00C6\u01FC\u01E2'
+    }, {
+      base: 'AO',
+      letters: '\uA734'
+    }, {
+      base: 'AU',
+      letters: '\uA736'
+    }, {
+      base: 'AV',
+      letters: '\uA738\uA73A'
+    }, {
+      base: 'AY',
+      letters: '\uA73C'
+    }, {
+      base: 'B',
+      letters: '\u0042\u24B7\uFF22\u1E02\u1E04\u1E06\u0243\u0182\u0181'
+    }, {
+      base: 'C',
+      letters: '\u0043\u24B8\uFF23\u0106\u0108\u010A\u010C\u00C7\u1E08\u0187\u023B\uA73E'
+    }, {
+      base: 'D',
+      letters: '\u0044\u24B9\uFF24\u1E0A\u010E\u1E0C\u1E10\u1E12\u1E0E\u0110\u018B\u018A\u0189\uA779\u00D0'
+    }, {
+      base: 'DZ',
+      letters: '\u01F1\u01C4'
+    }, {
+      base: 'Dz',
+      letters: '\u01F2\u01C5'
+    }, {
+      base: 'E',
+      letters: '\u0045\u24BA\uFF25\u00C8\u00C9\u00CA\u1EC0\u1EBE\u1EC4\u1EC2\u1EBC\u0112\u1E14\u1E16\u0114\u0116\u00CB\u1EBA\u011A\u0204\u0206\u1EB8\u1EC6\u0228\u1E1C\u0118\u1E18\u1E1A\u0190\u018E'
+    }, {
+      base: 'F',
+      letters: '\u0046\u24BB\uFF26\u1E1E\u0191\uA77B'
+    }, {
+      base: 'G',
+      letters: '\u0047\u24BC\uFF27\u01F4\u011C\u1E20\u011E\u0120\u01E6\u0122\u01E4\u0193\uA7A0\uA77D\uA77E'
+    }, {
+      base: 'H',
+      letters: '\u0048\u24BD\uFF28\u0124\u1E22\u1E26\u021E\u1E24\u1E28\u1E2A\u0126\u2C67\u2C75\uA78D'
+    }, {
+      base: 'I',
+      letters: '\u0049\u24BE\uFF29\u00CC\u00CD\u00CE\u0128\u012A\u012C\u0130\u00CF\u1E2E\u1EC8\u01CF\u0208\u020A\u1ECA\u012E\u1E2C\u0197'
+    }, {
+      base: 'J',
+      letters: '\u004A\u24BF\uFF2A\u0134\u0248'
+    }, {
+      base: 'K',
+      letters: '\u004B\u24C0\uFF2B\u1E30\u01E8\u1E32\u0136\u1E34\u0198\u2C69\uA740\uA742\uA744\uA7A2'
+    }, {
+      base: 'L',
+      letters: '\u004C\u24C1\uFF2C\u013F\u0139\u013D\u1E36\u1E38\u013B\u1E3C\u1E3A\u0141\u023D\u2C62\u2C60\uA748\uA746\uA780'
+    }, {
+      base: 'LJ',
+      letters: '\u01C7'
+    }, {
+      base: 'Lj',
+      letters: '\u01C8'
+    }, {
+      base: 'M',
+      letters: '\u004D\u24C2\uFF2D\u1E3E\u1E40\u1E42\u2C6E\u019C'
+    }, {
+      base: 'N',
+      letters: '\u004E\u24C3\uFF2E\u01F8\u0143\u00D1\u1E44\u0147\u1E46\u0145\u1E4A\u1E48\u0220\u019D\uA790\uA7A4'
+    }, {
+      base: 'NJ',
+      letters: '\u01CA'
+    }, {
+      base: 'Nj',
+      letters: '\u01CB'
+    }, {
+      base: 'O',
+      letters: '\u004F\u24C4\uFF2F\u00D2\u00D3\u00D4\u1ED2\u1ED0\u1ED6\u1ED4\u00D5\u1E4C\u022C\u1E4E\u014C\u1E50\u1E52\u014E\u022E\u0230\u00D6\u022A\u1ECE\u0150\u01D1\u020C\u020E\u01A0\u1EDC\u1EDA\u1EE0\u1EDE\u1EE2\u1ECC\u1ED8\u01EA\u01EC\u00D8\u01FE\u0186\u019F\uA74A\uA74C'
+    }, {
+      base: 'OI',
+      letters: '\u01A2'
+    }, {
+      base: 'OO',
+      letters: '\uA74E'
+    }, {
+      base: 'OU',
+      letters: '\u0222'
+    }, {
+      base: 'OE',
+      letters: '\u008C\u0152'
+    }, {
+      base: 'oe',
+      letters: '\u009C\u0153'
+    }, {
+      base: 'P',
+      letters: '\u0050\u24C5\uFF30\u1E54\u1E56\u01A4\u2C63\uA750\uA752\uA754'
+    }, {
+      base: 'Q',
+      letters: '\u0051\u24C6\uFF31\uA756\uA758\u024A'
+    }, {
+      base: 'R',
+      letters: '\u0052\u24C7\uFF32\u0154\u1E58\u0158\u0210\u0212\u1E5A\u1E5C\u0156\u1E5E\u024C\u2C64\uA75A\uA7A6\uA782'
+    }, {
+      base: 'S',
+      letters: '\u0053\u24C8\uFF33\u1E9E\u015A\u1E64\u015C\u1E60\u0160\u1E66\u1E62\u1E68\u0218\u015E\u2C7E\uA7A8\uA784'
+    }, {
+      base: 'T',
+      letters: '\u0054\u24C9\uFF34\u1E6A\u0164\u1E6C\u021A\u0162\u1E70\u1E6E\u0166\u01AC\u01AE\u023E\uA786'
+    }, {
+      base: 'TZ',
+      letters: '\uA728'
+    }, {
+      base: 'U',
+      letters: '\u0055\u24CA\uFF35\u00D9\u00DA\u00DB\u0168\u1E78\u016A\u1E7A\u016C\u00DC\u01DB\u01D7\u01D5\u01D9\u1EE6\u016E\u0170\u01D3\u0214\u0216\u01AF\u1EEA\u1EE8\u1EEE\u1EEC\u1EF0\u1EE4\u1E72\u0172\u1E76\u1E74\u0244'
+    }, {
+      base: 'V',
+      letters: '\u0056\u24CB\uFF36\u1E7C\u1E7E\u01B2\uA75E\u0245'
+    }, {
+      base: 'VY',
+      letters: '\uA760'
+    }, {
+      base: 'W',
+      letters: '\u0057\u24CC\uFF37\u1E80\u1E82\u0174\u1E86\u1E84\u1E88\u2C72'
+    }, {
+      base: 'X',
+      letters: '\u0058\u24CD\uFF38\u1E8A\u1E8C'
+    }, {
+      base: 'Y',
+      letters: '\u0059\u24CE\uFF39\u1EF2\u00DD\u0176\u1EF8\u0232\u1E8E\u0178\u1EF6\u1EF4\u01B3\u024E\u1EFE'
+    }, {
+      base: 'Z',
+      letters: '\u005A\u24CF\uFF3A\u0179\u1E90\u017B\u017D\u1E92\u1E94\u01B5\u0224\u2C7F\u2C6B\uA762'
+    }, {
+      base: 'a',
+      letters: '\u0061\u24D0\uFF41\u1E9A\u00E0\u00E1\u00E2\u1EA7\u1EA5\u1EAB\u1EA9\u00E3\u0101\u0103\u1EB1\u1EAF\u1EB5\u1EB3\u0227\u01E1\u00E4\u01DF\u1EA3\u00E5\u01FB\u01CE\u0201\u0203\u1EA1\u1EAD\u1EB7\u1E01\u0105\u2C65\u0250'
+    }, {
+      base: 'aa',
+      letters: '\uA733'
+    }, {
+      base: 'ae',
+      letters: '\u00E6\u01FD\u01E3'
+    }, {
+      base: 'ao',
+      letters: '\uA735'
+    }, {
+      base: 'au',
+      letters: '\uA737'
+    }, {
+      base: 'av',
+      letters: '\uA739\uA73B'
+    }, {
+      base: 'ay',
+      letters: '\uA73D'
+    }, {
+      base: 'b',
+      letters: '\u0062\u24D1\uFF42\u1E03\u1E05\u1E07\u0180\u0183\u0253'
+    }, {
+      base: 'c',
+      letters: '\u0063\u24D2\uFF43\u0107\u0109\u010B\u010D\u00E7\u1E09\u0188\u023C\uA73F\u2184'
+    }, {
+      base: 'd',
+      letters: '\u0064\u24D3\uFF44\u1E0B\u010F\u1E0D\u1E11\u1E13\u1E0F\u0111\u018C\u0256\u0257\uA77A'
+    }, {
+      base: 'dz',
+      letters: '\u01F3\u01C6'
+    }, {
+      base: 'e',
+      letters: '\u0065\u24D4\uFF45\u00E8\u00E9\u00EA\u1EC1\u1EBF\u1EC5\u1EC3\u1EBD\u0113\u1E15\u1E17\u0115\u0117\u00EB\u1EBB\u011B\u0205\u0207\u1EB9\u1EC7\u0229\u1E1D\u0119\u1E19\u1E1B\u0247\u025B\u01DD'
+    }, {
+      base: 'f',
+      letters: '\u0066\u24D5\uFF46\u1E1F\u0192\uA77C'
+    }, {
+      base: 'g',
+      letters: '\u0067\u24D6\uFF47\u01F5\u011D\u1E21\u011F\u0121\u01E7\u0123\u01E5\u0260\uA7A1\u1D79\uA77F'
+    }, {
+      base: 'h',
+      letters: '\u0068\u24D7\uFF48\u0125\u1E23\u1E27\u021F\u1E25\u1E29\u1E2B\u1E96\u0127\u2C68\u2C76\u0265'
+    }, {
+      base: 'hv',
+      letters: '\u0195'
+    }, {
+      base: 'i',
+      letters: '\u0069\u24D8\uFF49\u00EC\u00ED\u00EE\u0129\u012B\u012D\u00EF\u1E2F\u1EC9\u01D0\u0209\u020B\u1ECB\u012F\u1E2D\u0268\u0131'
+    }, {
+      base: 'j',
+      letters: '\u006A\u24D9\uFF4A\u0135\u01F0\u0249'
+    }, {
+      base: 'k',
+      letters: '\u006B\u24DA\uFF4B\u1E31\u01E9\u1E33\u0137\u1E35\u0199\u2C6A\uA741\uA743\uA745\uA7A3'
+    }, {
+      base: 'l',
+      letters: '\u006C\u24DB\uFF4C\u0140\u013A\u013E\u1E37\u1E39\u013C\u1E3D\u1E3B\u017F\u0142\u019A\u026B\u2C61\uA749\uA781\uA747'
+    }, {
+      base: 'lj',
+      letters: '\u01C9'
+    }, {
+      base: 'm',
+      letters: '\u006D\u24DC\uFF4D\u1E3F\u1E41\u1E43\u0271\u026F'
+    }, {
+      base: 'n',
+      letters: '\u006E\u24DD\uFF4E\u01F9\u0144\u00F1\u1E45\u0148\u1E47\u0146\u1E4B\u1E49\u019E\u0272\u0149\uA791\uA7A5'
+    }, {
+      base: 'nj',
+      letters: '\u01CC'
+    }, {
+      base: 'o',
+      letters: '\u006F\u24DE\uFF4F\u00F2\u00F3\u00F4\u1ED3\u1ED1\u1ED7\u1ED5\u00F5\u1E4D\u022D\u1E4F\u014D\u1E51\u1E53\u014F\u022F\u0231\u00F6\u022B\u1ECF\u0151\u01D2\u020D\u020F\u01A1\u1EDD\u1EDB\u1EE1\u1EDF\u1EE3\u1ECD\u1ED9\u01EB\u01ED\u00F8\u01FF\u0254\uA74B\uA74D\u0275'
+    }, {
+      base: 'oi',
+      letters: '\u01A3'
+    }, {
+      base: 'ou',
+      letters: '\u0223'
+    }, {
+      base: 'oo',
+      letters: '\uA74F'
+    }, {
+      base: 'p',
+      letters: '\u0070\u24DF\uFF50\u1E55\u1E57\u01A5\u1D7D\uA751\uA753\uA755'
+    }, {
+      base: 'q',
+      letters: '\u0071\u24E0\uFF51\u024B\uA757\uA759'
+    }, {
+      base: 'r',
+      letters: '\u0072\u24E1\uFF52\u0155\u1E59\u0159\u0211\u0213\u1E5B\u1E5D\u0157\u1E5F\u024D\u027D\uA75B\uA7A7\uA783'
+    }, {
+      base: 's',
+      letters: '\u0073\u24E2\uFF53\u00DF\u015B\u1E65\u015D\u1E61\u0161\u1E67\u1E63\u1E69\u0219\u015F\u023F\uA7A9\uA785\u1E9B'
+    }, {
+      base: 't',
+      letters: '\u0074\u24E3\uFF54\u1E6B\u1E97\u0165\u1E6D\u021B\u0163\u1E71\u1E6F\u0167\u01AD\u0288\u2C66\uA787'
+    }, {
+      base: 'tz',
+      letters: '\uA729'
+    }, {
+      base: 'u',
+      letters: '\u0075\u24E4\uFF55\u00F9\u00FA\u00FB\u0169\u1E79\u016B\u1E7B\u016D\u00FC\u01DC\u01D8\u01D6\u01DA\u1EE7\u016F\u0171\u01D4\u0215\u0217\u01B0\u1EEB\u1EE9\u1EEF\u1EED\u1EF1\u1EE5\u1E73\u0173\u1E77\u1E75\u0289'
+    }, {
+      base: 'v',
+      letters: '\u0076\u24E5\uFF56\u1E7D\u1E7F\u028B\uA75F\u028C'
+    }, {
+      base: 'vy',
+      letters: '\uA761'
+    }, {
+      base: 'w',
+      letters: '\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73'
+    }, {
+      base: 'x',
+      letters: '\u0078\u24E7\uFF58\u1E8B\u1E8D'
+    }, {
+      base: 'y',
+      letters: '\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF'
+    }, {
+      base: 'z',
+      letters: '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763'
+    }];
+    diacriticsMap = {};
+
+    for (var i = 0; i < defaultDiacriticsRemovalMap.length; i++) {
+      var letters = defaultDiacriticsRemovalMap[i].letters;
+
+      for (var j = 0; j < letters.length; j++) {
+        diacriticsMap[letters[j]] = defaultDiacriticsRemovalMap[i].base;
+      }
+    }
+
+    return diacriticsMap;
+  } // Remove accent characters/diacritics from the string.
+
+
+  function removeAccents(str) {
+    diacriticsMap = getDiacriticsRemovalMap();
+    return str.replace(/[^\u0000-\u007E]/g, function (a) {
+      return diacriticsMap[a] || a;
+    });
+  }
 }
 
 /***/ }),
@@ -5170,273 +5517,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 /***/ }),
 
-/***/ "./node_modules/lodash.deburr/index.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash.deburr/index.js ***!
-  \*********************************************/
-/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
-
-/**
- * lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
-
-/** Used to match Latin Unicode letters (excluding mathematical operators). */
-var reLatin = /[\xc0-\xd6\xd8-\xf6\xf8-\xff\u0100-\u017f]/g;
-
-/** Used to compose unicode character classes. */
-var rsComboMarksRange = '\\u0300-\\u036f\\ufe20-\\ufe23',
-    rsComboSymbolsRange = '\\u20d0-\\u20f0';
-
-/** Used to compose unicode capture groups. */
-var rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']';
-
-/**
- * Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks) and
- * [combining diacritical marks for symbols](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks_for_Symbols).
- */
-var reComboMark = RegExp(rsCombo, 'g');
-
-/** Used to map Latin Unicode letters to basic Latin letters. */
-var deburredLetters = {
-  // Latin-1 Supplement block.
-  '\xc0': 'A',  '\xc1': 'A', '\xc2': 'A', '\xc3': 'A', '\xc4': 'A', '\xc5': 'A',
-  '\xe0': 'a',  '\xe1': 'a', '\xe2': 'a', '\xe3': 'a', '\xe4': 'a', '\xe5': 'a',
-  '\xc7': 'C',  '\xe7': 'c',
-  '\xd0': 'D',  '\xf0': 'd',
-  '\xc8': 'E',  '\xc9': 'E', '\xca': 'E', '\xcb': 'E',
-  '\xe8': 'e',  '\xe9': 'e', '\xea': 'e', '\xeb': 'e',
-  '\xcc': 'I',  '\xcd': 'I', '\xce': 'I', '\xcf': 'I',
-  '\xec': 'i',  '\xed': 'i', '\xee': 'i', '\xef': 'i',
-  '\xd1': 'N',  '\xf1': 'n',
-  '\xd2': 'O',  '\xd3': 'O', '\xd4': 'O', '\xd5': 'O', '\xd6': 'O', '\xd8': 'O',
-  '\xf2': 'o',  '\xf3': 'o', '\xf4': 'o', '\xf5': 'o', '\xf6': 'o', '\xf8': 'o',
-  '\xd9': 'U',  '\xda': 'U', '\xdb': 'U', '\xdc': 'U',
-  '\xf9': 'u',  '\xfa': 'u', '\xfb': 'u', '\xfc': 'u',
-  '\xdd': 'Y',  '\xfd': 'y', '\xff': 'y',
-  '\xc6': 'Ae', '\xe6': 'ae',
-  '\xde': 'Th', '\xfe': 'th',
-  '\xdf': 'ss',
-  // Latin Extended-A block.
-  '\u0100': 'A',  '\u0102': 'A', '\u0104': 'A',
-  '\u0101': 'a',  '\u0103': 'a', '\u0105': 'a',
-  '\u0106': 'C',  '\u0108': 'C', '\u010a': 'C', '\u010c': 'C',
-  '\u0107': 'c',  '\u0109': 'c', '\u010b': 'c', '\u010d': 'c',
-  '\u010e': 'D',  '\u0110': 'D', '\u010f': 'd', '\u0111': 'd',
-  '\u0112': 'E',  '\u0114': 'E', '\u0116': 'E', '\u0118': 'E', '\u011a': 'E',
-  '\u0113': 'e',  '\u0115': 'e', '\u0117': 'e', '\u0119': 'e', '\u011b': 'e',
-  '\u011c': 'G',  '\u011e': 'G', '\u0120': 'G', '\u0122': 'G',
-  '\u011d': 'g',  '\u011f': 'g', '\u0121': 'g', '\u0123': 'g',
-  '\u0124': 'H',  '\u0126': 'H', '\u0125': 'h', '\u0127': 'h',
-  '\u0128': 'I',  '\u012a': 'I', '\u012c': 'I', '\u012e': 'I', '\u0130': 'I',
-  '\u0129': 'i',  '\u012b': 'i', '\u012d': 'i', '\u012f': 'i', '\u0131': 'i',
-  '\u0134': 'J',  '\u0135': 'j',
-  '\u0136': 'K',  '\u0137': 'k', '\u0138': 'k',
-  '\u0139': 'L',  '\u013b': 'L', '\u013d': 'L', '\u013f': 'L', '\u0141': 'L',
-  '\u013a': 'l',  '\u013c': 'l', '\u013e': 'l', '\u0140': 'l', '\u0142': 'l',
-  '\u0143': 'N',  '\u0145': 'N', '\u0147': 'N', '\u014a': 'N',
-  '\u0144': 'n',  '\u0146': 'n', '\u0148': 'n', '\u014b': 'n',
-  '\u014c': 'O',  '\u014e': 'O', '\u0150': 'O',
-  '\u014d': 'o',  '\u014f': 'o', '\u0151': 'o',
-  '\u0154': 'R',  '\u0156': 'R', '\u0158': 'R',
-  '\u0155': 'r',  '\u0157': 'r', '\u0159': 'r',
-  '\u015a': 'S',  '\u015c': 'S', '\u015e': 'S', '\u0160': 'S',
-  '\u015b': 's',  '\u015d': 's', '\u015f': 's', '\u0161': 's',
-  '\u0162': 'T',  '\u0164': 'T', '\u0166': 'T',
-  '\u0163': 't',  '\u0165': 't', '\u0167': 't',
-  '\u0168': 'U',  '\u016a': 'U', '\u016c': 'U', '\u016e': 'U', '\u0170': 'U', '\u0172': 'U',
-  '\u0169': 'u',  '\u016b': 'u', '\u016d': 'u', '\u016f': 'u', '\u0171': 'u', '\u0173': 'u',
-  '\u0174': 'W',  '\u0175': 'w',
-  '\u0176': 'Y',  '\u0177': 'y', '\u0178': 'Y',
-  '\u0179': 'Z',  '\u017b': 'Z', '\u017d': 'Z',
-  '\u017a': 'z',  '\u017c': 'z', '\u017e': 'z',
-  '\u0132': 'IJ', '\u0133': 'ij',
-  '\u0152': 'Oe', '\u0153': 'oe',
-  '\u0149': "'n", '\u017f': 'ss'
-};
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof __webpack_require__.g == 'object' && __webpack_require__.g && __webpack_require__.g.Object === Object && __webpack_require__.g;
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-/**
- * The base implementation of `_.propertyOf` without support for deep paths.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Function} Returns the new accessor function.
- */
-function basePropertyOf(object) {
-  return function(key) {
-    return object == null ? undefined : object[key];
-  };
-}
-
-/**
- * Used by `_.deburr` to convert Latin-1 Supplement and Latin Extended-A
- * letters to basic Latin letters.
- *
- * @private
- * @param {string} letter The matched letter to deburr.
- * @returns {string} Returns the deburred letter.
- */
-var deburrLetter = basePropertyOf(deburredLetters);
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolToString = symbolProto ? symbolProto.toString : undefined;
-
-/**
- * The base implementation of `_.toString` which doesn't convert nullish
- * values to empty strings.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  // Exit early for strings to avoid a performance hit in some environments.
-  if (typeof value == 'string') {
-    return value;
-  }
-  if (isSymbol(value)) {
-    return symbolToString ? symbolToString.call(value) : '';
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && objectToString.call(value) == symbolTag);
-}
-
-/**
- * Converts `value` to a string. An empty string is returned for `null`
- * and `undefined` values. The sign of `-0` is preserved.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- * @example
- *
- * _.toString(null);
- * // => ''
- *
- * _.toString(-0);
- * // => '-0'
- *
- * _.toString([1, 2, 3]);
- * // => '1,2,3'
- */
-function toString(value) {
-  return value == null ? '' : baseToString(value);
-}
-
-/**
- * Deburrs `string` by converting
- * [Latin-1 Supplement](https://en.wikipedia.org/wiki/Latin-1_Supplement_(Unicode_block)#Character_table)
- * and [Latin Extended-A](https://en.wikipedia.org/wiki/Latin_Extended-A)
- * letters to basic Latin letters and removing
- * [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks).
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category String
- * @param {string} [string=''] The string to deburr.
- * @returns {string} Returns the deburred string.
- * @example
- *
- * _.deburr('déjà vu');
- * // => 'deja vu'
- */
-function deburr(string) {
-  string = toString(string);
-  return string && string.replace(reLatin, deburrLetter).replace(reComboMark, '');
-}
-
-module.exports = deburr;
-
-
-/***/ }),
-
 /***/ "./src/list-filters.scss":
 /*!*******************************!*\
   !*** ./src/list-filters.scss ***!
@@ -5556,2319 +5636,6 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
-/***/ }),
-
-/***/ "./node_modules/@sindresorhus/slugify/index.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/@sindresorhus/slugify/index.js ***!
-  \*****************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ slugify; },
-/* harmony export */   "slugifyWithCounter": function() { return /* binding */ slugifyWithCounter; }
-/* harmony export */ });
-/* harmony import */ var escape_string_regexp__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! escape-string-regexp */ "./node_modules/@sindresorhus/slugify/node_modules/escape-string-regexp/index.js");
-/* harmony import */ var _sindresorhus_transliterate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @sindresorhus/transliterate */ "./node_modules/@sindresorhus/transliterate/index.js");
-/* harmony import */ var _overridable_replacements_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./overridable-replacements.js */ "./node_modules/@sindresorhus/slugify/overridable-replacements.js");
-
-
-
-
-const decamelize = string => {
-	return string
-		// Separate capitalized words.
-		.replace(/([A-Z]{2,})(\d+)/g, '$1 $2')
-		.replace(/([a-z\d]+)([A-Z]{2,})/g, '$1 $2')
-
-		.replace(/([a-z\d])([A-Z])/g, '$1 $2')
-		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1 $2');
-};
-
-const removeMootSeparators = (string, separator) => {
-	const escapedSeparator = (0,escape_string_regexp__WEBPACK_IMPORTED_MODULE_0__["default"])(separator);
-
-	return string
-		.replace(new RegExp(`${escapedSeparator}{2,}`, 'g'), separator)
-		.replace(new RegExp(`^${escapedSeparator}|${escapedSeparator}$`, 'g'), '');
-};
-
-function slugify(string, options) {
-	if (typeof string !== 'string') {
-		throw new TypeError(`Expected a string, got \`${typeof string}\``);
-	}
-
-	options = {
-		separator: '-',
-		lowercase: true,
-		decamelize: true,
-		customReplacements: [],
-		preserveLeadingUnderscore: false,
-		preserveTrailingDash: false,
-		...options
-	};
-
-	const shouldPrependUnderscore = options.preserveLeadingUnderscore && string.startsWith('_');
-	const shouldAppendDash = options.preserveTrailingDash && string.endsWith('-');
-
-	const customReplacements = new Map([
-		..._overridable_replacements_js__WEBPACK_IMPORTED_MODULE_2__["default"],
-		...options.customReplacements
-	]);
-
-	string = (0,_sindresorhus_transliterate__WEBPACK_IMPORTED_MODULE_1__["default"])(string, {customReplacements});
-
-	if (options.decamelize) {
-		string = decamelize(string);
-	}
-
-	let patternSlug = /[^a-zA-Z\d]+/g;
-
-	if (options.lowercase) {
-		string = string.toLowerCase();
-		patternSlug = /[^a-z\d]+/g;
-	}
-
-	string = string.replace(patternSlug, options.separator);
-	string = string.replace(/\\/g, '');
-	if (options.separator) {
-		string = removeMootSeparators(string, options.separator);
-	}
-
-	if (shouldPrependUnderscore) {
-		string = `_${string}`;
-	}
-
-	if (shouldAppendDash) {
-		string = `${string}-`;
-	}
-
-	return string;
-}
-
-function slugifyWithCounter() {
-	const occurrences = new Map();
-
-	const countable = (string, options) => {
-		string = slugify(string, options);
-
-		if (!string) {
-			return '';
-		}
-
-		const stringLower = string.toLowerCase();
-		const numberless = occurrences.get(stringLower.replace(/(?:-\d+?)+?$/, '')) || 0;
-		const counter = occurrences.get(stringLower);
-		occurrences.set(stringLower, typeof counter === 'number' ? counter + 1 : 1);
-		const newCounter = occurrences.get(stringLower) || 2;
-		if (newCounter >= 2 || numberless > 2) {
-			string = `${string}-${newCounter}`;
-		}
-
-		return string;
-	};
-
-	countable.reset = () => {
-		occurrences.clear();
-	};
-
-	return countable;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@sindresorhus/slugify/node_modules/escape-string-regexp/index.js":
-/*!***************************************************************************************!*\
-  !*** ./node_modules/@sindresorhus/slugify/node_modules/escape-string-regexp/index.js ***!
-  \***************************************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ escapeStringRegexp; }
-/* harmony export */ });
-function escapeStringRegexp(string) {
-	if (typeof string !== 'string') {
-		throw new TypeError('Expected a string');
-	}
-
-	// Escape characters with special meaning either inside or outside character sets.
-	// Use a simple backslash escape when it’s always valid, and a `\xnn` escape when the simpler form would be disallowed by Unicode patterns’ stricter grammar.
-	return string
-		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-		.replace(/-/g, '\\x2d');
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@sindresorhus/slugify/overridable-replacements.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/@sindresorhus/slugify/overridable-replacements.js ***!
-  \************************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-const overridableReplacements = [
-	['&', ' and '],
-	['🦄', ' unicorn '],
-	['♥', ' love ']
-];
-
-/* harmony default export */ __webpack_exports__["default"] = (overridableReplacements);
-
-
-/***/ }),
-
-/***/ "./node_modules/@sindresorhus/transliterate/index.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/@sindresorhus/transliterate/index.js ***!
-  \***********************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ transliterate; }
-/* harmony export */ });
-/* harmony import */ var lodash_deburr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash.deburr */ "./node_modules/lodash.deburr/index.js");
-/* harmony import */ var escape_string_regexp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! escape-string-regexp */ "./node_modules/@sindresorhus/transliterate/node_modules/escape-string-regexp/index.js");
-/* harmony import */ var _replacements_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./replacements.js */ "./node_modules/@sindresorhus/transliterate/replacements.js");
-
-
-
-
-const doCustomReplacements = (string, replacements) => {
-	for (const [key, value] of replacements) {
-		// TODO: Use `String#replaceAll()` when targeting Node.js 16.
-		string = string.replace(new RegExp((0,escape_string_regexp__WEBPACK_IMPORTED_MODULE_1__["default"])(key), 'g'), value);
-	}
-
-	return string;
-};
-
-function transliterate(string, options) {
-	if (typeof string !== 'string') {
-		throw new TypeError(`Expected a string, got \`${typeof string}\``);
-	}
-
-	options = {
-		customReplacements: [],
-		...options
-	};
-
-	const customReplacements = new Map([
-		..._replacements_js__WEBPACK_IMPORTED_MODULE_2__["default"],
-		...options.customReplacements
-	]);
-
-	string = string.normalize();
-	string = doCustomReplacements(string, customReplacements);
-	string = lodash_deburr__WEBPACK_IMPORTED_MODULE_0__(string);
-
-	return string;
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@sindresorhus/transliterate/node_modules/escape-string-regexp/index.js":
-/*!*********************************************************************************************!*\
-  !*** ./node_modules/@sindresorhus/transliterate/node_modules/escape-string-regexp/index.js ***!
-  \*********************************************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ escapeStringRegexp; }
-/* harmony export */ });
-function escapeStringRegexp(string) {
-	if (typeof string !== 'string') {
-		throw new TypeError('Expected a string');
-	}
-
-	// Escape characters with special meaning either inside or outside character sets.
-	// Use a simple backslash escape when it’s always valid, and a `\xnn` escape when the simpler form would be disallowed by Unicode patterns’ stricter grammar.
-	return string
-		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-		.replace(/-/g, '\\x2d');
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@sindresorhus/transliterate/replacements.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/@sindresorhus/transliterate/replacements.js ***!
-  \******************************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-const replacements = [
-	// German umlauts
-	['ß', 'ss'],
-	['ẞ', 'Ss'],
-	['ä', 'ae'],
-	['Ä', 'Ae'],
-	['ö', 'oe'],
-	['Ö', 'Oe'],
-	['ü', 'ue'],
-	['Ü', 'Ue'],
-
-	// Latin
-	['À', 'A'],
-	['Á', 'A'],
-	['Â', 'A'],
-	['Ã', 'A'],
-	['Ä', 'Ae'],
-	['Å', 'A'],
-	['Æ', 'AE'],
-	['Ç', 'C'],
-	['È', 'E'],
-	['É', 'E'],
-	['Ê', 'E'],
-	['Ë', 'E'],
-	['Ì', 'I'],
-	['Í', 'I'],
-	['Î', 'I'],
-	['Ï', 'I'],
-	['Ð', 'D'],
-	['Ñ', 'N'],
-	['Ò', 'O'],
-	['Ó', 'O'],
-	['Ô', 'O'],
-	['Õ', 'O'],
-	['Ö', 'Oe'],
-	['Ő', 'O'],
-	['Ø', 'O'],
-	['Ù', 'U'],
-	['Ú', 'U'],
-	['Û', 'U'],
-	['Ü', 'Ue'],
-	['Ű', 'U'],
-	['Ý', 'Y'],
-	['Þ', 'TH'],
-	['ß', 'ss'],
-	['à', 'a'],
-	['á', 'a'],
-	['â', 'a'],
-	['ã', 'a'],
-	['ä', 'ae'],
-	['å', 'a'],
-	['æ', 'ae'],
-	['ç', 'c'],
-	['è', 'e'],
-	['é', 'e'],
-	['ê', 'e'],
-	['ë', 'e'],
-	['ì', 'i'],
-	['í', 'i'],
-	['î', 'i'],
-	['ï', 'i'],
-	['ð', 'd'],
-	['ñ', 'n'],
-	['ò', 'o'],
-	['ó', 'o'],
-	['ô', 'o'],
-	['õ', 'o'],
-	['ö', 'oe'],
-	['ő', 'o'],
-	['ø', 'o'],
-	['ù', 'u'],
-	['ú', 'u'],
-	['û', 'u'],
-	['ü', 'ue'],
-	['ű', 'u'],
-	['ý', 'y'],
-	['þ', 'th'],
-	['ÿ', 'y'],
-	['ẞ', 'SS'],
-
-	// Vietnamese
-	['à', 'a'],
-	['À', 'A'],
-	['á', 'a'],
-	['Á', 'A'],
-	['â', 'a'],
-	['Â', 'A'],
-	['ã', 'a'],
-	['Ã', 'A'],
-	['è', 'e'],
-	['È', 'E'],
-	['é', 'e'],
-	['É', 'E'],
-	['ê', 'e'],
-	['Ê', 'E'],
-	['ì', 'i'],
-	['Ì', 'I'],
-	['í', 'i'],
-	['Í', 'I'],
-	['ò', 'o'],
-	['Ò', 'O'],
-	['ó', 'o'],
-	['Ó', 'O'],
-	['ô', 'o'],
-	['Ô', 'O'],
-	['õ', 'o'],
-	['Õ', 'O'],
-	['ù', 'u'],
-	['Ù', 'U'],
-	['ú', 'u'],
-	['Ú', 'U'],
-	['ý', 'y'],
-	['Ý', 'Y'],
-	['ă', 'a'],
-	['Ă', 'A'],
-	['Đ', 'D'],
-	['đ', 'd'],
-	['ĩ', 'i'],
-	['Ĩ', 'I'],
-	['ũ', 'u'],
-	['Ũ', 'U'],
-	['ơ', 'o'],
-	['Ơ', 'O'],
-	['ư', 'u'],
-	['Ư', 'U'],
-	['ạ', 'a'],
-	['Ạ', 'A'],
-	['ả', 'a'],
-	['Ả', 'A'],
-	['ấ', 'a'],
-	['Ấ', 'A'],
-	['ầ', 'a'],
-	['Ầ', 'A'],
-	['ẩ', 'a'],
-	['Ẩ', 'A'],
-	['ẫ', 'a'],
-	['Ẫ', 'A'],
-	['ậ', 'a'],
-	['Ậ', 'A'],
-	['ắ', 'a'],
-	['Ắ', 'A'],
-	['ằ', 'a'],
-	['Ằ', 'A'],
-	['ẳ', 'a'],
-	['Ẳ', 'A'],
-	['ẵ', 'a'],
-	['Ẵ', 'A'],
-	['ặ', 'a'],
-	['Ặ', 'A'],
-	['ẹ', 'e'],
-	['Ẹ', 'E'],
-	['ẻ', 'e'],
-	['Ẻ', 'E'],
-	['ẽ', 'e'],
-	['Ẽ', 'E'],
-	['ế', 'e'],
-	['Ế', 'E'],
-	['ề', 'e'],
-	['Ề', 'E'],
-	['ể', 'e'],
-	['Ể', 'E'],
-	['ễ', 'e'],
-	['Ễ', 'E'],
-	['ệ', 'e'],
-	['Ệ', 'E'],
-	['ỉ', 'i'],
-	['Ỉ', 'I'],
-	['ị', 'i'],
-	['Ị', 'I'],
-	['ọ', 'o'],
-	['Ọ', 'O'],
-	['ỏ', 'o'],
-	['Ỏ', 'O'],
-	['ố', 'o'],
-	['Ố', 'O'],
-	['ồ', 'o'],
-	['Ồ', 'O'],
-	['ổ', 'o'],
-	['Ổ', 'O'],
-	['ỗ', 'o'],
-	['Ỗ', 'O'],
-	['ộ', 'o'],
-	['Ộ', 'O'],
-	['ớ', 'o'],
-	['Ớ', 'O'],
-	['ờ', 'o'],
-	['Ờ', 'O'],
-	['ở', 'o'],
-	['Ở', 'O'],
-	['ỡ', 'o'],
-	['Ỡ', 'O'],
-	['ợ', 'o'],
-	['Ợ', 'O'],
-	['ụ', 'u'],
-	['Ụ', 'U'],
-	['ủ', 'u'],
-	['Ủ', 'U'],
-	['ứ', 'u'],
-	['Ứ', 'U'],
-	['ừ', 'u'],
-	['Ừ', 'U'],
-	['ử', 'u'],
-	['Ử', 'U'],
-	['ữ', 'u'],
-	['Ữ', 'U'],
-	['ự', 'u'],
-	['Ự', 'U'],
-	['ỳ', 'y'],
-	['Ỳ', 'Y'],
-	['ỵ', 'y'],
-	['Ỵ', 'Y'],
-	['ỷ', 'y'],
-	['Ỷ', 'Y'],
-	['ỹ', 'y'],
-	['Ỹ', 'Y'],
-
-	// Arabic
-	['ء', 'e'],
-	['آ', 'a'],
-	['أ', 'a'],
-	['ؤ', 'w'],
-	['إ', 'i'],
-	['ئ', 'y'],
-	['ا', 'a'],
-	['ب', 'b'],
-	['ة', 't'],
-	['ت', 't'],
-	['ث', 'th'],
-	['ج', 'j'],
-	['ح', 'h'],
-	['خ', 'kh'],
-	['د', 'd'],
-	['ذ', 'dh'],
-	['ر', 'r'],
-	['ز', 'z'],
-	['س', 's'],
-	['ش', 'sh'],
-	['ص', 's'],
-	['ض', 'd'],
-	['ط', 't'],
-	['ظ', 'z'],
-	['ع', 'e'],
-	['غ', 'gh'],
-	['ـ', '_'],
-	['ف', 'f'],
-	['ق', 'q'],
-	['ك', 'k'],
-	['ل', 'l'],
-	['م', 'm'],
-	['ن', 'n'],
-	['ه', 'h'],
-	['و', 'w'],
-	['ى', 'a'],
-	['ي', 'y'],
-	['َ‎', 'a'],
-	['ُ', 'u'],
-	['ِ‎', 'i'],
-	['٠', '0'],
-	['١', '1'],
-	['٢', '2'],
-	['٣', '3'],
-	['٤', '4'],
-	['٥', '5'],
-	['٦', '6'],
-	['٧', '7'],
-	['٨', '8'],
-	['٩', '9'],
-
-	// Persian / Farsi
-	['چ', 'ch'],
-	['ک', 'k'],
-	['گ', 'g'],
-	['پ', 'p'],
-	['ژ', 'zh'],
-	['ی', 'y'],
-	['۰', '0'],
-	['۱', '1'],
-	['۲', '2'],
-	['۳', '3'],
-	['۴', '4'],
-	['۵', '5'],
-	['۶', '6'],
-	['۷', '7'],
-	['۸', '8'],
-	['۹', '9'],
-
-	// Pashto
-	['ټ', 'p'],
-	['ځ', 'z'],
-	['څ', 'c'],
-	['ډ', 'd'],
-	['ﺫ', 'd'],
-	['ﺭ', 'r'],
-	['ړ', 'r'],
-	['ﺯ', 'z'],
-	['ږ', 'g'],
-	['ښ', 'x'],
-	['ګ', 'g'],
-	['ڼ', 'n'],
-	['ۀ', 'e'],
-	['ې', 'e'],
-	['ۍ', 'ai'],
-
-	// Urdu
-	['ٹ', 't'],
-	['ڈ', 'd'],
-	['ڑ', 'r'],
-	['ں', 'n'],
-	['ہ', 'h'],
-	['ھ', 'h'],
-	['ے', 'e'],
-
-	// Russian
-	['А', 'A'],
-	['а', 'a'],
-	['Б', 'B'],
-	['б', 'b'],
-	['В', 'V'],
-	['в', 'v'],
-	['Г', 'G'],
-	['г', 'g'],
-	['Д', 'D'],
-	['д', 'd'],
-	['ъе', 'ye'],
-	['Ъе', 'Ye'],
-	['ъЕ', 'yE'],
-	['ЪЕ', 'YE'],
-	['Е', 'E'],
-	['е', 'e'],
-	['Ё', 'Yo'],
-	['ё', 'yo'],
-	['Ж', 'Zh'],
-	['ж', 'zh'],
-	['З', 'Z'],
-	['з', 'z'],
-	['И', 'I'],
-	['и', 'i'],
-	['ый', 'iy'],
-	['Ый', 'Iy'],
-	['ЫЙ', 'IY'],
-	['ыЙ', 'iY'],
-	['Й', 'Y'],
-	['й', 'y'],
-	['К', 'K'],
-	['к', 'k'],
-	['Л', 'L'],
-	['л', 'l'],
-	['М', 'M'],
-	['м', 'm'],
-	['Н', 'N'],
-	['н', 'n'],
-	['О', 'O'],
-	['о', 'o'],
-	['П', 'P'],
-	['п', 'p'],
-	['Р', 'R'],
-	['р', 'r'],
-	['С', 'S'],
-	['с', 's'],
-	['Т', 'T'],
-	['т', 't'],
-	['У', 'U'],
-	['у', 'u'],
-	['Ф', 'F'],
-	['ф', 'f'],
-	['Х', 'Kh'],
-	['х', 'kh'],
-	['Ц', 'Ts'],
-	['ц', 'ts'],
-	['Ч', 'Ch'],
-	['ч', 'ch'],
-	['Ш', 'Sh'],
-	['ш', 'sh'],
-	['Щ', 'Sch'],
-	['щ', 'sch'],
-	['Ъ', ''],
-	['ъ', ''],
-	['Ы', 'Y'],
-	['ы', 'y'],
-	['Ь', ''],
-	['ь', ''],
-	['Э', 'E'],
-	['э', 'e'],
-	['Ю', 'Yu'],
-	['ю', 'yu'],
-	['Я', 'Ya'],
-	['я', 'ya'],
-
-	// Romanian
-	['ă', 'a'],
-	['Ă', 'A'],
-	['ș', 's'],
-	['Ș', 'S'],
-	['ț', 't'],
-	['Ț', 'T'],
-	['ţ', 't'],
-	['Ţ', 'T'],
-
-	// Turkish
-	['ş', 's'],
-	['Ş', 'S'],
-	['ç', 'c'],
-	['Ç', 'C'],
-	['ğ', 'g'],
-	['Ğ', 'G'],
-	['ı', 'i'],
-	['İ', 'I'],
-
-	// Armenian
-	['ա', 'a'],
-	['Ա', 'A'],
-	['բ', 'b'],
-	['Բ', 'B'],
-	['գ', 'g'],
-	['Գ', 'G'],
-	['դ', 'd'],
-	['Դ', 'D'],
-	['ե', 'ye'],
-	['Ե', 'Ye'],
-	['զ', 'z'],
-	['Զ', 'Z'],
-	['է', 'e'],
-	['Է', 'E'],
-	['ը', 'y'],
-	['Ը', 'Y'],
-	['թ', 't'],
-	['Թ', 'T'],
-	['ժ', 'zh'],
-	['Ժ', 'Zh'],
-	['ի', 'i'],
-	['Ի', 'I'],
-	['լ', 'l'],
-	['Լ', 'L'],
-	['խ', 'kh'],
-	['Խ', 'Kh'],
-	['ծ', 'ts'],
-	['Ծ', 'Ts'],
-	['կ', 'k'],
-	['Կ', 'K'],
-	['հ', 'h'],
-	['Հ', 'H'],
-	['ձ', 'dz'],
-	['Ձ', 'Dz'],
-	['ղ', 'gh'],
-	['Ղ', 'Gh'],
-	['ճ', 'tch'],
-	['Ճ', 'Tch'],
-	['մ', 'm'],
-	['Մ', 'M'],
-	['յ', 'y'],
-	['Յ', 'Y'],
-	['ն', 'n'],
-	['Ն', 'N'],
-	['շ', 'sh'],
-	['Շ', 'Sh'],
-	['ո', 'vo'],
-	['Ո', 'Vo'],
-	['չ', 'ch'],
-	['Չ', 'Ch'],
-	['պ', 'p'],
-	['Պ', 'P'],
-	['ջ', 'j'],
-	['Ջ', 'J'],
-	['ռ', 'r'],
-	['Ռ', 'R'],
-	['ս', 's'],
-	['Ս', 'S'],
-	['վ', 'v'],
-	['Վ', 'V'],
-	['տ', 't'],
-	['Տ', 'T'],
-	['ր', 'r'],
-	['Ր', 'R'],
-	['ց', 'c'],
-	['Ց', 'C'],
-	['ու', 'u'],
-	['ՈՒ', 'U'],
-	['Ու', 'U'],
-	['փ', 'p'],
-	['Փ', 'P'],
-	['ք', 'q'],
-	['Ք', 'Q'],
-	['օ', 'o'],
-	['Օ', 'O'],
-	['ֆ', 'f'],
-	['Ֆ', 'F'],
-	['և', 'yev'],
-
-	// Georgian
-	['ა', 'a'],
-	['ბ', 'b'],
-	['გ', 'g'],
-	['დ', 'd'],
-	['ე', 'e'],
-	['ვ', 'v'],
-	['ზ', 'z'],
-	['თ', 't'],
-	['ი', 'i'],
-	['კ', 'k'],
-	['ლ', 'l'],
-	['მ', 'm'],
-	['ნ', 'n'],
-	['ო', 'o'],
-	['პ', 'p'],
-	['ჟ', 'zh'],
-	['რ', 'r'],
-	['ს', 's'],
-	['ტ', 't'],
-	['უ', 'u'],
-	['ფ', 'ph'],
-	['ქ', 'q'],
-	['ღ', 'gh'],
-	['ყ', 'k'],
-	['შ', 'sh'],
-	['ჩ', 'ch'],
-	['ც', 'ts'],
-	['ძ', 'dz'],
-	['წ', 'ts'],
-	['ჭ', 'tch'],
-	['ხ', 'kh'],
-	['ჯ', 'j'],
-	['ჰ', 'h'],
-
-	// Czech
-	['č', 'c'],
-	['ď', 'd'],
-	['ě', 'e'],
-	['ň', 'n'],
-	['ř', 'r'],
-	['š', 's'],
-	['ť', 't'],
-	['ů', 'u'],
-	['ž', 'z'],
-	['Č', 'C'],
-	['Ď', 'D'],
-	['Ě', 'E'],
-	['Ň', 'N'],
-	['Ř', 'R'],
-	['Š', 'S'],
-	['Ť', 'T'],
-	['Ů', 'U'],
-	['Ž', 'Z'],
-
-	// Dhivehi
-	['ހ', 'h'],
-	['ށ', 'sh'],
-	['ނ', 'n'],
-	['ރ', 'r'],
-	['ބ', 'b'],
-	['ޅ', 'lh'],
-	['ކ', 'k'],
-	['އ', 'a'],
-	['ވ', 'v'],
-	['މ', 'm'],
-	['ފ', 'f'],
-	['ދ', 'dh'],
-	['ތ', 'th'],
-	['ލ', 'l'],
-	['ގ', 'g'],
-	['ޏ', 'gn'],
-	['ސ', 's'],
-	['ޑ', 'd'],
-	['ޒ', 'z'],
-	['ޓ', 't'],
-	['ޔ', 'y'],
-	['ޕ', 'p'],
-	['ޖ', 'j'],
-	['ޗ', 'ch'],
-	['ޘ', 'tt'],
-	['ޙ', 'hh'],
-	['ޚ', 'kh'],
-	['ޛ', 'th'],
-	['ޜ', 'z'],
-	['ޝ', 'sh'],
-	['ޞ', 's'],
-	['ޟ', 'd'],
-	['ޠ', 't'],
-	['ޡ', 'z'],
-	['ޢ', 'a'],
-	['ޣ', 'gh'],
-	['ޤ', 'q'],
-	['ޥ', 'w'],
-	['ަ', 'a'],
-	['ާ', 'aa'],
-	['ި', 'i'],
-	['ީ', 'ee'],
-	['ު', 'u'],
-	['ޫ', 'oo'],
-	['ެ', 'e'],
-	['ޭ', 'ey'],
-	['ޮ', 'o'],
-	['ޯ', 'oa'],
-	['ް', ''],
-
-	// Greek
-	['α', 'a'],
-	['β', 'v'],
-	['γ', 'g'],
-	['δ', 'd'],
-	['ε', 'e'],
-	['ζ', 'z'],
-	['η', 'i'],
-	['θ', 'th'],
-	['ι', 'i'],
-	['κ', 'k'],
-	['λ', 'l'],
-	['μ', 'm'],
-	['ν', 'n'],
-	['ξ', 'ks'],
-	['ο', 'o'],
-	['π', 'p'],
-	['ρ', 'r'],
-	['σ', 's'],
-	['τ', 't'],
-	['υ', 'y'],
-	['φ', 'f'],
-	['χ', 'x'],
-	['ψ', 'ps'],
-	['ω', 'o'],
-	['ά', 'a'],
-	['έ', 'e'],
-	['ί', 'i'],
-	['ό', 'o'],
-	['ύ', 'y'],
-	['ή', 'i'],
-	['ώ', 'o'],
-	['ς', 's'],
-	['ϊ', 'i'],
-	['ΰ', 'y'],
-	['ϋ', 'y'],
-	['ΐ', 'i'],
-	['Α', 'A'],
-	['Β', 'B'],
-	['Γ', 'G'],
-	['Δ', 'D'],
-	['Ε', 'E'],
-	['Ζ', 'Z'],
-	['Η', 'I'],
-	['Θ', 'TH'],
-	['Ι', 'I'],
-	['Κ', 'K'],
-	['Λ', 'L'],
-	['Μ', 'M'],
-	['Ν', 'N'],
-	['Ξ', 'KS'],
-	['Ο', 'O'],
-	['Π', 'P'],
-	['Ρ', 'R'],
-	['Σ', 'S'],
-	['Τ', 'T'],
-	['Υ', 'Y'],
-	['Φ', 'F'],
-	['Χ', 'X'],
-	['Ψ', 'PS'],
-	['Ω', 'O'],
-	['Ά', 'A'],
-	['Έ', 'E'],
-	['Ί', 'I'],
-	['Ό', 'O'],
-	['Ύ', 'Y'],
-	['Ή', 'I'],
-	['Ώ', 'O'],
-	['Ϊ', 'I'],
-	['Ϋ', 'Y'],
-
-	// Disabled as it conflicts with German and Latin.
-	// Hungarian
-	// ['ä', 'a'],
-	// ['Ä', 'A'],
-	// ['ö', 'o'],
-	// ['Ö', 'O'],
-	// ['ü', 'u'],
-	// ['Ü', 'U'],
-	// ['ű', 'u'],
-	// ['Ű', 'U'],
-
-	// Latvian
-	['ā', 'a'],
-	['ē', 'e'],
-	['ģ', 'g'],
-	['ī', 'i'],
-	['ķ', 'k'],
-	['ļ', 'l'],
-	['ņ', 'n'],
-	['ū', 'u'],
-	['Ā', 'A'],
-	['Ē', 'E'],
-	['Ģ', 'G'],
-	['Ī', 'I'],
-	['Ķ', 'K'],
-	['Ļ', 'L'],
-	['Ņ', 'N'],
-	['Ū', 'U'],
-	['č', 'c'],
-	['š', 's'],
-	['ž', 'z'],
-	['Č', 'C'],
-	['Š', 'S'],
-	['Ž', 'Z'],
-
-	// Lithuanian
-	['ą', 'a'],
-	['č', 'c'],
-	['ę', 'e'],
-	['ė', 'e'],
-	['į', 'i'],
-	['š', 's'],
-	['ų', 'u'],
-	['ū', 'u'],
-	['ž', 'z'],
-	['Ą', 'A'],
-	['Č', 'C'],
-	['Ę', 'E'],
-	['Ė', 'E'],
-	['Į', 'I'],
-	['Š', 'S'],
-	['Ų', 'U'],
-	['Ū', 'U'],
-
-	// Macedonian
-	['Ќ', 'Kj'],
-	['ќ', 'kj'],
-	['Љ', 'Lj'],
-	['љ', 'lj'],
-	['Њ', 'Nj'],
-	['њ', 'nj'],
-	['Тс', 'Ts'],
-	['тс', 'ts'],
-
-	// Polish
-	['ą', 'a'],
-	['ć', 'c'],
-	['ę', 'e'],
-	['ł', 'l'],
-	['ń', 'n'],
-	['ś', 's'],
-	['ź', 'z'],
-	['ż', 'z'],
-	['Ą', 'A'],
-	['Ć', 'C'],
-	['Ę', 'E'],
-	['Ł', 'L'],
-	['Ń', 'N'],
-	['Ś', 'S'],
-	['Ź', 'Z'],
-	['Ż', 'Z'],
-
-	// Disabled as it conflicts with Vietnamese.
-	// Serbian
-	// ['љ', 'lj'],
-	// ['њ', 'nj'],
-	// ['Љ', 'Lj'],
-	// ['Њ', 'Nj'],
-	// ['đ', 'dj'],
-	// ['Đ', 'Dj'],
-	// ['ђ', 'dj'],
-	// ['ј', 'j'],
-	// ['ћ', 'c'],
-	// ['џ', 'dz'],
-	// ['Ђ', 'Dj'],
-	// ['Ј', 'j'],
-	// ['Ћ', 'C'],
-	// ['Џ', 'Dz'],
-
-	// Disabled as it conflicts with German and Latin.
-	// Slovak
-	// ['ä', 'a'],
-	// ['Ä', 'A'],
-	// ['ľ', 'l'],
-	// ['ĺ', 'l'],
-	// ['ŕ', 'r'],
-	// ['Ľ', 'L'],
-	// ['Ĺ', 'L'],
-	// ['Ŕ', 'R'],
-
-	// Disabled as it conflicts with German and Latin.
-	// Swedish
-	// ['å', 'o'],
-	// ['Å', 'o'],
-	// ['ä', 'a'],
-	// ['Ä', 'A'],
-	// ['ë', 'e'],
-	// ['Ë', 'E'],
-	// ['ö', 'o'],
-	// ['Ö', 'O'],
-
-	// Ukrainian
-	['Є', 'Ye'],
-	['І', 'I'],
-	['Ї', 'Yi'],
-	['Ґ', 'G'],
-	['є', 'ye'],
-	['і', 'i'],
-	['ї', 'yi'],
-	['ґ', 'g'],
-
-	// Dutch
-	['Ĳ', 'IJ'],
-	['ĳ', 'ij'],
-
-	// Danish
-	// ['Æ', 'Ae'],
-	// ['Ø', 'Oe'],
-	// ['Å', 'Aa'],
-	// ['æ', 'ae'],
-	// ['ø', 'oe'],
-	// ['å', 'aa']
-
-	// Currencies
-	['¢', 'c'],
-	['¥', 'Y'],
-	['߿', 'b'],
-	['৳', 't'],
-	['૱', 'Bo'],
-	['฿', 'B'],
-	['₠', 'CE'],
-	['₡', 'C'],
-	['₢', 'Cr'],
-	['₣', 'F'],
-	['₥', 'm'],
-	['₦', 'N'],
-	['₧', 'Pt'],
-	['₨', 'Rs'],
-	['₩', 'W'],
-	['₫', 's'],
-	['€', 'E'],
-	['₭', 'K'],
-	['₮', 'T'],
-	['₯', 'Dp'],
-	['₰', 'S'],
-	['₱', 'P'],
-	['₲', 'G'],
-	['₳', 'A'],
-	['₴', 'S'],
-	['₵', 'C'],
-	['₶', 'tt'],
-	['₷', 'S'],
-	['₸', 'T'],
-	['₹', 'R'],
-	['₺', 'L'],
-	['₽', 'P'],
-	['₿', 'B'],
-	['﹩', '$'],
-	['￠', 'c'],
-	['￥', 'Y'],
-	['￦', 'W'],
-
-	// Latin
-	['𝐀', 'A'],
-	['𝐁', 'B'],
-	['𝐂', 'C'],
-	['𝐃', 'D'],
-	['𝐄', 'E'],
-	['𝐅', 'F'],
-	['𝐆', 'G'],
-	['𝐇', 'H'],
-	['𝐈', 'I'],
-	['𝐉', 'J'],
-	['𝐊', 'K'],
-	['𝐋', 'L'],
-	['𝐌', 'M'],
-	['𝐍', 'N'],
-	['𝐎', 'O'],
-	['𝐏', 'P'],
-	['𝐐', 'Q'],
-	['𝐑', 'R'],
-	['𝐒', 'S'],
-	['𝐓', 'T'],
-	['𝐔', 'U'],
-	['𝐕', 'V'],
-	['𝐖', 'W'],
-	['𝐗', 'X'],
-	['𝐘', 'Y'],
-	['𝐙', 'Z'],
-	['𝐚', 'a'],
-	['𝐛', 'b'],
-	['𝐜', 'c'],
-	['𝐝', 'd'],
-	['𝐞', 'e'],
-	['𝐟', 'f'],
-	['𝐠', 'g'],
-	['𝐡', 'h'],
-	['𝐢', 'i'],
-	['𝐣', 'j'],
-	['𝐤', 'k'],
-	['𝐥', 'l'],
-	['𝐦', 'm'],
-	['𝐧', 'n'],
-	['𝐨', 'o'],
-	['𝐩', 'p'],
-	['𝐪', 'q'],
-	['𝐫', 'r'],
-	['𝐬', 's'],
-	['𝐭', 't'],
-	['𝐮', 'u'],
-	['𝐯', 'v'],
-	['𝐰', 'w'],
-	['𝐱', 'x'],
-	['𝐲', 'y'],
-	['𝐳', 'z'],
-	['𝐴', 'A'],
-	['𝐵', 'B'],
-	['𝐶', 'C'],
-	['𝐷', 'D'],
-	['𝐸', 'E'],
-	['𝐹', 'F'],
-	['𝐺', 'G'],
-	['𝐻', 'H'],
-	['𝐼', 'I'],
-	['𝐽', 'J'],
-	['𝐾', 'K'],
-	['𝐿', 'L'],
-	['𝑀', 'M'],
-	['𝑁', 'N'],
-	['𝑂', 'O'],
-	['𝑃', 'P'],
-	['𝑄', 'Q'],
-	['𝑅', 'R'],
-	['𝑆', 'S'],
-	['𝑇', 'T'],
-	['𝑈', 'U'],
-	['𝑉', 'V'],
-	['𝑊', 'W'],
-	['𝑋', 'X'],
-	['𝑌', 'Y'],
-	['𝑍', 'Z'],
-	['𝑎', 'a'],
-	['𝑏', 'b'],
-	['𝑐', 'c'],
-	['𝑑', 'd'],
-	['𝑒', 'e'],
-	['𝑓', 'f'],
-	['𝑔', 'g'],
-	['𝑖', 'i'],
-	['𝑗', 'j'],
-	['𝑘', 'k'],
-	['𝑙', 'l'],
-	['𝑚', 'm'],
-	['𝑛', 'n'],
-	['𝑜', 'o'],
-	['𝑝', 'p'],
-	['𝑞', 'q'],
-	['𝑟', 'r'],
-	['𝑠', 's'],
-	['𝑡', 't'],
-	['𝑢', 'u'],
-	['𝑣', 'v'],
-	['𝑤', 'w'],
-	['𝑥', 'x'],
-	['𝑦', 'y'],
-	['𝑧', 'z'],
-	['𝑨', 'A'],
-	['𝑩', 'B'],
-	['𝑪', 'C'],
-	['𝑫', 'D'],
-	['𝑬', 'E'],
-	['𝑭', 'F'],
-	['𝑮', 'G'],
-	['𝑯', 'H'],
-	['𝑰', 'I'],
-	['𝑱', 'J'],
-	['𝑲', 'K'],
-	['𝑳', 'L'],
-	['𝑴', 'M'],
-	['𝑵', 'N'],
-	['𝑶', 'O'],
-	['𝑷', 'P'],
-	['𝑸', 'Q'],
-	['𝑹', 'R'],
-	['𝑺', 'S'],
-	['𝑻', 'T'],
-	['𝑼', 'U'],
-	['𝑽', 'V'],
-	['𝑾', 'W'],
-	['𝑿', 'X'],
-	['𝒀', 'Y'],
-	['𝒁', 'Z'],
-	['𝒂', 'a'],
-	['𝒃', 'b'],
-	['𝒄', 'c'],
-	['𝒅', 'd'],
-	['𝒆', 'e'],
-	['𝒇', 'f'],
-	['𝒈', 'g'],
-	['𝒉', 'h'],
-	['𝒊', 'i'],
-	['𝒋', 'j'],
-	['𝒌', 'k'],
-	['𝒍', 'l'],
-	['𝒎', 'm'],
-	['𝒏', 'n'],
-	['𝒐', 'o'],
-	['𝒑', 'p'],
-	['𝒒', 'q'],
-	['𝒓', 'r'],
-	['𝒔', 's'],
-	['𝒕', 't'],
-	['𝒖', 'u'],
-	['𝒗', 'v'],
-	['𝒘', 'w'],
-	['𝒙', 'x'],
-	['𝒚', 'y'],
-	['𝒛', 'z'],
-	['𝒜', 'A'],
-	['𝒞', 'C'],
-	['𝒟', 'D'],
-	['𝒢', 'g'],
-	['𝒥', 'J'],
-	['𝒦', 'K'],
-	['𝒩', 'N'],
-	['𝒪', 'O'],
-	['𝒫', 'P'],
-	['𝒬', 'Q'],
-	['𝒮', 'S'],
-	['𝒯', 'T'],
-	['𝒰', 'U'],
-	['𝒱', 'V'],
-	['𝒲', 'W'],
-	['𝒳', 'X'],
-	['𝒴', 'Y'],
-	['𝒵', 'Z'],
-	['𝒶', 'a'],
-	['𝒷', 'b'],
-	['𝒸', 'c'],
-	['𝒹', 'd'],
-	['𝒻', 'f'],
-	['𝒽', 'h'],
-	['𝒾', 'i'],
-	['𝒿', 'j'],
-	['𝓀', 'h'],
-	['𝓁', 'l'],
-	['𝓂', 'm'],
-	['𝓃', 'n'],
-	['𝓅', 'p'],
-	['𝓆', 'q'],
-	['𝓇', 'r'],
-	['𝓈', 's'],
-	['𝓉', 't'],
-	['𝓊', 'u'],
-	['𝓋', 'v'],
-	['𝓌', 'w'],
-	['𝓍', 'x'],
-	['𝓎', 'y'],
-	['𝓏', 'z'],
-	['𝓐', 'A'],
-	['𝓑', 'B'],
-	['𝓒', 'C'],
-	['𝓓', 'D'],
-	['𝓔', 'E'],
-	['𝓕', 'F'],
-	['𝓖', 'G'],
-	['𝓗', 'H'],
-	['𝓘', 'I'],
-	['𝓙', 'J'],
-	['𝓚', 'K'],
-	['𝓛', 'L'],
-	['𝓜', 'M'],
-	['𝓝', 'N'],
-	['𝓞', 'O'],
-	['𝓟', 'P'],
-	['𝓠', 'Q'],
-	['𝓡', 'R'],
-	['𝓢', 'S'],
-	['𝓣', 'T'],
-	['𝓤', 'U'],
-	['𝓥', 'V'],
-	['𝓦', 'W'],
-	['𝓧', 'X'],
-	['𝓨', 'Y'],
-	['𝓩', 'Z'],
-	['𝓪', 'a'],
-	['𝓫', 'b'],
-	['𝓬', 'c'],
-	['𝓭', 'd'],
-	['𝓮', 'e'],
-	['𝓯', 'f'],
-	['𝓰', 'g'],
-	['𝓱', 'h'],
-	['𝓲', 'i'],
-	['𝓳', 'j'],
-	['𝓴', 'k'],
-	['𝓵', 'l'],
-	['𝓶', 'm'],
-	['𝓷', 'n'],
-	['𝓸', 'o'],
-	['𝓹', 'p'],
-	['𝓺', 'q'],
-	['𝓻', 'r'],
-	['𝓼', 's'],
-	['𝓽', 't'],
-	['𝓾', 'u'],
-	['𝓿', 'v'],
-	['𝔀', 'w'],
-	['𝔁', 'x'],
-	['𝔂', 'y'],
-	['𝔃', 'z'],
-	['𝔄', 'A'],
-	['𝔅', 'B'],
-	['𝔇', 'D'],
-	['𝔈', 'E'],
-	['𝔉', 'F'],
-	['𝔊', 'G'],
-	['𝔍', 'J'],
-	['𝔎', 'K'],
-	['𝔏', 'L'],
-	['𝔐', 'M'],
-	['𝔑', 'N'],
-	['𝔒', 'O'],
-	['𝔓', 'P'],
-	['𝔔', 'Q'],
-	['𝔖', 'S'],
-	['𝔗', 'T'],
-	['𝔘', 'U'],
-	['𝔙', 'V'],
-	['𝔚', 'W'],
-	['𝔛', 'X'],
-	['𝔜', 'Y'],
-	['𝔞', 'a'],
-	['𝔟', 'b'],
-	['𝔠', 'c'],
-	['𝔡', 'd'],
-	['𝔢', 'e'],
-	['𝔣', 'f'],
-	['𝔤', 'g'],
-	['𝔥', 'h'],
-	['𝔦', 'i'],
-	['𝔧', 'j'],
-	['𝔨', 'k'],
-	['𝔩', 'l'],
-	['𝔪', 'm'],
-	['𝔫', 'n'],
-	['𝔬', 'o'],
-	['𝔭', 'p'],
-	['𝔮', 'q'],
-	['𝔯', 'r'],
-	['𝔰', 's'],
-	['𝔱', 't'],
-	['𝔲', 'u'],
-	['𝔳', 'v'],
-	['𝔴', 'w'],
-	['𝔵', 'x'],
-	['𝔶', 'y'],
-	['𝔷', 'z'],
-	['𝔸', 'A'],
-	['𝔹', 'B'],
-	['𝔻', 'D'],
-	['𝔼', 'E'],
-	['𝔽', 'F'],
-	['𝔾', 'G'],
-	['𝕀', 'I'],
-	['𝕁', 'J'],
-	['𝕂', 'K'],
-	['𝕃', 'L'],
-	['𝕄', 'M'],
-	['𝕆', 'N'],
-	['𝕊', 'S'],
-	['𝕋', 'T'],
-	['𝕌', 'U'],
-	['𝕍', 'V'],
-	['𝕎', 'W'],
-	['𝕏', 'X'],
-	['𝕐', 'Y'],
-	['𝕒', 'a'],
-	['𝕓', 'b'],
-	['𝕔', 'c'],
-	['𝕕', 'd'],
-	['𝕖', 'e'],
-	['𝕗', 'f'],
-	['𝕘', 'g'],
-	['𝕙', 'h'],
-	['𝕚', 'i'],
-	['𝕛', 'j'],
-	['𝕜', 'k'],
-	['𝕝', 'l'],
-	['𝕞', 'm'],
-	['𝕟', 'n'],
-	['𝕠', 'o'],
-	['𝕡', 'p'],
-	['𝕢', 'q'],
-	['𝕣', 'r'],
-	['𝕤', 's'],
-	['𝕥', 't'],
-	['𝕦', 'u'],
-	['𝕧', 'v'],
-	['𝕨', 'w'],
-	['𝕩', 'x'],
-	['𝕪', 'y'],
-	['𝕫', 'z'],
-	['𝕬', 'A'],
-	['𝕭', 'B'],
-	['𝕮', 'C'],
-	['𝕯', 'D'],
-	['𝕰', 'E'],
-	['𝕱', 'F'],
-	['𝕲', 'G'],
-	['𝕳', 'H'],
-	['𝕴', 'I'],
-	['𝕵', 'J'],
-	['𝕶', 'K'],
-	['𝕷', 'L'],
-	['𝕸', 'M'],
-	['𝕹', 'N'],
-	['𝕺', 'O'],
-	['𝕻', 'P'],
-	['𝕼', 'Q'],
-	['𝕽', 'R'],
-	['𝕾', 'S'],
-	['𝕿', 'T'],
-	['𝖀', 'U'],
-	['𝖁', 'V'],
-	['𝖂', 'W'],
-	['𝖃', 'X'],
-	['𝖄', 'Y'],
-	['𝖅', 'Z'],
-	['𝖆', 'a'],
-	['𝖇', 'b'],
-	['𝖈', 'c'],
-	['𝖉', 'd'],
-	['𝖊', 'e'],
-	['𝖋', 'f'],
-	['𝖌', 'g'],
-	['𝖍', 'h'],
-	['𝖎', 'i'],
-	['𝖏', 'j'],
-	['𝖐', 'k'],
-	['𝖑', 'l'],
-	['𝖒', 'm'],
-	['𝖓', 'n'],
-	['𝖔', 'o'],
-	['𝖕', 'p'],
-	['𝖖', 'q'],
-	['𝖗', 'r'],
-	['𝖘', 's'],
-	['𝖙', 't'],
-	['𝖚', 'u'],
-	['𝖛', 'v'],
-	['𝖜', 'w'],
-	['𝖝', 'x'],
-	['𝖞', 'y'],
-	['𝖟', 'z'],
-	['𝖠', 'A'],
-	['𝖡', 'B'],
-	['𝖢', 'C'],
-	['𝖣', 'D'],
-	['𝖤', 'E'],
-	['𝖥', 'F'],
-	['𝖦', 'G'],
-	['𝖧', 'H'],
-	['𝖨', 'I'],
-	['𝖩', 'J'],
-	['𝖪', 'K'],
-	['𝖫', 'L'],
-	['𝖬', 'M'],
-	['𝖭', 'N'],
-	['𝖮', 'O'],
-	['𝖯', 'P'],
-	['𝖰', 'Q'],
-	['𝖱', 'R'],
-	['𝖲', 'S'],
-	['𝖳', 'T'],
-	['𝖴', 'U'],
-	['𝖵', 'V'],
-	['𝖶', 'W'],
-	['𝖷', 'X'],
-	['𝖸', 'Y'],
-	['𝖹', 'Z'],
-	['𝖺', 'a'],
-	['𝖻', 'b'],
-	['𝖼', 'c'],
-	['𝖽', 'd'],
-	['𝖾', 'e'],
-	['𝖿', 'f'],
-	['𝗀', 'g'],
-	['𝗁', 'h'],
-	['𝗂', 'i'],
-	['𝗃', 'j'],
-	['𝗄', 'k'],
-	['𝗅', 'l'],
-	['𝗆', 'm'],
-	['𝗇', 'n'],
-	['𝗈', 'o'],
-	['𝗉', 'p'],
-	['𝗊', 'q'],
-	['𝗋', 'r'],
-	['𝗌', 's'],
-	['𝗍', 't'],
-	['𝗎', 'u'],
-	['𝗏', 'v'],
-	['𝗐', 'w'],
-	['𝗑', 'x'],
-	['𝗒', 'y'],
-	['𝗓', 'z'],
-	['𝗔', 'A'],
-	['𝗕', 'B'],
-	['𝗖', 'C'],
-	['𝗗', 'D'],
-	['𝗘', 'E'],
-	['𝗙', 'F'],
-	['𝗚', 'G'],
-	['𝗛', 'H'],
-	['𝗜', 'I'],
-	['𝗝', 'J'],
-	['𝗞', 'K'],
-	['𝗟', 'L'],
-	['𝗠', 'M'],
-	['𝗡', 'N'],
-	['𝗢', 'O'],
-	['𝗣', 'P'],
-	['𝗤', 'Q'],
-	['𝗥', 'R'],
-	['𝗦', 'S'],
-	['𝗧', 'T'],
-	['𝗨', 'U'],
-	['𝗩', 'V'],
-	['𝗪', 'W'],
-	['𝗫', 'X'],
-	['𝗬', 'Y'],
-	['𝗭', 'Z'],
-	['𝗮', 'a'],
-	['𝗯', 'b'],
-	['𝗰', 'c'],
-	['𝗱', 'd'],
-	['𝗲', 'e'],
-	['𝗳', 'f'],
-	['𝗴', 'g'],
-	['𝗵', 'h'],
-	['𝗶', 'i'],
-	['𝗷', 'j'],
-	['𝗸', 'k'],
-	['𝗹', 'l'],
-	['𝗺', 'm'],
-	['𝗻', 'n'],
-	['𝗼', 'o'],
-	['𝗽', 'p'],
-	['𝗾', 'q'],
-	['𝗿', 'r'],
-	['𝘀', 's'],
-	['𝘁', 't'],
-	['𝘂', 'u'],
-	['𝘃', 'v'],
-	['𝘄', 'w'],
-	['𝘅', 'x'],
-	['𝘆', 'y'],
-	['𝘇', 'z'],
-	['𝘈', 'A'],
-	['𝘉', 'B'],
-	['𝘊', 'C'],
-	['𝘋', 'D'],
-	['𝘌', 'E'],
-	['𝘍', 'F'],
-	['𝘎', 'G'],
-	['𝘏', 'H'],
-	['𝘐', 'I'],
-	['𝘑', 'J'],
-	['𝘒', 'K'],
-	['𝘓', 'L'],
-	['𝘔', 'M'],
-	['𝘕', 'N'],
-	['𝘖', 'O'],
-	['𝘗', 'P'],
-	['𝘘', 'Q'],
-	['𝘙', 'R'],
-	['𝘚', 'S'],
-	['𝘛', 'T'],
-	['𝘜', 'U'],
-	['𝘝', 'V'],
-	['𝘞', 'W'],
-	['𝘟', 'X'],
-	['𝘠', 'Y'],
-	['𝘡', 'Z'],
-	['𝘢', 'a'],
-	['𝘣', 'b'],
-	['𝘤', 'c'],
-	['𝘥', 'd'],
-	['𝘦', 'e'],
-	['𝘧', 'f'],
-	['𝘨', 'g'],
-	['𝘩', 'h'],
-	['𝘪', 'i'],
-	['𝘫', 'j'],
-	['𝘬', 'k'],
-	['𝘭', 'l'],
-	['𝘮', 'm'],
-	['𝘯', 'n'],
-	['𝘰', 'o'],
-	['𝘱', 'p'],
-	['𝘲', 'q'],
-	['𝘳', 'r'],
-	['𝘴', 's'],
-	['𝘵', 't'],
-	['𝘶', 'u'],
-	['𝘷', 'v'],
-	['𝘸', 'w'],
-	['𝘹', 'x'],
-	['𝘺', 'y'],
-	['𝘻', 'z'],
-	['𝘼', 'A'],
-	['𝘽', 'B'],
-	['𝘾', 'C'],
-	['𝘿', 'D'],
-	['𝙀', 'E'],
-	['𝙁', 'F'],
-	['𝙂', 'G'],
-	['𝙃', 'H'],
-	['𝙄', 'I'],
-	['𝙅', 'J'],
-	['𝙆', 'K'],
-	['𝙇', 'L'],
-	['𝙈', 'M'],
-	['𝙉', 'N'],
-	['𝙊', 'O'],
-	['𝙋', 'P'],
-	['𝙌', 'Q'],
-	['𝙍', 'R'],
-	['𝙎', 'S'],
-	['𝙏', 'T'],
-	['𝙐', 'U'],
-	['𝙑', 'V'],
-	['𝙒', 'W'],
-	['𝙓', 'X'],
-	['𝙔', 'Y'],
-	['𝙕', 'Z'],
-	['𝙖', 'a'],
-	['𝙗', 'b'],
-	['𝙘', 'c'],
-	['𝙙', 'd'],
-	['𝙚', 'e'],
-	['𝙛', 'f'],
-	['𝙜', 'g'],
-	['𝙝', 'h'],
-	['𝙞', 'i'],
-	['𝙟', 'j'],
-	['𝙠', 'k'],
-	['𝙡', 'l'],
-	['𝙢', 'm'],
-	['𝙣', 'n'],
-	['𝙤', 'o'],
-	['𝙥', 'p'],
-	['𝙦', 'q'],
-	['𝙧', 'r'],
-	['𝙨', 's'],
-	['𝙩', 't'],
-	['𝙪', 'u'],
-	['𝙫', 'v'],
-	['𝙬', 'w'],
-	['𝙭', 'x'],
-	['𝙮', 'y'],
-	['𝙯', 'z'],
-	['𝙰', 'A'],
-	['𝙱', 'B'],
-	['𝙲', 'C'],
-	['𝙳', 'D'],
-	['𝙴', 'E'],
-	['𝙵', 'F'],
-	['𝙶', 'G'],
-	['𝙷', 'H'],
-	['𝙸', 'I'],
-	['𝙹', 'J'],
-	['𝙺', 'K'],
-	['𝙻', 'L'],
-	['𝙼', 'M'],
-	['𝙽', 'N'],
-	['𝙾', 'O'],
-	['𝙿', 'P'],
-	['𝚀', 'Q'],
-	['𝚁', 'R'],
-	['𝚂', 'S'],
-	['𝚃', 'T'],
-	['𝚄', 'U'],
-	['𝚅', 'V'],
-	['𝚆', 'W'],
-	['𝚇', 'X'],
-	['𝚈', 'Y'],
-	['𝚉', 'Z'],
-	['𝚊', 'a'],
-	['𝚋', 'b'],
-	['𝚌', 'c'],
-	['𝚍', 'd'],
-	['𝚎', 'e'],
-	['𝚏', 'f'],
-	['𝚐', 'g'],
-	['𝚑', 'h'],
-	['𝚒', 'i'],
-	['𝚓', 'j'],
-	['𝚔', 'k'],
-	['𝚕', 'l'],
-	['𝚖', 'm'],
-	['𝚗', 'n'],
-	['𝚘', 'o'],
-	['𝚙', 'p'],
-	['𝚚', 'q'],
-	['𝚛', 'r'],
-	['𝚜', 's'],
-	['𝚝', 't'],
-	['𝚞', 'u'],
-	['𝚟', 'v'],
-	['𝚠', 'w'],
-	['𝚡', 'x'],
-	['𝚢', 'y'],
-	['𝚣', 'z'],
-
-	// Dotless letters
-	['𝚤', 'l'],
-	['𝚥', 'j'],
-
-	// Greek
-	['𝛢', 'A'],
-	['𝛣', 'B'],
-	['𝛤', 'G'],
-	['𝛥', 'D'],
-	['𝛦', 'E'],
-	['𝛧', 'Z'],
-	['𝛨', 'I'],
-	['𝛩', 'TH'],
-	['𝛪', 'I'],
-	['𝛫', 'K'],
-	['𝛬', 'L'],
-	['𝛭', 'M'],
-	['𝛮', 'N'],
-	['𝛯', 'KS'],
-	['𝛰', 'O'],
-	['𝛱', 'P'],
-	['𝛲', 'R'],
-	['𝛳', 'TH'],
-	['𝛴', 'S'],
-	['𝛵', 'T'],
-	['𝛶', 'Y'],
-	['𝛷', 'F'],
-	['𝛸', 'x'],
-	['𝛹', 'PS'],
-	['𝛺', 'O'],
-	['𝛻', 'D'],
-	['𝛼', 'a'],
-	['𝛽', 'b'],
-	['𝛾', 'g'],
-	['𝛿', 'd'],
-	['𝜀', 'e'],
-	['𝜁', 'z'],
-	['𝜂', 'i'],
-	['𝜃', 'th'],
-	['𝜄', 'i'],
-	['𝜅', 'k'],
-	['𝜆', 'l'],
-	['𝜇', 'm'],
-	['𝜈', 'n'],
-	['𝜉', 'ks'],
-	['𝜊', 'o'],
-	['𝜋', 'p'],
-	['𝜌', 'r'],
-	['𝜍', 's'],
-	['𝜎', 's'],
-	['𝜏', 't'],
-	['𝜐', 'y'],
-	['𝜑', 'f'],
-	['𝜒', 'x'],
-	['𝜓', 'ps'],
-	['𝜔', 'o'],
-	['𝜕', 'd'],
-	['𝜖', 'E'],
-	['𝜗', 'TH'],
-	['𝜘', 'K'],
-	['𝜙', 'f'],
-	['𝜚', 'r'],
-	['𝜛', 'p'],
-	['𝜜', 'A'],
-	['𝜝', 'V'],
-	['𝜞', 'G'],
-	['𝜟', 'D'],
-	['𝜠', 'E'],
-	['𝜡', 'Z'],
-	['𝜢', 'I'],
-	['𝜣', 'TH'],
-	['𝜤', 'I'],
-	['𝜥', 'K'],
-	['𝜦', 'L'],
-	['𝜧', 'M'],
-	['𝜨', 'N'],
-	['𝜩', 'KS'],
-	['𝜪', 'O'],
-	['𝜫', 'P'],
-	['𝜬', 'S'],
-	['𝜭', 'TH'],
-	['𝜮', 'S'],
-	['𝜯', 'T'],
-	['𝜰', 'Y'],
-	['𝜱', 'F'],
-	['𝜲', 'X'],
-	['𝜳', 'PS'],
-	['𝜴', 'O'],
-	['𝜵', 'D'],
-	['𝜶', 'a'],
-	['𝜷', 'v'],
-	['𝜸', 'g'],
-	['𝜹', 'd'],
-	['𝜺', 'e'],
-	['𝜻', 'z'],
-	['𝜼', 'i'],
-	['𝜽', 'th'],
-	['𝜾', 'i'],
-	['𝜿', 'k'],
-	['𝝀', 'l'],
-	['𝝁', 'm'],
-	['𝝂', 'n'],
-	['𝝃', 'ks'],
-	['𝝄', 'o'],
-	['𝝅', 'p'],
-	['𝝆', 'r'],
-	['𝝇', 's'],
-	['𝝈', 's'],
-	['𝝉', 't'],
-	['𝝊', 'y'],
-	['𝝋', 'f'],
-	['𝝌', 'x'],
-	['𝝍', 'ps'],
-	['𝝎', 'o'],
-	['𝝏', 'a'],
-	['𝝐', 'e'],
-	['𝝑', 'i'],
-	['𝝒', 'k'],
-	['𝝓', 'f'],
-	['𝝔', 'r'],
-	['𝝕', 'p'],
-	['𝝖', 'A'],
-	['𝝗', 'B'],
-	['𝝘', 'G'],
-	['𝝙', 'D'],
-	['𝝚', 'E'],
-	['𝝛', 'Z'],
-	['𝝜', 'I'],
-	['𝝝', 'TH'],
-	['𝝞', 'I'],
-	['𝝟', 'K'],
-	['𝝠', 'L'],
-	['𝝡', 'M'],
-	['𝝢', 'N'],
-	['𝝣', 'KS'],
-	['𝝤', 'O'],
-	['𝝥', 'P'],
-	['𝝦', 'R'],
-	['𝝧', 'TH'],
-	['𝝨', 'S'],
-	['𝝩', 'T'],
-	['𝝪', 'Y'],
-	['𝝫', 'F'],
-	['𝝬', 'X'],
-	['𝝭', 'PS'],
-	['𝝮', 'O'],
-	['𝝯', 'D'],
-	['𝝰', 'a'],
-	['𝝱', 'v'],
-	['𝝲', 'g'],
-	['𝝳', 'd'],
-	['𝝴', 'e'],
-	['𝝵', 'z'],
-	['𝝶', 'i'],
-	['𝝷', 'th'],
-	['𝝸', 'i'],
-	['𝝹', 'k'],
-	['𝝺', 'l'],
-	['𝝻', 'm'],
-	['𝝼', 'n'],
-	['𝝽', 'ks'],
-	['𝝾', 'o'],
-	['𝝿', 'p'],
-	['𝞀', 'r'],
-	['𝞁', 's'],
-	['𝞂', 's'],
-	['𝞃', 't'],
-	['𝞄', 'y'],
-	['𝞅', 'f'],
-	['𝞆', 'x'],
-	['𝞇', 'ps'],
-	['𝞈', 'o'],
-	['𝞉', 'a'],
-	['𝞊', 'e'],
-	['𝞋', 'i'],
-	['𝞌', 'k'],
-	['𝞍', 'f'],
-	['𝞎', 'r'],
-	['𝞏', 'p'],
-	['𝞐', 'A'],
-	['𝞑', 'V'],
-	['𝞒', 'G'],
-	['𝞓', 'D'],
-	['𝞔', 'E'],
-	['𝞕', 'Z'],
-	['𝞖', 'I'],
-	['𝞗', 'TH'],
-	['𝞘', 'I'],
-	['𝞙', 'K'],
-	['𝞚', 'L'],
-	['𝞛', 'M'],
-	['𝞜', 'N'],
-	['𝞝', 'KS'],
-	['𝞞', 'O'],
-	['𝞟', 'P'],
-	['𝞠', 'S'],
-	['𝞡', 'TH'],
-	['𝞢', 'S'],
-	['𝞣', 'T'],
-	['𝞤', 'Y'],
-	['𝞥', 'F'],
-	['𝞦', 'X'],
-	['𝞧', 'PS'],
-	['𝞨', 'O'],
-	['𝞩', 'D'],
-	['𝞪', 'av'],
-	['𝞫', 'g'],
-	['𝞬', 'd'],
-	['𝞭', 'e'],
-	['𝞮', 'z'],
-	['𝞯', 'i'],
-	['𝞰', 'i'],
-	['𝞱', 'th'],
-	['𝞲', 'i'],
-	['𝞳', 'k'],
-	['𝞴', 'l'],
-	['𝞵', 'm'],
-	['𝞶', 'n'],
-	['𝞷', 'ks'],
-	['𝞸', 'o'],
-	['𝞹', 'p'],
-	['𝞺', 'r'],
-	['𝞻', 's'],
-	['𝞼', 's'],
-	['𝞽', 't'],
-	['𝞾', 'y'],
-	['𝞿', 'f'],
-	['𝟀', 'x'],
-	['𝟁', 'ps'],
-	['𝟂', 'o'],
-	['𝟃', 'a'],
-	['𝟄', 'e'],
-	['𝟅', 'i'],
-	['𝟆', 'k'],
-	['𝟇', 'f'],
-	['𝟈', 'r'],
-	['𝟉', 'p'],
-	['𝟊', 'F'],
-	['𝟋', 'f'],
-	['⒜', '(a)'],
-	['⒝', '(b)'],
-	['⒞', '(c)'],
-	['⒟', '(d)'],
-	['⒠', '(e)'],
-	['⒡', '(f)'],
-	['⒢', '(g)'],
-	['⒣', '(h)'],
-	['⒤', '(i)'],
-	['⒥', '(j)'],
-	['⒦', '(k)'],
-	['⒧', '(l)'],
-	['⒨', '(m)'],
-	['⒩', '(n)'],
-	['⒪', '(o)'],
-	['⒫', '(p)'],
-	['⒬', '(q)'],
-	['⒭', '(r)'],
-	['⒮', '(s)'],
-	['⒯', '(t)'],
-	['⒰', '(u)'],
-	['⒱', '(v)'],
-	['⒲', '(w)'],
-	['⒳', '(x)'],
-	['⒴', '(y)'],
-	['⒵', '(z)'],
-	['Ⓐ', '(A)'],
-	['Ⓑ', '(B)'],
-	['Ⓒ', '(C)'],
-	['Ⓓ', '(D)'],
-	['Ⓔ', '(E)'],
-	['Ⓕ', '(F)'],
-	['Ⓖ', '(G)'],
-	['Ⓗ', '(H)'],
-	['Ⓘ', '(I)'],
-	['Ⓙ', '(J)'],
-	['Ⓚ', '(K)'],
-	['Ⓛ', '(L)'],
-	['Ⓝ', '(N)'],
-	['Ⓞ', '(O)'],
-	['Ⓟ', '(P)'],
-	['Ⓠ', '(Q)'],
-	['Ⓡ', '(R)'],
-	['Ⓢ', '(S)'],
-	['Ⓣ', '(T)'],
-	['Ⓤ', '(U)'],
-	['Ⓥ', '(V)'],
-	['Ⓦ', '(W)'],
-	['Ⓧ', '(X)'],
-	['Ⓨ', '(Y)'],
-	['Ⓩ', '(Z)'],
-	['ⓐ', '(a)'],
-	['ⓑ', '(b)'],
-	['ⓒ', '(b)'],
-	['ⓓ', '(c)'],
-	['ⓔ', '(e)'],
-	['ⓕ', '(f)'],
-	['ⓖ', '(g)'],
-	['ⓗ', '(h)'],
-	['ⓘ', '(i)'],
-	['ⓙ', '(j)'],
-	['ⓚ', '(k)'],
-	['ⓛ', '(l)'],
-	['ⓜ', '(m)'],
-	['ⓝ', '(n)'],
-	['ⓞ', '(o)'],
-	['ⓟ', '(p)'],
-	['ⓠ', '(q)'],
-	['ⓡ', '(r)'],
-	['ⓢ', '(s)'],
-	['ⓣ', '(t)'],
-	['ⓤ', '(u)'],
-	['ⓥ', '(v)'],
-	['ⓦ', '(w)'],
-	['ⓧ', '(x)'],
-	['ⓨ', '(y)'],
-	['ⓩ', '(z)'],
-
-	// Maltese
-	['Ċ', 'C'],
-	['ċ', 'c'],
-	['Ġ', 'G'],
-	['ġ', 'g'],
-	['Ħ', 'H'],
-	['ħ', 'h'],
-	['Ż', 'Z'],
-	['ż', 'z'],
-
-	// Numbers
-	['𝟎', '0'],
-	['𝟏', '1'],
-	['𝟐', '2'],
-	['𝟑', '3'],
-	['𝟒', '4'],
-	['𝟓', '5'],
-	['𝟔', '6'],
-	['𝟕', '7'],
-	['𝟖', '8'],
-	['𝟗', '9'],
-	['𝟘', '0'],
-	['𝟙', '1'],
-	['𝟚', '2'],
-	['𝟛', '3'],
-	['𝟜', '4'],
-	['𝟝', '5'],
-	['𝟞', '6'],
-	['𝟟', '7'],
-	['𝟠', '8'],
-	['𝟡', '9'],
-	['𝟢', '0'],
-	['𝟣', '1'],
-	['𝟤', '2'],
-	['𝟥', '3'],
-	['𝟦', '4'],
-	['𝟧', '5'],
-	['𝟨', '6'],
-	['𝟩', '7'],
-	['𝟪', '8'],
-	['𝟫', '9'],
-	['𝟬', '0'],
-	['𝟭', '1'],
-	['𝟮', '2'],
-	['𝟯', '3'],
-	['𝟰', '4'],
-	['𝟱', '5'],
-	['𝟲', '6'],
-	['𝟳', '7'],
-	['𝟴', '8'],
-	['𝟵', '9'],
-	['𝟶', '0'],
-	['𝟷', '1'],
-	['𝟸', '2'],
-	['𝟹', '3'],
-	['𝟺', '4'],
-	['𝟻', '5'],
-	['𝟼', '6'],
-	['𝟽', '7'],
-	['𝟾', '8'],
-	['𝟿', '9'],
-	['①', '1'],
-	['②', '2'],
-	['③', '3'],
-	['④', '4'],
-	['⑤', '5'],
-	['⑥', '6'],
-	['⑦', '7'],
-	['⑧', '8'],
-	['⑨', '9'],
-	['⑩', '10'],
-	['⑪', '11'],
-	['⑫', '12'],
-	['⑬', '13'],
-	['⑭', '14'],
-	['⑮', '15'],
-	['⑯', '16'],
-	['⑰', '17'],
-	['⑱', '18'],
-	['⑲', '19'],
-	['⑳', '20'],
-	['⑴', '1'],
-	['⑵', '2'],
-	['⑶', '3'],
-	['⑷', '4'],
-	['⑸', '5'],
-	['⑹', '6'],
-	['⑺', '7'],
-	['⑻', '8'],
-	['⑼', '9'],
-	['⑽', '10'],
-	['⑾', '11'],
-	['⑿', '12'],
-	['⒀', '13'],
-	['⒁', '14'],
-	['⒂', '15'],
-	['⒃', '16'],
-	['⒄', '17'],
-	['⒅', '18'],
-	['⒆', '19'],
-	['⒇', '20'],
-	['⒈', '1.'],
-	['⒉', '2.'],
-	['⒊', '3.'],
-	['⒋', '4.'],
-	['⒌', '5.'],
-	['⒍', '6.'],
-	['⒎', '7.'],
-	['⒏', '8.'],
-	['⒐', '9.'],
-	['⒑', '10.'],
-	['⒒', '11.'],
-	['⒓', '12.'],
-	['⒔', '13.'],
-	['⒕', '14.'],
-	['⒖', '15.'],
-	['⒗', '16.'],
-	['⒘', '17.'],
-	['⒙', '18.'],
-	['⒚', '19.'],
-	['⒛', '20.'],
-	['⓪', '0'],
-	['⓫', '11'],
-	['⓬', '12'],
-	['⓭', '13'],
-	['⓮', '14'],
-	['⓯', '15'],
-	['⓰', '16'],
-	['⓱', '17'],
-	['⓲', '18'],
-	['⓳', '19'],
-	['⓴', '20'],
-	['⓵', '1'],
-	['⓶', '2'],
-	['⓷', '3'],
-	['⓸', '4'],
-	['⓹', '5'],
-	['⓺', '6'],
-	['⓻', '7'],
-	['⓼', '8'],
-	['⓽', '9'],
-	['⓾', '10'],
-	['⓿', '0'],
-
-	// Punctuation
-	['🙰', '&'],
-	['🙱', '&'],
-	['🙲', '&'],
-	['🙳', '&'],
-	['🙴', '&'],
-	['🙵', '&'],
-	['🙶', '"'],
-	['🙷', '"'],
-	['🙸', '"'],
-	['‽', '?!'],
-	['🙹', '?!'],
-	['🙺', '?!'],
-	['🙻', '?!'],
-	['🙼', '/'],
-	['🙽', '\\'],
-
-	// Alchemy
-	['🜇', 'AR'],
-	['🜈', 'V'],
-	['🜉', 'V'],
-	['🜆', 'VR'],
-	['🜅', 'VF'],
-	['🜩', '2'],
-	['🜪', '5'],
-	['🝡', 'f'],
-	['🝢', 'W'],
-	['🝣', 'U'],
-	['🝧', 'V'],
-	['🝨', 'T'],
-	['🝪', 'V'],
-	['🝫', 'MB'],
-	['🝬', 'VB'],
-	['🝲', '3B'],
-	['🝳', '3B'],
-
-	// Emojis
-	['💯', '100'],
-	['🔙', 'BACK'],
-	['🔚', 'END'],
-	['🔛', 'ON!'],
-	['🔜', 'SOON'],
-	['🔝', 'TOP'],
-	['🔞', '18'],
-	['🔤', 'abc'],
-	['🔠', 'ABCD'],
-	['🔡', 'abcd'],
-	['🔢', '1234'],
-	['🔣', 'T&@%'],
-	['#️⃣', '#'],
-	['*️⃣', '*'],
-	['0️⃣', '0'],
-	['1️⃣', '1'],
-	['2️⃣', '2'],
-	['3️⃣', '3'],
-	['4️⃣', '4'],
-	['5️⃣', '5'],
-	['6️⃣', '6'],
-	['7️⃣', '7'],
-	['8️⃣', '8'],
-	['9️⃣', '9'],
-	['🔟', '10'],
-	['🅰️', 'A'],
-	['🅱️', 'B'],
-	['🆎', 'AB'],
-	['🆑', 'CL'],
-	['🅾️', 'O'],
-	['🅿', 'P'],
-	['🆘', 'SOS'],
-	['🅲', 'C'],
-	['🅳', 'D'],
-	['🅴', 'E'],
-	['🅵', 'F'],
-	['🅶', 'G'],
-	['🅷', 'H'],
-	['🅸', 'I'],
-	['🅹', 'J'],
-	['🅺', 'K'],
-	['🅻', 'L'],
-	['🅼', 'M'],
-	['🅽', 'N'],
-	['🆀', 'Q'],
-	['🆁', 'R'],
-	['🆂', 'S'],
-	['🆃', 'T'],
-	['🆄', 'U'],
-	['🆅', 'V'],
-	['🆆', 'W'],
-	['🆇', 'X'],
-	['🆈', 'Y'],
-	['🆉', 'Z']
-];
-
-/* harmony default export */ __webpack_exports__["default"] = (replacements);
-
-
 /***/ })
 
 /******/ 	});
@@ -7920,18 +5687,6 @@ const replacements = [
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	!function() {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
 /******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */

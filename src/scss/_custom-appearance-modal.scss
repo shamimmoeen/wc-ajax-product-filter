@@ -1,6 +1,5 @@
 @import './variables';
 @import './mixins';
-@import './pagination';
 
 // Custom Appearance Modal Button.
 .components-button.__custom_appearance_modal_btn {
@@ -9,20 +8,7 @@
 }
 
 .__custom_appearance_modal {
-    width: 800px;
-
-    &.options-fetched {
-        min-height: 70%;
-    }
-
-    .__loader {
-        text-align: center;
-        
-        svg {
-            width: 32px;
-            height: 32px;
-        }
-    }
+    @include fixed-height-modal;
 
     .wp-list-table {
         th {
@@ -135,37 +121,6 @@
     }
 
     @include button-link-delete;
-
-    .components-modal__content {
-        &::after {
-            content: "";
-            display: block;
-            margin-bottom: 24px;
-        }
-
-        .__modal_footer {
-            box-sizing: border-box;
-            border-top: 1px solid #ddd;
-            padding: 0 32px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            width: 100%;
-            z-index: 10;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-    }
-
-    &.options-fetched {
-        .components-modal__content {
-            padding-bottom: 0;
-            margin-bottom: 60px;
-        }
-    }
 
     .__table_header {
         margin-bottom: 1em;

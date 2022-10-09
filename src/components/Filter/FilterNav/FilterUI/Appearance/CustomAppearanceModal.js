@@ -72,7 +72,7 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 				setFetched(true);
 
 				if (!isEmpty(synced)) {
-					const classes = `${modalInitialClass} options-fetched`;
+					const classes = `${modalInitialClass} ajax-done`;
 
 					setOptions(synced);
 					setModalClasses(classes);

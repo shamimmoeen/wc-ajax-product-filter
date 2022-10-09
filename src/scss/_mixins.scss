@@ -21,3 +21,55 @@
         }
     }
 }
+
+@mixin fixed-height-modal {
+    width: 80em;
+
+    &.ajax-done {
+        min-height: 70%;
+    }
+
+    .components-modal__content {
+        &::after {
+            content: "";
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .__modal_footer {
+            box-sizing: border-box;
+            border-top: 1px solid #ddd;
+            padding: 0 32px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            width: 100%;
+            z-index: 10;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+
+            .components-button + .components-button {
+                margin-left: 4px;
+            }
+        }
+    }
+
+    &.ajax-done {
+        .components-modal__content {
+            padding-bottom: 0;
+            margin-bottom: 60px;
+        }
+    }
+
+    .__loader {
+        text-align: center;
+
+        svg {
+            width: 32px;
+            height: 32px;
+        }
+    }
+}

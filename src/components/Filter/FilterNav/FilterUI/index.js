@@ -18,7 +18,7 @@ const FilterUI = () => {
 		}
 	};
 
-	let initialTabName = 'appearance';
+	let initialTabName = 'general';
 
 	if (activeUIStep) {
 		initialTabName = activeUIStep;
