@@ -1,7 +1,7 @@
 import { Button, CheckboxControl, Modal, Spinner } from '@wordpress/components';
 import { sprintf, __ } from '@wordpress/i18n';
 import { useFilter } from '../../../FilterContext';
-import { find, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from '@wordpress/element';
 import axios from 'axios';
 import useFilterData from '../../../useFilterData';
