@@ -9421,64 +9421,11 @@ const Filter = () => {
         type: 'SET_ADDITIONAL_DATA',
         payload: additionalData
       });
+      const filterKeys = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getDefaultFilterKeys)(activeFilterData, filterType, filterKey, additionalData);
       /**
        * Sets the default filter keys.
        */
 
-      const filterKeys = {};
-      (0,_utils__WEBPACK_IMPORTED_MODULE_6__.availableFilters)().map(item => {
-        const type = item.type;
-
-        if ('active-filters' === type || 'reset-button' === type) {
-          return false;
-        }
-
-        if ('attribute' === type || 'custom-taxonomy' === type || 'post-meta' === type || 'post-property' === type) {
-          let data = {};
-
-          if ('attribute' === type) {
-            data = additionalData['attributes'];
-          } else if ('custom-taxonomy' === type) {
-            data = additionalData['custom_taxonomies'];
-          } else if ('post-meta' === type) {
-            data = additionalData['meta_keys'];
-          } else if ('post-property' === type) {
-            data = additionalData['post_properties'];
-          }
-
-          const _filterKeys = {};
-
-          for (const item in data) {
-            let _filterKey = `_${item}`;
-
-            if (filterType === type) {
-              let selected = '';
-
-              if ('attribute' === type || 'custom-taxonomy' === type) {
-                selected = activeFilterData['taxonomy'];
-              } else if (true) {
-                selected = activeFilterData['meta_key'];
-              } else {}
-
-              if (item === selected) {
-                _filterKey = filterKey;
-              }
-            }
-
-            _filterKeys[item] = _filterKey;
-          }
-
-          filterKeys[type] = _filterKeys;
-        } else {
-          let defaultFilterKey = item.defaultFilterKey;
-
-          if (filterType === type) {
-            defaultFilterKey = filterKey;
-          }
-
-          filterKeys[type] = defaultFilterKey;
-        }
-      });
       dispatch({
         type: 'SET_FILTER_KEYS',
         payload: filterKeys
@@ -9601,6 +9548,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
+/* harmony export */   "getDefaultFilterKeys": function() { return /* binding */ getDefaultFilterKeys; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
@@ -9803,6 +9751,63 @@ function perPageDefaultData() {
   };
 }
 
+function getDefaultFilterKeys(activeFilterData, filterType, filterKey, additionalData) {
+  const filterKeys = {};
+  availableFilters().map(item => {
+    const type = item.type;
+
+    if ('active-filters' === type || 'reset-button' === type) {
+      return false;
+    }
+
+    if ('attribute' === type || 'custom-taxonomy' === type || 'post-meta' === type || 'post-property' === type) {
+      let data = {};
+
+      if ('attribute' === type) {
+        data = additionalData['attributes'];
+      } else if ('custom-taxonomy' === type) {
+        data = additionalData['custom_taxonomies'];
+      } else if ('post-meta' === type) {
+        data = additionalData['meta_keys'];
+      } else if ('post-property' === type) {
+        data = additionalData['post_properties'];
+      }
+
+      const _filterKeys = {};
+
+      for (const item in data) {
+        let _filterKey = `_${item}`;
+
+        if (filterType === type) {
+          let selected = '';
+
+          if ('attribute' === type || 'custom-taxonomy' === type) {
+            selected = activeFilterData['taxonomy'];
+          } else if (true) {
+            selected = activeFilterData['meta_key'];
+          } else {}
+
+          if (item === selected) {
+            _filterKey = filterKey;
+          }
+        }
+
+        _filterKeys[item] = _filterKey;
+      }
+
+      filterKeys[type] = _filterKeys;
+    } else {
+      let defaultFilterKey = item.defaultFilterKey;
+
+      if (filterType === type) {
+        defaultFilterKey = filterKey;
+      }
+
+      filterKeys[type] = defaultFilterKey;
+    }
+  });
+  return filterKeys;
+}
 function getFilterDefaultData(type) {
   const defaultData = filterDefaultData();
   const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(availableFilters(), {
