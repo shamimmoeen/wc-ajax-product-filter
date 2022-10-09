@@ -557,37 +557,3 @@ export function getCustomAppearanceModalData(filterType, activeFilterData) {
 
 	return { type, taxonomy };
 }
-
-export function getOptionsTableModalData(filterType, activeFilterData) {
-	let keyword;
-	let type;
-	let optionsKey;
-	let ajaxParams;
-
-	if ('post-meta' === filterType) {
-		console.log('prepare');
-	}
-
-	if (isTaxonomyFilters(filterType)) {
-		type = 'taxonomy';
-		optionsKey = 'manual_options';
-
-		if ('category' === filterType) {
-			keyword = 'product_cat';
-		} else if ('tag' === filterType) {
-			keyword = 'product_tag';
-		} else if (
-			'attribute' === filterType ||
-			'custom-taxonomy' === filterType
-		) {
-			keyword = activeFilterData.taxonomy;
-		}
-
-		ajaxParams = {
-			action: 'get_taxonomy_filter_options',
-			taxonomy: keyword,
-		};
-	}
-
-	return { keyword, type, optionsKey, ajaxParams };
-}

@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import slugify from '@sindresorhus/slugify';
+import { wpFeSanitizeTitle } from '../../wp-fe-sanitize-title';
 import Listbox from '../../../Field/Listbox';
 import FilterKey from './FilterKey';
 import ToggleGroup from '../../../Field/ToggleGroup';
@@ -218,16 +218,8 @@ const GeneralFields = ({
 	};
 
 	const handleFilterKeyChange = (e) => {
-		// TODO: Check for default filter key change.
-
-		console.log('onChange event');
-
 		// Slugify the filter key.
-		const _filterKey = slugify(e.target.value, {
-			preserveLeadingUnderscore: true,
-			preserveTrailingDash: true,
-			separator: '_',
-		});
+		const _filterKey = wpFeSanitizeTitle(e.target.value);
 
 		const _activeFilterData = {
 			...activeFilterData,
@@ -272,7 +264,7 @@ const GeneralFields = ({
 					id={'filter_key'}
 					label={__('Filter Key', 'wc-ajax-product-filter')}
 					description={__(
-						'The unique key that will be used to identify the filter.',
+						'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
 						'wc-ajax-product-filter'
 					)}
 					value={filterKey}

@@ -52,6 +52,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) );
 		add_action( 'wp_ajax_get_taxonomy_filter_options', array( $this, 'get_taxonomy_filter_options' ) );
+		add_action( 'wp_ajax_wcapf_get_meta_values', array( $this, 'get_meta_values' ) );
 		add_action( 'wp_ajax_get_filters', array( $this, 'get_filters' ) );
 		add_action( 'wp_ajax_check_filter_key', array( $this, 'check_filter_key' ) );
 
@@ -616,6 +617,29 @@ class WCAPF_API {
 				$response[] = array(
 					'value' => $term_id,
 					'label' => $term_name,
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * TODO: Move pro to free.
+	 *
+	 * @return void
+	 */
+	public function get_meta_values() {
+		$meta_key = isset( $_GET['meta_key'] ) ? sanitize_text_field( $_GET['meta_key'] ) : '';
+
+		$values   = WCAPF_PRO_Helper::get_available_meta_values( $meta_key );
+		$response = array();
+
+		if ( $values ) {
+			foreach ( $values as $value ) {
+				$response[] = array(
+					'value' => $value,
+					'label' => $value,
 				);
 			}
 		}

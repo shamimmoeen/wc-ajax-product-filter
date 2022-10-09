@@ -4,7 +4,7 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { orderByOptions } from '../../../utils';
 import ManualOptions from './ManualOptions';
-import ManualOptionsModal from './ManualOptionsModal';
+import MetaValuesModal from './MetaValuesModal';
 import useFields from './useFields';
 
 const ValueTypeText = () => {
@@ -25,7 +25,7 @@ const ValueTypeText = () => {
 		orderTypeField,
 	} = useFields();
 
-	const [isOpen, setOpen] = useState(false);
+	const [open, setOpen] = useState(false);
 
 	const openModal = () => setOpen(true);
 
@@ -71,10 +71,7 @@ const ValueTypeText = () => {
 				<>
 					<ManualOptions openModal={openModal} />
 
-					<ManualOptionsModal
-						isOpen={isOpen}
-						closeModal={closeModal}
-					/>
+					<MetaValuesModal open={open} closeModal={closeModal} />
 				</>
 			);
 		}

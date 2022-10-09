@@ -2668,7 +2668,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
-/* harmony export */   "getOptionsTableModalData": function() { return /* binding */ getOptionsTableModalData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
@@ -3159,41 +3158,6 @@ function getCustomAppearanceModalData(filterType, activeFilterData) {
   return {
     type,
     taxonomy
-  };
-}
-function getOptionsTableModalData(filterType, activeFilterData) {
-  let keyword;
-  let type;
-  let optionsKey;
-  let ajaxParams;
-
-  if ('post-meta' === filterType) {
-    console.log('prepare');
-  }
-
-  if (isTaxonomyFilters(filterType)) {
-    type = 'taxonomy';
-    optionsKey = 'manual_options';
-
-    if ('category' === filterType) {
-      keyword = 'product_cat';
-    } else if ('tag' === filterType) {
-      keyword = 'product_tag';
-    } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
-      keyword = activeFilterData.taxonomy;
-    }
-
-    ajaxParams = {
-      action: 'get_taxonomy_filter_options',
-      taxonomy: keyword
-    };
-  }
-
-  return {
-    keyword,
-    type,
-    optionsKey,
-    ajaxParams
   };
 }
 
