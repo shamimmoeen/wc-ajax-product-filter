@@ -1,4 +1,3 @@
-import CustomTabPanel from '../CustomTabPanel';
 import { __ } from '@wordpress/i18n';
 
 const VisibilityRules = () => {
