@@ -4506,139 +4506,6 @@ const AvailableFilters = _ref => {
 
 /***/ }),
 
-/***/ "./src/components/CustomTabPanel.js":
-/*!******************************************!*\
-  !*** ./src/components/CustomTabPanel.js ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ CustomTabPanel; }
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
-
-
-
-/**
- * @wordpress/components '^19.16.0'
- * @wordpress/scripts '^23.5.0'
- */
-
-/**
- * External dependencies
- */
-
-
-/**
- * WordPress dependencies
- */
-
-
-
-/**
- * Internal dependencies
- */
-
-
-
-const noop = () => {};
-
-const TabButton = _ref => {
-  let {
-    tabId,
-    onClick,
-    isDisabled,
-    children,
-    selected,
-    ...rest
-  } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-    role: "tab",
-    tabIndex: selected ? null : -1,
-    "aria-selected": selected,
-    id: tabId,
-    onClick: onClick,
-    disabled: isDisabled
-  }, rest), children);
-};
-
-function CustomTabPanel(_ref2) {
-  var _selectedTab$name;
-
-  let {
-    className,
-    children,
-    tabs,
-    initialTabName,
-    orientation = 'horizontal',
-    activeClass = 'is-active',
-    onSelect = noop
-  } = _ref2;
-  const instanceId = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__.useInstanceId)(CustomTabPanel, 'tab-panel');
-  const [selected, setSelected] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
-
-  const handleClick = tabKey => {
-    setSelected(tabKey);
-    onSelect(tabKey);
-  };
-
-  const onNavigate = (childIndex, child) => {
-    child.click();
-  };
-
-  const selectedTab = (0,lodash__WEBPACK_IMPORTED_MODULE_3__.find)(tabs, {
-    name: selected
-  });
-  const selectedId = `${instanceId}-${(_selectedTab$name = selectedTab === null || selectedTab === void 0 ? void 0 : selectedTab.name) !== null && _selectedTab$name !== void 0 ? _selectedTab$name : 'none'}`;
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    const newSelectedTab = (0,lodash__WEBPACK_IMPORTED_MODULE_3__.find)(tabs, {
-      name: selected
-    });
-
-    if (!newSelectedTab) {
-      setSelected(initialTabName || (tabs.length > 0 ? tabs[0].name : null));
-    }
-  }, [tabs]);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: className
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.NavigableMenu, {
-    role: "tablist",
-    orientation: orientation,
-    onNavigate: onNavigate,
-    className: "components-tab-panel__tabs"
-  }, tabs.map(tab => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(TabButton, {
-    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()('components-tab-panel__tabs-item', tab.className, {
-      [activeClass]: tab.name === selected
-    }),
-    tabId: `${instanceId}-${tab.name}`,
-    "aria-controls": `${instanceId}-${tab.name}-view`,
-    selected: tab.name === selected,
-    key: tab.name,
-    onClick: (0,lodash__WEBPACK_IMPORTED_MODULE_3__.partial)(handleClick, tab.name),
-    isDisabled: tab.isDisabled
-  }, tab.title))), selectedTab && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    key: selectedId,
-    "aria-labelledby": selectedId,
-    role: "tabpanel",
-    id: `${selectedId}-view`,
-    className: "components-tab-panel__tab-content"
-  }, children(selectedTab)));
-}
-
-/***/ }),
-
 /***/ "./src/components/Field/Checkbox.js":
 /*!******************************************!*\
   !*** ./src/components/Field/Checkbox.js ***!
@@ -8814,7 +8681,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _CustomTabPanel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../CustomTabPanel */ "./src/components/CustomTabPanel.js");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../FilterContext */ "./src/components/Filter/FilterContext.js");
 /* harmony import */ var _Advanced__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Advanced */ "./src/components/Filter/FilterNav/FilterUI/Advanced.js");
 /* harmony import */ var _General__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./General */ "./src/components/Filter/FilterNav/FilterUI/General.js");
@@ -8853,48 +8721,36 @@ const FilterUI = () => {
     initialTabName = activeUIStep;
   }
 
-  const isOptionsDisabled = () => {
-    let disabled = false;
+  let tabs = [{
+    name: 'general',
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('General', 'wc-ajax-product-filter'),
+    className: 'general'
+  }, {
+    name: 'appearance',
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Appearance', 'wc-ajax-product-filter'),
+    className: 'appearance'
+  }, {
+    name: 'options',
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Options', 'wc-ajax-product-filter'),
+    className: 'options'
+  }, {
+    name: 'advanced',
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Advanced', 'wc-ajax-product-filter'),
+    className: 'advanced'
+  }];
+  const withoutOptions = ['active-filters', 'reset-button'];
 
-    if ('active-filters' === filterType) {
-      disabled = true;
-    } else if ('reset-button' === filterType) {
-      disabled = true;
-    }
+  if (withoutOptions.includes(filterType)) {
+    tabs = tabs.filter(tab => 'options' !== tab.name);
+  }
 
-    return disabled;
-  };
-
-  const isAppearanceDisabled = () => {
-    let disabled = false;
-    return disabled;
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CustomTabPanel__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
     className: "__filter_ui_tab_panel",
     activeClass: "active-tab",
     orientation: "vertical",
     initialTabName: initialTabName,
     onSelect: handleSelect,
-    tabs: [{
-      name: 'general',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('General', 'wc-ajax-product-filter'),
-      className: 'general'
-    }, {
-      name: 'appearance',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Appearance', 'wc-ajax-product-filter'),
-      className: 'appearance'
-    }, {
-      name: 'options',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Options', 'wc-ajax-product-filter'),
-      className: 'options',
-      isDisabled: isOptionsDisabled()
-    }, {
-      name: 'advanced',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Advanced', 'wc-ajax-product-filter'),
-      className: 'advanced',
-      isDisabled: isAppearanceDisabled()
-    }]
+    tabs: tabs
   }, tab => {
     if ('general' === tab.name) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_General__WEBPACK_IMPORTED_MODULE_5__["default"], null);
@@ -10650,10 +10506,8 @@ const Title = _ref => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _CustomTabPanel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../CustomTabPanel */ "./src/components/CustomTabPanel.js");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 
 
 
@@ -22357,17 +22211,6 @@ module.exports = window["regeneratorRuntime"];
 
 "use strict";
 module.exports = window["wp"]["components"];
-
-/***/ }),
-
-/***/ "@wordpress/compose":
-/*!*********************************!*\
-  !*** external ["wp","compose"] ***!
-  \*********************************/
-/***/ (function(module) {
-
-"use strict";
-module.exports = window["wp"]["compose"];
 
 /***/ }),
 

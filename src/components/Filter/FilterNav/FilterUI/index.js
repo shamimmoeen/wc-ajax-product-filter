@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import CustomTabPanel from '../../../CustomTabPanel';
+import { TabPanel } from '@wordpress/components';
 import { useFilter } from '../../FilterContext';
 import Advanced from './Advanced';
 import General from './General';
@@ -24,55 +24,43 @@ const FilterUI = () => {
 		initialTabName = activeUIStep;
 	}
 
-	const isOptionsDisabled = () => {
-		let disabled = false;
+	let tabs = [
+		{
+			name: 'general',
+			title: __('General', 'wc-ajax-product-filter'),
+			className: 'general',
+		},
+		{
+			name: 'appearance',
+			title: __('Appearance', 'wc-ajax-product-filter'),
+			className: 'appearance',
+		},
+		{
+			name: 'options',
+			title: __('Options', 'wc-ajax-product-filter'),
+			className: 'options',
+		},
+		{
+			name: 'advanced',
+			title: __('Advanced', 'wc-ajax-product-filter'),
+			className: 'advanced',
+		},
+	];
 
-		if ('active-filters' === filterType) {
-			disabled = true;
-		} else if ('reset-button' === filterType) {
-			disabled = true;
-		}
+	const withoutOptions = ['active-filters', 'reset-button'];
 
-		return disabled;
-	};
-
-	const isAppearanceDisabled = () => {
-		let disabled = false;
-
-		return disabled;
-	};
+	if (withoutOptions.includes(filterType)) {
+		tabs = tabs.filter((tab) => 'options' !== tab.name);
+	}
 
 	return (
-		<CustomTabPanel
+		<TabPanel
 			className='__filter_ui_tab_panel'
 			activeClass='active-tab'
 			orientation='vertical'
 			initialTabName={initialTabName}
 			onSelect={handleSelect}
-			tabs={[
-				{
-					name: 'general',
-					title: __('General', 'wc-ajax-product-filter'),
-					className: 'general',
-				},
-				{
-					name: 'appearance',
-					title: __('Appearance', 'wc-ajax-product-filter'),
-					className: 'appearance',
-				},
-				{
-					name: 'options',
-					title: __('Options', 'wc-ajax-product-filter'),
-					className: 'options',
-					isDisabled: isOptionsDisabled(),
-				},
-				{
-					name: 'advanced',
-					title: __('Advanced', 'wc-ajax-product-filter'),
-					className: 'advanced',
-					isDisabled: isAppearanceDisabled(),
-				},
-			]}
+			tabs={tabs}
 		>
 			{(tab) => {
 				if ('general' === tab.name) {
@@ -85,7 +73,7 @@ const FilterUI = () => {
 					return <Advanced />;
 				}
 			}}
-		</CustomTabPanel>
+		</TabPanel>
 	);
 };
 
