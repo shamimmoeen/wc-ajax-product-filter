@@ -1,6 +1,5 @@
 export const initialState = {
 	isLoading: true,
-	isFilterKeyChecking: false,
 	filterType: '',
 	activeUIStep: '',
 	filterKeys: {},
@@ -9,18 +8,12 @@ export const initialState = {
 	filtersData: {},
 	title: '',
 	isDirty: false,
-	isFilterOptionsLoading: true,
-	filterOptions: [],
-	filterModalOptions: [],
 };
 
 const filterReducer = (state, action) => {
 	switch (action.type) {
 		case 'SET_LOADING':
 			return { ...state, isLoading: action.payload };
-
-		case 'SET_FILTER_KEY_CHECKING':
-			return { ...state, isFilterKeyChecking: action.payload };
 
 		case 'SET_TITLE':
 			return { ...state, title: action.payload };
@@ -48,15 +41,6 @@ const filterReducer = (state, action) => {
 
 		case 'SET_FILTERS_DATA':
 			return { ...state, filtersData: action.payload };
-
-		case 'SET_FILTERS_OPTIONS_LOADING':
-			return { ...state, isFilterOptionsLoading: action.payload };
-
-		case 'SET_FILTERS_MODAL_OPTIONS':
-			return { ...state, filterModalOptions: action.payload };
-
-		case 'SET_FILTERS_OPTIONS':
-			return { ...state, filterOptions: action.payload };
 
 		default:
 			return state;

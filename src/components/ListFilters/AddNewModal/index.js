@@ -4,7 +4,6 @@ import { useEffect, useRef } from '@wordpress/element';
 import Footer from './Footer';
 import Body from './Body';
 import { useListFilters } from '../ListFiltersContext';
-import { availableFilters } from '../../Filter/utils';
 import { getAdditionalData } from '../../utils';
 
 const AddNewModal = ({
@@ -55,82 +54,6 @@ const AddNewModal = ({
 					type: 'SET_ADDITIONAL_DATA',
 					payload: additionalData,
 				});
-
-				let activeFilterData = {};
-				let filterType = '';
-				let filterKey = '';
-
-				/**
-				 * Sets the default filter keys.
-				 */
-				const filterKeys = {};
-
-				availableFilters().map((item) => {
-					const type = item.type;
-
-					if ('active-filters' === type || 'reset-button' === type) {
-						return false;
-					}
-
-					if (
-						'attribute' === type ||
-						'custom-taxonomy' === type ||
-						'post-meta' === type ||
-						'post-property' === type
-					) {
-						let data = {};
-
-						if ('attribute' === type) {
-							data = additionalData['attributes'];
-						} else if ('custom-taxonomy' === type) {
-							data = additionalData['custom_taxonomies'];
-						} else if ('post-meta' === type) {
-							data = additionalData['meta_keys'];
-						} else if ('post-property' === type) {
-							data = additionalData['post_properties'];
-						}
-
-						const _filterKeys = {};
-
-						for (const item in data) {
-							let _filterKey = `_${item}`;
-
-							if (filterType === type) {
-								let selected = '';
-
-								if (
-									'attribute' === type ||
-									'custom-taxonomy' === type
-								) {
-									selected = activeFilterData['taxonomy'];
-								} else if ('post-meta') {
-									selected = activeFilterData['meta_key'];
-								} else if ('post-property' === type) {
-									selected =
-										activeFilterData['post_property'];
-								}
-
-								if (item === selected) {
-									_filterKey = filterKey;
-								}
-							}
-
-							_filterKeys[item] = _filterKey;
-						}
-
-						filterKeys[type] = _filterKeys;
-					} else {
-						let defaultFilterKey = item.defaultFilterKey;
-
-						if (filterType === type) {
-							defaultFilterKey = filterKey;
-						}
-
-						filterKeys[type] = defaultFilterKey;
-					}
-				});
-
-				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
 				setLoading(false);
 			})

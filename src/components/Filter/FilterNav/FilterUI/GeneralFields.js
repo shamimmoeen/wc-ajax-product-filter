@@ -1,14 +1,15 @@
 import { __ } from '@wordpress/i18n';
+import { has } from 'lodash';
 import { wpFeSanitizeTitle } from '../../wp-fe-sanitize-title';
 import Listbox from '../../../Field/Listbox';
-import FilterKey from './FilterKey';
+import Text from '../../../Field/Text';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import Checkbox from '../../../Field/Checkbox';
 import useFilterData from '../../useFilterData';
 import Number from '../../../Field/Number';
+import { variableFilterTypesData } from '../../utils';
 
 const GeneralFields = ({
-	isFilterKeyChecking,
 	filterType,
 	activeFilterData,
 	filterKeys,
@@ -19,42 +20,56 @@ const GeneralFields = ({
 		handleCheckboxChange,
 		handleToggleGroupChange,
 		handleTextFieldChange,
+		setActiveFilterData,
+		setActiveFilterMultiData,
 	} = useFilterData(activeFilterData, dispatch);
 
-	const { value_type, value_decimal, value_decimal_places } =
+	const { field_key, value_type, value_decimal, value_decimal_places } =
 		activeFilterData;
 
-	const filterKey = activeFilterData['field_key'] ?? '';
+	/**
+	 * type = 'post-meta'
+	 * value = '_stock_status'
+	 * property = 'meta_key'
+	 */
+	const hanldeVariableFilterTypesChange = (type, value, property) => {
+		let filterKey;
+		let _filterKeys;
+
+		if (has(filterKeys, [type, value])) {
+			filterKey = filterKeys[type][value];
+		} else {
+			filterKey = '_' + wpFeSanitizeTitle(value);
+
+			_filterKeys = {
+				...filterKeys,
+				[type]: {
+					...filterKeys[type],
+					[value]: filterKey,
+				},
+			};
+		}
+
+		const data = { field_key: filterKey, [property]: value };
+
+		setActiveFilterMultiData(data);
+
+		if (_filterKeys) {
+			dispatch({
+				type: 'SET_FILTER_KEYS',
+				payload: _filterKeys,
+			});
+		}
+	};
 
 	const handleTaxonomyChange = (value) => {
-		if (!value) {
-			const _activeFilterData = {
-				...activeFilterData,
-				field_key: '',
-				taxonomy: '',
-			};
+		const { type, taxonomy } = activeFilterData;
 
-			dispatch({
-				type: 'SET_ACTIVE_FILTER_DATA',
-				payload: _activeFilterData,
-			});
-
+		if (value === taxonomy) {
 			return;
 		}
 
-		const type = activeFilterData['type'];
-		const filterKey = filterKeys[type][value];
-
-		const _activeFilterData = {
-			...activeFilterData,
-			field_key: filterKey,
-			taxonomy: value,
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
+		hanldeVariableFilterTypesChange(type, value, 'taxonomy');
 	};
 
 	const taxonomyField = () => {
@@ -100,34 +115,13 @@ const GeneralFields = ({
 	};
 
 	const handleMetaKeyChange = (value) => {
-		if (!value) {
-			const _activeFilterData = {
-				...activeFilterData,
-				field_key: '',
-				meta_key: '',
-			};
+		const { type, meta_key } = activeFilterData;
 
-			dispatch({
-				type: 'SET_ACTIVE_FILTER_DATA',
-				payload: _activeFilterData,
-			});
-
+		if (value === meta_key) {
 			return;
 		}
 
-		const type = activeFilterData['type'];
-		const filterKey = filterKeys[type][value];
-
-		const _activeFilterData = {
-			...activeFilterData,
-			field_key: filterKey,
-			meta_key: value,
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
+		hanldeVariableFilterTypesChange(type, value, 'meta_key');
 	};
 
 	const postMetaField = () => {
@@ -160,34 +154,13 @@ const GeneralFields = ({
 	};
 
 	const handlePostPropertyChange = (value) => {
-		if (!value) {
-			const _activeFilterData = {
-				...activeFilterData,
-				field_key: '',
-				post_property: '',
-			};
+		const { type, post_property } = activeFilterData;
 
-			dispatch({
-				type: 'SET_ACTIVE_FILTER_DATA',
-				payload: _activeFilterData,
-			});
-
+		if (value === post_property) {
 			return;
 		}
 
-		const type = activeFilterData['type'];
-		const filterKey = filterKeys[type][value];
-
-		const _activeFilterData = {
-			...activeFilterData,
-			field_key: filterKey,
-			post_property: value,
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
+		hanldeVariableFilterTypesChange(type, value, 'post_property');
 	};
 
 	const postPropertyField = () => {
@@ -218,58 +191,50 @@ const GeneralFields = ({
 	};
 
 	const handleFilterKeyChange = (e) => {
-		// Slugify the filter key.
-		const _filterKey = wpFeSanitizeTitle(e.target.value);
+		const filterKey = wpFeSanitizeTitle(e.target.value);
 
-		const _activeFilterData = {
-			...activeFilterData,
-			field_key: _filterKey,
-		};
+		setActiveFilterData('field_key', filterKey);
 
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
+		const variableFilterTypes = variableFilterTypesData();
 
-		if ('custom-taxonomy' === filterType || 'attribute' === filterType) {
-			const taxonomy = activeFilterData['taxonomy'];
+		const variableFilterTypeKeys = Object.keys(variableFilterTypes);
+
+		if (variableFilterTypeKeys.includes(filterType)) {
 			let _filterKeys;
 
-			if ('attribute' === filterType) {
-				_filterKeys = {
-					...filterKeys,
-					attribute: {
-						...filterKeys['attribute'],
-						[taxonomy]: _filterKey,
-					},
-				};
-			} else {
-				_filterKeys = {
-					...filterKeys,
-					'custom-taxonomy': {
-						...filterKeys['custom-taxonomy'],
-						[taxonomy]: _filterKey,
-					},
-				};
-			}
+			variableFilterTypeKeys.forEach((type) => {
+				if (filterType === type) {
+					const property = variableFilterTypes[type];
+					const key = activeFilterData[property];
 
-			dispatch({ type: 'SET_FILTER_KEYS', payload: _filterKeys });
+					_filterKeys = {
+						...filterKeys,
+						[type]: {
+							...filterKeys[type],
+							[key]: filterKey,
+						},
+					};
+				}
+			});
+
+			if (_filterKeys) {
+				dispatch({ type: 'SET_FILTER_KEYS', payload: _filterKeys });
+			}
 		}
 	};
 
 	const filterKeyField = () => {
 		if ('active-filters' !== filterType && 'reset-button' !== filterType) {
 			return (
-				<FilterKey
+				<Text
 					id={'filter_key'}
 					label={__('Filter Key', 'wc-ajax-product-filter')}
 					description={__(
 						'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
 						'wc-ajax-product-filter'
 					)}
-					value={filterKey}
+					value={field_key}
 					onChange={handleFilterKeyChange}
-					isFilterKeyChecking={isFilterKeyChecking}
 				/>
 			);
 		}

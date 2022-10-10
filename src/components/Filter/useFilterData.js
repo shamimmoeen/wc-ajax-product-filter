@@ -54,6 +54,13 @@ const useFilterData = (activeFilterData, dispatch) => {
 		});
 	};
 
+	const setActiveFilterMultiData = (data) => {
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: { ...activeFilterData, ...data },
+		});
+	};
+
 	return {
 		handleRadioChange,
 		handleCheckboxChange,
@@ -62,6 +69,7 @@ const useFilterData = (activeFilterData, dispatch) => {
 		handleSelectChange,
 		handleSelectTermChange,
 		setActiveFilterData,
+		setActiveFilterMultiData,
 	};
 };
 

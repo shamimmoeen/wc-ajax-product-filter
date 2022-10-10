@@ -4,11 +4,7 @@ import Notifications from '../Notifications';
 import FilterSaveButton from './FilterSaveButton';
 import { useFilter } from './FilterContext';
 import { useEffect } from '@wordpress/element';
-import {
-	availableFilters,
-	filterDefaultData,
-	getDefaultFilterKeys,
-} from './utils';
+import { filterDefaultData, initialFilterKeysData } from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
@@ -78,16 +74,8 @@ const Filter = () => {
 					payload: additionalData,
 				});
 
-				const filterKeys = getDefaultFilterKeys(
-					activeFilterData,
-					filterType,
-					filterKey,
-					additionalData
-				);
+				const filterKeys = initialFilterKeysData(activeFilterData);
 
-				/**
-				 * Sets the default filter keys.
-				 */
 				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
 				dispatch({ type: 'SET_LOADING', payload: false });

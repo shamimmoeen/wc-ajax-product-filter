@@ -2667,10 +2667,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
-/* harmony export */   "getDefaultFilterKeys": function() { return /* binding */ getDefaultFilterKeys; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
+/* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
 /* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
@@ -2680,7 +2680,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "productStatusOptions": function() { return /* binding */ productStatusOptions; },
 /* harmony export */   "taxonomyLimitByOptions": function() { return /* binding */ taxonomyLimitByOptions; },
 /* harmony export */   "termsOrderByOptions": function() { return /* binding */ termsOrderByOptions; },
-/* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; }
+/* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; },
+/* harmony export */   "variableFilterTypesData": function() { return /* binding */ variableFilterTypesData; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
@@ -2870,61 +2871,46 @@ function perPageDefaultData() {
   };
 }
 
-function getDefaultFilterKeys(activeFilterData, filterType, filterKey, additionalData) {
+function variableFilterTypesData() {
+  return {
+    attribute: 'taxonomy',
+    'custom-taxonomy': 'taxonomy',
+    'post-meta': 'meta_key',
+    'post-property': 'post_property'
+  };
+}
+function initialFilterKeysData(activeFilterData) {
+  var _activeFilterData$typ, _activeFilterData$fie;
+
+  const filterType = (_activeFilterData$typ = activeFilterData['type']) !== null && _activeFilterData$typ !== void 0 ? _activeFilterData$typ : '';
+  const filterKey = (_activeFilterData$fie = activeFilterData['field_key']) !== null && _activeFilterData$fie !== void 0 ? _activeFilterData$fie : '';
   const filterKeys = {};
-  availableFilters().map(item => {
-    const type = item.type;
 
-    if ('active-filters' === type || 'reset-button' === type) {
-      return false;
-    }
+  if (!filterType || !filterKey) {
+    return filterKeys;
+  }
 
-    if ('attribute' === type || 'custom-taxonomy' === type || 'post-meta' === type || 'post-property' === type) {
-      let data = {};
+  if ('active-filters' === filterType || 'reset-button' === filterType) {
+    return filterKeys;
+  }
 
-      if ('attribute' === type) {
-        data = additionalData['attributes'];
-      } else if ('custom-taxonomy' === type) {
-        data = additionalData['custom_taxonomies'];
-      } else if ('post-meta' === type) {
-        data = additionalData['meta_keys'];
-      } else if ('post-property' === type) {
-        data = additionalData['post_properties'];
-      }
+  const variableFilterTypes = variableFilterTypesData();
+  const variableFilterTypeKeys = Object.keys(variableFilterTypes);
 
-      const _filterKeys = {};
-
-      for (const item in data) {
-        let _filterKey = `_${item}`;
-
-        if (filterType === type) {
-          let selected = '';
-
-          if ('attribute' === type || 'custom-taxonomy' === type) {
-            selected = activeFilterData['taxonomy'];
-          } else if (true) {
-            selected = activeFilterData['meta_key'];
-          } else {}
-
-          if (item === selected) {
-            _filterKey = filterKey;
-          }
-        }
-
-        _filterKeys[item] = _filterKey;
-      }
-
-      filterKeys[type] = _filterKeys;
-    } else {
-      let defaultFilterKey = item.defaultFilterKey;
-
+  if (variableFilterTypeKeys.includes(filterType)) {
+    variableFilterTypeKeys.forEach(type => {
       if (filterType === type) {
-        defaultFilterKey = filterKey;
+        const property = variableFilterTypes[type];
+        const data = {
+          [activeFilterData[property]]: filterKey
+        };
+        filterKeys[type] = data;
       }
+    });
+  } else {
+    filterKeys[filterType] = filterKey;
+  }
 
-      filterKeys[type] = defaultFilterKey;
-    }
-  });
   return filterKeys;
 }
 function getFilterDefaultData(type) {
