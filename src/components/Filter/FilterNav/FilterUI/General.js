@@ -33,6 +33,7 @@ const Basic = () => {
 				activeFilterData={activeFilterData}
 				filterKeys={filterKeys}
 				additionalData={additionalData}
+				isDirty={isDirty}
 				dispatch={dispatch}
 			/>
 		</>

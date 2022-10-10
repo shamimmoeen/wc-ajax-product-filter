@@ -8,12 +8,13 @@ import useFields from './useFields';
 
 const ValueTypeNumber = () => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleCheckboxChange, handleTextFieldChange } = useFilterData(
 		activeFilterData,
+		isDirty,
 		dispatch
 	);
 

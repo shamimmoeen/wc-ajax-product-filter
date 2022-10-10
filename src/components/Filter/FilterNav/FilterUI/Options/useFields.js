@@ -11,12 +11,13 @@ import {
 
 const useFields = () => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
 		activeFilterData,
+		isDirty,
 		dispatch
 	);
 

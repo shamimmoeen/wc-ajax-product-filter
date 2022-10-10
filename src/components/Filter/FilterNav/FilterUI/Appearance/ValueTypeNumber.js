@@ -9,12 +9,12 @@ import useFields from './useFields';
 
 const ValueTypeNumber = () => {
 	const {
-		state: { filterType, activeFilterData },
+		state: { filterType, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
-		useFilterData(activeFilterData, dispatch);
+		useFilterData(activeFilterData, isDirty, dispatch);
 
 	const {
 		enableMultipleFilterField,

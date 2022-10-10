@@ -6,7 +6,7 @@ import useFilterData from '../../../useFilterData';
 
 const ResetFilter = () => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -14,6 +14,7 @@ const ResetFilter = () => {
 
 	const { handleCheckboxChange, handleTextFieldChange } = useFilterData(
 		activeFilterData,
+		isDirty,
 		dispatch
 	);
 

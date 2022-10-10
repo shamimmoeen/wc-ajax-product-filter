@@ -12,12 +12,13 @@ import useFields from './useFields';
 
 const TaxonomyOptions = () => {
 	const {
-		state: { filterType, activeFilterData },
+		state: { filterType, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleToggleGroupChange, handleSelectTermChange } = useFilterData(
 		activeFilterData,
+		isDirty,
 		dispatch
 	);
 
