@@ -2839,61 +2839,6 @@ const ToggleGroup = _ref => {
 
 /***/ }),
 
-/***/ "./src/components/Filter/FilterNav/FilterUI/FilterKey.js":
-/*!***************************************************************!*\
-  !*** ./src/components/Filter/FilterNav/FilterUI/FilterKey.js ***!
-  \***************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-
-
-
-
-const FilterKey = _ref => {
-  let {
-    label,
-    id,
-    value,
-    onChange,
-    description,
-    type = 'text',
-    isFilterKeyChecking,
-    ...rest
-  } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__form_control __filter_key"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__inner"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
-    htmlFor: id
-  }, label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__input_wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-    type: type,
-    id: id,
-    className: "components-text-control__input",
-    value: value,
-    onChange: onChange
-  }, rest)), isFilterKeyChecking && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Spinner, null)))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
-    className: "description"
-  }, description) : '');
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (FilterKey);
-
-/***/ }),
-
 /***/ "./src/components/Filter/FilterNav/FilterUI/GeneralFields.js":
 /*!*******************************************************************!*\
   !*** ./src/components/Filter/FilterNav/FilterUI/GeneralFields.js ***!
@@ -2906,13 +2851,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../wp-fe-sanitize-title */ "./src/components/Filter/wp-fe-sanitize-title.js");
-/* harmony import */ var _Field_Listbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Field/Listbox */ "./src/components/Field/Listbox.js");
-/* harmony import */ var _FilterKey__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FilterKey */ "./src/components/Filter/FilterNav/FilterUI/FilterKey.js");
-/* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
-/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
-/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../useFilterData */ "./src/components/Filter/useFilterData.js");
-/* harmony import */ var _Field_Number__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Field/Number */ "./src/components/Field/Number.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../wp-fe-sanitize-title */ "./src/components/Filter/wp-fe-sanitize-title.js");
+/* harmony import */ var _Field_Listbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Field/Listbox */ "./src/components/Field/Listbox.js");
+/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../useFilterData */ "./src/components/Filter/useFilterData.js");
+/* harmony import */ var _Field_Number__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Field/Number */ "./src/components/Field/Number.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../utils */ "./src/components/Filter/utils.js");
+
+
 
 
 
@@ -2924,10 +2874,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const GeneralFields = _ref => {
-  var _activeFilterData$fie;
-
   let {
-    isFilterKeyChecking,
     filterType,
     activeFilterData,
     filterKeys,
@@ -2937,38 +2884,63 @@ const GeneralFields = _ref => {
   const {
     handleCheckboxChange,
     handleToggleGroupChange,
-    handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, dispatch);
+    handleTextFieldChange,
+    setActiveFilterData,
+    setActiveFilterMultiData
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_8__["default"])(activeFilterData, dispatch);
   const {
+    field_key,
     value_type,
     value_decimal,
     value_decimal_places
   } = activeFilterData;
-  const filterKey = (_activeFilterData$fie = activeFilterData['field_key']) !== null && _activeFilterData$fie !== void 0 ? _activeFilterData$fie : '';
+  /**
+   * type = 'post-meta'
+   * value = '_stock_status'
+   * property = 'meta_key'
+   */
+
+  const hanldeVariableFilterTypesChange = (type, value, property) => {
+    let filterKey;
+
+    let _filterKeys;
+
+    if ((0,lodash__WEBPACK_IMPORTED_MODULE_2__.has)(filterKeys, [type, value])) {
+      filterKey = filterKeys[type][value];
+    } else {
+      filterKey = '_' + (0,_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_3__.wpFeSanitizeTitle)(value);
+      _filterKeys = { ...filterKeys,
+        [type]: { ...filterKeys[type],
+          [value]: filterKey
+        }
+      };
+    }
+
+    const data = {
+      field_key: filterKey,
+      [property]: value
+    };
+    setActiveFilterMultiData(data);
+
+    if (_filterKeys) {
+      dispatch({
+        type: 'SET_FILTER_KEYS',
+        payload: _filterKeys
+      });
+    }
+  };
 
   const handleTaxonomyChange = value => {
-    if (!value) {
-      const _activeFilterData = { ...activeFilterData,
-        field_key: '',
-        taxonomy: ''
-      };
-      dispatch({
-        type: 'SET_ACTIVE_FILTER_DATA',
-        payload: _activeFilterData
-      });
+    const {
+      type,
+      taxonomy
+    } = activeFilterData;
+
+    if (value === taxonomy) {
       return;
     }
 
-    const type = activeFilterData['type'];
-    const filterKey = filterKeys[type][value];
-    const _activeFilterData = { ...activeFilterData,
-      field_key: filterKey,
-      taxonomy: value
-    };
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: _activeFilterData
-    });
+    hanldeVariableFilterTypesChange(type, value, 'taxonomy');
   };
 
   const taxonomyField = () => {
@@ -2996,7 +2968,7 @@ const GeneralFields = _ref => {
         });
       }
 
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
         label: taxonomyFieldLabel,
         description: taxonomyFieldDesc,
         id: 'taxonomy',
@@ -3009,28 +2981,16 @@ const GeneralFields = _ref => {
   };
 
   const handleMetaKeyChange = value => {
-    if (!value) {
-      const _activeFilterData = { ...activeFilterData,
-        field_key: '',
-        meta_key: ''
-      };
-      dispatch({
-        type: 'SET_ACTIVE_FILTER_DATA',
-        payload: _activeFilterData
-      });
+    const {
+      type,
+      meta_key
+    } = activeFilterData;
+
+    if (value === meta_key) {
       return;
     }
 
-    const type = activeFilterData['type'];
-    const filterKey = filterKeys[type][value];
-    const _activeFilterData = { ...activeFilterData,
-      field_key: filterKey,
-      meta_key: value
-    };
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: _activeFilterData
-    });
+    hanldeVariableFilterTypesChange(type, value, 'meta_key');
   };
 
   const postMetaField = () => {
@@ -3046,7 +3006,7 @@ const GeneralFields = _ref => {
         });
       }
 
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'meta_key',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta Key', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the meta key that values will be available as filter options.', 'wc-ajax-product-filter'),
@@ -3059,28 +3019,16 @@ const GeneralFields = _ref => {
   };
 
   const handlePostPropertyChange = value => {
-    if (!value) {
-      const _activeFilterData = { ...activeFilterData,
-        field_key: '',
-        post_property: ''
-      };
-      dispatch({
-        type: 'SET_ACTIVE_FILTER_DATA',
-        payload: _activeFilterData
-      });
+    const {
+      type,
+      post_property
+    } = activeFilterData;
+
+    if (value === post_property) {
       return;
     }
 
-    const type = activeFilterData['type'];
-    const filterKey = filterKeys[type][value];
-    const _activeFilterData = { ...activeFilterData,
-      field_key: filterKey,
-      post_property: value
-    };
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: _activeFilterData
-    });
+    hanldeVariableFilterTypesChange(type, value, 'post_property');
   };
 
   const postPropertyField = () => {
@@ -3098,7 +3046,7 @@ const GeneralFields = _ref => {
         });
       }
 
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Listbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Post Property', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the post property that values will be available as filter options.', 'wc-ajax-product-filter'),
         id: 'post_property',
@@ -3111,59 +3059,50 @@ const GeneralFields = _ref => {
   };
 
   const handleFilterKeyChange = e => {
-    // Slugify the filter key.
-    const _filterKey = (0,_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_2__.wpFeSanitizeTitle)(e.target.value);
+    const filterKey = (0,_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_3__.wpFeSanitizeTitle)(e.target.value);
+    setActiveFilterData('field_key', filterKey);
+    const variableFilterTypes = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.variableFilterTypesData)();
+    const variableFilterTypeKeys = Object.keys(variableFilterTypes);
 
-    const _activeFilterData = { ...activeFilterData,
-      field_key: _filterKey
-    };
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: _activeFilterData
-    });
-
-    if ('custom-taxonomy' === filterType || 'attribute' === filterType) {
-      const taxonomy = activeFilterData['taxonomy'];
-
+    if (variableFilterTypeKeys.includes(filterType)) {
       let _filterKeys;
 
-      if ('attribute' === filterType) {
-        _filterKeys = { ...filterKeys,
-          attribute: { ...filterKeys['attribute'],
-            [taxonomy]: _filterKey
-          }
-        };
-      } else {
-        _filterKeys = { ...filterKeys,
-          'custom-taxonomy': { ...filterKeys['custom-taxonomy'],
-            [taxonomy]: _filterKey
-          }
-        };
-      }
-
-      dispatch({
-        type: 'SET_FILTER_KEYS',
-        payload: _filterKeys
+      variableFilterTypeKeys.forEach(type => {
+        if (filterType === type) {
+          const property = variableFilterTypes[type];
+          const key = activeFilterData[property];
+          _filterKeys = { ...filterKeys,
+            [type]: { ...filterKeys[type],
+              [key]: filterKey
+            }
+          };
+        }
       });
+
+      if (_filterKeys) {
+        dispatch({
+          type: 'SET_FILTER_KEYS',
+          payload: _filterKeys
+        });
+      }
     }
   };
 
   const filterKeyField = () => {
     if ('active-filters' !== filterType && 'reset-button' !== filterType) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterKey__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_5__["default"], {
         id: 'filter_key',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Key', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.', 'wc-ajax-product-filter'),
-        value: filterKey,
-        onChange: handleFilterKeyChange,
-        isFilterKeyChecking: isFilterKeyChecking
+        value: field_key,
+        onChange: handleFilterKeyChange
       });
     }
   };
 
   const valueTypeField = () => {
     if ('post-meta' === filterType) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_6__["default"], {
         id: 'value_type',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Type', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the meta value type.', 'wc-ajax-product-filter'),
@@ -3185,7 +3124,7 @@ const GeneralFields = _ref => {
 
   const valueIsDecimalField = () => {
     if ('post-meta' === filterType && 'number' === value_type) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_7__["default"], {
         id: 'value_decimal',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value is decimal', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether the meta values have decimal places.', 'wc-ajax-product-filter'),
@@ -3197,7 +3136,7 @@ const GeneralFields = _ref => {
 
   const decimalPlacesField = () => {
     if ('post-meta' === filterType && 'number' === value_type && '1' === value_decimal) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_9__["default"], {
         id: 'value_decimal_places',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Places', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the number of decimal places in meta values.', 'wc-ajax-product-filter'),
@@ -3296,6 +3235,15 @@ const useFilterData = (activeFilterData, dispatch) => {
     });
   };
 
+  const setActiveFilterMultiData = data => {
+    dispatch({
+      type: 'SET_ACTIVE_FILTER_DATA',
+      payload: { ...activeFilterData,
+        ...data
+      }
+    });
+  };
+
   return {
     handleRadioChange,
     handleCheckboxChange,
@@ -3303,7 +3251,8 @@ const useFilterData = (activeFilterData, dispatch) => {
     handleToggleGroupChange,
     handleSelectChange,
     handleSelectTermChange,
-    setActiveFilterData
+    setActiveFilterData,
+    setActiveFilterMultiData
   };
 };
 
@@ -3325,10 +3274,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
-/* harmony export */   "getDefaultFilterKeys": function() { return /* binding */ getDefaultFilterKeys; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
+/* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
 /* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
@@ -3338,7 +3287,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "productStatusOptions": function() { return /* binding */ productStatusOptions; },
 /* harmony export */   "taxonomyLimitByOptions": function() { return /* binding */ taxonomyLimitByOptions; },
 /* harmony export */   "termsOrderByOptions": function() { return /* binding */ termsOrderByOptions; },
-/* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; }
+/* harmony export */   "textDisplayTypes": function() { return /* binding */ textDisplayTypes; },
+/* harmony export */   "variableFilterTypesData": function() { return /* binding */ variableFilterTypesData; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
@@ -3528,61 +3478,46 @@ function perPageDefaultData() {
   };
 }
 
-function getDefaultFilterKeys(activeFilterData, filterType, filterKey, additionalData) {
+function variableFilterTypesData() {
+  return {
+    attribute: 'taxonomy',
+    'custom-taxonomy': 'taxonomy',
+    'post-meta': 'meta_key',
+    'post-property': 'post_property'
+  };
+}
+function initialFilterKeysData(activeFilterData) {
+  var _activeFilterData$typ, _activeFilterData$fie;
+
+  const filterType = (_activeFilterData$typ = activeFilterData['type']) !== null && _activeFilterData$typ !== void 0 ? _activeFilterData$typ : '';
+  const filterKey = (_activeFilterData$fie = activeFilterData['field_key']) !== null && _activeFilterData$fie !== void 0 ? _activeFilterData$fie : '';
   const filterKeys = {};
-  availableFilters().map(item => {
-    const type = item.type;
 
-    if ('active-filters' === type || 'reset-button' === type) {
-      return false;
-    }
+  if (!filterType || !filterKey) {
+    return filterKeys;
+  }
 
-    if ('attribute' === type || 'custom-taxonomy' === type || 'post-meta' === type || 'post-property' === type) {
-      let data = {};
+  if ('active-filters' === filterType || 'reset-button' === filterType) {
+    return filterKeys;
+  }
 
-      if ('attribute' === type) {
-        data = additionalData['attributes'];
-      } else if ('custom-taxonomy' === type) {
-        data = additionalData['custom_taxonomies'];
-      } else if ('post-meta' === type) {
-        data = additionalData['meta_keys'];
-      } else if ('post-property' === type) {
-        data = additionalData['post_properties'];
-      }
+  const variableFilterTypes = variableFilterTypesData();
+  const variableFilterTypeKeys = Object.keys(variableFilterTypes);
 
-      const _filterKeys = {};
-
-      for (const item in data) {
-        let _filterKey = `_${item}`;
-
-        if (filterType === type) {
-          let selected = '';
-
-          if ('attribute' === type || 'custom-taxonomy' === type) {
-            selected = activeFilterData['taxonomy'];
-          } else if (true) {
-            selected = activeFilterData['meta_key'];
-          } else {}
-
-          if (item === selected) {
-            _filterKey = filterKey;
-          }
-        }
-
-        _filterKeys[item] = _filterKey;
-      }
-
-      filterKeys[type] = _filterKeys;
-    } else {
-      let defaultFilterKey = item.defaultFilterKey;
-
+  if (variableFilterTypeKeys.includes(filterType)) {
+    variableFilterTypeKeys.forEach(type => {
       if (filterType === type) {
-        defaultFilterKey = filterKey;
+        const property = variableFilterTypes[type];
+        const data = {
+          [activeFilterData[property]]: filterKey
+        };
+        filterKeys[type] = data;
       }
+    });
+  } else {
+    filterKeys[filterType] = filterKey;
+  }
 
-      filterKeys[type] = defaultFilterKey;
-    }
-  });
   return filterKeys;
 }
 function getFilterDefaultData(type) {
@@ -4300,7 +4235,6 @@ const Body = _ref => {
   } = _ref;
   const {
     state: {
-      isFilterKeyChecking,
       title,
       filterType,
       activeFilterData,
@@ -4380,7 +4314,6 @@ const Body = _ref => {
     content = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__step_inner"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Filter_FilterNav_FilterUI_GeneralFields__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      isFilterKeyChecking: isFilterKeyChecking,
       filterType: filterType,
       activeFilterData: activeFilterData,
       filterKeys: filterKeys,
@@ -4546,9 +4479,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Footer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Footer */ "./src/components/ListFilters/AddNewModal/Footer.js");
 /* harmony import */ var _Body__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Body */ "./src/components/ListFilters/AddNewModal/Body.js");
 /* harmony import */ var _ListFiltersContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ListFiltersContext */ "./src/components/ListFilters/ListFiltersContext.js");
-/* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Filter/utils */ "./src/components/Filter/utils.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils */ "./src/components/utils.js");
-
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils */ "./src/components/utils.js");
 
 
 
@@ -4596,7 +4527,7 @@ const AddNewModal = _ref => {
       return;
     }
 
-    (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getAdditionalData)().then(res => {
+    (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getAdditionalData)().then(res => {
       const {
         data: {
           data: additionalData
@@ -4605,71 +4536,6 @@ const AddNewModal = _ref => {
       dispatch({
         type: 'SET_ADDITIONAL_DATA',
         payload: additionalData
-      });
-      let activeFilterData = {};
-      let filterType = '';
-      let filterKey = '';
-      /**
-       * Sets the default filter keys.
-       */
-
-      const filterKeys = {};
-      (0,_Filter_utils__WEBPACK_IMPORTED_MODULE_6__.availableFilters)().map(item => {
-        const type = item.type;
-
-        if ('active-filters' === type || 'reset-button' === type) {
-          return false;
-        }
-
-        if ('attribute' === type || 'custom-taxonomy' === type || 'post-meta' === type || 'post-property' === type) {
-          let data = {};
-
-          if ('attribute' === type) {
-            data = additionalData['attributes'];
-          } else if ('custom-taxonomy' === type) {
-            data = additionalData['custom_taxonomies'];
-          } else if ('post-meta' === type) {
-            data = additionalData['meta_keys'];
-          } else if ('post-property' === type) {
-            data = additionalData['post_properties'];
-          }
-
-          const _filterKeys = {};
-
-          for (const item in data) {
-            let _filterKey = `_${item}`;
-
-            if (filterType === type) {
-              let selected = '';
-
-              if ('attribute' === type || 'custom-taxonomy' === type) {
-                selected = activeFilterData['taxonomy'];
-              } else if (true) {
-                selected = activeFilterData['meta_key'];
-              } else {}
-
-              if (item === selected) {
-                _filterKey = filterKey;
-              }
-            }
-
-            _filterKeys[item] = _filterKey;
-          }
-
-          filterKeys[type] = _filterKeys;
-        } else {
-          let defaultFilterKey = item.defaultFilterKey;
-
-          if (filterType === type) {
-            defaultFilterKey = filterKey;
-          }
-
-          filterKeys[type] = defaultFilterKey;
-        }
-      });
-      dispatch({
-        type: 'SET_FILTER_KEYS',
-        payload: filterKeys
       });
       setLoading(false);
     }).catch(err => console.log(err));
@@ -5104,7 +4970,6 @@ const _filterType = 'attribute';
 const _filterTitle = 'Hello World';
 const initialState = {
   isLoading: true,
-  isFilterKeyChecking: false,
   title: _filterTitle,
   filterType: _filterType,
   filterKeys: {},
@@ -5119,11 +4984,6 @@ const listFiltersReducer = (state, action) => {
     case 'SET_LOADING':
       return { ...state,
         isLoading: action.payload
-      };
-
-    case 'SET_FILTER_KEY_CHECKING':
-      return { ...state,
-        isFilterKeyChecking: action.payload
       };
 
     case 'SET_TITLE':

@@ -169,21 +169,6 @@
 	}
 }
 
-// TODO: Maybe delete.
-// Filter Key field.
-.__form_control {
-	&.__filter_key {
-		.__input_wrapper {
-			display: flex;
-			align-items: center;
-		}
-
-		.components-spinner {
-			margin-top: 0;
-		}
-	}
-}
-
 // Number min, max fields with auto detect.
 .__form_control {
 	&.with-checkbox {

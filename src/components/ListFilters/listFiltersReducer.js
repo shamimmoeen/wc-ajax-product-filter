@@ -39,7 +39,6 @@ const _filterTitle = 'Hello World';
 
 export const initialState = {
 	isLoading: true,
-	isFilterKeyChecking: false,
 	title: _filterTitle,
 	filterType: _filterType,
 	filterKeys: {},
@@ -53,9 +52,6 @@ const listFiltersReducer = (state, action) => {
 	switch (action.type) {
 		case 'SET_LOADING':
 			return { ...state, isLoading: action.payload };
-
-		case 'SET_FILTER_KEY_CHECKING':
-			return { ...state, isFilterKeyChecking: action.payload };
 
 		case 'SET_TITLE':
 			return { ...state, title: action.payload };

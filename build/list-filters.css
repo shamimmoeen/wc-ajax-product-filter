@@ -331,14 +331,6 @@ body {
   }
 }
 
-.__form_control.__filter_key .__input_wrapper {
-  display: flex;
-  align-items: center;
-}
-.__form_control.__filter_key .components-spinner {
-  margin-top: 0;
-}
-
 .__form_control.with-checkbox .__input_wrapper {
   display: flex;
   gap: 12px;

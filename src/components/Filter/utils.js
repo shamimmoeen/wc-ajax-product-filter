@@ -198,74 +198,44 @@ function perPageDefaultData() {
 	};
 }
 
-export function getDefaultFilterKeys(
-	activeFilterData,
-	filterType,
-	filterKey,
-	additionalData
-) {
+export function variableFilterTypesData() {
+	return {
+		attribute: 'taxonomy',
+		'custom-taxonomy': 'taxonomy',
+		'post-meta': 'meta_key',
+		'post-property': 'post_property',
+	};
+}
+
+export function initialFilterKeysData(activeFilterData) {
+	const filterType = activeFilterData['type'] ?? '';
+	const filterKey = activeFilterData['field_key'] ?? '';
 	const filterKeys = {};
 
-	availableFilters().map((item) => {
-		const type = item.type;
+	if (!filterType || !filterKey) {
+		return filterKeys;
+	}
 
-		if ('active-filters' === type || 'reset-button' === type) {
-			return false;
-		}
+	if ('active-filters' === filterType || 'reset-button' === filterType) {
+		return filterKeys;
+	}
 
-		if (
-			'attribute' === type ||
-			'custom-taxonomy' === type ||
-			'post-meta' === type ||
-			'post-property' === type
-		) {
-			let data = {};
+	const variableFilterTypes = variableFilterTypesData();
 
-			if ('attribute' === type) {
-				data = additionalData['attributes'];
-			} else if ('custom-taxonomy' === type) {
-				data = additionalData['custom_taxonomies'];
-			} else if ('post-meta' === type) {
-				data = additionalData['meta_keys'];
-			} else if ('post-property' === type) {
-				data = additionalData['post_properties'];
-			}
+	const variableFilterTypeKeys = Object.keys(variableFilterTypes);
 
-			const _filterKeys = {};
-
-			for (const item in data) {
-				let _filterKey = `_${item}`;
-
-				if (filterType === type) {
-					let selected = '';
-
-					if ('attribute' === type || 'custom-taxonomy' === type) {
-						selected = activeFilterData['taxonomy'];
-					} else if ('post-meta') {
-						selected = activeFilterData['meta_key'];
-					} else if ('post-property' === type) {
-						selected = activeFilterData['post_property'];
-					}
-
-					if (item === selected) {
-						_filterKey = filterKey;
-					}
-				}
-
-				_filterKeys[item] = _filterKey;
-			}
-
-			filterKeys[type] = _filterKeys;
-		} else {
-			let defaultFilterKey = item.defaultFilterKey;
-
+	if (variableFilterTypeKeys.includes(filterType)) {
+		variableFilterTypeKeys.forEach((type) => {
 			if (filterType === type) {
-				defaultFilterKey = filterKey;
-			}
+				const property = variableFilterTypes[type];
+				const data = { [activeFilterData[property]]: filterKey };
 
-			filterKeys[type] = defaultFilterKey;
-		}
-	});
+				filterKeys[type] = data;
+			}
+		});
+	} else {
+		filterKeys[filterType] = filterKey;
+	}
 
 	return filterKeys;
 }
