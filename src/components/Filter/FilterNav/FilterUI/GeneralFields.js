@@ -14,6 +14,7 @@ const GeneralFields = ({
 	activeFilterData,
 	filterKeys,
 	additionalData,
+	isDirty,
 	dispatch,
 }) => {
 	const {
@@ -22,7 +23,7 @@ const GeneralFields = ({
 		handleTextFieldChange,
 		setActiveFilterData,
 		setActiveFilterMultiData,
-	} = useFilterData(activeFilterData, dispatch);
+	} = useFilterData(activeFilterData, isDirty, dispatch);
 
 	const { field_key, value_type, value_decimal, value_decimal_places } =
 		activeFilterData;

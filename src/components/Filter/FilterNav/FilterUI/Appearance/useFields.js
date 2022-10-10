@@ -7,12 +7,12 @@ import { useFilter } from '../../../FilterContext';
 
 const useFields = (type) => {
 	const {
-		state: { filterType, activeFilterData },
+		state: { filterType, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, dispatch);
+		useFilterData(activeFilterData, isDirty, dispatch);
 
 	const {
 		display_type,

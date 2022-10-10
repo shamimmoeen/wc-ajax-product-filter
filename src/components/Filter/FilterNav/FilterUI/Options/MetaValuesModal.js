@@ -10,11 +10,15 @@ const modalInitialClass = '__meta_values_modal';
 
 const MetaValuesModal = ({ open, closeModal }) => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
-	const { setActiveFilterData } = useFilterData(activeFilterData, dispatch);
+	const { setActiveFilterData } = useFilterData(
+		activeFilterData,
+		isDirty,
+		dispatch
+	);
 
 	const [loading, setLoading] = useState(true);
 	const [options, setOptions] = useState([]);

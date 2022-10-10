@@ -10,13 +10,17 @@ import ValueTypeDate from './ValueTypeDate';
 
 const Appearance = () => {
 	const {
-		state: { filterType, activeFilterData },
+		state: { filterType, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { show_title, value_type } = activeFilterData;
 
-	const { handleCheckboxChange } = useFilterData(activeFilterData, dispatch);
+	const { handleCheckboxChange } = useFilterData(
+		activeFilterData,
+		isDirty,
+		dispatch
+	);
 
 	const renderFields = () => {
 		let fields;

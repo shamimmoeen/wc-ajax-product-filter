@@ -9,12 +9,13 @@ import useFields from './useFields';
 
 const ValueTypeText = () => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleToggleGroupChange } = useFilterData(
 		activeFilterData,
+		isDirty,
 		dispatch
 	);
 

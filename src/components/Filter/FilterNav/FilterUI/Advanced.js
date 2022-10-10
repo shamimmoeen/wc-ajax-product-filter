@@ -8,12 +8,12 @@ import { accordionStates } from '../../utils';
 
 const Advanced = () => {
 	const {
-		state: { filterType, activeFilterData },
+		state: { filterType, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
 	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, dispatch);
+		useFilterData(activeFilterData, isDirty, dispatch);
 
 	const {
 		show_title,

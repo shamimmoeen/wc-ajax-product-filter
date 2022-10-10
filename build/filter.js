@@ -5196,7 +5196,8 @@ const Advanced = () => {
   const {
     state: {
       filterType,
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
@@ -5204,7 +5205,7 @@ const Advanced = () => {
     handleRadioChange,
     handleCheckboxChange,
     handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, isDirty, dispatch);
   const {
     show_title,
     use_term_slug_in_url,
@@ -5335,7 +5336,8 @@ __webpack_require__.r(__webpack_exports__);
 const ActiveFilters = () => {
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
@@ -5352,7 +5354,7 @@ const ActiveFilters = () => {
     handleRadioChange,
     handleCheckboxChange,
     handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, isDirty, dispatch);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'active_filters_layout',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'wc-ajax-product-filter'),
@@ -5459,13 +5461,14 @@ const CustomAppearanceModal = _ref => {
   const [modified, setModified] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_6__.useFilter)();
   const {
     setActiveFilterData
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, isDirty, dispatch);
   const maxItems = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getNoOfMaxTermsToRender)();
   const timeout = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getTimeoutForRemovingMediaFrames)(); // Fetch the options for the first time render.
 
@@ -5917,7 +5920,8 @@ __webpack_require__.r(__webpack_exports__);
 const ResetFilter = () => {
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_4__.useFilter)();
@@ -5928,7 +5932,7 @@ const ResetFilter = () => {
   const {
     handleCheckboxChange,
     handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, isDirty, dispatch);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'reset_button_label',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Button Label', 'wc-ajax-product-filter'),
@@ -5981,7 +5985,8 @@ const ValueTypeDate = () => {
   const {
     state: {
       activeFilterData,
-      additionalData
+      additionalData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
@@ -5989,7 +5994,7 @@ const ValueTypeDate = () => {
     handleRadioChange,
     handleCheckboxChange,
     handleSelectChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, isDirty, dispatch);
   const {
     enableMultipleFilterField,
     queryTypeField,
@@ -6114,7 +6119,8 @@ const ValueTypeNumber = () => {
   const {
     state: {
       filterType,
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
@@ -6122,7 +6128,7 @@ const ValueTypeNumber = () => {
     handleRadioChange,
     handleCheckboxChange,
     handleSelectChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, isDirty, dispatch);
   const {
     enableMultipleFilterField,
     queryTypeField,
@@ -6235,7 +6241,8 @@ const ValueTypeText = () => {
     state: {
       filterType,
       additionalData,
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
@@ -6243,7 +6250,7 @@ const ValueTypeText = () => {
     handleCheckboxChange,
     handleToggleGroupChange,
     handleSelectChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, isDirty, dispatch);
   const {
     enableMultipleFilterField,
     queryTypeField,
@@ -6457,7 +6464,8 @@ const Appearance = () => {
   const {
     state: {
       filterType,
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
@@ -6467,7 +6475,7 @@ const Appearance = () => {
   } = activeFilterData;
   const {
     handleCheckboxChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, isDirty, dispatch);
 
   const renderFields = () => {
     let fields;
@@ -6535,7 +6543,8 @@ const useFields = type => {
   const {
     state: {
       filterType,
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_6__.useFilter)();
@@ -6543,7 +6552,7 @@ const useFields = type => {
     handleRadioChange,
     handleCheckboxChange,
     handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, isDirty, dispatch);
   const {
     display_type,
     enable_multiple_filter,
@@ -6917,6 +6926,7 @@ const Basic = () => {
     activeFilterData: activeFilterData,
     filterKeys: filterKeys,
     additionalData: additionalData,
+    isDirty: isDirty,
     dispatch: dispatch
   }));
 };
@@ -6965,6 +6975,7 @@ const GeneralFields = _ref => {
     activeFilterData,
     filterKeys,
     additionalData,
+    isDirty,
     dispatch
   } = _ref;
   const {
@@ -6973,7 +6984,7 @@ const GeneralFields = _ref => {
     handleTextFieldChange,
     setActiveFilterData,
     setActiveFilterMultiData
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_8__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_8__["default"])(activeFilterData, isDirty, dispatch);
   const {
     field_key,
     value_type,
@@ -7672,13 +7683,14 @@ const MetaValuesModal = _ref => {
   } = _ref;
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
   const {
     setActiveFilterData
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, isDirty, dispatch);
   const [loading, setLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [options, setOptions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [fetched, setFetched] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
@@ -7951,14 +7963,15 @@ const TaxonomyOptions = () => {
   const {
     state: {
       filterType,
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_2__.useFilter)();
   const {
     handleToggleGroupChange,
     handleSelectTermChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, isDirty, dispatch);
   const {
     orderByField,
     orderDirectionField
@@ -8073,13 +8086,14 @@ __webpack_require__.r(__webpack_exports__);
 const ValueTypeDate = () => {
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
   const {
     handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, isDirty, dispatch);
   const {
     date_display_type,
     date_from_prefix,
@@ -8177,14 +8191,15 @@ __webpack_require__.r(__webpack_exports__);
 const ValueTypeNumber = () => {
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
   const {
     handleCheckboxChange,
     handleTextFieldChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, isDirty, dispatch);
   const {
     getOptionsField
   } = (0,_useFields__WEBPACK_IMPORTED_MODULE_7__["default"])();
@@ -8351,13 +8366,14 @@ __webpack_require__.r(__webpack_exports__);
 const ValueTypeText = () => {
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_2__.useFilter)();
   const {
     handleToggleGroupChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_3__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_3__["default"])(activeFilterData, isDirty, dispatch);
   const {
     getOptionsField,
     orderByField,
@@ -8520,14 +8536,15 @@ __webpack_require__.r(__webpack_exports__);
 const useFields = () => {
   const {
     state: {
-      activeFilterData
+      activeFilterData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_4__.useFilter)();
   const {
     handleRadioChange,
     handleToggleGroupChange
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, dispatch);
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_5__["default"])(activeFilterData, isDirty, dispatch);
 
   const getOptionsField = id => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -9197,63 +9214,41 @@ const Filter = () => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-const useFilterData = (activeFilterData, dispatch) => {
+const useFilterData = (activeFilterData, isDirty, dispatch) => {
+  const setDirty = () => {
+    if (!isDirty) {
+      dispatch({
+        type: 'SET_DIRTY'
+      });
+    }
+  };
+
   const handleRadioChange = (e, key) => {
     const value = e.target.value;
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: value
-      }
-    });
+    setActiveFilterData(key, value);
   };
 
   const handleCheckboxChange = (value, key) => {
     const _value = value ? '1' : '';
 
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: _value
-      }
-    });
+    setActiveFilterData(key, _value);
   };
 
   const handleTextFieldChange = (e, key) => {
     const value = e.target.value;
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: value
-      }
-    });
+    setActiveFilterData(key, value);
   };
 
   const handleToggleGroupChange = (value, key) => {
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: value
-      }
-    });
+    setActiveFilterData(key, value);
   };
 
   const handleSelectChange = (selectedItem, key) => {
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: selectedItem.value
-      }
-    });
+    setActiveFilterData(key, selectedItem.value);
   };
 
   const handleSelectTermChange = (selected, key) => {
-    dispatch({
-      type: 'SET_ACTIVE_FILTER_DATA',
-      payload: { ...activeFilterData,
-        [key]: selected
-      }
-    });
+    setActiveFilterData(key, selected);
   };
 
   const setActiveFilterData = (key, value) => {
@@ -9263,6 +9258,7 @@ const useFilterData = (activeFilterData, dispatch) => {
         [key]: value
       }
     });
+    setDirty();
   };
 
   const setActiveFilterMultiData = data => {
@@ -9272,6 +9268,7 @@ const useFilterData = (activeFilterData, dispatch) => {
         ...data
       }
     });
+    setDirty();
   };
 
   return {

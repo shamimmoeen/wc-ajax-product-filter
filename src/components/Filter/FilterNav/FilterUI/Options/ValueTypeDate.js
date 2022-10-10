@@ -6,11 +6,15 @@ import ManualOptions from './ManualOptions';
 
 const ValueTypeDate = () => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
-	const { handleTextFieldChange } = useFilterData(activeFilterData, dispatch);
+	const { handleTextFieldChange } = useFilterData(
+		activeFilterData,
+		isDirty,
+		dispatch
+	);
 
 	const {
 		date_display_type,

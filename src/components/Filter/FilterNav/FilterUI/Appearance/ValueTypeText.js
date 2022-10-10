@@ -10,7 +10,7 @@ import CustomAppearanceModal from './CustomAppearanceModal';
 
 const ValueTypeText = () => {
 	const {
-		state: { filterType, additionalData, activeFilterData },
+		state: { filterType, additionalData, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -18,7 +18,7 @@ const ValueTypeText = () => {
 		handleCheckboxChange,
 		handleToggleGroupChange,
 		handleSelectChange,
-	} = useFilterData(activeFilterData, dispatch);
+	} = useFilterData(activeFilterData, isDirty, dispatch);
 
 	const {
 		enableMultipleFilterField,

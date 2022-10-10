@@ -36,11 +36,15 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	const [modified, setModified] = useState(false);
 
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
-	const { setActiveFilterData } = useFilterData(activeFilterData, dispatch);
+	const { setActiveFilterData } = useFilterData(
+		activeFilterData,
+		isDirty,
+		dispatch
+	);
 
 	const maxItems = getNoOfMaxTermsToRender();
 	const timeout = getTimeoutForRemovingMediaFrames();

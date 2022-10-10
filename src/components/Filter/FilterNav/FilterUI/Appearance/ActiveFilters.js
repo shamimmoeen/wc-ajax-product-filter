@@ -7,7 +7,7 @@ import useFilterData from '../../../useFilterData';
 
 const ActiveFilters = () => {
 	const {
-		state: { activeFilterData },
+		state: { activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -22,7 +22,7 @@ const ActiveFilters = () => {
 	} = activeFilterData;
 
 	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, dispatch);
+		useFilterData(activeFilterData, isDirty, dispatch);
 
 	return (
 		<>
