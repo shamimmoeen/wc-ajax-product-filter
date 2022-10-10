@@ -20,6 +20,7 @@ const ListFilters = () => {
 
 	const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
 
+	// TODO: The default number of steps will be 3.
 	const [addPostModalOpen, setAddPostModalOpen] = useState(false);
 	const [addPostModalStep, setAddPostModalStep] = useState(1);
 	const [addPostModalTotalSteps, setAddPostModalTotalSteps] = useState(2);

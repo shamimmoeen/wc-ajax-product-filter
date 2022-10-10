@@ -1,8 +1,8 @@
+import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import AvailableFilters from '../../AvailableFilters';
 import Text from '../../Field/Text';
+import AvailableFilters from '../../Filter/FilterNav/FilterUI/AvailableFilters';
 import GeneralFields from '../../Filter/FilterNav/FilterUI/GeneralFields';
-import { getFilterDefaultData } from '../../Filter/utils';
 import { useListFilters } from '../ListFiltersContext';
 
 const Body = ({ step, setTotalSteps }) => {
@@ -18,43 +18,24 @@ const Body = ({ step, setTotalSteps }) => {
 		dispatch,
 	} = useListFilters();
 
-	const handleTitleChange = (e) => {
-		const {
-			target: { value },
-		} = e;
-
-		dispatch({ type: 'SET_TITLE', payload: value });
-	};
-
-	const handleSetFilterType = (filter) => {
-		const _filterType = filter.type;
-
-		if (_filterType === filterType) {
+	useEffect(() => {
+		if (!filterType) {
 			return;
 		}
 
-		if (
-			'active-filters' === _filterType ||
-			'reset-button' === _filterType
-		) {
+		const filtersWithoutOptions = ['active-filters', 'reset-button'];
+
+		if (filtersWithoutOptions.includes(filterType)) {
 			setTotalSteps(2);
 		} else {
 			setTotalSteps(3);
 		}
+	}, [filterType]);
 
-		dispatch({ type: 'SET_FILTER_TYPE', payload: _filterType });
+	const handleTitleChange = (e) => {
+		const value = e.target.value;
 
-		let filterData = filtersData[_filterType];
-
-		if (!filterData) {
-			filterData = getFilterDefaultData(_filterType);
-		}
-
-		dispatch({ type: 'SET_ACTIVE_FILTER_DATA', payload: filterData });
-
-		const _filtersData = { ...filtersData, [filterType]: activeFilterData };
-
-		dispatch({ type: 'SET_FILTERS_DATA', payload: _filtersData });
+		dispatch({ type: 'SET_TITLE', payload: value });
 	};
 
 	let content;
@@ -78,7 +59,9 @@ const Body = ({ step, setTotalSteps }) => {
 		content = (
 			<AvailableFilters
 				filterType={filterType}
-				handleSetFilterType={handleSetFilterType}
+				activeFilterData={activeFilterData}
+				filtersData={filtersData}
+				dispatch={dispatch}
 			/>
 		);
 	} else if (3 === step) {
