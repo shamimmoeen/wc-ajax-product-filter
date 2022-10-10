@@ -1,5 +1,5 @@
 import { useFilter } from '../../FilterContext';
-import AvaialableFilters from './AvailableFilters';
+import AvailableFilters from './AvailableFilters';
 import GeneralFields from './GeneralFields';
 
 const Basic = () => {
@@ -9,14 +9,24 @@ const Basic = () => {
 			filterType,
 			activeFilterData,
 			filterKeys,
+			filtersData,
 			additionalData,
+			isDirty,
 		},
 		dispatch,
 	} = useFilter();
 
 	return (
 		<>
-			<AvaialableFilters />
+			<AvailableFilters
+				filterType={filterType}
+				activeFilterData={activeFilterData}
+				filtersData={filtersData}
+				dispatch={dispatch}
+				setDirty={true}
+				isDirty={isDirty}
+			/>
+
 			<GeneralFields
 				isFilterKeyChecking={isFilterKeyChecking}
 				filterType={filterType}
