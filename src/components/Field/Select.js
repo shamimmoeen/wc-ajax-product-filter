@@ -93,7 +93,13 @@ const SingleValue = (props) => {
 	);
 };
 
-const SimpleReactSelect = ({ options, value, onChange, classes }) => {
+const SimpleReactSelect = ({
+	options,
+	value,
+	onChange,
+	classes,
+	portalTarget,
+}) => {
 	return (
 		<ReactSelect
 			components={{
@@ -108,6 +114,7 @@ const SimpleReactSelect = ({ options, value, onChange, classes }) => {
 			onChange={onChange}
 			styles={customStyles}
 			className={classes}
+			menuPortalTarget={portalTarget}
 			classNamePrefix='__react_select'
 			theme={(theme) => ({
 				...theme,
@@ -130,6 +137,7 @@ const Select = ({
 	onChange,
 	renderAsFormField = false,
 	childComponent,
+	portalTarget = false,
 }) => {
 	let customClasses = '__custom_react_select __single_select';
 	let html;
@@ -149,6 +157,7 @@ const Select = ({
 								options={options}
 								value={value}
 								classes={customClasses}
+								portalTarget={portalTarget}
 								onChange={(selectedItem) =>
 									onChange(selectedItem, id)
 								}
@@ -171,6 +180,7 @@ const Select = ({
 				options={options}
 				value={value}
 				classes={customClasses}
+				portalTarget={portalTarget}
 				onChange={(selectedItem) => onChange(selectedItem)}
 			/>
 		);

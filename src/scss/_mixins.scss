@@ -73,3 +73,10 @@
         }
     }
 }
+
+@mixin responsive-table {
+    overflow-x: auto;
+    padding-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}

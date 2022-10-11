@@ -4815,7 +4815,8 @@ const SimpleReactSelect = _ref2 => {
     options,
     value,
     onChange,
-    classes
+    classes,
+    portalTarget
   } = _ref2;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__["default"], {
     components: {
@@ -4830,6 +4831,7 @@ const SimpleReactSelect = _ref2 => {
     onChange: onChange,
     styles: customStyles,
     className: classes,
+    menuPortalTarget: portalTarget,
     classNamePrefix: "__react_select",
     theme: theme => ({ ...theme,
       borderRadius: 0,
@@ -4849,7 +4851,8 @@ const Select = _ref3 => {
     value,
     onChange,
     renderAsFormField = false,
-    childComponent
+    childComponent,
+    portalTarget = false
   } = _ref3;
   let customClasses = '__custom_react_select __single_select';
   let html;
@@ -4872,6 +4875,7 @@ const Select = _ref3 => {
       options: options,
       value: value,
       classes: customClasses,
+      portalTarget: portalTarget,
       onChange: selectedItem => onChange(selectedItem, id)
     }), childComponent))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "description"
@@ -4881,6 +4885,7 @@ const Select = _ref3 => {
       options: options,
       value: value,
       classes: customClasses,
+      portalTarget: portalTarget,
       onChange: selectedItem => onChange(selectedItem)
     });
   }
@@ -7360,13 +7365,21 @@ const ManualOptions = _ref => {
     state: {
       filterType,
       activeFilterData,
-      additionalData
+      additionalData,
+      isDirty
     },
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
   const {
-    default_time_periods
+    default_time_periods,
+    sort_by_options,
+    meta_keys,
+    meta_types
   } = additionalData;
+  const statusOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.productStatusOptions)();
+  const sortDirections = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.orderDirectionOptions)();
+  const metaKeys = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getMetaOptions)(meta_keys);
+  const metaTypes = meta_types;
   const {
     type,
     optionsKey
@@ -7377,7 +7390,7 @@ const ManualOptions = _ref => {
     let row;
 
     if ('product-status-options' === type) {
-      const firstOption = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.productStatusOptions)()[0];
+      const firstOption = statusOptions[0];
       const value = firstOption.value;
       row = {
         value,
@@ -7401,9 +7414,27 @@ const ManualOptions = _ref => {
         value,
         label: ''
       };
+    } else if ('sort-by-options' === type) {
+      const firstSortByOption = sort_by_options[0];
+      const sortByValue = firstSortByOption.value;
+      const firstSortDirection = sortDirections[1];
+      const sortDirectionValue = firstSortDirection.value;
+      row = {
+        value: sortByValue,
+        direction: sortDirectionValue,
+        label: ''
+      };
     }
 
     return row;
+  };
+
+  const setDirty = () => {
+    if (!isDirty) {
+      dispatch({
+        type: 'SET_DIRTY'
+      });
+    }
   };
 
   const setRows = _rows => {
@@ -7424,6 +7455,7 @@ const ManualOptions = _ref => {
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: _activeFilterData
     });
+    setDirty();
   };
 
   const handleRemoveAll = () => {
@@ -7434,6 +7466,7 @@ const ManualOptions = _ref => {
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: _activeFilterData
     });
+    setDirty();
   };
 
   const handleRemove = index => {
@@ -7448,6 +7481,7 @@ const ManualOptions = _ref => {
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: _activeFilterData
     });
+    setDirty();
   };
 
   const handleChange = (value, index, key) => {
@@ -7460,6 +7494,7 @@ const ManualOptions = _ref => {
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: _activeFilterData
     });
+    setDirty();
   };
 
   const handleSelectChange = (selected, index, key) => {
@@ -7503,6 +7538,14 @@ const ManualOptions = _ref => {
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Period', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
         className: "__label"
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Label', 'wc-ajax-product-filter')));
+    } else if ('sort-by-options' === type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+        className: "__sort_by"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sort by', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+        className: "__direction"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Direction', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+        className: "__label"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Label', 'wc-ajax-product-filter')));
     }
   };
 
@@ -7523,7 +7566,8 @@ const ManualOptions = _ref => {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_7__["default"], {
       options: options,
       value: value,
-      onChange: selected => handleSelectChange(selected, index, key)
+      onChange: selected => handleSelectChange(selected, index, key),
+      portalTarget: document.querySelector('body')
     }));
   };
 
@@ -7533,8 +7577,8 @@ const ManualOptions = _ref => {
         value,
         label
       } = row;
-      const options = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.productStatusOptions)();
-      let selected = options.find(option => value === option.value);
+      const options = statusOptions;
+      const selected = options.find(option => value === option.value);
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, selectField('__product_status', rowIndex, 'value', options, selected)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, inputField('__label', rowIndex, 'label', label)));
     } else if ('text-options' === type) {
       const {
@@ -7561,13 +7605,33 @@ const ManualOptions = _ref => {
         label
       } = row;
       const options = default_time_periods;
-      let selected = options.find(option => value === option.value);
+      const selected = options.find(option => value === option.value);
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, selectField('__time_period', rowIndex, 'value', options, selected)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, inputField('__label', rowIndex, 'label', label)));
+    } else if ('sort-by-options' === type) {
+      const {
+        value,
+        direction,
+        label,
+        meta_key,
+        meta_type
+      } = row;
+      const sortByOptions = sort_by_options;
+      const sortByValue = sortByOptions.find(option => value === option.value);
+      const sortDirectionValue = sortDirections.find(option => direction === option.value);
+      const isDisabled = 'rand' === value;
+      const metaValue = metaKeys.find(option => meta_key === option.value);
+      const metaType = metaTypes.find(option => meta_type === option.value);
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, selectField('__sort_by', rowIndex, 'value', sortByOptions, sortByValue), 'meta_value' === value && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "__meta_info"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Meta Key', 'wc-ajax-product-filter'), selectField('__meta_key', rowIndex, 'meta_key', metaKeys, metaValue)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Meta Type', 'wc-ajax-product-filter'), selectField('__meta_type', rowIndex, 'meta_type', metaTypes, metaType)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, !isDisabled && selectField('__direction', rowIndex, 'direction', sortDirections, sortDirectionValue)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, inputField('__label', rowIndex, 'label', label)));
     }
   };
 
   const table = () => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
+    const classes = `__responsive_table ${type}`;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: classes
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
       className: "wp-list-table widefat fixed striped"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
       className: "__drag_handle"
@@ -7578,7 +7642,8 @@ const ManualOptions = _ref => {
       setList: setRows,
       tag: 'tbody',
       direction: 'vertical',
-      handle: ".__drag_handler"
+      handle: ".__drag_handler",
+      onSort: setDirty
     }, rows.map((row, rowIndex) => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
         key: `filter-option-${rowIndex}`
@@ -7592,7 +7657,7 @@ const ManualOptions = _ref => {
         icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
         size: 20
       })))));
-    })));
+    }))));
   };
 
   const actionButtons = () => {
@@ -8505,6 +8570,8 @@ const Options = () => {
       } else if ('date' === value_type) {
         fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeDate__WEBPACK_IMPORTED_MODULE_6__["default"], null);
       }
+    } else if ('sort-by' === filterType) {
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManualOptions__WEBPACK_IMPORTED_MODULE_7__["default"], null);
     }
 
     return fields;
@@ -9311,6 +9378,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
+/* harmony export */   "getMetaOptions": function() { return /* binding */ getMetaOptions; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
@@ -9792,6 +9860,19 @@ function accordionStates() {
     value: 'collapsed'
   }];
 }
+function getMetaOptions(meta_keys) {
+  const metaOptions = [];
+
+  for (const key in meta_keys) {
+    const option = {
+      label: key,
+      value: key
+    };
+    metaOptions.push(option);
+  }
+
+  return metaOptions;
+}
 function getTaxonomy(filterType, taxonomy) {
   let _taxonomy;
 
@@ -9833,6 +9914,9 @@ function getTableData(filterType, activeFilterData) {
       type = 'time-period-options';
       optionsKey = 'time_period_options';
     }
+  } else if ('sort-by' === filterType) {
+    type = 'sort-by-options';
+    optionsKey = 'sort_by_options';
   }
 
   return {

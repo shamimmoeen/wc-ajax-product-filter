@@ -2668,6 +2668,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "getCustomAppearanceModalData": function() { return /* binding */ getCustomAppearanceModalData; },
 /* harmony export */   "getFilterDefaultData": function() { return /* binding */ getFilterDefaultData; },
+/* harmony export */   "getMetaOptions": function() { return /* binding */ getMetaOptions; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
@@ -3149,6 +3150,19 @@ function accordionStates() {
     value: 'collapsed'
   }];
 }
+function getMetaOptions(meta_keys) {
+  const metaOptions = [];
+
+  for (const key in meta_keys) {
+    const option = {
+      label: key,
+      value: key
+    };
+    metaOptions.push(option);
+  }
+
+  return metaOptions;
+}
 function getTaxonomy(filterType, taxonomy) {
   let _taxonomy;
 
@@ -3190,6 +3204,9 @@ function getTableData(filterType, activeFilterData) {
       type = 'time-period-options';
       optionsKey = 'time_period_options';
     }
+  } else if ('sort-by' === filterType) {
+    type = 'sort-by-options';
+    optionsKey = 'sort_by_options';
   }
 
   return {

@@ -548,6 +548,18 @@ export function accordionStates() {
 	];
 }
 
+export function getMetaOptions(meta_keys) {
+	const metaOptions = [];
+
+	for (const key in meta_keys) {
+		const option = { label: key, value: key };
+
+		metaOptions.push(option);
+	}
+
+	return metaOptions;
+}
+
 export function getTaxonomy(filterType, taxonomy) {
 	let _taxonomy;
 
@@ -596,6 +608,9 @@ export function getTableData(filterType, activeFilterData) {
 			type = 'time-period-options';
 			optionsKey = 'time_period_options';
 		}
+	} else if ('sort-by' === filterType) {
+		type = 'sort-by-options';
+		optionsKey = 'sort_by_options';
 	}
 
 	return { type, optionsKey };

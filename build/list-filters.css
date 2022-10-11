@@ -396,6 +396,24 @@ body {
   align-items: center;
 }
 
+.__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover {
+  border-color: #ddd;
+}
+.__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover .__react_select__single-value {
+  color: var(--wp-admin-theme-color);
+}
+.__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover .__react_select__dropdown-indicator svg {
+  fill: var(--wp-admin-theme-color);
+}
+.__react_select__menu-portal .__react_select__option:active {
+  background-color: #ddd;
+}
+.__react_select__menu-portal .__react_select__option .__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .__available_filters {
   margin-bottom: 1.5em;
 }

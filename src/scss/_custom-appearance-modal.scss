@@ -28,7 +28,7 @@
     }
 
     .__responsive_table {
-        overflow-x: auto;
+        @include responsive-table;
     
         &.color {
             table {
