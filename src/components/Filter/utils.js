@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { find } from 'lodash';
 import { foundProVersion } from '../utils';
 
 export function availableFilters() {
@@ -185,17 +184,62 @@ export function filterDefaultData() {
 	};
 }
 
-function ratingDefaultData() {
+function ratingFilterDefaultData() {
 	return { options_order_dir: 'desc' };
 }
 
-function perPageDefaultData() {
+function perPageFilterDefaultData() {
 	return {
 		display_type: 'radio',
 		min_value: '25',
 		max_value: '100',
 		step: '25',
 	};
+}
+
+function sortByFilterDefaultData() {
+	return {
+		display_type: 'radio',
+	};
+}
+
+export function getFilterDefaultData(type) {
+	const allFilters = availableFilters();
+	const defaultData = filterDefaultData();
+
+	// Set filter type.
+	defaultData.type = type;
+
+	// Set filter key.
+	const _filterData = allFilters.find((filter) => type === filter.type);
+	const _defaultFilterKey = _filterData.defaultFilterKey;
+
+	if (_defaultFilterKey) {
+		defaultData.field_key = _defaultFilterKey;
+	}
+
+	// Rating filter default options.
+	if ('rating' === type) {
+		for (const [key, value] of Object.entries(ratingFilterDefaultData())) {
+			defaultData[key] = value;
+		}
+	}
+
+	// Per-Page filter default options.
+	if ('per-page' === type) {
+		for (const [key, value] of Object.entries(perPageFilterDefaultData())) {
+			defaultData[key] = value;
+		}
+	}
+
+	// Sort By filter default options.
+	if ('sort-by' === type) {
+		for (const [key, value] of Object.entries(sortByFilterDefaultData())) {
+			defaultData[key] = value;
+		}
+	}
+
+	return defaultData;
 }
 
 export function variableFilterTypesData() {
@@ -238,19 +282,6 @@ export function initialFilterKeysData(activeFilterData) {
 	}
 
 	return filterKeys;
-}
-
-export function getFilterDefaultData(type) {
-	const defaultData = filterDefaultData();
-
-	const filterData = find(availableFilters(), { type });
-	const defaultFilterKey = filterData.defaultFilterKey;
-
-	if (defaultFilterKey) {
-		return { ...defaultData, type, field_key: defaultFilterKey };
-	}
-
-	return { ...defaultData, type };
 }
 
 export function methodsOfGettingOptions() {
@@ -406,7 +437,7 @@ export function textDisplayTypes(withPro = false) {
 	];
 
 	if (withPro && !foundProVersion()) {
-		const proDisplayTypes = ['color', 'image'];
+		const proDisplayTypes = ['label', 'color', 'image'];
 
 		return options.map((option) => {
 			if (!proDisplayTypes.includes(option.value)) {
