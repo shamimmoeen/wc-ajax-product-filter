@@ -6291,7 +6291,14 @@ const ValueTypeText = () => {
       const allowed = ['radio', 'select'];
       options = allOptions.filter(option => allowed.includes(option.value));
     } else {
-      const allOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)();
+      let allOptions;
+
+      if ('rating' === filterType || 'product-status' === filterType) {
+        allOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)(true);
+      } else {
+        allOptions = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.textDisplayTypes)(false);
+      }
+
       const notAllowed = ['color', 'image'];
       options = allOptions.filter(option => !notAllowed.includes(option.value));
     }
@@ -6309,7 +6316,7 @@ const ValueTypeText = () => {
     }));
   };
 
-  const useCategoryThumbnailField = () => {
+  const useCategoryImagesField = () => {
     if ('category' === filterType && 'image' === display_type) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'use_category_images',
@@ -6410,7 +6417,7 @@ const ValueTypeText = () => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), useCategoryThumbnailField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), useChosenField('use_chosen'), allItemsLabelFieldForUseChosen('all_items_label'), noResultsMessageField('chosen_no_results_message'), hierarchyField(), showCountField('show_count'), removeEmptyField('hide_empty'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), useCategoryImagesField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), useChosenField('use_chosen'), allItemsLabelFieldForUseChosen('all_items_label'), noResultsMessageField('chosen_no_results_message'), hierarchyField(), showCountField('show_count'), removeEmptyField('hide_empty'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ValueTypeText);
@@ -9321,10 +9328,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
-
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
 
 
 function availableFilters() {
@@ -9492,13 +9496,13 @@ function filterDefaultData() {
   };
 }
 
-function ratingDefaultData() {
+function ratingFilterDefaultData() {
   return {
     options_order_dir: 'desc'
   };
 }
 
-function perPageDefaultData() {
+function perPageFilterDefaultData() {
   return {
     display_type: 'radio',
     min_value: '25',
@@ -9507,6 +9511,49 @@ function perPageDefaultData() {
   };
 }
 
+function sortByFilterDefaultData() {
+  return {
+    display_type: 'radio'
+  };
+}
+
+function getFilterDefaultData(type) {
+  const allFilters = availableFilters();
+  const defaultData = filterDefaultData(); // Set filter type.
+
+  defaultData.type = type; // Set filter key.
+
+  const _filterData = allFilters.find(filter => type === filter.type);
+
+  const _defaultFilterKey = _filterData.defaultFilterKey;
+
+  if (_defaultFilterKey) {
+    defaultData.field_key = _defaultFilterKey;
+  } // Rating filter default options.
+
+
+  if ('rating' === type) {
+    for (const [key, value] of Object.entries(ratingFilterDefaultData())) {
+      defaultData[key] = value;
+    }
+  } // Per-Page filter default options.
+
+
+  if ('per-page' === type) {
+    for (const [key, value] of Object.entries(perPageFilterDefaultData())) {
+      defaultData[key] = value;
+    }
+  } // Sort By filter default options.
+
+
+  if ('sort-by' === type) {
+    for (const [key, value] of Object.entries(sortByFilterDefaultData())) {
+      defaultData[key] = value;
+    }
+  }
+
+  return defaultData;
+}
 function variableFilterTypesData() {
   return {
     attribute: 'taxonomy',
@@ -9548,24 +9595,6 @@ function initialFilterKeysData(activeFilterData) {
   }
 
   return filterKeys;
-}
-function getFilterDefaultData(type) {
-  const defaultData = filterDefaultData();
-  const filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(availableFilters(), {
-    type
-  });
-  const defaultFilterKey = filterData.defaultFilterKey;
-
-  if (defaultFilterKey) {
-    return { ...defaultData,
-      type,
-      field_key: defaultFilterKey
-    };
-  }
-
-  return { ...defaultData,
-    type
-  };
 }
 function methodsOfGettingOptions() {
   return [{
@@ -9677,8 +9706,8 @@ function textDisplayTypes() {
     value: 'image'
   }];
 
-  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
-    const proDisplayTypes = ['color', 'image'];
+  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)()) {
+    const proDisplayTypes = ['label', 'color', 'image'];
     return options.map(option => {
       if (!proDisplayTypes.includes(option.value)) {
         return option;
@@ -9716,7 +9745,7 @@ function numberDisplayTypes() {
     value: 'range_label'
   }];
 
-  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
+  if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)()) {
     const allowed = ['range_slider', 'range_number'];
     return options.map(option => {
       if (allowed.includes(option.value)) {

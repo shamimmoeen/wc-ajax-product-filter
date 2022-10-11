@@ -89,7 +89,14 @@ const ValueTypeText = () => {
 				allowed.includes(option.value)
 			);
 		} else {
-			const allOptions = textDisplayTypes();
+			let allOptions;
+
+			if ('rating' === filterType || 'product-status' === filterType) {
+				allOptions = textDisplayTypes(true);
+			} else {
+				allOptions = textDisplayTypes(false);
+			}
+
 			const notAllowed = ['color', 'image'];
 
 			options = allOptions.filter(
@@ -118,7 +125,7 @@ const ValueTypeText = () => {
 		);
 	};
 
-	const useCategoryThumbnailField = () => {
+	const useCategoryImagesField = () => {
 		if ('category' === filterType && 'image' === display_type) {
 			return (
 				<Checkbox
@@ -261,7 +268,7 @@ const ValueTypeText = () => {
 		<>
 			{displayTypeField()}
 
-			{useCategoryThumbnailField()}
+			{useCategoryImagesField()}
 
 			{enableMultipleFilterField('enable_multiple_filter')}
 
