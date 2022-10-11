@@ -627,7 +627,7 @@ body {
   .__options_table .wp-list-table.widefat th.__value {
     width: 200px;
   }
-  .__options_table .wp-list-table.widefat th.__min_value, .__options_table .wp-list-table.widefat th.__max_value {
+  .__options_table .wp-list-table.widefat th.__min_value, .__options_table .wp-list-table.widefat th.__max_value, .__options_table .wp-list-table.widefat th.__per_page {
     width: 120px;
   }
   .__options_table .wp-list-table.widefat th.__time_period {
@@ -678,7 +678,8 @@ body {
     max-width: 180px;
   }
   .__options_table .wp-list-table.widefat td .__min_value .components-text-control__input,
-.__options_table .wp-list-table.widefat td .__max_value .components-text-control__input {
+.__options_table .wp-list-table.widefat td .__max_value .components-text-control__input,
+.__options_table .wp-list-table.widefat td .__per_page .components-text-control__input {
     max-width: 100px;
   }
 }

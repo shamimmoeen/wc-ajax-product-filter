@@ -35,6 +35,8 @@ const Options = () => {
 			}
 		} else if ('sort-by' === filterType) {
 			fields = <ManualOptions />;
+		} else if ('per-page' === filterType) {
+			fields = <ManualOptions />;
 		}
 
 		return fields;
