@@ -2847,8 +2847,10 @@ function filterDefaultData() {
     date_to_placeholder: '',
     // Post Property
     post_property: '',
-    // Sort By
+    // Sort by
     sort_by_options: [],
+    // Per page
+    per_page_options: [],
     // Reset Button
     reset_button_label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset', 'wc-ajax-product-filter')
   };
@@ -3207,6 +3209,9 @@ function getTableData(filterType, activeFilterData) {
   } else if ('sort-by' === filterType) {
     type = 'sort-by-options';
     optionsKey = 'sort_by_options';
+  } else if ('per-page' === filterType) {
+    type = 'per-page-options';
+    optionsKey = 'per_page_options';
   }
 
   return {

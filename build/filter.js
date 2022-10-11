@@ -7424,6 +7424,11 @@ const ManualOptions = _ref => {
         direction: sortDirectionValue,
         label: ''
       };
+    } else if ('per-page-options' === type) {
+      row = {
+        value: '',
+        label: ''
+      };
     }
 
     return row;
@@ -7546,6 +7551,12 @@ const ManualOptions = _ref => {
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Direction', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
         className: "__label"
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Label', 'wc-ajax-product-filter')));
+    } else if ('per-page-options' === type) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+        className: "__per_page"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Per page', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+        className: "__label"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Label', 'wc-ajax-product-filter')));
     }
   };
 
@@ -7624,6 +7635,12 @@ const ManualOptions = _ref => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, selectField('__sort_by', rowIndex, 'value', sortByOptions, sortByValue), 'meta_value' === value && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "__meta_info"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Meta Key', 'wc-ajax-product-filter'), selectField('__meta_key', rowIndex, 'meta_key', metaKeys, metaValue)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Meta Type', 'wc-ajax-product-filter'), selectField('__meta_type', rowIndex, 'meta_type', metaTypes, metaType)))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, !isDisabled && selectField('__direction', rowIndex, 'direction', sortDirections, sortDirectionValue)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, inputField('__label', rowIndex, 'label', label)));
+    } else if ('per-page-options' === type) {
+      const {
+        value,
+        label
+      } = row;
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, inputField('__per_page', rowIndex, 'value', value)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, inputField('__label', rowIndex, 'label', label)));
     }
   };
 
@@ -8571,6 +8588,8 @@ const Options = () => {
         fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ValueTypeDate__WEBPACK_IMPORTED_MODULE_6__["default"], null);
       }
     } else if ('sort-by' === filterType) {
+      fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManualOptions__WEBPACK_IMPORTED_MODULE_7__["default"], null);
+    } else if ('per-page' === filterType) {
       fields = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ManualOptions__WEBPACK_IMPORTED_MODULE_7__["default"], null);
     }
 
@@ -9557,8 +9576,10 @@ function filterDefaultData() {
     date_to_placeholder: '',
     // Post Property
     post_property: '',
-    // Sort By
+    // Sort by
     sort_by_options: [],
+    // Per page
+    per_page_options: [],
     // Reset Button
     reset_button_label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset', 'wc-ajax-product-filter')
   };
@@ -9917,6 +9938,9 @@ function getTableData(filterType, activeFilterData) {
   } else if ('sort-by' === filterType) {
     type = 'sort-by-options';
     optionsKey = 'sort_by_options';
+  } else if ('per-page' === filterType) {
+    type = 'per-page-options';
+    optionsKey = 'per_page_options';
   }
 
   return {

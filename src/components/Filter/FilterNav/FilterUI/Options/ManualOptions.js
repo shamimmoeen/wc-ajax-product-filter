@@ -60,6 +60,8 @@ const ManualOptions = ({ openModal }) => {
 				direction: sortDirectionValue,
 				label: '',
 			};
+		} else if ('per-page-options' === type) {
+			row = { value: '', label: '' };
 		}
 
 		return row;
@@ -215,6 +217,17 @@ const ManualOptions = ({ openModal }) => {
 					</th>
 					<th className='__direction'>
 						{__('Direction', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+				</>
+			);
+		} else if ('per-page-options' === type) {
+			return (
+				<>
+					<th className='__per_page'>
+						{__('Per page', 'wc-ajax-product-filter')}
 					</th>
 					<th className='__label'>
 						{__('Label', 'wc-ajax-product-filter')}
@@ -397,6 +410,17 @@ const ManualOptions = ({ openModal }) => {
 								sortDirections,
 								sortDirectionValue
 							)}
+					</td>
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+				</>
+			);
+		} else if ('per-page-options' === type) {
+			const { value, label } = row;
+
+			return (
+				<>
+					<td>
+						{inputField('__per_page', rowIndex, 'value', value)}
 					</td>
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>

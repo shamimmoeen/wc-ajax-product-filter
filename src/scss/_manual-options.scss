@@ -46,7 +46,8 @@
 				}
 
 				&.__min_value,
-				&.__max_value {
+				&.__max_value,
+				&.__per_page {
 					width: 120px;
 				}
 
@@ -101,7 +102,8 @@
 				}
 
 				.__min_value,
-				.__max_value {
+				.__max_value,
+				.__per_page {
 					.components-text-control__input {
 						max-width: 100px;
 					}
