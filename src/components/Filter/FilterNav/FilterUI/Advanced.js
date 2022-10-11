@@ -17,7 +17,8 @@ const Advanced = () => {
 
 	const {
 		show_title,
-		use_term_slug_in_url,
+		enable_clear_all_button,
+		move_clear_all_button_in_title,
 		enable_accordion,
 		accordion_default_state,
 		show_clear_button,
@@ -82,6 +83,28 @@ const Advanced = () => {
 		}
 	};
 
+	const moveClearAllButtonInTitleField = () => {
+		return (
+			'active-filters' === filterType &&
+			'1' === enable_clear_all_button &&
+			'1' === show_title && (
+				<Checkbox
+					id={'move_clear_all_button_in_title'}
+					label={__(
+						'Clear All button in title',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Whether to show clear all filters button in the title.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={move_clear_all_button_in_title}
+					onChange={handleCheckboxChange}
+				/>
+			)
+		);
+	};
+
 	const enableSoftLimitField = () => {
 		let showField = true;
 
@@ -126,31 +149,6 @@ const Advanced = () => {
 		}
 	};
 
-	const termSlugField = () => {
-		const taxonomyFilterTypes = [
-			'category',
-			'tag',
-			'attribute',
-			'custom-taxonomy',
-		];
-
-		if (taxonomyFilterTypes.includes(filterType)) {
-			return (
-				<Checkbox
-					id={'use_term_slug_in_url'}
-					label={__('Term slug in URL', 'wc-ajax-product-filter')}
-					description={__(
-						'Use term slug instead of id in the URL.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={use_term_slug_in_url}
-					onChange={handleCheckboxChange}
-					isPro={true}
-				/>
-			);
-		}
-	};
-
 	return (
 		<>
 			{enableAccordionField()}
@@ -159,11 +157,11 @@ const Advanced = () => {
 
 			{enableClearButtonField()}
 
+			{moveClearAllButtonInTitleField()}
+
 			{enableSoftLimitField()}
 
 			{visibleOptionsField()}
-
-			{termSlugField()}
 		</>
 	);
 };

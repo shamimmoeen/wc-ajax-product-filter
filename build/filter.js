@@ -5208,7 +5208,8 @@ const Advanced = () => {
   } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_6__["default"])(activeFilterData, isDirty, dispatch);
   const {
     show_title,
-    use_term_slug_in_url,
+    enable_clear_all_button,
+    move_clear_all_button_in_title,
     enable_accordion,
     accordion_default_state,
     show_clear_button,
@@ -5255,6 +5256,16 @@ const Advanced = () => {
     }
   };
 
+  const moveClearAllButtonInTitleField = () => {
+    return 'active-filters' === filterType && '1' === enable_clear_all_button && '1' === show_title && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      id: 'move_clear_all_button_in_title',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Clear All button in title', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show clear all filters button in the title.', 'wc-ajax-product-filter'),
+      isChecked: move_clear_all_button_in_title,
+      onChange: handleCheckboxChange
+    });
+  };
+
   const enableSoftLimitField = () => {
     let showField = true;
 
@@ -5286,22 +5297,7 @@ const Advanced = () => {
     }
   };
 
-  const termSlugField = () => {
-    const taxonomyFilterTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
-
-    if (taxonomyFilterTypes.includes(filterType)) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: 'use_term_slug_in_url',
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Term slug in URL', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use term slug instead of id in the URL.', 'wc-ajax-product-filter'),
-        isChecked: use_term_slug_in_url,
-        onChange: handleCheckboxChange,
-        isPro: true
-      });
-    }
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, enableAccordionField(), accordionDefaultSateField(), enableClearButtonField(), enableSoftLimitField(), visibleOptionsField(), termSlugField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, enableAccordionField(), accordionDefaultSateField(), enableClearButtonField(), moveClearAllButtonInTitleField(), enableSoftLimitField(), visibleOptionsField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Advanced);
@@ -5342,11 +5338,9 @@ const ActiveFilters = () => {
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_5__.useFilter)();
   const {
-    show_title,
     active_filters_layout,
     enable_clear_all_button,
     clear_all_button_label,
-    move_clear_all_button_in_title,
     show_if_empty,
     empty_filter_message
   } = activeFilterData;
@@ -5380,12 +5374,6 @@ const ActiveFilters = () => {
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the button default label.', 'wc-ajax-product-filter'),
     value: clear_all_button_label,
     onChange: handleTextFieldChange
-  }), '1' === enable_clear_all_button && '1' === show_title && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    id: 'move_clear_all_button_in_title',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Clear button in title', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the clear button in title.', 'wc-ajax-product-filter'),
-    isChecked: move_clear_all_button_in_title,
-    onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'show_if_empty',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show if empty', 'wc-ajax-product-filter'),
@@ -7949,7 +7937,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../useFilterData */ "./src/components/Filter/useFilterData.js");
 /* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
 /* harmony import */ var _Field_SelectTerm__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../Field/SelectTerm */ "./src/components/Field/SelectTerm.js");
-/* harmony import */ var _useFields__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./useFields */ "./src/components/Filter/FilterNav/FilterUI/Options/useFields.js");
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _useFields__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./useFields */ "./src/components/Filter/FilterNav/FilterUI/Options/useFields.js");
+
 
 
 
@@ -7969,20 +7959,22 @@ const TaxonomyOptions = () => {
     dispatch
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_2__.useFilter)();
   const {
+    handleCheckboxChange,
     handleToggleGroupChange,
     handleSelectTermChange
   } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(activeFilterData, isDirty, dispatch);
   const {
     orderByField,
     orderDirectionField
-  } = (0,_useFields__WEBPACK_IMPORTED_MODULE_7__["default"])();
+  } = (0,_useFields__WEBPACK_IMPORTED_MODULE_8__["default"])();
   const {
     taxonomy,
     order_terms_by,
     limit_options,
     parent_term,
     limit_values_by_id,
-    exclude_values_id
+    exclude_values_id,
+    use_term_slug_in_url
   } = activeFilterData;
   const taxonomyForSelectTerm = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getTaxonomy)(filterType, taxonomy);
 
@@ -8053,7 +8045,17 @@ const TaxonomyOptions = () => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _orderByField(), _orderDirectionField(), limitOptionsField(), includeTermsField(), excludeTermsField(), parentTermField());
+  const termSlugField = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      id: 'use_term_slug_in_url',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use Term Slug', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use the term slug instead of id as the option value.', 'wc-ajax-product-filter'),
+      isChecked: use_term_slug_in_url,
+      onChange: handleCheckboxChange
+    });
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, _orderByField(), _orderDirectionField(), limitOptionsField(), includeTermsField(), excludeTermsField(), parentTermField(), termSlugField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (TaxonomyOptions);

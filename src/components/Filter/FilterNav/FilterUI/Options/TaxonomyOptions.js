@@ -8,6 +8,7 @@ import {
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
 import SelectTerm from '../../../../Field/SelectTerm';
+import Checkbox from '../../../../Field/Checkbox';
 import useFields from './useFields';
 
 const TaxonomyOptions = () => {
@@ -16,11 +17,11 @@ const TaxonomyOptions = () => {
 		dispatch,
 	} = useFilter();
 
-	const { handleToggleGroupChange, handleSelectTermChange } = useFilterData(
-		activeFilterData,
-		isDirty,
-		dispatch
-	);
+	const {
+		handleCheckboxChange,
+		handleToggleGroupChange,
+		handleSelectTermChange,
+	} = useFilterData(activeFilterData, isDirty, dispatch);
 
 	const { orderByField, orderDirectionField } = useFields();
 
@@ -31,6 +32,7 @@ const TaxonomyOptions = () => {
 		parent_term,
 		limit_values_by_id,
 		exclude_values_id,
+		use_term_slug_in_url,
 	} = activeFilterData;
 
 	const taxonomyForSelectTerm = getTaxonomy(filterType, taxonomy);
@@ -124,6 +126,21 @@ const TaxonomyOptions = () => {
 		}
 	};
 
+	const termSlugField = () => {
+		return (
+			<Checkbox
+				id={'use_term_slug_in_url'}
+				label={__('Use Term Slug', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to use the term slug instead of id as the option value.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={use_term_slug_in_url}
+				onChange={handleCheckboxChange}
+			/>
+		);
+	};
+
 	return (
 		<>
 			{_orderByField()}
@@ -137,6 +154,8 @@ const TaxonomyOptions = () => {
 			{excludeTermsField()}
 
 			{parentTermField()}
+
+			{termSlugField()}
 		</>
 	);
 };
