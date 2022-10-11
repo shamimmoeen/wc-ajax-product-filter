@@ -12,11 +12,9 @@ const ActiveFilters = () => {
 	} = useFilter();
 
 	const {
-		show_title,
 		active_filters_layout,
 		enable_clear_all_button,
 		clear_all_button_label,
-		move_clear_all_button_in_title,
 		show_if_empty,
 		empty_filter_message,
 	} = activeFilterData;
@@ -71,22 +69,6 @@ const ActiveFilters = () => {
 					)}
 					value={clear_all_button_label}
 					onChange={handleTextFieldChange}
-				/>
-			)}
-
-			{'1' === enable_clear_all_button && '1' === show_title && (
-				<Checkbox
-					id={'move_clear_all_button_in_title'}
-					label={__(
-						'Clear button in title',
-						'wc-ajax-product-filter'
-					)}
-					description={__(
-						'Whether to show the clear button in title.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={move_clear_all_button_in_title}
-					onChange={handleCheckboxChange}
 				/>
 			)}
 
