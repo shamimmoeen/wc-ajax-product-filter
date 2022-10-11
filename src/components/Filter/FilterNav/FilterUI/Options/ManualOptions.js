@@ -4,16 +4,28 @@ import { ReactSortable } from 'react-sortablejs';
 import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
 import { useFilter } from '../../../FilterContext';
-import { getTableData, productStatusOptions } from '../../../utils';
+import {
+	getTableData,
+	orderDirectionOptions,
+	productStatusOptions,
+	getMetaOptions,
+} from '../../../utils';
 import Select from '../../../../Field/Select';
 
 const ManualOptions = ({ openModal }) => {
 	const {
-		state: { filterType, activeFilterData, additionalData },
+		state: { filterType, activeFilterData, additionalData, isDirty },
 		dispatch,
 	} = useFilter();
 
-	const { default_time_periods } = additionalData;
+	const { default_time_periods, sort_by_options, meta_keys, meta_types } =
+		additionalData;
+
+	const statusOptions = productStatusOptions();
+	const sortDirections = orderDirectionOptions();
+
+	const metaKeys = getMetaOptions(meta_keys);
+	const metaTypes = meta_types;
 
 	const { type, optionsKey } = getTableData(filterType, activeFilterData);
 
@@ -23,7 +35,7 @@ const ManualOptions = ({ openModal }) => {
 		let row;
 
 		if ('product-status-options' === type) {
-			const firstOption = productStatusOptions()[0];
+			const firstOption = statusOptions[0];
 			const value = firstOption.value;
 
 			row = { value, label: '' };
@@ -36,9 +48,27 @@ const ManualOptions = ({ openModal }) => {
 			const value = firstOption.value;
 
 			row = { value, label: '' };
+		} else if ('sort-by-options' === type) {
+			const firstSortByOption = sort_by_options[0];
+			const sortByValue = firstSortByOption.value;
+
+			const firstSortDirection = sortDirections[1];
+			const sortDirectionValue = firstSortDirection.value;
+
+			row = {
+				value: sortByValue,
+				direction: sortDirectionValue,
+				label: '',
+			};
 		}
 
 		return row;
+	};
+
+	const setDirty = () => {
+		if (!isDirty) {
+			dispatch({ type: 'SET_DIRTY' });
+		}
 	};
 
 	const setRows = (_rows) => {
@@ -63,6 +93,8 @@ const ManualOptions = ({ openModal }) => {
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: _activeFilterData,
 		});
+
+		setDirty();
 	};
 
 	const handleRemoveAll = () => {
@@ -75,6 +107,8 @@ const ManualOptions = ({ openModal }) => {
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: _activeFilterData,
 		});
+
+		setDirty();
 	};
 
 	const handleRemove = (index) => {
@@ -90,6 +124,8 @@ const ManualOptions = ({ openModal }) => {
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: _activeFilterData,
 		});
+
+		setDirty();
 	};
 
 	const handleChange = (value, index, key) => {
@@ -105,6 +141,8 @@ const ManualOptions = ({ openModal }) => {
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: _activeFilterData,
 		});
+
+		setDirty();
 	};
 
 	const handleSelectChange = (selected, index, key) => {
@@ -169,6 +207,20 @@ const ManualOptions = ({ openModal }) => {
 					</th>
 				</>
 			);
+		} else if ('sort-by-options' === type) {
+			return (
+				<>
+					<th className='__sort_by'>
+						{__('Sort by', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__direction'>
+						{__('Direction', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+				</>
+			);
 		}
 	};
 
@@ -194,6 +246,7 @@ const ManualOptions = ({ openModal }) => {
 					onChange={(selected) =>
 						handleSelectChange(selected, index, key)
 					}
+					portalTarget={document.querySelector('body')}
 				/>
 			</div>
 		);
@@ -202,8 +255,8 @@ const ManualOptions = ({ openModal }) => {
 	const tableBody = (row, rowIndex) => {
 		if ('product-status-options' === type) {
 			const { value, label } = row;
-			const options = productStatusOptions();
-			let selected = options.find((option) => value === option.value);
+			const options = statusOptions;
+			const selected = options.find((option) => value === option.value);
 
 			return (
 				<>
@@ -261,7 +314,7 @@ const ManualOptions = ({ openModal }) => {
 		} else if ('time-period-options' === type) {
 			const { value, label } = row;
 			const options = default_time_periods;
-			let selected = options.find((option) => value === option.value);
+			const selected = options.find((option) => value === option.value);
 
 			return (
 				<>
@@ -277,58 +330,134 @@ const ManualOptions = ({ openModal }) => {
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
+		} else if ('sort-by-options' === type) {
+			const { value, direction, label, meta_key, meta_type } = row;
+
+			const sortByOptions = sort_by_options;
+			const sortByValue = sortByOptions.find(
+				(option) => value === option.value
+			);
+
+			const sortDirectionValue = sortDirections.find(
+				(option) => direction === option.value
+			);
+
+			const isDisabled = 'rand' === value;
+
+			const metaValue = metaKeys.find(
+				(option) => meta_key === option.value
+			);
+
+			const metaType = metaTypes.find(
+				(option) => meta_type === option.value
+			);
+
+			return (
+				<>
+					<td>
+						{selectField(
+							'__sort_by',
+							rowIndex,
+							'value',
+							sortByOptions,
+							sortByValue
+						)}
+						{'meta_value' === value && (
+							<div className='__meta_info'>
+								<div>
+									{__('Meta Key', 'wc-ajax-product-filter')}
+									{selectField(
+										'__meta_key',
+										rowIndex,
+										'meta_key',
+										metaKeys,
+										metaValue
+									)}
+								</div>
+
+								<div>
+									{__('Meta Type', 'wc-ajax-product-filter')}
+									{selectField(
+										'__meta_type',
+										rowIndex,
+										'meta_type',
+										metaTypes,
+										metaType
+									)}
+								</div>
+							</div>
+						)}
+					</td>
+					<td>
+						{!isDisabled &&
+							selectField(
+								'__direction',
+								rowIndex,
+								'direction',
+								sortDirections,
+								sortDirectionValue
+							)}
+					</td>
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+				</>
+			);
 		}
 	};
 
 	const table = () => {
+		const classes = `__responsive_table ${type}`;
+
 		return (
-			<table className='wp-list-table widefat fixed striped'>
-				<thead>
-					<tr>
-						<th className='__drag_handle' />
-						{tableHeader()}
-						<th className='__action' />
-					</tr>
-				</thead>
-				<ReactSortable
-					list={rows}
-					setList={setRows}
-					tag={'tbody'}
-					direction={'vertical'}
-					handle='.__drag_handler'
-				>
-					{rows.map((row, rowIndex) => {
-						return (
-							<tr key={`filter-option-${rowIndex}`}>
-								<td>
-									<div>
-										<Icon
-											icon={dragHandle}
-											className='__drag_handler'
-										/>
-									</div>
-								</td>
-								{tableBody(row, rowIndex)}
-								<td>
-									<div>
-										<button
-											className='button-link button-link-delete'
-											onClick={() =>
-												handleRemove(rowIndex)
-											}
-										>
+			<div className={classes}>
+				<table className='wp-list-table widefat fixed striped'>
+					<thead>
+						<tr>
+							<th className='__drag_handle' />
+							{tableHeader()}
+							<th className='__action' />
+						</tr>
+					</thead>
+					<ReactSortable
+						list={rows}
+						setList={setRows}
+						tag={'tbody'}
+						direction={'vertical'}
+						handle='.__drag_handler'
+						onSort={setDirty}
+					>
+						{rows.map((row, rowIndex) => {
+							return (
+								<tr key={`filter-option-${rowIndex}`}>
+									<td>
+										<div>
 											<Icon
-												icon={cancelCircleFilled}
-												size={20}
+												icon={dragHandle}
+												className='__drag_handler'
 											/>
-										</button>
-									</div>
-								</td>
-							</tr>
-						);
-					})}
-				</ReactSortable>
-			</table>
+										</div>
+									</td>
+									{tableBody(row, rowIndex)}
+									<td>
+										<div>
+											<button
+												className='button-link button-link-delete'
+												onClick={() =>
+													handleRemove(rowIndex)
+												}
+											>
+												<Icon
+													icon={cancelCircleFilled}
+													size={20}
+												/>
+											</button>
+										</div>
+									</td>
+								</tr>
+							);
+						})}
+					</ReactSortable>
+				</table>
+			</div>
 		);
 	};
 

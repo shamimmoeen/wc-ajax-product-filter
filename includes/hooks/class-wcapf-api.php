@@ -510,6 +510,32 @@ class WCAPF_API {
 
 		$response['default_time_periods'] = $time_period_options;
 
+		// Default sort by options.
+		$_sort_by_options = WCAPF_PRO_Helper::get_sort_by_options();
+		$sort_by_options  = array();
+
+		foreach ( $_sort_by_options as $sort_by_key => $sort_by_label ) {
+			$sort_by_options[] = array(
+				'label' => $sort_by_label,
+				'value' => $sort_by_key,
+			);
+		}
+
+		$response['sort_by_options'] = $sort_by_options;
+
+		// Default Meta Types.
+		$_meta_types = WCAPF_PRO_Helper::get_meta_types();
+		$meta_types  = array();
+
+		foreach ( $_meta_types as $meta_type_key => $meta_type_label ) {
+			$meta_types[] = array(
+				'label' => $meta_type_label,
+				'value' => $meta_type_key,
+			);
+		}
+
+		$response['meta_types'] = $meta_types;
+
 		wp_send_json_success( $response );
 	}
 

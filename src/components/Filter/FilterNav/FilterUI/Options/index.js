@@ -33,6 +33,8 @@ const Options = () => {
 			} else if ('date' === value_type) {
 				fields = <ValueTypeDate />;
 			}
+		} else if ('sort-by' === filterType) {
+			fields = <ManualOptions />;
 		}
 
 		return fields;

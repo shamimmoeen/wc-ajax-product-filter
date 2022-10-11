@@ -537,6 +537,24 @@ body {
   align-items: center;
 }
 
+.__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover {
+  border-color: #ddd;
+}
+.__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover .__react_select__single-value {
+  color: var(--wp-admin-theme-color);
+}
+.__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover .__react_select__dropdown-indicator svg {
+  fill: var(--wp-admin-theme-color);
+}
+.__react_select__menu-portal .__react_select__option:active {
+  background-color: #ddd;
+}
+.__react_select__menu-portal .__react_select__option .__wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .__available_filters {
   margin-bottom: 1.5em;
 }
@@ -590,7 +608,7 @@ body {
 }
 .__options_table .wp-list-table.widefat .components-text-control__input {
   border-color: #ddd;
-  max-width: 150px;
+  max-width: 200px;
 }
 .__options_table .wp-list-table.widefat .components-text-control__input:focus {
   border-color: var(--wp-admin-theme-color);
@@ -604,6 +622,34 @@ body {
 .__options_table .wp-list-table.widefat th.__action {
   text-align: center;
   width: 40px;
+}
+@media (min-width: 600px) {
+  .__options_table .wp-list-table.widefat th.__value {
+    width: 200px;
+  }
+  .__options_table .wp-list-table.widefat th.__min_value, .__options_table .wp-list-table.widefat th.__max_value {
+    width: 120px;
+  }
+  .__options_table .wp-list-table.widefat th.__time_period {
+    width: 170px;
+  }
+}
+.__options_table .wp-list-table.widefat th.__product_status {
+  width: 150px;
+}
+.__options_table .wp-list-table.widefat th.__sort_by {
+  width: 200px;
+}
+.__options_table .wp-list-table.widefat th.__direction {
+  width: 100px;
+}
+@media (min-width: 600px) and (max-width: 1499px) {
+  .__options_table .wp-list-table.widefat th.__sort_by {
+    width: 185px;
+  }
+  .__options_table .wp-list-table.widefat th.__direction {
+    width: 85px;
+  }
 }
 .__options_table .wp-list-table.widefat td {
   vertical-align: middle;
@@ -627,9 +673,14 @@ body {
   box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
   outline: 1px solid transparent;
 }
-.__options_table .wp-list-table.widefat .__min_value,
-.__options_table .wp-list-table.widefat .__max_value {
-  width: 100px;
+@media (min-width: 600px) {
+  .__options_table .wp-list-table.widefat td .__value .components-text-control__input {
+    max-width: 180px;
+  }
+  .__options_table .wp-list-table.widefat td .__min_value .components-text-control__input,
+.__options_table .wp-list-table.widefat td .__max_value .components-text-control__input {
+    max-width: 100px;
+  }
 }
 .__options_table .wp-list-table.widefat .__rating_label .components-text-control__input {
   max-width: 340px;
@@ -639,6 +690,23 @@ body {
 }
 .__options_table .wp-list-table.widefat .__time_period .__custom_react_select {
   min-width: 150px;
+}
+.__options_table .wp-list-table.widefat .__sort_by .__custom_react_select,
+.__options_table .wp-list-table.widefat .__meta_info .__custom_react_select {
+  width: 180px;
+}
+.__options_table .wp-list-table.widefat .__meta_info {
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 5px;
+}
+.__options_table .wp-list-table.widefat .__meta_info .__meta_key,
+.__options_table .wp-list-table.widefat .__meta_info .__meta_type {
+  display: flex;
+  margin-top: 2px;
+}
+.__options_table .wp-list-table.widefat .__direction .__custom_react_select {
+  min-width: 80px;
 }
 .__options_table .__action_buttons {
   display: flex;
@@ -653,6 +721,23 @@ body {
 }
 .__options_table .__action_buttons .components-button + .components-button {
   margin-left: 4px;
+}
+@media (max-width: 599px) {
+  .__options_table .__responsive_table {
+    overflow-x: auto;
+    padding-bottom: 15px;
+    position: relative;
+    z-index: 1;
+  }
+  .__options_table .__responsive_table.number-options table, .__options_table .__responsive_table.time-period-options table {
+    min-width: 460px;
+  }
+  .__options_table .__responsive_table.product-status-options table {
+    min-width: 480px;
+  }
+  .__options_table .__responsive_table.sort-by-options table {
+    min-width: 600px;
+  }
 }
 
 .__meta_values_modal {
@@ -777,6 +862,9 @@ body {
 }
 .__custom_appearance_modal .__responsive_table {
   overflow-x: auto;
+  padding-bottom: 15px;
+  position: relative;
+  z-index: 1;
 }
 .__custom_appearance_modal .__responsive_table.color table {
   min-width: 400px;

@@ -19,7 +19,7 @@
 
 		.components-text-control__input {
 			border-color: $inputBorderColor;
-			max-width: 150px;
+			max-width: 200px;
 
 			&:focus {
 				border-color: var(--wp-admin-theme-color);
@@ -39,6 +39,43 @@
 				text-align: center;
 				width: 40px;
 			}
+
+			@media (min-width: 600px) {
+				&.__value {
+					width: 200px;
+				}
+
+				&.__min_value,
+				&.__max_value {
+					width: 120px;
+				}
+
+				&.__time_period {
+					width: 170px;
+				}
+			}
+
+			&.__product_status {
+				width: 150px;
+			}
+
+			&.__sort_by {
+				width: 200px;
+			}
+
+			&.__direction {
+				width: 100px;
+			}
+
+			@media (min-width: 600px) and (max-width: 1499px) {
+				&.__sort_by {
+					width: 185px;
+				}
+
+				&.__direction {
+					width: 85px;
+				}
+			}
 		}
 
 		td {
@@ -55,9 +92,21 @@
 
 		@include button-link-delete;
 
-		.__min_value,
-		.__max_value {
-			width: 100px;
+		@media (min-width: 600px) {
+			td {
+				.__value {
+					.components-text-control__input {
+						max-width: 180px;
+					}
+				}
+
+				.__min_value,
+				.__max_value {
+					.components-text-control__input {
+						max-width: 100px;
+					}
+				}
+			}
 		}
 
 		.__rating_label {
@@ -77,6 +126,31 @@
 				min-width: 150px;
 			}
 		}
+
+		.__sort_by,
+		.__meta_info {
+			.__custom_react_select {
+				width: 180px;
+			}
+		}
+
+		.__meta_info {
+			flex-direction: column;
+			gap: 5px;
+			margin-top: 5px;
+
+			.__meta_key,
+			.__meta_type {
+				display: flex;
+				margin-top: 2px;
+			}
+		}
+
+		.__direction {
+			.__custom_react_select {
+				min-width: 80px;
+			}
+		}
 	}
 
 	.__action_buttons {
@@ -91,6 +165,31 @@
 
 		.components-button + .components-button {
 			margin-left: 4px;
+		}
+	}
+
+	@media (max-width: 599px) {
+		.__responsive_table {
+			@include responsive-table;
+
+			&.number-options,
+			&.time-period-options {
+				table {
+					min-width: 460px;
+				}
+			}
+
+			&.product-status-options {
+				table {
+					min-width: 480px;
+				}
+			}
+
+			&.sort-by-options {
+				table {
+					min-width: 600px;
+				}
+			}
 		}
 	}
 }
