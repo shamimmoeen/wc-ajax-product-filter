@@ -2517,6 +2517,24 @@ const Checkbox = _ref => {
     description,
     isPro
   } = _ref;
+
+  const renderDescription = () => {
+    if (description) {
+      if ('enable_soft_limit' === id || 'enable_soft_limit_for_extended_layout' === id) {
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+          className: "description",
+          dangerouslySetInnerHTML: {
+            __html: description
+          }
+        });
+      } else {
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+          className: "description"
+        }, description);
+      }
+    }
+  };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_control __checkbox_toggle"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2533,9 +2551,7 @@ const Checkbox = _ref => {
     checked: isChecked,
     id: id,
     onChange: value => onChange(value, id)
-  })))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "description"
-  }, description) : '');
+  })))), renderDescription());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Checkbox);

@@ -29,6 +29,10 @@
 
 	.description {
 		margin-top: 8px;
+
+		b {
+			font-weight: 500;
+		}
 	}
 
 	.components-text-control__input {
@@ -69,7 +73,8 @@
 		}
 	}
 
-	#soft_limit {
+	#soft_limit,
+	#soft_limit_for_extended_layout {
 		max-width: 60px;
 	}
 

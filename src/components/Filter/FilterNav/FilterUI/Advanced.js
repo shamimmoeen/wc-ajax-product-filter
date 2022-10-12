@@ -4,7 +4,7 @@ import Radio from '../../../Field/Radio';
 import Text from '../../../Field/Text';
 import { useFilter } from '../../FilterContext';
 import useFilterData from '../../useFilterData';
-import { accordionStates } from '../../utils';
+import { accordionStates, isTaxonomyFilters } from '../../utils';
 
 const Advanced = () => {
 	const {
@@ -17,13 +17,20 @@ const Advanced = () => {
 
 	const {
 		show_title,
+		active_filters_layout,
+		display_type,
+		number_display_type,
+		date_display_type,
+		value_type,
 		enable_clear_all_button,
 		move_clear_all_button_in_title,
 		enable_accordion,
 		accordion_default_state,
 		show_clear_button,
 		enable_soft_limit,
+		enable_soft_limit_for_extended_layout,
 		soft_limit,
+		soft_limit_for_extended_layout,
 	} = activeFilterData;
 
 	const enableAccordionField = () => {
@@ -105,47 +112,121 @@ const Advanced = () => {
 		);
 	};
 
-	const enableSoftLimitField = () => {
-		let showField = true;
+	const showSoftLimit = () => {
+		let show;
+		let _display_type;
 
-		if (showField) {
+		const notAllowedDisplayTypes = [
+			'select',
+			'multi-select',
+			'range_slider',
+			'range_number',
+			'range_select',
+			'range_multiselect',
+			'input_date',
+			'input_date_range',
+			'time_period_select',
+			'time_period_multiselect',
+		];
+
+		if (isTaxonomyFilters(filterType)) {
+			_display_type = display_type;
+		} else if ('price' === filterType) {
+			_display_type = number_display_type;
+		} else if (
+			'post-meta' === filterType ||
+			'post-property' === filterType
+		) {
+			if ('text' === value_type) {
+				_display_type = display_type;
+			} else if ('number' === value_type) {
+				_display_type = number_display_type;
+			} else if ('date' === value_type) {
+				_display_type = date_display_type;
+			}
+		} else {
+			_display_type = display_type;
+		}
+
+		if ('active-filters' === filterType) {
+			show = true;
+		} else if ('reset-button' === filterType) {
+			show = false;
+		} else {
+			if (notAllowedDisplayTypes.includes(_display_type)) {
+				show = false;
+			} else {
+				show = true;
+			}
+		}
+
+		return show;
+	};
+
+	const enableSoftLimitField = () => {
+		if (showSoftLimit()) {
+			let id = 'enable_soft_limit';
+			let value = enable_soft_limit;
+
+			if (
+				'active-filters' === filterType &&
+				'extended' === active_filters_layout
+			) {
+				id = 'enable_soft_limit_for_extended_layout';
+				value = enable_soft_limit_for_extended_layout;
+			}
+
+			const description = __(
+				'Whether to hide the long list of options with a <b>Show More/Show Less</b> toggle.',
+				'wc-ajax-product-filter'
+			);
+
 			return (
 				<Checkbox
-					id={'enable_soft_limit'}
+					id={id}
 					label={__('Soft Limit', 'wc-ajax-product-filter')}
-					description={__(
-						'Hide the long list of options with a `Show More/Show Less` toggle.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={enable_soft_limit}
+					description={description}
+					isChecked={value}
 					onChange={handleCheckboxChange}
-					isPro={true}
 				/>
 			);
 		}
 	};
 
 	const visibleOptionsField = () => {
-		let showField = true;
+		if (showSoftLimit()) {
+			let id = 'soft_limit';
+			let value = soft_limit;
+			let enabled = enable_soft_limit;
 
-		if (showField && enable_soft_limit) {
-			return (
-				<Text
-					id={'soft_limit'}
-					label={__(
-						'Number of visible options',
-						'wc-ajax-product-filter	'
-					)}
-					description={__(
-						'Show the toggle after this many options.',
-						'wc-ajax-product-filter	'
-					)}
-					value={soft_limit}
-					onChange={handleTextFieldChange}
-					type={'number'}
-					min={1}
-				/>
-			);
+			if (
+				'active-filters' === filterType &&
+				'extended' === active_filters_layout
+			) {
+				id = 'soft_limit_for_extended_layout';
+				value = soft_limit_for_extended_layout;
+				enabled = enable_soft_limit_for_extended_layout;
+			}
+
+			if (enabled) {
+				return (
+					<Text
+						id={id}
+						label={__(
+							'Number of visible options',
+							'wc-ajax-product-filter	'
+						)}
+						description={__(
+							'Show the toggle after this many options.',
+							'wc-ajax-product-filter	'
+						)}
+						value={value}
+						onChange={handleTextFieldChange}
+						type={'number'}
+						min={1}
+					/>
+				);
+			}
 		}
 	};
 
