@@ -287,22 +287,20 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	};
 
 	const handleUpdatingAppearanceData = () => {
-		const _appearanceData = [...appearanceData];
+		const _appearanceData = [];
 
-		const newAppearanceData = _appearanceData.map((option) => {
-			const found = find(options, { value: option.id });
+		options.forEach((option) => {
+			const _item = {
+				id: option['value'],
+				color: option['color'],
+				image_id: option['image_id'],
+				image_url: option['image_url'],
+			};
 
-			if ('color' === type) {
-				option['color'] = found['color'];
-			} else {
-				option['image_id'] = found['image_id'];
-				option['image_url'] = found['image_url'];
-			}
-
-			return option;
+			_appearanceData.push(_item);
 		});
 
-		setActiveFilterData('custom_appearance_options', newAppearanceData);
+		setActiveFilterData('custom_appearance_options', _appearanceData);
 		closeModal();
 	};
 
