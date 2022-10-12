@@ -51,7 +51,8 @@ class WCAPF_API {
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) );
-		add_action( 'wp_ajax_get_taxonomy_filter_options', array( $this, 'get_taxonomy_filter_options' ) );
+		add_action( 'wp_ajax_wcapf_get_taxonomy_terms', array( $this, 'get_taxonomy_terms' ) );
+		add_action( 'wp_ajax_wcapf_get_post_authors', array( $this, 'get_post_authors' ) );
 		add_action( 'wp_ajax_wcapf_get_meta_values', array( $this, 'get_meta_values' ) );
 		add_action( 'wp_ajax_get_filters', array( $this, 'get_filters' ) );
 		add_action( 'wp_ajax_check_filter_key', array( $this, 'check_filter_key' ) );
@@ -536,6 +537,19 @@ class WCAPF_API {
 
 		$response['meta_types'] = $meta_types;
 
+		// User roles.
+		$_user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
+		$user_roles  = array();
+
+		foreach ( $_user_roles as $role_value => $role_label ) {
+			$user_roles[] = array(
+				'label' => $role_label,
+				'value' => $role_value,
+			);
+		}
+
+		$response['user_roles'] = $user_roles;
+
 		wp_send_json_success( $response );
 	}
 
@@ -594,7 +608,7 @@ class WCAPF_API {
 		wp_send_json_success( $response );
 	}
 
-	public function get_taxonomy_filter_options() {
+	public function get_taxonomy_terms() {
 		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( $_GET['only_parent'] ) : '';
 		$keyword     = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
@@ -643,6 +657,35 @@ class WCAPF_API {
 				$response[] = array(
 					'value' => $term_id,
 					'label' => $term_name,
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	public function get_post_authors() {
+		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+
+		$per_page = 20;
+		$offset   = ( $page - 1 ) * $per_page;
+
+		$args = array(
+			'search' => $keyword,
+			'number' => $per_page,
+			'offset' => $offset,
+			'fields' => array( 'ID', 'display_name' ),
+		);
+
+		$users    = get_users( $args );
+		$response = array();
+
+		if ( $users ) {
+			foreach ( $users as $user ) {
+				$response[] = array(
+					'label' => $user->display_name,
+					'value' => $user->ID,
 				);
 			}
 		}

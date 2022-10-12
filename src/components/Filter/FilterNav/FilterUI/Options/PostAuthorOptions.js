@@ -1,19 +1,15 @@
 import { __ } from '@wordpress/i18n';
 import { useFilter } from '../../../FilterContext';
-import {
-	termsOrderByOptions,
-	taxonomyLimitByOptions,
-	getTaxonomy,
-} from '../../../utils';
 import useFilterData from '../../../useFilterData';
+import useFields from './useFields';
+import { authorLimitByOptions, authorOrderByOptions } from '../../../utils';
 import ToggleGroup from '../../../../Field/ToggleGroup';
 import SelectMulti from '../../../../Field/SelectMulti';
 import Checkbox from '../../../../Field/Checkbox';
-import useFields from './useFields';
 
-const TaxonomyOptions = () => {
+const PostAuthorOptions = () => {
 	const {
-		state: { filterType, activeFilterData, isDirty },
+		state: { activeFilterData, additionalData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -26,32 +22,30 @@ const TaxonomyOptions = () => {
 	const { orderByField, orderDirectionField } = useFields();
 
 	const {
-		taxonomy,
-		order_terms_by,
+		post_author_order_by,
 		limit_options,
-		parent_term,
 		limit_values_by_id,
 		exclude_values_id,
-		use_term_slug_in_url,
+		include_user_roles,
+		use_store_name,
 	} = activeFilterData;
 
-	const taxonomyForSelectTerm = getTaxonomy(filterType, taxonomy);
+	const { user_roles } = additionalData;
 
 	const _orderByField = () => {
-		const options = termsOrderByOptions();
-		const isPro = true;
+		const options = authorOrderByOptions();
 
-		return orderByField('order_terms_by', options, isPro);
+		return orderByField('post_author_order_by', options);
 	};
 
 	const _orderDirectionField = () => {
-		if ('default' !== order_terms_by) {
-			return orderDirectionField('order_terms_dir');
+		if ('default' !== post_author_order_by) {
+			return orderDirectionField('post_author_order_dir');
 		}
 	};
 
 	const limitOptionsField = () => {
-		const options = taxonomyLimitByOptions();
+		const options = authorLimitByOptions();
 
 		return (
 			<ToggleGroup
@@ -64,78 +58,79 @@ const TaxonomyOptions = () => {
 				options={options}
 				onChange={handleToggleGroupChange}
 				value={limit_options}
-				isPro={true}
 			/>
 		);
 	};
 
-	const includeTermsField = () => {
+	const includeAuthorsField = () => {
 		if ('include' === limit_options) {
 			return (
 				<SelectMulti
 					id={'limit_values_by_id'}
-					label={__('Terms to include', 'wc-ajax-product-filter')}
+					label={__('Authors to include', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the terms that will be available to filter by.',
+						'Select the authors that will be available to filter by.',
 						'wc-ajax-product-filter'
 					)}
-					taxonomy={taxonomyForSelectTerm}
 					isMultiple={true}
 					value={limit_values_by_id}
 					onChange={handleSelectTermChange}
+					type={'author'}
 				/>
 			);
 		}
 	};
 
-	const excludeTermsField = () => {
+	const excludeAuthorsField = () => {
 		if ('exclude' === limit_options) {
 			return (
 				<SelectMulti
 					id={'exclude_values_id'}
-					label={__('Terms to exclude', 'wc-ajax-product-filter')}
+					label={__('Authors to exclude', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the terms that will be excluded from the filter by options.',
+						'Select the authors that will be excluded from the filter by options.',
 						'wc-ajax-product-filter'
 					)}
-					taxonomy={taxonomyForSelectTerm}
 					isMultiple={true}
 					value={exclude_values_id}
 					onChange={handleSelectTermChange}
+					type={'author'}
 				/>
 			);
 		}
 	};
 
-	const parentTermField = () => {
-		if ('child' === limit_options) {
+	const userRolesField = () => {
+		if ('user_roles' === limit_options) {
 			return (
 				<SelectMulti
-					id={'parent_term'}
-					label={__('Parent Term', 'wc-ajax-product-filter')}
+					id={'include_user_roles'}
+					label={__('User Roles', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the parent term for which child terms will be available to filter the products.',
+						'Select the roles, matched authors must have at least one of these roles.',
 						'wc-ajax-product-filter'
 					)}
-					taxonomy={taxonomyForSelectTerm}
-					onlyParent={true}
-					value={parent_term}
+					isMultiple={true}
+					value={include_user_roles}
 					onChange={handleSelectTermChange}
+					type={'author'}
+					isUserRoles={true}
+					options={user_roles}
 				/>
 			);
 		}
 	};
 
-	const termSlugField = () => {
+	const useStoreNames = () => {
 		return (
 			<Checkbox
-				id={'use_term_slug_in_url'}
-				label={__('Use Term Slug', 'wc-ajax-product-filter')}
+				id={'use_store_name'}
+				label={__('Use Store Name', 'wc-ajax-product-filter')}
 				description={__(
-					'Whether to use the term slug instead of id as the option value.',
+					'Whether to show the store name as the option label.',
 					'wc-ajax-product-filter'
 				)}
-				isChecked={use_term_slug_in_url}
+				isChecked={use_store_name}
 				onChange={handleCheckboxChange}
 			/>
 		);
@@ -149,15 +144,15 @@ const TaxonomyOptions = () => {
 
 			{limitOptionsField()}
 
-			{includeTermsField()}
+			{includeAuthorsField()}
 
-			{excludeTermsField()}
+			{excludeAuthorsField()}
 
-			{parentTermField()}
+			{userRolesField()}
 
-			{termSlugField()}
+			{useStoreNames()}
 		</>
 	);
 };
 
-export default TaxonomyOptions;
+export default PostAuthorOptions;

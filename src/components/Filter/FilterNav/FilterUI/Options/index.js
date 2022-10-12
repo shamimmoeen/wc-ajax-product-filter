@@ -5,6 +5,7 @@ import RatingOptions from './RatingOptions';
 import ValueTypeText from './ValueTypeText';
 import ValueTypeDate from './ValueTypeDate';
 import ManualOptions from './ManualOptions';
+import PostAuthorOptions from './PostAuthorOptions';
 import { isTaxonomyFilters } from '../../../utils';
 
 const Options = () => {
@@ -15,7 +16,7 @@ const Options = () => {
 	const renderFields = () => {
 		let fields;
 
-		const { value_type } = activeFilterData;
+		const { value_type, post_property } = activeFilterData;
 
 		if (isTaxonomyFilters(filterType)) {
 			fields = <TaxonomyOptions />;
@@ -27,6 +28,16 @@ const Options = () => {
 			fields = <ManualOptions />;
 		} else if ('post-meta' === filterType) {
 			if ('text' === value_type) {
+				fields = <ValueTypeText />;
+			} else if ('number' === value_type) {
+				fields = <ValueTypeNumber />;
+			} else if ('date' === value_type) {
+				fields = <ValueTypeDate />;
+			}
+		} else if ('post-property' === filterType) {
+			if ('post_author' === post_property) {
+				fields = <PostAuthorOptions />;
+			} else if ('text' === value_type) {
 				fields = <ValueTypeText />;
 			} else if ('number' === value_type) {
 				fields = <ValueTypeNumber />;

@@ -35,13 +35,15 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 		setActiveFilterData(key, selected);
 	};
 
-	const setActiveFilterData = (key, value) => {
+	const setActiveFilterData = (key, value, makeDirty = true) => {
 		dispatch({
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: { ...activeFilterData, [key]: value },
 		});
 
-		setDirty();
+		if (makeDirty) {
+			setDirty();
+		}
 	};
 
 	const setActiveFilterMultiData = (data) => {

@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { useEffect } from '@wordpress/element';
 import { has } from 'lodash';
 import { wpFeSanitizeTitle } from '../../wp-fe-sanitize-title';
 import Listbox from '../../../Field/Listbox';
@@ -25,8 +26,24 @@ const GeneralFields = ({
 		setActiveFilterMultiData,
 	} = useFilterData(activeFilterData, isDirty, dispatch);
 
-	const { field_key, value_type, value_decimal, value_decimal_places } =
-		activeFilterData;
+	const {
+		field_key,
+		value_type,
+		value_decimal,
+		value_decimal_places,
+		post_property,
+	} = activeFilterData;
+
+	useEffect(() => {
+		if ('post-property' !== filterType) {
+			return;
+		}
+
+		const { post_property_data } = additionalData;
+		const propertyType = post_property_data[post_property] ?? 'text';
+
+		setActiveFilterData('value_type', propertyType, false);
+	}, [post_property]);
 
 	/**
 	 * type = 'post-meta'
@@ -166,7 +183,6 @@ const GeneralFields = ({
 
 	const postPropertyField = () => {
 		if ('post-property' === filterType) {
-			const postProperty = activeFilterData['post_property'];
 			const data = additionalData['post_properties'];
 			let options = [];
 
@@ -183,7 +199,7 @@ const GeneralFields = ({
 					)}
 					id={'post_property'}
 					options={options}
-					value={postProperty}
+					value={post_property}
 					onChange={handlePostPropertyChange}
 					searchable={false}
 				/>

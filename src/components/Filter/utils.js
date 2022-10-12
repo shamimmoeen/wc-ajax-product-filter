@@ -177,6 +177,9 @@ export function filterDefaultData() {
 		date_to_placeholder: '',
 		// Post Property
 		post_property: '',
+		post_author_order_by: 'default',
+		post_author_order_dir: 'asc',
+		include_user_roles: '',
 		// Sort by
 		sort_by_options: [],
 		// Per page
@@ -192,7 +195,7 @@ function ratingFilterDefaultData() {
 
 function perPageFilterDefaultData() {
 	return {
-		display_type: 'radio',
+		display_type: 'select',
 		min_value: '25',
 		max_value: '100',
 		step: '25',
@@ -201,7 +204,7 @@ function perPageFilterDefaultData() {
 
 function sortByFilterDefaultData() {
 	return {
-		display_type: 'radio',
+		display_type: 'select',
 	};
 }
 
@@ -389,6 +392,48 @@ export function orderTypeOptions() {
 		{
 			label: __('Numerical', 'wc-ajax-product-filter'),
 			value: 'numerical',
+		},
+	];
+}
+
+export function authorOrderByOptions() {
+	return [
+		{
+			label: __('Default', 'wc-ajax-product-filter'),
+			value: 'default',
+		},
+		{
+			label: __('ID', 'wc-ajax-product-filter'),
+			value: 'id',
+		},
+		{
+			label: __('Name', 'wc-ajax-product-filter'),
+			value: 'name',
+		},
+		{
+			label: __('Count', 'wc-ajax-product-filter'),
+			value: 'count',
+		},
+	];
+}
+
+export function authorLimitByOptions() {
+	return [
+		{
+			label: __('Off', 'wc-ajax-product-filter'),
+			value: 'off',
+		},
+		{
+			label: __('Include', 'wc-ajax-product-filter'),
+			value: 'include',
+		},
+		{
+			label: __('Exclude', 'wc-ajax-product-filter'),
+			value: 'exclude',
+		},
+		{
+			label: __('Role', 'wc-ajax-product-filter'),
+			value: 'user_roles',
 		},
 	];
 }
@@ -599,7 +644,7 @@ export function getTableData(filterType, activeFilterData) {
 	} else if ('product-status' === filterType) {
 		type = 'product-status-options';
 		optionsKey = 'product_status_options';
-	} else if ('post-meta' === filterType) {
+	} else if ('post-meta' === filterType || 'post-property' === filterType) {
 		if ('text' === value_type) {
 			type = 'text-options';
 			optionsKey = 'manual_options';
