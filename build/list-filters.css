@@ -249,6 +249,9 @@ body {
 .__form_control .description {
   margin-top: 8px;
 }
+.__form_control .description b {
+  font-weight: 500;
+}
 .__form_control .components-text-control__input {
   max-width: 220px;
 }
@@ -269,7 +272,8 @@ body {
 .__form_control.__checkbox_toggle .components-base-control__field {
   margin: 0;
 }
-.__form_control #soft_limit {
+.__form_control #soft_limit,
+.__form_control #soft_limit_for_extended_layout {
   max-width: 60px;
 }
 .__form_control .components-button-group .components-button {
