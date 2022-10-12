@@ -2914,6 +2914,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const GeneralFields = _ref => {
   let {
     filterType,
@@ -2934,8 +2935,22 @@ const GeneralFields = _ref => {
     field_key,
     value_type,
     value_decimal,
-    value_decimal_places
+    value_decimal_places,
+    post_property
   } = activeFilterData;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    var _post_property_data$p;
+
+    if ('post-property' !== filterType) {
+      return;
+    }
+
+    const {
+      post_property_data
+    } = additionalData;
+    const propertyType = (_post_property_data$p = post_property_data[post_property]) !== null && _post_property_data$p !== void 0 ? _post_property_data$p : 'text';
+    setActiveFilterData('value_type', propertyType, false);
+  }, [post_property]);
   /**
    * type = 'post-meta'
    * value = '_stock_status'
@@ -3075,7 +3090,6 @@ const GeneralFields = _ref => {
 
   const postPropertyField = () => {
     if ('post-property' === filterType) {
-      const postProperty = activeFilterData['post_property'];
       const data = additionalData['post_properties'];
       let options = [];
 
@@ -3093,7 +3107,7 @@ const GeneralFields = _ref => {
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the post property that values will be available as filter options.', 'wc-ajax-product-filter'),
         id: 'post_property',
         options: options,
-        value: postProperty,
+        value: post_property,
         onChange: handlePostPropertyChange,
         searchable: false
       });
@@ -3246,14 +3260,18 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
     setActiveFilterData(key, selected);
   };
 
-  const setActiveFilterData = (key, value) => {
+  const setActiveFilterData = function (key, value) {
+    let makeDirty = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
     dispatch({
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: { ...activeFilterData,
         [key]: value
       }
     });
-    setDirty();
+
+    if (makeDirty) {
+      setDirty();
+    }
   };
 
   const setActiveFilterMultiData = data => {
@@ -3292,6 +3310,8 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "accordionStates": function() { return /* binding */ accordionStates; },
+/* harmony export */   "authorLimitByOptions": function() { return /* binding */ authorLimitByOptions; },
+/* harmony export */   "authorOrderByOptions": function() { return /* binding */ authorOrderByOptions; },
 /* harmony export */   "availableFilters": function() { return /* binding */ availableFilters; },
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
@@ -3476,6 +3496,9 @@ function filterDefaultData() {
     date_to_placeholder: '',
     // Post Property
     post_property: '',
+    post_author_order_by: 'default',
+    post_author_order_dir: 'asc',
+    include_user_roles: '',
     // Sort by
     sort_by_options: [],
     // Per page
@@ -3493,7 +3516,7 @@ function ratingFilterDefaultData() {
 
 function perPageFilterDefaultData() {
   return {
-    display_type: 'radio',
+    display_type: 'select',
     min_value: '25',
     max_value: '100',
     step: '25'
@@ -3502,7 +3525,7 @@ function perPageFilterDefaultData() {
 
 function sortByFilterDefaultData() {
   return {
-    display_type: 'radio'
+    display_type: 'select'
   };
 }
 
@@ -3659,6 +3682,36 @@ function orderTypeOptions() {
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Numerical', 'wc-ajax-product-filter'),
     value: 'numerical'
+  }];
+}
+function authorOrderByOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'wc-ajax-product-filter'),
+    value: 'default'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('ID', 'wc-ajax-product-filter'),
+    value: 'id'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Name', 'wc-ajax-product-filter'),
+    value: 'name'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Count', 'wc-ajax-product-filter'),
+    value: 'count'
+  }];
+}
+function authorLimitByOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Off', 'wc-ajax-product-filter'),
+    value: 'off'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Include', 'wc-ajax-product-filter'),
+    value: 'include'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Exclude', 'wc-ajax-product-filter'),
+    value: 'exclude'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Role', 'wc-ajax-product-filter'),
+    value: 'user_roles'
   }];
 }
 function productStatusOptions() {
@@ -3824,7 +3877,7 @@ function getTableData(filterType, activeFilterData) {
   } else if ('product-status' === filterType) {
     type = 'product-status-options';
     optionsKey = 'product_status_options';
-  } else if ('post-meta' === filterType) {
+  } else if ('post-meta' === filterType || 'post-property' === filterType) {
     if ('text' === value_type) {
       type = 'text-options';
       optionsKey = 'manual_options';
