@@ -5809,24 +5809,18 @@ const CustomAppearanceModal = _ref => {
   };
 
   const handleUpdatingAppearanceData = () => {
-    const _appearanceData = [...appearanceData];
+    const _appearanceData = [];
+    options.forEach(option => {
+      const _item = {
+        id: option['value'],
+        color: option['color'],
+        image_id: option['image_id'],
+        image_url: option['image_url']
+      };
 
-    const newAppearanceData = _appearanceData.map(option => {
-      const found = (0,lodash__WEBPACK_IMPORTED_MODULE_5__.find)(options, {
-        value: option.id
-      });
-
-      if ('color' === type) {
-        option['color'] = found['color'];
-      } else {
-        option['image_id'] = found['image_id'];
-        option['image_url'] = found['image_url'];
-      }
-
-      return option;
+      _appearanceData.push(_item);
     });
-
-    setActiveFilterData('custom_appearance_options', newAppearanceData);
+    setActiveFilterData('custom_appearance_options', _appearanceData);
     closeModal();
   };
 
