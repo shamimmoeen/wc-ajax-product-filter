@@ -3765,7 +3765,7 @@ function textDisplayTypes() {
   }];
 
   if (withPro && !(0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)()) {
-    const proDisplayTypes = ['label', 'color', 'image'];
+    const proDisplayTypes = ['color', 'image'];
     return options.map(option => {
       if (!proDisplayTypes.includes(option.value)) {
         return option;

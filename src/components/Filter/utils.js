@@ -484,7 +484,7 @@ export function textDisplayTypes(withPro = false) {
 	];
 
 	if (withPro && !foundProVersion()) {
-		const proDisplayTypes = ['label', 'color', 'image'];
+		const proDisplayTypes = ['color', 'image'];
 
 		return options.map((option) => {
 			if (!proDisplayTypes.includes(option.value)) {
