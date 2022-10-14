@@ -10,7 +10,9 @@ import AddNewModal from './AddNewModal';
 import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
 import Notifications from '../Notifications';
-import classnames from 'classnames';
+import { DeleteIcon, DuplicateIcon, EditIcon, CodeIcon } from '../SVGIcons';
+import TopBar from '../TopBar';
+import Sidebar from '../Sidebar';
 
 const ListFilters = () => {
 	const {
@@ -112,30 +114,17 @@ const ListFilters = () => {
 		if (filters.length) {
 			html = filters.map((filter) => (
 				<tr key={filter.id}>
-					<td
-						className='title column-primary'
-						data-colname={__('Title', 'wc-ajax-product-filter')}
-					>
-						<a href={filter.permalink} className='row-title'>
+					<td className='__Title'>
+						<a href={filter.permalink} className='__post_title'>
 							{filter.title}
 						</a>
-						<div className='__post_id'>
+						<span className='__post_id'>
 							{__('ID', 'wc-ajax-product-filter')}:{` `}
 							{filter.id}
-						</div>
+						</span>
 					</td>
-					<td
-						data-colname={__(
-							'Filter Key',
-							'wc-ajax-product-filter'
-						)}
-						className={classnames({ empty: !filter.filter_key })}
-					>
-						{filter.filter_key}
-					</td>
-					<td
-						data-colname={__('Component', 'wc-ajax-product-filter')}
-					>
+					<td className='__Filter_Key'>{filter.filter_key}</td>
+					<td className='__Filter_Type'>
 						{filter.component}
 						{filter.componentExtra && (
 							<span className='__component_extra'>
@@ -144,27 +133,17 @@ const ListFilters = () => {
 							</span>
 						)}
 					</td>
-					<td
-						data-colname={__('Actions', 'wc-ajax-product-filter')}
-						className='__action_buttons_column'
-					>
-						<div className='__action_buttons'>
-							<Button
-								icon={'edit'}
-								className='__primary'
-								href={filter.permalink}
-							/>
-							<Button
-								icon={'trash'}
-								className='__destructive'
-								onClick={() => handleDeleteFilter(filter)}
-							/>
-							<Button
-								icon={'shortcode'}
-								className='__contextual'
-								onClick={() => handleCopyShortcode(filter.id)}
-							/>
-						</div>
+					<td className='__Actions'>
+						<Button
+							icon={DeleteIcon}
+							onClick={() => handleDeleteFilter(filter)}
+						/>
+						<Button icon={DuplicateIcon} />
+						<Button
+							icon={CodeIcon}
+							onClick={() => handleCopyShortcode(filter.id)}
+						/>
+						<Button icon={EditIcon} href={filter.permalink} />
 					</td>
 				</tr>
 			));
@@ -225,40 +204,56 @@ const ListFilters = () => {
 	};
 
 	return (
-		<>
-			<PostTable
-				title={__('List of Filters', 'wc-ajax-product-filter')}
-				addBtnTitle={__('Add Filter', 'wc-ajax-product-filter')}
-				handleAddFilter={handleAddFilter}
-				headers={[
-					__('Title', 'wc-ajax-product-filter'),
-					__('Filter Key', 'wc-ajax-product-filter'),
-					__('Component', 'wc-ajax-product-filter'),
-					__('Actions', 'wc-ajax-product-filter'),
-				]}
-				tbody={getTableData}
-			/>
+		<div className='wrap'>
+			<TopBar />
 
-			<AddNewModal
-				isOpen={addPostModalOpen}
-				closeModal={closeAddPostModal}
-				step={addPostModalStep}
-				setStep={setAddPostModalStep}
-				totalSteps={addPostModalTotalSteps}
-				setTotalSteps={setAddPostModalTotalSteps}
-				loading={addPostModalLoading}
-				setLoading={setAddPostModalLoading}
-				handleFilterSubmit={handleFilterSubmit}
-				addPostModalContent={addPostModalContent}
-			/>
+			<div className='__wcapf_layout'>
+				<div className='__main'>
+					<div className='__content'>
+						<PostTable
+							title={__(
+								'List of Filters',
+								'wc-ajax-product-filter'
+							)}
+							addBtnTitle={__(
+								'Add Filter',
+								'wc-ajax-product-filter'
+							)}
+							handleAddFilter={handleAddFilter}
+							headers={[
+								__('Title', 'wc-ajax-product-filter'),
+								__('Filter Key', 'wc-ajax-product-filter'),
+								__('Filter Type', 'wc-ajax-product-filter'),
+								__('Actions', 'wc-ajax-product-filter'),
+							]}
+							tbody={getTableData}
+						/>
+					</div>
 
-			<DeleteModal
-				isOpen={deletePostModalOpen}
-				closeModal={closeDeletePostModal}
-			/>
+					<Sidebar />
+				</div>
 
-			<Notifications />
-		</>
+				<AddNewModal
+					isOpen={addPostModalOpen}
+					closeModal={closeAddPostModal}
+					step={addPostModalStep}
+					setStep={setAddPostModalStep}
+					totalSteps={addPostModalTotalSteps}
+					setTotalSteps={setAddPostModalTotalSteps}
+					loading={addPostModalLoading}
+					setLoading={setAddPostModalLoading}
+					handleFilterSubmit={handleFilterSubmit}
+					addPostModalContent={addPostModalContent}
+				/>
+
+				<DeleteModal
+					isOpen={deletePostModalOpen}
+					closeModal={closeDeletePostModal}
+				/>
+
+				<Notifications />
+			</div>
+		</div>
 	);
 };
 

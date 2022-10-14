@@ -1,13 +1,13 @@
 import { Modal, Icon, Button } from '@wordpress/components';
-import { trash } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { DeleteIcon } from '../SVGIcons';
 
 const DeleteModal = ({ isOpen, closeModal }) => {
 	return (
 		isOpen && (
 			<Modal onRequestClose={closeModal} __experimentalHideHeader>
 				<div className='__delete_modal'>
-					<Icon icon={trash} size={40} />
+					<Icon icon={DeleteIcon} size={60} />
 
 					<h3>{__('Are you sure?', 'wc-ajax-product-filter')}</h3>
 

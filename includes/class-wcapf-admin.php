@@ -90,6 +90,8 @@ class WCAPF_Admin {
 	/**
 	 * Renders the header navigation in admin area.
 	 *
+	 * @TODO: Remove this.
+	 *
 	 * @return void
 	 */
 	public function render_header_navigation() {
