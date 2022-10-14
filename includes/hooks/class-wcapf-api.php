@@ -59,7 +59,7 @@ class WCAPF_API {
 
 		add_action( 'admin_menu', array( $this, 'register_new_endpoint' ) );
 		add_action( 'admin_menu', array( $this, 'change_post_menu_label' ) );
-		add_filter( 'in_admin_header', array( $this, 'render_header_navigation' ) );
+		// add_filter( 'in_admin_header', array( $this, 'render_header_navigation' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filters_list_admin_ui_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_filter_forms_list_admin_ui_scripts' ) );
 	}

@@ -1,0 +1,35 @@
+.__top_bar {
+    background-color: #fff;
+    padding: 0 40px;
+    display: flex;
+    min-height: 60px;
+    align-items: center;
+    gap: 10px;
+
+    h2 {
+        margin: 0;
+        font-size: 14px;
+        line-height: 2.5;
+        display: inline-flex;
+        align-items: center;
+
+        .__icon {
+            color: #babbbc;
+            margin-right: 4px;
+        }
+    }
+
+    .__buttons {
+        a {
+            margin: 0 5px;
+            padding: 0 5px;
+            font-size: 14px;
+            line-height: 2.5;
+            text-decoration: none;
+
+            &:not(:hover):not(:focus):not(:active) {
+                color: inherit;
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+.__sidebar {
+    .components-card-header {
+        h2 {
+            margin: 0;
+        }   
+    }
+
+    .components-card {
+        margin-bottom: 40px;
+    }
+
+    .__card_heading {
+        margin: 0;
+    }
+
+    .components-card-body {
+        p {
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+
+    .__buttons {
+        .components-button {
+            margin-right: 6px;
+        }
+    }
+}

@@ -1,20 +1,15 @@
-import { useState } from '@wordpress/element';
-import {
-	Button,
-	Flex,
-	FlexItem,
-	Icon,
-	SearchControl,
-	Spinner,
-} from '@wordpress/components';
+import { Button, Icon, Spinner } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import { useListFilters } from './ListFilters/ListFiltersContext';
+
+function slugify(key) {
+	return '__' + key.replace(/ /g, '_');
+}
 
 const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 	const {
 		state: { isLoading, filters },
 	} = useListFilters();
-	const [searchInput, setSearchInput] = useState('');
 
 	const filtersFound = filters.length;
 
@@ -23,21 +18,25 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 	if (isLoading) {
 		html = <Spinner />;
 	} else if (filtersFound) {
+		const countResults = sprintf(
+			_n(
+				'Showing <b>%d</b> result',
+				'Showing <b>%d</b> results',
+				filtersFound,
+				'wc-ajax-product-filter'
+			),
+			filtersFound
+		);
+
 		html = (
 			<>
-				<table className='wp-list-table widefat fixed striped __list_table'>
+				<table>
 					<thead>
 						<tr>
-							{headers.map((item, index) => {
-								let _classes = `__${item}`;
-
-								if (0 === index) {
-									_classes = 'column-title column-primary';
-								}
-
+							{headers.map((item) => {
 								return (
 									<th
-										className={_classes}
+										className={slugify(item)}
 										key={`posts-table-${item}`}
 									>
 										{item}
@@ -49,21 +48,9 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 					<tbody>{tbody()}</tbody>
 				</table>
 
-				<Flex className='__list_table_footer'>
-					<FlexItem>
-						<p className='description'>
-							{sprintf(
-								_n(
-									'Showing %d result',
-									'Showing %d results',
-									filtersFound,
-									'wc-ajax-product-filter'
-								),
-								filtersFound
-							)}
-						</p>
-					</FlexItem>
-				</Flex>
+				<div className='__list_table_summary'>
+					<span dangerouslySetInnerHTML={{ __html: countResults }} />
+				</div>
 			</>
 		);
 	} else {
@@ -90,25 +77,18 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 	}
 
 	return (
-		<div className='wrap'>
-			<h1>{title}</h1>
-
-			<div className='__list_table_search'>
-				<div className='__search_box'>
-					<SearchControl
-						value={searchInput}
-						onChange={setSearchInput}
-					/>
-				</div>
-				<div className=''>
+		<>
+			<div className='__list_table_wrapper'>
+				<div className='__list_table_header'>
+					<h2>{title}</h2>
 					<Button variant='primary' onClick={handleAddFilter}>
 						{addBtnTitle}
 					</Button>
 				</div>
-			</div>
 
-			{html}
-		</div>
+				<div className='__list_table_inner'>{html}</div>
+			</div>
+		</>
 	);
 };
 

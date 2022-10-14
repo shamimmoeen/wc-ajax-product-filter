@@ -224,6 +224,138 @@ body {
     right: 2em;
   }
 }
+.__main {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 40px;
+}
+
+.__list_table_wrapper {
+  background-color: rgb(255, 255, 255);
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+  outline: none;
+  border-radius: 1px;
+  --vr-padding: 16px;
+  --hr-padding: 24px;
+}
+.__list_table_wrapper .__list_table_header {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.__list_table_wrapper .__list_table_header h2 {
+  padding: 0;
+  margin: 0;
+}
+.__list_table_wrapper .__list_table_inner table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.__list_table_wrapper .__list_table_inner table th {
+  font-weight: 400;
+  background-color: #f8f9fa;
+}
+.__list_table_wrapper .__list_table_inner table thead th {
+  padding: 0 var(--vr-padding);
+  height: 36px;
+  border-bottom: 1px solid #e2e4e7;
+  text-align: left;
+}
+.__list_table_wrapper .__list_table_inner table thead .__Title {
+  padding-left: var(--hr-padding);
+}
+.__list_table_wrapper .__list_table_inner table thead .__Actions {
+  padding-left: calc(var(--vr-padding) + 10px);
+  padding-right: var(--hr-padding);
+}
+.__list_table_wrapper .__list_table_inner table tbody td {
+  padding: var(--vr-padding) var(--vr-padding);
+  text-align: left;
+  border-bottom: 1px solid #e2e4e7;
+}
+.__list_table_wrapper .__list_table_inner table tbody td.__Title {
+  padding-left: var(--hr-padding);
+}
+.__list_table_wrapper .__list_table_inner table tbody td.__Actions {
+  padding-bottom: 0;
+  padding-right: var(--hr-padding);
+  padding-top: 0;
+}
+.__list_table_wrapper .__list_table_inner table tbody td .__post_id,
+.__list_table_wrapper .__list_table_inner table tbody td .__component_extra {
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  margin-left: 4px;
+}
+.__list_table_wrapper .__list_table_inner table tbody td .__post_title {
+  text-decoration: none;
+}
+.__list_table_wrapper .__list_table_inner table tbody td .components-button svg {
+  width: 20px;
+  height: 20px;
+}
+.__list_table_wrapper .__list_table_inner .__list_table_summary {
+  padding: calc(var(--hr-padding) - 10px) var(--vr-padding);
+}
+
+.__list_table_search {
+  display: flex;
+  gap: 1.5em;
+  margin: 1.5em 0;
+}
+.__list_table_search .__search_box .components-search-control__input-wrapper .components-search-control__input {
+  background-color: #fff;
+  height: 36px;
+  min-height: 36px;
+  box-shadow: #ddd 0px 0px 0px 1px;
+}
+.__list_table_search .__search_box .components-base-control__field {
+  margin: 0;
+}
+
+.__list_table_footer {
+  margin: 1em 0;
+}
+
+table.__list_table {
+  border: none;
+}
+table.__list_table .row-title {
+  font-weight: 500;
+}
+table.__list_table .__post_id {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.3);
+}
+table.__list_table .__Actions {
+  text-align: center;
+}
+table.__list_table .__action_buttons {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+table.__list_table .__action_buttons .__primary {
+  color: var(--wp-admin-theme-color);
+}
+table.__list_table .__action_buttons .__destructive {
+  color: #d93e3e;
+}
+table.__list_table .__action_buttons .__contextual {
+  color: #50575e;
+}
+table.__list_table .__component_extra {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.3);
+}
+table.__list_table .__no_results {
+  background-color: transparent;
+}
+
 .__form_control {
   margin: 0 0 2em;
 }
@@ -468,6 +600,65 @@ body {
   }
 }
 
+.__top_bar {
+  background-color: #fff;
+  padding: 0 40px;
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  gap: 10px;
+}
+.__top_bar h2 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 2.5;
+  display: inline-flex;
+  align-items: center;
+}
+.__top_bar h2 .__icon {
+  color: #babbbc;
+  margin-right: 4px;
+}
+.__top_bar .__buttons a {
+  margin: 0 5px;
+  padding: 0 5px;
+  font-size: 14px;
+  line-height: 2.5;
+  text-decoration: none;
+}
+.__top_bar .__buttons a:not(:hover):not(:focus):not(:active) {
+  color: inherit;
+}
+
+.__sidebar .components-card-header h2 {
+  margin: 0;
+}
+.__sidebar .components-card {
+  margin-bottom: 40px;
+}
+.__sidebar .__card_heading {
+  margin: 0;
+}
+.__sidebar .components-card-body p:first-child {
+  margin-top: 0;
+}
+.__sidebar .__buttons .components-button {
+  margin-right: 6px;
+}
+
+body {
+  background-color: #f0f0f1;
+}
+body #wpcontent {
+  padding: 0;
+}
+body #wpcontent .wrap {
+  margin: 0;
+}
+body #wpcontent .wrap .__wcapf_layout {
+  padding: 40px;
+}
+
 #wcapf-filters-list-admin-ui {
   padding-bottom: 4em;
 }
@@ -480,61 +671,6 @@ body {
 }
 #wcapf-filters-list-admin-ui .components-snackbar-list .components-snackbar {
   box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
-}
-
-.__list_table_search {
-  display: flex;
-  gap: 1.5em;
-  margin: 1.5em 0;
-}
-.__list_table_search .__search_box .components-search-control__input-wrapper .components-search-control__input {
-  background-color: #fff;
-  height: 36px;
-  min-height: 36px;
-  box-shadow: #ddd 0px 0px 0px 1px;
-}
-.__list_table_search .__search_box .components-base-control__field {
-  margin: 0;
-}
-
-.__list_table_footer {
-  margin: 1em 0;
-}
-
-table.__list_table {
-  border: none;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-table.__list_table .row-title {
-  font-weight: 500;
-}
-table.__list_table .__post_id {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.3);
-}
-table.__list_table .__Actions {
-  text-align: center;
-}
-table.__list_table .__action_buttons {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-}
-table.__list_table .__action_buttons .__primary {
-  color: var(--wp-admin-theme-color);
-}
-table.__list_table .__action_buttons .__destructive {
-  color: #d93e3e;
-}
-table.__list_table .__action_buttons .__contextual {
-  color: #50575e;
-}
-table.__list_table .__component_extra {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.3);
-}
-table.__list_table .__no_results {
-  background-color: transparent;
 }
 
 .__import_data {
