@@ -26,8 +26,6 @@ body {
 #wcapf-filters-list-admin-ui {
 	$spaceBottom: 4em;
 
-	padding-bottom: $spaceBottom;
-
 	.components-snackbar-list {
 		width: auto;
 		position: fixed;
@@ -82,7 +80,7 @@ body {
 
 	.__buttons {
 		display: flex;
-		gap: 5px;
+		gap: 4px;
 	}
 
 	svg {

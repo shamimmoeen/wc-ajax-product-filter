@@ -643,7 +643,7 @@ table.__list_table .__no_results {
   margin-top: 0;
 }
 .__sidebar .__buttons .components-button {
-  margin-right: 6px;
+  margin-right: 4px;
 }
 
 body {
@@ -659,9 +659,6 @@ body #wpcontent .wrap .__wcapf_layout {
   padding: 40px;
 }
 
-#wcapf-filters-list-admin-ui {
-  padding-bottom: 4em;
-}
 #wcapf-filters-list-admin-ui .components-snackbar-list {
   width: auto;
   position: fixed;
@@ -707,7 +704,7 @@ body #wpcontent .wrap .__wcapf_layout {
 }
 .__delete_modal .__buttons {
   display: flex;
-  gap: 5px;
+  gap: 4px;
 }
 .__delete_modal svg {
   fill: #d93e3e;
