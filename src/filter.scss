@@ -1,8 +1,16 @@
 @import './scss/core';
+@import './scss/edit-form';
+@import './scss/title';
+@import './scss/tab-panel';
 @import './scss/preview';
-@import './scss/filter';
 @import './scss/form-fields';
+@import './scss/pro-tag';
 @import './scss/available-filters';
 @import './scss/manual-options';
 @import './scss/meta-values-modal';
 @import './scss/custom-appearance-modal';
+@import './scss/top-bar';
+
+body {
+	background: #fff;
+}

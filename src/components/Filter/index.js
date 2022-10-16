@@ -8,6 +8,7 @@ import { filterDefaultData, initialFilterKeysData } from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
+import TopBar from '../TopBar';
 
 const Filter = () => {
 	const { dispatch } = useFilter();
@@ -84,15 +85,20 @@ const Filter = () => {
 	}, []);
 
 	return (
-		<>
-			<FilterSettings />
+		<div className='__wcapf_admin'>
+			<TopBar view={'filters'} />
 
-			<FilterSaveButton />
-
-			<FilterPreview />
+			<div className='__edit_form'>
+				<FilterSettings />
+				<FilterPreview />
+			</div>
 
 			<Notifications />
-		</>
+
+			{/* <div className='__wcapf_layout'>
+				<FilterSaveButton />
+			</div> */}
+		</div>
 	);
 };
 

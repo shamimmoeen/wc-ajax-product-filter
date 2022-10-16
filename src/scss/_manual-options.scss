@@ -119,7 +119,7 @@
 
 		.__product_status {
 			.__custom_react_select {
-				min-width: 130px;
+				min-width: 140px;
 			}
 		}
 
@@ -188,6 +188,18 @@
 			}
 
 			&.sort-by-options {
+				table {
+					min-width: 600px;
+				}
+			}
+		}
+	}
+
+	@media (min-width: 1120px) and (max-width: 1199px) {
+		.__responsive_table {
+			&.sort-by-options {
+				@include responsive-table;
+
 				table {
 					min-width: 600px;
 				}

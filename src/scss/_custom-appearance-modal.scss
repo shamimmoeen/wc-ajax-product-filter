@@ -69,7 +69,7 @@
 
     .__color_picker_clear_button {
         padding: 0 8px;
-        margin-left: 4px;
+        margin: 0 0 0 4px;
     }
 
     .__color_picker_wrapper {
@@ -153,5 +153,16 @@
         font-weight: 500;
         font-style: italic;
         margin-top: 1em;
+    }
+}
+
+// RTL Styles.
+body.rtl {
+    .components-button.__custom_appearance_modal_btn {
+        margin: 0 10px 0 0;
+    }
+
+    .__custom_appearance_modal .__color_picker_clear_button {
+        margin: 0 4px 0 0;
     }
 }

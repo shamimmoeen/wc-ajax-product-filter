@@ -18,18 +18,8 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 	if (isLoading) {
 		html = <Spinner />;
 	} else if (filtersFound) {
-		const countResults = sprintf(
-			_n(
-				'Showing <b>%d</b> result',
-				'Showing <b>%d</b> results',
-				filtersFound,
-				'wc-ajax-product-filter'
-			),
-			filtersFound
-		);
-
 		html = (
-			<>
+			<div className='__list_table_responsive_wrapper'>
 				<table>
 					<thead>
 						<tr>
@@ -47,11 +37,7 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 					</thead>
 					<tbody>{tbody()}</tbody>
 				</table>
-
-				<div className='__list_table_summary'>
-					<span dangerouslySetInnerHTML={{ __html: countResults }} />
-				</div>
-			</>
+			</div>
 		);
 	} else {
 		html = (
@@ -76,6 +62,30 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 		);
 	}
 
+	const tableSummary = () => {
+		if (isLoading) {
+			return;
+		}
+
+		if (filtersFound) {
+			const countResults = sprintf(
+				_n(
+					'Showing <b>%d</b> result',
+					'Showing <b>%d</b> results',
+					filtersFound,
+					'wc-ajax-product-filter'
+				),
+				filtersFound
+			);
+
+			return (
+				<div className='__list_table_summary'>
+					<span dangerouslySetInnerHTML={{ __html: countResults }} />
+				</div>
+			);
+		}
+	};
+
 	return (
 		<>
 			<div className='__list_table_wrapper'>
@@ -87,6 +97,8 @@ const PostTable = ({ title, addBtnTitle, handleAddFilter, headers, tbody }) => {
 				</div>
 
 				<div className='__list_table_inner'>{html}</div>
+
+				{tableSummary()}
 			</div>
 		</>
 	);

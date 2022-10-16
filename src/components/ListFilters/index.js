@@ -143,7 +143,11 @@ const ListFilters = () => {
 							icon={CodeIcon}
 							onClick={() => handleCopyShortcode(filter.id)}
 						/>
-						<Button icon={EditIcon} href={filter.permalink} />
+						<Button
+							icon={EditIcon}
+							href={filter.permalink}
+							className='__edit_btn'
+						/>
 					</td>
 				</tr>
 			));
@@ -204,8 +208,8 @@ const ListFilters = () => {
 	};
 
 	return (
-		<div className='wrap'>
-			<TopBar />
+		<div className='__wcapf_admin'>
+			<TopBar view={'filters'} />
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>
