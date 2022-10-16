@@ -28,6 +28,10 @@ const customStyles = {
 		marginLeft: 0,
 		marginRight: 0,
 	}),
+	menuPortal: (base) => ({
+		...base,
+		zIndex: 300,
+	}),
 	menu: (base) => ({
 		...base,
 		borderRadius: 2,
@@ -35,6 +39,7 @@ const customStyles = {
 		border: '1px solid #ddd',
 		marginTop: 5,
 		marginBottom: 5,
+		zIndex: 300,
 	}),
 	menuList: (base) => ({
 		...base,

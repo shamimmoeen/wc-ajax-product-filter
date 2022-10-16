@@ -57,7 +57,6 @@ const FilterUI = () => {
 		<TabPanel
 			className='__filter_ui_tab_panel'
 			activeClass='active-tab'
-			orientation='vertical'
 			initialTabName={initialTabName}
 			onSelect={handleSelect}
 			tabs={tabs}

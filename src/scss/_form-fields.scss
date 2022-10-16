@@ -10,10 +10,14 @@
 	}
 
 	.__label {
-		width: 150px;
-
 		label {
 			font-weight: 500;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.__label {
+			width: 180px;
 		}
 	}
 
@@ -148,7 +152,7 @@
 			display: flex;
 
 			.display_type {
-				min-width: 130px;
+				min-width: 140px;
 			}
 
 			.date_display_type,
@@ -264,6 +268,7 @@
 	// Style the info(term_id, user_id) in option.
 	.__info {
 		color: rgba(0, 0, 0, 0.3);
+		display: inline-block;
 		font-size: 12px;
 		margin: 0 0 0 4px;
 	}
@@ -282,4 +287,35 @@
 
 .__react_select__menu-portal {
 	@include react-select-single;
+}
+
+/**
+* RTL Styles.
+*/
+body.rtl {
+	.__form_control {
+		.radio-group {
+			&:not(.radio-group-vertical) {
+				.components-radio-control__option {
+					label {
+						display: inline-block;
+					}
+
+					&:not(:last-child) {
+						margin: 0 0 0 10px;
+					}
+				}
+			}
+		}
+	}
+
+	.__custom_react_select {
+		.__react_select__dropdown-indicator {
+			padding: 0 0 0 4px;
+		}
+
+		.__info {
+			margin: 0 4px 0 0;
+		}
+	}
 }

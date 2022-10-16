@@ -1,0 +1,50 @@
+.__title_wrapper {
+	display: flex;
+	padding: 40px var(--large-gap) 0 var(--large-gap);
+	gap: 16px;
+
+	$size: 40px;
+
+	.__back_button {
+		color: #c3c4c7;
+		height: $size;
+		padding: 0;
+		justify-content: center;
+		min-width: $size;
+
+		&:hover,
+		&:focus {
+			color: var(--wp-admin-theme-color);
+		}
+
+		svg {
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	.components-text-control__input {
+		font-size: 1.7em;
+		height: $size;
+		padding: 3px 8px;
+		border-color: rgb(0 0 0 / 10%);
+	}
+
+	.__save_button {
+		font-weight: 500;
+		min-width: 100px;
+		height: $size;
+		text-transform: uppercase;
+		justify-content: center;
+	}
+}
+
+body.rtl {
+	.__title_wrapper {
+		.__back_button {
+			svg {
+				transform: rotate(180deg);
+			}
+		}
+	}
+}

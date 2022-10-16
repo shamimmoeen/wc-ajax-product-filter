@@ -1,157 +1,30 @@
-#wpbody-content {
-	padding-bottom: 0;
-}
-
-#wpfooter {
-	display: none;
-}
-
 body {
-	background-color: #ffffff;
-}
-
-#wpcontent .wcapf-admin-toolbar {
-	position: relative;
-	z-index: 100;
-}
-
-#wcapf-filter-admin-ui {
-	position: relative;
-}
-
-#wcapf-filter-admin-ui,
-#wcapf-filter-form-admin-ui {
-	margin-left: -20px;
-	padding: 20px;
-}
-
-.editor-preview {
-	$wcapf_header_height: 64px;
-	$wp_admin_bar_height: 32px;
-
-	background-color: #ffffff;
-	bottom: 0;
-	margin-top: calc(#{$wcapf_header_height} + #{$wp_admin_bar_height});
-	position: fixed;
-	right: 0;
-	top: 0;
-	z-index: 200;
-	overflow-y: auto;
-
-	.__title {
-		font-size: 2.2em;
-		line-height: 1;
-		font-weight: 400;
-		margin-bottom: 1.4em;
-		margin-top: 0;
+	&.auto-fold #wpcontent,
+	#wpcontent {
+		padding-left: 0;
+		padding-right: 0;
 	}
 
-	.__inner {
-		padding: 0 50px 50px;
+	#wpbody-content {
+		padding-bottom: 0;
 	}
 
-	.__overlay {
-		// background-color: #8888bb;
-		// background-color: #F0F8FB;
-		background-color: #ffffff;
+	#wpfooter {
+		display: none;
+	}
 
-		bottom: 0;
-		box-shadow: inset 10px 0 30px rgb(0 0 0 / 5%);
-		position: fixed;
-		right: 0;
-		top: 0;
-		z-index: -1;
+	.__wcapf_layout {
+		padding: var(--large-gap);
 	}
 }
 
-.__title {
-	.components-base-control__label {
-		font-size: 14px;
-		font-weight: 500;
-		color: #1e1e1e;
-		line-height: 1.3;
-		margin: 0 0 10px;
-		padding: 9px 0 4px;
-	}
-
-	.components-text-control__input {
-		font-size: 1.7em;
-		height: 1.7em;
-		line-height: 100%;
-		padding: 3px 8px;
-		border-color: #ddd;
-	}
-}
-
-.__tab_panel {
-	margin-left: -20px;
-	margin-right: -20px;
-	margin-top: 2em;
-
-	.components-tab-panel__tabs {
-		box-shadow: 0 10px 10px rgb(0 0 0 / 2%);
-		padding-left: 20px;
-		padding-right: 20px;
-		border-bottom: 1px solid #ededed;
-		justify-content: center;
-	}
-
-	.components-tab-panel__tabs-item {
-		font-size: 14px;
-
-		&:disabled:hover {
-			color: initial;
-		}
-
-		&:focus {
-			color: var(--wp-admin-theme-color);
-		}
-
-		&:focus,
-		&.active-tab {
-			box-shadow: inset 0 -3px var(--wp-admin-theme-color);
-		}
-	}
-
-	&:not(.filter_ui) {
-		.components-tab-panel__tab-content {
-			padding: 2em;
-			margin: 0 auto;
-			max-width: 60em;
-		}
-	}
-}
-
-.__save_post {
-	$size: 56px;
-
-	position: fixed;
-	box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
-		0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
-	bottom: 20px;
-	z-index: 300;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 106px;
-	height: 44px;
-	font-size: 16px;
-	text-transform: uppercase;
-	font-weight: 500;
-
-	.components-spinner {
-		margin: 0;
-	}
-
-	.__text {
-		padding: 0 4px;
-	}
-}
-
+/**
+* Snacbar styles.
+*/
 .components-snackbar-list {
 	width: auto;
 	position: fixed;
-	bottom: 85px;
+	bottom: 20px;
 
 	.components-snackbar {
 		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
@@ -159,131 +32,17 @@ body {
 	}
 }
 
-.components-custom-select-control__item .components-custom-select-control__item-hint,
-.__pro_tag {
-	--gradient-start: #a16bfe;
-	--gradient-start-text: '#A16BFE';
-	--gradient-end: #deb0df;
-	--gradient-end-text: '#DEB0DF';
-}
-
-// The hint is treated as the pro tag.
-.components-custom-select-control__item .components-custom-select-control__item-hint {
-	color: #fff;
-	background: linear-gradient(
-		33deg,
-		var(--gradient-start),
-		var(--gradient-end)
-	);
-	font-weight: 500;
-	letter-spacing: 0.5px;
-	padding: 0;
-	border-radius: 4px;
-	font-size: 12px;
-	text-align: center;
-	text-transform: uppercase;
-    line-height: 17px;
-    width: 34px;
-	margin: 0 0 0 6px;
-}
-
-.__pro_tag {
-	&::before {
-		content: 'PRO';
-		// color: var(--wp-admin-theme-color);
-		// color: #078cd6;
-		color: #fff;
-		// background-color: #dee3ff;
-		background: linear-gradient(-60deg, #c6d3f8, #dee3ff);
-		// background: linear-gradient(
-		// 	-60deg,
-		// 	rgb(138, 185, 255) 50%,
-		// 	rgb(69, 103, 178) 50%
-		// );
-		background: linear-gradient(
-			33deg,
-			var(--gradient-start),
-			var(--gradient-end)
-		);
-		font-weight: 500;
-		letter-spacing: 0.5px;
-		padding: 2px 4px;
-		border-radius: 4px;
-		margin: 0 0 0 4px;
-		font-size: 12px;
-	}
-}
-
-.__back_button_wrapper {
-	.__back_button {
-		scale: 2;
-	}
-
-	#__back_button_svg {
-		fill: #ddd;
-	}
-
-	.components-button {
-		width: 32px;
-		height: 38px;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0;
-		margin-left: -15px;
-		margin-bottom: 8px;
-
-		&:focus {
-			box-shadow: none;
-
-			#__back_button_svg {
-				fill: var(--wp-admin-theme-color);
-			}
+// Snackbar RTL Styles.
+body {
+    &:not(.rtl) {
+        .components-snackbar-list {
+			right: 20px;
 		}
+    }
 
-		&:focus,
-		&:hover {
-			#__back_button_svg {
-				fill: var(--wp-admin-theme-color);
-			}
+    &.rtl {
+        .components-snackbar-list {
+			left: 20px;
 		}
-	}
-}
-
-@media (min-width: 1366px) {
-	$preview_width: 400px;
-
-	.editor-control {
-		width: calc(100% - #{$preview_width});
-	}
-
-	.editor-preview {
-		width: $preview_width;
-
-		.__overlay {
-			width: $preview_width;
-		}
-	}
-
-	.__save_post {
-		right: calc(#{$preview_width} + 20px);
-	}
-
-	.components-snackbar-list {
-		right: calc(#{$preview_width} + 20px);
-	}
-}
-
-@media (max-width: 1365px) {
-	.editor-control {
-		width: 100%;
-	}
-
-	.editor-preview {
-		display: none;
-	}
-
-	.__save_post {
-		right: 2em;
-	}
+    }
 }
