@@ -52,13 +52,15 @@
         min-height: 38px;
         transition: all 0.15s ease-in;
 
-        &:hover {
-            opacity: .75;
-        }
+        &.__clipboard-api-found {
+            &:hover {
+                opacity: .75;
+            }
 
-        &:active {
-            opacity: .3;
-            transform: scale(.98);
+            &:active {
+                opacity: .3;
+                transform: scale(.98);
+            }
         }
 
         .__text {

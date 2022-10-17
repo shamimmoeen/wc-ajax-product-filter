@@ -4826,10 +4826,17 @@ const PublishModal = _ref => {
   const {
     createSuccessNotice
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useDispatch)(_wordpress_notices__WEBPACK_IMPORTED_MODULE_4__.store);
+  const clipboardApiFound = window.isSecureContext && navigator.clipboard;
 
-  const handleCopyToClipboard = () => {
+  const handleCopyToClipboard = text => {
+    if (!clipboardApiFound) {
+      return;
+    }
+
+    navigator.clipboard.writeText(text);
     createSuccessNotice('Copied to clipboard', {
-      type: 'snackbar'
+      type: 'snackbar',
+      id: 'copied-to-clipboard'
     });
   };
 
@@ -4847,15 +4854,21 @@ const PublishModal = _ref => {
       description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("If you want to use it in a widget, go to the widgets page, and then drag and drop plugin's widget to the desired area.", 'wc-ajax-product-filter');
     }
 
+    let classes = '__code';
+
+    if (clipboardApiFound) {
+      classes += ' __clipboard-api-found';
+    }
+
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__publish_tab_content"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, description), ('shortcode' === tab || 'php-code' === tab) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__code",
+      className: classes,
       tabIndex: 0,
-      onClick: handleCopyToClipboard
+      onClick: () => handleCopyToClipboard('hello world')
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__text"
-    }, code), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
+    }, code), clipboardApiFound && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
       icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_3__.ClipboardIcon,
       size: 24
     })), 'widget' === tab && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

@@ -7,9 +7,18 @@ import { useDispatch } from '@wordpress/data';
 const PublishModal = ({ isOpen, closeModal }) => {
 	const { createSuccessNotice } = useDispatch(noticesStore);
 
-	const handleCopyToClipboard = () => {
+	const clipboardApiFound = window.isSecureContext && navigator.clipboard;
+
+	const handleCopyToClipboard = (text) => {
+		if (!clipboardApiFound) {
+			return;
+		}
+
+		navigator.clipboard.writeText(text);
+
 		createSuccessNotice('Copied to clipboard', {
 			type: 'snackbar',
+			id: 'copied-to-clipboard',
 		});
 	};
 
@@ -36,18 +45,27 @@ const PublishModal = ({ isOpen, closeModal }) => {
 			);
 		}
 
+		let classes = '__code';
+
+		if (clipboardApiFound) {
+			classes += ' __clipboard-api-found';
+		}
+
 		return (
 			<div className='__publish_tab_content'>
 				<p>{description}</p>
 
 				{('shortcode' === tab || 'php-code' === tab) && (
 					<div
-						className='__code'
+						className={classes}
 						tabIndex={0}
-						onClick={handleCopyToClipboard}
+						onClick={() => handleCopyToClipboard('hello world')}
 					>
 						<div className='__text'>{code}</div>
-						<Icon icon={ClipboardIcon} size={24} />
+
+						{clipboardApiFound && (
+							<Icon icon={ClipboardIcon} size={24} />
+						)}
 					</div>
 				)}
 

@@ -633,10 +633,10 @@ body.rtl .__sidebar .components-button {
   min-height: 38px;
   transition: all 0.15s ease-in;
 }
-.__publish_modal .__code:hover {
+.__publish_modal .__code.__clipboard-api-found:hover {
   opacity: 0.75;
 }
-.__publish_modal .__code:active {
+.__publish_modal .__code.__clipboard-api-found:active {
   opacity: 0.3;
   transform: scale(0.98);
 }
