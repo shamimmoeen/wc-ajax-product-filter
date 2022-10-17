@@ -13,6 +13,8 @@ import Notifications from '../Notifications';
 import { DeleteIcon, DuplicateIcon, EditIcon, CodeIcon } from '../SVGIcons';
 import TopBar from '../TopBar';
 import Sidebar from '../Sidebar';
+import DuplicateModal from './DuplicateModal';
+import PublishModal from './PublishModal';
 
 const ListFilters = () => {
 	const {
@@ -20,7 +22,9 @@ const ListFilters = () => {
 		dispatch,
 	} = useListFilters();
 
-	const [deletePostModalOpen, setDeletePostModalOpen] = useState(false);
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
+	const [publishModalOpen, setPublishModalOpen] = useState(false);
 
 	// TODO: The default number of steps will be 3.
 	const [addPostModalOpen, setAddPostModalOpen] = useState(false);
@@ -34,8 +38,14 @@ const ListFilters = () => {
 	const [addPostModalLoading, setAddPostModalLoading] = useState(true);
 	const [addPostModalContent, setAddPostModalContent] = useState('');
 
-	const openDeletePostModal = () => setDeletePostModalOpen(true);
-	const closeDeletePostModal = () => setDeletePostModalOpen(false);
+	const openDeleteModal = () => setDeleteModalOpen(true);
+	const closeDeleteModal = () => setDeleteModalOpen(false);
+
+	const openDuplicateModal = () => setDuplicateModalOpen(true);
+	const closeDuplicateModal = () => setDuplicateModalOpen(false);
+
+	const openPublishModal = () => setPublishModalOpen(true);
+	const closePublishModal = () => setPublishModalOpen(false);
 
 	const openAddPostModal = () => setAddPostModalOpen(true);
 	const closeAddPostModal = () => setAddPostModalOpen(false);
@@ -92,9 +102,17 @@ const ListFilters = () => {
 		openAddPostModal();
 	};
 
-	const handleDeleteFilter = (filter) => {
-		openDeletePostModal();
+	const handleOpenDeleteModal = (filter) => {
+		openDeleteModal();
 		console.log(filter);
+	};
+
+	const handleOpenDuplicateModal = (filter) => {
+		openDuplicateModal();
+	};
+
+	const handleOpenPublishModal = (filter) => {
+		openPublishModal();
 	};
 
 	const handleCopyShortcode = (filterId) => {
@@ -136,12 +154,15 @@ const ListFilters = () => {
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
-							onClick={() => handleDeleteFilter(filter)}
+							onClick={() => handleOpenDeleteModal(filter)}
 						/>
-						<Button icon={DuplicateIcon} />
+						<Button
+							icon={DuplicateIcon}
+							onClick={() => handleOpenDuplicateModal(filter)}
+						/>
 						<Button
 							icon={CodeIcon}
-							onClick={() => handleCopyShortcode(filter.id)}
+							onClick={() => handleOpenPublishModal(filter)}
 						/>
 						<Button
 							icon={EditIcon}
@@ -251,8 +272,18 @@ const ListFilters = () => {
 				/>
 
 				<DeleteModal
-					isOpen={deletePostModalOpen}
-					closeModal={closeDeletePostModal}
+					isOpen={deleteModalOpen}
+					closeModal={closeDeleteModal}
+				/>
+
+				<DuplicateModal
+					isOpen={duplicateModalOpen}
+					closeModal={closeDuplicateModal}
+				/>
+
+				<PublishModal
+					isOpen={publishModalOpen}
+					closeModal={closePublishModal}
 				/>
 
 				<Notifications />

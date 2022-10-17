@@ -2,28 +2,13 @@
 @import './scss/variables';
 @import './scss/list-table';
 @import './scss/form-fields';
+@import './scss/pro-tag';
 @import './scss/available-filters';
 @import './scss/responsive-list-table';
 @import './scss/top-bar';
 @import './scss/sidebar';
-
-#wcapf-filters-list-admin-ui {
-	$spaceBottom: 4em;
-
-	.components-snackbar-list {
-		width: auto;
-		position: fixed;
-		right: 20px;
-		bottom: -#{$spaceBottom};
-		padding-bottom: calc($spaceBottom + 20px);
-
-		.components-snackbar {
-			box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
-				0px 6px 10px 0px rgb(0 0 0 / 14%),
-				0px 1px 18px 0px rgb(0 0 0 / 12%);
-		}
-	}
-}
+@import './scss/action-modal';
+@import './scss/publish-modal';
 
 .__import_data {
 	min-height: 250px;
@@ -45,29 +30,6 @@
 
 	p {
 		margin: 0 0 2em;
-	}
-}
-
-.__delete_modal {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-
-	h3 {
-		font-weight: 500;
-	}
-
-	.description {
-		margin: 0 0 2em;
-	}
-
-	.__buttons {
-		display: flex;
-		gap: 4px;
-	}
-
-	svg {
-		fill: $svgDeleteColor;
 	}
 }
 
