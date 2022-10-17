@@ -1,9 +1,9 @@
 .__top_bar {
     background-color: #fff;
     border-bottom: 1px solid #ccd0d4;
-    padding: 10px 40px 0;
+    padding: 10px var(--large-gap) 0;
 
-    @media (max-width: 599px) {
+    @media (max-width: 639px) {
         display: none;
     }
 
@@ -19,7 +19,7 @@
         }
     }
 
-    a {
+    a:not(.__upgrade_btn) {
         color: inherit;
         display: inline-block;
         font-size: 14px;
@@ -46,6 +46,11 @@
             }
         }
     }
+
+    a.__upgrade_btn {
+        position: relative;
+        top: 4px;
+    }
 }
 
 body {
@@ -58,6 +63,10 @@ body {
                     margin-right: 4px;
                 }
             }
+
+            a.__upgrade_btn {
+                margin-left: 20px;
+            }
         }
     }
 
@@ -69,6 +78,10 @@ body {
                 .__icon {
                     margin-left: 4px;
                 }
+            }
+
+            a.__upgrade_btn {
+                margin-right: 20px;
             }
         }
     }

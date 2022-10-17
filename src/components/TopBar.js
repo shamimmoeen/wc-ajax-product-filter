@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
+import { DiamondIcon } from './SVGIcons';
 
 const navMenus = [
 	{
@@ -36,6 +37,11 @@ const TopBar = ({ view }) => {
 					</a>
 				);
 			})}
+
+			<a href='' className='__upgrade_btn'>
+				<Icon icon={DiamondIcon} size={18} />
+				{__('Upgrade to PRO', 'wc-ajax-product-filter')}
+			</a>
 		</div>
 	);
 };
