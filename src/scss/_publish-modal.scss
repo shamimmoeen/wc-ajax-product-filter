@@ -1,0 +1,85 @@
+.__publish_modal {
+    width: 46em;
+
+    h3 {
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .__publish_tab_panel {
+        .components-tab-panel__tabs {
+            $size: 32px;
+
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            margin-left: -#{$size};
+            margin-right: -#{$size};
+            padding-left: $size;
+            padding-right: $size;
+            margin-top: 1em;
+            margin-bottom: 2em;
+            gap: 30px;
+
+            .components-tab-panel__tabs-item {
+                padding-left: 0;
+                padding-right: 0;
+
+                &:focus {
+                    color: var(--wp-admin-theme-color);
+                }
+
+                &:focus,
+                &.active-tab {
+                    box-shadow: inset 0 -2px var(--wp-admin-theme-color);
+                }
+            }
+        }
+    }
+
+    .__code,
+    .__link {
+        margin-top: 1.2em;
+    }
+
+    .__code {
+        align-items: center;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+        padding: 0 14px;
+        min-height: 38px;
+        transition: all 0.15s ease-in;
+
+        &:hover {
+            opacity: .75;
+        }
+
+        &:active {
+            opacity: .3;
+            transform: scale(.98);
+        }
+
+        .__text {
+            font-size: 1.3em;
+            font-weight: 500;
+            padding: 7px 0;
+        }
+    }
+
+    .__link {
+        .components-button {
+            border-radius: 4px;
+            justify-content: center;
+            height: 38px;
+            width: 100%;
+        }
+    }
+
+    .__buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2.5em;
+    }
+}

@@ -25,6 +25,7 @@ body {
 	width: auto;
 	position: fixed;
 	bottom: 20px;
+	z-index: 100100;
 
 	.components-snackbar {
 		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),

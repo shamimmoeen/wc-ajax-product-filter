@@ -23,6 +23,7 @@ body .__wcapf_layout {
   width: auto;
   position: fixed;
   bottom: 20px;
+  z-index: 100100;
 }
 .components-snackbar-list .components-snackbar {
   box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
@@ -402,6 +403,29 @@ body.rtl .__custom_react_select .__info {
   margin: 0 4px 0 0;
 }
 
+.__pro_tag {
+  --gradient-start: #a16bfe;
+  --gradient-start-text: "#A16BFE";
+  --gradient-end: #deb0df;
+  --gradient-end-text: "#DEB0DF";
+  display: inline-block;
+}
+.__pro_tag::before {
+  content: "PRO";
+  color: #fff;
+  background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin: 0 0 0 4px;
+  font-size: 12px;
+}
+
+body.rtl .__pro_tag::before {
+  margin: 0 4px 0 0;
+}
+
 .__available_filters {
   margin-bottom: 1.5em;
 }
@@ -543,15 +567,94 @@ body.rtl .__sidebar .components-button {
   margin: 0 0 4px 4px;
 }
 
-#wcapf-filters-list-admin-ui .components-snackbar-list {
-  width: auto;
-  position: fixed;
-  right: 20px;
-  bottom: -4em;
-  padding-bottom: calc(4em + 20px);
+/**
+* Delete, Duplicate Modals.
+*/
+.__action_modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-#wcapf-filters-list-admin-ui .components-snackbar-list .components-snackbar {
-  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+.__action_modal h3 {
+  font-weight: 500;
+}
+.__action_modal .description {
+  margin: 0 0 2em;
+}
+.__action_modal .__buttons {
+  display: flex;
+  gap: 4px;
+}
+.__action_modal .__buttons .components-button {
+  min-width: 70px;
+  justify-content: center;
+}
+
+.__publish_modal {
+  width: 46em;
+}
+.__publish_modal h3 {
+  font-weight: 500;
+  margin: 0;
+}
+.__publish_modal .__publish_tab_panel .components-tab-panel__tabs {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin-left: -32px;
+  margin-right: -32px;
+  padding-left: 32px;
+  padding-right: 32px;
+  margin-top: 1em;
+  margin-bottom: 2em;
+  gap: 30px;
+}
+.__publish_modal .__publish_tab_panel .components-tab-panel__tabs .components-tab-panel__tabs-item {
+  padding-left: 0;
+  padding-right: 0;
+}
+.__publish_modal .__publish_tab_panel .components-tab-panel__tabs .components-tab-panel__tabs-item:focus {
+  color: var(--wp-admin-theme-color);
+}
+.__publish_modal .__publish_tab_panel .components-tab-panel__tabs .components-tab-panel__tabs-item:focus, .__publish_modal .__publish_tab_panel .components-tab-panel__tabs .components-tab-panel__tabs-item.active-tab {
+  box-shadow: inset 0 -2px var(--wp-admin-theme-color);
+}
+.__publish_modal .__code,
+.__publish_modal .__link {
+  margin-top: 1.2em;
+}
+.__publish_modal .__code {
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 0 14px;
+  min-height: 38px;
+  transition: all 0.15s ease-in;
+}
+.__publish_modal .__code:hover {
+  opacity: 0.75;
+}
+.__publish_modal .__code:active {
+  opacity: 0.3;
+  transform: scale(0.98);
+}
+.__publish_modal .__code .__text {
+  font-size: 1.3em;
+  font-weight: 500;
+  padding: 7px 0;
+}
+.__publish_modal .__link .components-button {
+  border-radius: 4px;
+  justify-content: center;
+  height: 38px;
+  width: 100%;
+}
+.__publish_modal .__buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2.5em;
 }
 
 .__import_data {
@@ -572,25 +675,6 @@ body.rtl .__sidebar .components-button {
 }
 .__import_data p {
   margin: 0 0 2em;
-}
-
-.__delete_modal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.__delete_modal h3 {
-  font-weight: 500;
-}
-.__delete_modal .description {
-  margin: 0 0 2em;
-}
-.__delete_modal .__buttons {
-  display: flex;
-  gap: 4px;
-}
-.__delete_modal svg {
-  fill: #d93e3e;
 }
 
 .__add_filter_modal {

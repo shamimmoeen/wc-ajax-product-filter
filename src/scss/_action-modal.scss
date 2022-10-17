@@ -1,0 +1,27 @@
+/**
+* Delete, Duplicate Modals.
+*/
+
+.__action_modal {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h3 {
+		font-weight: 500;
+	}
+
+	.description {
+		margin: 0 0 2em;
+	}
+
+	.__buttons {
+		display: flex;
+		gap: 4px;
+
+		.components-button {
+			min-width: 70px;
+			justify-content: center;
+		}
+	}
+}
