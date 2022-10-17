@@ -431,11 +431,34 @@ body.rtl .__custom_react_select .__info {
   margin: 0 4px 0 0;
 }
 
+.__upgrade_btn,
 .__pro_tag {
   --gradient-start: #a16bfe;
   --gradient-start-text: "#A16BFE";
   --gradient-end: #deb0df;
   --gradient-end-text: "#DEB0DF";
+}
+
+a.__upgrade_btn {
+  align-items: center;
+  background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
+  border-radius: 4px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 1;
+  gap: 0.65rem;
+  padding: 8px 12px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+a.__upgrade_btn svg {
+  fill: #fff;
+}
+
+.__pro_tag {
   display: inline-block;
 }
 .__pro_tag::before {
@@ -971,9 +994,9 @@ body.rtl .__custom_appearance_modal .__color_picker_clear_button {
 .__top_bar {
   background-color: #fff;
   border-bottom: 1px solid #ccd0d4;
-  padding: 10px 40px 0;
+  padding: 10px var(--large-gap) 0;
 }
-@media (max-width: 599px) {
+@media (max-width: 639px) {
   .__top_bar {
     display: none;
   }
@@ -988,7 +1011,7 @@ body.rtl .__custom_appearance_modal .__color_picker_clear_button {
   color: #babbbc;
   vertical-align: middle;
 }
-.__top_bar a {
+.__top_bar a:not(.__upgrade_btn) {
   color: inherit;
   display: inline-block;
   font-size: 14px;
@@ -999,16 +1022,20 @@ body.rtl .__custom_appearance_modal .__color_picker_clear_button {
   box-shadow: none;
   position: relative;
 }
-.__top_bar a:hover, .__top_bar a:focus {
+.__top_bar a:not(.__upgrade_btn):hover, .__top_bar a:not(.__upgrade_btn):focus {
   color: var(--wp-admin-theme-color);
 }
-.__top_bar a.is-active::after {
+.__top_bar a:not(.__upgrade_btn).is-active::after {
   content: "";
   border-bottom: 3px solid var(--wp-admin-theme-color);
   position: absolute;
   width: 100%;
   bottom: 0;
   left: 0;
+}
+.__top_bar a.__upgrade_btn {
+  position: relative;
+  top: 4px;
 }
 
 body:not(.rtl) .__top_bar h2 {
@@ -1017,11 +1044,17 @@ body:not(.rtl) .__top_bar h2 {
 body:not(.rtl) .__top_bar h2 .__icon {
   margin-right: 4px;
 }
+body:not(.rtl) .__top_bar a.__upgrade_btn {
+  margin-left: 20px;
+}
 body.rtl .__top_bar h2 {
   margin: 0 0 0 10px;
 }
 body.rtl .__top_bar h2 .__icon {
   margin-left: 4px;
+}
+body.rtl .__top_bar a.__upgrade_btn {
+  margin-right: 20px;
 }
 
 body {
