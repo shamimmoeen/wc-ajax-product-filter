@@ -296,16 +296,21 @@ class WCAPF {
 		$disable_inputs   = apply_filters( 'wcapf_disable_inputs_while_fetching_results', $disable_inputs );
 		$history_popstate = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
 
+		$loading_overlay_options = array();
+
 		if ( isset( $settings['loading_image'] ) && $settings['loading_image'] ) {
-			$image     = wp_get_attachment_image_src( $settings['loading_image'] );
-			$image_src = $image[0];
+			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
 
-			$loading_image_src = $image_src;
-		} else {
-			$loading_image_src = WCAPF_PLUGIN_URL . '/admin/images/loader.gif';
+			if ( $image ) {
+				$image_src = $image[0];
+
+				$loading_overlay_options = array(
+					'image'          => $image_src,
+					'imageAnimation' => '',
+					'imageClass'     => 'wcapf-loading-overlay-img'
+				);
+			}
 		}
-
-		$loading_overlay_options = array( 'image' => $loading_image_src );
 
 		$params = array(
 			'filter_input_delay'                       => 800, // In milliseconds.
