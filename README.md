@@ -2,8 +2,8 @@
 **Contributors:** shamimmoeen  
 **Tags:** product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter  
 **Requires at least:** 4.0  
-**Tested up to:** 6.0.1  
-**Stable tag:** 3.0.0  
+**Tested up to:** 6.0.2  
+**Stable tag:** 3.3.1  
 **Requires PHP:** 5.5  
 **License:** GPLv3  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
@@ -16,7 +16,7 @@ WooCommerce Ajax Product Filter – is a plugin that allows you to filter your p
 
 [Free Demo](https://demos.wptools.io/wc-ajax-product-filter/) | [Paid Demo](https://demos.wptools.io/wc-ajax-product-filter-pro/)
 
-### Features: ###
+## Features: ##
 
 * Filter by category, tag, attribute, price, rating
 * Filter by product status (featured, on-sale)
@@ -40,11 +40,12 @@ WooCommerce Ajax Product Filter – is a plugin that allows you to filter your p
 * Easy to modify the CSS to better fit your theme style
 * Developer friendly - contains useful hooks and filters
 
-### Pro Features: ###
+## Pro Features: ##
 
 * Filter by custom taxonomy
 * Filter by post meta
 * Filter by post property (author, date, modified)
+* Filter by vendors (WCFM - WooCommerce Multivendor Marketplace by WC Lovers)
 * Filter to sort the products using post table columns and meta value
 * Products per page filter
 * Display the filter values using color, image
@@ -58,7 +59,7 @@ WooCommerce Ajax Product Filter – is a plugin that allows you to filter your p
 * Clear button in filter title
 * Show more/show less button in filter items to minimize the filter height
 
-[Get the pro version](https://wptools.io/wc-ajax-product-filter/)
+[Get the pro version](https://wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Pro+Upgrade)
 
 ## Frequently Asked Questions ##
 
@@ -69,6 +70,10 @@ Once the plugin is activated, go to **WCAPF** > **Add New** from WordPress admin
 ### How do I display the filters to the store? ###
 
 The filters can be displayed using both shortcode and widget. The shortcode is `[wcapf_filter id="*"]`, where id is the filter post id.
+
+### Why does the product attribute count not right? ###
+
+Go to **WooCommerce** > **Status** > **Tools** from WordPress admin. At the bottom, there is a section called **Regenerate the product attributes lookup table**. Click on the **Regenerate** button on that section.
 
 ### Why does the filter not working? ###
 
@@ -118,6 +123,24 @@ If you have problems with the work of the plugin you should follow these steps:
 
 
 ## Changelog ##
+
+### 3.3.1 ###
+
+* Make it compatible with woo-variation-swatches
+
+### 3.3.0 ###
+
+* Feature - Option to specify user roles for post author filter
+
+### 3.2.0 ###
+
+* Fix - custom loading image issue
+
+### 3.1.0 ###
+
+* Fix - loading image upload button js issue
+* Fix - product sorting via ajax issue
+* Fix - products count result not updating issue
 
 ### 3.0.0 ###
 

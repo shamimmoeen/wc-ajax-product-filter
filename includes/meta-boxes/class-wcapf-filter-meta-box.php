@@ -197,6 +197,8 @@ class WCAPF_Filter_Meta_Box {
 			array( 'decimal_places' )
 		);
 
+		$array_fields = apply_filters( 'wcapf_sub_fields_type_array', array( 'include_user_roles' ) );
+
 		$parsed_field = array();
 
 		foreach ( $available_fields as $field_key ) {
@@ -210,6 +212,8 @@ class WCAPF_Filter_Meta_Box {
 				}
 			} elseif ( in_array( $field_key, $absint_fields ) ) {
 				$_field_value = absint( $field_value );
+			} elseif ( in_array( $field_key, $array_fields ) ) {
+				$_field_value = $field_value ? array_map( 'sanitize_text_field', $field_value ) : array();
 			} else {
 				$space_allowed = array( 'value_prefix', 'value_postfix', 'values_separator' );
 

@@ -36,6 +36,7 @@ class WCAPF_Field_Instance {
 	public $value_type;
 	public $meta_key;
 	public $post_property;
+	public $use_store_name;
 	public $number_data_type;
 	public $form_id;
 
@@ -174,6 +175,8 @@ class WCAPF_Field_Instance {
 		$this->number_data_type = $this->get_number_data_type();
 
 		$this->post_property = $this->get_sub_field_value( 'post_property' );
+
+		$this->use_store_name = $this->is_store_name_enabled();
 
 		$this->custom_appearance_options = $this->get_appearance_data();
 
@@ -402,6 +405,19 @@ class WCAPF_Field_Instance {
 		}
 
 		return apply_filters( 'wcapf_number_data_type', $data_type, $this->instance );
+	}
+
+	/**
+	 * @return string
+	 *
+	 * @since 3.3.0
+	 */
+	public function is_store_name_enabled() {
+		if ( ! class_exists( 'WCFMmp' ) ) {
+			return '';
+		}
+
+		return $this->get_sub_field_value( 'use_store_name' );
 	}
 
 	/**
