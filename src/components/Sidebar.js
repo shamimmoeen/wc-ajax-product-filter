@@ -12,7 +12,7 @@ const support = __(
 );
 
 const question = __(
-	"Do you have any questions or <b>feature requests</b> or do you need help with <b>custom development</b>? We'll be able to answer any kind of query.",
+	"Do you have any <b>questions</b> or <b>feature requests</b> or do you need help with <b>custom development</b>? We'll be able to answer any kind of query.",
 	'wc-ajax-product-filter'
 );
 
