@@ -342,15 +342,7 @@ class WCAPF {
 
 		global $typenow;
 
-		global $current_screen;
-
-		$valid_lists = array(
-			'toplevel_page_wcapf-new',
-			'wcapf_page_new-filter-forms',
-			'wcapf_page_wcapf-new-settings',
-		);
-
-		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow && ! in_array( $current_screen->id, $valid_lists ) ) {
+		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow ) {
 			return;
 		}
 
@@ -391,7 +383,6 @@ class WCAPF {
 		);
 
 		$admin_scripts = apply_filters( 'wcapf_admin_scripts_before_main_script', array() );
-		// $admin_scripts = array(); // TODO: Fix the issue.
 
 		if ( $admin_scripts ) {
 			foreach ( $admin_scripts as $script ) {
@@ -433,12 +424,8 @@ class WCAPF {
 	 */
 	private function admin_js_params() {
 		$params = array(
-			'ajaxurl'  => admin_url( 'admin-ajax.php' ),
-			'foundPro' => true,
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 		);
-
-		$params['max_items_in_custom_appearance_modal'] = 99;
-		$params['timeout_for_cleaning_wp_media_frames'] = 300;
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}

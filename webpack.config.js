@@ -13,5 +13,6 @@ module.exports = {
 		),
 		'filter-form': path.resolve(process.cwd(), 'src', 'filter-form.js'),
 		filter: path.resolve(process.cwd(), 'src', 'filter.js'),
+		settings: path.resolve(process.cwd(), 'src', 'settings.js'),
 	},
 };

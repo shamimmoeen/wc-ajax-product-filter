@@ -111,7 +111,7 @@ const App = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const renderElementInstance = document.getElementById('wcapf-filter-forms-list-admin-ui');
+  const renderElementInstance = document.getElementById('wcapf-forms-list-admin-ui');
 
   if (renderElementInstance) {
     (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.render)((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(App, null)), renderElementInstance);

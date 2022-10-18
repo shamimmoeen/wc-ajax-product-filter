@@ -26,6 +26,10 @@ class WCAPF_Admin {
 		$plugin_file = plugin_basename( WCAPF_PLUGIN_FILE );
 		add_filter( 'plugin_action_links_' . $plugin_file, array( $this, 'plugin_action_links' ) );
 
+		add_action( 'admin_menu', array( $this, 'register_admin_pages' ) );
+		add_action( 'admin_menu', array( $this, 'modify_admin_menu_label' ) );
+		add_action( 'in_admin_header', array( $this, 'disable_admin_notices' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
 		add_action( 'admin_footer-widgets.php', array( $this, 'js_scripts_for_legacy_widget' ) );
 	}
 
@@ -48,6 +52,8 @@ class WCAPF_Admin {
 	/**
 	 * The settings page html markup.
 	 *
+	 * TODO: Remove this.
+	 *
 	 * @return void
 	 */
 	public function settings_page_html() {
@@ -56,6 +62,8 @@ class WCAPF_Admin {
 
 	/**
 	 * Change the admin footer text.
+	 *
+	 * TODO: Remove this.
 	 *
 	 * @param string $text The default footer text.
 	 *
@@ -90,7 +98,7 @@ class WCAPF_Admin {
 	/**
 	 * Renders the header navigation in admin area.
 	 *
-	 * @TODO: Remove this.
+	 * TODO: Remove this.
 	 *
 	 * @return void
 	 */
@@ -106,6 +114,8 @@ class WCAPF_Admin {
 
 	/**
 	 * Adds plugin's action links.
+	 *
+	 * TODO: Show the upgrade to pro and filters list instead of settings links.
 	 *
 	 * @param array $links The default links.
 	 *
@@ -124,6 +134,240 @@ class WCAPF_Admin {
 		);
 
 		return array_merge( $new_links, $links );
+	}
+
+	/**
+	 * Registers the custom admin pages.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function register_admin_pages() {
+		add_menu_page(
+			'WCAPF',
+			'WCAPF',
+			'manage_options',
+			'wcapf-filter',
+			array( $this, 'render_filter' ),
+			'dashicons-filter',
+			5 // TODO: Move the menu page to bottom (100).
+		);
+
+		add_submenu_page(
+			'wcapf-filter',
+			__( 'Forms', 'wc-ajax-product-filter' ),
+			__( 'Forms', 'wc-ajax-product-filter' ),
+			'manage_options',
+			'wcapf-form',
+			array( $this, 'render_form' )
+		);
+
+		add_submenu_page(
+			'wcapf-filter',
+			__( 'Settings', 'wc-ajax-product-filter' ),
+			__( 'Settings', 'wc-ajax-product-filter' ),
+			'manage_options',
+			'wcapf-new-settings', // TODO: Remove 'new' from slug.
+			array( $this, 'render_settings' )
+		);
+	}
+
+	public function render_filter() {
+		if ( isset( $_GET['id'] ) ) {
+			$element = '<div id="wcapf-filter-admin-ui"></div>';
+		} else {
+			$element = '<div id="wcapf-filters-list-admin-ui"></div>';
+		}
+
+		echo $element;
+	}
+
+	public function render_form() {
+		if ( isset( $_GET['id'] ) ) {
+			$element = '<div id="wcapf-form-admin-ui"></div>';
+		} else {
+			$element = '<div id="wcapf-forms-list-admin-ui"></div>';
+		}
+
+		echo $element;
+	}
+
+	public function render_settings() {
+		echo '<div id="wcapf-settings-admin-ui"></div>';
+	}
+
+	/**
+	 * Modify the label of custom admin menu.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function modify_admin_menu_label() {
+		global $submenu;
+
+		if ( isset( $submenu['wcapf-filter'] ) ) {
+			$new_data = $submenu['wcapf-filter'];
+
+			if ( isset( $new_data[0][0] ) ) {
+				$new_data[0][0] = __( 'Filters', 'wc-ajax-product-filter' );
+			}
+
+			$submenu['wcapf-filter'] = $new_data;
+		}
+	}
+
+	/**
+	 * @return string[]
+	 */
+	private function slugs_of_custom_admin_pages() {
+		return array(
+			'toplevel_page_wcapf-filter',
+			'wcapf_page_wcapf-form',
+			'wcapf_page_wcapf-new-settings',
+		);
+	}
+
+	/**
+	 * Disable admin notices without ours.
+	 *
+	 * @source https://wordpress.stackexchange.com/a/316152
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function disable_admin_notices() {
+		global $current_screen;
+
+		if ( isset( $current_screen->id ) && in_array( $current_screen->id, $this->slugs_of_custom_admin_pages() ) ) {
+			remove_all_actions( 'admin_notices' );
+		}
+	}
+
+	/**
+	 * The helper function to load the js build scripts.
+	 *
+	 * @param string $file The file name.
+	 *
+	 * @return void
+	 */
+	private function load_scripts( $file ) {
+		$asset_path = WCAPF_PLUGIN_DIR . '/build/' . $file . '.asset.php';
+
+		if ( ! file_exists( $asset_path ) ) {
+			/** @noinspection PhpMultipleClassDeclarationsInspection */
+			throw new Error(
+				'You need to run `npm start` or `npm run build` for the ' . $file . ' admin ui'
+			);
+		}
+
+		$asset_file = require( $asset_path );
+		$handle     = 'wcapf-' . $file . '-admin';
+		$js_file    = 'build/' . $file . '.js';
+		$css_file   = 'build/' . $file . '.css';
+
+		// Enqueue CSS dependencies.
+		foreach ( $asset_file['dependencies'] as $style ) {
+			wp_enqueue_style( $style );
+		}
+
+		// Load the js file.
+		wp_enqueue_script(
+			$handle,
+			plugins_url( $js_file, WCAPF_PLUGIN_FILE ),
+			$asset_file['dependencies'],
+			$asset_file['version']
+		);
+
+		// Load the style file.
+		wp_enqueue_style(
+			$handle,
+			plugins_url( $css_file, WCAPF_PLUGIN_FILE ),
+			array(),
+			$asset_file['version']
+		);
+	}
+
+	/**
+	 * Enqueue the admin ui scripts.
+	 *
+	 * @param string $hook The current admin page.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_admin_ui_scripts( $hook ) {
+		if ( 'toplevel_page_wcapf-filter' === $hook ) {
+			// Filters list admin ui scripts.
+			if ( ! isset( $_GET['id'] ) ) {
+				$this->load_scripts( 'list-filters' );
+			} else {
+				// Single filter admin ui scripts.
+				$this->load_scripts( 'filter' );
+			}
+		}
+
+		if ( 'wcapf_page_wcapf-form' === $hook ) {
+			// Filter forms list admin ui scripts.
+			if ( ! isset( $_GET['id'] ) ) {
+				$this->load_scripts( 'list-filter-forms' );
+			} else {
+				// Single filter form admin ui scripts.
+				$this->load_scripts( 'filter-form' );
+			}
+		}
+
+		// TODO: Remove 'new' from hook.
+		// Settings page admin ui scripts.
+		if ( 'wcapf_page_wcapf-new-settings' === $hook ) {
+			$this->load_scripts( 'settings' );
+		}
+
+		if ( in_array( $hook, $this->slugs_of_custom_admin_pages() ) ) {
+			wp_register_script( 'wcapf-admin-scripts', false );
+
+			wp_localize_script(
+				'wcapf-admin-scripts',
+				'wcapf_admin_params',
+				$this->admin_js_params()
+			);
+
+			wp_enqueue_script( 'wcapf-admin-scripts' );
+		}
+	}
+
+	/**
+	 * Admin js params.
+	 *
+	 * @return array
+	 */
+	private function admin_js_params() {
+		$params = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+		);
+
+		// TODO: Make it dynamic.
+		$params['foundPro'] = true;
+
+		$params['max_items_in_custom_appearance_modal'] = 99;
+		$params['timeout_for_cleaning_wp_media_frames'] = 300;
+
+		$helper = new WCAPF_Helper();
+
+		$admin_page_links = array(
+			'admin_pages' => array(
+				'filters'  => $helper::filters_list_page_url(),
+				'forms'    => $helper::forms_list_page_url(),
+				'settings' => $helper::new_settings_page_url(),
+			),
+		);
+
+		$params = array_merge( $params, $admin_page_links );
+
+		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
 
 	/**
