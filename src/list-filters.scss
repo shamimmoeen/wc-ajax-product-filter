@@ -67,7 +67,7 @@
 			gap: 10px;
 
 			.__label {
-				width: 100%;
+				display: none;
 			}
 
 			.__wrapper {
@@ -79,7 +79,10 @@
 			}
 
 			.components-text-control__input {
+				font-size: 1.7em;
+				height: 40px;
 				max-width: unset;
+				padding: 3px 8px;
 			}
 		}
 	}

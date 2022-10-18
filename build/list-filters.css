@@ -406,9 +406,7 @@ body.rtl .__custom_react_select .__info {
 .__upgrade_btn,
 .__pro_tag {
   --gradient-start: #a16bfe;
-  --gradient-start-text: "#A16BFE";
   --gradient-end: #deb0df;
-  --gradient-end-text: "#DEB0DF";
 }
 
 a.__upgrade_btn {
@@ -428,6 +426,9 @@ a.__upgrade_btn {
 }
 a.__upgrade_btn svg {
   fill: #fff;
+}
+a.__upgrade_btn:focus {
+  box-shadow: 0 0 0 1px var(--gradient-start);
 }
 
 .__pro_tag {
@@ -738,7 +739,7 @@ body.rtl .__sidebar .components-button {
   gap: 10px;
 }
 .__add_filter_modal .__title_step .__inner .__label {
-  width: 100%;
+  display: none;
 }
 .__add_filter_modal .__title_step .__inner .__wrapper {
   width: 100%;
@@ -747,7 +748,10 @@ body.rtl .__sidebar .components-button {
   display: flex;
 }
 .__add_filter_modal .__title_step .__inner .components-text-control__input {
+  font-size: 1.7em;
+  height: 40px;
   max-width: unset;
+  padding: 3px 8px;
 }
 .__add_filter_modal .__stepper {
   display: flex;

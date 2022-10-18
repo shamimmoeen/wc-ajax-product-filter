@@ -434,9 +434,7 @@ body.rtl .__custom_react_select .__info {
 .__upgrade_btn,
 .__pro_tag {
   --gradient-start: #a16bfe;
-  --gradient-start-text: "#A16BFE";
   --gradient-end: #deb0df;
-  --gradient-end-text: "#DEB0DF";
 }
 
 a.__upgrade_btn {
@@ -456,6 +454,9 @@ a.__upgrade_btn {
 }
 a.__upgrade_btn svg {
   fill: #fff;
+}
+a.__upgrade_btn:focus {
+  box-shadow: 0 0 0 1px var(--gradient-start);
 }
 
 .__pro_tag {
