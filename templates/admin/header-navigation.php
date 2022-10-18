@@ -22,16 +22,6 @@ $tabs = array();
 if ( isset( $submenu[ $parent_slug ] ) ) {
 	foreach ( $submenu[ $parent_slug ] as $i => $sub_item ) {
 
-		// Ignore "All Filters".
-		if ( 'edit.php?post_type=wcapf-filter' === $sub_item[2] ) {
-			continue;
-		}
-
-		// Ignore "All Filters".
-		if ( 'edit.php?post_type=wcapf-form' === $sub_item[2] ) {
-			continue;
-		}
-
 		// Ignore "Add New".
 		if ( 'post-new.php?post_type=wcapf-filter' === $sub_item[2] ) {
 			continue;

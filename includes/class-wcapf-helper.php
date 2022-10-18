@@ -32,6 +32,37 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * The filters list page url.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function filters_list_page_url() {
+		return menu_page_url( 'wcapf-filter', false );
+	}
+
+	/**
+	 * The forms list page url.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function forms_list_page_url() {
+		return menu_page_url( 'wcapf-form', false );
+	}
+
+	/**
+	 * The settings page url.
+	 *
+	 * @return string
+	 */
+	public static function new_settings_page_url() {
+		return menu_page_url( 'wcapf-new-settings', false );
+	}
+
+	/**
 	 * The settings page url.
 	 *
 	 * @return string

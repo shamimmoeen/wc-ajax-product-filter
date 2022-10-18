@@ -7,7 +7,7 @@ const App = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 	const renderElementInstance = document.getElementById(
-		'wcapf-filter-forms-list-admin-ui'
+		'wcapf-forms-list-admin-ui'
 	);
 
 	if (renderElementInstance) {

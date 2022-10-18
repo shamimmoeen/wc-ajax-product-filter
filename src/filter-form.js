@@ -13,7 +13,7 @@ const App = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 	const renderElementInstance = document.getElementById(
-		'wcapf-filter-form-admin-ui'
+		'wcapf-form-admin-ui'
 	);
 
 	if (renderElementInstance) {
