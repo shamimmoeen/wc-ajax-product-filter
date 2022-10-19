@@ -1,43 +1,24 @@
-import { Modal, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
+import { Button, Icon, Modal, Spinner } from '@wordpress/components';
 import Footer from './Footer';
 import Body from './Body';
 import { useListFilters } from '../ListFiltersContext';
 import { getAdditionalData } from '../../utils';
+import { CheckIcon } from '../../SVGIcons';
 
-const AddNewModal = ({
-	isOpen,
-	closeModal,
-	step,
-	setStep,
-	totalSteps,
-	setTotalSteps,
-	loading,
-	setLoading,
-	handleFilterSubmit,
-	addPostModalContent,
-}) => {
-	const { dispatch } = useListFilters();
+const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
+	const {
+		state: { filterType },
+		dispatch,
+	} = useListFilters();
+
+	const [loading, setLoading] = useState(true);
+	const [step, setStep] = useState(1);
+	const [totalSteps, setTotalSteps] = useState(3);
+	const [newItem, setNewItem] = useState('');
 
 	const modalRef = useRef(null);
-
-	// Reset the modal.
-	useEffect(() => {
-		if (!isOpen) {
-			return;
-		}
-
-		if (!modalRef.current) {
-			return;
-		}
-
-		if (step < 2) {
-			return;
-		}
-
-		modalRef.current.children[0].focus();
-	}, [step]);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -60,11 +41,118 @@ const AddNewModal = ({
 			.catch((err) => console.log(err));
 	}, [isOpen]);
 
+	// Focus the modal when step gets changed.
+	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
+		if (!modalRef.current) {
+			return;
+		}
+
+		if (step < 2) {
+			return;
+		}
+
+		modalRef.current.children[0].focus();
+	}, [step]);
+
+	useEffect(() => {
+		if (!filterType) {
+			return;
+		}
+
+		const filtersWithoutOptions = ['active-filters', 'reset-button'];
+
+		if (filtersWithoutOptions.includes(filterType)) {
+			if (3 === totalSteps) {
+				setTotalSteps(2);
+			}
+		} else {
+			if (2 === totalSteps) {
+				setTotalSteps(3);
+			}
+		}
+	}, [filterType]);
+
+	const handleCloseModal = () => {
+		setAddNewModalOpen(false);
+
+		setStep(1);
+		setTotalSteps(3);
+		setLoading(true);
+		setNewItem('');
+
+		dispatch({ type: 'SET_TITLE', payload: '' });
+		dispatch({ type: 'SET_FILTER_TYPE', payload: '' });
+		dispatch({ type: 'SET_ACTIVE_FILTER_DATA', payload: {} });
+		dispatch({ type: 'SET_FILTER_KEYS', payload: {} });
+		dispatch({ type: 'SET_ADDITIONAL_DATA', payload: {} });
+		dispatch({ type: 'SET_FILTERS_DATA', payload: {} });
+	};
+
+	const handleFilterSubmit = () => {
+		setLoading(true);
+
+		setTimeout(() => {
+			setLoading(false);
+			setNewItem('hello world');
+		}, 500);
+	};
+
+	const modalContent = () => {
+		if (loading) {
+			return (
+				<div className='__loader'>
+					<Spinner />
+				</div>
+			);
+		} else if (newItem) {
+			return (
+				<div className='__filter_response'>
+					<Icon icon={CheckIcon} />
+					<h4>
+						{__('Filter was created', 'wc-ajax-product-filter')}
+					</h4>
+					<p className='description'>
+						{__(
+							'Now you can edit all the settings of this filter.',
+							'wc-ajax-product-filter'
+						)}
+					</p>
+					<div className='_buttons'>
+						<Button variant='secondary' onClick={handleCloseModal}>
+							{__('Maybe Later', 'wc-ajax-product-filter')}
+						</Button>
+						<Button variant='primary'>
+							{__('Edit Filter', 'wc-ajax-product-filter')}
+						</Button>
+					</div>
+				</div>
+			);
+		} else {
+			return (
+				<>
+					<Body step={step} setTotalSteps={setTotalSteps} />
+
+					<Footer
+						step={step}
+						setStep={setStep}
+						totalSteps={totalSteps}
+						closeModal={handleCloseModal}
+						handleFilterSubmit={handleFilterSubmit}
+					/>
+				</>
+			);
+		}
+	};
+
 	return (
 		isOpen && (
 			<Modal
 				className='__add_filter_modal'
-				onRequestClose={closeModal}
+				onRequestClose={handleCloseModal}
 				ref={modalRef}
 				__experimentalHideHeader
 			>
@@ -73,32 +161,7 @@ const AddNewModal = ({
 						{__('Add Filter', 'wc-ajax-product-filter')}
 					</h3>
 
-					{loading ? (
-						<div className='__loader'>
-							<Spinner />
-						</div>
-					) : (
-						<>
-							{addPostModalContent ? (
-								addPostModalContent
-							) : (
-								<>
-									<Body
-										step={step}
-										setTotalSteps={setTotalSteps}
-									/>
-
-									<Footer
-										step={step}
-										setStep={setStep}
-										totalSteps={totalSteps}
-										closeModal={closeModal}
-										handleFilterSubmit={handleFilterSubmit}
-									/>
-								</>
-							)}
-						</>
-					)}
+					{modalContent()}
 				</div>
 			</Modal>
 		)

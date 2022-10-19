@@ -1,50 +1,11 @@
-const _activeFilterData = {
-	show_title: '1',
-	field_key: '',
-	taxonomy: '',
-	display_type: 'checkbox',
-	query_type: 'and',
-	all_items_label: '',
-	use_chosen: '',
-	chosen_no_results_message: '',
-	enable_multiple_filter: '',
-	show_count: '',
-	hide_empty: '',
-	enable_tooltip: '',
-	show_count_in_tooltip: '',
-	tooltip_position: '',
-	custom_appearance_options: {},
-	use_term_slug_in_url: '',
-	limit_options: '',
-	parent_term: '',
-	limit_values_by_id: '',
-	exclude_values_id: '',
-	show_clear_button: '',
-	order_terms_by: 'name',
-	order_terms_dir: 'asc',
-	enable_accordion: '',
-	accordion_default_state: 'expanded',
-	enable_soft_limit: '',
-	soft_limit: '',
-	type: 'attribute',
-	field_id: '',
-	enable_visibility_rules: '',
-	visibility_rules: [],
-	get_options: 'automatically',
-};
-
-const _filterType = 'attribute';
-
-const _filterTitle = 'Hello World';
-
 const initialFilters = wcapf_admin_params.filters;
 
 export const initialState = {
-	title: _filterTitle,
-	filterType: _filterType,
+	title: '',
+	filterType: '',
 	filterKeys: {},
 	additionalData: {},
-	activeFilterData: _activeFilterData,
+	activeFilterData: {},
 	filtersData: {},
 	filters: initialFilters,
 };
