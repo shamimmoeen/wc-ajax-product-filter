@@ -1,11 +1,10 @@
-import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Text from '../../Field/Text';
 import AvailableFilters from '../../Filter/FilterNav/FilterUI/AvailableFilters';
 import GeneralFields from '../../Filter/FilterNav/FilterUI/GeneralFields';
 import { useListFilters } from '../ListFiltersContext';
 
-const Body = ({ step, setTotalSteps }) => {
+const Body = ({ step }) => {
 	const {
 		state: {
 			title,
@@ -17,20 +16,6 @@ const Body = ({ step, setTotalSteps }) => {
 		},
 		dispatch,
 	} = useListFilters();
-
-	useEffect(() => {
-		if (!filterType) {
-			return;
-		}
-
-		const filtersWithoutOptions = ['active-filters', 'reset-button'];
-
-		if (filtersWithoutOptions.includes(filterType)) {
-			setTotalSteps(2);
-		} else {
-			setTotalSteps(3);
-		}
-	}, [filterType]);
 
 	const handleTitleChange = (e) => {
 		const value = e.target.value;
