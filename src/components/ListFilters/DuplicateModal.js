@@ -2,7 +2,7 @@ import { Modal, Icon, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { DuplicateIcon } from '../SVGIcons';
 
-const DuplicateModal = ({ isOpen, closeModal }) => {
+const DuplicateModal = ({ isOpen, closeModal, duplicateFilter }) => {
 	return (
 		isOpen && (
 			<Modal onRequestClose={closeModal} __experimentalHideHeader>
@@ -22,7 +22,7 @@ const DuplicateModal = ({ isOpen, closeModal }) => {
 						<Button variant='secondary' onClick={closeModal}>
 							{__('No', 'wc-ajax-product-filter')}
 						</Button>
-						<Button variant='primary'>
+						<Button variant='primary' onClick={duplicateFilter}>
 							{__('Yes', 'wc-ajax-product-filter')}
 						</Button>
 					</div>

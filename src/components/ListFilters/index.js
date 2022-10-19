@@ -1,20 +1,17 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Icon } from '@wordpress/components';
-import PostTable from '../PostTable';
 import { useEffect, useState } from '@wordpress/element';
 import { useListFilters } from './ListFiltersContext';
-import axios from 'axios';
-import { prepareFilterData } from '../utils';
-import DeleteModal from './DeleteModal';
-import AddNewModal from './AddNewModal';
-import { store as noticesStore } from '@wordpress/notices';
-import { useDispatch } from '@wordpress/data';
-import Notifications from '../Notifications';
-import { DeleteIcon, DuplicateIcon, EditIcon, CodeIcon } from '../SVGIcons';
 import TopBar from '../TopBar';
+import Table from './Table';
 import Sidebar from '../Sidebar';
+import AddNewModal from './AddNewModal';
+import DeleteModal from './DeleteModal';
 import DuplicateModal from './DuplicateModal';
 import PublishModal from './PublishModal';
+import Notifications from '../Notifications';
+import { store as noticesStore } from '@wordpress/notices';
+import { useDispatch } from '@wordpress/data';
 
 const ListFilters = () => {
 	const {
@@ -22,9 +19,13 @@ const ListFilters = () => {
 		dispatch,
 	} = useListFilters();
 
-	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-	const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
-	const [publishModalOpen, setPublishModalOpen] = useState(false);
+	const { createSuccessNotice } = useDispatch(noticesStore);
+
+	const [deleteModalId, setDeleteModalId] = useState(null);
+	const [duplicateModalId, setDuplicateModalId] = useState(null);
+	const [publishModalId, setPublishModalId] = useState(null);
+	const [deletingItemId, setDeletingItemId] = useState(null);
+	const [duplicatingItemId, setDuplicatingItemId] = useState(null);
 
 	// TODO: The default number of steps will be 3.
 	const [addPostModalOpen, setAddPostModalOpen] = useState(false);
@@ -38,48 +39,8 @@ const ListFilters = () => {
 	const [addPostModalLoading, setAddPostModalLoading] = useState(true);
 	const [addPostModalContent, setAddPostModalContent] = useState('');
 
-	const openDeleteModal = () => setDeleteModalOpen(true);
-	const closeDeleteModal = () => setDeleteModalOpen(false);
-
-	const openDuplicateModal = () => setDuplicateModalOpen(true);
-	const closeDuplicateModal = () => setDuplicateModalOpen(false);
-
-	const openPublishModal = () => setPublishModalOpen(true);
-	const closePublishModal = () => setPublishModalOpen(false);
-
-	const openAddPostModal = () => setAddPostModalOpen(true);
-	const closeAddPostModal = () => setAddPostModalOpen(false);
-
-	const { createErrorNotice } = useDispatch(noticesStore);
-
-	const getFilters = () => {
-		const data = {
-			action: 'get_filters',
-		};
-
-		return axios.get(wcapf_admin_params.ajaxurl, {
-			params: data,
-		});
-	};
-
-	useEffect(() => {
-		getFilters()
-			.then((res) => {
-				const {
-					data: { data: _filters },
-				} = res;
-
-				const newFilters = [];
-
-				_filters.forEach((filter) => {
-					newFilters.push(prepareFilterData(filter));
-				});
-
-				dispatch({ type: 'SET_FILTERS', payload: newFilters });
-				dispatch({ type: 'SET_LOADING', payload: false });
-			})
-			.catch((err) => console.log(err));
-	}, []);
+	const handleOpenAddNewModal = () => setAddPostModalOpen(true);
+	const handleCloseAddNewModal = () => setAddPostModalOpen(false);
 
 	// Reset the add filter modal when closing the modal.
 	useEffect(() => {
@@ -98,96 +59,72 @@ const ListFilters = () => {
 		dispatch({ type: 'SET_FILTER_KEYS', payload: {} });
 	}, [addPostModalOpen]);
 
-	const handleAddFilter = () => {
-		openAddPostModal();
+	const handleOpenDeleteModal = (id) => {
+		setDeleteModalId(id);
 	};
 
-	const handleOpenDeleteModal = (filter) => {
-		openDeleteModal();
-		console.log(filter);
+	const handleCloseDeleteModal = () => {
+		setDeleteModalId(null);
 	};
 
-	const handleOpenDuplicateModal = (filter) => {
-		openDuplicateModal();
-	};
+	const handleDeleteFilter = () => {
+		const id = deleteModalId;
 
-	const handleOpenPublishModal = (filter) => {
-		openPublishModal();
-	};
+		handleCloseDeleteModal();
 
-	const handleCopyShortcode = (filterId) => {
-		navigator.clipboard.writeText(`[wcapf_filter id="${filterId}"]`);
+		setDeletingItemId(id);
 
-		createErrorNotice(
-			__('Shortcode copied to clipboard', 'wc-ajax-product-filter'),
-			{
+		setTimeout(() => {
+			setDeletingItemId(null);
+
+			const _filters = filters.filter((filter) => filter.id !== id);
+			dispatch({ type: 'SET_FILTERS', payload: _filters });
+
+			createSuccessNotice('Filter deleted successfully', {
 				type: 'snackbar',
-			}
-		);
+				icon: '😵',
+				id: 'filter-deleted',
+			});
+		}, 1000);
 	};
 
-	const getTableData = () => {
-		let html;
+	const handleOpenDuplicateModal = (id) => {
+		setDuplicateModalId(id);
+	};
 
-		if (filters.length) {
-			html = filters.map((filter) => (
-				<tr key={filter.id}>
-					<td className='__Title'>
-						<a href={filter.permalink} className='__post_title'>
-							{filter.title}
-						</a>
-						<span className='__post_id'>
-							{__('ID', 'wc-ajax-product-filter')}:{` `}
-							{filter.id}
-						</span>
-					</td>
-					<td className='__Filter_Key'>{filter.filter_key}</td>
-					<td className='__Filter_Type'>
-						{filter.component}
-						{filter.componentExtra && (
-							<span className='__component_extra'>
-								{` `}
-								{filter.componentExtra}
-							</span>
-						)}
-					</td>
-					<td className='__Actions'>
-						<Button
-							icon={DeleteIcon}
-							onClick={() => handleOpenDeleteModal(filter)}
-						/>
-						<Button
-							icon={DuplicateIcon}
-							onClick={() => handleOpenDuplicateModal(filter)}
-						/>
-						<Button
-							icon={CodeIcon}
-							onClick={() => handleOpenPublishModal(filter)}
-						/>
-						<Button
-							icon={EditIcon}
-							href={filter.permalink}
-							className='__edit_btn'
-						/>
-					</td>
-				</tr>
-			));
-		} else {
-			html = (
-				<tr className='__no_results'>
-					<td colSpan={5}>
-						<p className='description'>
-							{__(
-								'No matching results found.',
-								'wc-ajax-product-filter'
-							)}
-						</p>
-					</td>
-				</tr>
-			);
-		}
+	const handleCloseDuplicateModal = () => {
+		setDuplicateModalId(null);
+	};
 
-		return html;
+	const handleDuplicateFilter = () => {
+		const id = duplicateModalId;
+
+		handleCloseDuplicateModal();
+
+		setDuplicatingItemId(id);
+
+		setTimeout(() => {
+			setDuplicatingItemId(null);
+
+			const _filter = filters.find((filter) => filter.id === id);
+			const _filters = [_filter, ...filters];
+
+			dispatch({ type: 'SET_FILTERS', payload: _filters });
+
+			createSuccessNotice('Filter duplicated successfully', {
+				type: 'snackbar',
+				icon: '🙌',
+				id: 'filter-duplicated',
+			});
+		}, 1000);
+	};
+
+	const handleOpenPublishModal = (id) => {
+		setPublishModalId(id);
+	};
+
+	const handleClosePublishModal = () => {
+		setPublishModalId(null);
 	};
 
 	const content = (
@@ -207,7 +144,7 @@ const ListFilters = () => {
 				)}
 			</p>
 			<div className='_buttons'>
-				<Button variant='secondary' onClick={closeAddPostModal}>
+				<Button variant='secondary' onClick={handleCloseAddNewModal}>
 					{__('Maybe Later', 'wc-ajax-product-filter')}
 				</Button>
 				<Button variant='primary'>
@@ -234,33 +171,21 @@ const ListFilters = () => {
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>
-					<div className='__content'>
-						<PostTable
-							title={__(
-								'List of Filters',
-								'wc-ajax-product-filter'
-							)}
-							addBtnTitle={__(
-								'Add Filter',
-								'wc-ajax-product-filter'
-							)}
-							handleAddFilter={handleAddFilter}
-							headers={[
-								__('Title', 'wc-ajax-product-filter'),
-								__('Filter Key', 'wc-ajax-product-filter'),
-								__('Filter Type', 'wc-ajax-product-filter'),
-								__('Actions', 'wc-ajax-product-filter'),
-							]}
-							tbody={getTableData}
-						/>
-					</div>
+					<Table
+						openAddNewModal={handleOpenAddNewModal}
+						openDeleteModal={handleOpenDeleteModal}
+						openDuplicateModal={handleOpenDuplicateModal}
+						openPublishModal={handleOpenPublishModal}
+						deletingItemId={deletingItemId}
+						duplicatingItemId={duplicatingItemId}
+					/>
 
 					<Sidebar />
 				</div>
 
 				<AddNewModal
 					isOpen={addPostModalOpen}
-					closeModal={closeAddPostModal}
+					closeModal={handleCloseAddNewModal}
 					step={addPostModalStep}
 					setStep={setAddPostModalStep}
 					totalSteps={addPostModalTotalSteps}
@@ -272,18 +197,20 @@ const ListFilters = () => {
 				/>
 
 				<DeleteModal
-					isOpen={deleteModalOpen}
-					closeModal={closeDeleteModal}
+					isOpen={deleteModalId}
+					closeModal={handleCloseDeleteModal}
+					deleteFilter={handleDeleteFilter}
 				/>
 
 				<DuplicateModal
-					isOpen={duplicateModalOpen}
-					closeModal={closeDuplicateModal}
+					isOpen={duplicateModalId}
+					closeModal={handleCloseDuplicateModal}
+					duplicateFilter={handleDuplicateFilter}
 				/>
 
 				<PublishModal
-					isOpen={publishModalOpen}
-					closeModal={closePublishModal}
+					isOpen={publishModalId}
+					closeModal={handleClosePublishModal}
 				/>
 
 				<Notifications />

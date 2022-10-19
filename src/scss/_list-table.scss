@@ -51,7 +51,6 @@
             thead {
                 th {
                     border-bottom: 1px solid #e2e4e7;
-                    font-size: 14px;
                     font-weight: 500;
                     padding: 0 var(--vr-padding);
                     height: 36px;
@@ -76,15 +75,20 @@
                     }
 
                     .__post_title {
-                        font-size: 14px;
                         font-weight: 500;
                         text-decoration: none;
                     }
 
                     .components-button {
+                        &.is-small.has-icon  {
+                            padding: 0;
+                            min-width: 30px;
+                            height: 30px;
+                        }
+
                         svg {
-                            width: 20px;
-                            height: 20px;
+                            width: 16px;
+                            height: 16px;
                         }
                     }
                 }

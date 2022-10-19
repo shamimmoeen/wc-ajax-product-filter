@@ -5547,6 +5547,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
+const maxItems = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getNoOfMaxTermsToRender)();
+const timeout = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getTimeoutForRemovingMediaFrames)();
 
 const CustomAppearanceModal = _ref => {
   let {
@@ -5573,9 +5575,7 @@ const CustomAppearanceModal = _ref => {
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_6__.useFilter)();
   const {
     setActiveFilterData
-  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, isDirty, dispatch);
-  const maxItems = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getNoOfMaxTermsToRender)();
-  const timeout = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getTimeoutForRemovingMediaFrames)(); // Fetch the options for the first time render.
+  } = (0,_useFilterData__WEBPACK_IMPORTED_MODULE_7__["default"])(activeFilterData, isDirty, dispatch); // Fetch the options for the first time render.
 
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!open) {
@@ -5626,10 +5626,11 @@ const CustomAppearanceModal = _ref => {
         image_url = found['image_url'];
       }
 
-      option['color'] = color;
-      option['image_id'] = image_id;
-      option['image_url'] = image_url;
-      return option;
+      return { ...option,
+        color,
+        image_id,
+        image_url
+      };
     });
     return synced;
   }; // Sync the appearance data every time the modal opens.
@@ -5644,20 +5645,17 @@ const CustomAppearanceModal = _ref => {
       return;
     }
 
-    const unsynced = [...options];
-    const synced = syncData(unsynced);
+    const synced = syncData(options);
     setOptions(synced);
   }, [open]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    let _options = [...options];
-
     if (!searchInput.length) {
-      const filtered = getChunks(_options);
-      setFilteredOptions(filtered);
+      const chunked = getChunks(options);
+      setFilteredOptions(chunked);
       return;
     }
 
-    const _filtered = _options.filter(option => {
+    const _filtered = options.filter(option => {
       const {
         label,
         value
@@ -5665,8 +5663,8 @@ const CustomAppearanceModal = _ref => {
       return label.toLowerCase().includes(searchInput.toLowerCase()) || value.toString().toLowerCase().includes(searchInput.toLowerCase());
     });
 
-    const filtered = getChunks(_filtered);
-    setFilteredOptions(filtered);
+    const chunked = getChunks(_filtered);
+    setFilteredOptions(chunked);
   }, [searchInput, options]); // Triggers after modal is closed.
 
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -5713,11 +5711,16 @@ const CustomAppearanceModal = _ref => {
   };
 
   const _handleChangeColor = (value, option) => {
-    const _options = [...options];
+    const _options = options.map(_option => {
+      if (_option.value === option.value) {
+        return { ..._option,
+          color: value
+        };
+      }
 
-    const index = _options.findIndex(_option => _option.value === option.value);
+      return _option;
+    });
 
-    _options[index]['color'] = value;
     setOptions(_options);
     markAsModified();
   };
@@ -5731,12 +5734,17 @@ const CustomAppearanceModal = _ref => {
   };
 
   const _handleChangeImage = (id, url, option) => {
-    const _options = [...options];
+    const _options = options.map(_option => {
+      if (_option.value === option.value) {
+        return { ..._option,
+          image_id: id,
+          image_url: url
+        };
+      }
 
-    const index = _options.findIndex(_option => _option.value === option.value);
+      return _option;
+    });
 
-    _options[index]['image_id'] = id;
-    _options[index]['image_url'] = url;
     setOptions(_options);
     markAsModified();
   };
@@ -5763,19 +5771,20 @@ const CustomAppearanceModal = _ref => {
   };
 
   const handleClearingAppearanceData = () => {
-    let _options = [...options];
-    let newOptions = [];
+    let newOptions;
 
     if ('color' === type) {
-      newOptions = _options.map(option => {
-        option['color'] = '';
-        return option;
+      newOptions = options.map(option => {
+        return { ...option,
+          color: ''
+        };
       });
     } else {
-      newOptions = _options.map(option => {
-        option['image_id'] = '';
-        option['image_url'] = '';
-        return option;
+      newOptions = options.map(option => {
+        return { ...option,
+          image_id: '',
+          image_url: ''
+        };
       });
     }
 
@@ -7610,8 +7619,16 @@ const ManualOptions = _ref => {
   };
 
   const handleChange = (value, index, key) => {
-    const _rows = [...rows];
-    _rows[index][key] = value;
+    const _rows = rows.map((_row, _index) => {
+      if (_index === index) {
+        return { ..._row,
+          [key]: value
+        };
+      }
+
+      return _row;
+    });
+
     const _activeFilterData = { ...activeFilterData,
       [optionsKey]: _rows
     };
@@ -7960,8 +7977,24 @@ const MetaValuesModal = _ref => {
   };
 
   const handleOptionChange = (value, index) => {
-    const _options = [...options];
-    _options[index]['status'] = value ? 'added' : '';
+    const find = options[index];
+
+    const _options = options.map(option => {
+      if (option.value === find.value) {
+        if (value) {
+          return { ...option,
+            status: 'added'
+          };
+        }
+
+        return { ...option,
+          status: ''
+        };
+      }
+
+      return option;
+    });
+
     setOptions(_options);
   };
 
@@ -10991,18 +11024,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const topBarLinks = wcapf_admin_params.top_bar_links;
 const navMenus = [{
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filters', 'wc-ajax-product-filter'),
   id: 'filters',
-  href: '#'
+  href: topBarLinks.filters
 }, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Forms', 'wc-ajax-product-filter'),
-  id: 'filter-forms',
-  href: '#'
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Forms', 'wc-ajax-product-filter'),
+  id: 'forms',
+  href: topBarLinks.forms
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'wc-ajax-product-filter'),
   id: 'settings',
-  href: '#'
+  href: topBarLinks.settings
 }];
 
 const TopBar = _ref => {

@@ -300,6 +300,22 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function enqueue_admin_ui_scripts( $hook ) {
+		// Load the dependent js variables before loading other scripts.
+		if ( in_array( $hook, $this->slugs_of_custom_admin_pages() ) ) {
+			wp_register_script( 'wcapf-admin-scripts', false );
+
+			wp_localize_script(
+				'wcapf-admin-scripts',
+				'wcapf_admin_params',
+				$this->admin_js_params()
+			);
+
+			wp_enqueue_script( 'wcapf-admin-scripts' );
+
+			// Loads the media utils.
+			wp_enqueue_media();
+		}
+
 		if ( 'toplevel_page_wcapf-filter' === $hook ) {
 			// Filters list admin ui scripts.
 			if ( ! isset( $_GET['id'] ) ) {
@@ -320,23 +336,23 @@ class WCAPF_Admin {
 			}
 		}
 
-		// TODO: Remove 'new' from hook.
 		// Settings page admin ui scripts.
 		if ( 'wcapf_page_wcapf-new-settings' === $hook ) {
 			$this->load_scripts( 'settings' );
 		}
+	}
 
-		if ( in_array( $hook, $this->slugs_of_custom_admin_pages() ) ) {
-			wp_register_script( 'wcapf-admin-scripts', false );
+	/**
+	 * Gets the current screen id.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function current_screen_id() {
+		global $current_screen;
 
-			wp_localize_script(
-				'wcapf-admin-scripts',
-				'wcapf_admin_params',
-				$this->admin_js_params()
-			);
-
-			wp_enqueue_script( 'wcapf-admin-scripts' );
-		}
+		return isset( $current_screen->id ) ? $current_screen->id : '';
 	}
 
 	/**
@@ -357,15 +373,19 @@ class WCAPF_Admin {
 
 		$helper = new WCAPF_Helper();
 
-		$admin_page_links = array(
-			'admin_pages' => array(
-				'filters'  => $helper::filters_list_page_url(),
-				'forms'    => $helper::forms_list_page_url(),
-				'settings' => $helper::new_settings_page_url(),
-			),
+		$params['top_bar_links'] = array(
+			'filters'  => $helper::filters_list_page_url(),
+			'forms'    => $helper::forms_list_page_url(),
+			'settings' => $helper::new_settings_page_url(),
 		);
 
-		$params = array_merge( $params, $admin_page_links );
+		$api_utils = new WCAPF_API_Utils();
+
+		if ( 'toplevel_page_wcapf-filter' === $this->current_screen_id() ) {
+			$params['filters'] = $api_utils::get_filters();
+		}
+
+		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}

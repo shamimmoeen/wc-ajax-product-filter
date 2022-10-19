@@ -98,7 +98,6 @@ body.rtl .components-snackbar-list {
 }
 .__list_table_wrapper .__list_table_inner table thead th {
   border-bottom: 1px solid #e2e4e7;
-  font-size: 14px;
   font-weight: 500;
   padding: 0 var(--vr-padding);
   height: 36px;
@@ -118,13 +117,17 @@ body.rtl .components-snackbar-list {
   font-size: 12px;
 }
 .__list_table_wrapper .__list_table_inner table tbody td .__post_title {
-  font-size: 14px;
   font-weight: 500;
   text-decoration: none;
 }
+.__list_table_wrapper .__list_table_inner table tbody td .components-button.is-small.has-icon {
+  padding: 0;
+  min-width: 30px;
+  height: 30px;
+}
 .__list_table_wrapper .__list_table_inner table tbody td .components-button svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 .__list_table_wrapper .__list_table_summary {
   padding: var(--vr-padding) var(--hr-padding);
