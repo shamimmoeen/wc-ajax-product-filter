@@ -4,7 +4,7 @@ import { ClipboardIcon } from '../SVGIcons';
 import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
 
-const PublishModal = ({ isOpen, closeModal }) => {
+const PublishModal = ({ isOpen: id, closeModal }) => {
 	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	const clipboardApiFound = window.isSecureContext && navigator.clipboard;
@@ -26,21 +26,24 @@ const PublishModal = ({ isOpen, closeModal }) => {
 		let description;
 		let code;
 
+		const shortcode = `[wcapf_filter id="${id}"]`;
+		const widgetsPageLink = wcapf_admin_params.widgets_page_link;
+
 		if ('shortcode' === tab) {
 			description = __(
 				'If you want to publish using shortcode, just copy code below and use it.',
 				'wc-ajax-product-filter'
 			);
-			code = '[wcapf_filter id="456"]';
+			code = shortcode;
 		} else if ('php-code' === tab) {
 			description = __(
 				'If you want to publish using PHP code, just copy code below and use it.',
 				'wc-ajax-product-filter'
 			);
-			code = '<?php echo do_shortcode( \'[wcapf_filter id="456"]\' ); ?>';
+			code = `<?php echo do_shortcode( '${shortcode}' ); ?>`;
 		} else {
 			description = __(
-				"If you want to use it in a widget, go to the widgets page, and then drag and drop plugin's widget to the desired area.",
+				'If you want to use it in a widget, go to the widgets page, add <b>WC Ajax Product Filter</b> widget to the desired area.',
 				'wc-ajax-product-filter'
 			);
 		}
@@ -53,7 +56,7 @@ const PublishModal = ({ isOpen, closeModal }) => {
 
 		return (
 			<div className='__publish_tab_content'>
-				<p>{description}</p>
+				<p dangerouslySetInnerHTML={{ __html: description }} />
 
 				{('shortcode' === tab || 'php-code' === tab) && (
 					<div
@@ -71,7 +74,11 @@ const PublishModal = ({ isOpen, closeModal }) => {
 
 				{'widget' === tab && (
 					<div className='__link'>
-						<Button variant='primary'>
+						<Button
+							variant='primary'
+							href={widgetsPageLink}
+							target='_blank'
+						>
 							{__('Go to Widgets', 'wc-ajax-product-filter')}
 						</Button>
 					</div>
@@ -87,7 +94,7 @@ const PublishModal = ({ isOpen, closeModal }) => {
 	};
 
 	return (
-		isOpen && (
+		id && (
 			<Modal
 				onRequestClose={closeModal}
 				__experimentalHideHeader

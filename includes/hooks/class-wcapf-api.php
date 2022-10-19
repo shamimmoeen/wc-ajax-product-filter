@@ -43,6 +43,8 @@ class WCAPF_API {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
+
+
 		add_action( 'wp_ajax_get_available_filters', array( $this, 'get_available_filters' ) );
 		add_action( 'wp_ajax_get_filter_form_data', array( $this, 'get_filter_form_data' ) );
 		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );

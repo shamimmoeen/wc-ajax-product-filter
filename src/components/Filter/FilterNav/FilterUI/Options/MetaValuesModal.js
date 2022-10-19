@@ -106,8 +106,19 @@ const MetaValuesModal = ({ open, closeModal }) => {
 	};
 
 	const handleOptionChange = (value, index) => {
-		const _options = [...options];
-		_options[index]['status'] = value ? 'added' : '';
+		const find = options[index];
+
+		const _options = options.map((option) => {
+			if (option.value === find.value) {
+				if (value) {
+					return { ...option, status: 'added' };
+				}
+
+				return { ...option, status: '' };
+			}
+
+			return option;
+		});
 
 		setOptions(_options);
 	};

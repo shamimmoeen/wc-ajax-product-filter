@@ -23,6 +23,9 @@ import {
 const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
 
+const maxItems = getNoOfMaxTermsToRender();
+const timeout = getTimeoutForRemovingMediaFrames();
+
 const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -45,9 +48,6 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 		isDirty,
 		dispatch
 	);
-
-	const maxItems = getNoOfMaxTermsToRender();
-	const timeout = getTimeoutForRemovingMediaFrames();
 
 	// Fetch the options for the first time render.
 	useEffect(() => {
@@ -99,6 +99,7 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	const syncData = (unsynced) => {
 		const synced = unsynced.map((option) => {
 			const found = find(appearanceData, { id: option.value });
+
 			let color = '';
 			let image_id = '';
 			let image_url = '';
@@ -109,11 +110,12 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 				image_url = found['image_url'];
 			}
 
-			option['color'] = color;
-			option['image_id'] = image_id;
-			option['image_url'] = image_url;
-
-			return option;
+			return {
+				...option,
+				color,
+				image_id,
+				image_url,
+			};
 		});
 
 		return synced;
@@ -129,24 +131,21 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 			return;
 		}
 
-		const unsynced = [...options];
-		const synced = syncData(unsynced);
+		const synced = syncData(options);
 
 		setOptions(synced);
 	}, [open]);
 
 	useEffect(() => {
-		let _options = [...options];
-
 		if (!searchInput.length) {
-			const filtered = getChunks(_options);
+			const chunked = getChunks(options);
 
-			setFilteredOptions(filtered);
+			setFilteredOptions(chunked);
 
 			return;
 		}
 
-		const _filtered = _options.filter((option) => {
+		const _filtered = options.filter((option) => {
 			const { label, value } = option;
 
 			return (
@@ -158,9 +157,9 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 			);
 		});
 
-		const filtered = getChunks(_filtered);
+		const chunked = getChunks(_filtered);
 
-		setFilteredOptions(filtered);
+		setFilteredOptions(chunked);
 	}, [searchInput, options]);
 
 	// Triggers after modal is closed.
@@ -210,12 +209,13 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	};
 
 	const _handleChangeColor = (value, option) => {
-		const _options = [...options];
-		const index = _options.findIndex(
-			(_option) => _option.value === option.value
-		);
+		const _options = options.map((_option) => {
+			if (_option.value === option.value) {
+				return { ..._option, color: value };
+			}
 
-		_options[index]['color'] = value;
+			return _option;
+		});
 
 		setOptions(_options);
 		markAsModified();
@@ -230,13 +230,13 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	};
 
 	const _handleChangeImage = (id, url, option) => {
-		const _options = [...options];
-		const index = _options.findIndex(
-			(_option) => _option.value === option.value
-		);
+		const _options = options.map((_option) => {
+			if (_option.value === option.value) {
+				return { ..._option, image_id: id, image_url: url };
+			}
 
-		_options[index]['image_id'] = id;
-		_options[index]['image_url'] = url;
+			return _option;
+		});
 
 		setOptions(_options);
 		markAsModified();
@@ -264,21 +264,15 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	};
 
 	const handleClearingAppearanceData = () => {
-		let _options = [...options];
-		let newOptions = [];
+		let newOptions;
 
 		if ('color' === type) {
-			newOptions = _options.map((option) => {
-				option['color'] = '';
-
-				return option;
+			newOptions = options.map((option) => {
+				return { ...option, color: '' };
 			});
 		} else {
-			newOptions = _options.map((option) => {
-				option['image_id'] = '';
-				option['image_url'] = '';
-
-				return option;
+			newOptions = options.map((option) => {
+				return { ...option, image_id: '', image_url: '' };
 			});
 		}
 

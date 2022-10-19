@@ -2,7 +2,7 @@ import { Modal, Icon, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { DeleteIcon } from '../SVGIcons';
 
-const DeleteModal = ({ isOpen, closeModal }) => {
+const DeleteModal = ({ isOpen, closeModal, deleteFilter }) => {
 	return (
 		isOpen && (
 			<Modal onRequestClose={closeModal} __experimentalHideHeader>
@@ -22,7 +22,7 @@ const DeleteModal = ({ isOpen, closeModal }) => {
 						<Button variant='secondary' onClick={closeModal}>
 							{__('No', 'wc-ajax-product-filter')}
 						</Button>
-						<Button variant='primary'>
+						<Button variant='primary' onClick={deleteFilter}>
 							{__('Yes', 'wc-ajax-product-filter')}
 						</Button>
 					</div>

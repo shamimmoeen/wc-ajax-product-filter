@@ -131,8 +131,13 @@ const ManualOptions = ({ openModal }) => {
 	};
 
 	const handleChange = (value, index, key) => {
-		const _rows = [...rows];
-		_rows[index][key] = value;
+		const _rows = rows.map((_row, _index) => {
+			if (_index === index) {
+				return { ..._row, [key]: value };
+			}
+
+			return _row;
+		});
 
 		const _activeFilterData = {
 			...activeFilterData,
