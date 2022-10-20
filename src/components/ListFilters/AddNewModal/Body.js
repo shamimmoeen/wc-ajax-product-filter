@@ -17,6 +17,8 @@ const Body = ({ step }) => {
 		dispatch,
 	} = useListFilters();
 
+	const { initial_filter_keys: initialFilterKeysData } = additionalData;
+
 	const handleTitleChange = (e) => {
 		const value = e.target.value;
 
@@ -46,6 +48,7 @@ const Body = ({ step }) => {
 				filterType={filterType}
 				activeFilterData={activeFilterData}
 				filtersData={filtersData}
+				initialFilterKeysData={initialFilterKeysData}
 				dispatch={dispatch}
 			/>
 		);

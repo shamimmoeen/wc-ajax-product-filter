@@ -16,12 +16,15 @@ const Basic = () => {
 		dispatch,
 	} = useFilter();
 
+	const { initial_filter_keys: initialFilterKeysData } = additionalData;
+
 	return (
 		<>
 			<AvailableFilters
 				filterType={filterType}
 				activeFilterData={activeFilterData}
 				filtersData={filtersData}
+				initialFilterKeysData={initialFilterKeysData}
 				dispatch={dispatch}
 				setDirty={true}
 				isDirty={isDirty}

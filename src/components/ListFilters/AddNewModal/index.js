@@ -6,10 +6,15 @@ import Body from './Body';
 import { useListFilters } from '../ListFiltersContext';
 import { getAdditionalData } from '../../utils';
 import { CheckIcon } from '../../SVGIcons';
+import axios from 'axios';
+import {
+	filterCreateErrorNotice,
+	removeFilterCreateNotice,
+} from '../../notices';
 
 const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	const {
-		state: { filterType },
+		state: { title, filterType, activeFilterData },
 		dispatch,
 	} = useListFilters();
 
@@ -58,6 +63,28 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		modalRef.current.children[0].focus();
 	}, [step]);
 
+	// Focus the modal when loading state gets changed.
+	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
+		if (!modalRef.current) {
+			return;
+		}
+
+		if (step < 2) {
+			return;
+		}
+
+		if (loading) {
+			return;
+		}
+
+		modalRef.current.children[0].focus();
+	}, [loading]);
+
+	// Change the total steps according to the filter type.
 	useEffect(() => {
 		if (!filterType) {
 			return;
@@ -77,6 +104,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	}, [filterType]);
 
 	const handleCloseModal = () => {
+		removeFilterCreateNotice();
 		setAddNewModalOpen(false);
 
 		setStep(1);
@@ -93,12 +121,37 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	};
 
 	const handleFilterSubmit = () => {
+		removeFilterCreateNotice();
+
 		setLoading(true);
 
-		setTimeout(() => {
-			setLoading(false);
-			setNewItem('hello world');
-		}, 500);
+		const formData = new FormData();
+
+		formData.append('action', 'wcapf_save_filter');
+		formData.append('filter_title', title);
+		formData.append('filter_data', JSON.stringify(activeFilterData));
+
+		axios
+			.post(wcapf_admin_params.ajaxurl, formData)
+			.then((res) => {
+				setLoading(false);
+
+				const {
+					data: { data, success },
+				} = res;
+
+				if (success) {
+					console.log(data);
+					setNewItem('hello');
+				} else {
+					filterCreateErrorNotice(data);
+				}
+			})
+			.catch((err) => {
+				setLoading(false);
+
+				filterCreateErrorNotice(err.message);
+			});
 	};
 
 	const modalContent = () => {

@@ -1,12 +1,12 @@
 import { Modal, Button, TabPanel, Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { ClipboardIcon } from '../SVGIcons';
-import { store as noticesStore } from '@wordpress/notices';
-import { useDispatch } from '@wordpress/data';
+import {
+	copiedToClipboardNotice,
+	removeCopiedToClipboardNotice,
+} from '../notices';
 
 const PublishModal = ({ isOpen: id, closeModal }) => {
-	const { createSuccessNotice } = useDispatch(noticesStore);
-
 	const clipboardApiFound = window.isSecureContext && navigator.clipboard;
 
 	const handleCopyToClipboard = (text) => {
@@ -16,10 +16,11 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 
 		navigator.clipboard.writeText(text);
 
-		createSuccessNotice('Copied to clipboard', {
-			type: 'snackbar',
-			id: 'copied-to-clipboard',
-		});
+		copiedToClipboardNotice();
+	};
+
+	const handleTabChange = () => {
+		removeCopiedToClipboardNotice();
 	};
 
 	const gettabContent = (tab) => {
@@ -62,7 +63,7 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 					<div
 						className={classes}
 						tabIndex={0}
-						onClick={() => handleCopyToClipboard('hello world')}
+						onClick={() => handleCopyToClipboard(code)}
 					>
 						<div className='__text'>{code}</div>
 
@@ -106,6 +107,7 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 					<TabPanel
 						className='__publish_tab_panel'
 						activeClass='active-tab'
+						onSelect={handleTabChange}
 						tabs={[
 							{
 								name: 'shortcode',

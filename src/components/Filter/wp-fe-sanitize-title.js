@@ -15,25 +15,27 @@
 export function wpFeSanitizeTitle(title) {
 	var diacriticsMap;
 
-	return removeSingleTrailingDash(
-		replaceSpacesWithDash(
-			removeHTMLEntities(
-				removeAccents(
-					// Strip any HTML tags.
-					title.replace(/<[^>]+>/gi, '')
+	return removeSingleLeadingDash(
+		removeSingleTrailingDash(
+			replaceSpacesWithDash(
+				removeHTMLEntities(
+					removeAccents(
+						// Strip any HTML tags.
+						title.replace(/<[^>]+>/gi, '')
+					)
+						.toLowerCase()
+						// Replace &nbsp;, &ndash;, and &mdash with a dash (-).
+						.replace(/&(?:(?:nbsp)|(?:ndash)|(?:mdash));/g, '-')
 				)
-					.toLowerCase()
-					// Replace &nbsp;, &ndash;, and &mdash with a dash (-).
-					.replace(/&(?:(?:nbsp)|(?:ndash)|(?:mdash));/g, '-')
+					// Replace any forward slashes (/) or periods (.) with a dash (-).
+					.replace(/[\/\.]/g, '-')
+					// Replace anything that is not a:
+					// word character
+					// space
+					// nor a dash (-)
+					// with an empty string (i.e. remove it).
+					.replace(/[^\w\s-]+/g, '')
 			)
-				// Replace any forward slashes (/) or periods (.) with a dash (-).
-				.replace(/[\/\.]/g, '-')
-				// Replace anything that is not a:
-				// word character
-				// space
-				// nor a dash (-)
-				// with an empty string (i.e. remove it).
-				.replace(/[^\w\s-]+/g, '')
 		)
 	);
 
@@ -77,6 +79,19 @@ export function wpFeSanitizeTitle(title) {
 	function removeSingleTrailingDash(str) {
 		if ('-' === str.substr(str.length - 1)) {
 			return str.substr(0, str.length - 1);
+		}
+		return str;
+	}
+
+	/**
+	 * If the string starts with a dash, remove it.
+	 *
+	 * @param string str The string which may or may not start in a dash.
+	 * @return string The string without a dash on the start.
+	 */
+	function removeSingleLeadingDash(str) {
+		if ('-' === str.substr(0, 1)) {
+			return str.substr(1, str.length - 1);
 		}
 		return str;
 	}

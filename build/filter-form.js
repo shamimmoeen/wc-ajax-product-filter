@@ -2697,27 +2697,22 @@ function availableFilters() {
     type: 'active-filters'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Category', 'wc-ajax-product-filter'),
-    type: 'category',
-    defaultFilterKey: '_product_cat'
+    type: 'category'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Tag', 'wc-ajax-product-filter'),
-    type: 'tag',
-    defaultFilterKey: '_product_tag'
+    type: 'tag'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Attribute', 'wc-ajax-product-filter'),
     type: 'attribute'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Price', 'wc-ajax-product-filter'),
-    type: 'price',
-    defaultFilterKey: '_price'
+    type: 'price'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Rating', 'wc-ajax-product-filter'),
-    type: 'rating',
-    defaultFilterKey: '_rating'
+    type: 'rating'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Product Status', 'wc-ajax-product-filter'),
-    type: 'product-status',
-    defaultFilterKey: '_status'
+    type: 'product-status'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Property', 'wc-ajax-product-filter'),
     type: 'post-property',
@@ -2733,12 +2728,10 @@ function availableFilters() {
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort by', 'wc-ajax-product-filter'),
     type: 'sort-by',
-    defaultFilterKey: '_sort_by',
     isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Per page', 'wc-ajax-product-filter'),
     type: 'per-page',
-    defaultFilterKey: '_per_page',
     isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset Button', 'wc-ajax-product-filter'),
@@ -2882,18 +2875,14 @@ function sortByFilterDefaultData() {
   };
 }
 
-function getFilterDefaultData(type) {
-  const allFilters = availableFilters();
+function getFilterDefaultData(type, filterKeys) {
   const defaultData = filterDefaultData(); // Set filter type.
 
-  defaultData.type = type; // Set filter key.
+  defaultData.type = type;
+  const variableFilterTypes = Object.keys(variableFilterTypesData()); // Set the filter key for non variable filter types.
 
-  const _filterData = allFilters.find(filter => type === filter.type);
-
-  const _defaultFilterKey = _filterData.defaultFilterKey;
-
-  if (_defaultFilterKey) {
-    defaultData.field_key = _defaultFilterKey;
+  if (!variableFilterTypes.includes(type)) {
+    defaultData.field_key = filterKeys[type];
   } // Rating filter default options.
 
 
@@ -2955,8 +2944,6 @@ function initialFilterKeysData(activeFilterData) {
         filterKeys[type] = data;
       }
     });
-  } else {
-    filterKeys[filterType] = filterKey;
   }
 
   return filterKeys;
@@ -4577,15 +4564,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _SVGIcons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SVGIcons */ "./src/components/SVGIcons.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/components/utils.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/notices */ "@wordpress/notices");
-/* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_notices__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_7__);
-
-
-
 
 
 
@@ -4595,29 +4573,30 @@ __webpack_require__.r(__webpack_exports__);
 const Title = _ref => {
   let {
     value,
-    handleChange
+    handleChange,
+    isDirty,
+    btnBusy,
+    btnDisabled,
+    handleSubmit
   } = _ref;
-  const {
-    createErrorNotice
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useDispatch)(_wordpress_notices__WEBPACK_IMPORTED_MODULE_6__.store);
-  const link = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.removeParam)('id', window.location.search);
+  const goBackLink = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.removeParam)('id', window.location.search);
+  let btnTitle;
+  let btnVariant;
 
-  const handlePublish = () => {
-    const formData = new FormData();
-    formData.append('action', 'save_filter');
-    formData.append('post_title', 'hello world');
-    axios__WEBPACK_IMPORTED_MODULE_5___default().post(wcapf_admin_params.ajaxurl, formData).then(() => {}).catch(err => {
-      createErrorNotice(err.message, {
-        type: 'snackbar',
-        icon: '🔥'
-      });
-    });
-  };
+  if (isDirty) {
+    btnTitle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Save', 'wc-ajax-product-filter'));
+    btnVariant = 'primary';
+  } else {
+    btnTitle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "__icon"
+    }, "\uD83D\uDD25"), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Publish', 'wc-ajax-product-filter'));
+    btnVariant = 'secondary';
+  }
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__title_wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-    href: link,
+    href: goBackLink,
     className: "__back_button"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
     icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_3__.BackIcon
@@ -4627,10 +4606,12 @@ const Title = _ref => {
     className: "components-text-control__input",
     onChange: e => handleChange(e.target.value)
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-    variant: "secondary",
+    variant: btnVariant,
     className: "__save_button",
-    onClick: handlePublish
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Publish', 'wc-ajax-product-filter	')));
+    onClick: handleSubmit,
+    isBusy: btnBusy,
+    disabled: btnDisabled
+  }, btnTitle));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Title);

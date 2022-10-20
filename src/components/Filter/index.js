@@ -1,14 +1,14 @@
-import FilterSettings from './FilterSettings';
+import { useEffect } from '@wordpress/element';
+import TopBar from '../TopBar';
+import FilterTitle from './FilterTitle';
+import FilterNav from './FilterNav';
 import FilterPreview from './FilterPreview';
 import Notifications from '../Notifications';
-import FilterSaveButton from './FilterSaveButton';
 import { useFilter } from './FilterContext';
-import { useEffect } from '@wordpress/element';
 import { filterDefaultData, initialFilterKeysData } from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
-import TopBar from '../TopBar';
 
 const Filter = () => {
 	const { dispatch } = useFilter();
@@ -45,8 +45,6 @@ const Filter = () => {
 				} = resAdditionalData;
 
 				let activeFilterData = {};
-				let filterType = '';
-				let filterKey = '';
 
 				if (!isEmpty(filterData)) {
 					dispatch({
@@ -59,8 +57,8 @@ const Filter = () => {
 						filterData['field_data']
 					);
 
-					filterType = activeFilterData['type'];
-					filterKey = activeFilterData['field_key'];
+					const filterType = activeFilterData['type'];
+					const filterId = activeFilterData['field_id'];
 
 					dispatch({
 						type: 'SET_ACTIVE_FILTER_DATA',
@@ -68,6 +66,8 @@ const Filter = () => {
 					});
 
 					dispatch({ type: 'SET_FILTER_TYPE', payload: filterType });
+
+					dispatch({ type: 'SET_FILTER_ID', payload: filterId });
 				}
 
 				dispatch({
@@ -89,15 +89,15 @@ const Filter = () => {
 			<TopBar view={'filters'} />
 
 			<div className='__edit_form'>
-				<FilterSettings />
+				<div className='editor-control'>
+					<FilterTitle />
+					<FilterNav />
+				</div>
+
 				<FilterPreview />
 			</div>
 
 			<Notifications />
-
-			{/* <div className='__wcapf_layout'>
-				<FilterSaveButton />
-			</div> */}
 		</div>
 	);
 };

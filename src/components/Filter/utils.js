@@ -10,12 +10,10 @@ export function availableFilters() {
 		{
 			title: __('Category', 'wc-ajax-product-filter'),
 			type: 'category',
-			defaultFilterKey: '_product_cat',
 		},
 		{
 			title: __('Tag', 'wc-ajax-product-filter'),
 			type: 'tag',
-			defaultFilterKey: '_product_tag',
 		},
 		{
 			title: __('Attribute', 'wc-ajax-product-filter'),
@@ -24,17 +22,14 @@ export function availableFilters() {
 		{
 			title: __('Price', 'wc-ajax-product-filter'),
 			type: 'price',
-			defaultFilterKey: '_price',
 		},
 		{
 			title: __('Rating', 'wc-ajax-product-filter'),
 			type: 'rating',
-			defaultFilterKey: '_rating',
 		},
 		{
 			title: __('Product Status', 'wc-ajax-product-filter'),
 			type: 'product-status',
-			defaultFilterKey: '_status',
 		},
 		{
 			title: __('Post Property', 'wc-ajax-product-filter'),
@@ -54,13 +49,11 @@ export function availableFilters() {
 		{
 			title: __('Sort by', 'wc-ajax-product-filter'),
 			type: 'sort-by',
-			defaultFilterKey: '_sort_by',
 			isPro: true,
 		},
 		{
 			title: __('Per page', 'wc-ajax-product-filter'),
 			type: 'per-page',
-			defaultFilterKey: '_per_page',
 			isPro: true,
 		},
 		{
@@ -208,19 +201,17 @@ function sortByFilterDefaultData() {
 	};
 }
 
-export function getFilterDefaultData(type) {
-	const allFilters = availableFilters();
+export function getFilterDefaultData(type, filterKeys) {
 	const defaultData = filterDefaultData();
 
 	// Set filter type.
 	defaultData.type = type;
 
-	// Set filter key.
-	const _filterData = allFilters.find((filter) => type === filter.type);
-	const _defaultFilterKey = _filterData.defaultFilterKey;
+	const variableFilterTypes = Object.keys(variableFilterTypesData());
 
-	if (_defaultFilterKey) {
-		defaultData.field_key = _defaultFilterKey;
+	// Set the filter key for non variable filter types.
+	if (!variableFilterTypes.includes(type)) {
+		defaultData.field_key = filterKeys[type];
 	}
 
 	// Rating filter default options.
@@ -282,8 +273,6 @@ export function initialFilterKeysData(activeFilterData) {
 				filterKeys[type] = data;
 			}
 		});
-	} else {
-		filterKeys[filterType] = filterKey;
 	}
 
 	return filterKeys;

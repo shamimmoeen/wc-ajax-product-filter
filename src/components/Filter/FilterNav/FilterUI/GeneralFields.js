@@ -34,6 +34,8 @@ const GeneralFields = ({
 		post_property,
 	} = activeFilterData;
 
+	const { initial_filter_keys: initialFilterKeysData } = additionalData;
+
 	useEffect(() => {
 		if ('post-property' !== filterType) {
 			return;
@@ -57,7 +59,11 @@ const GeneralFields = ({
 		if (has(filterKeys, [type, value])) {
 			filterKey = filterKeys[type][value];
 		} else {
-			filterKey = '_' + wpFeSanitizeTitle(value);
+			if (has(initialFilterKeysData, [type, value])) {
+				filterKey = initialFilterKeysData[type][value];
+			} else {
+				filterKey = '_' + wpFeSanitizeTitle(value);
+			}
 
 			_filterKeys = {
 				...filterKeys,
