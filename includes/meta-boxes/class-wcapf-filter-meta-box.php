@@ -72,23 +72,7 @@ class WCAPF_Filter_Meta_Box {
 		$filter_key = isset( $field_data['field_key'] ) ? sanitize_title( $field_data['field_key'] ) : '';
 		$class_name = WCAPF_Helper::get_field_class_name_by_type( $field_type );
 
-		$error_code = '';
-
-		$field_types_with_key_required = WCAPF_Helper::field_types_with_key_required();
-
-		if ( ! $field_type ) { // Filter is required.
-			$error_code = 20;
-		} elseif ( ! $class_name ) { // Invalid filter type.
-			$error_code = 21;
-		} elseif ( in_array( $field_type, $field_types_with_key_required ) ) {
-			if ( ! $filter_key ) { // Filter key required.
-				$error_code = 22;
-			} elseif ( $this->is_filter_key_already_in_use( $post_id, $filter_key ) ) { // Filter key is already in use.
-				$error_code = 23;
-			} elseif ( $this->taxonomy_exists_for_filter_key( $filter_key ) ) {
-				$error_code = 24;
-			}
-		}
+		$error_code = WCAPF_API_Utils::validate_filter( $field_type, $filter_key, $post_id );
 
 		if ( $error_code ) {
 			$user_id = get_current_user_id();
@@ -105,146 +89,24 @@ class WCAPF_Filter_Meta_Box {
 		$field_sub_fields = $field_class->get_sub_fields();
 		$available_fields = wp_list_pluck( $field_sub_fields, 'name' );
 
-		$float_fields = apply_filters(
-			'wcapf_sub_fields_type_float',
-			array( 'min_value', 'max_value', 'step' )
-		);
+		$_field_data = array();
 
-		$absint_fields = apply_filters(
-			'wcapf_sub_fields_type_absint',
-			array( 'decimal_places' )
-		);
-
-		$array_fields = apply_filters( 'wcapf_sub_fields_type_array', array( 'include_user_roles' ) );
-
-		$parsed_field = array();
-
-		foreach ( $available_fields as $field_key ) {
-			$field_value = isset( $field_data[ $field_key ] ) ? $field_data[ $field_key ] : '';
-
-			if ( in_array( $field_key, $float_fields ) ) {
-				$_field_value = floatval( $field_value );
-
-				if ( 'step' === $field_key && ! $_field_value ) {
-					$_field_value = 1;
-				}
-			} elseif ( in_array( $field_key, $absint_fields ) ) {
-				$_field_value = absint( $field_value );
-			} elseif ( in_array( $field_key, $array_fields ) ) {
-				$_field_value = $field_value ? array_map( 'sanitize_text_field', $field_value ) : array();
-			} else {
-				$space_allowed = array( 'value_prefix', 'value_postfix', 'values_separator' );
-
-				// Preserve spaces in values separator.
-				if ( in_array( $field_key, $space_allowed ) ) {
-					$field_value = str_replace( ' ', '&nbsp;', $field_value );
-				}
-
-				$_field_value = sanitize_text_field( $field_value );
-
-				if ( 'decimal_separator' === $field_key && ! $_field_value ) {
-					$_field_value = '.';
-				}
-			}
-
-			$parsed_field[ $field_key ] = $_field_value;
-		}
-
-		$parsed_field['type'] = $field_type;
-
-		// Parse the product status options.
-		if ( isset( $field_data['product_status_options'] ) ) {
-			$product_status_options = $field_data['product_status_options'];
-
-			$statuses = WCAPF_Helper::get_product_status_options();
-
-			if ( $product_status_options ) {
-				$decode  = rawurldecode( $product_status_options );
-				$options = json_decode( $decode, true );
-				$options = is_array( $options ) ? $options : array();
-
-				$parsed_options = array();
-
-				foreach ( $options as $option ) {
-					$value = sanitize_text_field( $option['value'] );
-					$label = wp_kses_post( $option['label'] );
-
-					if ( ! strlen( $value ) ) {
-						continue;
-					}
-
-					if ( ! strlen( $label ) ) {
-						$label = isset( $statuses[ $value ] ) ? $statuses[ $value ] : $value;
-					}
-
-					$parsed_option    = array_merge( $option, array( 'label' => $label ) );
-					$parsed_options[] = $parsed_option;
-				}
-
-				$parsed_field['product_status_options'] = $parsed_options;
+		foreach ( $field_data as $field_key => $field_value ) {
+			if ( in_array( $field_key, $available_fields ) ) {
+				$_field_data[ $field_key ] = $field_value;
 			}
 		}
 
-		// Set default label for the 'Clear All' button in active filters field.
-		if ( isset( $parsed_field['clear_all_button_label'] ) && empty( $parsed_field['clear_all_button_label'] ) ) {
-			$parsed_field['clear_all_button_label'] = __( 'Clear All', 'wc-ajax-product-filter' );
-		}
-
-		// Set default label for the reset filters button.
-		if ( isset( $parsed_field['reset_button_label'] ) && empty( $parsed_field['reset_button_label'] ) ) {
-			$parsed_field['reset_button_label'] = __( 'Reset', 'wc-ajax-product-filter' );
-		}
-
-		// Store the field key as sanitized.
-		$parsed_field['field_key'] = $filter_key;
-
-		// Store the post id in the field data.
-		$parsed_field['field_id'] = $post_id;
-
-		// Visibility rules.
-		$enable_visibility_rules = isset( $_POST['enable_visibility_rules'] ) ? $_POST['enable_visibility_rules'] : '';
-		$visibility_rules        = isset( $_POST['visibility_rules'] ) ? $_POST['visibility_rules'] : '';
-
-		$decode           = rawurldecode( $visibility_rules );
-		$visibility_rules = json_decode( $decode, true );
-		$visibility_rules = is_array( $visibility_rules ) ? $visibility_rules : array();
-
-		$parsed_field['enable_visibility_rules'] = $enable_visibility_rules;
-		$parsed_field['visibility_rules']        = $visibility_rules;
-
-		$parsed_field = apply_filters( 'wcapf_parse_form_field_data', $parsed_field, $field_data );
+		$parsed_field = WCAPF_API_Utils::get_parsed_field(
+			$_field_data,
+			$field_type,
+			$filter_key,
+			$post_id,
+			$field_data
+		);
 
 		update_post_meta( $post_id, '_field_data', $parsed_field );
 		update_post_meta( $post_id, '_filter_key', $filter_key );
-	}
-
-	private function is_filter_key_already_in_use( $post_id, $filter_key ) {
-		$args = array(
-			'post_type'      => 'wcapf-filter',
-			'post_status'    => 'publish',
-			'posts_per_page' => 1,
-			'post__not_in'   => array( $post_id ),
-			'fields'         => 'ids',
-			'meta_query'     => array(
-				array(
-					'key'   => '_filter_key',
-					'value' => $filter_key,
-				),
-			),
-		);
-
-		return get_posts( $args );
-	}
-
-	/**
-	 * Checks if taxonomy exists with the filter key.
-	 *
-	 * @param string $filter_key The filter key.
-	 *
-	 * @return bool
-	 */
-	private function taxonomy_exists_for_filter_key( $filter_key ) {
-		return taxonomy_exists( $filter_key );
 	}
 
 	private function meta_validation_transient_name( $post_id, $user_id ) {
@@ -275,19 +137,7 @@ class WCAPF_Filter_Meta_Box {
 
 	public function validation_error_admin_notice() {
 		$error_code    = isset( $_GET['message'] ) ? sanitize_text_field( $_GET['message'] ) : '';
-		$error_message = '';
-
-		if ( '20' === $error_code ) {
-			$error_message = __( 'Filter is required.', 'wc-ajax-product-filter' );
-		} elseif ( '21' === $error_code ) {
-			$error_message = __( 'Invalid filter type.', 'wc-ajax-product-filter' );
-		} elseif ( '22' === $error_code ) {
-			$error_message = __( 'Filter key is required.', 'wc-ajax-product-filter' );
-		} elseif ( '23' === $error_code ) {
-			$error_message = __( 'The filter key is already in use on another filter.', 'wc-ajax-product-filter' );
-		} elseif ( '24' === $error_code ) {
-			$error_message = __( 'There is a taxonomy exists with the filter key.', 'wc-ajax-product-filter' );
-		}
+		$error_message = WCAPF_API_Utils::get_error_message_from_code( $error_code );
 
 		if ( ! $error_message ) {
 			return;

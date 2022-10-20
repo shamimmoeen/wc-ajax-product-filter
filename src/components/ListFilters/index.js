@@ -11,6 +11,7 @@ import PublishModal from './PublishModal';
 import Notifications from '../Notifications';
 import { store as noticesStore } from '@wordpress/notices';
 import { useDispatch } from '@wordpress/data';
+import { removeCopiedToClipboardNotice } from '../notices';
 
 const ListFilters = () => {
 	const {
@@ -94,6 +95,8 @@ const ListFilters = () => {
 	};
 
 	const handleClosePublishModal = () => {
+		removeCopiedToClipboardNotice();
+
 		setPublishModalId(null);
 	};
 

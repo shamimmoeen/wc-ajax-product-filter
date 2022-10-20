@@ -2,35 +2,36 @@ import { __ } from '@wordpress/i18n';
 import { Button, Icon } from '@wordpress/components';
 import { BackIcon } from './SVGIcons';
 import { removeParam } from './utils';
-import axios from 'axios';
-import { store as noticesStore } from '@wordpress/notices';
-import { useDispatch } from '@wordpress/data';
 
-const Title = ({ value, handleChange }) => {
-	const { createErrorNotice } = useDispatch(noticesStore);
+const Title = ({
+	value,
+	handleChange,
+	isDirty,
+	btnBusy,
+	btnDisabled,
+	handleSubmit,
+}) => {
+	const goBackLink = removeParam('id', window.location.search);
 
-	const link = removeParam('id', window.location.search);
+	let btnTitle;
+	let btnVariant;
 
-	const handlePublish = () => {
-		const formData = new FormData();
-
-		formData.append('action', 'save_filter');
-		formData.append('post_title', 'hello world');
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
-			.then(() => {})
-			.catch((err) => {
-				createErrorNotice(err.message, {
-					type: 'snackbar',
-					icon: '🔥',
-				});
-			});
-	};
+	if (isDirty) {
+		btnTitle = <span>{__('Save', 'wc-ajax-product-filter')}</span>;
+		btnVariant = 'primary';
+	} else {
+		btnTitle = (
+			<span>
+				<span className='__icon'>🔥</span>
+				{__('Publish', 'wc-ajax-product-filter')}
+			</span>
+		);
+		btnVariant = 'secondary';
+	}
 
 	return (
 		<div className='__title_wrapper'>
-			<Button href={link} className='__back_button'>
+			<Button href={goBackLink} className='__back_button'>
 				<Icon icon={BackIcon} />
 			</Button>
 
@@ -42,11 +43,13 @@ const Title = ({ value, handleChange }) => {
 			/>
 
 			<Button
-				variant='secondary'
+				variant={btnVariant}
 				className='__save_button'
-				onClick={handlePublish}
+				onClick={handleSubmit}
+				isBusy={btnBusy}
+				disabled={btnDisabled}
 			>
-				{__('Publish', 'wc-ajax-product-filter	')}
+				{btnTitle}
 			</Button>
 		</div>
 	);

@@ -7,6 +7,7 @@ const AvailableFilters = ({
 	filterType,
 	activeFilterData,
 	filtersData,
+	initialFilterKeysData,
 	dispatch,
 	setDirty = false,
 	isDirty,
@@ -23,7 +24,10 @@ const AvailableFilters = ({
 		let _activeFilterData = filtersData[_filterType];
 
 		if (!_activeFilterData) {
-			_activeFilterData = getFilterDefaultData(_filterType);
+			_activeFilterData = getFilterDefaultData(
+				_filterType,
+				initialFilterKeysData
+			);
 		}
 
 		dispatch({

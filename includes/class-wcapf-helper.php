@@ -145,6 +145,8 @@ class WCAPF_Helper {
 	/**
 	 * The field types where the field key is required.
 	 *
+	 * TODO: Maybe moved to WCAPF_API_Utils class.
+	 *
 	 * @return array
 	 */
 	public static function field_types_with_key_required() {

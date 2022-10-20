@@ -50,6 +50,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
 		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
 		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
+		add_action( 'wp_ajax_wcapf_save_filter', array( $this, 'save_filter' ) );
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) );
@@ -156,6 +157,19 @@ class WCAPF_API {
 		wp_send_json_success( $preview );
 	}
 
+	public function get_filter_data() {
+		$post_id    = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
+		$field_data = get_post_meta( $post_id, '_field_data', true );
+		$field_data = $this->parse_field_data( $field_data );
+
+		$response = array(
+			'post_title' => get_the_title( $post_id ),
+			'field_data' => $field_data,
+		);
+
+		wp_send_json_success( $response );
+	}
+
 	/**
 	 * Parse the field data.
 	 *
@@ -180,7 +194,7 @@ class WCAPF_API {
 
 				$field_data['parent_term'] = array(
 					'value' => $term->term_id,
-					'label' => $term->name
+					'label' => $term->name,
 				);
 			}
 
@@ -247,17 +261,29 @@ class WCAPF_API {
 		return $field_data;
 	}
 
-	public function get_filter_data() {
-		$post_id    = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
-		$field_data = get_post_meta( $post_id, '_field_data', true );
-		$field_data = $this->parse_field_data( $field_data );
+	public function save_filter() {
+		$filter_title = isset( $_POST['filter_title'] ) ? $_POST['filter_title'] : '';
+		$filter_id    = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
+		$_filter_data = isset( $_POST['filter_data'] ) ? $_POST['filter_data'] : array();
 
-		$response = array(
-			'post_title' => get_the_title( $post_id ),
-			'field_data' => $field_data,
-		);
+		$filter_data = stripslashes( $_filter_data );
+		$filter_data = json_decode( $filter_data, true );
 
-		wp_send_json_success( $response );
+		$filter_type = $filter_data['type'];
+		$filter_key  = sanitize_title( $filter_data['field_key'] );
+
+		$error_code = WCAPF_API_Utils::validate_filter( $filter_type, $filter_key, $filter_id );
+
+		if ( $error_code ) {
+			$error_message = WCAPF_API_Utils::get_error_message_from_code( $error_code );
+
+			wp_send_json_error( __( $error_message, 'wc-ajax-product-filter' ) );
+		}
+
+		wp_send_json_success( array(
+			'filter_title' => $filter_title,
+			'filter_data'  => $filter_data,
+		) );
 	}
 
 	/**
@@ -390,6 +416,9 @@ class WCAPF_API {
 		}
 
 		$response['user_roles'] = $user_roles;
+
+		// Initial filter keys.
+		$response['initial_filter_keys'] = WCAPF_API_Utils::get_initial_filter_keys();
 
 		wp_send_json_success( $response );
 	}
