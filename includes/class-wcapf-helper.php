@@ -527,4 +527,40 @@ class WCAPF_Helper {
 		return $wcapf_chosen_filters ?: array();
 	}
 
+	/**
+	 * Retrieve the array format from the filter manual options.
+	 * The input is string for v3.0.0 and array for v4.0.0.
+	 *
+	 * TODO: Might be deprecated in the future.
+	 *
+	 * @param string|array $raw Filter manual options.
+	 *
+	 * @return array
+	 */
+	public static function retrieve_manual_options_array( $raw ) {
+		if ( ! is_array( $raw ) ) {
+			$decode  = rawurldecode( $raw );
+			$options = json_decode( $decode, true );
+		} else {
+			$options = $raw;
+		}
+
+		if ( ! is_array( $options ) ) {
+			$options = array();
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Checks if WCFM Marketplace found.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function is_wcfm_marketplace_found() {
+		return class_exists( 'WCFMmp' );
+	}
+
 }

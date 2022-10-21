@@ -122,18 +122,20 @@ const PostAuthorOptions = () => {
 	};
 
 	const useStoreNames = () => {
-		return (
-			<Checkbox
-				id={'use_store_name'}
-				label={__('Use Store Name', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to show the store name as the option label.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={use_store_name}
-				onChange={handleCheckboxChange}
-			/>
-		);
+		if (wcapf_admin_params.wcfm_marketplace_found) {
+			return (
+				<Checkbox
+					id={'use_store_name'}
+					label={__('Use Store Name', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to show the store name as the option label.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={use_store_name}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
 	};
 
 	return (
