@@ -219,17 +219,6 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * @return string[]
-	 */
-	private function slugs_of_custom_admin_pages() {
-		return array(
-			'toplevel_page_wcapf-filter',
-			'wcapf_page_wcapf-form',
-			'wcapf_page_wcapf-new-settings',
-		);
-	}
-
-	/**
 	 * Disable admin notices without ours.
 	 *
 	 * @source https://wordpress.stackexchange.com/a/316152
@@ -247,46 +236,13 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * The helper function to load the js build scripts.
-	 *
-	 * @param string $file The file name.
-	 *
-	 * @return void
+	 * @return string[]
 	 */
-	private function load_scripts( $file ) {
-		$asset_path = WCAPF_PLUGIN_DIR . '/build/' . $file . '.asset.php';
-
-		if ( ! file_exists( $asset_path ) ) {
-			/** @noinspection PhpMultipleClassDeclarationsInspection */
-			throw new Error(
-				'You need to run `npm start` or `npm run build` for the ' . $file . ' admin ui'
-			);
-		}
-
-		$asset_file = require( $asset_path );
-		$handle     = 'wcapf-' . $file . '-admin';
-		$js_file    = 'build/' . $file . '.js';
-		$css_file   = 'build/' . $file . '.css';
-
-		// Enqueue CSS dependencies.
-		foreach ( $asset_file['dependencies'] as $style ) {
-			wp_enqueue_style( $style );
-		}
-
-		// Load the js file.
-		wp_enqueue_script(
-			$handle,
-			plugins_url( $js_file, WCAPF_PLUGIN_FILE ),
-			$asset_file['dependencies'],
-			$asset_file['version']
-		);
-
-		// Load the style file.
-		wp_enqueue_style(
-			$handle,
-			plugins_url( $css_file, WCAPF_PLUGIN_FILE ),
-			array(),
-			$asset_file['version']
+	private function slugs_of_custom_admin_pages() {
+		return array(
+			'toplevel_page_wcapf-filter',
+			'wcapf_page_wcapf-form',
+			'wcapf_page_wcapf-new-settings',
 		);
 	}
 
@@ -343,19 +299,6 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * Gets the current screen id.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	private function current_screen_id() {
-		global $current_screen;
-
-		return isset( $current_screen->id ) ? $current_screen->id : '';
-	}
-
-	/**
 	 * Admin js params.
 	 *
 	 * @return array
@@ -373,11 +316,9 @@ class WCAPF_Admin {
 
 		$helper = new WCAPF_Helper();
 
-		$params['top_bar_links'] = array(
-			'filters'  => $helper::filters_list_page_url(),
-			'forms'    => $helper::forms_list_page_url(),
-			'settings' => $helper::new_settings_page_url(),
-		);
+		$params['filters_page_link']  = $helper::filters_list_page_url();
+		$params['forms_page_link']    = $helper::forms_list_page_url();
+		$params['settings_page_link'] = $helper::new_settings_page_url();
 
 		$api_utils = new WCAPF_API_Utils();
 
@@ -387,7 +328,66 @@ class WCAPF_Admin {
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
+		$params['wcfm_marketplace_found'] = WCAPF_Helper::is_wcfm_marketplace_found();
+
 		return apply_filters( 'wcapf_admin_js_params', $params );
+	}
+
+	/**
+	 * Gets the current screen id.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function current_screen_id() {
+		global $current_screen;
+
+		return isset( $current_screen->id ) ? $current_screen->id : '';
+	}
+
+	/**
+	 * The helper function to load the js build scripts.
+	 *
+	 * @param string $file The file name.
+	 *
+	 * @return void
+	 */
+	private function load_scripts( $file ) {
+		$asset_path = WCAPF_PLUGIN_DIR . '/build/' . $file . '.asset.php';
+
+		if ( ! file_exists( $asset_path ) ) {
+			/** @noinspection PhpMultipleClassDeclarationsInspection */
+			throw new Error(
+				'You need to run `npm start` or `npm run build` for the ' . $file . ' admin ui'
+			);
+		}
+
+		$asset_file = require( $asset_path );
+		$handle     = 'wcapf-' . $file . '-admin';
+		$js_file    = 'build/' . $file . '.js';
+		$css_file   = 'build/' . $file . '.css';
+
+		// Enqueue CSS dependencies.
+		foreach ( $asset_file['dependencies'] as $style ) {
+			wp_enqueue_style( $style );
+		}
+
+		// Load the js file.
+		wp_enqueue_script(
+			$handle,
+			plugins_url( $js_file, WCAPF_PLUGIN_FILE ),
+			$asset_file['dependencies'],
+			$asset_file['version']
+		);
+
+		// Load the style file.
+		wp_enqueue_style(
+			$handle,
+			plugins_url( $css_file, WCAPF_PLUGIN_FILE ),
+			array(),
+			$asset_file['version']
+		);
 	}
 
 	/**

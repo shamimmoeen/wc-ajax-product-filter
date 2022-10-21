@@ -2,8 +2,6 @@
 /**
  * The api utility class.
  *
- * TODO: Maybe delete.
- *
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
@@ -23,16 +21,7 @@ class WCAPF_API_Utils {
 	 * @return array
 	 */
 	public static function get_filters() {
-		$args = array(
-			'post_type'   => 'wcapf-filter',
-			'nopaging'    => true,
-			// 'posts_per_page' => 3,
-			'post_status' => 'any',
-			'fields'      => 'ids',
-		);
-
-		$filters = get_posts( $args );
-
+		$filters      = self::get_filter_ids();
 		$filters_data = array();
 
 		foreach ( $filters as $filter_id ) {
@@ -40,6 +29,17 @@ class WCAPF_API_Utils {
 		}
 
 		return $filters_data;
+	}
+
+	public static function get_filter_ids() {
+		$args = array(
+			'post_type'   => 'wcapf-filter',
+			'nopaging'    => true,
+			'post_status' => 'any',
+			'fields'      => 'ids',
+		);
+
+		return get_posts( $args );
 	}
 
 	/**
@@ -50,31 +50,33 @@ class WCAPF_API_Utils {
 	 * @return array
 	 */
 	public static function get_filter_data( $id ) {
-		$field_data = get_post_meta( $id, '_field_data', true );
+		$filter_data = get_post_meta( $id, '_field_data', true );
 
 		return array(
 			'id'            => $id,
-			'field_key'     => $field_data['field_key'],
-			'type'          => $field_data['type'],
-			'taxonomy'      => isset( $field_data['taxonomy'] ) ? $field_data['taxonomy'] : '',
-			'meta_key'      => isset( $field_data['meta_key'] ) ? $field_data['meta_key'] : '',
-			'post_property' => isset( $field_data['post_property'] ) ? $field_data['post_property'] : '',
+			'field_key'     => isset( $filter_data['field_key'] ) ? $filter_data['field_key'] : '',
+			'type'          => isset( $filter_data['type'] ) ? $filter_data['type'] : '',
+			'taxonomy'      => isset( $filter_data['taxonomy'] ) ? $filter_data['taxonomy'] : '',
+			'meta_key'      => isset( $filter_data['meta_key'] ) ? $filter_data['meta_key'] : '',
+			'post_property' => isset( $filter_data['post_property'] ) ? $filter_data['post_property'] : '',
 			'title'         => get_the_title( $id ),
 		);
 	}
 
 	/**
-	 * TODO: We should remove the $unparsed_field_data param.
+	 * Parse the filter data to be saved into the database.
 	 *
-	 * @param array  $field_data
-	 * @param string $field_type
-	 * @param string $filter_key
-	 * @param int    $post_id
-	 * @param array  $unparsed_field_data
+	 * TODO: We should remove the $unparsed_field_data param when removing the classic view completely.
+	 *
+	 * @param array  $field_data          The field/filter data.
+	 * @param string $field_type          The field/filter type.
+	 * @param string $filter_key          The filter key.
+	 * @param int    $post_id             The post id.
+	 * @param array  $unparsed_field_data The field raw data.
 	 *
 	 * @return array
 	 */
-	public static function get_parsed_field(
+	public static function parse_filter_data(
 		$field_data,
 		$field_type,
 		$filter_key,
@@ -133,9 +135,7 @@ class WCAPF_API_Utils {
 			$statuses = WCAPF_Helper::get_product_status_options();
 
 			if ( $product_status_options ) {
-				$decode  = rawurldecode( $product_status_options );
-				$options = json_decode( $decode, true );
-				$options = is_array( $options ) ? $options : array();
+				$options = WCAPF_Helper::retrieve_manual_options_array( $product_status_options );
 
 				$parsed_options = array();
 
@@ -200,11 +200,11 @@ class WCAPF_API_Utils {
 	 *
 	 * @param string $filter_type The filter type.
 	 * @param string $filter_key  The filter key.
-	 * @param string $filter_id   The filter id.
+	 * @param string $post_id     The post id.
 	 *
 	 * @return int
 	 */
-	public static function validate_filter( $filter_type, $filter_key, $filter_id ) {
+	public static function validate_filter( $filter_type, $filter_key, $post_id ) {
 		$error_code = 0;
 
 		$filter_types_with_key_required = WCAPF_Helper::field_types_with_key_required();
@@ -216,7 +216,7 @@ class WCAPF_API_Utils {
 		} elseif ( in_array( $filter_type, $filter_types_with_key_required ) ) {
 			if ( ! $filter_key ) { // Filter key required.
 				$error_code = 22;
-			} elseif ( self::is_filter_key_already_in_use( $filter_id, $filter_key ) ) { // Filter key is already in use.
+			} elseif ( self::is_filter_key_already_in_use( $post_id, $filter_key ) ) { // Filter key is already in use.
 				$error_code = 23;
 			} elseif ( self::taxonomy_exists_for_filter_key( $filter_key ) ) {
 				$error_code = 24;
@@ -226,6 +226,11 @@ class WCAPF_API_Utils {
 		return $error_code;
 	}
 
+	/**
+	 * List of all filter types.
+	 *
+	 * @return string[]
+	 */
 	public static function available_filter_types() {
 		return array(
 			'active-filters',
@@ -244,6 +249,14 @@ class WCAPF_API_Utils {
 		);
 	}
 
+	/**
+	 * Checks if the given filter key is in use on another filter.
+	 *
+	 * @param int    $post_id    The post id.
+	 * @param string $filter_key The filter key.
+	 *
+	 * @return int[]
+	 */
 	public static function is_filter_key_already_in_use( $post_id, $filter_key ) {
 		$args = array(
 			'post_type'      => 'wcapf-filter',
@@ -263,7 +276,7 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Checks if taxonomy exists with the filter key.
+	 * Checks if taxonomy exists with the given filter key.
 	 *
 	 * @param string $filter_key The filter key.
 	 *
@@ -273,6 +286,13 @@ class WCAPF_API_Utils {
 		return taxonomy_exists( $filter_key );
 	}
 
+	/**
+	 * Gets the error message for the given error code.
+	 *
+	 * @param int $error_code The error code.
+	 *
+	 * @return string
+	 */
 	public static function get_error_message_from_code( $error_code ) {
 		$error_code    = intval( $error_code );
 		$error_message = '';
@@ -292,62 +312,20 @@ class WCAPF_API_Utils {
 		return $error_message;
 	}
 
+	/**
+	 * Returns an array of the filter keys that we'll suggest as default for different filter types.
+	 *
+	 * @return array
+	 */
 	public static function get_initial_filter_keys() {
-		$args = array(
-			'post_type'   => 'wcapf-filter',
-			'nopaging'    => true,
-			'post_status' => 'any',
-			'fields'      => 'ids',
-		);
+		list( $used_keys, $used_keys_by_type ) = self::get_used_filter_keys_data();
 
-		$filter_ids        = get_posts( $args );
-		$used_keys         = array();
-		$used_keys_by_type = array();
-
-		$variable_filter_types_data = array(
-			'attribute'       => 'taxonomy',
-			'custom-taxonomy' => 'taxonomy',
-			'post-meta'       => 'meta_key',
-			'post-property'   => 'post_property',
-		);
-
-		$variable_filter_types = array_keys( $variable_filter_types_data );
-
-		foreach ( $filter_ids as $id ) {
-			$filter_data = get_post_meta( $id, '_field_data', true );
-			$filter_key  = $filter_data['field_key'];
-			$filter_type = $filter_data['type'];
-
-			if ( ! $filter_key ) {
-				continue;
-			}
-
-			if ( ! in_array( $filter_key, $used_keys ) ) {
-				$used_keys[] = $filter_key;
-			}
-
-			if ( in_array( $filter_type, $variable_filter_types ) ) {
-				$sub_type = $filter_data[ $variable_filter_types_data[ $filter_type ] ];
-
-				$used_keys_by_type[ $filter_type ][ $sub_type ] = $filter_key;
-			} else {
-				$used_keys_by_type[ $filter_type ] = $filter_key;
-			}
-		}
-
+		$variable_filter_types  = array_keys( self::variable_filter_types_data() );
 		$available_filter_types = self::available_filter_types();
 
 		$initial_filter_keys = array();
 
-		$default_filters_keys_data = array(
-			'category'       => '_product_cat',
-			'tag'            => '_product_tag',
-			'price'          => '_price',
-			'rating'         => '_rating',
-			'product-status' => '_status',
-			'sort-by'        => '_sort_by',
-			'per-page'       => '_per_page',
-		);
+		$default_filters_keys_data = self::default_filter_keys_data();
 
 		foreach ( $available_filter_types as $filter_type ) {
 			if ( 'active-filters' === $filter_type || 'reset-button' === $filter_type ) {
@@ -381,20 +359,76 @@ class WCAPF_API_Utils {
 		return $initial_filter_keys;
 	}
 
+	private static function get_used_filter_keys_data() {
+		$filter_ids        = self::get_filter_ids();
+		$used_keys         = array();
+		$used_keys_by_type = array();
+
+		$variable_filter_types_data = self::variable_filter_types_data();
+		$variable_filter_types      = array_keys( $variable_filter_types_data );
+
+		foreach ( $filter_ids as $id ) {
+			$filter_data = get_post_meta( $id, '_field_data', true );
+			$filter_key  = isset( $filter_data['field_key'] ) ? $filter_data['field_key'] : '';
+			$filter_type = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
+
+			if ( ! $filter_key ) {
+				continue;
+			}
+
+			if ( ! in_array( $filter_key, $used_keys ) ) {
+				$used_keys[] = $filter_key;
+			}
+
+			if ( in_array( $filter_type, $variable_filter_types ) ) {
+				$sub_type = $filter_data[ $variable_filter_types_data[ $filter_type ] ];
+
+				$used_keys_by_type[ $filter_type ][ $sub_type ] = $filter_key;
+			} else {
+				$used_keys_by_type[ $filter_type ] = $filter_key;
+			}
+		}
+
+		return array( $used_keys, $used_keys_by_type );
+	}
+
+	private static function variable_filter_types_data() {
+		return array(
+			'attribute'       => 'taxonomy',
+			'custom-taxonomy' => 'taxonomy',
+			'post-meta'       => 'meta_key',
+			'post-property'   => 'post_property',
+		);
+	}
+
+	private static function default_filter_keys_data() {
+		return array(
+			'category'       => '_product_cat',
+			'tag'            => '_product_tag',
+			'price'          => '_price',
+			'rating'         => '_rating',
+			'product-status' => '_status',
+			'sort-by'        => '_sort_by',
+			'per-page'       => '_per_page',
+		);
+	}
+
 	/**
-	 * @param string $default
-	 * @param array  $used_keys
+	 * Generates a unique filter key for the given prefix.
+	 *
+	 * @param string $prefix    The default filter key.
+	 * @param array  $used_keys An array containing the already used filter keys.
 	 *
 	 * @return string
 	 */
-	public static function generate_unique_filter_key( $default, $used_keys ) {
+	private static function generate_unique_filter_key( $prefix, $used_keys ) {
 		// Find the maximum suffix so we can ensure uniqueness.
 		$max_suffix = 1;
 
 		$results = array();
 
 		foreach ( $used_keys as $used_key ) {
-			if ( false !== stripos( $used_key, $default ) ) {
+			if ( false !== stripos( $used_key, $prefix ) ) {
 				$results[] = $used_key;
 			}
 		}
@@ -407,7 +441,61 @@ class WCAPF_API_Utils {
 			}
 		}
 
-		return $default . '_' . ( $max_suffix + 1 );
+		return $prefix . '_' . ( $max_suffix + 1 );
+	}
+
+	/**
+	 * Duplicate filter.
+	 *
+	 * @param int $post_id The post id to be duplicated.
+	 *
+	 * @return int|WP_Error
+	 */
+	public static function duplicate_filter( $post_id ) {
+		$post_arr = array(
+			'post_title'  => get_the_title( $post_id ) . ' ' . __( '(Copy)', 'wc-ajax-product-filter' ),
+			'post_type'   => 'wcapf-filter',
+			'post_status' => 'publish',
+		);
+
+		$new_post_id = wp_insert_post( $post_arr, true );
+
+		if ( is_wp_error( $new_post_id ) ) {
+			return $new_post_id;
+		}
+
+		$filter_data = get_post_meta( $post_id, '_field_data', true );
+		$filter_type = $filter_data['type'];
+
+		if ( 'active-filters' === $filter_type || 'reset-button' === $filter_type ) {
+			$new_filter_key = '';
+		} else {
+			$variable_filter_types_data = self::variable_filter_types_data();
+			$default_filter_keys_data   = self::default_filter_keys_data();
+			$variable_filter_types      = array_keys( $variable_filter_types_data );
+
+			if ( in_array( $filter_type, $variable_filter_types ) ) {
+				$sub      = $variable_filter_types_data[ $filter_type ];
+				$property = $filter_data[ $sub ];
+				$default  = '_' . sanitize_title( $property );
+			} else {
+				$default = $default_filter_keys_data[ $filter_type ];
+			}
+
+			list( $used_keys ) = self::get_used_filter_keys_data();
+
+			$new_filter_key = self::generate_unique_filter_key( $default, $used_keys );
+		}
+
+		$new_filter_data = $filter_data;
+
+		$new_filter_data['field_key'] = $new_filter_key;
+		$new_filter_data['field_id']  = $new_post_id;
+
+		update_post_meta( $new_post_id, '_field_data', $new_filter_data );
+		update_post_meta( $new_post_id, '_filter_key', $new_filter_key );
+
+		return $new_post_id;
 	}
 
 }

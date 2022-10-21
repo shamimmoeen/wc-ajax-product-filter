@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Icon } from '@wordpress/components';
 import { BackIcon } from './SVGIcons';
-import { removeParam } from './utils';
 
 const Title = ({
 	value,
@@ -11,7 +10,7 @@ const Title = ({
 	btnDisabled,
 	handleSubmit,
 }) => {
-	const goBackLink = removeParam('id', window.location.search);
+	const goBackLink = wcapf_admin_params.filters_page_link;
 
 	let btnTitle;
 	let btnVariant;

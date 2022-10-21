@@ -54,7 +54,7 @@ const Filter = () => {
 
 					activeFilterData = merge(
 						filterDefaultData(),
-						filterData['field_data']
+						filterData['filter_data']
 					);
 
 					const filterType = activeFilterData['type'];

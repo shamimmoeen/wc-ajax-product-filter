@@ -9,9 +9,16 @@ import DeleteModal from './DeleteModal';
 import DuplicateModal from './DuplicateModal';
 import PublishModal from './PublishModal';
 import Notifications from '../Notifications';
-import { store as noticesStore } from '@wordpress/notices';
-import { useDispatch } from '@wordpress/data';
-import { removeCopiedToClipboardNotice } from '../notices';
+import axios from 'axios';
+import {
+	filterDeletedErrorNotice,
+	filterDeletedSuccessNotice,
+	filterDuplicatedErrorNotice,
+	filterDuplicatedSuccessNotice,
+	removeCopiedToClipboardNotice,
+	removeFilterDeletedNotices,
+	removeFilterDuplicatedNotices,
+} from '../notices';
 
 const ListFilters = () => {
 	const {
@@ -26,11 +33,17 @@ const ListFilters = () => {
 	const [deletingItemId, setDeletingItemId] = useState(null);
 	const [duplicatingItemId, setDuplicatingItemId] = useState(null);
 
-	const { createSuccessNotice } = useDispatch(noticesStore);
+	const handleOpenAddNewModal = () => {
+		removeFilterDeletedNotices();
+		removeFilterDuplicatedNotices();
 
-	const handleOpenAddNewModal = () => setAddNewModalOpen(true);
+		setAddNewModalOpen(true);
+	};
 
 	const handleOpenDeleteModal = (id) => {
+		removeFilterDeletedNotices();
+		removeFilterDuplicatedNotices();
+
 		setDeleteModalId(id);
 	};
 
@@ -45,21 +58,43 @@ const ListFilters = () => {
 
 		setDeletingItemId(id);
 
-		setTimeout(() => {
-			setDeletingItemId(null);
+		const formData = new FormData();
 
-			const _filters = filters.filter((filter) => filter.id !== id);
-			dispatch({ type: 'SET_FILTERS', payload: _filters });
+		formData.append('action', 'wcapf_delete_filter');
+		formData.append('filter_id', id);
 
-			createSuccessNotice('Filter deleted successfully', {
-				type: 'snackbar',
-				icon: '😵',
-				id: 'filter-deleted',
+		axios
+			.post(wcapf_admin_params.ajaxurl, formData)
+			.then((res) => {
+				setDeletingItemId(null);
+
+				const {
+					data: { data: message, success },
+				} = res;
+
+				if (success) {
+					filterDeletedSuccessNotice(message);
+
+					const _filters = filters.filter(
+						(filter) => filter.id !== id
+					);
+
+					dispatch({ type: 'SET_FILTERS', payload: _filters });
+				} else {
+					filterDeletedErrorNotice(message);
+				}
+			})
+			.catch((err) => {
+				setDeletingItemId(null);
+
+				filterDeletedErrorNotice(err.message);
 			});
-		}, 1000);
 	};
 
 	const handleOpenDuplicateModal = (id) => {
+		removeFilterDeletedNotices();
+		removeFilterDuplicatedNotices();
+
 		setDuplicateModalId(id);
 	};
 
@@ -74,23 +109,43 @@ const ListFilters = () => {
 
 		setDuplicatingItemId(id);
 
-		setTimeout(() => {
-			setDuplicatingItemId(null);
+		const formData = new FormData();
 
-			const _filter = filters.find((filter) => filter.id === id);
-			const _filters = [_filter, ...filters];
+		formData.append('action', 'wcapf_duplicate_filter');
+		formData.append('filter_id', id);
 
-			dispatch({ type: 'SET_FILTERS', payload: _filters });
+		axios
+			.post(wcapf_admin_params.ajaxurl, formData)
+			.then((res) => {
+				setDuplicatingItemId(null);
 
-			createSuccessNotice('Filter duplicated successfully', {
-				type: 'snackbar',
-				icon: '🙌',
-				id: 'filter-duplicated',
+				const {
+					data: { data, success },
+				} = res;
+
+				if (success) {
+					const { message, filter_data: newFilterData } = data;
+
+					filterDuplicatedSuccessNotice(message);
+
+					const _filters = [newFilterData, ...filters];
+
+					dispatch({ type: 'SET_FILTERS', payload: _filters });
+				} else {
+					filterDuplicatedErrorNotice(data);
+				}
+			})
+			.catch((err) => {
+				setDuplicatingItemId(null);
+
+				filterDuplicatedErrorNotice(err.message);
 			});
-		}, 1000);
 	};
 
 	const handleOpenPublishModal = (id) => {
+		removeFilterDeletedNotices();
+		removeFilterDuplicatedNotices();
+
 		setPublishModalId(id);
 	};
 

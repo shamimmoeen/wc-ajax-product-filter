@@ -7,13 +7,20 @@ import PublishModal from '../ListFilters/PublishModal';
 import {
 	filterSavedSuccessNotice,
 	filterSavedErrorNotice,
-	removeFilterNotices,
+	removeFilterSavedNotices,
 	removeCopiedToClipboardNotice,
 } from '../notices';
 
 const FilterTitle = () => {
 	const {
-		state: { title, filterId, activeFilterData, isDirty },
+		state: {
+			title,
+			filterType,
+			filterId,
+			activeFilterData,
+			filtersData,
+			isDirty,
+		},
 		dispatch,
 	} = useFilter();
 
@@ -26,7 +33,7 @@ const FilterTitle = () => {
 			return;
 		}
 
-		removeFilterNotices();
+		removeFilterSavedNotices();
 	}, [isDirty]);
 
 	const handleChange = (value) => {
@@ -38,7 +45,7 @@ const FilterTitle = () => {
 	};
 
 	const handleOpenPublishModal = () => {
-		removeFilterNotices();
+		removeFilterSavedNotices();
 
 		setPublishModalId(filterId);
 	};
@@ -49,8 +56,34 @@ const FilterTitle = () => {
 		setPublishModalId(null);
 	};
 
+	const setNewFilterData = (data) => {
+		const {
+			detailed: { post_title, filter_data: newFilterData },
+		} = data;
+
+		dispatch({
+			type: 'SET_TITLE',
+			payload: post_title,
+		});
+
+		const { type } = newFilterData;
+
+		if (filterType === type) {
+			dispatch({
+				type: 'SET_ACTIVE_FILTER_DATA',
+				payload: newFilterData,
+			});
+		} else {
+			const newFiltersData = { ...filtersData, [type]: newFilterData };
+
+			dispatch({ type: 'SET_FILTERS_DATA', payload: newFiltersData });
+		}
+
+		dispatch({ type: 'UNSET_DIRTY' });
+	};
+
 	const handleSaveFilter = () => {
-		removeFilterNotices();
+		removeFilterSavedNotices();
 
 		setBtnDisabled(true);
 		setBtnBusy(true);
@@ -72,17 +105,15 @@ const FilterTitle = () => {
 					data: { data, success },
 				} = res;
 
-				console.log(data);
-
 				if (success) {
+					setNewFilterData(data);
+
 					filterSavedSuccessNotice(
 						__(
 							'Filter saved successfully',
 							'wc-ajax-product-filter'
 						)
 					);
-
-					dispatch({ type: 'UNSET_DIRTY' });
 				} else {
 					filterSavedErrorNotice(data);
 				}

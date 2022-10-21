@@ -4,7 +4,7 @@ import { Button, Icon, Modal, Spinner } from '@wordpress/components';
 import Footer from './Footer';
 import Body from './Body';
 import { useListFilters } from '../ListFiltersContext';
-import { getAdditionalData } from '../../utils';
+import { getAdditionalData, getEditFilterLink } from '../../utils';
 import { CheckIcon } from '../../SVGIcons';
 import axios from 'axios';
 import {
@@ -14,14 +14,14 @@ import {
 
 const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	const {
-		state: { title, filterType, activeFilterData },
+		state: { title, filterType, activeFilterData, filters },
 		dispatch,
 	} = useListFilters();
 
 	const [loading, setLoading] = useState(true);
 	const [step, setStep] = useState(1);
 	const [totalSteps, setTotalSteps] = useState(3);
-	const [newItem, setNewItem] = useState('');
+	const [newItemId, setNewItemId] = useState('');
 
 	const modalRef = useRef(null);
 
@@ -105,12 +105,12 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 
 	const handleCloseModal = () => {
 		removeFilterCreateNotice();
-		setAddNewModalOpen(false);
 
+		setAddNewModalOpen(false);
 		setStep(1);
 		setTotalSteps(3);
 		setLoading(true);
-		setNewItem('');
+		setNewItemId('');
 
 		dispatch({ type: 'SET_TITLE', payload: '' });
 		dispatch({ type: 'SET_FILTER_TYPE', payload: '' });
@@ -141,8 +141,13 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 				} = res;
 
 				if (success) {
-					console.log(data);
-					setNewItem('hello');
+					const { short: newFilterData } = data;
+
+					setNewItemId(newFilterData.id);
+
+					const _filters = [newFilterData, ...filters];
+
+					dispatch({ type: 'SET_FILTERS', payload: _filters });
 				} else {
 					filterCreateErrorNotice(data);
 				}
@@ -161,7 +166,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 					<Spinner />
 				</div>
 			);
-		} else if (newItem) {
+		} else if (newItemId) {
 			return (
 				<div className='__filter_response'>
 					<Icon icon={CheckIcon} />
@@ -178,7 +183,10 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 						<Button variant='secondary' onClick={handleCloseModal}>
 							{__('Maybe Later', 'wc-ajax-product-filter')}
 						</Button>
-						<Button variant='primary'>
+						<Button
+							variant='primary'
+							href={getEditFilterLink(newItemId)}
+						>
 							{__('Edit Filter', 'wc-ajax-product-filter')}
 						</Button>
 					</div>

@@ -42,6 +42,12 @@ export function getAdditionalData() {
 	});
 }
 
+const filtersPageLink = wcapf_admin_params.filters_page_link;
+
+export function getEditFilterLink(filterId) {
+	return filtersPageLink + '&id=' + filterId;
+}
+
 export function prepareFilterData(raw) {
 	const { id, field_key, type, taxonomy, meta_key, post_property, title } =
 		raw;
@@ -61,9 +67,7 @@ export function prepareFilterData(raw) {
 		componentExtra = post_property;
 	}
 
-	let permalink = window.location.href;
-
-	permalink += '&id=' + id;
+	const permalink = getEditFilterLink(id);
 
 	return {
 		id,
@@ -74,30 +78,6 @@ export function prepareFilterData(raw) {
 		componentExtra,
 		permalink,
 	};
-}
-
-export function removeParam(key, sourceURL) {
-	var rtn = sourceURL.split('?')[0],
-		param,
-		params_arr = [],
-		queryString =
-			sourceURL.indexOf('?') !== -1 ? sourceURL.split('?')[1] : '';
-
-	if (queryString !== '') {
-		params_arr = queryString.split('&');
-
-		for (var i = params_arr.length - 1; i >= 0; i -= 1) {
-			param = params_arr[i].split('=')[0];
-
-			if (param === key) {
-				params_arr.splice(i, 1);
-			}
-		}
-
-		if (params_arr.length) rtn = rtn + '?' + params_arr.join('&');
-	}
-
-	return rtn;
 }
 
 export function prepareMetaKeys(options) {

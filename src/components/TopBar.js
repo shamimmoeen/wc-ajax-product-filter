@@ -2,23 +2,21 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
 import { DiamondIcon } from './SVGIcons';
 
-const topBarLinks = wcapf_admin_params.top_bar_links;
-
 const navMenus = [
 	{
 		label: __('Filters', 'wc-ajax-product-filter'),
 		id: 'filters',
-		href: topBarLinks.filters,
+		href: wcapf_admin_params.filters_page_link,
 	},
 	{
 		label: __('Forms', 'wc-ajax-product-filter'),
 		id: 'forms',
-		href: topBarLinks.forms,
+		href: wcapf_admin_params.forms_page_link,
 	},
 	{
 		label: __('Settings', 'wc-ajax-product-filter'),
 		id: 'settings',
-		href: topBarLinks.settings,
+		href: wcapf_admin_params.settings_page_link,
 	},
 ];
 

@@ -211,7 +211,7 @@ export function getFilterDefaultData(type, filterKeys) {
 
 	// Set the filter key for non variable filter types.
 	if (!variableFilterTypes.includes(type)) {
-		defaultData.field_key = filterKeys[type];
+		defaultData.field_key = filterKeys[type] ?? '';
 	}
 
 	// Rating filter default options.
@@ -308,7 +308,6 @@ export function taxonomyLimitByOptions() {
 		{
 			label: __('Child of', 'wc-ajax-product-filter'),
 			value: 'child',
-			isPro: true,
 		},
 	];
 }

@@ -97,7 +97,7 @@ class WCAPF_Filter_Meta_Box {
 			}
 		}
 
-		$parsed_field = WCAPF_API_Utils::get_parsed_field(
+		$parsed_field = WCAPF_API_Utils::parse_filter_data(
 			$_field_data,
 			$field_type,
 			$filter_key,

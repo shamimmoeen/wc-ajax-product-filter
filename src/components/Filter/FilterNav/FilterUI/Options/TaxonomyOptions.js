@@ -13,7 +13,7 @@ import useFields from './useFields';
 
 const TaxonomyOptions = () => {
 	const {
-		state: { filterType, activeFilterData, isDirty },
+		state: { filterType, activeFilterData, additionalData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -35,7 +35,23 @@ const TaxonomyOptions = () => {
 		use_term_slug_in_url,
 	} = activeFilterData;
 
+	const { taxonomy_hierarchical_data } = additionalData;
+
 	const taxonomyForSelectTerm = getTaxonomy(filterType, taxonomy);
+
+	const isTaxonomyHierarchical = () => {
+		let hierarchical;
+
+		if ('product_cat' === taxonomyForSelectTerm) {
+			hierarchical = true;
+		} else if ('product_tag' === taxonomyForSelectTerm) {
+			hierarchical = false;
+		} else {
+			hierarchical = taxonomy_hierarchical_data[taxonomyForSelectTerm];
+		}
+
+		return hierarchical;
+	};
 
 	const _orderByField = () => {
 		const options = termsOrderByOptions();
@@ -51,7 +67,14 @@ const TaxonomyOptions = () => {
 	};
 
 	const limitOptionsField = () => {
-		const options = taxonomyLimitByOptions();
+		const _options = taxonomyLimitByOptions();
+		let options;
+
+		if (isTaxonomyHierarchical()) {
+			options = _options;
+		} else {
+			options = _options.filter((option) => 'child' !== option.value);
+		}
 
 		return (
 			<ToggleGroup
@@ -108,7 +131,7 @@ const TaxonomyOptions = () => {
 	};
 
 	const parentTermField = () => {
-		if ('child' === limit_options) {
+		if ('child' === limit_options && isTaxonomyHierarchical()) {
 			return (
 				<SelectMulti
 					id={'parent_term'}

@@ -43,22 +43,20 @@ class WCAPF_API {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-
-
 		add_action( 'wp_ajax_get_available_filters', array( $this, 'get_available_filters' ) );
 		add_action( 'wp_ajax_get_filter_form_data', array( $this, 'get_filter_form_data' ) );
 		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
 		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
 		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
 		add_action( 'wp_ajax_wcapf_save_filter', array( $this, 'save_filter' ) );
+		add_action( 'wp_ajax_wcapf_duplicate_filter', array( $this, 'duplicate_filter' ) );
+		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
-		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) );
+		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) ); // TODO
 		add_action( 'wp_ajax_wcapf_get_taxonomy_terms', array( $this, 'get_taxonomy_terms' ) );
 		add_action( 'wp_ajax_wcapf_get_post_authors', array( $this, 'get_post_authors' ) );
 		add_action( 'wp_ajax_wcapf_get_meta_values', array( $this, 'get_meta_values' ) );
-		add_action( 'wp_ajax_get_filters', array( $this, 'get_filters' ) );
-		add_action( 'wp_ajax_check_filter_key', array( $this, 'check_filter_key' ) );
 	}
 
 	public function get_available_filters() {
@@ -157,42 +155,176 @@ class WCAPF_API {
 		wp_send_json_success( $preview );
 	}
 
-	public function get_filter_data() {
-		$post_id    = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
-		$field_data = get_post_meta( $post_id, '_field_data', true );
-		$field_data = $this->parse_field_data( $field_data );
+	/**
+	 * Saves the filter via ajax.
+	 *
+	 * @return void
+	 */
+	public function save_filter() {
+		$post_title   = isset( $_POST['filter_title'] ) ? $_POST['filter_title'] : '';
+		$post_id      = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
+		$_filter_data = isset( $_POST['filter_data'] ) ? $_POST['filter_data'] : array();
 
-		$response = array(
-			'post_title' => get_the_title( $post_id ),
-			'field_data' => $field_data,
-		);
+		$filter_data = stripslashes( $_filter_data );
+		$filter_data = json_decode( $filter_data, true );
 
-		wp_send_json_success( $response );
+		$filter_type = $filter_data['type'];
+		$filter_key  = sanitize_title( $filter_data['field_key'] );
+
+		$error_code = WCAPF_API_Utils::validate_filter( $filter_type, $filter_key, $post_id );
+
+		if ( $error_code ) {
+			$error_message = WCAPF_API_Utils::get_error_message_from_code( $error_code );
+
+			wp_send_json_error( __( $error_message, 'wc-ajax-product-filter' ) );
+		}
+
+		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
+			$post_arr = array(
+				'ID'          => $post_id,
+				'post_title'  => $post_title,
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+			);
+
+			$new_post_id = wp_update_post( $post_arr, true );
+		} else {
+			$post_arr = array(
+				'post_title'  => $post_title,
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+			);
+
+			$new_post_id = wp_insert_post( $post_arr, true );
+		}
+
+		if ( is_wp_error( $new_post_id ) ) {
+			wp_send_json_error( $new_post_id->get_error_message() );
+		}
+
+		update_option( '_pet', $filter_data ); // todo: remove
+
+		$filter_data = $this->parse_new_ui_filter_data( $filter_data );
+
+		update_option( '_pet2', $filter_data ); // todo: remove
+
+		$parsed_field = WCAPF_API_Utils::parse_filter_data( $filter_data, $filter_type, $filter_key, $new_post_id );
+
+		update_post_meta( $new_post_id, '_field_data', $parsed_field );
+		update_post_meta( $new_post_id, '_filter_key', $filter_key );
+
+		// For the filters list table.
+		$short = WCAPF_API_Utils::get_filter_data( $new_post_id );
+
+		// For the filter edit page.
+		$detailed = $this->get_filter( $new_post_id );
+
+		wp_send_json_success( array(
+			'short'    => $short,
+			'detailed' => $detailed,
+		) );
 	}
 
 	/**
-	 * Parse the field data.
+	 * Parse the filter data comes from the new UI.
 	 *
-	 * TODO: Might be deprecated in future.
-	 *
-	 * @param array $field_data The field data array.
+	 * @param array $filter_data The filter data.
 	 *
 	 * @return array
 	 */
-	private function parse_field_data( $field_data ) {
+	private function parse_new_ui_filter_data( $filter_data ) {
+		$parent_term        = $filter_data['parent_term'];
+		$limit_values_by_id = $filter_data['limit_values_by_id'];
+		$exclude_values_id  = $filter_data['exclude_values_id'];
+		$appearance_options = $filter_data['custom_appearance_options'];
+		$include_user_roles = $filter_data['include_user_roles'];
+
+		if ( $parent_term ) {
+			$filter_data['parent_term'] = $parent_term['value'];
+		}
+
+		if ( $limit_values_by_id ) {
+			$values = wp_list_pluck( $limit_values_by_id, 'value' );
+
+			$filter_data['limit_values_by_id'] = implode( ',', $values );
+		}
+
+		if ( $exclude_values_id ) {
+			$values = wp_list_pluck( $exclude_values_id, 'value' );
+
+			$filter_data['exclude_values_id'] = implode( ',', $values );
+		}
+
+		if ( $appearance_options ) {
+			$parsed = array();
+
+			foreach ( $appearance_options as $option ) {
+				$term_id = $option['id'];
+
+				$parsed[ $term_id ] = $option;
+			}
+
+			$filter_data['custom_appearance_options'] = $parsed;
+		}
+
+		if ( $include_user_roles ) {
+			$filter_data['include_user_roles'] = wp_list_pluck( $include_user_roles, 'value' );
+		}
+
+		return $filter_data;
+	}
+
+	/**
+	 * Gets the filter data via ajax.
+	 *
+	 * @return void
+	 */
+	public function get_filter_data() {
+		$post_id = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
+
+		wp_send_json_success( $this->get_filter( $post_id ) );
+	}
+
+	/**
+	 * Gets the data for the edit filter view.
+	 *
+	 * @param int $post_id The post id.
+	 *
+	 * @return array
+	 */
+	private function get_filter( $post_id ) {
+		$filter_data = get_post_meta( $post_id, '_field_data', true );
+		$filter_data = $this->prepare_filter_data_for_new_ui( $filter_data );
+
+		return array(
+			'post_title'  => get_the_title( $post_id ),
+			'filter_data' => $filter_data,
+		);
+	}
+
+	/**
+	 * Prepare the filter data for new UI.
+	 *
+	 * TODO: Might be deprecated in the future.
+	 *
+	 * @param array $filter_data The filter data array.
+	 *
+	 * @return array
+	 */
+	private function prepare_filter_data_for_new_ui( $filter_data ) {
 		// Fill the term_ids with value and label.
 		$taxonomy_types = array( 'category', 'tag', 'attribute', 'custom-taxonomy' );
-		$filter_type    = isset( $field_data['type'] ) ? $field_data['type'] : '';
+		$filter_type    = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
 
 		if ( in_array( $filter_type, $taxonomy_types ) ) {
-			$parent_term        = $field_data['parent_term'];
-			$limit_values_by_id = $field_data['limit_values_by_id'];
-			$exclude_values_id  = $field_data['exclude_values_id'];
+			$parent_term        = $filter_data['parent_term'];
+			$limit_values_by_id = $filter_data['limit_values_by_id'];
+			$exclude_values_id  = $filter_data['exclude_values_id'];
 
 			if ( $parent_term ) {
 				$term = get_term( $parent_term );
 
-				$field_data['parent_term'] = array(
+				$filter_data['parent_term'] = array(
 					'value' => $term->term_id,
 					'label' => $term->name,
 				);
@@ -219,31 +351,31 @@ class WCAPF_API {
 						}
 					}
 
-					$field_data[ $key ] = $parsed;
+					$filter_data[ $key ] = $parsed;
 				}
 			}
 		}
 
 		// Set the default values for the order settings.
-		$order_terms_dir    = isset( $field_data['order_terms_dir'] ) ? $field_data['order_terms_dir'] : '';
-		$options_order_dir  = isset( $field_data['options_order_dir'] ) ? $field_data['options_order_dir'] : '';
-		$options_order_type = isset( $field_data['options_order_type'] ) ? $field_data['options_order_type'] : '';
+		$order_terms_dir    = isset( $filter_data['order_terms_dir'] ) ? $filter_data['order_terms_dir'] : '';
+		$options_order_dir  = isset( $filter_data['options_order_dir'] ) ? $filter_data['options_order_dir'] : '';
+		$options_order_type = isset( $filter_data['options_order_type'] ) ? $filter_data['options_order_type'] : '';
 
 		if ( ! $order_terms_dir ) {
-			$field_data['order_terms_dir'] = 'asc';
+			$filter_data['order_terms_dir'] = 'asc';
 		}
 
 		if ( ! $options_order_dir ) {
-			$field_data['options_order_dir'] = 'asc';
+			$filter_data['options_order_dir'] = 'asc';
 		}
 
 		if ( ! $options_order_type ) {
-			$field_data['options_order_type'] = 'alphabetical';
+			$filter_data['options_order_type'] = 'alphabetical';
 		}
 
 		// Parse custom appearance options.
-		$custom_appearance_options = isset( $field_data['custom_appearance_options'] )
-			? $field_data['custom_appearance_options']
+		$custom_appearance_options = isset( $filter_data['custom_appearance_options'] )
+			? $filter_data['custom_appearance_options']
 			: array();
 
 		if ( $custom_appearance_options ) {
@@ -255,39 +387,80 @@ class WCAPF_API {
 				$parsed[] = $option;
 			}
 
-			$field_data['custom_appearance_options'] = $parsed;
+			$filter_data['custom_appearance_options'] = $parsed;
 		}
 
-		return $field_data;
-	}
+		// Parse user roles.
+		$include_user_roles = isset( $filter_data['include_user_roles'] )
+			? $filter_data['include_user_roles']
+			: array();
 
-	public function save_filter() {
-		$filter_title = isset( $_POST['filter_title'] ) ? $_POST['filter_title'] : '';
-		$filter_id    = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
-		$_filter_data = isset( $_POST['filter_data'] ) ? $_POST['filter_data'] : array();
+		if ( $include_user_roles ) {
+			$user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
+			$parsed     = array();
 
-		$filter_data = stripslashes( $_filter_data );
-		$filter_data = json_decode( $filter_data, true );
+			foreach ( $include_user_roles as $role ) {
+				$parsed[] = array(
+					'value' => $role,
+					'label' => $user_roles[ $role ],
+				);
+			}
 
-		$filter_type = $filter_data['type'];
-		$filter_key  = sanitize_title( $filter_data['field_key'] );
-
-		$error_code = WCAPF_API_Utils::validate_filter( $filter_type, $filter_key, $filter_id );
-
-		if ( $error_code ) {
-			$error_message = WCAPF_API_Utils::get_error_message_from_code( $error_code );
-
-			wp_send_json_error( __( $error_message, 'wc-ajax-product-filter' ) );
+			$filter_data['include_user_roles'] = $parsed;
 		}
 
-		wp_send_json_success( array(
-			'filter_title' => $filter_title,
-			'filter_data'  => $filter_data,
-		) );
+		return $filter_data;
 	}
 
 	/**
-	 * TODO: Move the helper methods to free version.
+	 * Duplicates the filter via ajax.
+	 *
+	 * @return void
+	 */
+	public function duplicate_filter() {
+		$post_id = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
+
+		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
+			$new_post_id = WCAPF_API_Utils::duplicate_filter( $post_id );
+
+			if ( is_wp_error( $new_post_id ) ) {
+				wp_send_json_error( $new_post_id->get_error_message() );
+			} else {
+				wp_send_json_success( array(
+					'message'     => __( 'Filter duplicated successfully', 'wc-ajax-product-filter' ),
+					'filter_data' => WCAPF_API_Utils::get_filter_data( $new_post_id ),
+				) );
+			}
+		} else {
+			wp_send_json_error( __( 'Invalid filter id', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
+	 * Deletes the filter via ajax.
+	 *
+	 * @return void
+	 */
+	public function delete_filter() {
+		$post_id = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
+
+		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
+			$delete = wp_delete_post( $post_id, true );
+
+			if ( $delete ) {
+				wp_send_json_success( __( 'Filter deleted successfully', 'wc-ajax-product-filter' ) );
+			} else {
+				wp_send_json_error(
+					__( 'There was a problem deleting the filter, please try again.', 'wc-ajax-product-filter' )
+				);
+			}
+		} else {
+			wp_send_json_error( __( 'Invalid filter id', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
+	 * TODO: Move the helper methods from pro to free.
 	 *
 	 * @return void
 	 */
@@ -442,6 +615,11 @@ class WCAPF_API {
 		return $options;
 	}
 
+	/**
+	 * Gets the filter preview via ajax.
+	 *
+	 * @return void
+	 */
 	public function get_filter_preview() {
 		$post_id = 65; // TODO
 
@@ -454,6 +632,11 @@ class WCAPF_API {
 		wp_send_json_success( $preview );
 	}
 
+	/**
+	 * Gets the custom appearance data via ajax.
+	 *
+	 * @return void
+	 */
 	public function get_custom_appearance_data() {
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 
@@ -478,6 +661,11 @@ class WCAPF_API {
 		wp_send_json_success( $response );
 	}
 
+	/**
+	 * Gets the taxonomy terms via ajax.
+	 *
+	 * @return void
+	 */
 	public function get_taxonomy_terms() {
 		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( $_GET['only_parent'] ) : '';
@@ -534,6 +722,11 @@ class WCAPF_API {
 		wp_send_json_success( $response );
 	}
 
+	/**
+	 * Gets the post authors via ajax.
+	 *
+	 * @return void
+	 */
 	public function get_post_authors() {
 		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
 		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
@@ -564,7 +757,9 @@ class WCAPF_API {
 	}
 
 	/**
-	 * TODO: Move pro to free.
+	 * Gets the meta values via ajax.
+	 *
+	 * TODO: Move the helper method from pro to free.
 	 *
 	 * @return void
 	 */
@@ -584,69 +779,6 @@ class WCAPF_API {
 		}
 
 		wp_send_json_success( $response );
-	}
-
-	public function get_filters() {
-		$args = array(
-			'post_type'   => 'wcapf-filter',
-			'nopaging'    => true,
-			'post_status' => 'any',
-			'fields'      => 'ids',
-		);
-
-		$filters = get_posts( $args );
-
-		$filters_data = array();
-
-		foreach ( $filters as $filter_id ) {
-			$field_data = get_post_meta( $filter_id, '_field_data', true );
-
-			$filters_data[] = array(
-				'id'            => $filter_id,
-				'field_key'     => $field_data['field_key'],
-				'type'          => $field_data['type'],
-				'taxonomy'      => isset( $field_data['taxonomy'] ) ? $field_data['taxonomy'] : '',
-				'meta_key'      => isset( $field_data['meta_key'] ) ? $field_data['meta_key'] : '',
-				'post_property' => isset( $field_data['post_property'] ) ? $field_data['post_property'] : '',
-				'title'         => get_the_title( $filter_id ),
-			);
-		}
-
-		wp_send_json_success( $filters_data );
-	}
-
-	public function check_filter_key() {
-		$filter_key = isset( $_GET['filter_key'] ) ? sanitize_title( $_GET['filter_key'] ) : '';
-
-		if ( ! $filter_key ) {
-			wp_send_json_error( __( 'Filter key is required.', 'wc-ajax-product-filter' ) );
-		}
-
-		// Check for existing filter.
-		$args = array(
-			'post_type'      => 'wcapf-filter',
-			'post_status'    => 'publish',
-			'posts_per_page' => 1,
-			'fields'         => 'ids',
-			'meta_query'     => array(
-				array(
-					'key'   => '_filter_key',
-					'value' => $filter_key,
-				),
-			),
-		);
-
-		$found = get_posts( $args );
-
-		if ( $found ) {
-			wp_send_json_error( __( 'The filter key is already in use on another filter.', 'wc-ajax-product-filter' ) );
-		}
-
-		if ( taxonomy_exists( $filter_key ) ) {
-			wp_send_json_error( __( 'There is a taxonomy exists with the filter key.', 'wc-ajax-product-filter' ) );
-		}
-
-		wp_send_json_success( 'available' );
 	}
 
 }

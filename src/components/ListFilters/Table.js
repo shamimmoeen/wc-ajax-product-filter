@@ -49,7 +49,12 @@ const Table = ({
 	const tableBody = () =>
 		filters.map((_filter) => {
 			const filter = prepareFilterData(_filter);
+
 			const filterId = filter.id;
+			const filterTitle = filter.title
+				? filter.title
+				: __('(no title)', 'wc-ajax-product-filter');
+
 			const isDeleting = filterId === deletingItemId;
 			const isDuplicating = filterId === duplicatingItemId;
 
@@ -57,7 +62,7 @@ const Table = ({
 				<tr key={filterId}>
 					<td className='__Title'>
 						<a href={filter.permalink} className='__post_title'>
-							{filter.title}
+							{filterTitle}
 						</a>
 						<span className='__post_id'>
 							{__('ID', 'wc-ajax-product-filter')}:{` `}

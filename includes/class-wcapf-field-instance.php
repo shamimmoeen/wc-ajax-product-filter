@@ -408,12 +408,12 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
-	 *
 	 * @since 3.3.0
+	 *
+	 * @return string
 	 */
 	public function is_store_name_enabled() {
-		if ( ! class_exists( 'WCFMmp' ) ) {
+		if ( ! WCAPF_Helper::is_wcfm_marketplace_found() ) {
 			return '';
 		}
 
