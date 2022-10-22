@@ -1,11 +1,3 @@
-.__main {
-    @media (min-width: 1200px) {
-        display: grid;
-        grid-template-columns: 3fr 1fr;
-        gap: 40px;
-    }
-}
-
 .__list_table_wrapper {
     --vr-padding: 16px;
     --hr-padding: 24px;
