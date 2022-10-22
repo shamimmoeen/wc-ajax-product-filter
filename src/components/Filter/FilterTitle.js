@@ -10,6 +10,7 @@ import {
 	removeFilterSavedNotices,
 	removeCopiedToClipboardNotice,
 } from '../notices';
+import { disableFilterSubmission } from '../utils';
 
 const FilterTitle = () => {
 	const {
@@ -35,6 +36,25 @@ const FilterTitle = () => {
 
 		removeFilterSavedNotices();
 	}, [isDirty]);
+
+	useEffect(() => {
+		if (!isDirty) {
+			return;
+		}
+
+		const titleReady = title;
+		const filterReady = !disableFilterSubmission(activeFilterData);
+
+		if (!titleReady && !filterReady && !btnDisabled) {
+			setBtnDisabled(true);
+		} else if (titleReady && !filterReady && !btnDisabled) {
+			setBtnDisabled(true);
+		} else if (!titleReady && filterReady && !btnDisabled) {
+			setBtnDisabled(true);
+		} else if (titleReady && filterReady && btnDisabled) {
+			setBtnDisabled(false);
+		}
+	}, [title, activeFilterData]);
 
 	const handleChange = (value) => {
 		dispatch({ type: 'SET_TITLE', payload: value });

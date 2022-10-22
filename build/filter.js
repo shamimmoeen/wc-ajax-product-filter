@@ -9365,6 +9365,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _ListFilters_PublishModal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ListFilters/PublishModal */ "./src/components/ListFilters/PublishModal.js");
 /* harmony import */ var _notices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../notices */ "./src/components/notices.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
+
 
 
 
@@ -9396,6 +9398,24 @@ const FilterTitle = () => {
 
     (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeFilterSavedNotices)();
   }, [isDirty]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!isDirty) {
+      return;
+    }
+
+    const titleReady = title;
+    const filterReady = !(0,_utils__WEBPACK_IMPORTED_MODULE_7__.disableFilterSubmission)(activeFilterData);
+
+    if (!titleReady && !filterReady && !btnDisabled) {
+      setBtnDisabled(true);
+    } else if (titleReady && !filterReady && !btnDisabled) {
+      setBtnDisabled(true);
+    } else if (!titleReady && filterReady && !btnDisabled) {
+      setBtnDisabled(true);
+    } else if (titleReady && filterReady && btnDisabled) {
+      setBtnDisabled(false);
+    }
+  }, [title, activeFilterData]);
 
   const handleChange = value => {
     dispatch({
@@ -11352,7 +11372,7 @@ function removeFilterSavedNotices() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "disableFilterHandling": function() { return /* binding */ disableFilterHandling; },
+/* harmony export */   "disableFilterSubmission": function() { return /* binding */ disableFilterSubmission; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
 /* harmony export */   "getEditFilterLink": function() { return /* binding */ getEditFilterLink; },
@@ -11466,7 +11486,7 @@ function prepareMetaKeys(options) {
 
   return _options;
 }
-function disableFilterHandling(activeFilterData) {
+function disableFilterSubmission(activeFilterData) {
   const {
     type
   } = activeFilterData;

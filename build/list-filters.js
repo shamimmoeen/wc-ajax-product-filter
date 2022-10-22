@@ -4445,7 +4445,6 @@ const Footer = _ref => {
   } = _ref;
   const {
     state: {
-      isFilterKeyChecking,
       title,
       filterType,
       activeFilterData
@@ -4495,11 +4494,7 @@ const Footer = _ref => {
           disabled = true;
         }
       } else if (3 === step) {
-        if (isFilterKeyChecking) {
-          disabled = true;
-        } else {
-          disabled = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.disableFilterHandling)(activeFilterData);
-        }
+        disabled = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.disableFilterSubmission)(activeFilterData);
       }
 
       content = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
@@ -5829,7 +5824,7 @@ function removeFilterSavedNotices() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "disableFilterHandling": function() { return /* binding */ disableFilterHandling; },
+/* harmony export */   "disableFilterSubmission": function() { return /* binding */ disableFilterSubmission; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
 /* harmony export */   "getEditFilterLink": function() { return /* binding */ getEditFilterLink; },
@@ -5943,7 +5938,7 @@ function prepareMetaKeys(options) {
 
   return _options;
 }
-function disableFilterHandling(activeFilterData) {
+function disableFilterSubmission(activeFilterData) {
   const {
     type
   } = activeFilterData;
