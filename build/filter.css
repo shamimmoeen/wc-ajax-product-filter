@@ -16,6 +16,14 @@ body .__wcapf_layout {
   padding: var(--large-gap);
 }
 
+@media (min-width: 1200px) {
+  .__main {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 40px;
+  }
+}
+
 /**
 * Snacbar styles.
 */
@@ -36,82 +44,6 @@ body.rtl .components-snackbar-list {
   left: 20px;
 }
 
-.editor-preview {
-  background-color: #fff;
-  bottom: 0;
-  position: fixed;
-  top: 0;
-  z-index: 200;
-  overflow-y: auto;
-}
-.editor-preview .__title {
-  font-size: 2.2em;
-  line-height: 1;
-  font-weight: 400;
-  margin-bottom: 1.4em;
-  margin-top: 0;
-}
-.editor-preview .__inner {
-  padding: 50px;
-}
-@media (max-width: 960px) {
-  .editor-preview .__inner {
-    padding: 40px 24px;
-  }
-}
-@media (max-width: 599px) {
-  .editor-preview .__inner {
-    padding: 30px 16px;
-  }
-}
-.editor-preview .__overlay {
-  background-color: #fff;
-  box-shadow: inset 10px 0 30px rgba(0, 0, 0, 0.05);
-  position: fixed;
-  bottom: 0;
-  top: 0;
-  z-index: -1;
-}
-
-body:not(.rtl) .editor-preview {
-  right: 0;
-}
-body:not(.rtl) .editor-preview .__overlay {
-  right: 0;
-}
-body.rtl .editor-preview {
-  left: 0;
-}
-body.rtl .editor-preview .__overlay {
-  left: 0;
-}
-
-@media (min-width: 1121px) {
-  .editor-control {
-    width: calc(100% - 400px);
-  }
-  .editor-preview {
-    margin-top: 32px;
-    width: 400px;
-  }
-  .editor-preview .__overlay {
-    width: 400px;
-  }
-}
-@media (max-width: 1120px) {
-  .editor-preview {
-    position: relative;
-  }
-  .editor-preview .__overlay {
-    position: absolute;
-  }
-  body:not(.rtl) .editor-preview .__overlay {
-    left: 0;
-  }
-  body.rtl .editor-preview .__overlay {
-    right: 0;
-  }
-}
 .__title_wrapper {
   display: flex;
   padding: 40px var(--large-gap) 0 var(--large-gap);
@@ -1131,8 +1063,31 @@ body.rtl .__top_bar a.__upgrade_btn {
   margin-top: 2.5em;
 }
 
-body {
-  background: #fff;
+.__edit_filter .__content {
+  --vr-padding: 16px;
+  --hr-padding: 24px;
+  background-color: rgb(255, 255, 255);
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+  outline: none;
+  border-radius: 1px;
+}
+.__edit_filter .__content .__title_wrapper {
+  padding: var(--vr-padding) var(--hr-padding);
+  gap: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.__edit_filter .__content .__title_wrapper .__back_button {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.__edit_filter .__content .__tab_panel {
+  margin-top: 0;
+}
+.__edit_filter .__sidebar .components-card-header h2 {
+  font-size: 2.2em;
+  line-height: 1;
+  font-weight: 400;
+  margin: 0;
 }
 
 /*# sourceMappingURL=filter.css.map*/

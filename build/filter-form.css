@@ -16,6 +16,14 @@ body .__wcapf_layout {
   padding: var(--large-gap);
 }
 
+@media (min-width: 1200px) {
+  .__main {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 40px;
+  }
+}
+
 /**
 * Snacbar styles.
 */

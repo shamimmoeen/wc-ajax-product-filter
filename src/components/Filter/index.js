@@ -88,13 +88,17 @@ const Filter = () => {
 		<div className='__wcapf_admin'>
 			<TopBar view={'filters'} />
 
-			<div className='__edit_form'>
-				<div className='editor-control'>
-					<FilterTitle />
-					<FilterNav />
-				</div>
+			<div className='__wcapf_layout'>
+				<div className='__main __edit_filter'>
+					<div className='__content'>
+						<FilterTitle />
+						<FilterNav />
+					</div>
 
-				<FilterPreview />
+					<div className='__sidebar'>
+						<FilterPreview />
+					</div>
+				</div>
 			</div>
 
 			<Notifications />
