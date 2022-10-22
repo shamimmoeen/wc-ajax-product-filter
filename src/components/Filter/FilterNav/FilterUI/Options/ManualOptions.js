@@ -11,6 +11,7 @@ import {
 	getMetaOptions,
 } from '../../../utils';
 import Select from '../../../../Field/Select';
+import Text from '../../../../Field/Text';
 
 const ManualOptions = ({ openModal }) => {
 	const {
@@ -73,7 +74,18 @@ const ManualOptions = ({ openModal }) => {
 		}
 	};
 
-	const setRows = (_rows) => {
+	/**
+	 * @source https://github.com/SortableJS/react-sortablejs/issues/210#issuecomment-880414814
+	 */
+	const setRows = (_rows, sortable, store) => {
+		if (!sortable) {
+			return;
+		}
+
+		if (!store.dragging) {
+			return;
+		}
+
 		const _activeFilterData = {
 			...activeFilterData,
 			[optionsKey]: _rows,
@@ -131,6 +143,10 @@ const ManualOptions = ({ openModal }) => {
 	};
 
 	const handleChange = (value, index, key) => {
+		if (rows[index][key] === value) {
+			return;
+		}
+
 		const _rows = rows.map((_row, _index) => {
 			if (_index === index) {
 				return { ..._row, [key]: value };
@@ -156,8 +172,8 @@ const ManualOptions = ({ openModal }) => {
 		handleChange(selected.value, index, key);
 	};
 
-	const handleInputChange = (e, index, key) => {
-		handleChange(e.target.value, index, key);
+	const handleInputChange = (value, key, index) => {
+		handleChange(value, index, key);
 	};
 
 	const tableHeader = () => {
@@ -245,11 +261,12 @@ const ManualOptions = ({ openModal }) => {
 	const inputField = (wrapperClass, index, key, value) => {
 		return (
 			<div className={wrapperClass}>
-				<input
-					type='text'
+				<Text
+					id={key}
+					index={index}
 					value={value}
-					className='components-text-control__input'
-					onChange={(e) => handleInputChange(e, index, key)}
+					onChange={handleInputChange}
+					renderAsFormField={false}
 				/>
 			</div>
 		);

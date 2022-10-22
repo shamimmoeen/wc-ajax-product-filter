@@ -57,10 +57,15 @@ const FilterTitle = () => {
 	}, [title, activeFilterData]);
 
 	const handleChange = (value) => {
+		if (title === value) {
+			return;
+		}
+
 		dispatch({ type: 'SET_TITLE', payload: value });
 
 		if (!isDirty) {
 			dispatch({ type: 'SET_DIRTY' });
+			dispatch({ type: 'SET_LOAD_PREVIEW' });
 		}
 	};
 
@@ -81,6 +86,9 @@ const FilterTitle = () => {
 			detailed: { post_title, filter_data: newFilterData },
 		} = data;
 
+		dispatch({ type: 'UNSET_DIRTY' });
+		dispatch({ type: 'UNSET_LOAD_PREVIEW' });
+
 		dispatch({
 			type: 'SET_TITLE',
 			payload: post_title,
@@ -98,8 +106,6 @@ const FilterTitle = () => {
 
 			dispatch({ type: 'SET_FILTERS_DATA', payload: newFiltersData });
 		}
-
-		dispatch({ type: 'UNSET_DIRTY' });
 	};
 
 	const handleSaveFilter = () => {

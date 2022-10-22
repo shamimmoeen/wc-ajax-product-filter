@@ -2673,6 +2673,7 @@ __webpack_require__.r(__webpack_exports__);
 const InputField = _ref => {
   let {
     id,
+    index,
     initialValue,
     onChange,
     type = 'text',
@@ -2702,7 +2703,7 @@ const InputField = _ref => {
     className: "components-text-control__input",
     value: value,
     onChange: handleInputChange,
-    onBlur: () => onChange(value, id)
+    onBlur: () => onChange(value, id, index)
   }, rest));
 };
 
@@ -2711,6 +2712,8 @@ const Text = _ref2 => {
     label,
     id,
     value,
+    index,
+    // Index is used on the manual options table
     onChange,
     description,
     type = 'text',
@@ -2734,6 +2737,7 @@ const Text = _ref2 => {
       className: "__input_wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
       id: id,
+      index: index,
       initialValue: value,
       onChange: onChange,
       type: type,
@@ -2744,6 +2748,7 @@ const Text = _ref2 => {
   } else {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
       id: id,
+      index: index,
       initialValue: value,
       onChange: onChange,
       type: type,

@@ -2,6 +2,7 @@ export const initialState = {
 	isLoading: true,
 	activeUIStep: '',
 	isDirty: false,
+	loadPreview: true,
 	title: '',
 	filterType: '',
 	filterId: '',
@@ -24,6 +25,12 @@ const filterReducer = (state, action) => {
 
 		case 'UNSET_DIRTY':
 			return { ...state, isDirty: false };
+
+		case 'SET_LOAD_PREVIEW':
+			return { ...state, loadPreview: true };
+
+		case 'UNSET_LOAD_PREVIEW':
+			return { ...state, loadPreview: false };
 
 		case 'SET_TITLE':
 			return { ...state, title: action.payload };

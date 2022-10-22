@@ -1,3 +1,5 @@
+import Text from './Text';
+
 const Number = ({
 	label,
 	id,
@@ -15,12 +17,12 @@ const Number = ({
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
-						<input
+						<Text
 							type={type}
 							id={id}
-							className='components-text-control__input'
 							value={value}
-							onChange={(e) => onChange(e, id)}
+							onChange={onChange}
+							renderAsFormField={false}
 							{...rest}
 						/>
 					</div>

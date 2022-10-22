@@ -2,6 +2,7 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 	const setDirty = () => {
 		if (!isDirty) {
 			dispatch({ type: 'SET_DIRTY' });
+			dispatch({ type: 'SET_LOAD_PREVIEW' });
 		}
 	};
 
@@ -34,6 +35,12 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 	};
 
 	const setActiveFilterData = (key, value, makeDirty = true) => {
+		const prevValue = activeFilterData[key];
+
+		if (value === prevValue) {
+			return;
+		}
+
 		dispatch({
 			type: 'SET_ACTIVE_FILTER_DATA',
 			payload: { ...activeFilterData, [key]: value },

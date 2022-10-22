@@ -3,6 +3,7 @@ import { wpFeSanitizeTitle } from '../Filter/wp-fe-sanitize-title';
 
 const InputField = ({
 	id,
+	index,
 	initialValue,
 	onChange,
 	type = 'text',
@@ -34,7 +35,7 @@ const InputField = ({
 			className='components-text-control__input'
 			value={value}
 			onChange={handleInputChange}
-			onBlur={() => onChange(value, id)}
+			onBlur={() => onChange(value, id, index)}
 			{...rest}
 		/>
 	);
@@ -44,6 +45,7 @@ const Text = ({
 	label,
 	id,
 	value,
+	index, // Index is used on the manual options table
 	onChange,
 	description,
 	type = 'text',
@@ -62,6 +64,7 @@ const Text = ({
 						<div className='__input_wrapper'>
 							<InputField
 								id={id}
+								index={index}
 								initialValue={value}
 								onChange={onChange}
 								type={type}
@@ -78,6 +81,7 @@ const Text = ({
 		return (
 			<InputField
 				id={id}
+				index={index}
 				initialValue={value}
 				onChange={onChange}
 				type={type}

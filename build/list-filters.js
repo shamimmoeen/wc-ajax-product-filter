@@ -2622,6 +2622,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Text__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Text */ "./src/components/Field/Text.js");
+
 
 
 
@@ -2647,12 +2649,12 @@ const Number = _ref => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
     className: "__input_wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_Text__WEBPACK_IMPORTED_MODULE_2__["default"], (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
     type: type,
     id: id,
-    className: "components-text-control__input",
     value: value,
-    onChange: e => onChange(e, id)
+    onChange: onChange,
+    renderAsFormField: false
   }, rest))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
     className: "description"
   }, description) : '');
@@ -2682,6 +2684,7 @@ __webpack_require__.r(__webpack_exports__);
 const InputField = _ref => {
   let {
     id,
+    index,
     initialValue,
     onChange,
     type = 'text',
@@ -2711,7 +2714,7 @@ const InputField = _ref => {
     className: "components-text-control__input",
     value: value,
     onChange: handleInputChange,
-    onBlur: () => onChange(value, id)
+    onBlur: () => onChange(value, id, index)
   }, rest));
 };
 
@@ -2720,6 +2723,8 @@ const Text = _ref2 => {
     label,
     id,
     value,
+    index,
+    // Index is used on the manual options table
     onChange,
     description,
     type = 'text',
@@ -2743,6 +2748,7 @@ const Text = _ref2 => {
       className: "__input_wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
       id: id,
+      index: index,
       initialValue: value,
       onChange: onChange,
       type: type,
@@ -2753,6 +2759,7 @@ const Text = _ref2 => {
   } else {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
       id: id,
+      index: index,
       initialValue: value,
       onChange: onChange,
       type: type,
@@ -2886,6 +2893,9 @@ const AvailableFilters = _ref => {
     if (setDirty && !isDirty) {
       dispatch({
         type: 'SET_DIRTY'
+      });
+      dispatch({
+        type: 'SET_LOAD_PREVIEW'
       });
     }
   };
@@ -3277,6 +3287,9 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
       dispatch({
         type: 'SET_DIRTY'
       });
+      dispatch({
+        type: 'SET_LOAD_PREVIEW'
+      });
     }
   };
 
@@ -3309,6 +3322,12 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 
   const setActiveFilterData = function (key, value) {
     let makeDirty = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    const prevValue = activeFilterData[key];
+
+    if (value === prevValue) {
+      return;
+    }
+
     dispatch({
       type: 'SET_ACTIVE_FILTER_DATA',
       payload: { ...activeFilterData,
