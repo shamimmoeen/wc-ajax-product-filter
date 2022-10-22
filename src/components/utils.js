@@ -90,7 +90,7 @@ export function prepareMetaKeys(options) {
 	return _options;
 }
 
-export function disableFilterHandling(activeFilterData) {
+export function disableFilterSubmission(activeFilterData) {
 	const { type } = activeFilterData;
 
 	if ('active-filters' === type || 'reset-button' === type) {

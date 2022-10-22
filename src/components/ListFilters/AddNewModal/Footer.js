@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Flex, FlexItem, Button } from '@wordpress/components';
 import { useListFilters } from '../ListFiltersContext';
 import classnames from 'classnames';
-import { disableFilterHandling } from '../../utils';
+import { disableFilterSubmission } from '../../utils';
 
 const Footer = ({
 	step,
@@ -12,7 +12,7 @@ const Footer = ({
 	handleFilterSubmit,
 }) => {
 	const {
-		state: { isFilterKeyChecking, title, filterType, activeFilterData },
+		state: { title, filterType, activeFilterData },
 	} = useListFilters();
 
 	const backButton = () => {
@@ -64,11 +64,7 @@ const Footer = ({
 					disabled = true;
 				}
 			} else if (3 === step) {
-				if (isFilterKeyChecking) {
-					disabled = true;
-				} else {
-					disabled = disableFilterHandling(activeFilterData);
-				}
+				disabled = disableFilterSubmission(activeFilterData);
 			}
 
 			content = (
