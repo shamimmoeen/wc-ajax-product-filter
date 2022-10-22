@@ -2673,10 +2673,49 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Filter_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Filter/wp-fe-sanitize-title */ "./src/components/Filter/wp-fe-sanitize-title.js");
 
 
 
-const Text = _ref => {
+
+
+const InputField = _ref => {
+  let {
+    id,
+    initialValue,
+    onChange,
+    type = 'text',
+    isFilterKey,
+    ...rest
+  } = _ref;
+  const [value, setValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialValue);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect)(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  const handleInputChange = e => {
+    let _value;
+
+    if (isFilterKey) {
+      _value = (0,_Filter_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_2__.wpFeSanitizeTitle)(e.target.value);
+    } else {
+      _value = e.target.value;
+    }
+
+    setValue(_value);
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    type: type,
+    id: id,
+    className: "components-text-control__input",
+    value: value,
+    onChange: handleInputChange,
+    onBlur: () => onChange(value, id)
+  }, rest));
+};
+
+const Text = _ref2 => {
   let {
     label,
     id,
@@ -2684,29 +2723,42 @@ const Text = _ref => {
     onChange,
     description,
     type = 'text',
+    renderAsFormField = true,
+    isFilterKey = false,
     ...rest
-  } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__form_control"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__inner"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
-    htmlFor: id
-  }, label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
-    className: "__input_wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
-    type: type,
-    id: id,
-    className: "components-text-control__input",
-    value: value,
-    onChange: e => onChange(e, id)
-  }, rest))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
-    className: "description"
-  }, description) : '');
+  } = _ref2;
+
+  if (renderAsFormField) {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+      className: "__form_control"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+      className: "__inner"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+      className: "__label"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("label", {
+      htmlFor: id
+    }, label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+      className: "__wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+      className: "__input_wrapper"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+      id: id,
+      initialValue: value,
+      onChange: onChange,
+      type: type,
+      isFilterKey: isFilterKey
+    }, rest))))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
+      className: "description"
+    }, description));
+  } else {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
+      id: id,
+      initialValue: value,
+      onChange: onChange,
+      type: type,
+      isFilterKey: isFilterKey
+    }, rest));
+  }
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Text);
@@ -3110,8 +3162,7 @@ const GeneralFields = _ref => {
     }
   };
 
-  const handleFilterKeyChange = e => {
-    const filterKey = (0,_wp_fe_sanitize_title__WEBPACK_IMPORTED_MODULE_3__.wpFeSanitizeTitle)(e.target.value);
+  const handleFilterKeyChange = filterKey => {
     setActiveFilterData('field_key', filterKey);
     const variableFilterTypes = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.variableFilterTypesData)();
     const variableFilterTypeKeys = Object.keys(variableFilterTypes);
@@ -3147,7 +3198,8 @@ const GeneralFields = _ref => {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Key', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.', 'wc-ajax-product-filter'),
         value: field_key,
-        onChange: handleFilterKeyChange
+        onChange: handleFilterKeyChange,
+        isFilterKey: true
       });
     }
   };
@@ -3239,8 +3291,7 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
     setActiveFilterData(key, _value);
   };
 
-  const handleTextFieldChange = (e, key) => {
-    const value = e.target.value;
+  const handleTextFieldChange = (value, key) => {
     setActiveFilterData(key, value);
   };
 
@@ -5937,7 +5988,8 @@ function prepareMetaKeys(options) {
   }
 
   return _options;
-}
+} // TODO: Check for pro features.
+
 function disableFilterSubmission(activeFilterData) {
   const {
     type

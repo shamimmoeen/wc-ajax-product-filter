@@ -52,7 +52,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_duplicate_filter', array( $this, 'duplicate_filter' ) );
 		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
 		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
-		add_action( 'wp_ajax_get_filter_preview', array( $this, 'get_filter_preview' ) );
+		add_action( 'wp_ajax_wcapf_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) ); // TODO
 		add_action( 'wp_ajax_wcapf_get_taxonomy_terms', array( $this, 'get_taxonomy_terms' ) );
 		add_action( 'wp_ajax_wcapf_get_post_authors', array( $this, 'get_post_authors' ) );
@@ -161,12 +161,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function save_filter() {
-		$post_title   = isset( $_POST['filter_title'] ) ? $_POST['filter_title'] : '';
-		$post_id      = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
-		$_filter_data = isset( $_POST['filter_data'] ) ? $_POST['filter_data'] : array();
-
-		$filter_data = stripslashes( $_filter_data );
-		$filter_data = json_decode( $filter_data, true );
+		list( $filter_data, $post_id, $post_title ) = $this->get_filter_data_from_post_request();
 
 		$filter_type = $filter_data['type'];
 		$filter_key  = sanitize_title( $filter_data['field_key'] );
@@ -223,6 +218,17 @@ class WCAPF_API {
 			'short'    => $short,
 			'detailed' => $detailed,
 		) );
+	}
+
+	private function get_filter_data_from_post_request() {
+		$filter_title = isset( $_POST['filter_title'] ) ? sanitize_text_field( $_POST['filter_title'] ) : '';
+		$filter_id    = isset( $_POST['filter_id'] ) ? absint( $_POST['filter_id'] ) : '';
+		$_filter_data = isset( $_POST['filter_data'] ) ? $_POST['filter_data'] : array();
+
+		$filter_data = stripslashes( $_filter_data );
+		$filter_data = json_decode( $filter_data, true );
+
+		return array( $filter_data, $filter_id, $filter_title );
 	}
 
 	/**
@@ -621,11 +627,28 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_filter_preview() {
-		$post_id = 65; // TODO
+		list( $filter_data, $post_id, $filter_title ) = $this->get_filter_data_from_post_request();
+
+		$filter_type = $filter_data['type'];
+		$filter_key  = $filter_data['field_key'];
+
+		$filter_data  = $this->parse_new_ui_filter_data( $filter_data );
+		$parsed_field = WCAPF_API_Utils::parse_filter_data( $filter_data, $filter_type, $filter_key, $post_id );
+
+		$parsed_field['for_preview']  = true;
+		$parsed_field['filter_title'] = $filter_title;
+
+		$field_class = WCAPF_Helper::get_field_class_name_by_type( $filter_type );
+
+		if ( ! $field_class ) {
+			wp_send_json_error( __( 'Invalid filter type', 'wc-ajax-product-filter' ) );
+		}
+
+		$field = WCAPF_Helper::get_field_instance( $filter_type, $parsed_field );
 
 		ob_start();
 
-		echo do_shortcode( '[wcapf_filter id=' . $post_id . ']' );
+		$field->filter_form();
 
 		$preview = ob_get_clean();
 

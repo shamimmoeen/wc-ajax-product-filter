@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Icon } from '@wordpress/components';
 import { BackIcon } from './SVGIcons';
+import Text from './Field/Text';
 
 const Title = ({
 	value,
@@ -34,11 +35,10 @@ const Title = ({
 				<Icon icon={BackIcon} />
 			</Button>
 
-			<input
-				type='text'
+			<Text
 				value={value}
-				className='components-text-control__input'
-				onChange={(e) => handleChange(e.target.value)}
+				onChange={handleChange}
+				renderAsFormField={false}
 			/>
 
 			<Button

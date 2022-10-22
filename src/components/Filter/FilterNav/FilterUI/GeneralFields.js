@@ -213,9 +213,7 @@ const GeneralFields = ({
 		}
 	};
 
-	const handleFilterKeyChange = (e) => {
-		const filterKey = wpFeSanitizeTitle(e.target.value);
-
+	const handleFilterKeyChange = (filterKey) => {
 		setActiveFilterData('field_key', filterKey);
 
 		const variableFilterTypes = variableFilterTypesData();
@@ -258,6 +256,7 @@ const GeneralFields = ({
 					)}
 					value={field_key}
 					onChange={handleFilterKeyChange}
+					isFilterKey={true}
 				/>
 			);
 		}

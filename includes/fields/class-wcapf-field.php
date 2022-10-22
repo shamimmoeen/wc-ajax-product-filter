@@ -537,9 +537,9 @@ abstract class WCAPF_Field {
 	 *
 	 * @param array $data The field data.
 	 *
-	 * @return void
-	 *
 	 * @since 3.3.0
+	 *
+	 * @return void
 	 */
 	private function field_user_roles( $data ) {
 		$id    = $data['id'];
@@ -839,6 +839,10 @@ abstract class WCAPF_Field {
 		$show_title    = $this->get_sub_field_value( 'show_title' );
 		$filter_id     = $this->get_sub_field_value( 'field_id' );
 		$filter_title  = get_the_title( $filter_id );
+
+		if ( $this->get_sub_field_value( 'for_preview' ) ) {
+			$filter_title = $this->get_sub_field_value( 'filter_title' );
+		}
 
 		$form_id   = $this->get_sub_field_value( 'form_id' );
 		$filter_id .= $form_id ? '-' . $form_id : '';

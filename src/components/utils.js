@@ -90,6 +90,7 @@ export function prepareMetaKeys(options) {
 	return _options;
 }
 
+// TODO: Check for pro features.
 export function disableFilterSubmission(activeFilterData) {
 	const { type } = activeFilterData;
 

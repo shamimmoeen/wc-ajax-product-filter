@@ -17,9 +17,7 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 		setActiveFilterData(key, _value);
 	};
 
-	const handleTextFieldChange = (e, key) => {
-		const value = e.target.value;
-
+	const handleTextFieldChange = (value, key) => {
 		setActiveFilterData(key, value);
 	};
 
