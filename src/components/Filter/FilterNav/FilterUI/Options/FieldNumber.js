@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { CheckboxControl } from '@wordpress/components';
+import Text from '../../../../Field/Text';
 
 const FieldNumber = ({
 	label,
@@ -22,12 +23,12 @@ const FieldNumber = ({
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
 						<div>
-							<input
+							<Text
 								type={type}
 								id={id}
-								className='components-text-control__input'
 								value={value}
-								onChange={(e) => onChange(e, id)}
+								onChange={onChange}
+								renderAsFormField={false}
 								{...rest}
 							/>
 						</div>

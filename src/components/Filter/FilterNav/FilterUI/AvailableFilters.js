@@ -41,6 +41,7 @@ const AvailableFilters = ({
 
 		if (setDirty && !isDirty) {
 			dispatch({ type: 'SET_DIRTY' });
+			dispatch({ type: 'SET_LOAD_PREVIEW' });
 		}
 	};
 

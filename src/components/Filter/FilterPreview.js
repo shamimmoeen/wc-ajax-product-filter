@@ -6,7 +6,7 @@ import { useFilter } from './FilterContext';
 
 const FilterPreview = () => {
 	const {
-		state: { isLoading, title, filterId, activeFilterData },
+		state: { isLoading, title, filterId, activeFilterData, loadPreview },
 	} = useFilter();
 
 	const [preview, setPreview] = useState('');
@@ -14,6 +14,11 @@ const FilterPreview = () => {
 
 	useEffect(() => {
 		if (isLoading) {
+			return;
+		}
+
+		// Don't reload the preview after the filter is saved.
+		if (!loadPreview) {
 			return;
 		}
 
@@ -26,7 +31,6 @@ const FilterPreview = () => {
 		formData.append('filter_id', filterId);
 		formData.append('filter_data', JSON.stringify(activeFilterData));
 
-		// @source https://03balogun.medium.com/practical-use-case-of-the-abortcontroller-and-axios-cancel-token-7c75bf85f3ea
 		const controller = new AbortController();
 
 		axios
@@ -55,10 +59,6 @@ const FilterPreview = () => {
 			controller.abort();
 		};
 	}, [isLoading, title, activeFilterData]);
-
-	useEffect(() => {
-		console.log('active filter data changed');
-	}, [activeFilterData]);
 
 	return (
 		<div className={'editor-preview'}>
