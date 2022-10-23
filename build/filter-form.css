@@ -53,6 +53,10 @@ body.rtl .components-snackbar-list {
 .wcapf-single-filter.wcapf-reset-button-filter.wcapf-field-hidden {
   display: block;
 }
+.wcapf-single-filter:not(.filter-active) .wcapf-clear-all-btn,
+.wcapf-single-filter:not(.filter-active) .wcapf-clear-btn {
+  display: unset;
+}
 
 .__filters_drop_zone .__fz_item {
   border: 1px solid #ddd;

@@ -14,4 +14,12 @@
 			display: block;
 		}
 	}
+
+	&:not(.filter-active) {
+
+		.wcapf-clear-all-btn,
+		.wcapf-clear-btn {
+			display: unset;
+		}
+	}
 }

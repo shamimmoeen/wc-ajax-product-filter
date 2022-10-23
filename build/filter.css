@@ -162,6 +162,10 @@ body.rtl .__title_wrapper .__save_button .__icon {
 .wcapf-single-filter.wcapf-reset-button-filter.wcapf-field-hidden {
   display: block;
 }
+.wcapf-single-filter:not(.filter-active) .wcapf-clear-all-btn,
+.wcapf-single-filter:not(.filter-active) .wcapf-clear-btn {
+  display: unset;
+}
 
 :root {
   --large-gap: 40px;
