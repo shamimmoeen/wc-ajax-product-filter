@@ -1,106 +1,30 @@
-.editor-preview {
-    background-color: #fff;
-	bottom: 0;
-	position: fixed;
-	top: 0;
-	z-index: 200;
-	overflow-y: auto;
+.__edit_filter {
+	--vr-padding: 16px;
+	--hr-padding: 24px;
 
-	.__title {
-		font-size: 2.2em;
-		line-height: 1;
-		font-weight: 400;
-		margin-bottom: 1.4em;
-		margin-top: 0;
-	}
+	.__content {
+		background-color: rgb(255, 255, 255);
+		position: relative;
+		box-shadow: rgb(0 0 0 / 10%) 0px 0px 0px 1px;
+		outline: none;
+		border-radius: 1px;
 
-	.__inner {
-		padding: 50px;
-
-        @media (max-width: 960px) {
-            padding: 40px 24px;
-        }
-
-        @media (max-width: 599px) {
-            padding: 30px 16px;
-        }
-	}
-
-	.__overlay {
-		background-color: #fff;
-		box-shadow: inset 10px 0 30px rgb(0 0 0 / 5%);
-		position: fixed;
-		bottom: 0;
-		top: 0;
-		z-index: -1;
-	}
-}
-
-// RTL styles.
-body {
-    &:not(.rtl) {
-        .editor-preview {
-            right: 0;
-
-            .__overlay {
-                right: 0;
-            }
-        }
-    }
-
-    &.rtl {
-        .editor-preview {
-            left: 0;
-
-            .__overlay {
-                left: 0;
-            }
-        }
-    }
-}
-
-// Responsive styles.
-@media (min-width: 1121px) {
-	$preview_width: 400px;
-
-	.editor-control {
-		width: calc(100% - #{$preview_width});
-	}
-
-	.editor-preview {
-        margin-top: 32px;
-		width: $preview_width;
-
-		.__overlay {
-			width: $preview_width;
+		.__tab_panel {
+			margin-top: 0;
 		}
 	}
-}
 
-@media (max-width: 1120px) {
-	.editor-preview {
-		position: relative;
+	.__preview_card {
+		.components-card-header {
+			justify-content: flex-start;
+			gap: 8px;
 
-        .__overlay {
-            position: absolute;
-        }
+			h2 {
+				font-size: 1.7em;
+				font-weight: 500;
+				line-height: 1;
+				margin: 3px 0;
+			}
+		}
 	}
-
-    body {
-        &:not(.rtl) {
-            .editor-preview {
-                .__overlay {
-                    left: 0;
-                }
-            }
-        }
-
-        &.rtl {
-            .editor-preview {
-                .__overlay {
-                    right: 0;
-                }
-            }
-        }
-    }
 }

@@ -1,7 +1,11 @@
 .__top_bar {
+    align-items: center;
     background-color: #fff;
     border-bottom: 1px solid #ccd0d4;
-    padding: 10px var(--large-gap) 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 var(--large-gap);
 
     @media (max-width: 639px) {
         display: none;
@@ -23,8 +27,8 @@
         color: inherit;
         display: inline-block;
         font-size: 14px;
-        line-height: 2.5;
-        padding: 5px 5px 10px;
+        line-height: 3;
+        padding: 10px 5px;
         margin: 0 5px;
         text-decoration: none;
         box-shadow: none;
@@ -47,9 +51,32 @@
         }
     }
 
-    a.__upgrade_btn {
-        position: relative;
-        top: 4px;
+    .__cta {
+        display: flex;
+        gap: 16px;
+
+        @media (max-width: 767px) {
+            display: none;
+        }
+
+        .__plan,
+        .__version {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            div {
+                &:first-child {
+                    font-size: smaller;
+                    color: #646970;
+                }
+
+                &:last-child {
+                    font-weight: 600;
+                    font-size: 14px;
+                }
+            }
+        }
     }
 }
 
@@ -63,10 +90,6 @@ body {
                     margin-right: 4px;
                 }
             }
-
-            a.__upgrade_btn {
-                margin-left: 20px;
-            }
         }
     }
 
@@ -78,10 +101,6 @@ body {
                 .__icon {
                     margin-left: 4px;
                 }
-            }
-
-            a.__upgrade_btn {
-                margin-right: 20px;
             }
         }
     }

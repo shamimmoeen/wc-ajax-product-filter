@@ -61,22 +61,15 @@ const FilterPreview = () => {
 	}, [isLoading, title, activeFilterData]);
 
 	return (
-		<>
-			<Card>
-				<CardHeader>
-					<h2>{__('Preview', 'wc-ajax-product-filter')}</h2>
-				</CardHeader>
-				<CardBody>
-					{previewLoading ? (
-						<Spinner />
-					) : (
-						<div
-							dangerouslySetInnerHTML={{ __html: preview }}
-						></div>
-					)}
-				</CardBody>
-			</Card>
-		</>
+		<Card className='__preview_card'>
+			<CardHeader>
+				<h2>{__('Preview', 'wc-ajax-product-filter')}</h2>
+				{previewLoading && <Spinner />}
+			</CardHeader>
+			<CardBody>
+				<div dangerouslySetInnerHTML={{ __html: preview }} />
+			</CardBody>
+		</Card>
 	);
 };
 

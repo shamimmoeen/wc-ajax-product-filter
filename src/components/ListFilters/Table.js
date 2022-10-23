@@ -1,6 +1,12 @@
 import { Button, Icon } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
-import { CodeIcon, DeleteIcon, DuplicateIcon, EditIcon } from '../SVGIcons';
+import {
+	CodeIcon,
+	DeleteIcon,
+	DuplicateIcon,
+	EditIcon,
+	PlusIcon,
+} from '../SVGIcons';
 import { prepareFilterData } from '../utils';
 import { useListFilters } from './ListFiltersContext';
 
@@ -170,7 +176,8 @@ const Table = ({
 				<div className='__list_table_header'>
 					<h2>{__('List of Filters', 'wc-ajax-product-filter')}</h2>
 					<Button variant='primary' onClick={openAddNewModal}>
-						{__('Add Filter', 'wc-ajax-product-filter')}
+						<Icon icon={PlusIcon} size={16} />
+						{__('Add New', 'wc-ajax-product-filter')}
 					</Button>
 				</div>
 

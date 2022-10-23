@@ -19,7 +19,7 @@ body .__wcapf_layout {
 @media (min-width: 1200px) {
   .__main {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 5fr 2fr;
     gap: 40px;
   }
 }
@@ -78,6 +78,9 @@ body.rtl .components-snackbar-list {
 .__list_table_wrapper .__list_table_header h2 {
   padding: 0;
   margin: 0;
+}
+.__list_table_wrapper .__list_table_header .components-button {
+  gap: 7px;
 }
 @media (max-width: 800px) {
   .__list_table_wrapper .__list_table_inner {
@@ -511,9 +514,13 @@ body.rtl .__available_filters .__filters .__item {
 }
 
 .__top_bar {
+  align-items: center;
   background-color: #fff;
   border-bottom: 1px solid #ccd0d4;
-  padding: 10px var(--large-gap) 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 var(--large-gap);
 }
 @media (max-width: 639px) {
   .__top_bar {
@@ -534,8 +541,8 @@ body.rtl .__available_filters .__filters .__item {
   color: inherit;
   display: inline-block;
   font-size: 14px;
-  line-height: 2.5;
-  padding: 5px 5px 10px;
+  line-height: 3;
+  padding: 10px 5px;
   margin: 0 5px;
   text-decoration: none;
   box-shadow: none;
@@ -552,9 +559,30 @@ body.rtl .__available_filters .__filters .__item {
   bottom: 0;
   left: 0;
 }
-.__top_bar a.__upgrade_btn {
-  position: relative;
-  top: 4px;
+.__top_bar .__cta {
+  display: flex;
+  gap: 16px;
+}
+@media (max-width: 767px) {
+  .__top_bar .__cta {
+    display: none;
+  }
+}
+.__top_bar .__cta .__plan,
+.__top_bar .__cta .__version {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.__top_bar .__cta .__plan div:first-child,
+.__top_bar .__cta .__version div:first-child {
+  font-size: smaller;
+  color: #646970;
+}
+.__top_bar .__cta .__plan div:last-child,
+.__top_bar .__cta .__version div:last-child {
+  font-weight: 600;
+  font-size: 14px;
 }
 
 body:not(.rtl) .__top_bar h2 {
@@ -563,17 +591,11 @@ body:not(.rtl) .__top_bar h2 {
 body:not(.rtl) .__top_bar h2 .__icon {
   margin-right: 4px;
 }
-body:not(.rtl) .__top_bar a.__upgrade_btn {
-  margin-left: 20px;
-}
 body.rtl .__top_bar h2 {
   margin: 0 0 0 10px;
 }
 body.rtl .__top_bar h2 .__icon {
   margin-left: 4px;
-}
-body.rtl .__top_bar a.__upgrade_btn {
-  margin-right: 20px;
 }
 
 .__sidebar .components-card-header h2 {

@@ -37,11 +37,6 @@ const FilterNav = () => {
 					title: __('Visibility Rules', 'wc-ajax-product-filter'),
 					className: 'visibility_rules',
 				},
-				{
-					name: 'customize',
-					title: __('Customize', 'wc-ajax-product-filter'),
-					className: 'customize',
-				},
 			]}
 		>
 			{(tab) => {

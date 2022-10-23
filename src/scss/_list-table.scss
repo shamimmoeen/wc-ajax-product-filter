@@ -20,6 +20,10 @@
             padding: 0;
             margin: 0;
         }
+
+        .components-button {
+            gap: 7px;
+        }
     }
 
     .__list_table_inner {
@@ -72,7 +76,7 @@
                     }
 
                     .components-button {
-                        &.is-small.has-icon  {
+                        &.is-small.has-icon {
                             padding: 0;
                             min-width: 30px;
                             height: 30px;
@@ -96,6 +100,7 @@
 body {
     &:not(.rtl) {
         .__list_table_wrapper {
+
             th,
             td {
                 text-align: left;
@@ -133,6 +138,7 @@ body {
 
     &.rtl {
         .__list_table_wrapper {
+
             th,
             td {
                 text-align: right;
