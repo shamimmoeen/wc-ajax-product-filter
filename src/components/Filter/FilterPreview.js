@@ -4,6 +4,11 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useFilter } from './FilterContext';
 
+const accordionAnimation = wcapf_params.enable_animation_for_accordion;
+const previewWrapperClass = accordionAnimation
+	? 'wcapf-accordion-with-animation'
+	: '';
+
 const FilterPreview = () => {
 	const {
 		state: { isLoading, title, filterId, activeFilterData, loadPreview },
@@ -44,6 +49,8 @@ const FilterPreview = () => {
 
 				setPreview(data);
 				setPreviewLoading(false);
+
+				jQuery('body').trigger('init_filter_widgets');
 			})
 			.catch((err) => {
 				if (axios.isCancel(err)) {
@@ -67,7 +74,10 @@ const FilterPreview = () => {
 				{previewLoading && <Spinner />}
 			</CardHeader>
 			<CardBody>
-				<div dangerouslySetInnerHTML={{ __html: preview }} />
+				<div
+					className={previewWrapperClass}
+					dangerouslySetInnerHTML={{ __html: preview }}
+				/>
 			</CardBody>
 		</Card>
 	);

@@ -46,7 +46,14 @@ class WCAPF_Frontend_Scripts {
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
 	}
 
-	public static function load_frontend_scripts() {
+	/**
+	 * Loads the frontend scripts.
+	 *
+	 * @param bool $for_preview Determines if the scripts should be loaded for preview purposes.
+	 *
+	 * @return void
+	 */
+	public static function load_frontend_scripts( $for_preview = false ) {
 		wp_enqueue_style(
 			'wcapf-icons',
 			WCAPF_PLUGIN_URL . 'public/icons/icons.css',
@@ -124,19 +131,26 @@ class WCAPF_Frontend_Scripts {
 			true
 		);
 
+		// Load the js variables in the header.
+		wp_register_script( 'wcapf-params', false );
+
 		wp_localize_script(
-			'wc-ajax-product-filter-public-scripts',
+			'wcapf-params',
 			'wcapf_params',
-			self::get_js_params()
+			self::get_js_params( $for_preview )
 		);
+
+		wp_enqueue_script( 'wcapf-params' );
 	}
 
 	/**
 	 * Frontend js params.
 	 *
+	 * @param bool $for_preview
+	 *
 	 * @return array
 	 */
-	private static function get_js_params() {
+	private static function get_js_params( $for_preview ) {
 		$settings = WCAPF_Helper::get_settings();
 
 		$disable_inputs = true;
@@ -177,6 +191,7 @@ class WCAPF_Frontend_Scripts {
 			'is_mobile'                                => wp_is_mobile(),
 			'disable_inputs_while_fetching_results'    => $disable_inputs,
 			'apply_filters_on_browser_history_change'  => $history_popstate,
+			'for_preview'                              => $for_preview,
 		);
 
 		$params = array_merge( $params, $settings );

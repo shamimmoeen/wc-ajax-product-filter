@@ -9334,6 +9334,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const accordionAnimation = wcapf_params.enable_animation_for_accordion;
+const previewWrapperClass = accordionAnimation ? 'wcapf-accordion-with-animation' : '';
 
 const FilterPreview = () => {
   const {
@@ -9374,6 +9376,7 @@ const FilterPreview = () => {
       } = res;
       setPreview(data);
       setPreviewLoading(false);
+      jQuery('body').trigger('init_filter_widgets');
     }).catch(err => {
       if (axios__WEBPACK_IMPORTED_MODULE_3___default().isCancel(err)) {
         return 'axios request cancelled';
@@ -9390,6 +9393,7 @@ const FilterPreview = () => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Card, {
     className: "__preview_card"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CardHeader, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Preview', 'wc-ajax-product-filter')), previewLoading && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CardBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: previewWrapperClass,
     dangerouslySetInnerHTML: {
       __html: preview
     }
@@ -9611,8 +9615,6 @@ const initialState = {
   activeUIStep: '',
   isDirty: false,
   loadPreview: true,
-  saveBtnStatus: false,
-  filterStatus: '',
   title: '',
   filterType: '',
   filterId: '',
@@ -9652,11 +9654,6 @@ const filterReducer = (state, action) => {
     case 'UNSET_LOAD_PREVIEW':
       return { ...state,
         loadPreview: false
-      };
-
-    case 'SET_SAVE_BUTTON_STATUS':
-      return { ...state,
-        title: action.payload
       };
 
     case 'SET_TITLE':

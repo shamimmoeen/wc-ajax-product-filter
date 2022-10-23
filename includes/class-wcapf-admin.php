@@ -274,14 +274,19 @@ class WCAPF_Admin {
 			if ( ! isset( $_GET['id'] ) ) {
 				$this->load_scripts( 'list-filters' );
 			} else {
-				// Single filter admin ui scripts.
-				$this->load_scripts( 'filter' );
-
 				// Loads the media utils.
 				wp_enqueue_media();
 
 				// Loads the wcapf frontend styles for the filter preview.
-				WCAPF_Frontend_Scripts::load_frontend_scripts();
+				WCAPF_Frontend_Scripts::load_frontend_scripts( true );
+
+				/**
+				 * Hook to load the pro version scripts.
+				 */
+				do_action( 'wcapf_load_preview_scripts' );
+
+				// Single filter admin ui scripts.
+				$this->load_scripts( 'filter' );
 			}
 		}
 
@@ -290,11 +295,19 @@ class WCAPF_Admin {
 			if ( ! isset( $_GET['id'] ) ) {
 				$this->load_scripts( 'list-filter-forms' );
 			} else {
-				// Single filter form admin ui scripts.
-				$this->load_scripts( 'filter-form' );
+				// Loads the media utils.
+				wp_enqueue_media();
 
 				// Loads the wcapf frontend styles for the filter preview.
-				WCAPF_Frontend_Scripts::load_frontend_scripts();
+				WCAPF_Frontend_Scripts::load_frontend_scripts( true );
+
+				/**
+				 * Hook to load the pro version scripts.
+				 */
+				do_action( 'wcapf_load_preview_scripts' );
+
+				// Single filter form admin ui scripts.
+				$this->load_scripts( 'filter-form' );
 			}
 		}
 

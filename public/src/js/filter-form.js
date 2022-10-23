@@ -32,6 +32,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_window_when': '',
 	'scroll_window_custom_element': '',
 	'scroll_to_top_offset': '',
+	'for_preview': '',
 };
 
 jQuery( document ).ready( function( $ ) {
@@ -46,10 +47,15 @@ jQuery( document ).ready( function( $ ) {
 	// Store fields' id and filter information.
 	const fields = {};
 
-	const $wcapfSingleFilters      = $( '.wcapf-single-filter' );
-	const $wcapfNavFilters         = $( '.wcapf-nav-filter' );
-	const $wcapfNumberRangeFilters = $( '.wcapf-number-range-filter' );
-	const $wcapfDateFilters        = $( '.wcapf-date-range-filter' );
+	const wcapfSingleFilterSelector      = '.wcapf-single-filter';
+	const wcapfNavFilterSelector         = '.wcapf-nav-filter';
+	const wcapfNumberRangeFilterSelector = '.wcapf-number-range-filter';
+	const wcapfDateFilterSelector        = '.wcapf-date-range-filter';
+
+	const $wcapfSingleFilters      = $( wcapfSingleFilterSelector );
+	const $wcapfNavFilters         = $( wcapfNavFilterSelector );
+	const $wcapfNumberRangeFilters = $( wcapfNumberRangeFilterSelector );
+	const $wcapfDateFilters        = $( wcapfDateFilterSelector );
 
 	$wcapfSingleFilters.each( function() {
 		const $field         = $( this );
@@ -70,7 +76,15 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
-		$wcapfNavFilters.find( '.wcapf-chosen-select' ).each( function() {
+		let $root;
+
+		if ( wcapf_params.for_preview ) {
+			$root = $( wcapfNavFilterSelector );
+		} else {
+			$root = $wcapfNavFilters;
+		}
+
+		$root.find( '.wcapf-chosen-select' ).each( function() {
 			const $this   = $( this );
 			const options = {};
 
@@ -94,7 +108,15 @@ jQuery( document ).ready( function( $ ) {
 
 	// Initialize hierarchy accordion.
 	function initHierarchyAccordion() {
-		$wcapfNavFilters.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
+		let $root;
+
+		if ( wcapf_params.for_preview ) {
+			$root = $( wcapfNavFilterSelector );
+		} else {
+			$root = $wcapfNavFilters;
+		}
+
+		$root.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
 			const $this  = $( this );
 			const $child = $this.parent( 'li' ).children( 'ul' );
 
@@ -160,7 +182,15 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
-		$wcapfNumberRangeFilters.find( '.wcapf-range-slider' ).each( function() {
+		let $root;
+
+		if ( wcapf_params.for_preview ) {
+			$root = $( wcapfNumberRangeFilterSelector );
+		} else {
+			$root = $wcapfNumberRangeFilters;
+		}
+
+		$root.find( '.wcapf-range-slider' ).each( function() {
 			const $item = $( this );
 
 			const filterKey = $item.attr( 'data-filter-key' );
@@ -213,6 +243,10 @@ jQuery( document ).ready( function( $ ) {
 			} );
 
 			function filterProductsAccordingToSlider( values ) {
+				if ( wcapf_params.for_preview ) {
+					return;
+				}
+
 				$body.trigger( 'wcapf-nouislider-before-filter-products', [ $item, values ] );
 
 				const minValue = parseFloat( values[ 0 ] );
@@ -337,7 +371,15 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
-		const $wcapfDateFilter = $wcapfDateFilters.find( '.wcapf-date-input' );
+		let $root;
+
+		if ( wcapf_params.for_preview ) {
+			$root = $( wcapfDateFilterSelector );
+		} else {
+			$root = $wcapfDateFilters;
+		}
+
+		const $wcapfDateFilter = $root.find( '.wcapf-date-input' );
 
 		const format        = $wcapfDateFilter.attr( 'data-date-format' );
 		const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
@@ -588,6 +630,10 @@ jQuery( document ).ready( function( $ ) {
 
 	// The main filter function.
 	function filterProducts( forceReRender = false ) {
+		if ( wcapf_params.for_preview ) {
+			return;
+		}
+
 		beforeFetchingProducts();
 
 		$.get( window.location.href, function( data ) {
@@ -1088,10 +1134,7 @@ jQuery( document ).ready( function( $ ) {
 		filterProducts( true );
 	} );
 
-	$body.on( 'wcapf-run-filter-products', function( e, forceReRender ) {
-		filterProducts( forceReRender );
-	} );
-
+	// Run ajax filter when browser history changes (user goes back or forward).
 	if ( $( wcapf_params.shop_loop_container ).length || $( wcapf_params.not_found_container ).length ) {
 		if ( wcapf_params.apply_filters_on_browser_history_change ) {
 			$( window ).bind( 'popstate', function() {
@@ -1099,6 +1142,19 @@ jQuery( document ).ready( function( $ ) {
 			} );
 		}
 	}
+
+	// The hook that manually run the ajax filters (can be useful for other plugins).
+	$body.on( 'wcapf-run-filter-products', function( e, forceReRender ) {
+		filterProducts( forceReRender );
+	} );
+
+	// The hook that reinitialize the filter widgets (to show the preview in the backend).
+	$body.on( 'init_filter_widgets', function() {
+		initChosen();
+		initHierarchyAccordion();
+		initNoUISlider();
+		initDatepicker();
+	} );
 
 	/**
 	 * Make it compatible with other plugins.
