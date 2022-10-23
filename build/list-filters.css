@@ -426,7 +426,7 @@ a.__upgrade_btn {
   letter-spacing: 0.2px;
   line-height: 1;
   gap: 0.65rem;
-  padding: 8px 12px;
+  padding: 10px 12px;
   text-transform: uppercase;
   text-decoration: none;
 }
@@ -570,9 +570,10 @@ body.rtl .__available_filters .__filters .__item {
 }
 .__top_bar .__cta .__plan,
 .__top_bar .__cta .__version {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
 .__top_bar .__cta .__plan div:first-child,
 .__top_bar .__cta .__version div:first-child {
