@@ -89,10 +89,12 @@ const Filter = () => {
 			<TopBar view={'filters'} />
 
 			<div className='__wcapf_layout'>
-				<div className='__main __edit_filter'>
-					<div className='__content'>
-						<FilterTitle />
-						<FilterNav />
+				<div className='__main'>
+					<div className='__edit_filter'>
+						<div className='__content'>
+							<FilterTitle />
+							<FilterNav />
+						</div>
 					</div>
 
 					<div className='__sidebar'>
