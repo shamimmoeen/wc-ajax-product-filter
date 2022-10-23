@@ -759,20 +759,7 @@ body.rtl .__sidebar .components-button {
 .__add_filter_modal .__step_inner {
   margin: 2.5em 0;
 }
-.__add_filter_modal .__title_step .__inner {
-  flex-direction: column;
-  gap: 10px;
-}
-.__add_filter_modal .__title_step .__inner .__label {
-  display: none;
-}
-.__add_filter_modal .__title_step .__inner .__wrapper {
-  width: 100%;
-}
-.__add_filter_modal .__title_step .__inner .__wrapper .__input_wrapper {
-  display: flex;
-}
-.__add_filter_modal .__title_step .__inner .components-text-control__input {
+.__add_filter_modal .__title_step .components-text-control__input {
   font-size: 1.7em;
   height: 40px;
   max-width: unset;

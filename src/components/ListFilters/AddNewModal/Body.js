@@ -30,16 +30,18 @@ const Body = ({ step }) => {
 	if (1 === step) {
 		content = (
 			<div className='__step_inner __title_step'>
-				<Text
-					id={'filter_title'}
-					label={__('Filter Title', 'wc-ajax-product-filter')}
-					placeholder={__(
-						'Enter filter title',
-						'wc-ajax-product-filter'
-					)}
-					value={title}
-					onChange={handleTitleChange}
-				/>
+				<div className='__form_control'>
+					<input
+						type={'text'}
+						placeholder={__(
+							'Enter filter title',
+							'wc-ajax-product-filter'
+						)}
+						className='components-text-control__input'
+						value={title}
+						onChange={handleTitleChange}
+					/>
+				</div>
 			</div>
 		);
 	} else if (2 === step) {
