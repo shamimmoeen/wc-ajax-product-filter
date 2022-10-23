@@ -47,6 +47,12 @@ body.rtl .components-snackbar-list {
 .wcapf-single-filter {
   font-size: 14px;
 }
+.wcapf-single-filter.wcapf-active-filters-filter.wcapf-field-hidden {
+  display: block;
+}
+.wcapf-single-filter.wcapf-reset-button-filter.wcapf-field-hidden {
+  display: block;
+}
 
 .__filters_drop_zone .__fz_item {
   border: 1px solid #ddd;

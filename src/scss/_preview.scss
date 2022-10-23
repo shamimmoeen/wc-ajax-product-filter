@@ -1,3 +1,17 @@
 .wcapf-single-filter {
 	font-size: 14px;
+
+	// Force show the active filters.
+	&.wcapf-active-filters-filter {
+		&.wcapf-field-hidden {
+			display: block;
+		}
+	}
+
+	// Force show the reset filter.
+	&.wcapf-reset-button-filter {
+		&.wcapf-field-hidden {
+			display: block;
+		}
+	}
 }

@@ -267,9 +267,6 @@ class WCAPF_Admin {
 			);
 
 			wp_enqueue_script( 'wcapf-admin-scripts' );
-
-			// Loads the media utils.
-			wp_enqueue_media();
 		}
 
 		if ( 'toplevel_page_wcapf-filter' === $hook ) {
@@ -279,6 +276,12 @@ class WCAPF_Admin {
 			} else {
 				// Single filter admin ui scripts.
 				$this->load_scripts( 'filter' );
+
+				// Loads the media utils.
+				wp_enqueue_media();
+
+				// Loads the wcapf frontend styles for the filter preview.
+				WCAPF_Frontend_Scripts::load_frontend_scripts();
 			}
 		}
 
@@ -289,11 +292,17 @@ class WCAPF_Admin {
 			} else {
 				// Single filter form admin ui scripts.
 				$this->load_scripts( 'filter-form' );
+
+				// Loads the wcapf frontend styles for the filter preview.
+				WCAPF_Frontend_Scripts::load_frontend_scripts();
 			}
 		}
 
 		// Settings page admin ui scripts.
 		if ( 'wcapf_page_wcapf-new-settings' === $hook ) {
+			// Loads the media utils.
+			wp_enqueue_media();
+
 			$this->load_scripts( 'settings' );
 		}
 	}
