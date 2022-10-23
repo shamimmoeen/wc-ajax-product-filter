@@ -5,19 +5,19 @@
 }
 
 a.__upgrade_btn {
-    align-items: center;
+	align-items: center;
 	background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
 	border-radius: 4px;
 	color: #fff;
 	display: inline-flex;
-    font-size: .625rem;
+	font-size: .625rem;
 	font-weight: 600;
-    letter-spacing: .2px;
-    line-height: 1;
+	letter-spacing: .2px;
+	line-height: 1;
 	gap: .65rem;
-	padding: 8px 12px;
-    text-transform: uppercase;
-    text-decoration: none;
+	padding: 10px 12px;
+	text-transform: uppercase;
+	text-decoration: none;
 
 	svg {
 		fill: #fff;
