@@ -42,9 +42,9 @@ const FilterNav = () => {
 			{(tab) => {
 				if (isLoading) {
 					return (
-						<Flex justify={'center'} style={{ margin: '2em 0' }}>
+						<div style={{ padding: '2em 0', textAlign: 'center' }}>
 							<Spinner />
-						</Flex>
+						</div>
 					);
 				} else {
 					if (tab.name === 'filter_ui') {
