@@ -1,17 +1,13 @@
 .__tab_panel {
-	margin-top: 1.5em;
-
 	.components-tab-panel__tabs {
+		background-color: #f8f9fa;
 		border-bottom: 1px solid rgb(0 0 0 / 5%);
-		box-shadow: 0 10px 10px rgb(0 0 0 / 2%);
-		padding-left: 20px;
-		padding-right: 20px;
+		padding-left: var(--hr-padding);
+		padding-right: var(--hr-padding);
 		justify-content: center;
 	}
 
 	.components-tab-panel__tabs-item {
-		font-size: 14px;
-
 		&:disabled:hover {
 			color: initial;
 		}
@@ -27,10 +23,6 @@
 	}
 
 	&.filter_ui {
-		> .components-tab-panel__tabs {
-			box-shadow: none;
-		}
-
 		.__available_filters {
 			margin-bottom: 2em;
 

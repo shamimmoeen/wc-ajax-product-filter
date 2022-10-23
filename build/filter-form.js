@@ -4330,7 +4330,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DeleteIcon": function() { return /* binding */ DeleteIcon; },
 /* harmony export */   "DiamondIcon": function() { return /* binding */ DiamondIcon; },
 /* harmony export */   "DuplicateIcon": function() { return /* binding */ DuplicateIcon; },
-/* harmony export */   "EditIcon": function() { return /* binding */ EditIcon; }
+/* harmony export */   "EditIcon": function() { return /* binding */ EditIcon; },
+/* harmony export */   "PlusIcon": function() { return /* binding */ PlusIcon; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -4388,6 +4389,11 @@ const CheckIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createEleme
   viewBox: "0 0 24 24"
 }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("polyline", {
   points: "20 6 9 17 4 12"
+}));
+const PlusIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  viewBox: "0 0 512 512"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  d: "M490.667,234.667H277.333V21.333C277.333,9.551,267.782,0,256,0s-21.333,9.551-21.333,21.333v213.333H21.333 C9.551,234.667,0,244.218,0,256s9.551,21.333,21.333,21.333h213.333v213.333c0,11.782,9.551,21.333,21.333,21.333 s21.333-9.551,21.333-21.333V277.333h213.333c11.782,0,21.333-9.551,21.333-21.333S502.449,234.667,490.667,234.667z"
 }));
 
 /***/ }),
