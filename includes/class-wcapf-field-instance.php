@@ -39,6 +39,7 @@ class WCAPF_Field_Instance {
 	public $use_store_name;
 	public $number_data_type;
 	public $form_id;
+	public $use_custom_title;
 
 	/**
 	 * The raw field instance.
@@ -181,6 +182,8 @@ class WCAPF_Field_Instance {
 		$this->custom_appearance_options = $this->get_appearance_data();
 
 		$this->form_id = $this->get_sub_field_value( 'form_id' );
+
+		$this->use_custom_title = $this->is_custom_title_enabled();
 	}
 
 	/**
@@ -427,6 +430,23 @@ class WCAPF_Field_Instance {
 		$options = $this->get_sub_field_value( 'custom_appearance_options' );
 
 		return apply_filters( 'wcapf_field_instance_appearance_options', $options, $this );
+	}
+
+	/**
+	 * Determines if show custom title instead of filter title in the active filters' widget.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_custom_title_enabled() {
+		$for_preview = $this->get_sub_field_value( 'for_preview' );
+
+		if ( $for_preview ) {
+			return true;
+		}
+
+		return boolval( $this->get_sub_field_value( 'use_custom_title' ) );
 	}
 
 }

@@ -392,17 +392,25 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @param array  $filter_data Active filters data.
-	 * @param string $filter_key  The filter key.
-	 * @param string $layout      The layout, simple or extended.
-	 * @param string $extra_class Markup extra class.
+	 * @param array  $filter_data      Active filters data.
+	 * @param string $filter_key       The filter key.
+	 * @param string $layout           The layout, simple or extended.
+	 * @param string $use_custom_title Determines if we show custom title instead of filter title.
+	 * @param string $extra_class      Markup extra class.
 	 *
 	 * @return string
 	 */
-	public static function get_active_filters_markup( $filter_data, $filter_key, $layout, $extra_class = '' ) {
+	public static function get_active_filters_markup(
+		$filter_data,
+		$filter_key,
+		$layout,
+		$use_custom_title,
+		$extra_class = ''
+	) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
-		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : array();
-		$filter_id      = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : array();
+		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : '';
+		$filter_id      = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : '';
+		$custom_title   = isset( $filter_data['custom_title'] ) ? $filter_data['custom_title'] : '';
 
 		$html = '';
 
@@ -418,7 +426,16 @@ class WCAPF_Helper {
 			$attrs .= ' data-filter-key="' . esc_attr( $filter_key ) . '"';
 			$attrs .= ' data-value="' . esc_attr( rawurlencode( $value ) ) . '"';
 
-			$label = apply_filters( 'wcapf_active_filter_label', $label, $layout, $filter_type, $filter_id, $filter_key );
+			$label = apply_filters(
+				'wcapf_active_filter_label',
+				$label,
+				$layout,
+				$filter_type,
+				$filter_id,
+				$use_custom_title,
+				$custom_title,
+				$filter_key
+			);
 
 			$html .= '<div ' . $attrs . '>' . wp_kses_post( $label ) . '</div>';
 		}
@@ -515,7 +532,7 @@ class WCAPF_Helper {
 			}
 		}
 
-		return apply_filters( 'wcapf_active_filters_data', $sorted, $chosen_filters );
+		return apply_filters( 'wcapf_active_filters_data', $sorted, $sort_by_value, $chosen_filters );
 	}
 
 	/**
