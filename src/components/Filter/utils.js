@@ -609,6 +609,20 @@ export function getTaxonomy(filterType, taxonomy) {
 	return _taxonomy;
 }
 
+export function isTaxonomyHierarchical(currentTaxonomy, hierarchicalData) {
+	let hierarchical;
+
+	if ('product_cat' === currentTaxonomy) {
+		hierarchical = true;
+	} else if ('product_tag' === currentTaxonomy) {
+		hierarchical = false;
+	} else {
+		hierarchical = hierarchicalData[currentTaxonomy];
+	}
+
+	return hierarchical;
+}
+
 export function isTaxonomyFilters(filterType) {
 	const taxonomyFilterTypes = [
 		'category',
@@ -666,17 +680,7 @@ export function getCustomAppearanceModalData(filterType, activeFilterData) {
 		} = activeFilterData;
 
 		if ('color' === _type || ('image' === _type && !use_category_images)) {
-			if ('category' === filterType) {
-				taxonomy = 'product_cat';
-			} else if ('tag' === filterType) {
-				taxonomy = 'product_tag';
-			} else if (
-				'attribute' === filterType ||
-				'custom-taxonomy' === filterType
-			) {
-				taxonomy = _taxonomy;
-			}
-
+			taxonomy = getTaxonomy(filterType, _taxonomy);
 			type = _type;
 		}
 	}

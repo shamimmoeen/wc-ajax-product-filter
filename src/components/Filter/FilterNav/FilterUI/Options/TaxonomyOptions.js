@@ -4,6 +4,7 @@ import {
 	termsOrderByOptions,
 	taxonomyLimitByOptions,
 	getTaxonomy,
+	isTaxonomyHierarchical,
 } from '../../../utils';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
@@ -26,7 +27,7 @@ const TaxonomyOptions = () => {
 	const { orderByField, orderDirectionField } = useFields();
 
 	const {
-		taxonomy,
+		taxonomy: _taxonomy,
 		order_terms_by,
 		limit_options,
 		parent_term,
@@ -35,23 +36,8 @@ const TaxonomyOptions = () => {
 		use_term_slug_in_url,
 	} = activeFilterData;
 
-	const { taxonomy_hierarchical_data } = additionalData;
-
-	const taxonomyForSelectTerm = getTaxonomy(filterType, taxonomy);
-
-	const isTaxonomyHierarchical = () => {
-		let hierarchical;
-
-		if ('product_cat' === taxonomyForSelectTerm) {
-			hierarchical = true;
-		} else if ('product_tag' === taxonomyForSelectTerm) {
-			hierarchical = false;
-		} else {
-			hierarchical = taxonomy_hierarchical_data[taxonomyForSelectTerm];
-		}
-
-		return hierarchical;
-	};
+	const taxonomy = getTaxonomy(filterType, _taxonomy);
+	const { taxonomy_hierarchical_data: hierarchicalData } = additionalData;
 
 	const _orderByField = () => {
 		const options = termsOrderByOptions();
@@ -70,7 +56,7 @@ const TaxonomyOptions = () => {
 		const _options = taxonomyLimitByOptions();
 		let options;
 
-		if (isTaxonomyHierarchical()) {
+		if (isTaxonomyHierarchical(taxonomy, hierarchicalData)) {
 			options = _options;
 		} else {
 			options = _options.filter((option) => 'child' !== option.value);
@@ -102,7 +88,7 @@ const TaxonomyOptions = () => {
 						'Select the terms that will be available to filter by.',
 						'wc-ajax-product-filter'
 					)}
-					taxonomy={taxonomyForSelectTerm}
+					taxonomy={taxonomy}
 					isMultiple={true}
 					value={limit_values_by_id}
 					onChange={handleSelectTermChange}
@@ -121,7 +107,7 @@ const TaxonomyOptions = () => {
 						'Select the terms that will be excluded from the filter by options.',
 						'wc-ajax-product-filter'
 					)}
-					taxonomy={taxonomyForSelectTerm}
+					taxonomy={taxonomy}
 					isMultiple={true}
 					value={exclude_values_id}
 					onChange={handleSelectTermChange}
@@ -131,7 +117,10 @@ const TaxonomyOptions = () => {
 	};
 
 	const parentTermField = () => {
-		if ('child' === limit_options && isTaxonomyHierarchical()) {
+		if (
+			'child' === limit_options &&
+			isTaxonomyHierarchical(taxonomy, hierarchicalData)
+		) {
 			return (
 				<SelectMulti
 					id={'parent_term'}
@@ -140,7 +129,7 @@ const TaxonomyOptions = () => {
 						'Select the parent term for which child terms will be available to filter the products.',
 						'wc-ajax-product-filter'
 					)}
-					taxonomy={taxonomyForSelectTerm}
+					taxonomy={taxonomy}
 					onlyParent={true}
 					value={parent_term}
 					onChange={handleSelectTermChange}

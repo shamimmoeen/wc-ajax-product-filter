@@ -31,8 +31,6 @@ class WCAPF_Admin {
 		add_action( 'in_admin_header', array( $this, 'disable_admin_notices' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
 		add_action( 'admin_footer-widgets.php', array( $this, 'js_scripts_for_legacy_widget' ) );
-
-		add_filter( 'wcapf_active_filters_data', array( $this, 'add_dummy_active_filters' ) );
 	}
 
 	/**
@@ -412,15 +410,6 @@ class WCAPF_Admin {
 			array(),
 			$asset_file['version']
 		);
-	}
-
-	/**
-	 * Adds dummy filters to show when previewing the active filters.
-	 *
-	 * @return array[]
-	 */
-	public function add_dummy_active_filters() {
-		return WCAPF_API_Utils::dummy_active_filters();
 	}
 
 	/**

@@ -503,7 +503,7 @@ class WCAPF_API_Utils {
 	 *
 	 * @return array[]
 	 */
-	public static function dummy_active_filters() {
+	public static function get_dummy_active_filters() {
 		$rating = '<i class="wcapf-icon-star-full"></i>';
 		$rating .= '<i class="wcapf-icon-star-full"></i>';
 		$rating .= '<i class="wcapf-icon-star-full"></i>';
