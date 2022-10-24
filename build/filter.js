@@ -9333,6 +9333,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FilterContext */ "./src/components/Filter/FilterContext.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils */ "./src/components/Filter/utils.js");
+
 
 
 
@@ -9352,8 +9354,9 @@ const FilterPreview = () => {
       loadPreview
     }
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_4__.useFilter)();
+  const [notice, setNotice] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
   const [preview, setPreview] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
-  const [previewLoading, setPreviewLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [previewLoading, setPreviewLoading] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (isLoading) {
       return;
@@ -9361,6 +9364,13 @@ const FilterPreview = () => {
 
 
     if (!loadPreview) {
+      return;
+    }
+
+    const message = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.isFilterReady)(title, activeFilterData);
+
+    if (message) {
+      setNotice(message);
       return;
     }
 
@@ -9381,14 +9391,16 @@ const FilterPreview = () => {
       } = res;
       setPreview(data);
       setPreviewLoading(false);
+      setNotice('');
       jQuery('body').trigger('init_filter_widgets');
     }).catch(err => {
       if (axios__WEBPACK_IMPORTED_MODULE_3___default().isCancel(err)) {
         return 'axios request cancelled';
       }
 
-      console.log(err);
       setPreviewLoading(false);
+      setNotice('');
+      console.log(err);
     }); // cleanup function
 
     return () => {
@@ -9397,7 +9409,10 @@ const FilterPreview = () => {
   }, [isLoading, title, activeFilterData]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Card, {
     className: "__preview_card"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CardHeader, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Preview', 'wc-ajax-product-filter')), previewLoading && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CardBody, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CardHeader, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Preview', 'wc-ajax-product-filter')), previewLoading && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, null)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CardBody, null, notice ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Notice, {
+    status: "info",
+    isDismissible: false
+  }, notice) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: previewWrapperClass,
     dangerouslySetInnerHTML: {
       __html: preview
@@ -9948,6 +9963,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
+/* harmony export */   "isFilterReady": function() { return /* binding */ isFilterReady; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
 /* harmony export */   "isTaxonomyHierarchical": function() { return /* binding */ isTaxonomyHierarchical; },
 /* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
@@ -9964,6 +9980,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 function availableFilters() {
@@ -10077,7 +10096,7 @@ function filterDefaultData() {
     time_period_options: [],
     min_value: '0',
     min_value_auto_detect: '',
-    max_value: '1000',
+    max_value: '100',
     max_value_auto_detect: '',
     step: '10',
     value_prefix: '',
@@ -10137,10 +10156,7 @@ function ratingFilterDefaultData() {
 
 function perPageFilterDefaultData() {
   return {
-    display_type: 'select',
-    min_value: '25',
-    max_value: '100',
-    step: '25'
+    display_type: 'select'
   };
 }
 
@@ -10551,6 +10567,113 @@ function getCustomAppearanceModalData(filterType, activeFilterData) {
     type,
     taxonomy
   };
+}
+function isFilterReady(title, activeFilterData) {
+  if (!title) {
+    return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title is required', 'wc-ajax-product-filter');
+  }
+
+  let message;
+  const {
+    number_display_type,
+    date_display_type,
+    type,
+    taxonomy,
+    post_property,
+    meta_key,
+    get_options,
+    value_type,
+    number_get_options
+  } = activeFilterData;
+  const {
+    optionsKey
+  } = getTableData(type, activeFilterData);
+  const rows = activeFilterData[optionsKey];
+  const rangeDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'range_multiselect', 'range_label'];
+  const dateDisplayTypes = ['time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label'];
+
+  switch (type) {
+    case 'attribute':
+      if (!taxonomy) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select an attribute', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'price':
+      if (rangeDisplayTypes.includes(number_display_type) && 'manual_entry' === number_get_options && (0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'rating':
+      if ('manual_entry' === number_get_options && (0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'product-status':
+      if ((0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'post-property':
+      if (!post_property) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Selct a post property', 'wc-ajax-product-filter');
+      } else if (('post_date' === post_property || 'post_modified' === post_property) && dateDisplayTypes.includes(date_display_type) && (0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'custom-taxonomy':
+      if (!taxonomy) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a taxonomy', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'post-meta':
+      if (!meta_key) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Selct a meta key', 'wc-ajax-product-filter');
+      } else {
+        if ('text' === value_type) {
+          if ('manual_entry' === get_options && (0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+            message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+          }
+        } else if ('number' === value_type) {
+          if (rangeDisplayTypes.includes(number_display_type) && 'manual_entry' === number_get_options && (0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+            message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+          }
+        } else if ('date' === value_type) {
+          if (dateDisplayTypes.includes(date_display_type) && (0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+            message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+          }
+        }
+      }
+
+      break;
+
+    case 'sort-by':
+      if ((0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+      }
+
+      break;
+
+    case 'per-page':
+      if ((0,lodash__WEBPACK_IMPORTED_MODULE_2__.isEmpty)(rows)) {
+        message = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add few options', 'wc-ajax-product-filter');
+      }
+
+      break;
+  }
+
+  return message;
 }
 
 /***/ }),
