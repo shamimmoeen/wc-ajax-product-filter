@@ -152,15 +152,20 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * Gets the main wc query data.
 	 *
-	 * @param string $table The table name.
+	 * @param string $primary_table  The primary table name.
+	 * @param string $primary_column The primary column name.
 	 *
 	 * @return array
 	 */
-	public static function get_main_query_data( $table = '' ) {
+	public static function get_main_query_data( $primary_table = '', $primary_column = '' ) {
 		global $wpdb;
 
-		if ( ! $table ) {
-			$table = $wpdb->posts;
+		if ( ! $primary_table ) {
+			$primary_table = $wpdb->posts;
+		}
+
+		if ( ! $primary_column ) {
+			$primary_column = 'ID';
 		}
 
 		if ( is_shop() || is_product_taxonomy() ) {
@@ -170,8 +175,8 @@ class WCAPF_Product_Filter_Utils {
 
 			$meta_query     = new WP_Meta_Query( $meta_query );
 			$tax_query      = new WP_Tax_Query( $tax_query );
-			$meta_query_sql = $meta_query->get_sql( 'post', $table, 'ID' );
-			$tax_query_sql  = $tax_query->get_sql( $table, 'ID' );
+			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
+			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
 		} else {
 			$meta_query_sql = array( 'join' => '', 'where' => '' );
 			$tax_query_sql  = array( 'join' => '', 'where' => '' );
@@ -399,9 +404,9 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * Gets the user roles.
 	 *
-	 * @return array
-	 *
 	 * @since 3.3.0
+	 *
+	 * @return array
 	 */
 	public static function get_user_roles() {
 		global $wp_roles;
