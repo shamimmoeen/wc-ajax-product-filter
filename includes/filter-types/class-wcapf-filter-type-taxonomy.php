@@ -154,7 +154,10 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data( $lookup_table_name );
+		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data(
+			$lookup_table_name,
+			'product_or_parent_id'
+		);
 
 		$query = array();
 		$join  = '';
