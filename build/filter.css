@@ -167,6 +167,10 @@ body.rtl .__title_wrapper .__save_button .__icon {
   display: unset;
 }
 
+.__preview_card .components-notice {
+  margin: 0;
+}
+
 :root {
   --large-gap: 40px;
 }

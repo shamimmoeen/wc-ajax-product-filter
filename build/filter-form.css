@@ -58,6 +58,10 @@ body.rtl .components-snackbar-list {
   display: unset;
 }
 
+.__preview_card .components-notice {
+  margin: 0;
+}
+
 .__filters_drop_zone .__fz_item {
   border: 1px solid #ddd;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);

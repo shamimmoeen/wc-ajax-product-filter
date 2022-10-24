@@ -1,8 +1,15 @@
-import { Card, CardBody, CardHeader, Spinner } from '@wordpress/components';
+import {
+	Card,
+	CardBody,
+	CardHeader,
+	Notice,
+	Spinner,
+} from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import { useFilter } from './FilterContext';
+import { getTableData, isFilterReady } from './utils';
 
 const accordionAnimation = wcapf_params.enable_animation_for_accordion;
 const previewWrapperClass = accordionAnimation
@@ -14,8 +21,9 @@ const FilterPreview = () => {
 		state: { isLoading, title, filterId, activeFilterData, loadPreview },
 	} = useFilter();
 
+	const [notice, setNotice] = useState('');
 	const [preview, setPreview] = useState('');
-	const [previewLoading, setPreviewLoading] = useState(true);
+	const [previewLoading, setPreviewLoading] = useState(false);
 
 	useEffect(() => {
 		if (isLoading) {
@@ -24,6 +32,13 @@ const FilterPreview = () => {
 
 		// Don't reload the preview after the filter is saved.
 		if (!loadPreview) {
+			return;
+		}
+
+		const message = isFilterReady(title, activeFilterData);
+
+		if (message) {
+			setNotice(message);
 			return;
 		}
 
@@ -49,6 +64,7 @@ const FilterPreview = () => {
 
 				setPreview(data);
 				setPreviewLoading(false);
+				setNotice('');
 
 				jQuery('body').trigger('init_filter_widgets');
 			})
@@ -57,8 +73,10 @@ const FilterPreview = () => {
 					return 'axios request cancelled';
 				}
 
-				console.log(err);
 				setPreviewLoading(false);
+				setNotice('');
+
+				console.log(err);
 			});
 
 		// cleanup function
@@ -74,10 +92,16 @@ const FilterPreview = () => {
 				{previewLoading && <Spinner />}
 			</CardHeader>
 			<CardBody>
-				<div
-					className={previewWrapperClass}
-					dangerouslySetInnerHTML={{ __html: preview }}
-				/>
+				{notice ? (
+					<Notice status='info' isDismissible={false}>
+						{notice}
+					</Notice>
+				) : (
+					<div
+						className={previewWrapperClass}
+						dangerouslySetInnerHTML={{ __html: preview }}
+					/>
+				)}
 			</CardBody>
 		</Card>
 	);
