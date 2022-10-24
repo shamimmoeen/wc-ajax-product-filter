@@ -5380,7 +5380,7 @@ const Advanced = () => {
   const moveClearAllButtonInTitleField = () => {
     return 'active-filters' === filterType && '1' === enable_clear_all_button && '1' === show_title && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
       id: 'move_clear_all_button_in_title',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Clear All button in title', 'wc-ajax-product-filter'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Move clear all button in title', 'wc-ajax-product-filter'),
       description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show clear all filters button in the title.', 'wc-ajax-product-filter'),
       isChecked: move_clear_all_button_in_title,
       onChange: handleCheckboxChange

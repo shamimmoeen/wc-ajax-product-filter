@@ -98,7 +98,7 @@ const Advanced = () => {
 				<Checkbox
 					id={'move_clear_all_button_in_title'}
 					label={__(
-						'Clear All button in title',
+						'Move clear all button in title',
 						'wc-ajax-product-filter'
 					)}
 					description={__(

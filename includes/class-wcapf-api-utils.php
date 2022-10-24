@@ -498,4 +498,75 @@ class WCAPF_API_Utils {
 		return $new_post_id;
 	}
 
+	/**
+	 * Gets the dummy active filters.
+	 *
+	 * @return array[]
+	 */
+	public static function dummy_active_filters() {
+		$rating = '<i class="wcapf-icon-star-full"></i>';
+		$rating .= '<i class="wcapf-icon-star-full"></i>';
+		$rating .= '<i class="wcapf-icon-star-full"></i>';
+		$rating .= '<i class="wcapf-icon-star-full"></i>';
+		$rating .= '<i class="wcapf-icon-star-empty"></i>';
+
+		return array(
+			'_sort_by'      => array(
+				'filter_type'    => 'sort-by',
+				'filter_key'     => '_sort_by',
+				'filter_id'      => '1',
+				'custom_title'   => __( 'Sort by', 'wc-ajax-product-filter' ),
+				'active_filters' => array(
+					'min_price-asc' => __( 'Min Price', 'wc-ajax-product-filter' ),
+				),
+			),
+			'_product_cat'  => array(
+				'filter_type'    => '_product_cat',
+				'filter_key'     => '_product_cat',
+				'filter_id'      => '2',
+				'custom_title'   => __( 'Category', 'wc-ajax-product-filter' ),
+				'active_filters' => array(
+					'16' => __( 'Clothing', 'wc-ajax-product-filter' ),
+					'17' => __( 'Tshirts', 'wc-ajax-product-filter' ),
+				),
+			),
+			'_product_type' => array(
+				'filter_type'    => '_product_type',
+				'filter_key'     => '_product_type',
+				'filter_id'      => '3',
+				'custom_title'   => __( 'Product Type', 'wc-ajax-product-filter' ),
+				'active_filters' => array(
+					'4' => __( 'Variable', 'wc-ajax-product-filter' ),
+				),
+			),
+			'_rating'       => array(
+				'filter_type'    => '_rating',
+				'filter_key'     => '_rating',
+				'filter_id'      => '4',
+				'custom_title'   => __( 'Rating', 'wc-ajax-product-filter' ),
+				'active_filters' => array(
+					'4' => $rating,
+				),
+			),
+			'_vendor'       => array(
+				'filter_type'    => '_vendor',
+				'filter_key'     => '_vendor',
+				'filter_id'      => '5',
+				'custom_title'   => __( 'Vendor', 'wc-ajax-product-filter' ),
+				'active_filters' => array(
+					'1' => __( 'Jeffrey', 'wc-ajax-product-filter' ),
+				),
+			),
+			'_pa_color'     => array(
+				'filter_type'    => 'attribute',
+				'filter_key'     => '_pa_color',
+				'filter_id'      => '6',
+				'custom_title'   => __( 'Color', 'wc-ajax-product-filter' ),
+				'active_filters' => array(
+					'yellow' => __( 'Yellow', 'wc-ajax-product-filter' ),
+				),
+			),
+		);
+	}
+
 }
