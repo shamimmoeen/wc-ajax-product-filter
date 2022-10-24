@@ -644,6 +644,10 @@ class WCAPF_API {
 			wp_send_json_error( __( 'Invalid filter type', 'wc-ajax-product-filter' ) );
 		}
 
+		if ( 'active-filters' === $filter_type ) {
+			add_filter( 'wcapf_active_filters_data', array( $this, 'add_dummy_active_filters' ) );
+		}
+
 		$field = WCAPF_Helper::get_field_instance( $filter_type, $parsed_field );
 
 		ob_start();
@@ -653,6 +657,15 @@ class WCAPF_API {
 		$preview = ob_get_clean();
 
 		wp_send_json_success( $preview );
+	}
+
+	/**
+	 * Adds dummy filters to show when previewing the active filters.
+	 *
+	 * @return array[]
+	 */
+	public function add_dummy_active_filters() {
+		return WCAPF_API_Utils::get_dummy_active_filters();
 	}
 
 	/**

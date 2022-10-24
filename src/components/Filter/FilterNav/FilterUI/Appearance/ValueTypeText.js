@@ -3,7 +3,13 @@ import Checkbox from '../../../../Field/Checkbox';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
-import { getCustomAppearanceModalData, textDisplayTypes } from '../../../utils';
+import {
+	getCustomAppearanceModalData,
+	getTaxonomy,
+	isTaxonomyFilters,
+	isTaxonomyHierarchical,
+	textDisplayTypes,
+} from '../../../utils';
 import useFields from './useFields';
 import Select from '../../../../Field/Select';
 import CustomAppearanceModal from './CustomAppearanceModal';
@@ -32,10 +38,12 @@ const ValueTypeText = () => {
 	} = useFields('text');
 
 	const {
+		taxonomy: _taxonomy,
 		display_type,
 		custom_appearance_options,
 		use_category_images,
 		hierarchical,
+		enable_hierarchy_accordion,
 		enable_tooltip,
 		tooltip_position,
 		show_count_in_tooltip,
@@ -142,25 +150,17 @@ const ValueTypeText = () => {
 		}
 	};
 
-	const hierarchyField = () => {
-		let isHierarchical = false;
-
-		if ('category' === filterType) {
-			isHierarchical = true;
-		} else if ('custom-taxonomy' === filterType) {
-			const { taxonomy } = activeFilterData;
-			const { taxonomy_hierarchical_data } = additionalData;
-
-			if (taxonomy_hierarchical_data[taxonomy]) {
-				isHierarchical = true;
-			}
+	const isHierarchyEnabled = () => {
+		if (!isTaxonomyFilters(filterType)) {
+			return false;
 		}
 
-		if (!isHierarchical) {
-			return;
-		}
+		const taxonomy = getTaxonomy(filterType, _taxonomy);
+		const { taxonomy_hierarchical_data: hierarchicalData } = additionalData;
 
-		let showField = false;
+		if (!isTaxonomyHierarchical(taxonomy, hierarchicalData)) {
+			return false;
+		}
 
 		const validDisplayTypes = [
 			'checkbox',
@@ -170,10 +170,14 @@ const ValueTypeText = () => {
 		];
 
 		if (validDisplayTypes.includes(display_type)) {
-			showField = true;
+			return true;
 		}
 
-		if (showField) {
+		return false;
+	};
+
+	const hierarchyField = () => {
+		if (isHierarchyEnabled()) {
 			return (
 				<Checkbox
 					id={'hierarchical'}
@@ -183,6 +187,26 @@ const ValueTypeText = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={hierarchical}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
+	};
+
+	const hierarchyAccordionField = () => {
+		if (isHierarchyEnabled() && '1' === hierarchical) {
+			return (
+				<Checkbox
+					id={'enable_hierarchy_accordion'}
+					label={__(
+						'Enable hierarchy accordion',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Whether to enable accordion for the hierarchy filter options.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={enable_hierarchy_accordion}
 					onChange={handleCheckboxChange}
 				/>
 			);
@@ -283,6 +307,8 @@ const ValueTypeText = () => {
 			{noResultsMessageField('chosen_no_results_message')}
 
 			{hierarchyField()}
+
+			{hierarchyAccordionField()}
 
 			{showCountField('show_count')}
 

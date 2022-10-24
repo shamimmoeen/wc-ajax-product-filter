@@ -4,11 +4,16 @@ import Radio from '../../../Field/Radio';
 import Text from '../../../Field/Text';
 import { useFilter } from '../../FilterContext';
 import useFilterData from '../../useFilterData';
-import { accordionStates, isTaxonomyFilters } from '../../utils';
+import {
+	accordionStates,
+	getTaxonomy,
+	isTaxonomyFilters,
+	isTaxonomyHierarchical,
+} from '../../utils';
 
 const Advanced = () => {
 	const {
-		state: { filterType, activeFilterData, isDirty },
+		state: { filterType, activeFilterData, additionalData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -19,6 +24,8 @@ const Advanced = () => {
 		show_title,
 		active_filters_layout,
 		display_type,
+		taxonomy: _taxonomy,
+		hierarchical,
 		number_display_type,
 		date_display_type,
 		value_type,
@@ -129,7 +136,11 @@ const Advanced = () => {
 			'time_period_multiselect',
 		];
 
-		if (isTaxonomyFilters(filterType)) {
+		const taxonomyTypeFilter = isTaxonomyFilters(filterType);
+		const taxonomy = getTaxonomy(filterType, _taxonomy);
+		const { taxonomy_hierarchical_data: hierarchicalData } = additionalData;
+
+		if (taxonomyTypeFilter) {
 			_display_type = display_type;
 		} else if ('price' === filterType) {
 			_display_type = number_display_type;
@@ -153,7 +164,13 @@ const Advanced = () => {
 		} else if ('reset-button' === filterType) {
 			show = false;
 		} else {
-			if (notAllowedDisplayTypes.includes(_display_type)) {
+			if (
+				taxonomyTypeFilter &&
+				isTaxonomyHierarchical(taxonomy, hierarchicalData) &&
+				'1' === hierarchical
+			) {
+				show = false;
+			} else if (notAllowedDisplayTypes.includes(_display_type)) {
 				show = false;
 			} else {
 				show = true;

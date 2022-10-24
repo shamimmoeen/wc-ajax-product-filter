@@ -3388,6 +3388,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
+/* harmony export */   "isTaxonomyHierarchical": function() { return /* binding */ isTaxonomyHierarchical; },
 /* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
 /* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
@@ -3914,6 +3915,19 @@ function getTaxonomy(filterType, taxonomy) {
 
   return _taxonomy;
 }
+function isTaxonomyHierarchical(currentTaxonomy, hierarchicalData) {
+  let hierarchical;
+
+  if ('product_cat' === currentTaxonomy) {
+    hierarchical = true;
+  } else if ('product_tag' === currentTaxonomy) {
+    hierarchical = false;
+  } else {
+    hierarchical = hierarchicalData[currentTaxonomy];
+  }
+
+  return hierarchical;
+}
 function isTaxonomyFilters(filterType) {
   const taxonomyFilterTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
   return taxonomyFilterTypes.includes(filterType);
@@ -3967,14 +3981,7 @@ function getCustomAppearanceModalData(filterType, activeFilterData) {
     } = activeFilterData;
 
     if ('color' === _type || 'image' === _type && !use_category_images) {
-      if ('category' === filterType) {
-        taxonomy = 'product_cat';
-      } else if ('tag' === filterType) {
-        taxonomy = 'product_tag';
-      } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
-        taxonomy = _taxonomy;
-      }
-
+      taxonomy = getTaxonomy(filterType, _taxonomy);
       type = _type;
     }
   }

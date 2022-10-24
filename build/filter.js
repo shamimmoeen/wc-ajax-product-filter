@@ -5311,6 +5311,7 @@ const Advanced = () => {
     state: {
       filterType,
       activeFilterData,
+      additionalData,
       isDirty
     },
     dispatch
@@ -5324,6 +5325,8 @@ const Advanced = () => {
     show_title,
     active_filters_layout,
     display_type,
+    taxonomy: _taxonomy,
+    hierarchical,
     number_display_type,
     date_display_type,
     value_type,
@@ -5393,8 +5396,13 @@ const Advanced = () => {
     let _display_type;
 
     const notAllowedDisplayTypes = ['select', 'multi-select', 'range_slider', 'range_number', 'range_select', 'range_multiselect', 'input_date', 'input_date_range', 'time_period_select', 'time_period_multiselect'];
+    const taxonomyTypeFilter = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.isTaxonomyFilters)(filterType);
+    const taxonomy = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getTaxonomy)(filterType, _taxonomy);
+    const {
+      taxonomy_hierarchical_data: hierarchicalData
+    } = additionalData;
 
-    if ((0,_utils__WEBPACK_IMPORTED_MODULE_7__.isTaxonomyFilters)(filterType)) {
+    if (taxonomyTypeFilter) {
       _display_type = display_type;
     } else if ('price' === filterType) {
       _display_type = number_display_type;
@@ -5415,7 +5423,9 @@ const Advanced = () => {
     } else if ('reset-button' === filterType) {
       show = false;
     } else {
-      if (notAllowedDisplayTypes.includes(_display_type)) {
+      if (taxonomyTypeFilter && (0,_utils__WEBPACK_IMPORTED_MODULE_7__.isTaxonomyHierarchical)(taxonomy, hierarchicalData) && '1' === hierarchical) {
+        show = false;
+      } else if (notAllowedDisplayTypes.includes(_display_type)) {
         show = false;
       } else {
         show = true;
@@ -6429,10 +6439,12 @@ const ValueTypeText = () => {
     removeEmptyField
   } = (0,_useFields__WEBPACK_IMPORTED_MODULE_7__["default"])('text');
   const {
+    taxonomy: _taxonomy,
     display_type,
     custom_appearance_options,
     use_category_images,
     hierarchical,
+    enable_hierarchy_accordion,
     enable_tooltip,
     tooltip_position,
     show_count_in_tooltip
@@ -6507,41 +6519,48 @@ const ValueTypeText = () => {
     }
   };
 
-  const hierarchyField = () => {
-    let isHierarchical = false;
-
-    if ('category' === filterType) {
-      isHierarchical = true;
-    } else if ('custom-taxonomy' === filterType) {
-      const {
-        taxonomy
-      } = activeFilterData;
-      const {
-        taxonomy_hierarchical_data
-      } = additionalData;
-
-      if (taxonomy_hierarchical_data[taxonomy]) {
-        isHierarchical = true;
-      }
+  const isHierarchyEnabled = () => {
+    if (!(0,_utils__WEBPACK_IMPORTED_MODULE_6__.isTaxonomyFilters)(filterType)) {
+      return false;
     }
 
-    if (!isHierarchical) {
-      return;
+    const taxonomy = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getTaxonomy)(filterType, _taxonomy);
+    const {
+      taxonomy_hierarchical_data: hierarchicalData
+    } = additionalData;
+
+    if (!(0,_utils__WEBPACK_IMPORTED_MODULE_6__.isTaxonomyHierarchical)(taxonomy, hierarchicalData)) {
+      return false;
     }
 
-    let showField = false;
     const validDisplayTypes = ['checkbox', 'radio', 'select', 'multi-select'];
 
     if (validDisplayTypes.includes(display_type)) {
-      showField = true;
+      return true;
     }
 
-    if (showField) {
+    return false;
+  };
+
+  const hierarchyField = () => {
+    if (isHierarchyEnabled()) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'hierarchical',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show hierarchy', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the filter options as hierarchical.', 'wc-ajax-product-filter'),
         isChecked: hierarchical,
+        onChange: handleCheckboxChange
+      });
+    }
+  };
+
+  const hierarchyAccordionField = () => {
+    if (isHierarchyEnabled() && '1' === hierarchical) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        id: 'enable_hierarchy_accordion',
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable hierarchy accordion', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to enable accordion for the hierarchy filter options.', 'wc-ajax-product-filter'),
+        isChecked: enable_hierarchy_accordion,
         onChange: handleCheckboxChange
       });
     }
@@ -6596,7 +6615,7 @@ const ValueTypeText = () => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), useCategoryImagesField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), useChosenField('use_chosen'), allItemsLabelFieldForUseChosen('all_items_label'), noResultsMessageField('chosen_no_results_message'), hierarchyField(), showCountField('show_count'), removeEmptyField('hide_empty'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), useCategoryImagesField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), useChosenField('use_chosen'), allItemsLabelFieldForUseChosen('all_items_label'), noResultsMessageField('chosen_no_results_message'), hierarchyField(), hierarchyAccordionField(), showCountField('show_count'), removeEmptyField('hide_empty'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ValueTypeText);
@@ -8452,7 +8471,7 @@ const TaxonomyOptions = () => {
     orderDirectionField
   } = (0,_useFields__WEBPACK_IMPORTED_MODULE_8__["default"])();
   const {
-    taxonomy,
+    taxonomy: _taxonomy,
     order_terms_by,
     limit_options,
     parent_term,
@@ -8460,24 +8479,10 @@ const TaxonomyOptions = () => {
     exclude_values_id,
     use_term_slug_in_url
   } = activeFilterData;
+  const taxonomy = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getTaxonomy)(filterType, _taxonomy);
   const {
-    taxonomy_hierarchical_data
+    taxonomy_hierarchical_data: hierarchicalData
   } = additionalData;
-  const taxonomyForSelectTerm = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getTaxonomy)(filterType, taxonomy);
-
-  const isTaxonomyHierarchical = () => {
-    let hierarchical;
-
-    if ('product_cat' === taxonomyForSelectTerm) {
-      hierarchical = true;
-    } else if ('product_tag' === taxonomyForSelectTerm) {
-      hierarchical = false;
-    } else {
-      hierarchical = taxonomy_hierarchical_data[taxonomyForSelectTerm];
-    }
-
-    return hierarchical;
-  };
 
   const _orderByField = () => {
     const options = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.termsOrderByOptions)();
@@ -8496,7 +8501,7 @@ const TaxonomyOptions = () => {
 
     let options;
 
-    if (isTaxonomyHierarchical()) {
+    if ((0,_utils__WEBPACK_IMPORTED_MODULE_3__.isTaxonomyHierarchical)(taxonomy, hierarchicalData)) {
       options = _options;
     } else {
       options = _options.filter(option => 'child' !== option.value);
@@ -8519,7 +8524,7 @@ const TaxonomyOptions = () => {
         id: 'limit_values_by_id',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Terms to include', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the terms that will be available to filter by.', 'wc-ajax-product-filter'),
-        taxonomy: taxonomyForSelectTerm,
+        taxonomy: taxonomy,
         isMultiple: true,
         value: limit_values_by_id,
         onChange: handleSelectTermChange
@@ -8533,7 +8538,7 @@ const TaxonomyOptions = () => {
         id: 'exclude_values_id',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Terms to exclude', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the terms that will be excluded from the filter by options.', 'wc-ajax-product-filter'),
-        taxonomy: taxonomyForSelectTerm,
+        taxonomy: taxonomy,
         isMultiple: true,
         value: exclude_values_id,
         onChange: handleSelectTermChange
@@ -8542,12 +8547,12 @@ const TaxonomyOptions = () => {
   };
 
   const parentTermField = () => {
-    if ('child' === limit_options && isTaxonomyHierarchical()) {
+    if ('child' === limit_options && (0,_utils__WEBPACK_IMPORTED_MODULE_3__.isTaxonomyHierarchical)(taxonomy, hierarchicalData)) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_SelectMulti__WEBPACK_IMPORTED_MODULE_6__["default"], {
         id: 'parent_term',
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Parent Term', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select the parent term for which child terms will be available to filter the products.', 'wc-ajax-product-filter'),
-        taxonomy: taxonomyForSelectTerm,
+        taxonomy: taxonomy,
         onlyParent: true,
         value: parent_term,
         onChange: handleSelectTermChange
@@ -9944,6 +9949,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getTaxonomy": function() { return /* binding */ getTaxonomy; },
 /* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
+/* harmony export */   "isTaxonomyHierarchical": function() { return /* binding */ isTaxonomyHierarchical; },
 /* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
 /* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
@@ -10470,6 +10476,19 @@ function getTaxonomy(filterType, taxonomy) {
 
   return _taxonomy;
 }
+function isTaxonomyHierarchical(currentTaxonomy, hierarchicalData) {
+  let hierarchical;
+
+  if ('product_cat' === currentTaxonomy) {
+    hierarchical = true;
+  } else if ('product_tag' === currentTaxonomy) {
+    hierarchical = false;
+  } else {
+    hierarchical = hierarchicalData[currentTaxonomy];
+  }
+
+  return hierarchical;
+}
 function isTaxonomyFilters(filterType) {
   const taxonomyFilterTypes = ['category', 'tag', 'attribute', 'custom-taxonomy'];
   return taxonomyFilterTypes.includes(filterType);
@@ -10523,14 +10542,7 @@ function getCustomAppearanceModalData(filterType, activeFilterData) {
     } = activeFilterData;
 
     if ('color' === _type || 'image' === _type && !use_category_images) {
-      if ('category' === filterType) {
-        taxonomy = 'product_cat';
-      } else if ('tag' === filterType) {
-        taxonomy = 'product_tag';
-      } else if ('attribute' === filterType || 'custom-taxonomy' === filterType) {
-        taxonomy = _taxonomy;
-      }
-
+      taxonomy = getTaxonomy(filterType, _taxonomy);
       type = _type;
     }
   }
