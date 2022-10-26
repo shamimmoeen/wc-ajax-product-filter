@@ -32,6 +32,14 @@ export function proTag(isProFeature) {
 	return <span className='__pro_tag' />;
 }
 
+export function upgradeToProLink() {
+	return '#';
+}
+
+export function pluginVersion() {
+	return wcapf_admin_params.version;
+}
+
 export function getAdditionalData() {
 	const data = {
 		action: 'get_filter_additional_data',

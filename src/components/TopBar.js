@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
 import { DiamondIcon } from './SVGIcons';
+import { foundProVersion, pluginVersion, upgradeToProLink } from './utils';
 
 const navMenus = [
 	{
@@ -41,17 +42,27 @@ const TopBar = ({ view }) => {
 			</div>
 
 			<div className='__cta'>
-				<a href='' className='__upgrade_btn'>
-					<Icon icon={DiamondIcon} size={18} />
-					{__('Upgrade to PRO', 'wc-ajax-product-filter')}
-				</a>
+				{!foundProVersion() && (
+					<a
+						href={upgradeToProLink()}
+						className='__upgrade_btn'
+						target='_blank'
+					>
+						<Icon icon={DiamondIcon} size={18} />
+						{__('Upgrade to PRO', 'wc-ajax-product-filter')}
+					</a>
+				)}
+
 				<div className='__plan'>
 					<div>{__('You are on the', 'wc-ajax-product-filter')}</div>
-					<div>{__('FREE Plan')}</div>
+					<div>
+						{foundProVersion() ? __('PRO Plan') : __('FREE Plan')}
+					</div>
 				</div>
+
 				<div className='__version'>
 					<div>{__('Version', 'wc-ajax-product-filter')}</div>
-					<div>{__('3.3.1')}</div>
+					<div>{pluginVersion()}</div>
 				</div>
 			</div>
 		</div>

@@ -146,35 +146,37 @@ const ValueTypeNumber = () => {
 							onChange={handleTextFieldChange}
 						/>
 					</div>
-					<div className='cols-wrapper'>
-						<Number
-							id={'decimal_places'}
-							label={__(
-								'Decimal Places',
-								'wc-ajax-product-filter'
-							)}
-							value={decimal_places}
-							onChange={handleTextFieldChange}
-						/>
-						<Number
-							id={'thousand_separator'}
-							label={__(
-								'Thousand Separator',
-								'wc-ajax-product-filter'
-							)}
-							value={thousand_separator}
-							onChange={handleTextFieldChange}
-						/>
-						<Number
-							id={'decimal_separator'}
-							label={__(
-								'Decimal Separator',
-								'wc-ajax-product-filter'
-							)}
-							value={decimal_separator}
-							onChange={handleTextFieldChange}
-						/>
-					</div>
+					{'range_number' !== number_display_type && (
+						<div className='cols-wrapper'>
+							<Number
+								id={'decimal_places'}
+								label={__(
+									'Decimal Places',
+									'wc-ajax-product-filter'
+								)}
+								value={decimal_places}
+								onChange={handleTextFieldChange}
+							/>
+							<Number
+								id={'thousand_separator'}
+								label={__(
+									'Thousand Separator',
+									'wc-ajax-product-filter'
+								)}
+								value={thousand_separator}
+								onChange={handleTextFieldChange}
+							/>
+							<Number
+								id={'decimal_separator'}
+								label={__(
+									'Decimal Separator',
+									'wc-ajax-product-filter'
+								)}
+								value={decimal_separator}
+								onChange={handleTextFieldChange}
+							/>
+						</div>
+					)}
 				</div>
 			);
 		}

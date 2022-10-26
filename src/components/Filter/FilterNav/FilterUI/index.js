@@ -8,7 +8,7 @@ import Options from './Options';
 
 const FilterUI = () => {
 	const {
-		state: { activeUIStep, filterType },
+		state: { activeUIStep, filterType, activeFilterData },
 		dispatch,
 	} = useFilter();
 
@@ -47,10 +47,16 @@ const FilterUI = () => {
 		},
 	];
 
-	const withoutOptions = ['active-filters', 'reset-button'];
-
-	if (withoutOptions.includes(filterType)) {
+	if ('active-filters' === filterType) {
 		tabs = tabs.filter((tab) => 'options' !== tab.name);
+	} else if ('reset-button' === filterType) {
+		const notAllowedTabs = ['options'];
+
+		if (!activeFilterData['show_title']) {
+			notAllowedTabs.push('advanced');
+		}
+
+		tabs = tabs.filter((tab) => !notAllowedTabs.includes(tab.name));
 	}
 
 	return (

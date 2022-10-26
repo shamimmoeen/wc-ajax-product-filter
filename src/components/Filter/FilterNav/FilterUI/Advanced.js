@@ -120,25 +120,36 @@ const Advanced = () => {
 	};
 
 	const showSoftLimit = () => {
-		let show;
-		let _display_type;
+		if ('active-filters' === filterType) {
+			return true;
+		}
 
-		const notAllowedDisplayTypes = [
-			'select',
-			'multi-select',
-			'range_slider',
-			'range_number',
-			'range_select',
-			'range_multiselect',
-			'input_date',
-			'input_date_range',
-			'time_period_select',
-			'time_period_multiselect',
-		];
+		if ('reset-button' === filterType) {
+			return false;
+		}
 
 		const taxonomyTypeFilter = isTaxonomyFilters(filterType);
 		const taxonomy = getTaxonomy(filterType, _taxonomy);
 		const { taxonomy_hierarchical_data: hierarchicalData } = additionalData;
+
+		const hierarchicalDisplayTypes = [
+			'checkbox',
+			'radio',
+			'select',
+			'multi-select',
+		];
+
+		if (
+			taxonomyTypeFilter &&
+			isTaxonomyHierarchical(taxonomy, hierarchicalData) &&
+			hierarchicalDisplayTypes.includes(display_type) &&
+			'1' === hierarchical
+		) {
+			return false;
+		}
+
+		let show;
+		let _display_type;
 
 		if (taxonomyTypeFilter) {
 			_display_type = display_type;
@@ -159,22 +170,23 @@ const Advanced = () => {
 			_display_type = display_type;
 		}
 
-		if ('active-filters' === filterType) {
-			show = true;
-		} else if ('reset-button' === filterType) {
+		const notAllowedDisplayTypes = [
+			'select',
+			'multi-select',
+			'range_slider',
+			'range_number',
+			'range_select',
+			'range_multiselect',
+			'input_date',
+			'input_date_range',
+			'time_period_select',
+			'time_period_multiselect',
+		];
+
+		if (notAllowedDisplayTypes.includes(_display_type)) {
 			show = false;
 		} else {
-			if (
-				taxonomyTypeFilter &&
-				isTaxonomyHierarchical(taxonomy, hierarchicalData) &&
-				'1' === hierarchical
-			) {
-				show = false;
-			} else if (notAllowedDisplayTypes.includes(_display_type)) {
-				show = false;
-			} else {
-				show = true;
-			}
+			show = true;
 		}
 
 		return show;
@@ -194,9 +206,24 @@ const Advanced = () => {
 			}
 
 			const description = __(
-				'Whether to hide the long list of options with a <b>Show More/Show Less</b> toggle.',
+				'Whether to hide the long list of options with a `<b>Show More/Show Less</b>` toggle.',
 				'wc-ajax-product-filter'
 			);
+
+			let isProFeature = false;
+
+			const filterTypes = [
+				'price',
+				'post-property',
+				'custom-taxonomy',
+				'post-meta',
+				'sort-by',
+				'per-page',
+			];
+
+			if (!filterTypes.includes(filterType)) {
+				isProFeature = true;
+			}
 
 			return (
 				<Checkbox
@@ -205,6 +232,7 @@ const Advanced = () => {
 					description={description}
 					isChecked={value}
 					onChange={handleCheckboxChange}
+					isPro={isProFeature}
 				/>
 			);
 		}

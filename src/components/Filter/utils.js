@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { foundProVersion } from '../utils';
-import { isEmpty } from 'lodash';
 
 export function availableFilters() {
 	return [
@@ -276,7 +275,7 @@ export function initialFilterKeysData(activeFilterData) {
 	return filterKeys;
 }
 
-export function methodsOfGettingOptions() {
+export function methodsOfGettingOptions(forRating = false) {
 	return [
 		{
 			label: __('Automatically', 'wc-ajax-product-filter'),
@@ -285,6 +284,7 @@ export function methodsOfGettingOptions() {
 		{
 			label: __('Manual Entry', 'wc-ajax-product-filter'),
 			value: 'manual_entry',
+			isPro: forRating,
 		},
 	];
 }
@@ -684,152 +684,4 @@ export function getCustomAppearanceModalData(filterType, activeFilterData) {
 	}
 
 	return { type, taxonomy };
-}
-
-export function isFilterReady(title, activeFilterData) {
-	if (!title) {
-		return __('Title is required', 'wc-ajax-product-filter');
-	}
-
-	let message;
-
-	const {
-		number_display_type,
-		date_display_type,
-		type,
-		taxonomy,
-		post_property,
-		meta_key,
-		get_options,
-		value_type,
-		number_get_options,
-	} = activeFilterData;
-
-	const { optionsKey } = getTableData(type, activeFilterData);
-
-	const rows = activeFilterData[optionsKey];
-
-	const rangeDisplayTypes = [
-		'range_checkbox',
-		'range_radio',
-		'range_select',
-		'range_multiselect',
-		'range_label',
-	];
-
-	const dateDisplayTypes = [
-		'time_period_checkbox',
-		'time_period_radio',
-		'time_period_select',
-		'time_period_multiselect',
-		'time_period_label',
-	];
-
-	switch (type) {
-		case 'attribute':
-			if (!taxonomy) {
-				message = __('Select an attribute', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'price':
-			if (
-				rangeDisplayTypes.includes(number_display_type) &&
-				'manual_entry' === number_get_options &&
-				isEmpty(rows)
-			) {
-				message = __('Add few options', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'rating':
-			if ('manual_entry' === number_get_options && isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'product-status':
-			if (isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'post-property':
-			if (!post_property) {
-				message = __('Selct a post property', 'wc-ajax-product-filter');
-			} else if (
-				('post_date' === post_property ||
-					'post_modified' === post_property) &&
-				dateDisplayTypes.includes(date_display_type) &&
-				isEmpty(rows)
-			) {
-				message = __('Add few options', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'custom-taxonomy':
-			if (!taxonomy) {
-				message = __('Select a taxonomy', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'post-meta':
-			if (!meta_key) {
-				message = __('Selct a meta key', 'wc-ajax-product-filter');
-			} else {
-				if ('text' === value_type) {
-					if ('manual_entry' === get_options && isEmpty(rows)) {
-						message = __(
-							'Add few options',
-							'wc-ajax-product-filter'
-						);
-					}
-				} else if ('number' === value_type) {
-					if (
-						rangeDisplayTypes.includes(number_display_type) &&
-						'manual_entry' === number_get_options &&
-						isEmpty(rows)
-					) {
-						message = __(
-							'Add few options',
-							'wc-ajax-product-filter'
-						);
-					}
-				} else if ('date' === value_type) {
-					if (
-						dateDisplayTypes.includes(date_display_type) &&
-						isEmpty(rows)
-					) {
-						message = __(
-							'Add few options',
-							'wc-ajax-product-filter'
-						);
-					}
-				}
-			}
-
-			break;
-
-		case 'sort-by':
-			if (isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
-			}
-
-			break;
-
-		case 'per-page':
-			if (isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
-			}
-
-			break;
-	}
-
-	return message;
 }

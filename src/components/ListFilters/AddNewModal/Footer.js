@@ -64,6 +64,7 @@ const Footer = ({
 					disabled = true;
 				}
 			} else if (3 === step) {
+				// TODO: Check
 				disabled = disableFilterSubmission(activeFilterData);
 			}
 

@@ -10,7 +10,7 @@ import {
 	removeFilterSavedNotices,
 	removeCopiedToClipboardNotice,
 } from '../notices';
-import { disableFilterSubmission } from '../utils';
+import { getFilterStatus } from './utilsForFilterData';
 
 const FilterTitle = () => {
 	const {
@@ -42,16 +42,11 @@ const FilterTitle = () => {
 			return;
 		}
 
-		const titleReady = title;
-		const filterReady = !disableFilterSubmission(activeFilterData);
+		const filterReady = !getFilterStatus(title, activeFilterData);
 
-		if (!titleReady && !filterReady && !btnDisabled) {
+		if (!filterReady && !btnDisabled) {
 			setBtnDisabled(true);
-		} else if (titleReady && !filterReady && !btnDisabled) {
-			setBtnDisabled(true);
-		} else if (!titleReady && filterReady && !btnDisabled) {
-			setBtnDisabled(true);
-		} else if (titleReady && filterReady && btnDisabled) {
+		} else if (filterReady && btnDisabled) {
 			setBtnDisabled(false);
 		}
 	}, [title, activeFilterData]);
