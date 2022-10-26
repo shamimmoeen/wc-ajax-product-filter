@@ -11560,14 +11560,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const ProFeaturesNotice = () => {
-  if (!(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)()) {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__pro_settings"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('These settings are available only at the pro version.', 'wc-ajax-product-filter'), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-      href: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.upgradeToProLink)(),
-      target: "_blank"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade', 'wc-ajax-product-filter'))));
-  }
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)() && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__pro_settings"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('These settings are available only at the pro version.', 'wc-ajax-product-filter'), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.upgradeToProLink)(),
+    target: "_blank"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade', 'wc-ajax-product-filter')))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ProFeaturesNotice);
