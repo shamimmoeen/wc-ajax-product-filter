@@ -319,6 +319,10 @@ jQuery( document ).ready( function( $ ) {
 	initNoUISlider();
 
 	function filterByDate( $input ) {
+		if ( wcapf_params.for_preview ) {
+			return;
+		}
+
 		const $wcapfDateFilter = $input.closest( '.wcapf-date-input' );
 		const filterKey        = $wcapfDateFilter.attr( 'data-filter-key' );
 		const isRange          = $wcapfDateFilter.attr( 'data-is-range' );
