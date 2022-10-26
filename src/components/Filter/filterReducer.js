@@ -1,8 +1,6 @@
 export const initialState = {
 	isLoading: true,
 	activeUIStep: '',
-	isDirty: false,
-	loadPreview: true,
 	title: '',
 	filterType: '',
 	filterId: '',
@@ -10,6 +8,8 @@ export const initialState = {
 	additionalData: {},
 	filterKeys: {},
 	filtersData: {},
+	isDirty: false,
+	loadPreview: true,
 };
 
 const filterReducer = (state, action) => {
@@ -19,18 +19,6 @@ const filterReducer = (state, action) => {
 
 		case 'SET_ACTIVE_UI_STEP':
 			return { ...state, activeUIStep: action.payload };
-
-		case 'SET_DIRTY':
-			return { ...state, isDirty: true };
-
-		case 'UNSET_DIRTY':
-			return { ...state, isDirty: false };
-
-		case 'SET_LOAD_PREVIEW':
-			return { ...state, loadPreview: true };
-
-		case 'UNSET_LOAD_PREVIEW':
-			return { ...state, loadPreview: false };
 
 		case 'SET_TITLE':
 			return { ...state, title: action.payload };
@@ -52,6 +40,18 @@ const filterReducer = (state, action) => {
 
 		case 'SET_FILTERS_DATA':
 			return { ...state, filtersData: action.payload };
+
+		case 'SET_DIRTY':
+			return { ...state, isDirty: true };
+
+		case 'UNSET_DIRTY':
+			return { ...state, isDirty: false };
+
+		case 'SET_LOAD_PREVIEW':
+			return { ...state, loadPreview: true };
+
+		case 'UNSET_LOAD_PREVIEW':
+			return { ...state, loadPreview: false };
 
 		default:
 			return state;

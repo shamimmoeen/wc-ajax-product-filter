@@ -1,7 +1,68 @@
+.__pro_settings,
 .__upgrade_btn,
 .__pro_tag {
-	--gradient-start: #a16bfe;
-	--gradient-end: #a162a2;
+	--gradient-start: #D279EE;
+	--gradient-end: #5691c8;
+}
+
+.__pro_features_card {
+	--gradient-start: #2b5876;
+	--gradient-end: #5691c8;
+
+	background: linear-gradient(33deg, var(--gradient-end), var(--gradient-start));
+	border-radius: 10px;
+	color: #fff;
+	padding: 16px;
+
+	.__heading {
+		text-align: center;
+	}
+
+	h2,
+	a {
+		color: #fff;
+	}
+
+	ul {
+		margin: 2em 1em;
+
+		li {
+			position: relative;
+			margin-bottom: 10px;
+
+			&::before {
+				content: '\f147';
+				font-family: dashicons;
+				display: inline-block;
+				line-height: 1;
+				font-weight: 400;
+				font-style: normal;
+				width: 20px;
+				height: 20px;
+				font-size: 20px;
+				vertical-align: top;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+		}
+	}
+}
+
+.__pro_settings {
+	border-radius: 10px;
+	padding: 16px;
+	margin-bottom: 2em;
+	border: 3px solid rgba(0, 0, 0, 5%);
+	border-image-source: linear-gradient(to left, var(--gradient-start), var(--gradient-end));
+	border-width: 3px;
+	border-image-slice: 1;
+
+	p {
+		margin: 0;
+		font-weight: 500;
+		font-size: 14px;
+	}
 }
 
 a.__upgrade_btn {
@@ -39,15 +100,44 @@ a.__upgrade_btn {
 		letter-spacing: 0.5px;
 		padding: 2px 4px;
 		border-radius: 4px;
-		margin: 0 0 0 4px;
 		font-size: 12px;
 	}
 }
 
-body.rtl {
-	.__pro_tag {
-		&::before {
-			margin: 0 4px 0 0;
+body {
+	&:not(.rtl) {
+		.__pro_features_card {
+			li {
+				padding-left: 2em;
+
+				&::before {
+					left: 0;
+				}
+			}
+		}
+
+		.__pro_tag {
+			&::before {
+				margin: 0 0 0 4px;
+			}
+		}
+	}
+
+	&.rtl {
+		.__pro_features_card {
+			li {
+				padding-right: 2em;
+
+				&::before {
+					right: 0;
+				}
+			}
+		}
+
+		.__pro_tag {
+			&::before {
+				margin: 0 4px 0 0;
+			}
 		}
 	}
 }

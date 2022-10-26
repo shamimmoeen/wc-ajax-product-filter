@@ -2,14 +2,22 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
+	Icon,
 	Notice,
 	Spinner,
+	Tooltip,
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import axios from 'axios';
+import ProFeaturesCard from '../ProFeaturesCard';
 import { useFilter } from './FilterContext';
-import { getTableData, isFilterReady } from './utils';
+import { getFilterStatus } from './utilsForFilterData';
+
+const previewTooltip = __(
+	'This is for demonstration purposes only and may not look same in the frontend.',
+	'wc-ajax-product-filter'
+);
 
 const accordionAnimation = wcapf_params.enable_animation_for_accordion;
 const previewWrapperClass = accordionAnimation
@@ -21,7 +29,7 @@ const FilterPreview = () => {
 		state: { isLoading, title, filterId, activeFilterData, loadPreview },
 	} = useFilter();
 
-	const [notice, setNotice] = useState('');
+	const [filterStatus, setFilterStatus] = useState('');
 	const [preview, setPreview] = useState('');
 	const [previewLoading, setPreviewLoading] = useState(false);
 
@@ -35,11 +43,16 @@ const FilterPreview = () => {
 			return;
 		}
 
-		const message = isFilterReady(title, activeFilterData);
+		const _filterStatus = getFilterStatus(title, activeFilterData);
 
-		if (message) {
-			setNotice(message);
+		if (_filterStatus) {
+			setFilterStatus(_filterStatus);
+
 			return;
+		}
+
+		if ('pro-feature' === filterStatus) {
+			setFilterStatus('');
 		}
 
 		setPreviewLoading(true);
@@ -64,7 +77,7 @@ const FilterPreview = () => {
 
 				setPreview(data);
 				setPreviewLoading(false);
-				setNotice('');
+				setFilterStatus('');
 
 				jQuery('body').trigger('init_filter_widgets');
 			})
@@ -74,7 +87,7 @@ const FilterPreview = () => {
 				}
 
 				setPreviewLoading(false);
-				setNotice('');
+				setFilterStatus('');
 
 				console.log(err);
 			});
@@ -86,24 +99,39 @@ const FilterPreview = () => {
 	}, [isLoading, title, activeFilterData]);
 
 	return (
-		<Card className='__preview_card'>
-			<CardHeader>
-				<h2>{__('Preview', 'wc-ajax-product-filter')}</h2>
-				{previewLoading && <Spinner />}
-			</CardHeader>
-			<CardBody>
-				{notice ? (
-					<Notice status='info' isDismissible={false}>
-						{notice}
-					</Notice>
-				) : (
-					<div
-						className={previewWrapperClass}
-						dangerouslySetInnerHTML={{ __html: preview }}
-					/>
-				)}
-			</CardBody>
-		</Card>
+		<>
+			{'pro-feature' === filterStatus ? (
+				<ProFeaturesCard />
+			) : (
+				<Card className='__preview_card'>
+					<CardHeader>
+						<h2>
+							{__('Preview', 'wc-ajax-product-filter')}
+							<Tooltip text={previewTooltip}>
+								<span className='__preview_note'>
+									<Icon icon={'editor-help'} />
+								</span>
+							</Tooltip>
+						</h2>
+						{previewLoading && <Spinner />}
+					</CardHeader>
+					<CardBody>
+						{filterStatus ? (
+							<Notice status='info' isDismissible={false}>
+								{filterStatus}
+							</Notice>
+						) : (
+							<div
+								className={previewWrapperClass}
+								dangerouslySetInnerHTML={{
+									__html: preview,
+								}}
+							/>
+						)}
+					</CardBody>
+				</Card>
+			)}
+		</>
 	);
 };
 

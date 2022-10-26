@@ -12,14 +12,40 @@
 
 	.__preview_card {
 		.components-card-header {
-			justify-content: flex-start;
-			gap: 8px;
+			justify-content: space-between;
+			gap: 16px;
 
 			h2 {
 				font-size: 1.7em;
 				font-weight: 500;
 				line-height: 1;
 				margin: 3px 0;
+			}
+
+			.components-spinner {
+				margin: 0;
+			}
+
+			.__preview_note {
+				color: #757575;
+				font-size: unset;
+				font-weight: normal;
+				margin: 0 0 0 4px;
+			}
+		}
+	}
+}
+
+body {
+	&.rtl {
+		.__edit_filter {
+			.__preview_card {
+				.components-card-header {
+					.__preview_note {
+						display: inline-block;
+						margin: 0 4px 0 0;
+					}
+				}
 			}
 		}
 	}

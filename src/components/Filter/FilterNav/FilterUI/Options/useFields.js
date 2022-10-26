@@ -11,7 +11,7 @@ import {
 
 const useFields = () => {
 	const {
-		state: { activeFilterData, isDirty },
+		state: { filterType, activeFilterData, isDirty },
 		dispatch,
 	} = useFilter();
 
@@ -22,6 +22,14 @@ const useFields = () => {
 	);
 
 	const getOptionsField = (id) => {
+		let options;
+
+		if ('rating' === filterType) {
+			options = methodsOfGettingOptions(true);
+		} else {
+			options = methodsOfGettingOptions();
+		}
+
 		return (
 			<Radio
 				id={id}
@@ -29,7 +37,7 @@ const useFields = () => {
 				description={__(
 					'Whether to get the options automatically or you want to add the options manually.'
 				)}
-				options={methodsOfGettingOptions()}
+				options={options}
 				value={activeFilterData[id]}
 				onChange={handleRadioChange}
 			/>

@@ -188,6 +188,7 @@ const ValueTypeText = () => {
 					)}
 					isChecked={hierarchical}
 					onChange={handleCheckboxChange}
+					isPro={'category' === filterType}
 				/>
 			);
 		}

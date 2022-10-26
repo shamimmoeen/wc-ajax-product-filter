@@ -11,6 +11,7 @@ import ToggleGroup from '../../../../Field/ToggleGroup';
 import SelectMulti from '../../../../Field/SelectMulti';
 import Checkbox from '../../../../Field/Checkbox';
 import useFields from './useFields';
+import ProFeaturesNotice from '../../../../ProFeaturesNotice';
 
 const TaxonomyOptions = () => {
 	const {
@@ -41,9 +42,8 @@ const TaxonomyOptions = () => {
 
 	const _orderByField = () => {
 		const options = termsOrderByOptions();
-		const isPro = true;
 
-		return orderByField('order_terms_by', options, isPro);
+		return orderByField('order_terms_by', options);
 	};
 
 	const _orderDirectionField = () => {
@@ -73,7 +73,6 @@ const TaxonomyOptions = () => {
 				options={options}
 				onChange={handleToggleGroupChange}
 				value={limit_options}
-				isPro={true}
 			/>
 		);
 	};
@@ -155,6 +154,8 @@ const TaxonomyOptions = () => {
 
 	return (
 		<>
+			<ProFeaturesNotice />
+
 			{_orderByField()}
 
 			{_orderDirectionField()}

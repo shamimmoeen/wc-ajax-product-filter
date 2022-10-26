@@ -333,6 +333,8 @@ class WCAPF_Admin {
 		// TODO: Make it dynamic.
 		$params['foundPro'] = true;
 
+		$params['version'] = WCAPF_VERSION;
+
 		$params['max_items_in_custom_appearance_modal'] = 99;
 		$params['timeout_for_cleaning_wp_media_frames'] = 300;
 
