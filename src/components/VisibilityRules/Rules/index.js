@@ -1,6 +1,7 @@
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import AndClause from './AndClause';
+import { isEmpty } from 'lodash';
 
 const Rules = ({
 	label,
@@ -9,6 +10,7 @@ const Rules = ({
 	handleRemove,
 	handleAddingAndClause,
 	handleAddingOrClause,
+	handleRemoveAllRules,
 }) => {
 	return (
 		<div className='__form_control __rules'>
@@ -31,13 +33,25 @@ const Rules = ({
 							))}
 						</div>
 
-						<Button
-							onClick={handleAddingAndClause}
-							variant='secondary'
-							isSmall
-						>
-							{__('Add rule group', 'wc-ajax-product-filter')}
-						</Button>
+						<div className='__buttons'>
+							<Button
+								onClick={handleAddingAndClause}
+								variant='secondary'
+								isSmall
+							>
+								{__('Add rule group', 'wc-ajax-product-filter')}
+							</Button>
+							{!isEmpty(rules) && (
+								<Button
+									onClick={handleRemoveAllRules}
+									variant='tertiary'
+									isDestructive
+									isSmall
+								>
+									{__('Remove all', 'wc-ajax-product-filter')}
+								</Button>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>

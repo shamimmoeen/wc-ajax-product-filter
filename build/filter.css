@@ -1355,6 +1355,10 @@ body.rtl .__sidebar .components-button {
 .__form_control.__rules .__archive_select .__react_select__option--is-selected .__info {
   color: rgba(0, 0, 0, 0.3);
 }
+.__form_control.__rules .__buttons {
+  display: flex;
+  gap: 4px;
+}
 .__form_control.__media_screen_rules .components-base-control__field, .__form_control.__rules .components-base-control__field {
   margin: 0;
 }

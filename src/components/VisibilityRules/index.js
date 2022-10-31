@@ -46,18 +46,37 @@ const VisibilityRules = () => {
 	};
 
 	const handleRuleChange = (column, andIndex, orIndex, value) => {
+		if ('rule' === column || 'operator' === column) {
+			const oldValue = rules[andIndex][orIndex][column];
+
+			if (oldValue === value.value) {
+				return;
+			}
+		} else if ('compare' === column) {
+			const oldValue = rules[andIndex][orIndex][column];
+
+			if (oldValue.value === value.value) {
+				return;
+			}
+		}
+
 		const newRules = rules.map((andData, _andIndex) =>
 			andData.map((orData, _orIndex) => {
 				if (_andIndex === andIndex && _orIndex === orIndex) {
 					if ('rule' === column) {
+						const { group, value: newValue } = value;
+
 						return {
 							...orData,
-							rule: value,
+							group,
+							rule: newValue,
 							compare: '',
 							include_children: '',
 						};
 					} else if ('operator' === column) {
-						return { ...orData, operator: value };
+						const { value: operator } = value;
+
+						return { ...orData, operator };
 					} else if ('compare' === column) {
 						return { ...orData, compare: value };
 					} else if ('include_children' === column) {
@@ -126,6 +145,12 @@ const VisibilityRules = () => {
 		updateVisibilityRules(_visibilityRules);
 	};
 
+	const handleRemoveAllRules = () => {
+		const _visibilityRules = { ...visibilityRules, rules: [] };
+
+		updateVisibilityRules(_visibilityRules);
+	};
+
 	return (
 		<>
 			<MediaScreenRules
@@ -158,6 +183,7 @@ const VisibilityRules = () => {
 					handleRemove={handleRemoveRule}
 					handleAddingAndClause={handleAddingAndClause}
 					handleAddingOrClause={handleAddingOrClause}
+					handleRemoveAllRules={handleRemoveAllRules}
 				/>
 			)}
 		</>

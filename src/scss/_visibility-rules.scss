@@ -84,6 +84,11 @@
                 }
             }
         }
+
+        .__buttons {
+            display: flex;
+            gap: 4px;
+        }
     }
 
     &.__media_screen_rules,

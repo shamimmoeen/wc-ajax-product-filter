@@ -11,8 +11,9 @@ export function getOperators() {
 }
 
 export const placeholderRule = {
-	rule: page,
-	operator: operators[0],
+	group: 'page',
+	rule: 'page',
+	operator: 'equal',
 };
 
 export function getRules() {
@@ -35,6 +36,16 @@ export function getRules() {
 	}
 
 	return rules;
+}
+
+export function getRule(group, rule) {
+	if ('archive' === group) {
+		return taxonomies.find((option) => option.value === rule);
+	} else if ('filter' === group) {
+		return filters.find((option) => option.value === rule);
+	} else {
+		return getRules().find((option) => option.value === rule);
+	}
 }
 
 export function isTaxonomyHierarchical(tax) {
