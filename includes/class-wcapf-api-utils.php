@@ -31,11 +31,11 @@ class WCAPF_API_Utils {
 		return $filters_data;
 	}
 
-	public static function get_filter_ids() {
+	public static function get_filter_ids( $post_status = 'any' ) {
 		$args = array(
 			'post_type'   => 'wcapf-filter',
 			'nopaging'    => true,
-			'post_status' => 'any',
+			'post_status' => $post_status,
 			'fields'      => 'ids',
 		);
 
@@ -592,12 +592,7 @@ class WCAPF_API_Utils {
 			$and_rules = array();
 
 			foreach ( $_and_rules as $_or_rule ) {
-				$rule             = isset( $_or_rule['rule'] ) ? $_or_rule['rule'] : array();
-				$operator         = isset( $_or_rule['operator'] ) ? $_or_rule['operator'] : array();
-				$compare          = isset( $_or_rule['compare'] ) ? $_or_rule['compare'] : array();
-				$include_children = isset( $_or_rule['include_children'] ) ? $_or_rule['include_children'] : '';
-
-				$group = isset( $rule['group'] ) ? $rule['group'] : '';
+				$group = isset( $_or_rule['group'] ) ? $_or_rule['group'] : '';
 
 				if ( ! $group ) {
 					continue;
@@ -606,30 +601,14 @@ class WCAPF_API_Utils {
 				$or_rule = array();
 
 				if ( 'archive' === $group ) {
-					$value = isset( $compare['value'] ) ? $compare['value'] : '';
+					$compare = isset( $_or_rule['compare'] ) ? $_or_rule['compare'] : array();
+					$value   = isset( $compare['value'] ) ? $compare['value'] : '';
 
 					if ( $value ) {
-						$or_rule = array(
-							'group'            => $group,
-							'rule'             => $rule['value'],
-							'operator'         => $operator['value'],
-							'compare'          => $value,
-							'include_children' => $include_children,
-						);
+						$or_rule = array_merge( $_or_rule, array( 'compare' => $value ) );
 					}
-				} elseif ( 'page' === $group ) {
-					$or_rule = array(
-						'group'    => $group,
-						'rule'     => $rule['value'],
-						'operator' => $operator['value'],
-						'compare'  => 'shop',
-					);
 				} else {
-					$or_rule = array(
-						'group'    => $group,
-						'rule'     => $rule['value'],
-						'operator' => $operator['value'],
-					);
+					$or_rule = $_or_rule;
 				}
 
 				if ( $or_rule ) {
@@ -662,42 +641,35 @@ class WCAPF_API_Utils {
 		$_rules           = isset( $visibility_rules['rules'] ) ? $visibility_rules['rules'] : array();
 		$rules            = array();
 
-		$data = self::get_visibility_rules_data();
-
-		$operators  = $data['operators'];
-		$page       = $data['page'];
-		$taxonomies = $data['taxonomies'];
-		$filters    = $data['filters'];
-
 		foreach ( $_rules as $_and_rules ) {
 			$and_rules = array();
 
 			foreach ( $_and_rules as $_or_rule ) {
-				$group            = isset( $_or_rule['group'] ) ? $_or_rule['group'] : '';
-				$rule             = isset( $_or_rule['rule'] ) ? $_or_rule['rule'] : '';
-				$operator         = isset( $_or_rule['operator'] ) ? $_or_rule['operator'] : '';
-				$compare          = isset( $_or_rule['compare'] ) ? $_or_rule['compare'] : '';
-				$include_children = isset( $_or_rule['include_children'] ) ? $_or_rule['include_children'] : '';
+				$group   = isset( $_or_rule['group'] ) ? $_or_rule['group'] : '';
+				$rule    = isset( $_or_rule['rule'] ) ? $_or_rule['rule'] : '';
+				$compare = isset( $_or_rule['compare'] ) ? $_or_rule['compare'] : '';
 
 				$or_rule = array();
 
 				if ( 'archive' === $group ) {
-					$or_rule = array(
-						'rule'             => self::get_sub_array( $taxonomies, $rule ),
-						'operator'         => self::get_sub_array( $operators, $operator ),
-						'compare'          => self::get_term( $compare ),
-						'include_children' => $include_children,
-					);
+					$term = get_term( $compare );
+
+					if ( $term ) {
+						$term_data = array(
+							'value' => $term->term_id,
+							'label' => $term->name,
+						);
+
+						$or_rule = array_merge( $_or_rule, array( 'compare' => $term_data ) );
+					}
 				} elseif ( 'filter' === $group ) {
-					$or_rule = array(
-						'rule'     => self::get_sub_array( $filters, $rule ),
-						'operator' => self::get_sub_array( $operators, $operator ),
-					);
+					$filter = get_post( $rule );
+
+					if ( $filter && 'wcapf-filter' === $filter->post_type && 'publish' === $filter->post_status ) {
+						$or_rule = $_or_rule;
+					}
 				} elseif ( 'page' === $group ) {
-					$or_rule = array(
-						'rule'     => $page,
-						'operator' => self::get_sub_array( $operators, $operator ),
-					);
+					$or_rule = $_or_rule;
 				}
 
 				if ( $or_rule ) {
@@ -745,7 +717,7 @@ class WCAPF_API_Utils {
 			);
 		}
 
-		$_filters = WCAPF_API_Utils::get_filter_ids();
+		$_filters = WCAPF_API_Utils::get_filter_ids( 'publish' );
 		$filters  = array();
 
 		foreach ( $_filters as $filter_id ) {
@@ -785,28 +757,6 @@ class WCAPF_API_Utils {
 			'page'       => $page,
 			'taxonomies' => $taxonomies,
 			'filters'    => $filters,
-		);
-	}
-
-	private static function get_sub_array( $array, $value ) {
-		$sub_array = array();
-
-		foreach ( $array as $_sub_array ) {
-			if ( $_sub_array['value'] === $value ) {
-				$sub_array = $_sub_array;
-				break;
-			}
-		}
-
-		return $sub_array;
-	}
-
-	private static function get_term( $term_id ) {
-		$term = get_term( $term_id );
-
-		return array(
-			'label' => $term->name,
-			'value' => $term->term_id,
 		);
 	}
 

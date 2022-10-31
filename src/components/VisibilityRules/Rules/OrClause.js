@@ -4,7 +4,12 @@ import { cancelCircleFilled } from '@wordpress/icons';
 import Select from '../../Field/Select';
 import SelectArchive from './SelectArchive';
 import SelectRule from './SelectRule';
-import { getRules, getOperators, isTaxonomyHierarchical } from '../utils';
+import {
+	getRules,
+	getOperators,
+	isTaxonomyHierarchical,
+	getRule,
+} from '../utils';
 
 const OrClause = ({
 	clause,
@@ -13,10 +18,20 @@ const OrClause = ({
 	handleChange,
 	handleRemove,
 }) => {
-	const { rule, operator, compare, include_children } = clause;
-	const { group, value } = rule;
+	const {
+		group,
+		rule: _rule,
+		operator: _operator,
+		compare,
+		include_children,
+	} = clause;
 
+	const taxonomy = _rule;
 	const rules = getRules();
+	const rule = getRule(group, _rule);
+	const operator = getOperators().find(
+		(option) => option.value === _operator
+	);
 
 	const renderCompareField = () => {
 		if ('page' === group) {
@@ -24,8 +39,6 @@ const OrClause = ({
 		} else if ('filter' === group) {
 			return __('Active', 'wc-ajax-product-filter');
 		} else if ('archive' === group) {
-			const taxonomy = value;
-
 			return (
 				<div className='compare'>
 					<SelectArchive
@@ -42,8 +55,6 @@ const OrClause = ({
 
 	const renderIncludeChildrent = () => {
 		if ('archive' === group) {
-			const taxonomy = value;
-
 			if (
 				'product_cat' === taxonomy ||
 				isTaxonomyHierarchical(taxonomy)

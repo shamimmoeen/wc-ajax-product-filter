@@ -12085,16 +12085,16 @@ const OrClause = _ref => {
     handleRemove
   } = _ref;
   const {
-    rule,
-    operator,
+    group,
+    rule: _rule,
+    operator: _operator,
     compare,
     include_children
   } = clause;
-  const {
-    group,
-    value
-  } = rule;
+  const taxonomy = _rule;
   const rules = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getRules)();
+  const rule = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getRule)(group, _rule);
+  const operator = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getOperators)().find(option => option.value === _operator);
 
   const renderCompareField = () => {
     if ('page' === group) {
@@ -12102,7 +12102,6 @@ const OrClause = _ref => {
     } else if ('filter' === group) {
       return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Active', 'wc-ajax-product-filter');
     } else if ('archive' === group) {
-      const taxonomy = value;
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "compare"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_SelectArchive__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -12115,8 +12114,6 @@ const OrClause = _ref => {
 
   const renderIncludeChildrent = () => {
     if ('archive' === group) {
-      const taxonomy = value;
-
       if ('product_cat' === taxonomy || (0,_utils__WEBPACK_IMPORTED_MODULE_6__.isTaxonomyHierarchical)(taxonomy)) {
         return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
           className: "include-children-checkbox"
@@ -12325,6 +12322,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _AndClause__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AndClause */ "./src/components/VisibilityRules/Rules/AndClause.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -12337,7 +12337,8 @@ const Rules = _ref => {
     handleChange,
     handleRemove,
     handleAddingAndClause,
-    handleAddingOrClause
+    handleAddingOrClause,
+    handleRemoveAllRules
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_control __rules"
@@ -12358,11 +12359,18 @@ const Rules = _ref => {
     handleRemove: handleRemove,
     handleAddingOrClause: handleAddingOrClause,
     key: index
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__buttons"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: handleAddingAndClause,
     variant: "secondary",
     isSmall: true
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add rule group', 'wc-ajax-product-filter'))))));
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add rule group', 'wc-ajax-product-filter')), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    onClick: handleRemoveAllRules,
+    variant: "tertiary",
+    isDestructive: true,
+    isSmall: true
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove all', 'wc-ajax-product-filter')))))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Rules);
@@ -12447,17 +12455,39 @@ const VisibilityRules = () => {
   };
 
   const handleRuleChange = (column, andIndex, orIndex, value) => {
+    if ('rule' === column || 'operator' === column) {
+      const oldValue = rules[andIndex][orIndex][column];
+
+      if (oldValue === value.value) {
+        return;
+      }
+    } else if ('compare' === column) {
+      const oldValue = rules[andIndex][orIndex][column];
+
+      if (oldValue.value === value.value) {
+        return;
+      }
+    }
+
     const newRules = rules.map((andData, _andIndex) => andData.map((orData, _orIndex) => {
       if (_andIndex === andIndex && _orIndex === orIndex) {
         if ('rule' === column) {
+          const {
+            group,
+            value: newValue
+          } = value;
           return { ...orData,
-            rule: value,
+            group,
+            rule: newValue,
             compare: '',
             include_children: ''
           };
         } else if ('operator' === column) {
+          const {
+            value: operator
+          } = value;
           return { ...orData,
-            operator: value
+            operator
           };
         } else if ('compare' === column) {
           return { ...orData,
@@ -12528,6 +12558,13 @@ const VisibilityRules = () => {
     updateVisibilityRules(_visibilityRules);
   };
 
+  const handleRemoveAllRules = () => {
+    const _visibilityRules = { ...visibilityRules,
+      rules: []
+    };
+    updateVisibilityRules(_visibilityRules);
+  };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_MediaScreenRules__WEBPACK_IMPORTED_MODULE_5__["default"], {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hide filter on', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select screen sizes where you want to hide the filter.', 'wc-ajax-product-filter'),
@@ -12546,7 +12583,8 @@ const VisibilityRules = () => {
     handleChange: handleRuleChange,
     handleRemove: handleRemoveRule,
     handleAddingAndClause: handleAddingAndClause,
-    handleAddingOrClause: handleAddingOrClause
+    handleAddingOrClause: handleAddingOrClause,
+    handleRemoveAllRules: handleRemoveAllRules
   }));
 };
 
@@ -12564,6 +12602,7 @@ const VisibilityRules = () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "getOperators": function() { return /* binding */ getOperators; },
+/* harmony export */   "getRule": function() { return /* binding */ getRule; },
 /* harmony export */   "getRules": function() { return /* binding */ getRules; },
 /* harmony export */   "isTaxonomyHierarchical": function() { return /* binding */ isTaxonomyHierarchical; },
 /* harmony export */   "placeholderRule": function() { return /* binding */ placeholderRule; }
@@ -12588,8 +12627,9 @@ function getOperators() {
   return operators;
 }
 const placeholderRule = {
-  rule: page,
-  operator: operators[0]
+  group: 'page',
+  rule: 'page',
+  operator: 'equal'
 };
 function getRules() {
   const rules = [page];
@@ -12611,6 +12651,15 @@ function getRules() {
   }
 
   return rules;
+}
+function getRule(group, rule) {
+  if ('archive' === group) {
+    return taxonomies.find(option => option.value === rule);
+  } else if ('filter' === group) {
+    return filters.find(option => option.value === rule);
+  } else {
+    return getRules().find(option => option.value === rule);
+  }
 }
 function isTaxonomyHierarchical(tax) {
   return taxonomy_hierarchical_data[tax];
