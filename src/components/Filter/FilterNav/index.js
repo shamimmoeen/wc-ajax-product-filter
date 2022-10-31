@@ -1,5 +1,5 @@
 import { useState } from '@wordpress/element';
-import { Flex, Spinner, TabPanel } from '@wordpress/components';
+import { Spinner, TabPanel } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import FilterUI from './FilterUI';
 import VisibilityRules from '../../VisibilityRules';
@@ -9,7 +9,7 @@ const FilterNav = () => {
 	const {
 		state: { isLoading },
 	} = useFilter();
-	const [activeTab, setActiveTab] = useState('filter_ui');
+	const [activeTab, setActiveTab] = useState('visibility_rules');
 
 	const handleSelect = (tabName) => {
 		setActiveTab(tabName);
@@ -24,6 +24,7 @@ const FilterNav = () => {
 	return (
 		<TabPanel
 			className={tabPanelClasses}
+			initialTabName={'visibility_rules'}
 			activeClass='active-tab'
 			onSelect={handleSelect}
 			tabs={[

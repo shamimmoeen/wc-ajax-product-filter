@@ -163,6 +163,11 @@ class WCAPF_API {
 	public function save_filter() {
 		list( $filter_data, $post_id, $post_title ) = $this->get_filter_data_from_post_request();
 
+		$_visibility_rules = isset( $_POST['visibility_rules'] ) ? $_POST['visibility_rules'] : array();
+
+		$visibility_rules = stripslashes( $_visibility_rules );
+		$visibility_rules = json_decode( $visibility_rules, true );
+
 		$filter_type = $filter_data['type'];
 		$filter_key  = sanitize_title( $filter_data['field_key'] );
 
@@ -302,9 +307,12 @@ class WCAPF_API {
 		$filter_data = get_post_meta( $post_id, '_field_data', true );
 		$filter_data = $this->prepare_filter_data_for_new_ui( $filter_data );
 
+		// todo: prepare visibility rules for react ui
+
 		return array(
-			'post_title'  => get_the_title( $post_id ),
-			'filter_data' => $filter_data,
+			'post_title'       => get_the_title( $post_id ),
+			'filter_data'      => $filter_data,
+			'visibility_rules' => array(),
 		);
 	}
 

@@ -1,7 +1,8 @@
-import { sprintf, __ } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
 import axios from 'axios';
+import { FormatTermLabel } from './utilsForReactSelect';
 
 const SelectMulti = ({
 	label,
@@ -56,22 +57,6 @@ const SelectMulti = ({
 		}
 	};
 
-	const formatLabel = (data) => {
-		return (
-			<span>
-				{data.label}
-				<span className='__info'>
-					[
-					{sprintf(
-						__('ID: %s', 'wc-ajax-product-filter'),
-						data.value
-					)}
-					]
-				</span>
-			</span>
-		);
-	};
-
 	let _classnames;
 
 	if (isMultiple) {
@@ -116,7 +101,7 @@ const SelectMulti = ({
 					loadingMessage={() =>
 						__('Loading...', 'wc-ajax-product-filter')
 					}
-					formatOptionLabel={formatLabel}
+					formatOptionLabel={FormatTermLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id)}
@@ -146,7 +131,7 @@ const SelectMulti = ({
 					loadingMessage={() =>
 						__('Loading...', 'wc-ajax-product-filter')
 					}
-					formatOptionLabel={formatLabel}
+					formatOptionLabel={FormatTermLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id)}

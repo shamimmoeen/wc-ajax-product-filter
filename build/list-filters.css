@@ -350,7 +350,6 @@ body.rtl .__list_table_wrapper .__edit_btn {
 }
 .__custom_react_select .__info {
   color: rgba(0, 0, 0, 0.3);
-  display: inline-block;
   font-size: 12px;
   margin: 0 0 0 4px;
 }
@@ -374,6 +373,14 @@ body.rtl .__list_table_wrapper .__edit_btn {
   justify-content: space-between;
   align-items: center;
 }
+.__custom_react_select.__single_select .__react_select__group .__react_select__option {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.__custom_react_select.__single_select .__pro_group .__react_select__option {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 .__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover {
   border-color: #ddd;
@@ -392,6 +399,14 @@ body.rtl .__list_table_wrapper .__edit_btn {
   justify-content: space-between;
   align-items: center;
 }
+.__react_select__menu-portal .__react_select__group .__react_select__option {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.__react_select__menu-portal .__pro_group .__react_select__option {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 /**
 * RTL Styles.
@@ -409,6 +424,7 @@ body.rtl .__custom_react_select .__info {
   margin: 0 4px 0 0;
 }
 
+.__pro_group .__pro_heading,
 .__pro_settings,
 .__upgrade_btn,
 .__pro_tag {
@@ -496,6 +512,33 @@ a.__upgrade_btn:focus {
 }
 .__pro_tag::before {
   content: "PRO";
+  color: #fff;
+  background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.__pro_group .__react_select__group-heading {
+  position: relative;
+  text-align: center;
+}
+.__pro_group .__react_select__group-heading::after {
+  border-bottom: 1px solid #eee;
+  content: "";
+  left: 0;
+  position: absolute;
+  top: calc(50% - 1px);
+  width: 100%;
+  z-index: -1;
+}
+.__pro_group .__react_select__group-heading .__pro_heading_wrapper {
+  padding: 0 4px;
+  background-color: #fff;
+}
+.__pro_group .__react_select__group-heading .__pro_heading {
   color: #fff;
   background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
   font-weight: 500;

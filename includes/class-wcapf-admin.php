@@ -330,8 +330,7 @@ class WCAPF_Admin {
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 		);
 
-		// TODO: Make it dynamic.
-		$params['foundPro'] = true;
+		$params['foundPro'] = WCAPF_Helper::found_pro_version();
 
 		$params['version'] = WCAPF_VERSION;
 
@@ -347,7 +346,13 @@ class WCAPF_Admin {
 		$api_utils = new WCAPF_API_Utils();
 
 		if ( 'toplevel_page_wcapf-filter' === $this->current_screen_id() ) {
-			$params['filters'] = $api_utils::get_filters();
+			if ( ! isset( $_GET['id'] ) ) {
+				$params['filters'] = $api_utils::get_filters();
+			}
+
+			if ( isset( $_GET['id'] ) ) {
+				$params['visibility_rules_data'] = $api_utils::get_visibility_rules_data();
+			}
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

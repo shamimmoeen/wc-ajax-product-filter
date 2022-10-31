@@ -19,6 +19,7 @@ const FilterTitle = () => {
 			filterType,
 			filterId,
 			activeFilterData,
+			visibilityRules,
 			filtersData,
 			isDirty,
 		},
@@ -115,6 +116,7 @@ const FilterTitle = () => {
 		formData.append('filter_title', title);
 		formData.append('filter_id', filterId);
 		formData.append('filter_data', JSON.stringify(activeFilterData));
+		formData.append('visibility_rules', JSON.stringify(visibilityRules));
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)

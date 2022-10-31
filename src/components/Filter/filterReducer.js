@@ -1,3 +1,47 @@
+import { __ } from '@wordpress/i18n';
+
+const demoRules = [
+	// [
+	// 	{
+	// 		rule: {
+	// 			label: __('Page', 'wc-ajax-product-filter'),
+	// 			value: 'page',
+	// 			group: 'page',
+	// 		},
+	// 		operator: {
+	// 			label: __('not equal', 'wc-ajax-product-filter'),
+	// 			value: 'not-equal',
+	// 		},
+	// 	},
+	// 	{
+	// 		rule: {
+	// 			label: __('Category', 'wc-ajax-product-filter'),
+	// 			value: 'product_cat',
+	// 			group: 'archive',
+	// 		},
+	// 		operator: {
+	// 			label: __('equal', 'wc-ajax-product-filter'),
+	// 			value: 'equal',
+	// 		},
+	// 		compare: { label: 'Uncategorized', value: 15 },
+	// 		include_children: '1',
+	// 	},
+	// ],
+	[
+		{
+			rule: {
+				label: __('Price', 'wc-ajax-product-filter'),
+				value: 371,
+				group: 'filter',
+			},
+			operator: {
+				label: __('equal', 'wc-ajax-product-filter'),
+				value: 'equal',
+			},
+		},
+	],
+];
+
 export const initialState = {
 	isLoading: true,
 	activeUIStep: '',
@@ -5,6 +49,11 @@ export const initialState = {
 	filterType: '',
 	filterId: '',
 	activeFilterData: {},
+	visibilityRules: {
+		media_screens: ['mobile'],
+		enable_rules: '1',
+		rules: demoRules,
+	},
 	additionalData: {},
 	filterKeys: {},
 	filtersData: {},
@@ -34,6 +83,9 @@ const filterReducer = (state, action) => {
 
 		case 'SET_ADDITIONAL_DATA':
 			return { ...state, additionalData: action.payload };
+
+		case 'SET_VISIBILITY_RULES':
+			return { ...state, visibilityRules: action.payload };
 
 		case 'SET_FILTER_KEYS':
 			return { ...state, filterKeys: action.payload };

@@ -1,102 +1,13 @@
-import { Icon } from '@wordpress/components';
-import { check, chevronDown } from '@wordpress/icons';
-import { default as ReactSelect, components } from 'react-select';
-import { isProFeature } from '../utils';
-
-const customStyles = {
-	control: (base) => ({
-		...base,
-		height: 30,
-		minHeight: 30,
-	}),
-	dropdownIndicator: (base) => ({
-		...base,
-		padding: '0 4px 0 0',
-	}),
-	clearIndicator: (base) => ({
-		...base,
-		paddingTop: 0,
-		paddingBottom: 0,
-	}),
-	input: (base) => ({
-		...base,
-		paddingTop: 0,
-		paddingBottom: 0,
-	}),
-	singleValue: (base) => ({
-		...base,
-		marginLeft: 0,
-		marginRight: 0,
-	}),
-	menuPortal: (base) => ({
-		...base,
-		zIndex: 300,
-	}),
-	menu: (base) => ({
-		...base,
-		borderRadius: 2,
-		boxShadow: 'none',
-		border: '1px solid #ddd',
-		marginTop: 5,
-		marginBottom: 5,
-		zIndex: 300,
-	}),
-	menuList: (base) => ({
-		...base,
-		padding: 0,
-		borderRadius: 2,
-	}),
-	option: (base, { isFocused }) => ({
-		...base,
-		padding: '1px 8px',
-		lineHeight: '28px',
-		backgroundColor: isFocused ? '#ddd' : 'transparent',
-		color: 'unset',
-	}),
-};
-
-const IndicatorSeparator = () => null;
-
-const CaretDownIcon = () => {
-	return <Icon icon={chevronDown} size={18} />;
-};
-
-const DropdownIndicator = (props) => {
-	return (
-		<components.DropdownIndicator {...props}>
-			<CaretDownIcon />
-		</components.DropdownIndicator>
-	);
-};
-
-const Option = (props) => {
-	const { data, isSelected } = props;
-	const { label, isPro } = data;
-
-	return (
-		<components.Option {...props}>
-			<div className='__wrapper'>
-				<div className='__option_label'>
-					{label}
-					{isProFeature(isPro) && <span className='__pro_tag' />}
-				</div>
-				{isSelected && <Icon icon={check} className='__icon' />}
-			</div>
-		</components.Option>
-	);
-};
-
-const SingleValue = (props) => {
-	const { data } = props;
-	const { label, isPro } = data;
-
-	return (
-		<components.SingleValue {...props}>
-			{label}
-			{isProFeature(isPro) && <span className='__pro_tag' />}
-		</components.SingleValue>
-	);
-};
+import { default as ReactSelect } from 'react-select';
+import {
+	customStyles,
+	IndicatorSeparator,
+	DropdownIndicator,
+	Option,
+	SingleValue,
+	Group,
+	FormatGroupLabel,
+} from '../Field/utilsForReactSelect';
 
 const SimpleReactSelect = ({
 	options,
@@ -112,7 +23,9 @@ const SimpleReactSelect = ({
 				DropdownIndicator,
 				Option,
 				SingleValue,
+				Group,
 			}}
+			formatGroupLabel={FormatGroupLabel}
 			isSearchable={false}
 			options={options}
 			value={value}
