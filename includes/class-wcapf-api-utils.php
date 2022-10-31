@@ -93,13 +93,7 @@ class WCAPF_API_Utils {
 			array( 'decimal_places' )
 		);
 
-		$array_fields = apply_filters(
-			'wcapf_sub_fields_type_array',
-			array(
-				'include_user_roles',
-				'media_screen',
-			)
-		);
+		$array_fields = apply_filters( 'wcapf_sub_fields_type_array', array( 'include_user_roles' ) );
 
 		$parsed_field = array();
 
@@ -505,65 +499,6 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Gets the visibility rules data for react UI.
-	 *
-	 * @return array[][]
-	 */
-	public static function get_visibility_rules_data() {
-		// The list of all public taxonomies registered for post type product.
-		$_taxonomies = get_taxonomies(
-			array(
-				'object_type' => array( 'product' ),
-				'public'      => true,
-			),
-			'objects'
-		);
-
-		$taxonomies = array();
-
-		foreach ( $_taxonomies as $taxonomy ) {
-			$label = $taxonomy->labels->singular_name;
-			$name  = $taxonomy->name;
-
-			$taxonomies[] = array(
-				'label' => $label,
-				'value' => $name,
-				'group' => 'archive',
-			);
-		}
-
-		$_filters = WCAPF_API_Utils::get_filter_ids();
-		$filters  = array();
-
-		foreach ( $_filters as $filter_id ) {
-			$filter_data = get_post_meta( $filter_id, '_field_data', true );
-			$type        = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
-
-			if ( 'active-filters' === $type || 'reset-button' === $type ) {
-				continue;
-			}
-
-			$filters[] = array(
-				'label' => get_the_title( $filter_id ),
-				'value' => $filter_id,
-				'group' => 'filter',
-			);
-		}
-
-		return array(
-			'rules' => array(
-				'page'       => array(
-					'label' => __( 'Page', 'wc-ajax-product-filter' ),
-					'value' => 'page',
-					'group' => 'page',
-				),
-				'taxonomies' => $taxonomies,
-				'filters'    => $filters,
-			),
-		);
-	}
-
-	/**
 	 * Gets the dummy active filters.
 	 *
 	 * @return array[]
@@ -631,6 +566,247 @@ class WCAPF_API_Utils {
 					'yellow' => __( 'Yellow', 'wc-ajax-product-filter' ),
 				),
 			),
+		);
+	}
+
+	/**
+	 * Parse the filter visibility rules before saving into the database.
+	 *
+	 * @param array $visibility_rules The visibility rules data.
+	 *
+	 * @return array
+	 */
+	public static function parse_visibility_rules( $visibility_rules ) {
+		$media_screens = isset( $visibility_rules['media_screens'] ) ? $visibility_rules['media_screens'] : array();
+		$enable_rules  = isset( $visibility_rules['enable_rules'] ) ? $visibility_rules['enable_rules'] : '';
+		$_rules        = isset( $visibility_rules['rules'] ) ? $visibility_rules['rules'] : array();
+		$rules         = array();
+
+		$parsed = array();
+
+		if ( $media_screens ) {
+			$parsed['media_screens'] = array_map( 'sanitize_text_field', $media_screens );
+		}
+
+		foreach ( $_rules as $_and_rules ) {
+			$and_rules = array();
+
+			foreach ( $_and_rules as $_or_rule ) {
+				$rule             = isset( $_or_rule['rule'] ) ? $_or_rule['rule'] : array();
+				$operator         = isset( $_or_rule['operator'] ) ? $_or_rule['operator'] : array();
+				$compare          = isset( $_or_rule['compare'] ) ? $_or_rule['compare'] : array();
+				$include_children = isset( $_or_rule['include_children'] ) ? $_or_rule['include_children'] : '';
+
+				$group = isset( $rule['group'] ) ? $rule['group'] : '';
+
+				if ( ! $group ) {
+					continue;
+				}
+
+				$or_rule = array();
+
+				if ( 'archive' === $group ) {
+					$value = isset( $compare['value'] ) ? $compare['value'] : '';
+
+					if ( $value ) {
+						$or_rule = array(
+							'group'            => $group,
+							'rule'             => $rule['value'],
+							'operator'         => $operator['value'],
+							'compare'          => $value,
+							'include_children' => $include_children,
+						);
+					}
+				} elseif ( 'page' === $group ) {
+					$or_rule = array(
+						'group'    => $group,
+						'rule'     => $rule['value'],
+						'operator' => $operator['value'],
+						'compare'  => 'shop',
+					);
+				} else {
+					$or_rule = array(
+						'group'    => $group,
+						'rule'     => $rule['value'],
+						'operator' => $operator['value'],
+					);
+				}
+
+				if ( $or_rule ) {
+					$and_rules[] = $or_rule;
+				}
+			}
+
+			if ( $and_rules ) {
+				$rules[] = $and_rules;
+			}
+		}
+
+		$parsed['enable_rules'] = $enable_rules;
+		$parsed['rules']        = $rules;
+
+		return $parsed;
+	}
+
+	/**
+	 * Prepare the filter visibility rules for react ui.
+	 *
+	 * @param int $post_id The post id.
+	 *
+	 * @return array
+	 */
+	public static function prepare_filter_visibility_rules( $post_id ) {
+		$visibility_rules = get_post_meta( $post_id, '_field_visibility_rules', true );
+		$media_screens    = isset( $visibility_rules['media_screens'] ) ? $visibility_rules['media_screens'] : array();
+		$enable_rules     = isset( $visibility_rules['enable_rules'] ) ? $visibility_rules['enable_rules'] : '';
+		$_rules           = isset( $visibility_rules['rules'] ) ? $visibility_rules['rules'] : array();
+		$rules            = array();
+
+		$data = self::get_visibility_rules_data();
+
+		$operators  = $data['operators'];
+		$page       = $data['page'];
+		$taxonomies = $data['taxonomies'];
+		$filters    = $data['filters'];
+
+		foreach ( $_rules as $_and_rules ) {
+			$and_rules = array();
+
+			foreach ( $_and_rules as $_or_rule ) {
+				$group            = isset( $_or_rule['group'] ) ? $_or_rule['group'] : '';
+				$rule             = isset( $_or_rule['rule'] ) ? $_or_rule['rule'] : '';
+				$operator         = isset( $_or_rule['operator'] ) ? $_or_rule['operator'] : '';
+				$compare          = isset( $_or_rule['compare'] ) ? $_or_rule['compare'] : '';
+				$include_children = isset( $_or_rule['include_children'] ) ? $_or_rule['include_children'] : '';
+
+				$or_rule = array();
+
+				if ( 'archive' === $group ) {
+					$or_rule = array(
+						'rule'             => self::get_sub_array( $taxonomies, $rule ),
+						'operator'         => self::get_sub_array( $operators, $operator ),
+						'compare'          => self::get_term( $compare ),
+						'include_children' => $include_children,
+					);
+				} elseif ( 'filter' === $group ) {
+					$or_rule = array(
+						'rule'     => self::get_sub_array( $filters, $rule ),
+						'operator' => self::get_sub_array( $operators, $operator ),
+					);
+				} elseif ( 'page' === $group ) {
+					$or_rule = array(
+						'rule'     => $page,
+						'operator' => self::get_sub_array( $operators, $operator ),
+					);
+				}
+
+				if ( $or_rule ) {
+					$and_rules[] = $or_rule;
+				}
+			}
+
+			if ( $and_rules ) {
+				$rules[] = $and_rules;
+			}
+		}
+
+		return array(
+			'media_screens' => $media_screens,
+			'enable_rules'  => $enable_rules,
+			'rules'         => $rules,
+		);
+	}
+
+	/**
+	 * Gets the visibility rules data for react UI.
+	 *
+	 * @return array[][]
+	 */
+	public static function get_visibility_rules_data() {
+		// The list of all public taxonomies registered for post type product.
+		$_taxonomies = get_taxonomies(
+			array(
+				'object_type' => array( 'product' ),
+				'public'      => true,
+			),
+			'objects'
+		);
+
+		$taxonomies = array();
+
+		foreach ( $_taxonomies as $taxonomy ) {
+			$label = $taxonomy->labels->singular_name;
+			$name  = $taxonomy->name;
+
+			$taxonomies[] = array(
+				'label' => $label,
+				'value' => $name,
+				'group' => 'archive',
+			);
+		}
+
+		$_filters = WCAPF_API_Utils::get_filter_ids();
+		$filters  = array();
+
+		foreach ( $_filters as $filter_id ) {
+			$filter_data = get_post_meta( $filter_id, '_field_data', true );
+			$type        = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
+
+			if ( 'active-filters' === $type || 'reset-button' === $type ) {
+				continue;
+			}
+
+			$filters[] = array(
+				'label' => get_the_title( $filter_id ),
+				'value' => $filter_id,
+				'group' => 'filter',
+			);
+		}
+
+		$operators = array(
+			array(
+				'label' => __( 'equal', 'wc-ajax-product-filter' ),
+				'value' => 'equal',
+			),
+			array(
+				'label' => __( 'not equal', 'wc-ajax-product-filter' ),
+				'value' => 'not-equal',
+			),
+		);
+
+		$page = array(
+			'label' => __( 'Page', 'wc-ajax-product-filter' ),
+			'value' => 'page',
+			'group' => 'page',
+		);
+
+		return array(
+			'operators'  => $operators,
+			'page'       => $page,
+			'taxonomies' => $taxonomies,
+			'filters'    => $filters,
+		);
+	}
+
+	private static function get_sub_array( $array, $value ) {
+		$sub_array = array();
+
+		foreach ( $array as $_sub_array ) {
+			if ( $_sub_array['value'] === $value ) {
+				$sub_array = $_sub_array;
+				break;
+			}
+		}
+
+		return $sub_array;
+	}
+
+	private static function get_term( $term_id ) {
+		$term = get_term( $term_id );
+
+		return array(
+			'label' => $term->name,
+			'value' => $term->term_id,
 		);
 	}
 

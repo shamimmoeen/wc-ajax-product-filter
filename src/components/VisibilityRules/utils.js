@@ -4,20 +4,11 @@ import { isEmpty } from 'lodash';
 const { taxonomy_hierarchical_data, visibility_rules_data } =
 	wcapf_admin_params;
 
-const {
-	rules: { page, taxonomies, filters },
-} = visibility_rules_data;
+const { operators, page, taxonomies, filters } = visibility_rules_data;
 
-export const operators = [
-	{
-		label: __('equal', 'wc-ajax-product-filter'),
-		value: 'equal',
-	},
-	{
-		label: __('not equal', 'wc-ajax-product-filter'),
-		value: 'not-equal',
-	},
-];
+export function getOperators() {
+	return operators;
+}
 
 export const placeholderRule = {
 	rule: page,

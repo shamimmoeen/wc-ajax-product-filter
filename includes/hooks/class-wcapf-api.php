@@ -213,6 +213,15 @@ class WCAPF_API {
 		update_post_meta( $new_post_id, '_field_data', $parsed_field );
 		update_post_meta( $new_post_id, '_filter_key', $filter_key );
 
+		update_option( '_pet_rules', $visibility_rules ); // todo: remove
+
+		// Parse the visibility rules.
+		$parsed_visibility_rules = WCAPF_API_Utils::parse_visibility_rules( $visibility_rules );
+
+		update_option( '_pet2_rules', $parsed_visibility_rules ); // todo: remove
+
+		update_post_meta( $new_post_id, '_field_visibility_rules', $parsed_visibility_rules );
+
 		// For the filters list table.
 		$short = WCAPF_API_Utils::get_filter_data( $new_post_id );
 
@@ -304,15 +313,14 @@ class WCAPF_API {
 	 * @return array
 	 */
 	private function get_filter( $post_id ) {
-		$filter_data = get_post_meta( $post_id, '_field_data', true );
-		$filter_data = $this->prepare_filter_data_for_new_ui( $filter_data );
-
-		// todo: prepare visibility rules for react ui
+		$filter_data      = get_post_meta( $post_id, '_field_data', true );
+		$filter_data      = $this->prepare_filter_data_for_new_ui( $filter_data );
+		$visibility_rules = WCAPF_API_Utils::prepare_filter_visibility_rules( $post_id );
 
 		return array(
 			'post_title'       => get_the_title( $post_id ),
 			'filter_data'      => $filter_data,
-			'visibility_rules' => array(),
+			'visibility_rules' => $visibility_rules,
 		);
 	}
 

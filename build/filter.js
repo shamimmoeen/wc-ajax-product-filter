@@ -9699,7 +9699,8 @@ const FilterTitle = () => {
     const {
       detailed: {
         post_title,
-        filter_data: newFilterData
+        filter_data: newFilterData,
+        visibility_rules: visibilityRules
       }
     } = data;
     dispatch({
@@ -9730,6 +9731,11 @@ const FilterTitle = () => {
         payload: newFiltersData
       });
     }
+
+    dispatch({
+      type: 'SET_VISIBILITY_RULES',
+      payload: visibilityRules
+    });
   };
 
   const handleSaveFilter = () => {
@@ -9802,46 +9808,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "initialState": function() { return /* binding */ initialState; }
 /* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-
-const demoRules = [// [
-// 	{
-// 		rule: {
-// 			label: __('Page', 'wc-ajax-product-filter'),
-// 			value: 'page',
-// 			group: 'page',
-// 		},
-// 		operator: {
-// 			label: __('not equal', 'wc-ajax-product-filter'),
-// 			value: 'not-equal',
-// 		},
-// 	},
-// 	{
-// 		rule: {
-// 			label: __('Category', 'wc-ajax-product-filter'),
-// 			value: 'product_cat',
-// 			group: 'archive',
-// 		},
-// 		operator: {
-// 			label: __('equal', 'wc-ajax-product-filter'),
-// 			value: 'equal',
-// 		},
-// 		compare: { label: 'Uncategorized', value: 15 },
-// 		include_children: '1',
-// 	},
-// ],
-[{
-  rule: {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Price', 'wc-ajax-product-filter'),
-    value: 371,
-    group: 'filter'
-  },
-  operator: {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('equal', 'wc-ajax-product-filter'),
-    value: 'equal'
-  }
-}]];
 const initialState = {
   isLoading: true,
   activeUIStep: '',
@@ -9849,11 +9815,7 @@ const initialState = {
   filterType: '',
   filterId: '',
   activeFilterData: {},
-  visibilityRules: {
-    media_screens: ['mobile'],
-    enable_rules: '1',
-    rules: demoRules
-  },
+  visibilityRules: {},
   additionalData: {},
   filterKeys: {},
   filtersData: {},
@@ -10032,6 +9994,10 @@ const Filter = () => {
         dispatch({
           type: 'SET_FILTER_ID',
           payload: filterId
+        });
+        dispatch({
+          type: 'SET_VISIBILITY_RULES',
+          payload: filterData['visibility_rules']
         });
       }
 
@@ -12176,7 +12142,7 @@ const OrClause = _ref => {
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "operator"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    options: _utils__WEBPACK_IMPORTED_MODULE_6__.operators,
+    options: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getOperators)(),
     value: operator,
     onChange: selected => handleChange('operator', andIndex, orIndex, selected)
   })), renderCompareField(), renderIncludeChildrent()), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -12597,9 +12563,9 @@ const VisibilityRules = () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getOperators": function() { return /* binding */ getOperators; },
 /* harmony export */   "getRules": function() { return /* binding */ getRules; },
 /* harmony export */   "isTaxonomyHierarchical": function() { return /* binding */ isTaxonomyHierarchical; },
-/* harmony export */   "operators": function() { return /* binding */ operators; },
 /* harmony export */   "placeholderRule": function() { return /* binding */ placeholderRule; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
@@ -12613,19 +12579,14 @@ const {
   visibility_rules_data
 } = wcapf_admin_params;
 const {
-  rules: {
-    page,
-    taxonomies,
-    filters
-  }
+  operators,
+  page,
+  taxonomies,
+  filters
 } = visibility_rules_data;
-const operators = [{
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('equal', 'wc-ajax-product-filter'),
-  value: 'equal'
-}, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('not equal', 'wc-ajax-product-filter'),
-  value: 'not-equal'
-}];
+function getOperators() {
+  return operators;
+}
 const placeholderRule = {
   rule: page,
   operator: operators[0]
