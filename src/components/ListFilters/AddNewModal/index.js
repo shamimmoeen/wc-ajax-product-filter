@@ -130,6 +130,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		formData.append('action', 'wcapf_save_filter');
 		formData.append('filter_title', title);
 		formData.append('filter_data', JSON.stringify(activeFilterData));
+		formData.append('visibility_rules', JSON.stringify({}));
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)
