@@ -9,16 +9,8 @@ import useFilterData from '../../../useFilterData';
 const modalInitialClass = '__meta_values_modal';
 
 const MetaValuesModal = ({ open, closeModal }) => {
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const { setActiveFilterData } = useFilterData(
-		activeFilterData,
-		isDirty,
-		dispatch
-	);
+	const { state, dispatch } = useFilter();
+	const { setActiveFilterData } = useFilterData(state, dispatch);
 
 	const [loading, setLoading] = useState(true);
 	const [options, setOptions] = useState([]);
@@ -27,7 +19,9 @@ const MetaValuesModal = ({ open, closeModal }) => {
 	const [modalClasses, setModalClasses] = useState(modalInitialClass);
 	const [replaceOptions, toggleReplaceOptions] = useState(false);
 
-	const { meta_key, manual_options } = activeFilterData;
+	const {
+		activeFilterData: { meta_key, manual_options },
+	} = state;
 
 	// Fetch the options for the first time render.
 	useEffect(() => {

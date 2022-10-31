@@ -8,29 +8,26 @@ import SelectMulti from '../../../../Field/SelectMulti';
 import Checkbox from '../../../../Field/Checkbox';
 
 const PostAuthorOptions = () => {
-	const {
-		state: { activeFilterData, additionalData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const {
 		handleCheckboxChange,
 		handleToggleGroupChange,
 		handleSelectTermChange,
-	} = useFilterData(activeFilterData, isDirty, dispatch);
+	} = useFilterData(state, dispatch);
 
 	const { orderByField, orderDirectionField } = useFields();
 
 	const {
-		post_author_order_by,
-		limit_options,
-		limit_values_by_id,
-		exclude_values_id,
-		include_user_roles,
-		use_store_name,
-	} = activeFilterData;
-
-	const { user_roles } = additionalData;
+		activeFilterData: {
+			post_author_order_by,
+			limit_options,
+			limit_values_by_id,
+			exclude_values_id,
+			include_user_roles,
+			use_store_name,
+		},
+		additionalData: { user_roles },
+	} = state;
 
 	const _orderByField = () => {
 		const options = authorOrderByOptions();

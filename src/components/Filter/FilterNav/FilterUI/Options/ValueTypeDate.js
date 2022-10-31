@@ -5,26 +5,20 @@ import useFilterData from '../../../useFilterData';
 import ManualOptions from './ManualOptions';
 
 const ValueTypeDate = () => {
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const { handleTextFieldChange } = useFilterData(
-		activeFilterData,
-		isDirty,
-		dispatch
-	);
+	const { state, dispatch } = useFilter();
+	const { handleTextFieldChange } = useFilterData(state, dispatch);
 
 	const {
-		date_display_type,
-		date_from_prefix,
-		date_from_postfix,
-		date_from_placeholder,
-		date_to_prefix,
-		date_to_postfix,
-		date_to_placeholder,
-	} = activeFilterData;
+		activeFilterData: {
+			date_display_type,
+			date_from_prefix,
+			date_from_postfix,
+			date_from_placeholder,
+			date_to_prefix,
+			date_to_postfix,
+			date_to_placeholder,
+		},
+	} = state;
 
 	const inputFields = () => {
 		if (

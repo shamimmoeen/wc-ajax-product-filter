@@ -12,7 +12,6 @@ import { __ } from '@wordpress/i18n';
 import axios from 'axios';
 import ProFeaturesCard from '../ProFeaturesCard';
 import { useFilter } from './FilterContext';
-import { getFilterStatus } from './utilsForFilterData';
 
 const previewTooltip = __(
 	'This is for demonstration purposes only and may not look same in the frontend.',
@@ -26,33 +25,30 @@ const previewWrapperClass = accordionAnimation
 
 const FilterPreview = () => {
 	const {
-		state: { isLoading, title, filterId, activeFilterData, loadPreview },
+		state: {
+			title,
+			filterId,
+			activeFilterData,
+			loadPreview,
+			filterStatus,
+			filterPreview,
+		},
 	} = useFilter();
 
-	const [filterStatus, setFilterStatus] = useState('');
 	const [preview, setPreview] = useState('');
+	const [initialLoading, setInitialLoading] = useState(true);
 	const [previewLoading, setPreviewLoading] = useState(false);
 
+	const { type, message } = filterStatus;
+
 	useEffect(() => {
-		if (isLoading) {
+		if (!filterPreview) {
 			return;
 		}
 
 		// Don't reload the preview after the filter is saved.
 		if (!loadPreview) {
 			return;
-		}
-
-		const _filterStatus = getFilterStatus(title, activeFilterData);
-
-		if (_filterStatus) {
-			setFilterStatus(_filterStatus);
-
-			return;
-		}
-
-		if ('pro-feature' === filterStatus) {
-			setFilterStatus('');
 		}
 
 		setPreviewLoading(true);
@@ -76,8 +72,8 @@ const FilterPreview = () => {
 				} = res;
 
 				setPreview(data);
+				setInitialLoading(false);
 				setPreviewLoading(false);
-				setFilterStatus('');
 
 				jQuery('body').trigger('init_filter_widgets');
 			})
@@ -86,8 +82,8 @@ const FilterPreview = () => {
 					return 'axios request cancelled';
 				}
 
+				setInitialLoading(false);
 				setPreviewLoading(false);
-				setFilterStatus('');
 
 				console.log(err);
 			});
@@ -96,11 +92,11 @@ const FilterPreview = () => {
 		return () => {
 			controller.abort();
 		};
-	}, [isLoading, title, activeFilterData]);
+	}, [filterPreview]);
 
 	return (
 		<>
-			{'pro-feature' === filterStatus ? (
+			{'pro-feature' === type ? (
 				<ProFeaturesCard />
 			) : (
 				<Card className='__preview_card'>
@@ -113,20 +109,26 @@ const FilterPreview = () => {
 								</span>
 							</Tooltip>
 						</h2>
-						{previewLoading && <Spinner />}
+						{previewLoading && !initialLoading && <Spinner />}
 					</CardHeader>
 					<CardBody>
-						{filterStatus ? (
+						{message ? (
 							<Notice status='info' isDismissible={false}>
-								{filterStatus}
+								{message}
 							</Notice>
 						) : (
-							<div
-								className={previewWrapperClass}
-								dangerouslySetInnerHTML={{
-									__html: preview,
-								}}
-							/>
+							<>
+								{initialLoading ? (
+									<Spinner />
+								) : (
+									<div
+										className={previewWrapperClass}
+										dangerouslySetInnerHTML={{
+											__html: preview,
+										}}
+									/>
+								)}
+							</>
 						)}
 					</CardBody>
 				</Card>

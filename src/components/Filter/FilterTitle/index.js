@@ -1,34 +1,33 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { useFilter } from './FilterContext';
-import Title from '../Title';
+import { useFilter } from '../FilterContext';
+import useFilterData from '../useFilterData';
 import axios from 'axios';
-import PublishModal from '../ListFilters/PublishModal';
+import PublishModal from '../../ListFilters/PublishModal';
 import {
 	filterSavedSuccessNotice,
 	filterSavedErrorNotice,
 	removeFilterSavedNotices,
 	removeCopiedToClipboardNotice,
-} from '../notices';
-import { getFilterStatus } from './utilsForFilterData';
+} from '../../notices';
+import Title from './Title';
 
 const FilterTitle = () => {
-	const {
-		state: {
-			title,
-			filterType,
-			filterId,
-			activeFilterData,
-			visibilityRules,
-			filtersData,
-			isDirty,
-		},
-		dispatch,
-	} = useFilter();
+	const { state, dispatch } = useFilter();
+	const { setDirty } = useFilterData(state, dispatch);
 
 	const [publishModalId, setPublishModalId] = useState(null);
-	const [btnBusy, setBtnBusy] = useState(false);
-	const [btnDisabled, setBtnDisabled] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	const {
+		title,
+		filterType,
+		filterId,
+		activeFilterData,
+		visibilityRules,
+		filtersData,
+		isDirty,
+	} = state;
 
 	useEffect(() => {
 		if (!isDirty) {
@@ -38,31 +37,14 @@ const FilterTitle = () => {
 		removeFilterSavedNotices();
 	}, [isDirty]);
 
-	useEffect(() => {
-		if (!isDirty) {
-			return;
-		}
-
-		const filterReady = !getFilterStatus(title, activeFilterData);
-
-		if (!filterReady && !btnDisabled) {
-			setBtnDisabled(true);
-		} else if (filterReady && btnDisabled) {
-			setBtnDisabled(false);
-		}
-	}, [title, activeFilterData]);
-
-	const handleChange = (value) => {
+	const handleTitleChange = (value) => {
 		if (title === value) {
 			return;
 		}
 
 		dispatch({ type: 'SET_TITLE', payload: value });
 
-		if (!isDirty) {
-			dispatch({ type: 'SET_DIRTY' });
-			dispatch({ type: 'SET_LOAD_PREVIEW' });
-		}
+		setDirty();
 	};
 
 	const handleOpenPublishModal = () => {
@@ -86,8 +68,8 @@ const FilterTitle = () => {
 			},
 		} = data;
 
-		dispatch({ type: 'UNSET_DIRTY' });
-		dispatch({ type: 'UNSET_LOAD_PREVIEW' });
+		dispatch({ type: 'SET_DIRTY', payload: false });
+		dispatch({ type: 'SET_LOAD_PREVIEW', payload: false });
 
 		dispatch({
 			type: 'SET_TITLE',
@@ -113,8 +95,7 @@ const FilterTitle = () => {
 	const handleSaveFilter = () => {
 		removeFilterSavedNotices();
 
-		setBtnDisabled(true);
-		setBtnBusy(true);
+		setLoading(true);
 
 		const formData = new FormData();
 
@@ -127,8 +108,7 @@ const FilterTitle = () => {
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)
 			.then((res) => {
-				setBtnDisabled(false);
-				setBtnBusy(false);
+				setLoading(false);
 
 				const {
 					data: { data, success },
@@ -148,8 +128,7 @@ const FilterTitle = () => {
 				}
 			})
 			.catch((err) => {
-				setBtnDisabled(false);
-				setBtnBusy(false);
+				setLoading(false);
 
 				filterSavedErrorNotice(err.message);
 			});
@@ -166,12 +145,8 @@ const FilterTitle = () => {
 	return (
 		<>
 			<Title
-				label={__('Filter Title', 'wc-ajax-product-filter')}
-				value={title}
-				handleChange={handleChange}
-				isDirty={isDirty}
-				btnBusy={btnBusy}
-				btnDisabled={btnDisabled}
+				loading={loading}
+				handleTitleChange={handleTitleChange}
 				handleSubmit={handleSubmit}
 			/>
 

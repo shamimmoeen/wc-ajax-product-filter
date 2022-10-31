@@ -3,15 +3,14 @@ import { Button, NavigableMenu } from '@wordpress/components';
 import { availableFilters, getFilterDefaultData } from '../../utils';
 import { proTag } from '../../../utils';
 
-const AvailableFilters = ({
-	filterType,
-	activeFilterData,
-	filtersData,
-	initialFilterKeysData,
-	dispatch,
-	setDirty = false,
-	isDirty,
-}) => {
+const AvailableFilters = ({ state, dispatch, callback }) => {
+	const {
+		filterType,
+		activeFilterData,
+		additionalData: { initial_filter_keys: initialFilterKeysData },
+		filtersData,
+	} = state;
+
 	const handleSetFilterType = (filter) => {
 		const _filterType = filter.type;
 
@@ -39,9 +38,9 @@ const AvailableFilters = ({
 
 		dispatch({ type: 'SET_FILTERS_DATA', payload: _filtersData });
 
-		if (setDirty && !isDirty) {
-			dispatch({ type: 'SET_DIRTY' });
-			dispatch({ type: 'SET_LOAD_PREVIEW' });
+		// Make the filter dirty.
+		if (callback) {
+			callback();
 		}
 	};
 

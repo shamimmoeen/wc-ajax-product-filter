@@ -5,18 +5,15 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 
 const ResetFilter = () => {
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const { reset_button_label, show_if_empty } = activeFilterData;
-
+	const { state, dispatch } = useFilter();
 	const { handleCheckboxChange, handleTextFieldChange } = useFilterData(
-		activeFilterData,
-		isDirty,
+		state,
 		dispatch
 	);
+
+	const {
+		activeFilterData: { reset_button_label, show_if_empty },
+	} = state;
 
 	return (
 		<>

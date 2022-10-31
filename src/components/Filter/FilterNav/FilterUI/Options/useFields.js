@@ -10,16 +10,13 @@ import {
 } from '../../../utils';
 
 const useFields = () => {
-	const {
-		state: { filterType, activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const { handleRadioChange, handleToggleGroupChange } = useFilterData(
-		activeFilterData,
-		isDirty,
+		state,
 		dispatch
 	);
+
+	const { filterType, activeFilterData } = state;
 
 	const getOptionsField = (id) => {
 		let options;

@@ -10,21 +10,16 @@ import useFilterData from '../../useFilterData';
 import Number from '../../../Field/Number';
 import { variableFilterTypesData } from '../../utils';
 
-const GeneralFields = ({
-	filterType,
-	activeFilterData,
-	filterKeys,
-	additionalData,
-	isDirty,
-	dispatch,
-}) => {
+const GeneralFields = ({ state, dispatch }) => {
 	const {
 		handleCheckboxChange,
 		handleToggleGroupChange,
 		handleTextFieldChange,
 		setActiveFilterData,
 		setActiveFilterMultiData,
-	} = useFilterData(activeFilterData, isDirty, dispatch);
+	} = useFilterData(state, dispatch);
+
+	const { filterType, activeFilterData, additionalData, filterKeys } = state;
 
 	const {
 		field_key,

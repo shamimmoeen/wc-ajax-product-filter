@@ -1,25 +1,23 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import { useFilter } from '../Filter/FilterContext';
+import useFilterData from '../Filter/useFilterData';
 import Rules from './Rules';
 import MediaScreenRules from './MediaScreenRules';
 import { isEmpty } from 'lodash';
 import { placeholderRule } from './utils';
 
 const VisibilityRules = () => {
-	const {
-		state: { isDirty, visibilityRules },
-		dispatch,
-	} = useFilter();
+	const { state, dispatch } = useFilter();
+	const { setDirty } = useFilterData(state, dispatch);
 
+	const { visibilityRules } = state;
 	const { media_screens, enable_rules, rules } = visibilityRules;
 
 	const updateVisibilityRules = (value) => {
 		dispatch({ type: 'SET_VISIBILITY_RULES', payload: value });
 
-		if (!isDirty) {
-			dispatch({ type: 'SET_DIRTY' });
-		}
+		setDirty();
 	};
 
 	const handleMediaScreenChange = (value) => {

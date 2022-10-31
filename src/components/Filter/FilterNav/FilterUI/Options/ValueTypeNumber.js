@@ -7,34 +7,31 @@ import ManualOptions from './ManualOptions';
 import useFields from './useFields';
 
 const ValueTypeNumber = () => {
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const { handleCheckboxChange, handleTextFieldChange } = useFilterData(
-		activeFilterData,
-		isDirty,
+		state,
 		dispatch
 	);
 
 	const { getOptionsField } = useFields();
 
 	const {
-		number_display_type,
-		number_get_options,
-		min_value,
-		min_value_auto_detect,
-		max_value,
-		max_value_auto_detect,
-		step,
-		value_prefix,
-		value_postfix,
-		values_separator,
-		decimal_places,
-		thousand_separator,
-		decimal_separator,
-	} = activeFilterData;
+		activeFilterData: {
+			number_display_type,
+			number_get_options,
+			min_value,
+			min_value_auto_detect,
+			max_value,
+			max_value_auto_detect,
+			step,
+			value_prefix,
+			value_postfix,
+			values_separator,
+			decimal_places,
+			thousand_separator,
+			decimal_separator,
+		},
+	} = state;
 
 	const _getOptionsField = () => {
 		let showField = false;

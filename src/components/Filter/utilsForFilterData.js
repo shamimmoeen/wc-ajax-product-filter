@@ -3,6 +3,14 @@ import { foundProVersion } from '../utils';
 import { getTableData } from './utils';
 import { isEmpty } from 'lodash';
 
+export function proFeature(feature) {
+	return { type: 'pro-feature', feature };
+}
+
+export function dataRequired(message) {
+	return { type: 'data-required', message };
+}
+
 const softLimitDisabledDisplayTypes = ['select', 'multi-select'];
 
 const rangeDisplayTypes = [
@@ -34,18 +42,18 @@ function activeFiltersTryingProFeatures(activeFilterData) {
 		enable_soft_limit_for_extended_layout,
 	} = activeFilterData;
 
-	let proFeaturesTrying = false;
+	let tryingPro = false;
 
 	if ('simple' === active_filters_layout && '1' === enable_soft_limit) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('soft-limit');
 	} else if (
 		'extended' === active_filters_layout &&
 		'1' === enable_soft_limit_for_extended_layout
 	) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('soft-limit');
 	}
 
-	return proFeaturesTrying;
+	return tryingPro;
 }
 
 function filterKeyMissing(activeFilterData) {
@@ -86,32 +94,30 @@ function taxonomyTypeFilterTryingProFeatures(
 		'multi-select',
 	];
 
-	let proFeaturesTrying = false;
+	let tryingPro = false;
 
 	if (proDisplayTypes.includes(display_type)) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature(`display-type-${display_type}`);
 	} else if (
 		checkForHierarchy &&
 		allowedHierarchicalDisplayTypes.includes(display_type) &&
 		'1' === hierarchical
 	) {
-		console.log('hierarchical here');
-		proFeaturesTrying = true;
+		tryingPro = proFeature('hierarchical');
 	} else if ('default' !== order_terms_by) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('ordering-of-terms');
 	} else if ('off' !== limit_options) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('limit-terms');
 	} else if ('1' === use_term_slug_in_url) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('term-slug-in-url');
 	} else if (
 		'1' === enable_soft_limit &&
 		!softLimitDisabledDisplayTypes.includes(display_type)
 	) {
-		console.log('soft limit here');
-		proFeaturesTrying = true;
+		tryingPro = proFeature('soft-limit');
 	}
 
-	return proFeaturesTrying;
+	return tryingPro;
 }
 
 function priceFilterTryingProFeatures(activeFilterData) {
@@ -121,15 +127,15 @@ function priceFilterTryingProFeatures(activeFilterData) {
 		return false;
 	}
 
-	let proFeaturesTrying = false;
+	let tryingPro = false;
 
 	const { number_display_type } = activeFilterData;
 
 	if (rangeDisplayTypes.includes(number_display_type)) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature(`display-type-${number_display_type}`);
 	}
 
-	return proFeaturesTrying;
+	return tryingPro;
 }
 
 function ratingFilterTryingProFeatures(activeFilterData) {
@@ -139,21 +145,21 @@ function ratingFilterTryingProFeatures(activeFilterData) {
 		return false;
 	}
 
-	let proFeaturesTrying = false;
+	let tryingPro = false;
 
 	const { display_type, number_get_options, enable_soft_limit } =
 		activeFilterData;
 
 	if ('manual_entry' === number_get_options) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('rating-manual-entry');
 	} else if (
 		'1' === enable_soft_limit &&
 		!softLimitDisabledDisplayTypes.includes(display_type)
 	) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('soft-limit');
 	}
 
-	return proFeaturesTrying;
+	return tryingPro;
 }
 
 function productStatusFilterTryingProFeatures(activeFilterData) {
@@ -163,7 +169,7 @@ function productStatusFilterTryingProFeatures(activeFilterData) {
 		return false;
 	}
 
-	let proFeaturesTrying = false;
+	let tryingPro = false;
 
 	const { display_type, enable_soft_limit } = activeFilterData;
 
@@ -171,19 +177,20 @@ function productStatusFilterTryingProFeatures(activeFilterData) {
 		'1' === enable_soft_limit &&
 		!softLimitDisabledDisplayTypes.includes(display_type)
 	) {
-		proFeaturesTrying = true;
+		tryingPro = proFeature('soft-limit');
 	}
 
-	return proFeaturesTrying;
+	return tryingPro;
 }
 
 export function getFilterStatus(title, activeFilterData) {
 	if (!title) {
-		return __('Title is required', 'wc-ajax-product-filter');
+		return dataRequired(__('Title is required', 'wc-ajax-product-filter'));
 	}
 
 	const foundPro = foundProVersion();
 
+	let tryingPro = '';
 	let message = '';
 
 	const {
@@ -204,108 +211,125 @@ export function getFilterStatus(title, activeFilterData) {
 
 	switch (type) {
 		case 'active-filters':
-			if (activeFiltersTryingProFeatures(activeFilterData)) {
-				message = 'pro-feature';
+			tryingPro = activeFiltersTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			}
 
 			break;
 
 		case 'category':
-			if (taxonomyTypeFilterTryingProFeatures(activeFilterData, true)) {
-				message = 'pro-feature';
+			tryingPro = taxonomyTypeFilterTryingProFeatures(
+				activeFilterData,
+				true
+			);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			}
 
 			break;
 
 		case 'tag':
-			if (taxonomyTypeFilterTryingProFeatures(activeFilterData)) {
-				message = 'pro-feature';
+			tryingPro = taxonomyTypeFilterTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			}
 
 			break;
 
 		case 'attribute':
-			if (taxonomyTypeFilterTryingProFeatures(activeFilterData)) {
-				message = 'pro-feature';
+			tryingPro = taxonomyTypeFilterTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (!taxonomy) {
-				message = __('Select an attribute', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Select an attribute', 'wc-ajax-product-filter')
+				);
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			}
 
 			break;
 
 		case 'price':
-			if (priceFilterTryingProFeatures(activeFilterData)) {
-				message = 'pro-feature';
+			tryingPro = priceFilterTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else if (
 				rangeDisplayTypes.includes(number_display_type) &&
 				'manual_entry' === number_get_options &&
 				isEmpty(rows)
 			) {
-				message = __('Add few options', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Add few options', 'wc-ajax-product-filter')
+				);
 			}
 
 			break;
 
 		case 'rating':
-			if (ratingFilterTryingProFeatures(activeFilterData)) {
-				message = 'pro-feature';
+			tryingPro = ratingFilterTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else if ('manual_entry' === number_get_options && isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Add few options', 'wc-ajax-product-filter')
+				);
 			}
 
 			break;
 
 		case 'product-status':
-			if (productStatusFilterTryingProFeatures(activeFilterData)) {
-				message = 'pro-feature';
+			tryingPro = productStatusFilterTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else if (isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Add few options', 'wc-ajax-product-filter')
+				);
 			}
 
 			break;
 
 		case 'post-property':
 			if (!foundPro) {
-				message = 'pro-feature';
+				message = proFeature('pro-feature');
 			} else if (!post_property) {
-				message = __(
-					'Select a post property',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Select a post property', 'wc-ajax-product-filter')
 				);
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else if (
 				('post_date' === post_property ||
@@ -313,20 +337,23 @@ export function getFilterStatus(title, activeFilterData) {
 				dateDisplayTypes.includes(date_display_type) &&
 				isEmpty(rows)
 			) {
-				message = __('Add few options', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Add few options', 'wc-ajax-product-filter')
+				);
 			}
 
 			break;
 
 		case 'custom-taxonomy':
 			if (!foundPro) {
-				message = 'pro-feature';
+				message = proFeature('pro-feature');
 			} else if (!taxonomy) {
-				message = __('Select a taxonomy', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Select a taxonomy', 'wc-ajax-product-filter')
+				);
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			}
 
@@ -334,20 +361,20 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'post-meta':
 			if (!foundPro) {
-				message = 'pro-feature';
+				message = proFeature('pro-feature');
 			} else if (!meta_key) {
-				message = __('Select a meta key', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Select a meta key', 'wc-ajax-product-filter')
+				);
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else {
 				if ('text' === value_type) {
 					if ('manual_entry' === get_options && isEmpty(rows)) {
-						message = __(
-							'Add few options',
-							'wc-ajax-product-filter'
+						message = dataRequired(
+							__('Add few options', 'wc-ajax-product-filter')
 						);
 					}
 				} else if ('number' === value_type) {
@@ -356,9 +383,8 @@ export function getFilterStatus(title, activeFilterData) {
 						'manual_entry' === number_get_options &&
 						isEmpty(rows)
 					) {
-						message = __(
-							'Add few options',
-							'wc-ajax-product-filter'
+						message = dataRequired(
+							__('Add few options', 'wc-ajax-product-filter')
 						);
 					}
 				} else if ('date' === value_type) {
@@ -366,9 +392,8 @@ export function getFilterStatus(title, activeFilterData) {
 						dateDisplayTypes.includes(date_display_type) &&
 						isEmpty(rows)
 					) {
-						message = __(
-							'Add few options',
-							'wc-ajax-product-filter'
+						message = dataRequired(
+							__('Add few options', 'wc-ajax-product-filter')
 						);
 					}
 				}
@@ -378,28 +403,30 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'sort-by':
 			if (!foundPro) {
-				message = 'pro-feature';
+				message = proFeature('pro-feature');
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else if (isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Add few options', 'wc-ajax-product-filter')
+				);
 			}
 
 			break;
 
 		case 'per-page':
 			if (!foundPro) {
-				message = 'pro-feature';
+				message = proFeature('pro-feature');
 			} else if (filterKeyMissing(activeFilterData)) {
-				message = __(
-					'Filter key is required',
-					'wc-ajax-product-filter'
+				message = dataRequired(
+					__('Filter key is required', 'wc-ajax-product-filter')
 				);
 			} else if (isEmpty(rows)) {
-				message = __('Add few options', 'wc-ajax-product-filter');
+				message = dataRequired(
+					__('Add few options', 'wc-ajax-product-filter')
+				);
 			}
 
 			break;
