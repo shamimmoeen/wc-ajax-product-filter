@@ -68,6 +68,11 @@ const Filter = () => {
 					dispatch({ type: 'SET_FILTER_TYPE', payload: filterType });
 
 					dispatch({ type: 'SET_FILTER_ID', payload: filterId });
+
+					dispatch({
+						type: 'SET_VISIBILITY_RULES',
+						payload: filterData['visibility_rules'],
+					});
 				}
 
 				dispatch({

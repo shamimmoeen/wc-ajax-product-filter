@@ -1,47 +1,3 @@
-import { __ } from '@wordpress/i18n';
-
-const demoRules = [
-	// [
-	// 	{
-	// 		rule: {
-	// 			label: __('Page', 'wc-ajax-product-filter'),
-	// 			value: 'page',
-	// 			group: 'page',
-	// 		},
-	// 		operator: {
-	// 			label: __('not equal', 'wc-ajax-product-filter'),
-	// 			value: 'not-equal',
-	// 		},
-	// 	},
-	// 	{
-	// 		rule: {
-	// 			label: __('Category', 'wc-ajax-product-filter'),
-	// 			value: 'product_cat',
-	// 			group: 'archive',
-	// 		},
-	// 		operator: {
-	// 			label: __('equal', 'wc-ajax-product-filter'),
-	// 			value: 'equal',
-	// 		},
-	// 		compare: { label: 'Uncategorized', value: 15 },
-	// 		include_children: '1',
-	// 	},
-	// ],
-	[
-		{
-			rule: {
-				label: __('Price', 'wc-ajax-product-filter'),
-				value: 371,
-				group: 'filter',
-			},
-			operator: {
-				label: __('equal', 'wc-ajax-product-filter'),
-				value: 'equal',
-			},
-		},
-	],
-];
-
 export const initialState = {
 	isLoading: true,
 	activeUIStep: '',
@@ -49,11 +5,7 @@ export const initialState = {
 	filterType: '',
 	filterId: '',
 	activeFilterData: {},
-	visibilityRules: {
-		media_screens: ['mobile'],
-		enable_rules: '1',
-		rules: demoRules,
-	},
+	visibilityRules: {},
 	additionalData: {},
 	filterKeys: {},
 	filtersData: {},

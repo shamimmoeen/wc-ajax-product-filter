@@ -4,7 +4,7 @@ import { cancelCircleFilled } from '@wordpress/icons';
 import Select from '../../Field/Select';
 import SelectArchive from './SelectArchive';
 import SelectRule from './SelectRule';
-import { getRules, operators, isTaxonomyHierarchical } from '../utils';
+import { getRules, getOperators, isTaxonomyHierarchical } from '../utils';
 
 const OrClause = ({
 	clause,
@@ -86,7 +86,7 @@ const OrClause = ({
 
 				<div className='operator'>
 					<Select
-						options={operators}
+						options={getOperators()}
 						value={operator}
 						onChange={(selected) =>
 							handleChange(

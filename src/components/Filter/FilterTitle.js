@@ -79,7 +79,11 @@ const FilterTitle = () => {
 
 	const setNewFilterData = (data) => {
 		const {
-			detailed: { post_title, filter_data: newFilterData },
+			detailed: {
+				post_title,
+				filter_data: newFilterData,
+				visibility_rules: visibilityRules,
+			},
 		} = data;
 
 		dispatch({ type: 'UNSET_DIRTY' });
@@ -102,6 +106,8 @@ const FilterTitle = () => {
 
 			dispatch({ type: 'SET_FILTERS_DATA', payload: newFiltersData });
 		}
+
+		dispatch({ type: 'SET_VISIBILITY_RULES', payload: visibilityRules });
 	};
 
 	const handleSaveFilter = () => {
