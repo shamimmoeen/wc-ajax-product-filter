@@ -3486,8 +3486,6 @@ function filterDefaultData() {
     soft_limit: '5',
     type: '',
     field_id: '',
-    enable_visibility_rules: '',
-    visibility_rules: [],
     get_options: 'automatically',
     use_category_images: '',
     // Active Filters

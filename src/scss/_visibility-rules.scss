@@ -1,0 +1,121 @@
+@import './mixins';
+
+.__form_control {
+    &.__media_screen_rules {
+        .__input_wrapper {
+            display: flex;
+            gap: 12px;
+        }
+    }
+
+    &.__rules {
+        .__inner {
+            flex-direction: column;
+        }
+
+        $border-radius: 3px;
+        $gap: 6px;
+
+        .or-clauses {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: $border-radius;
+            margin-bottom: 10px;
+            padding: $gap;
+        }
+
+        .or-clause {
+            display: flex;
+            align-items: center;
+            margin-bottom: $gap;
+            gap: $gap;
+
+            .cols {
+                align-items: center;
+                display: flex;
+                flex: 1;
+                gap: 10px;
+                background: #f8f9fa;
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                border-radius: $border-radius;
+                padding: $gap;
+
+                @media (min-width: 600px) {
+                    .rule {
+                        width: 29%;
+                    }
+
+                    .operator {
+                        min-width: 100px;
+                    }
+
+                    .compare {
+                        width: 34%;
+                    }
+
+                    .include-children-checkbox {
+                        min-width: 130px;
+                    }
+                }
+
+                @media (max-width: 599px) {
+                    align-items: flex-start;
+                    flex-direction: column;
+
+                    .rule,
+                    .operator,
+                    .compare {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        @include button-link-delete;
+
+        p {
+            margin: 0 0 10px;
+        }
+
+        .__rule_select,
+        .__archive_select {
+            .__react_select__option--is-selected {
+                .__info {
+                    color: rgba(0, 0, 0, 0.3);
+                }
+            }
+        }
+    }
+
+    &.__media_screen_rules,
+    &.__rules {
+        .components-base-control__field {
+            margin: 0;
+        }
+    }
+}
+
+body {
+    &:not(.rtl) {
+        .__form_control {
+
+            &.__media_screen_rules,
+            &.__rules {
+                .components-checkbox-control__input-container {
+                    margin: 0 6px 0 0;
+                }
+            }
+        }
+    }
+
+    &.rtl {
+        .__form_control {
+
+            &.__media_screen_rules,
+            &.__rules {
+                .components-checkbox-control__input-container {
+                    margin: 0 0 0 6px;
+                }
+            }
+        }
+    }
+}

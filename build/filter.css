@@ -353,7 +353,6 @@ body.rtl .__title_wrapper .__save_button .__icon {
 }
 .__custom_react_select .__info {
   color: rgba(0, 0, 0, 0.3);
-  display: inline-block;
   font-size: 12px;
   margin: 0 0 0 4px;
 }
@@ -377,6 +376,14 @@ body.rtl .__title_wrapper .__save_button .__icon {
   justify-content: space-between;
   align-items: center;
 }
+.__custom_react_select.__single_select .__react_select__group .__react_select__option {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.__custom_react_select.__single_select .__pro_group .__react_select__option {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 .__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover {
   border-color: #ddd;
@@ -395,6 +402,14 @@ body.rtl .__title_wrapper .__save_button .__icon {
   justify-content: space-between;
   align-items: center;
 }
+.__react_select__menu-portal .__react_select__group .__react_select__option {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.__react_select__menu-portal .__pro_group .__react_select__option {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 /**
 * RTL Styles.
@@ -412,6 +427,7 @@ body.rtl .__custom_react_select .__info {
   margin: 0 4px 0 0;
 }
 
+.__pro_group .__pro_heading,
 .__pro_settings,
 .__upgrade_btn,
 .__pro_tag {
@@ -499,6 +515,33 @@ a.__upgrade_btn:focus {
 }
 .__pro_tag::before {
   content: "PRO";
+  color: #fff;
+  background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.__pro_group .__react_select__group-heading {
+  position: relative;
+  text-align: center;
+}
+.__pro_group .__react_select__group-heading::after {
+  border-bottom: 1px solid #eee;
+  content: "";
+  left: 0;
+  position: absolute;
+  top: calc(50% - 1px);
+  width: 100%;
+  z-index: -1;
+}
+.__pro_group .__react_select__group-heading .__pro_heading_wrapper {
+  padding: 0 4px;
+  background-color: #fff;
+}
+.__pro_group .__react_select__group-heading .__pro_heading {
   color: #fff;
   background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
   font-weight: 500;
@@ -1223,6 +1266,104 @@ body.rtl .__sidebar .components-button {
   display: flex;
   justify-content: flex-end;
   margin-top: 2.5em;
+}
+
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
+.__form_control.__media_screen_rules .__input_wrapper {
+  display: flex;
+  gap: 12px;
+}
+.__form_control.__rules .__inner {
+  flex-direction: column;
+}
+.__form_control.__rules .or-clauses {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+.__form_control.__rules .or-clause {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 6px;
+}
+.__form_control.__rules .or-clause .cols {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  background: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 6px;
+}
+@media (min-width: 600px) {
+  .__form_control.__rules .or-clause .cols .rule {
+    width: 29%;
+  }
+  .__form_control.__rules .or-clause .cols .operator {
+    min-width: 100px;
+  }
+  .__form_control.__rules .or-clause .cols .compare {
+    width: 34%;
+  }
+  .__form_control.__rules .or-clause .cols .include-children-checkbox {
+    min-width: 130px;
+  }
+}
+@media (max-width: 599px) {
+  .__form_control.__rules .or-clause .cols {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .__form_control.__rules .or-clause .cols .rule,
+.__form_control.__rules .or-clause .cols .operator,
+.__form_control.__rules .or-clause .cols .compare {
+    width: 100%;
+  }
+}
+.__form_control.__rules .button-link-delete svg {
+  fill: #cc1818;
+  opacity: 0.2;
+  transition: opacity 0.1s linear;
+}
+.__form_control.__rules .button-link-delete:hover svg, .__form_control.__rules .button-link-delete:focus svg {
+  opacity: 0.8;
+}
+.__form_control.__rules .button-link-delete:focus {
+  box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
+  outline: 1px solid transparent;
+}
+.__form_control.__rules p {
+  margin: 0 0 10px;
+}
+.__form_control.__rules .__rule_select .__react_select__option--is-selected .__info,
+.__form_control.__rules .__archive_select .__react_select__option--is-selected .__info {
+  color: rgba(0, 0, 0, 0.3);
+}
+.__form_control.__media_screen_rules .components-base-control__field, .__form_control.__rules .components-base-control__field {
+  margin: 0;
+}
+
+body:not(.rtl) .__form_control.__media_screen_rules .components-checkbox-control__input-container, body:not(.rtl) .__form_control.__rules .components-checkbox-control__input-container {
+  margin: 0 6px 0 0;
+}
+body.rtl .__form_control.__media_screen_rules .components-checkbox-control__input-container, body.rtl .__form_control.__rules .components-checkbox-control__input-container {
+  margin: 0 0 0 6px;
 }
 
 /*# sourceMappingURL=filter.css.map*/

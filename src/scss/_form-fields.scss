@@ -100,6 +100,7 @@
 	// Disabled State.
 	.components-radio-control__option {
 		&.disabled {
+
 			input,
 			label {
 				cursor: default;
@@ -232,6 +233,20 @@
 			align-items: center;
 		}
 	}
+
+	.__react_select__group {
+		.__react_select__option {
+			padding-left: 16px;
+			padding-right: 16px;
+		}
+	}
+
+	.__pro_group {
+		.__react_select__option {
+			padding-left: 8px;
+			padding-right: 8px;
+		}
+	}
 }
 
 .__custom_react_select {
@@ -268,7 +283,6 @@
 	// Style the info(term_id, user_id) in option.
 	.__info {
 		color: rgba(0, 0, 0, 0.3);
-		display: inline-block;
 		font-size: 12px;
 		margin: 0 0 0 4px;
 	}

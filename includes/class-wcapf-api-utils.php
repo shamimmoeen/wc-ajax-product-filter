@@ -93,7 +93,13 @@ class WCAPF_API_Utils {
 			array( 'decimal_places' )
 		);
 
-		$array_fields = apply_filters( 'wcapf_sub_fields_type_array', array( 'include_user_roles' ) );
+		$array_fields = apply_filters(
+			'wcapf_sub_fields_type_array',
+			array(
+				'include_user_roles',
+				'media_screen',
+			)
+		);
 
 		$parsed_field = array();
 
@@ -496,6 +502,65 @@ class WCAPF_API_Utils {
 		update_post_meta( $new_post_id, '_filter_key', $new_filter_key );
 
 		return $new_post_id;
+	}
+
+	/**
+	 * Gets the visibility rules data for react UI.
+	 *
+	 * @return array[][]
+	 */
+	public static function get_visibility_rules_data() {
+		// The list of all public taxonomies registered for post type product.
+		$_taxonomies = get_taxonomies(
+			array(
+				'object_type' => array( 'product' ),
+				'public'      => true,
+			),
+			'objects'
+		);
+
+		$taxonomies = array();
+
+		foreach ( $_taxonomies as $taxonomy ) {
+			$label = $taxonomy->labels->singular_name;
+			$name  = $taxonomy->name;
+
+			$taxonomies[] = array(
+				'label' => $label,
+				'value' => $name,
+				'group' => 'archive',
+			);
+		}
+
+		$_filters = WCAPF_API_Utils::get_filter_ids();
+		$filters  = array();
+
+		foreach ( $_filters as $filter_id ) {
+			$filter_data = get_post_meta( $filter_id, '_field_data', true );
+			$type        = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
+
+			if ( 'active-filters' === $type || 'reset-button' === $type ) {
+				continue;
+			}
+
+			$filters[] = array(
+				'label' => get_the_title( $filter_id ),
+				'value' => $filter_id,
+				'group' => 'filter',
+			);
+		}
+
+		return array(
+			'rules' => array(
+				'page'       => array(
+					'label' => __( 'Page', 'wc-ajax-product-filter' ),
+					'value' => 'page',
+					'group' => 'page',
+				),
+				'taxonomies' => $taxonomies,
+				'filters'    => $filters,
+			),
+		);
 	}
 
 	/**

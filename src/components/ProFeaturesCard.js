@@ -81,6 +81,12 @@ const ProFeaturesCard = () => {
 						'wc-ajax-product-filter'
 					)}
 				</li>
+				<li>
+					{__(
+						'Set conditions to determine when to display the filter',
+						'wc-ajax-product-filter'
+					)}
+				</li>
 			</ul>
 		</div>
 	);

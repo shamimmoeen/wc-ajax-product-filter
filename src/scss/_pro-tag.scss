@@ -1,3 +1,4 @@
+.__pro_group .__pro_heading,
 .__pro_settings,
 .__upgrade_btn,
 .__pro_tag {
@@ -89,18 +90,48 @@ a.__upgrade_btn {
 	}
 }
 
+@mixin pro-tag {
+	color: #fff;
+	background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
+	font-weight: 500;
+	letter-spacing: 0.5px;
+	padding: 2px 4px;
+	border-radius: 4px;
+	font-size: 12px;
+}
+
 .__pro_tag {
 	display: inline-block;
 
 	&::before {
 		content: 'PRO';
-		color: #fff;
-		background: linear-gradient(33deg, var(--gradient-start), var(--gradient-end));
-		font-weight: 500;
-		letter-spacing: 0.5px;
-		padding: 2px 4px;
-		border-radius: 4px;
-		font-size: 12px;
+		@include pro-tag;
+	}
+}
+
+.__pro_group {
+	.__react_select__group-heading {
+		position: relative;
+		text-align: center;
+
+		&::after {
+			border-bottom: 1px solid #eee;
+			content: "";
+			left: 0;
+			position: absolute;
+			top: calc(50% - 1px);
+			width: 100%;
+			z-index: -1;
+		}
+
+		.__pro_heading_wrapper {
+			padding: 0 4px;
+			background-color: #fff;
+		}
+
+		.__pro_heading {
+			@include pro-tag;
+		}
 	}
 }
 
