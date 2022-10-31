@@ -12,33 +12,33 @@ import {
 } from '../../utils';
 
 const Advanced = () => {
-	const {
-		state: { filterType, activeFilterData, additionalData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, isDirty, dispatch);
+		useFilterData(state, dispatch);
 
 	const {
-		show_title,
-		active_filters_layout,
-		display_type,
-		taxonomy: _taxonomy,
-		hierarchical,
-		number_display_type,
-		date_display_type,
-		value_type,
-		enable_clear_all_button,
-		move_clear_all_button_in_title,
-		enable_accordion,
-		accordion_default_state,
-		show_clear_button,
-		enable_soft_limit,
-		enable_soft_limit_for_extended_layout,
-		soft_limit,
-		soft_limit_for_extended_layout,
-	} = activeFilterData;
+		filterType,
+		activeFilterData: {
+			show_title,
+			active_filters_layout,
+			display_type,
+			taxonomy: _taxonomy,
+			hierarchical,
+			number_display_type,
+			date_display_type,
+			value_type,
+			enable_clear_all_button,
+			move_clear_all_button_in_title,
+			enable_accordion,
+			accordion_default_state,
+			show_clear_button,
+			enable_soft_limit,
+			enable_soft_limit_for_extended_layout,
+			soft_limit,
+			soft_limit_for_extended_layout,
+		},
+		additionalData,
+	} = state;
 
 	const enableAccordionField = () => {
 		if (show_title) {

@@ -15,16 +15,12 @@ import Select from '../../../../Field/Select';
 import CustomAppearanceModal from './CustomAppearanceModal';
 
 const ValueTypeText = () => {
-	const {
-		state: { filterType, additionalData, activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const {
 		handleCheckboxChange,
 		handleToggleGroupChange,
 		handleSelectChange,
-	} = useFilterData(activeFilterData, isDirty, dispatch);
+	} = useFilterData(state, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -36,6 +32,8 @@ const ValueTypeText = () => {
 		showCountField,
 		removeEmptyField,
 	} = useFields('text');
+
+	const { filterType, activeFilterData, additionalData } = state;
 
 	const {
 		taxonomy: _taxonomy,

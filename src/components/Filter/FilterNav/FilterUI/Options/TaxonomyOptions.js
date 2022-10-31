@@ -14,28 +14,28 @@ import useFields from './useFields';
 import ProFeaturesNotice from '../../../../ProFeaturesNotice';
 
 const TaxonomyOptions = () => {
-	const {
-		state: { filterType, activeFilterData, additionalData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const {
 		handleCheckboxChange,
 		handleToggleGroupChange,
 		handleSelectTermChange,
-	} = useFilterData(activeFilterData, isDirty, dispatch);
+	} = useFilterData(state, dispatch);
 
 	const { orderByField, orderDirectionField } = useFields();
 
 	const {
-		taxonomy: _taxonomy,
-		order_terms_by,
-		limit_options,
-		parent_term,
-		limit_values_by_id,
-		exclude_values_id,
-		use_term_slug_in_url,
-	} = activeFilterData;
+		filterType,
+		activeFilterData: {
+			taxonomy: _taxonomy,
+			order_terms_by,
+			limit_options,
+			parent_term,
+			limit_values_by_id,
+			exclude_values_id,
+			use_term_slug_in_url,
+		},
+		additionalData,
+	} = state;
 
 	const taxonomy = getTaxonomy(filterType, _taxonomy);
 	const { taxonomy_hierarchical_data: hierarchicalData } = additionalData;

@@ -8,13 +8,9 @@ import { numberDisplayTypes } from '../../../utils';
 import useFields from './useFields';
 
 const ValueTypeNumber = () => {
-	const {
-		state: { filterType, activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
-		useFilterData(activeFilterData, isDirty, dispatch);
+		useFilterData(state, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -28,10 +24,13 @@ const ValueTypeNumber = () => {
 	} = useFields('number');
 
 	const {
-		number_display_type,
-		number_range_slider_display_values_as,
-		align_values_at_the_end,
-	} = activeFilterData;
+		filterType,
+		activeFilterData: {
+			number_display_type,
+			number_range_slider_display_values_as,
+			align_values_at_the_end,
+		},
+	} = state;
 
 	const displayTypeField = () => {
 		let options = [];

@@ -8,13 +8,9 @@ import { dateDisplayTypes } from '../../../utils';
 import useFields from './useFields';
 
 const ValueTypeDate = () => {
-	const {
-		state: { activeFilterData, additionalData, isDirty },
-		dispatch,
-	} = useFilter();
-
+	const { state, dispatch } = useFilter();
 	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
-		useFilterData(activeFilterData, isDirty, dispatch);
+		useFilterData(state, dispatch);
 
 	const {
 		enableMultipleFilterField,
@@ -28,12 +24,15 @@ const ValueTypeDate = () => {
 	} = useFields('date');
 
 	const {
-		date_display_type,
-		date_format,
-		show_date_inputs_inline,
-		date_picker_month_dropdown,
-		date_picker_year_dropdown,
-	} = activeFilterData;
+		activeFilterData: {
+			date_display_type,
+			date_format,
+			show_date_inputs_inline,
+			date_picker_month_dropdown,
+			date_picker_year_dropdown,
+		},
+		additionalData,
+	} = state;
 
 	const displayTypeField = () => {
 		const options = dateDisplayTypes();

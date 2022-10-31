@@ -6,21 +6,19 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 
 const ActiveFilters = () => {
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const {
-		active_filters_layout,
-		enable_clear_all_button,
-		clear_all_button_label,
-		show_if_empty,
-		empty_filter_message,
-	} = activeFilterData;
-
+	const { state, dispatch } = useFilter();
 	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(activeFilterData, isDirty, dispatch);
+		useFilterData(state, dispatch);
+
+	const {
+		activeFilterData: {
+			active_filters_layout,
+			enable_clear_all_button,
+			clear_all_button_label,
+			show_if_empty,
+			empty_filter_message,
+		},
+	} = state;
 
 	return (
 		<>

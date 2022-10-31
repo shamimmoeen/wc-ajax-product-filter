@@ -1,8 +1,10 @@
-const useFilterData = (activeFilterData, isDirty, dispatch) => {
+const useFilterData = (state, dispatch) => {
+	const { activeFilterData, isDirty } = state;
+
 	const setDirty = () => {
 		if (!isDirty) {
-			dispatch({ type: 'SET_DIRTY' });
-			dispatch({ type: 'SET_LOAD_PREVIEW' });
+			dispatch({ type: 'SET_DIRTY', payload: true });
+			dispatch({ type: 'SET_LOAD_PREVIEW', payload: true });
 		}
 	};
 
@@ -61,6 +63,7 @@ const useFilterData = (activeFilterData, isDirty, dispatch) => {
 	};
 
 	return {
+		setDirty,
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,

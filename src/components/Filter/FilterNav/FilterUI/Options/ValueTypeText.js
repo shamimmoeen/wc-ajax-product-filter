@@ -8,16 +8,8 @@ import MetaValuesModal from './MetaValuesModal';
 import useFields from './useFields';
 
 const ValueTypeText = () => {
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const { handleToggleGroupChange } = useFilterData(
-		activeFilterData,
-		isDirty,
-		dispatch
-	);
+	const { state, dispatch } = useFilter();
+	const { handleToggleGroupChange } = useFilterData(state, dispatch);
 
 	const {
 		getOptionsField,
@@ -32,7 +24,9 @@ const ValueTypeText = () => {
 
 	const closeModal = () => setOpen(false);
 
-	const { get_options, options_order_by } = activeFilterData;
+	const {
+		activeFilterData: { get_options, options_order_by },
+	} = state;
 
 	useEffect(() => {
 		if ('automatically' === get_options && 'label' === options_order_by) {

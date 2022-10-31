@@ -4,6 +4,7 @@ import { ReactSortable } from 'react-sortablejs';
 import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
 import { useFilter } from '../../../FilterContext';
+import useFilterData from '../../../useFilterData';
 import {
 	getTableData,
 	orderDirectionOptions,
@@ -14,13 +15,19 @@ import Select from '../../../../Field/Select';
 import Text from '../../../../Field/Text';
 
 const ManualOptions = ({ openModal }) => {
-	const {
-		state: { filterType, activeFilterData, additionalData, isDirty },
-		dispatch,
-	} = useFilter();
+	const { state, dispatch } = useFilter();
+	const { setDirty } = useFilterData(state, dispatch);
 
-	const { default_time_periods, sort_by_options, meta_keys, meta_types } =
-		additionalData;
+	const {
+		filterType,
+		activeFilterData,
+		additionalData: {
+			default_time_periods,
+			sort_by_options,
+			meta_keys,
+			meta_types,
+		},
+	} = state;
 
 	const statusOptions = productStatusOptions();
 	const sortDirections = orderDirectionOptions();
@@ -66,12 +73,6 @@ const ManualOptions = ({ openModal }) => {
 		}
 
 		return row;
-	};
-
-	const setDirty = () => {
-		if (!isDirty) {
-			dispatch({ type: 'SET_DIRTY' });
-		}
 	};
 
 	/**

@@ -27,6 +27,9 @@ const maxItems = getNoOfMaxTermsToRender();
 const timeout = getTimeoutForRemovingMediaFrames();
 
 const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
+	const { state, dispatch } = useFilter();
+	const { setActiveFilterData } = useFilterData(state, dispatch);
+
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [fetched, setFetched] = useState(false);
@@ -37,17 +40,6 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 	const [searchInput, setSearchInput] = useState('');
 	const [modalClasses, setModalClasses] = useState(modalInitialClass);
 	const [modified, setModified] = useState(false);
-
-	const {
-		state: { activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const { setActiveFilterData } = useFilterData(
-		activeFilterData,
-		isDirty,
-		dispatch
-	);
 
 	// Fetch the options for the first time render.
 	useEffect(() => {

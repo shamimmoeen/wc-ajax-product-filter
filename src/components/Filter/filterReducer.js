@@ -9,8 +9,10 @@ export const initialState = {
 	additionalData: {},
 	filterKeys: {},
 	filtersData: {},
+	filterStatus: '',
 	isDirty: false,
 	loadPreview: true,
+	filterPreview: 0,
 };
 
 const filterReducer = (state, action) => {
@@ -45,17 +47,19 @@ const filterReducer = (state, action) => {
 		case 'SET_FILTERS_DATA':
 			return { ...state, filtersData: action.payload };
 
-		case 'SET_DIRTY':
-			return { ...state, isDirty: true };
+		case 'SET_FILTER_STATUS':
+			return { ...state, filterStatus: action.payload };
 
-		case 'UNSET_DIRTY':
-			return { ...state, isDirty: false };
+		case 'SET_DIRTY':
+			return { ...state, isDirty: action.payload };
 
 		case 'SET_LOAD_PREVIEW':
-			return { ...state, loadPreview: true };
+			return { ...state, loadPreview: action.payload };
 
-		case 'UNSET_LOAD_PREVIEW':
-			return { ...state, loadPreview: false };
+		case 'SET_FILTER_PREVIEW':
+			const count = state.filterPreview;
+
+			return { ...state, filterPreview: count + 1 };
 
 		default:
 			return state;

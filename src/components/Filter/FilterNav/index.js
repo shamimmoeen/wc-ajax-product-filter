@@ -9,7 +9,7 @@ const FilterNav = () => {
 	const {
 		state: { isLoading },
 	} = useFilter();
-	const [activeTab, setActiveTab] = useState('visibility_rules');
+	const [activeTab, setActiveTab] = useState('filter_ui');
 
 	const handleSelect = (tabName) => {
 		setActiveTab(tabName);
@@ -24,7 +24,6 @@ const FilterNav = () => {
 	return (
 		<TabPanel
 			className={tabPanelClasses}
-			initialTabName={'visibility_rules'}
 			activeClass='active-tab'
 			onSelect={handleSelect}
 			tabs={[
@@ -52,8 +51,6 @@ const FilterNav = () => {
 						return <FilterUI />;
 					} else if (tab.name === 'visibility_rules') {
 						return <VisibilityRules />;
-					} else if (tab.name === 'customize') {
-						return 'Customize Form';
 					}
 				}
 			}}

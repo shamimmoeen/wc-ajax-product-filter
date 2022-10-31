@@ -1,23 +1,12 @@
 import { __ } from '@wordpress/i18n';
-import Text from '../../Field/Text';
 import AvailableFilters from '../../Filter/FilterNav/FilterUI/AvailableFilters';
 import GeneralFields from '../../Filter/FilterNav/FilterUI/GeneralFields';
 import { useListFilters } from '../ListFiltersContext';
 
 const Body = ({ step }) => {
-	const {
-		state: {
-			title,
-			filterType,
-			activeFilterData,
-			filterKeys,
-			additionalData,
-			filtersData,
-		},
-		dispatch,
-	} = useListFilters();
+	const { state, dispatch } = useListFilters();
 
-	const { initial_filter_keys: initialFilterKeysData } = additionalData;
+	const { title } = state;
 
 	const handleTitleChange = (e) => {
 		const value = e.target.value;
@@ -45,25 +34,11 @@ const Body = ({ step }) => {
 			</div>
 		);
 	} else if (2 === step) {
-		content = (
-			<AvailableFilters
-				filterType={filterType}
-				activeFilterData={activeFilterData}
-				filtersData={filtersData}
-				initialFilterKeysData={initialFilterKeysData}
-				dispatch={dispatch}
-			/>
-		);
+		content = <AvailableFilters state={state} dispatch={dispatch} />;
 	} else if (3 === step) {
 		content = (
 			<div className='__step_inner'>
-				<GeneralFields
-					filterType={filterType}
-					activeFilterData={activeFilterData}
-					filterKeys={filterKeys}
-					additionalData={additionalData}
-					dispatch={dispatch}
-				/>
+				<GeneralFields state={state} dispatch={dispatch} />
 			</div>
 		);
 	}

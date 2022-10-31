@@ -9,9 +9,12 @@ import { filterDefaultData, initialFilterKeysData } from './utils';
 import axios from 'axios';
 import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
+import useFilterStatus from './useFilterStatus';
 
 const Filter = () => {
 	const { dispatch } = useFilter();
+
+	useFilterStatus();
 
 	const getFilterData = () => {
 		/**

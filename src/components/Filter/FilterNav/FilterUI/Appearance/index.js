@@ -9,18 +9,13 @@ import ResetFilter from './ResetFilter';
 import ValueTypeDate from './ValueTypeDate';
 
 const Appearance = () => {
+	const { state, dispatch } = useFilter();
+	const { handleCheckboxChange } = useFilterData(state, dispatch);
+
 	const {
-		state: { filterType, activeFilterData, isDirty },
-		dispatch,
-	} = useFilter();
-
-	const { show_title, value_type } = activeFilterData;
-
-	const { handleCheckboxChange } = useFilterData(
-		activeFilterData,
-		isDirty,
-		dispatch
-	);
+		filterType,
+		activeFilterData: { show_title, value_type },
+	} = state;
 
 	const renderFields = () => {
 		let fields;
