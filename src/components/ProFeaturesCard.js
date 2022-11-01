@@ -41,7 +41,7 @@ const ProFeaturesCard = () => {
 				</li>
 				<li>
 					{__(
-						'Display the filter values using color, image',
+						'Display the filter options using color, image',
 						'wc-ajax-product-filter'
 					)}
 				</li>
@@ -54,6 +54,12 @@ const ProFeaturesCard = () => {
 				<li>
 					{__(
 						'Display the terms in a hierarchical view and enable accordion on them',
+						'wc-ajax-product-filter'
+					)}
+				</li>
+				<li>
+					{__(
+						'Remove filter options that show empty results',
 						'wc-ajax-product-filter'
 					)}
 				</li>

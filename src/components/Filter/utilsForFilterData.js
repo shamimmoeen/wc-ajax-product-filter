@@ -3,6 +3,8 @@ import { foundProVersion } from '../utils';
 import { getTableData } from './utils';
 import { isEmpty } from 'lodash';
 
+const foundPro = foundProVersion();
+
 export function proFeature(feature) {
 	return { type: 'pro-feature', feature };
 }
@@ -30,8 +32,6 @@ const dateDisplayTypes = [
 ];
 
 function activeFiltersTryingProFeatures(activeFilterData) {
-	const foundPro = foundProVersion();
-
 	if (foundPro) {
 		return false;
 	}
@@ -70,8 +70,6 @@ function taxonomyTypeFilterTryingProFeatures(
 	activeFilterData,
 	checkForHierarchy = false
 ) {
-	const foundPro = foundProVersion();
-
 	if (foundPro) {
 		return false;
 	}
@@ -79,6 +77,7 @@ function taxonomyTypeFilterTryingProFeatures(
 	const {
 		display_type,
 		hierarchical,
+		hide_empty,
 		order_terms_by,
 		limit_options,
 		use_term_slug_in_url,
@@ -103,7 +102,9 @@ function taxonomyTypeFilterTryingProFeatures(
 		allowedHierarchicalDisplayTypes.includes(display_type) &&
 		'1' === hierarchical
 	) {
-		tryingPro = proFeature('hierarchical');
+		tryingPro = proFeature('hierarchical-view');
+	} else if ('1' === hide_empty) {
+		tryingPro = proFeature('remove-empty');
 	} else if ('default' !== order_terms_by) {
 		tryingPro = proFeature('ordering-of-terms');
 	} else if ('off' !== limit_options) {
@@ -121,8 +122,6 @@ function taxonomyTypeFilterTryingProFeatures(
 }
 
 function priceFilterTryingProFeatures(activeFilterData) {
-	const foundPro = foundProVersion();
-
 	if (foundPro) {
 		return false;
 	}
@@ -139,19 +138,19 @@ function priceFilterTryingProFeatures(activeFilterData) {
 }
 
 function ratingFilterTryingProFeatures(activeFilterData) {
-	const foundPro = foundProVersion();
-
 	if (foundPro) {
 		return false;
 	}
 
 	let tryingPro = false;
 
-	const { display_type, number_get_options, enable_soft_limit } =
+	const { display_type, hide_empty, number_get_options, enable_soft_limit } =
 		activeFilterData;
 
 	if ('manual_entry' === number_get_options) {
 		tryingPro = proFeature('rating-manual-entry');
+	} else if ('1' === hide_empty) {
+		tryingPro = proFeature('remove-empty');
 	} else if (
 		'1' === enable_soft_limit &&
 		!softLimitDisabledDisplayTypes.includes(display_type)
@@ -163,17 +162,17 @@ function ratingFilterTryingProFeatures(activeFilterData) {
 }
 
 function productStatusFilterTryingProFeatures(activeFilterData) {
-	const foundPro = foundProVersion();
-
 	if (foundPro) {
 		return false;
 	}
 
 	let tryingPro = false;
 
-	const { display_type, enable_soft_limit } = activeFilterData;
+	const { display_type, hide_empty, enable_soft_limit } = activeFilterData;
 
-	if (
+	if ('1' === hide_empty) {
+		tryingPro = proFeature('remove-empty');
+	} else if (
 		'1' === enable_soft_limit &&
 		!softLimitDisabledDisplayTypes.includes(display_type)
 	) {
@@ -187,8 +186,6 @@ export function getFilterStatus(title, activeFilterData) {
 	if (!title) {
 		return dataRequired(__('Title is required', 'wc-ajax-product-filter'));
 	}
-
-	const foundPro = foundProVersion();
 
 	let tryingPro = '';
 	let message = '';
@@ -322,7 +319,7 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'post-property':
 			if (!foundPro) {
-				message = proFeature('pro-feature');
+				message = proFeature('post-property-filter');
 			} else if (!post_property) {
 				message = dataRequired(
 					__('Select a post property', 'wc-ajax-product-filter')
@@ -346,7 +343,7 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'custom-taxonomy':
 			if (!foundPro) {
-				message = proFeature('pro-feature');
+				message = proFeature('custom-taxonomy-filter');
 			} else if (!taxonomy) {
 				message = dataRequired(
 					__('Select a taxonomy', 'wc-ajax-product-filter')
@@ -361,7 +358,7 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'post-meta':
 			if (!foundPro) {
-				message = proFeature('pro-feature');
+				message = proFeature('post-meta-filter');
 			} else if (!meta_key) {
 				message = dataRequired(
 					__('Select a meta key', 'wc-ajax-product-filter')
@@ -403,7 +400,7 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'sort-by':
 			if (!foundPro) {
-				message = proFeature('pro-feature');
+				message = proFeature('sort-by-filter');
 			} else if (filterKeyMissing(activeFilterData)) {
 				message = dataRequired(
 					__('Filter key is required', 'wc-ajax-product-filter')
@@ -418,7 +415,7 @@ export function getFilterStatus(title, activeFilterData) {
 
 		case 'per-page':
 			if (!foundPro) {
-				message = proFeature('pro-feature');
+				message = proFeature('per-page-filter');
 			} else if (filterKeyMissing(activeFilterData)) {
 				message = dataRequired(
 					__('Filter key is required', 'wc-ajax-product-filter')
