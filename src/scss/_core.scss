@@ -1,4 +1,5 @@
 body {
+
 	&.auto-fold #wpcontent,
 	#wpcontent {
 		padding-left: 0;
@@ -15,15 +16,25 @@ body {
 
 	.__wcapf_layout {
 		padding: var(--large-gap);
+
+		.__post_data_fetching {
+			margin: 5em 0;
+			text-align: center;
+
+			.components-spinner {
+				height: 64px;
+				width: 64px;
+			}
+		}
 	}
 }
 
 .__main {
-    @media (min-width: 1200px) {
-        display: grid;
-        grid-template-columns: 5fr 2fr;
-        gap: 40px;
-    }
+	@media (min-width: 1200px) {
+		display: grid;
+		grid-template-columns: 5fr 2fr;
+		gap: 40px;
+	}
 }
 
 /**
@@ -43,15 +54,15 @@ body {
 
 // Snackbar RTL Styles.
 body {
-    &:not(.rtl) {
-        .components-snackbar-list {
+	&:not(.rtl) {
+		.components-snackbar-list {
 			right: 20px;
 		}
-    }
+	}
 
-    &.rtl {
-        .components-snackbar-list {
+	&.rtl {
+		.components-snackbar-list {
 			left: 20px;
 		}
-    }
+	}
 }
