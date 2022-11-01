@@ -3,13 +3,12 @@ import { Button, Icon } from '@wordpress/components';
 import { useFilter } from '../FilterContext';
 import { BackIcon } from '../../SVGIcons';
 import Text from '../../Field/Text';
+import { getFiltersPageLink } from '../../utils';
 
 const Title = ({ loading, handleTitleChange, handleSubmit }) => {
 	const {
 		state: { title, filterStatus, isDirty },
 	} = useFilter();
-
-	const goBackLink = wcapf_admin_params.filters_page_link;
 
 	let btnTitle;
 	let btnVariant;
@@ -38,7 +37,7 @@ const Title = ({ loading, handleTitleChange, handleSubmit }) => {
 
 	return (
 		<div className='__title_wrapper'>
-			<Button href={goBackLink} className='__back_button'>
+			<Button href={getFiltersPageLink()} className='__back_button'>
 				<Icon icon={BackIcon} />
 			</Button>
 
