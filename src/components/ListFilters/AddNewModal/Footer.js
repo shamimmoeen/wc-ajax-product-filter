@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Flex, FlexItem, Button } from '@wordpress/components';
-import { useListFilters } from '../ListFiltersContext';
 import classnames from 'classnames';
-import { disableFilterSubmission } from '../../utils';
+import { useListFilters } from '../ListFiltersContext';
+import { disableFilterSubmission } from './utils';
 
 const Footer = ({
 	step,
@@ -64,7 +64,6 @@ const Footer = ({
 					disabled = true;
 				}
 			} else if (3 === step) {
-				// TODO: Check
 				disabled = disableFilterSubmission(activeFilterData);
 			}
 

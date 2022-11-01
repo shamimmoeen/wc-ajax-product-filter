@@ -47,7 +47,7 @@ const GeneralFields = ({ state, dispatch }) => {
 	 * value = '_stock_status'
 	 * property = 'meta_key'
 	 */
-	const hanldeVariableFilterTypesChange = (type, value, property) => {
+	const handleVariableFilterTypesChange = (type, value, property) => {
 		let filterKey;
 		let _filterKeys;
 
@@ -88,7 +88,7 @@ const GeneralFields = ({ state, dispatch }) => {
 			return;
 		}
 
-		hanldeVariableFilterTypesChange(type, value, 'taxonomy');
+		handleVariableFilterTypesChange(type, value, 'taxonomy');
 	};
 
 	const taxonomyField = () => {
@@ -140,7 +140,7 @@ const GeneralFields = ({ state, dispatch }) => {
 			return;
 		}
 
-		hanldeVariableFilterTypesChange(type, value, 'meta_key');
+		handleVariableFilterTypesChange(type, value, 'meta_key');
 	};
 
 	const postMetaField = () => {
@@ -179,7 +179,7 @@ const GeneralFields = ({ state, dispatch }) => {
 			return;
 		}
 
-		hanldeVariableFilterTypesChange(type, value, 'post_property');
+		handleVariableFilterTypesChange(type, value, 'post_property');
 	};
 
 	const postPropertyField = () => {

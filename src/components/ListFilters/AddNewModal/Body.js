@@ -1,12 +1,14 @@
 import { __ } from '@wordpress/i18n';
+import { useListFilters } from '../ListFiltersContext';
 import AvailableFilters from '../../Filter/FilterNav/FilterUI/AvailableFilters';
 import GeneralFields from '../../Filter/FilterNav/FilterUI/GeneralFields';
-import { useListFilters } from '../ListFiltersContext';
+import ProFeaturesNotice from '../../ProFeaturesNotice';
+import { proFilterTypeMessage, tryingProFilterType } from './utils';
 
 const Body = ({ step }) => {
 	const { state, dispatch } = useListFilters();
 
-	const { title } = state;
+	const { title, filterType } = state;
 
 	const handleTitleChange = (e) => {
 		const value = e.target.value;
@@ -38,6 +40,12 @@ const Body = ({ step }) => {
 	} else if (3 === step) {
 		content = (
 			<div className='__step_inner'>
+				{tryingProFilterType(filterType) && (
+					<ProFeaturesNotice
+						message={proFilterTypeMessage(filterType)}
+					/>
+				)}
+
 				<GeneralFields state={state} dispatch={dispatch} />
 			</div>
 		);

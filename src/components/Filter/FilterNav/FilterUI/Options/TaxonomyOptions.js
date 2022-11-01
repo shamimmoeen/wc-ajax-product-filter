@@ -154,7 +154,12 @@ const TaxonomyOptions = () => {
 
 	return (
 		<>
-			<ProFeaturesNotice />
+			<ProFeaturesNotice
+				message={__(
+					'These settings are available only at the PRO version.',
+					'wc-ajax-product-filter'
+				)}
+			/>
 
 			{_orderByField()}
 

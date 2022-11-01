@@ -7340,7 +7340,7 @@ const GeneralFields = _ref => {
    * property = 'meta_key'
    */
 
-  const hanldeVariableFilterTypesChange = (type, value, property) => {
+  const handleVariableFilterTypesChange = (type, value, property) => {
     let filterKey;
 
     let _filterKeys;
@@ -7385,7 +7385,7 @@ const GeneralFields = _ref => {
       return;
     }
 
-    hanldeVariableFilterTypesChange(type, value, 'taxonomy');
+    handleVariableFilterTypesChange(type, value, 'taxonomy');
   };
 
   const taxonomyField = () => {
@@ -7435,7 +7435,7 @@ const GeneralFields = _ref => {
       return;
     }
 
-    hanldeVariableFilterTypesChange(type, value, 'meta_key');
+    handleVariableFilterTypesChange(type, value, 'meta_key');
   };
 
   const postMetaField = () => {
@@ -7473,7 +7473,7 @@ const GeneralFields = _ref => {
       return;
     }
 
-    hanldeVariableFilterTypesChange(type, value, 'post_property');
+    handleVariableFilterTypesChange(type, value, 'post_property');
   };
 
   const postPropertyField = () => {
@@ -8686,7 +8686,9 @@ const TaxonomyOptions = () => {
     });
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_9__["default"], null), _orderByField(), _orderDirectionField(), limitOptionsField(), includeTermsField(), excludeTermsField(), parentTermField(), termSlugField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('These settings are available only at the PRO version.', 'wc-ajax-product-filter')
+  }), _orderByField(), _orderDirectionField(), limitOptionsField(), includeTermsField(), excludeTermsField(), parentTermField(), termSlugField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (TaxonomyOptions);
@@ -9560,6 +9562,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FilterContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../FilterContext */ "./src/components/Filter/FilterContext.js");
 /* harmony import */ var _SVGIcons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../SVGIcons */ "./src/components/SVGIcons.js");
 /* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils */ "./src/components/utils.js");
+
 
 
 
@@ -9580,7 +9584,6 @@ const Title = _ref => {
       isDirty
     }
   } = (0,_FilterContext__WEBPACK_IMPORTED_MODULE_3__.useFilter)();
-  const goBackLink = wcapf_admin_params.filters_page_link;
   let btnTitle;
   let btnVariant;
   let btnDisabled = false;
@@ -9606,7 +9609,7 @@ const Title = _ref => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__title_wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-    href: goBackLink,
+    href: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getFiltersPageLink)(),
     className: "__back_button"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
     icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_4__.BackIcon
@@ -11855,10 +11858,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ProFeaturesNotice = () => {
+const ProFeaturesNotice = _ref => {
+  let {
+    message
+  } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)() && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__pro_settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('These settings are available only at the pro version.', 'wc-ajax-product-filter'), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, message, ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.upgradeToProLink)(),
     target: "_blank"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade', 'wc-ajax-product-filter')))));
@@ -11976,15 +11982,15 @@ __webpack_require__.r(__webpack_exports__);
 const navMenus = [{
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filters', 'wc-ajax-product-filter'),
   id: 'filters',
-  href: wcapf_admin_params.filters_page_link
+  href: (0,_utils__WEBPACK_IMPORTED_MODULE_4__.getFiltersPageLink)()
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Forms', 'wc-ajax-product-filter'),
   id: 'forms',
-  href: wcapf_admin_params.forms_page_link
+  href: (0,_utils__WEBPACK_IMPORTED_MODULE_4__.getFormsPageLink)()
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Settings', 'wc-ajax-product-filter'),
   id: 'settings',
-  href: wcapf_admin_params.settings_page_link
+  href: (0,_utils__WEBPACK_IMPORTED_MODULE_4__.getSettingsPageLink)()
 }];
 
 const TopBar = _ref => {
@@ -12867,29 +12873,25 @@ function removeFilterSavedNotices() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "disableFilterSubmission": function() { return /* binding */ disableFilterSubmission; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
 /* harmony export */   "getEditFilterLink": function() { return /* binding */ getEditFilterLink; },
+/* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
+/* harmony export */   "getFiltersPageLink": function() { return /* binding */ getFiltersPageLink; },
+/* harmony export */   "getFormsPageLink": function() { return /* binding */ getFormsPageLink; },
 /* harmony export */   "getNoOfMaxTermsToRender": function() { return /* binding */ getNoOfMaxTermsToRender; },
+/* harmony export */   "getSettingsPageLink": function() { return /* binding */ getSettingsPageLink; },
 /* harmony export */   "getTimeoutForRemovingMediaFrames": function() { return /* binding */ getTimeoutForRemovingMediaFrames; },
 /* harmony export */   "isProFeature": function() { return /* binding */ isProFeature; },
 /* harmony export */   "pluginVersion": function() { return /* binding */ pluginVersion; },
-/* harmony export */   "prepareFilterData": function() { return /* binding */ prepareFilterData; },
-/* harmony export */   "prepareMetaKeys": function() { return /* binding */ prepareMetaKeys; },
 /* harmony export */   "proTag": function() { return /* binding */ proTag; },
 /* harmony export */   "removeMediaFrames": function() { return /* binding */ removeMediaFrames; },
 /* harmony export */   "upgradeToProLink": function() { return /* binding */ upgradeToProLink; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Filter_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Filter/utils */ "./src/components/Filter/utils.js");
-
-
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 
 
 function foundProVersion() {
@@ -12931,104 +12933,24 @@ function getAdditionalData() {
   const data = {
     action: 'get_filter_additional_data'
   };
-  return axios__WEBPACK_IMPORTED_MODULE_2___default().get(wcapf_admin_params.ajaxurl, {
+  return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
     params: data
   });
 }
-const filtersPageLink = wcapf_admin_params.filters_page_link;
+function getFiltersPageLink() {
+  return wcapf_admin_params.filters_page_link;
+}
 function getEditFilterLink(filterId) {
-  return filtersPageLink + '&id=' + filterId;
+  return getFiltersPageLink() + '&id=' + filterId;
 }
-function prepareFilterData(raw) {
-  const {
-    id,
-    field_key,
-    type,
-    taxonomy,
-    meta_key,
-    post_property,
-    title
-  } = raw;
-  const shortcode = `[wcapf_filter id="${id}"]`;
-
-  const _filterData = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)((0,_Filter_utils__WEBPACK_IMPORTED_MODULE_3__.availableFilters)(), {
-    type: type
-  });
-
-  const component = _filterData['title'];
-  let componentExtra = '';
-
-  if ('custom-taxonomy' === type || 'attribute' === type) {
-    componentExtra = taxonomy;
-  } else if ('post-meta' === type) {
-    componentExtra = meta_key;
-  } else if ('post-property' === type) {
-    componentExtra = post_property;
-  }
-
-  const permalink = getEditFilterLink(id);
-  return {
-    id,
-    title,
-    filter_key: field_key,
-    shortcode,
-    component,
-    componentExtra,
-    permalink
-  };
+function getFormsPageLink() {
+  return wcapf_admin_params.forms_page_link;
 }
-function prepareMetaKeys(options) {
-  const _options = [];
-
-  for (const [value, label] of Object.entries(options)) {
-    _options.push({
-      label,
-      value
-    });
-  }
-
-  return _options;
-} // TODO: Check for pro features.
-
-function disableFilterSubmission(activeFilterData) {
-  const {
-    type
-  } = activeFilterData;
-
-  if ('active-filters' === type || 'reset-button' === type) {
-    return false;
-  }
-
-  const {
-    field_key
-  } = activeFilterData;
-
-  if (!field_key) {
-    return true;
-  }
-
-  const {
-    taxonomy,
-    post_property,
-    meta_key
-  } = activeFilterData;
-  let disabled = false;
-
-  if ('attribute' === type || 'custom-taxonomy' === type) {
-    if (!taxonomy) {
-      disabled = true;
-    }
-  } else if ('post-property' === type) {
-    if (!post_property) {
-      disabled = true;
-    }
-  } else if ('post-meta' === type) {
-    if (!meta_key) {
-      disabled = true;
-    }
-  }
-
-  return disabled;
+function getEditFormLink(formId) {
+  return getFormsPageLink() + '&id=' + formId;
+}
+function getSettingsPageLink() {
+  return wcapf_admin_params.settings_page_link;
 }
 function getNoOfMaxTermsToRender() {
   const maxItems = parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;

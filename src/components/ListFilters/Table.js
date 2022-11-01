@@ -7,8 +7,8 @@ import {
 	EditIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { prepareFilterData } from '../utils';
 import { useListFilters } from './ListFiltersContext';
+import { prepareFilterData } from './utils';
 
 function slugify(key) {
 	return '__' + key.replace(/ /g, '_');
