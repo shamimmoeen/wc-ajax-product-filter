@@ -1,3 +1,5 @@
+@import './variables';
+
 /**
 * Delete, Duplicate Modals.
 */
@@ -24,4 +26,12 @@
 			justify-content: center;
 		}
 	}
+}
+
+.__delete_modal .__icon {
+	fill: $svgDeleteColor;
+}
+
+.__duplicate_modal .__icon {
+	fill: #3fc1c9;
 }

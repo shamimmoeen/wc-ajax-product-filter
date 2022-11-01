@@ -7,7 +7,7 @@ const DeleteModal = ({ isOpen, closeModal, deleteFilter }) => {
 		isOpen && (
 			<Modal onRequestClose={closeModal} __experimentalHideHeader>
 				<div className='__action_modal __delete_modal'>
-					<Icon icon={DeleteIcon} size={60} />
+					<Icon icon={DeleteIcon} size={60} className='__icon' />
 
 					<h3>{__('Delete Filter?', 'wc-ajax-product-filter')}</h3>
 

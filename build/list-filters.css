@@ -741,6 +741,20 @@ body.rtl .__sidebar .components-button {
   margin: 0 0 4px 4px;
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 /**
 * Delete, Duplicate Modals.
 */
@@ -762,6 +776,14 @@ body.rtl .__sidebar .components-button {
 .__action_modal .__buttons .components-button {
   min-width: 70px;
   justify-content: center;
+}
+
+.__delete_modal .__icon {
+  fill: #d93e3e;
+}
+
+.__duplicate_modal .__icon {
+  fill: #3fc1c9;
 }
 
 .__publish_modal {

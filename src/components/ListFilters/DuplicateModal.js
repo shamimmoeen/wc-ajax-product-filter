@@ -7,7 +7,7 @@ const DuplicateModal = ({ isOpen, closeModal, duplicateFilter }) => {
 		isOpen && (
 			<Modal onRequestClose={closeModal} __experimentalHideHeader>
 				<div className='__action_modal __duplicate_modal'>
-					<Icon icon={DuplicateIcon} size={60} />
+					<Icon icon={DuplicateIcon} size={60} className='__icon' />
 
 					<h3>{__('Duplicate Filter?', 'wc-ajax-product-filter')}</h3>
 
