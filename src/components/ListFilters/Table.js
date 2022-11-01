@@ -16,8 +16,8 @@ function slugify(key) {
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
-	__('Filter Key', 'wc-ajax-product-filter'),
 	__('Filter Type', 'wc-ajax-product-filter'),
+	__('Filter Key', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
 
@@ -75,7 +75,6 @@ const Table = ({
 							{filterId}
 						</span>
 					</td>
-					<td className='__Filter_Key'>{filter.filter_key}</td>
 					<td className='__Filter_Type'>
 						{filter.component}
 						{filter.componentExtra && (
@@ -85,6 +84,7 @@ const Table = ({
 							</span>
 						)}
 					</td>
+					<td className='__Filter_Key'>{filter.filter_key}</td>
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
