@@ -44,6 +44,8 @@ node_modules export-ignore
 *.sql export-ignore
 *.tar.gz export-ignore
 *.zip export-ignore
+.dist export-ignore
+.vscode export-ignore
 
 # Ignore source codes.
 admin/src export-ignore
