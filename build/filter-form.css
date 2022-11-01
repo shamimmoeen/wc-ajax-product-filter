@@ -15,6 +15,14 @@ body #wpfooter {
 body .__wcapf_layout {
   padding: var(--large-gap);
 }
+body .__wcapf_layout .__post_data_fetching {
+  margin: 5em 0;
+  text-align: center;
+}
+body .__wcapf_layout .__post_data_fetching .components-spinner {
+  height: 64px;
+  width: 64px;
+}
 
 @media (min-width: 1200px) {
   .__main {

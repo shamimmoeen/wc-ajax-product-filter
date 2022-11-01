@@ -1,4 +1,7 @@
 import { useEffect } from '@wordpress/element';
+import { Spinner } from '@wordpress/components';
+import axios from 'axios';
+import { isEmpty, merge } from 'lodash';
 import TopBar from '../TopBar';
 import FilterTitle from './FilterTitle';
 import FilterNav from './FilterNav';
@@ -6,13 +9,14 @@ import FilterPreview from './FilterPreview';
 import Notifications from '../Notifications';
 import { useFilter } from './FilterContext';
 import { filterDefaultData, initialFilterKeysData } from './utils';
-import axios from 'axios';
-import { isEmpty, merge } from 'lodash';
 import { getAdditionalData } from '../utils';
 import useFilterStatus from './useFilterStatus';
 
 const Filter = () => {
-	const { dispatch } = useFilter();
+	const {
+		state: { isLoading },
+		dispatch,
+	} = useFilter();
 
 	useFilterStatus();
 
@@ -97,18 +101,24 @@ const Filter = () => {
 			<TopBar view={'filters'} />
 
 			<div className='__wcapf_layout'>
-				<div className='__main __edit_filter'>
-					<div className='__edit_filter_from'>
-						<div className='__content'>
-							<FilterTitle />
-							<FilterNav />
+				{isLoading ? (
+					<div className='__post_data_fetching'>
+						<Spinner />
+					</div>
+				) : (
+					<div className='__main __edit_filter'>
+						<div className='__edit_filter_from'>
+							<div className='__content'>
+								<FilterTitle />
+								<FilterNav />
+							</div>
+						</div>
+
+						<div className='__sidebar'>
+							<FilterPreview />
 						</div>
 					</div>
-
-					<div className='__sidebar'>
-						<FilterPreview />
-					</div>
-				</div>
+				)}
 			</div>
 
 			<Notifications />
