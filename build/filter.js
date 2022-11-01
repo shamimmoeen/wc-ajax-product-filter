@@ -10903,6 +10903,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
 function proFeature(feature) {
   return {
     type: 'pro-feature',
@@ -10920,8 +10921,6 @@ const rangeDisplayTypes = ['range_checkbox', 'range_radio', 'range_select', 'ran
 const dateDisplayTypes = ['time_period_checkbox', 'time_period_radio', 'time_period_select', 'time_period_multiselect', 'time_period_label'];
 
 function activeFiltersTryingProFeatures(activeFilterData) {
-  const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
-
   if (foundPro) {
     return false;
   }
@@ -10956,7 +10955,6 @@ function filterKeyMissing(activeFilterData) {
 
 function taxonomyTypeFilterTryingProFeatures(activeFilterData) {
   let checkForHierarchy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
 
   if (foundPro) {
     return false;
@@ -10965,6 +10963,7 @@ function taxonomyTypeFilterTryingProFeatures(activeFilterData) {
   const {
     display_type,
     hierarchical,
+    hide_empty,
     order_terms_by,
     limit_options,
     use_term_slug_in_url,
@@ -10977,7 +10976,9 @@ function taxonomyTypeFilterTryingProFeatures(activeFilterData) {
   if (proDisplayTypes.includes(display_type)) {
     tryingPro = proFeature(`display-type-${display_type}`);
   } else if (checkForHierarchy && allowedHierarchicalDisplayTypes.includes(display_type) && '1' === hierarchical) {
-    tryingPro = proFeature('hierarchical');
+    tryingPro = proFeature('hierarchical-view');
+  } else if ('1' === hide_empty) {
+    tryingPro = proFeature('remove-empty');
   } else if ('default' !== order_terms_by) {
     tryingPro = proFeature('ordering-of-terms');
   } else if ('off' !== limit_options) {
@@ -10992,8 +10993,6 @@ function taxonomyTypeFilterTryingProFeatures(activeFilterData) {
 }
 
 function priceFilterTryingProFeatures(activeFilterData) {
-  const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
-
   if (foundPro) {
     return false;
   }
@@ -11011,8 +11010,6 @@ function priceFilterTryingProFeatures(activeFilterData) {
 }
 
 function ratingFilterTryingProFeatures(activeFilterData) {
-  const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
-
   if (foundPro) {
     return false;
   }
@@ -11020,12 +11017,15 @@ function ratingFilterTryingProFeatures(activeFilterData) {
   let tryingPro = false;
   const {
     display_type,
+    hide_empty,
     number_get_options,
     enable_soft_limit
   } = activeFilterData;
 
   if ('manual_entry' === number_get_options) {
     tryingPro = proFeature('rating-manual-entry');
+  } else if ('1' === hide_empty) {
+    tryingPro = proFeature('remove-empty');
   } else if ('1' === enable_soft_limit && !softLimitDisabledDisplayTypes.includes(display_type)) {
     tryingPro = proFeature('soft-limit');
   }
@@ -11034,8 +11034,6 @@ function ratingFilterTryingProFeatures(activeFilterData) {
 }
 
 function productStatusFilterTryingProFeatures(activeFilterData) {
-  const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
-
   if (foundPro) {
     return false;
   }
@@ -11043,10 +11041,13 @@ function productStatusFilterTryingProFeatures(activeFilterData) {
   let tryingPro = false;
   const {
     display_type,
+    hide_empty,
     enable_soft_limit
   } = activeFilterData;
 
-  if ('1' === enable_soft_limit && !softLimitDisabledDisplayTypes.includes(display_type)) {
+  if ('1' === hide_empty) {
+    tryingPro = proFeature('remove-empty');
+  } else if ('1' === enable_soft_limit && !softLimitDisabledDisplayTypes.includes(display_type)) {
     tryingPro = proFeature('soft-limit');
   }
 
@@ -11058,7 +11059,6 @@ function getFilterStatus(title, activeFilterData) {
     return dataRequired((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Title is required', 'wc-ajax-product-filter'));
   }
 
-  const foundPro = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.foundProVersion)();
   let tryingPro = '';
   let message = '';
   const {
@@ -11163,7 +11163,7 @@ function getFilterStatus(title, activeFilterData) {
 
     case 'post-property':
       if (!foundPro) {
-        message = proFeature('pro-feature');
+        message = proFeature('post-property-filter');
       } else if (!post_property) {
         message = dataRequired((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a post property', 'wc-ajax-product-filter'));
       } else if (filterKeyMissing(activeFilterData)) {
@@ -11176,7 +11176,7 @@ function getFilterStatus(title, activeFilterData) {
 
     case 'custom-taxonomy':
       if (!foundPro) {
-        message = proFeature('pro-feature');
+        message = proFeature('custom-taxonomy-filter');
       } else if (!taxonomy) {
         message = dataRequired((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a taxonomy', 'wc-ajax-product-filter'));
       } else if (filterKeyMissing(activeFilterData)) {
@@ -11187,7 +11187,7 @@ function getFilterStatus(title, activeFilterData) {
 
     case 'post-meta':
       if (!foundPro) {
-        message = proFeature('pro-feature');
+        message = proFeature('post-meta-filter');
       } else if (!meta_key) {
         message = dataRequired((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select a meta key', 'wc-ajax-product-filter'));
       } else if (filterKeyMissing(activeFilterData)) {
@@ -11212,7 +11212,7 @@ function getFilterStatus(title, activeFilterData) {
 
     case 'sort-by':
       if (!foundPro) {
-        message = proFeature('pro-feature');
+        message = proFeature('sort-by-filter');
       } else if (filterKeyMissing(activeFilterData)) {
         message = dataRequired((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter key is required', 'wc-ajax-product-filter'));
       } else if ((0,lodash__WEBPACK_IMPORTED_MODULE_3__.isEmpty)(rows)) {
@@ -11223,7 +11223,7 @@ function getFilterStatus(title, activeFilterData) {
 
     case 'per-page':
       if (!foundPro) {
-        message = proFeature('pro-feature');
+        message = proFeature('per-page-filter');
       } else if (filterKeyMissing(activeFilterData)) {
         message = dataRequired((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter key is required', 'wc-ajax-product-filter'));
       } else if ((0,lodash__WEBPACK_IMPORTED_MODULE_3__.isEmpty)(rows)) {
@@ -11831,7 +11831,7 @@ const ProFeaturesCard = () => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Need more features?', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade to PRO to unlock all features.', 'wc-ajax-product-filter'), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.upgradeToProLink)(),
     target: "_blank"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade Now', 'wc-ajax-product-filter')))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter by Custom Taxonomy, Post Meta', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter by Post Author/Vendor, Date, Modified', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom sorting filter for products', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Products per page filter', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display the filter values using color, image', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display the price ranges using checkbox, radio, select, multi-select, label', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display the terms in a hierarchical view and enable accordion on them', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use term slug as the filter value', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Option to include/exclude terms, show only child terms', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose the ordering of terms', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Hide the filter items using the 'Show more' and 'Show less' buttons", 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set conditions to determine when to display the filter', 'wc-ajax-product-filter'))));
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade Now', 'wc-ajax-product-filter')))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter by Custom Taxonomy, Post Meta', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter by Post Author/Vendor, Date, Modified', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom sorting filter for products', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Products per page filter', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display the filter options using color, image', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display the price ranges using checkbox, radio, select, multi-select, label', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display the terms in a hierarchical view and enable accordion on them', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove filter options that show empty results', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use term slug as the filter value', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Option to include/exclude terms, show only child terms', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose the ordering of terms', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Hide the filter items using the 'Show more' and 'Show less' buttons", 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set conditions to determine when to display the filter', 'wc-ajax-product-filter'))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ProFeaturesCard);
