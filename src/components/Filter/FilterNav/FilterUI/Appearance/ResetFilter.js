@@ -32,7 +32,7 @@ const ResetFilter = () => {
 				id={'show_if_empty'}
 				label={__('Show if empty', 'wc-ajax-product-filter')}
 				description={__(
-					'Whether to show the reset filter button when no filter is applied.',
+					'Whether to show the reset filter button in disabled state when no filter is applied.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={show_if_empty}
