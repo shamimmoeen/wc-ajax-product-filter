@@ -56,9 +56,9 @@ const ValueTypeNumber = () => {
 	const automaticRangeFields = () => {
 		let showField = false;
 
-		const automaticaDisplayTypes = ['range_slider', 'range_number'];
+		const automaticDisplayTypes = ['range_slider', 'range_number'];
 
-		if (automaticaDisplayTypes.includes(number_display_type)) {
+		if (automaticDisplayTypes.includes(number_display_type)) {
 			showField = true;
 		} else {
 			if ('automatically' === number_get_options) {

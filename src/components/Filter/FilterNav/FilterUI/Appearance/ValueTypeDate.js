@@ -86,7 +86,7 @@ const ValueTypeDate = () => {
 			return (
 				<Checkbox
 					id={'show_date_inputs_inline'}
-					label={__('Inlide Date Inputs', 'wc-ajax-product-filter')}
+					label={__('Inline Date Inputs', 'wc-ajax-product-filter')}
 					description={__(
 						'Whether to show the date input fields in a single line.',
 						'wc-ajax-product-filter'

@@ -3497,6 +3497,7 @@ function filterDefaultData() {
     field_id: '',
     get_options: 'automatically',
     use_category_images: '',
+    title_in_active_filters: '',
     // Active Filters
     active_filters_layout: 'simple',
     enable_clear_all_button: '1',

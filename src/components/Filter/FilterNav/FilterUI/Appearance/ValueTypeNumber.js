@@ -68,7 +68,7 @@ const ValueTypeNumber = () => {
 					id={'number_range_slider_display_values_as'}
 					label={__('Display values as', 'wc-ajax-product-filter')}
 					description={__(
-						'Determinses how the slider values will be shown on the frontend.',
+						'Determines how the slider values will be shown on the frontend.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
