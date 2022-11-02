@@ -26,18 +26,15 @@ const ProFeaturesCard = () => {
 				</li>
 				<li>
 					{__(
-						'Filter by Post Author/Vendor, Date, Modified',
+						'Filter by Post Property(author/vendor, date, modified)',
 						'wc-ajax-product-filter'
 					)}
 				</li>
 				<li>
 					{__(
-						'Custom sorting filter for products',
+						'Sort by, Results per page filters',
 						'wc-ajax-product-filter'
 					)}
-				</li>
-				<li>
-					{__('Products per page filter', 'wc-ajax-product-filter')}
 				</li>
 				<li>
 					{__(
@@ -78,6 +75,12 @@ const ProFeaturesCard = () => {
 				<li>
 					{__(
 						'Choose the ordering of terms',
+						'wc-ajax-product-filter'
+					)}
+				</li>
+				<li>
+					{__(
+						'Manually create the rating filter options',
 						'wc-ajax-product-filter'
 					)}
 				</li>

@@ -4,6 +4,8 @@
         "Listbox",
         "shortcode",
         "sprintf",
-        "wcapf"
+        "unsynced",
+        "wcapf",
+        "widefat"
     ]
 }

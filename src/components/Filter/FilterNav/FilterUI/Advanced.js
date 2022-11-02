@@ -32,6 +32,7 @@ const Advanced = () => {
 			enable_accordion,
 			accordion_default_state,
 			show_clear_button,
+			title_in_active_filters,
 			enable_soft_limit,
 			enable_soft_limit_for_extended_layout,
 			soft_limit,
@@ -81,7 +82,7 @@ const Advanced = () => {
 	const enableClearButtonField = () => {
 		const disallowedFilterTypes = ['active-filters', 'reset-button'];
 
-		if (!disallowedFilterTypes.includes(filterType)) {
+		if (show_title && !disallowedFilterTypes.includes(filterType)) {
 			return (
 				<Checkbox
 					id={'show_clear_button'}
@@ -275,6 +276,26 @@ const Advanced = () => {
 		}
 	};
 
+	const activeFilterLabelField = () => {
+		if ('active-filters' !== filterType && 'reset-button' !== filterType) {
+			return (
+				<Text
+					id={'title_in_active_filters'}
+					label={__(
+						'Custom title in active filters',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Leave blank to show the filter title.',
+						'wc-ajax-product-filter	'
+					)}
+					value={title_in_active_filters}
+					onChange={handleTextFieldChange}
+				/>
+			);
+		}
+	};
+
 	return (
 		<>
 			{enableAccordionField()}
@@ -288,6 +309,8 @@ const Advanced = () => {
 			{enableSoftLimitField()}
 
 			{visibleOptionsField()}
+
+			{activeFilterLabelField()}
 		</>
 	);
 };
