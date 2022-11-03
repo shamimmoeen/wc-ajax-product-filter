@@ -4,34 +4,11 @@
 @import './scss/form-fields';
 @import './scss/pro-tag';
 @import './scss/available-filters';
-@import './scss/responsive-list-table';
 @import './scss/top-bar';
 @import './scss/sidebar';
 @import './scss/action-modal';
 @import './scss/publish-modal';
-
-.__import_data {
-	min-height: 250px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-
-	.dashicon {
-		width: 40px;
-		height: 40px;
-		font-size: 40px;
-		color: #babbbc;
-	}
-
-	h3 {
-		font-weight: 500;
-	}
-
-	p {
-		margin: 0 0 2em;
-	}
-}
+@import './scss/import-sample-filters';
 
 .__add_filter_modal {
 	max-width: 700px;

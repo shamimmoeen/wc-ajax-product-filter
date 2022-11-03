@@ -7,10 +7,7 @@ import { useListFilters } from '../ListFiltersContext';
 import { getAdditionalData, getEditFilterLink } from '../../utils';
 import { CheckIcon } from '../../SVGIcons';
 import axios from 'axios';
-import {
-	filterCreateErrorNotice,
-	removeFilterCreateNotice,
-} from '../../notices';
+import { itemCreateErrorNotice, removeItemCreateNotice } from '../../notices';
 
 const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	const {
@@ -104,7 +101,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	}, [filterType]);
 
 	const handleCloseModal = () => {
-		removeFilterCreateNotice();
+		removeItemCreateNotice();
 
 		setAddNewModalOpen(false);
 		setStep(1);
@@ -121,7 +118,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	};
 
 	const handleFilterSubmit = () => {
-		removeFilterCreateNotice();
+		removeItemCreateNotice();
 
 		setLoading(true);
 
@@ -150,13 +147,13 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 
 					dispatch({ type: 'SET_FILTERS', payload: _filters });
 				} else {
-					filterCreateErrorNotice(data);
+					itemCreateErrorNotice(data);
 				}
 			})
 			.catch((err) => {
 				setLoading(false);
 
-				filterCreateErrorNotice(err.message);
+				itemCreateErrorNotice(err.message);
 			});
 	};
 

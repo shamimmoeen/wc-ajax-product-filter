@@ -1,0 +1,24 @@
+.__import_sample_filters {
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 24px;
+    text-align: center;
+
+    .dashicon {
+        width: 40px;
+        height: 40px;
+        font-size: 40px;
+        color: #babbbc;
+    }
+
+    h3 {
+        font-weight: 500;
+    }
+
+    p {
+        margin: 0 0 2em;
+    }
+}

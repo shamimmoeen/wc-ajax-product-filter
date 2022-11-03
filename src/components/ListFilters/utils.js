@@ -21,7 +21,7 @@ export function prepareFilterData(raw) {
 		componentExtra = post_property;
 	}
 
-	const permalink = getEditFilterLink(id);
+	const editLink = getEditFilterLink(id);
 
 	return {
 		id,
@@ -30,6 +30,6 @@ export function prepareFilterData(raw) {
 		shortcode,
 		component,
 		componentExtra,
-		permalink,
+		editLink,
 	};
 }

@@ -57,6 +57,10 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_taxonomy_terms', array( $this, 'get_taxonomy_terms' ) );
 		add_action( 'wp_ajax_wcapf_get_post_authors', array( $this, 'get_post_authors' ) );
 		add_action( 'wp_ajax_wcapf_get_meta_values', array( $this, 'get_meta_values' ) );
+
+		// Form
+		add_action( 'wp_ajax_wcapf_duplicate_form', array( $this, 'duplicate_form' ) );
+		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
 	}
 
 	public function get_available_filters() {
@@ -435,36 +439,12 @@ class WCAPF_API {
 	}
 
 	/**
-	 * Duplicates the filter via ajax.
-	 *
-	 * @return void
-	 */
-	public function duplicate_filter() {
-		$post_id = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
-
-		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
-			$new_post_id = WCAPF_API_Utils::duplicate_filter( $post_id );
-
-			if ( is_wp_error( $new_post_id ) ) {
-				wp_send_json_error( $new_post_id->get_error_message() );
-			} else {
-				wp_send_json_success( array(
-					'message'     => __( 'Filter duplicated successfully', 'wc-ajax-product-filter' ),
-					'filter_data' => WCAPF_API_Utils::get_filter_data( $new_post_id ),
-				) );
-			}
-		} else {
-			wp_send_json_error( __( 'Invalid filter id', 'wc-ajax-product-filter' ) );
-		}
-	}
-
-	/**
 	 * Deletes the filter via ajax.
 	 *
 	 * @return void
 	 */
 	public function delete_filter() {
-		$post_id = isset( $_POST['filter_id'] ) ? $_POST['filter_id'] : '';
+		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
 
 		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
 			$delete = wp_delete_post( $post_id, true );
@@ -831,6 +811,77 @@ class WCAPF_API {
 		}
 
 		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Duplicates the form via ajax.
+	 *
+	 * @return void
+	 */
+	public function duplicate_form() {
+		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+
+		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
+			$new_post_id = WCAPF_API_Utils::duplicate_form( $post_id );
+
+			if ( is_wp_error( $new_post_id ) ) {
+				wp_send_json_error( $new_post_id->get_error_message() );
+			} else {
+				wp_send_json_success( array(
+					'message'  => __( 'Form duplicated successfully', 'wc-ajax-product-filter' ),
+					'new_post' => WCAPF_API_Utils::get_form_data( $new_post_id ),
+				) );
+			}
+		} else {
+			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
+	 * Duplicates the filter via ajax.
+	 *
+	 * @return void
+	 */
+	public function duplicate_filter() {
+		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+
+		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
+			$new_post_id = WCAPF_API_Utils::duplicate_filter( $post_id );
+
+			if ( is_wp_error( $new_post_id ) ) {
+				wp_send_json_error( $new_post_id->get_error_message() );
+			} else {
+				wp_send_json_success( array(
+					'message'  => __( 'Filter duplicated successfully', 'wc-ajax-product-filter' ),
+					'new_post' => WCAPF_API_Utils::get_filter_data( $new_post_id ),
+				) );
+			}
+		} else {
+			wp_send_json_error( __( 'Invalid filter id', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
+	 * Deletes the form via ajax.
+	 *
+	 * @return void
+	 */
+	public function delete_form() {
+		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+
+		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
+			$delete = wp_delete_post( $post_id, true );
+
+			if ( $delete ) {
+				wp_send_json_success( __( 'Form deleted successfully', 'wc-ajax-product-filter' ) );
+			} else {
+				wp_send_json_error(
+					__( 'There was a problem deleting the form, please try again.', 'wc-ajax-product-filter' )
+				);
+			}
+		} else {
+			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
+		}
 	}
 
 }

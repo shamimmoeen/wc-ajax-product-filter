@@ -4582,10 +4582,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 /***/ }),
 
-/***/ "./src/filter-form.scss":
-/*!******************************!*\
-  !*** ./src/filter-form.scss ***!
-  \******************************/
+/***/ "./src/form.scss":
+/*!***********************!*\
+  !*** ./src/form.scss ***!
+  \***********************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9041,13 +9041,13 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 !function() {
 "use strict";
-/*!****************************!*\
-  !*** ./src/filter-form.js ***!
-  \****************************/
+/*!*********************!*\
+  !*** ./src/form.js ***!
+  \*********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _filter_form_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./filter-form.scss */ "./src/filter-form.scss");
+/* harmony import */ var _form_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form.scss */ "./src/form.scss");
 /* harmony import */ var _components_FilterForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/FilterForm */ "./src/components/FilterForm/index.js");
 /* harmony import */ var _components_FilterForm_FilterFormContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/FilterForm/FilterFormContext */ "./src/components/FilterForm/FilterFormContext.js");
 
@@ -9070,4 +9070,4 @@ document.addEventListener('DOMContentLoaded', () => {
 }();
 /******/ })()
 ;
-//# sourceMappingURL=filter-form.js.map
+//# sourceMappingURL=form.js.map
