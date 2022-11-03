@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useFilterForm } from './FilterFormContext';
+import { useFilterForm } from './FormContext';
 import Title from '../Title';
 
 const FilterFormTitle = () => {

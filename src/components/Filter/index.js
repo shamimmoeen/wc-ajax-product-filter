@@ -24,8 +24,8 @@ const Filter = () => {
 		/**
 		 * @source https://stackoverflow.com/a/979995
 		 */
-		var query = new URL(window.location.href);
-		var id = query.searchParams.get('id');
+		const query = new URL(window.location.href);
+		const id = query.searchParams.get('id');
 
 		const data = {
 			action: 'get_filter_data',
@@ -93,7 +93,13 @@ const Filter = () => {
 
 				dispatch({ type: 'SET_LOADING', payload: false });
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				// TODO: Maybe show a snackbar notice.
+
+				console.log(err);
+
+				dispatch({ type: 'SET_LOADING', payload: false });
+			});
 	}, []);
 
 	return (
