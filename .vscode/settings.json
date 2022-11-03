@@ -4,9 +4,13 @@
         "dashicon",
         "Listbox",
         "shortcode",
+        "sortablejs",
         "sprintf",
         "unsynced",
         "wcapf",
-        "widefat"
+        "widefat",
+        "wpbody",
+        "wpcontent",
+        "wpfooter"
     ]
 }

@@ -53,7 +53,7 @@ class WCAPF_API_Utils {
 		$filter_data = get_post_meta( $id, '_field_data', true );
 
 		return array(
-			'id'            => $id,
+			'id'            => absint( $id ),
 			'field_key'     => isset( $filter_data['field_key'] ) ? $filter_data['field_key'] : '',
 			'type'          => isset( $filter_data['type'] ) ? $filter_data['type'] : '',
 			'taxonomy'      => isset( $filter_data['taxonomy'] ) ? $filter_data['taxonomy'] : '',
@@ -298,7 +298,7 @@ class WCAPF_API_Utils {
 		$error_message = '';
 
 		if ( 20 === $error_code ) {
-			$error_message = __( 'Filter is required.', 'wc-ajax-product-filter' );
+			$error_message = __( 'Filter type is required.', 'wc-ajax-product-filter' );
 		} elseif ( 21 === $error_code ) {
 			$error_message = __( 'Invalid filter type.', 'wc-ajax-product-filter' );
 		} elseif ( 22 === $error_code ) {

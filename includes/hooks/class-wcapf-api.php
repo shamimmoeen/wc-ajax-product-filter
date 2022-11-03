@@ -43,10 +43,7 @@ class WCAPF_API {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_action( 'wp_ajax_get_available_filters', array( $this, 'get_available_filters' ) );
-		add_action( 'wp_ajax_get_filter_form_data', array( $this, 'get_filter_form_data' ) );
-		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
-		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
+		// For filter.
 		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
 		add_action( 'wp_ajax_wcapf_save_filter', array( $this, 'save_filter' ) );
 		add_action( 'wp_ajax_wcapf_duplicate_filter', array( $this, 'duplicate_filter' ) );
@@ -58,69 +55,17 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_post_authors', array( $this, 'get_post_authors' ) );
 		add_action( 'wp_ajax_wcapf_get_meta_values', array( $this, 'get_meta_values' ) );
 
-		// Form
+		// For form.
+		add_action( 'wp_ajax_wcapf_get_available_filters', array( $this, 'get_available_filters' ) );
+		add_action( 'wp_ajax_wcapf_get_form_data', array( $this, 'get_form_data' ) );
+		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
+		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
 		add_action( 'wp_ajax_wcapf_duplicate_form', array( $this, 'duplicate_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
 	}
 
-	public function get_available_filters() {
-		$args = array(
-			'post_type'   => 'wcapf-filter',
-			'post_status' => 'publish',
-			'nopaging'    => true,
-			'fields'      => 'ids',
-		);
-
-		$filters = get_posts( $args );
-		$results = array();
-
-		foreach ( $filters as $filter_id ) {
-			$title      = get_the_title( $filter_id );
-			$filter_key = get_post_meta( $filter_id, '_filter_key', true );
-			$query      = $title . $filter_key . $filter_id;
-
-			$results[] = array(
-				'id'        => $filter_id,
-				'title'     => $title,
-				'filterKey' => $filter_key,
-				'editLink'  => get_edit_post_link( $filter_id, '' ),
-				'query'     => $query,
-			);
-		}
-
-		wp_send_json_success( $results );
-	}
-
-	public function get_filter_form_data() {
-		$post_id   = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
-		$form_data = get_post_meta( $post_id, '_form_data', true );
-		$response  = array( 'post_title' => get_the_title( $post_id ) );
-
-		$filters_data = array();
-
-		if ( $form_data ) {
-			$filter_ids = isset( $form_data['filter_ids'] ) ? $form_data['filter_ids'] : array();
-
-			foreach ( $filter_ids as $field_id ) {
-				$field_data = get_post_meta( $field_id, '_field_data', true );
-				$field_key  = $field_data['field_key'];
-
-				$filters_data[] = array(
-					'id'        => $field_id,
-					'title'     => get_the_title( $field_id ),
-					'filterKey' => $field_key,
-					'editLink'  => get_edit_post_link( $field_id, '' ),
-				);
-			}
-		}
-
-		$response['filters_data'] = $filters_data;
-
-		wp_send_json_success( $response );
-	}
-
 	public function save_filter_form() {
-		$post_id       = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
+		$post_id       = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 		$_form_filters = isset( $_POST['form_filters'] ) ? $_POST['form_filters'] : '';
 		$post_title    = isset( $_POST['post_title'] ) ? $_POST['post_title'] : '';
 		$form_filters  = stripslashes( $_form_filters );
@@ -148,7 +93,7 @@ class WCAPF_API {
 	}
 
 	public function get_filter_form_preview() {
-		$post_id = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
+		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 
 		ob_start();
 
@@ -304,7 +249,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_filter_data() {
-		$post_id = isset( $_GET['post_id'] ) ? sanitize_text_field( $_GET['post_id'] ) : '';
+		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 
 		wp_send_json_success( $this->get_filter( $post_id ) );
 	}
@@ -444,7 +389,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function delete_filter() {
-		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
 			$delete = wp_delete_post( $post_id, true );
@@ -819,7 +764,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function duplicate_form() {
-		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
 			$new_post_id = WCAPF_API_Utils::duplicate_form( $post_id );
@@ -838,12 +783,37 @@ class WCAPF_API {
 	}
 
 	/**
+	 * Gets the form data via ajax.
+	 *
+	 * @return void
+	 */
+	public function get_form_data() {
+		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
+
+		$form_data    = get_post_meta( $post_id, '_form_data', true );
+		$form_filters = array();
+
+		if ( $form_data ) {
+			$filter_ids = isset( $form_data['filter_ids'] ) ? $form_data['filter_ids'] : array();
+
+			foreach ( $filter_ids as $filter_id ) {
+				$form_filters[] = WCAPF_API_Utils::get_filter_data( $filter_id );
+			}
+		}
+
+		wp_send_json_success( array(
+			'post_title'   => get_the_title( $post_id ),
+			'form_filters' => $form_filters,
+		) );
+	}
+
+	/**
 	 * Duplicates the filter via ajax.
 	 *
 	 * @return void
 	 */
 	public function duplicate_filter() {
-		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
 			$new_post_id = WCAPF_API_Utils::duplicate_filter( $post_id );
@@ -862,12 +832,23 @@ class WCAPF_API {
 	}
 
 	/**
+	 * Gets the available filters for the form via ajax.
+	 *
+	 * @return void
+	 */
+	public function get_available_filters() {
+		$filters = WCAPF_API_Utils::get_filters();
+
+		wp_send_json_success( $filters );
+	}
+
+	/**
 	 * Deletes the form via ajax.
 	 *
 	 * @return void
 	 */
 	public function delete_form() {
-		$post_id = isset( $_POST['post_id'] ) ? $_POST['post_id'] : '';
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
 			$delete = wp_delete_post( $post_id, true );

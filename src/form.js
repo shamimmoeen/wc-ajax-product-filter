@@ -1,13 +1,13 @@
 import './form.scss';
 import { render, StrictMode } from '@wordpress/element';
-import FilterForm from './components/FilterForm';
-import { FilterFormProvider } from './components/FilterForm/FilterFormContext';
+import Form from './components/Form';
+import { FormProvider } from './components/Form/FormContext';
 
 const App = () => {
 	return (
-		<FilterFormProvider>
-			<FilterForm />
-		</FilterFormProvider>
+		<FormProvider>
+			<Form />
+		</FormProvider>
 	);
 };
 
