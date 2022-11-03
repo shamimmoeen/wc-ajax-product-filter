@@ -3,14 +3,14 @@ import { useEffect, useState } from '@wordpress/element';
 import { useFilter } from '../FilterContext';
 import useFilterData from '../useFilterData';
 import axios from 'axios';
-import PublishModal from '../../ListFilters/PublishModal';
 import {
-	filterSavedSuccessNotice,
-	filterSavedErrorNotice,
-	removeFilterSavedNotices,
 	removeCopiedToClipboardNotice,
+	itemSavedSuccessNotice,
+	itemSavedErrorNotice,
+	removeItemSavedNotices,
 } from '../../notices';
 import Title from './Title';
+import PublishModal from '../../Modals/PublishModal';
 
 const FilterTitle = () => {
 	const { state, dispatch } = useFilter();
@@ -34,7 +34,7 @@ const FilterTitle = () => {
 			return;
 		}
 
-		removeFilterSavedNotices();
+		removeItemSavedNotices();
 	}, [isDirty]);
 
 	const handleTitleChange = (value) => {
@@ -48,7 +48,7 @@ const FilterTitle = () => {
 	};
 
 	const handleOpenPublishModal = () => {
-		removeFilterSavedNotices();
+		removeItemSavedNotices();
 
 		setPublishModalId(filterId);
 	};
@@ -93,7 +93,7 @@ const FilterTitle = () => {
 	};
 
 	const handleSaveFilter = () => {
-		removeFilterSavedNotices();
+		removeItemSavedNotices();
 
 		setLoading(true);
 
@@ -117,20 +117,20 @@ const FilterTitle = () => {
 				if (success) {
 					setNewFilterData(data);
 
-					filterSavedSuccessNotice(
+					itemSavedSuccessNotice(
 						__(
 							'Filter saved successfully',
 							'wc-ajax-product-filter'
 						)
 					);
 				} else {
-					filterSavedErrorNotice(data);
+					itemSavedErrorNotice(data);
 				}
 			})
 			.catch((err) => {
 				setLoading(false);
 
-				filterSavedErrorNotice(err.message);
+				itemSavedErrorNotice(err.message);
 			});
 	};
 
@@ -153,6 +153,7 @@ const FilterTitle = () => {
 			<PublishModal
 				isOpen={publishModalId}
 				closeModal={handleClosePublishModal}
+				postType={'filter'}
 			/>
 		</>
 	);

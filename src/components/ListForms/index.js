@@ -1,4 +1,4 @@
-import { useListFilters } from './ListFiltersContext';
+import { useListForms } from './ListFormsContext';
 import TopBar from '../TopBar';
 import Table from './Table';
 import Sidebar from '../Sidebar';
@@ -9,13 +9,13 @@ import DeleteModal from '../Modals/DeleteModal';
 import DuplicateModal from '../Modals/DuplicateModal';
 import PublishModal from '../Modals/PublishModal';
 
-const ListFilters = () => {
+const ListForms = () => {
 	const {
-		state: { filters: items },
+		state: { forms: items },
 		dispatch,
-	} = useListFilters();
+	} = useListForms();
 
-	const postType = 'filter';
+	const postType = 'form';
 
 	const {
 		addNewModalOpen,
@@ -38,7 +38,7 @@ const ListFilters = () => {
 
 	return (
 		<div className='__wcapf_admin'>
-			<TopBar view={'filters'} />
+			<TopBar view={'forms'} />
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>
@@ -85,4 +85,4 @@ const ListFilters = () => {
 	);
 };
 
-export default ListFilters;
+export default ListForms;

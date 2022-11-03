@@ -6,13 +6,9 @@ module.exports = {
 	entry: {
 		...defaultConfig.entry,
 		'list-filters': path.resolve(process.cwd(), 'src', 'list-filters.js'),
-		'list-filter-forms': path.resolve(
-			process.cwd(),
-			'src',
-			'list-filter-forms.js'
-		),
-		'filter-form': path.resolve(process.cwd(), 'src', 'filter-form.js'),
+		'list-forms': path.resolve(process.cwd(), 'src', 'list-forms.js'),
 		filter: path.resolve(process.cwd(), 'src', 'filter.js'),
+		form: path.resolve(process.cwd(), 'src', 'form.js'),
 		settings: path.resolve(process.cwd(), 'src', 'settings.js'),
 	},
 };

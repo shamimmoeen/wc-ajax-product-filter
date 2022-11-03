@@ -1,8 +1,14 @@
-import './list-filter-forms.scss';
+import './list-forms.scss';
 import { render, StrictMode } from '@wordpress/element';
+import { ListFormsProvider } from './components/ListForms/ListFormsContext';
+import ListForms from './components/ListForms';
 
 const App = () => {
-	return <h1>List of Filter Forms</h1>;
+	return (
+		<ListFormsProvider>
+			<ListForms />
+		</ListFormsProvider>
+	);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

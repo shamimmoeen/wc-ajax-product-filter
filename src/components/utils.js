@@ -68,6 +68,10 @@ export function getSettingsPageLink() {
 	return wcapf_admin_params.settings_page_link;
 }
 
+export function slugify(value) {
+	return '__' + value.replace(/ /g, '_');
+}
+
 export function getNoOfMaxTermsToRender() {
 	const maxItems =
 		parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;

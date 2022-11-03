@@ -27,18 +27,28 @@
     }
 
     .__list_table_inner {
-        @media (max-width: 800px) {
-            overflow-x: auto;
+        &:not(.__forms_table) {
+            @media (max-width: 800px) {
+                overflow-x: auto;
+                padding-bottom: 15px;
+            }
+
+            table {
+                min-width: 720px;
+            }
         }
 
+        &.__forms_table {
+            .__Actions {
+                min-width: 130px;
+            }
+        }
+    }
+
+    .__list_table_inner {
         table {
             border-collapse: collapse;
             width: 100%;
-
-            @media (max-width: 800px) {
-                min-width: 720px;
-            }
-
 
             th {
                 background-color: #f8f9fa;

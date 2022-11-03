@@ -33,64 +33,64 @@ export function removeCopiedToClipboardNotice() {
 	removeNotice('copied-to-clipboard');
 }
 
-// Filter Create Notices.
-const filterCreateErrorNoticeId = 'filter-create-error';
+// Item Create Notices.
+const itemCreateErrorNoticeId = 'item-create-error';
 
-export function filterCreateErrorNotice(message) {
-	addSuccessNotice(message, filterCreateErrorNoticeId, '😟');
+export function itemCreateErrorNotice(message) {
+	addSuccessNotice(message, itemCreateErrorNoticeId, '😟');
 }
 
-export function removeFilterCreateNotice() {
-	removeNotice(filterCreateErrorNoticeId);
+export function removeItemCreateNotice() {
+	removeNotice(itemCreateErrorNoticeId);
 }
 
-// Filter deleted notices.
-const filterDeletedSuccessNoticeId = 'filter-deleted-success';
-const filterDeletedErrorNoticeId = 'filter-deleted-error';
+// Item deleted notices.
+const itemDeletedSuccessNoticeId = 'item-deleted-success';
+const itemDeletedErrorNoticeId = 'item-deleted-error';
 
-export function filterDeletedSuccessNotice(message) {
-	addSuccessNotice(message, filterDeletedSuccessNoticeId, '😵');
+export function itemDeletedSuccessNotice(message) {
+	addSuccessNotice(message, itemDeletedSuccessNoticeId, '😵');
 }
 
-export function filterDeletedErrorNotice(message) {
-	addSuccessNotice(message, filterDeletedErrorNoticeId, '😟');
+export function itemDeletedErrorNotice(message) {
+	addSuccessNotice(message, itemDeletedErrorNoticeId, '😟');
 }
 
-export function removeFilterDeletedNotices() {
-	removeNotice(filterDeletedSuccessNoticeId);
-	removeNotice(filterDeletedErrorNoticeId);
+export function removeItemDeletedNotices() {
+	removeNotice(itemDeletedSuccessNoticeId);
+	removeNotice(itemDeletedErrorNoticeId);
 }
 
-// Filter duplicated notices.
-const filterDuplicatedSuccessNoticeId = 'filter-duplicated-success';
-const filterDuplicatedErrorNoticeId = 'filter-duplicated-error';
+// Item duplicated notices.
+const itemDuplicatedSuccessNoticeId = 'item-duplicated-success';
+const itemDuplicatedErrorNoticeId = 'item-duplicated-error';
 
-export function filterDuplicatedSuccessNotice(message) {
-	addSuccessNotice(message, filterDuplicatedSuccessNoticeId, '🙌');
+export function itemDuplicatedSuccessNotice(message) {
+	addSuccessNotice(message, itemDuplicatedSuccessNoticeId, '🙌');
 }
 
-export function filterDuplicatedErrorNotice(message) {
-	addSuccessNotice(message, filterDuplicatedErrorNoticeId, '😟');
+export function itemDuplicatedErrorNotice(message) {
+	addSuccessNotice(message, itemDuplicatedErrorNoticeId, '😟');
 }
 
-export function removeFilterDuplicatedNotices() {
-	removeNotice(filterDuplicatedSuccessNoticeId);
-	removeNotice(filterDuplicatedErrorNoticeId);
+export function removeItemDuplicatedNotices() {
+	removeNotice(itemDuplicatedSuccessNoticeId);
+	removeNotice(itemDuplicatedErrorNoticeId);
 }
 
-// Filter Save Notices.
-const filterSaveSuccessNoticeId = 'filter-save-success';
-const filterSaveErrorNoticeId = 'filter-save-error';
+// Item Save Notices.
+const itemSaveSuccessNoticeId = 'item-save-success';
+const itemSaveErrorNoticeId = 'item-save-error';
 
-export function filterSavedSuccessNotice(message) {
-	addSuccessNotice(message, filterSaveSuccessNoticeId, '👌');
+export function itemSavedSuccessNotice(message) {
+	addSuccessNotice(message, itemSaveSuccessNoticeId, '👌');
 }
 
-export function filterSavedErrorNotice(message) {
-	addSuccessNotice(message, filterSaveErrorNoticeId, '😟');
+export function itemSavedErrorNotice(message) {
+	addSuccessNotice(message, itemSaveErrorNoticeId, '😟');
 }
 
-export function removeFilterSavedNotices() {
-	removeNotice(filterSaveSuccessNoticeId);
-	removeNotice(filterSaveErrorNoticeId);
+export function removeItemSavedNotices() {
+	removeNotice(itemSaveSuccessNoticeId);
+	removeNotice(itemSaveErrorNoticeId);
 }

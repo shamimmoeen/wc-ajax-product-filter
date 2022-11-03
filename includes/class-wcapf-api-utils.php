@@ -760,4 +760,66 @@ class WCAPF_API_Utils {
 		);
 	}
 
+	/**
+	 * Gets the forms.
+	 *
+	 * @return array
+	 */
+	public static function get_forms() {
+		$args = array(
+			'post_type'   => 'wcapf-form',
+			'nopaging'    => true,
+			'post_status' => 'publish',
+			'fields'      => 'ids',
+		);
+
+		$posts = get_posts( $args );
+		$forms = array();
+
+		foreach ( $posts as $post_id ) {
+			$forms[] = self::get_form_data( $post_id );
+		}
+
+		return $forms;
+	}
+
+	/**
+	 * Gets the form data for given id.
+	 *
+	 * @param int $id The form id.
+	 *
+	 * @return array
+	 */
+	public static function get_form_data( $id ) {
+		return array(
+			'id'    => $id,
+			'title' => get_the_title( $id ),
+		);
+	}
+
+	/**
+	 * Duplicate form.
+	 *
+	 * @param int $post_id The post id to be duplicated.
+	 *
+	 * @return int|WP_Error
+	 */
+	public static function duplicate_form( $post_id ) {
+		$post_arr = array(
+			'post_title'  => get_the_title( $post_id ) . ' ' . __( '(Copy)', 'wc-ajax-product-filter' ),
+			'post_type'   => 'wcapf-form',
+			'post_status' => 'publish',
+		);
+
+		$new_post_id = wp_insert_post( $post_arr, true );
+
+		if ( is_wp_error( $new_post_id ) ) {
+			return $new_post_id;
+		}
+
+		// TODO: Copy the meta data.
+
+		return $new_post_id;
+	}
+
 }

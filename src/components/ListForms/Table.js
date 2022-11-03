@@ -9,13 +9,11 @@ import {
 	PlusIcon,
 } from '../SVGIcons';
 import { slugify } from '../utils';
-import { useListFilters } from './ListFiltersContext';
-import { prepareFilterData } from './utils';
+import { useListForms } from './ListFormsContext';
+import { prepareFormData } from './utils';
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
-	__('Filter Type', 'wc-ajax-product-filter'),
-	__('Filter Key', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
 
@@ -28,10 +26,10 @@ const Table = ({
 	duplicatingItemId,
 }) => {
 	const {
-		state: { filters },
-	} = useListFilters();
+		state: { forms },
+	} = useListForms();
 
-	const filtersFound = filters.length;
+	const formsFound = forms.length;
 
 	const tableHeader = () => {
 		return (
@@ -51,12 +49,12 @@ const Table = ({
 	};
 
 	const tableBody = () =>
-		filters.map((_filter) => {
-			const filter = prepareFilterData(_filter);
+		forms.map((_form) => {
+			const form = prepareFormData(_form);
 
-			const filterId = filter.id;
-			const filterTitle = filter.title
-				? filter.title
+			const filterId = form.id;
+			const filterTitle = form.title
+				? form.title
 				: __('(no title)', 'wc-ajax-product-filter');
 
 			const isDeleting = filterId === deletingItemId;
@@ -65,7 +63,7 @@ const Table = ({
 			return (
 				<tr key={filterId}>
 					<td className='__Title'>
-						<a href={filter.editLink} className='__post_title'>
+						<a href={form.editLink} className='__post_title'>
 							{filterTitle}
 						</a>
 						<span className='__post_id'>
@@ -73,16 +71,6 @@ const Table = ({
 							{filterId}
 						</span>
 					</td>
-					<td className='__Filter_Type'>
-						{filter.component}
-						{filter.componentExtra && (
-							<span className='__component_extra'>
-								{` `}
-								{filter.componentExtra}
-							</span>
-						)}
-					</td>
-					<td className='__Filter_Key'>{filter.filter_key}</td>
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
@@ -105,7 +93,7 @@ const Table = ({
 						/>
 						<Button
 							icon={EditIcon}
-							href={filter.editLink}
+							href={form.editLink}
 							className='__edit_btn'
 							isSmall
 						/>
@@ -126,15 +114,15 @@ const Table = ({
 	};
 
 	const listSummary = () => {
-		if (filtersFound) {
+		if (formsFound) {
 			const countResults = sprintf(
 				_n(
 					'Showing <b>%d</b> result',
 					'Showing <b>%d</b> results',
-					filtersFound,
+					formsFound,
 					'wc-ajax-product-filter'
 				),
-				filtersFound
+				formsFound
 			);
 
 			return (
@@ -149,18 +137,22 @@ const Table = ({
 		<div className='__content'>
 			<div className='__list_table_wrapper'>
 				<div className='__list_table_header'>
-					<h2>{__('List of Filters', 'wc-ajax-product-filter')}</h2>
-					<Button variant='primary' onClick={openAddNewModal}>
+					<h2>{__('List of Forms', 'wc-ajax-product-filter')}</h2>
+					<Button
+						variant='primary'
+						onClick={openAddNewModal}
+						disabled={!formsFound}
+					>
 						<Icon icon={PlusIcon} size={16} />
 						{__('Add New', 'wc-ajax-product-filter')}
 					</Button>
 				</div>
 
-				<div className='__list_table_inner'>
-					{filtersFound ? (
+				<div className='__list_table_inner __forms_table'>
+					{formsFound ? (
 						listTable()
 					) : (
-						<ImportSampleFilters view={'filters'} />
+						<ImportSampleFilters view={'forms'} />
 					)}
 				</div>
 

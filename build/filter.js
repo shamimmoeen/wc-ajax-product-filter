@@ -9659,9 +9659,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _useFilterData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../useFilterData */ "./src/components/Filter/useFilterData.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _ListFilters_PublishModal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ListFilters/PublishModal */ "./src/components/ListFilters/PublishModal.js");
-/* harmony import */ var _notices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../notices */ "./src/components/notices.js");
-/* harmony import */ var _Title__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Title */ "./src/components/Filter/FilterTitle/Title.js");
+/* harmony import */ var _notices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../notices */ "./src/components/notices.js");
+/* harmony import */ var _Title__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Title */ "./src/components/Filter/FilterTitle/Title.js");
+/* harmony import */ var _Modals_PublishModal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Modals/PublishModal */ "./src/components/Modals/PublishModal.js");
 
 
 
@@ -9696,7 +9696,7 @@ const FilterTitle = () => {
       return;
     }
 
-    (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeFilterSavedNotices)();
+    (0,_notices__WEBPACK_IMPORTED_MODULE_5__.removeItemSavedNotices)();
   }, [isDirty]);
 
   const handleTitleChange = value => {
@@ -9712,12 +9712,12 @@ const FilterTitle = () => {
   };
 
   const handleOpenPublishModal = () => {
-    (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeFilterSavedNotices)();
+    (0,_notices__WEBPACK_IMPORTED_MODULE_5__.removeItemSavedNotices)();
     setPublishModalId(filterId);
   };
 
   const handleClosePublishModal = () => {
-    (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeCopiedToClipboardNotice)();
+    (0,_notices__WEBPACK_IMPORTED_MODULE_5__.removeCopiedToClipboardNotice)();
     setPublishModalId(null);
   };
 
@@ -9767,7 +9767,7 @@ const FilterTitle = () => {
   };
 
   const handleSaveFilter = () => {
-    (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeFilterSavedNotices)();
+    (0,_notices__WEBPACK_IMPORTED_MODULE_5__.removeItemSavedNotices)();
     setLoading(true);
     const formData = new FormData();
     formData.append('action', 'wcapf_save_filter');
@@ -9786,13 +9786,13 @@ const FilterTitle = () => {
 
       if (success) {
         setNewFilterData(data);
-        (0,_notices__WEBPACK_IMPORTED_MODULE_6__.filterSavedSuccessNotice)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter saved successfully', 'wc-ajax-product-filter'));
+        (0,_notices__WEBPACK_IMPORTED_MODULE_5__.itemSavedSuccessNotice)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter saved successfully', 'wc-ajax-product-filter'));
       } else {
-        (0,_notices__WEBPACK_IMPORTED_MODULE_6__.filterSavedErrorNotice)(data);
+        (0,_notices__WEBPACK_IMPORTED_MODULE_5__.itemSavedErrorNotice)(data);
       }
     }).catch(err => {
       setLoading(false);
-      (0,_notices__WEBPACK_IMPORTED_MODULE_6__.filterSavedErrorNotice)(err.message);
+      (0,_notices__WEBPACK_IMPORTED_MODULE_5__.itemSavedErrorNotice)(err.message);
     });
   };
 
@@ -9804,13 +9804,14 @@ const FilterTitle = () => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Title__WEBPACK_IMPORTED_MODULE_7__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Title__WEBPACK_IMPORTED_MODULE_6__["default"], {
     loading: loading,
     handleTitleChange: handleTitleChange,
     handleSubmit: handleSubmit
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ListFilters_PublishModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Modals_PublishModal__WEBPACK_IMPORTED_MODULE_7__["default"], {
     isOpen: publishModalId,
-    closeModal: handleClosePublishModal
+    closeModal: handleClosePublishModal,
+    postType: 'filter'
   }));
 };
 
@@ -11659,10 +11660,10 @@ function wpFeSanitizeTitle(title) {
 
 /***/ }),
 
-/***/ "./src/components/ListFilters/PublishModal.js":
-/*!****************************************************!*\
-  !*** ./src/components/ListFilters/PublishModal.js ***!
-  \****************************************************/
+/***/ "./src/components/Modals/PublishModal.js":
+/*!***********************************************!*\
+  !*** ./src/components/Modals/PublishModal.js ***!
+  \***********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11684,7 +11685,8 @@ __webpack_require__.r(__webpack_exports__);
 const PublishModal = _ref => {
   let {
     isOpen: id,
-    closeModal
+    closeModal,
+    postType
   } = _ref;
   const clipboardApiFound = window.isSecureContext && navigator.clipboard;
 
@@ -11701,10 +11703,20 @@ const PublishModal = _ref => {
     (0,_notices__WEBPACK_IMPORTED_MODULE_4__.removeCopiedToClipboardNotice)();
   };
 
-  const gettabContent = tab => {
+  const getTabContent = tab => {
     let description;
     let code;
-    const shortcode = `[wcapf_filter id="${id}"]`;
+    let shortcode;
+    let widgetName;
+
+    if ('filter' === postType) {
+      shortcode = `[wcapf_filter id="${id}"]`;
+      widgetName = 'WC Ajax Product Filter';
+    } else if ('form' === postType) {
+      shortcode = `[wcapf_form id="${id}"]`;
+      widgetName = 'WC Ajax Product Filter Form';
+    }
+
     const widgetsPageLink = wcapf_admin_params.widgets_page_link;
 
     if ('shortcode' === tab) {
@@ -11714,7 +11726,7 @@ const PublishModal = _ref => {
       description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to publish using PHP code, just copy code below and use it.', 'wc-ajax-product-filter');
       code = `<?php echo do_shortcode( '${shortcode}' ); ?>`;
     } else {
-      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to use it in a widget, go to the widgets page, add <b>WC Ajax Product Filter</b> widget to the desired area.', 'wc-ajax-product-filter');
+      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to use it in a widget, go to the widgets page, add <b>%s</b> widget to the desired area.', 'wc-ajax-product-filter'), widgetName);
     }
 
     let classes = '__code';
@@ -11752,11 +11764,19 @@ const PublishModal = _ref => {
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'wc-ajax-product-filter'))));
   };
 
+  let heading;
+
+  if ('filter' === postType) {
+    heading = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Publish Filter', 'wc-ajax-product-filter');
+  } else if ('form' === postType) {
+    heading = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Publish Form', 'wc-ajax-product-filter');
+  }
+
   return id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
     onRequestClose: closeModal,
     __experimentalHideHeader: true,
     className: "__publish_modal"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Publish Filter', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TabPanel, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, heading), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TabPanel, {
     className: "__publish_tab_panel",
     activeClass: "active-tab",
     onSelect: handleTabChange,
@@ -11773,7 +11793,7 @@ const PublishModal = _ref => {
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Widget', 'wc-ajax-product-filter'),
       className: 'widget'
     }]
-  }, tab => gettabContent(tab.name))));
+  }, tab => getTabContent(tab.name))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (PublishModal);
@@ -12782,18 +12802,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "addErrorNotice": function() { return /* binding */ addErrorNotice; },
 /* harmony export */   "addSuccessNotice": function() { return /* binding */ addSuccessNotice; },
 /* harmony export */   "copiedToClipboardNotice": function() { return /* binding */ copiedToClipboardNotice; },
-/* harmony export */   "filterCreateErrorNotice": function() { return /* binding */ filterCreateErrorNotice; },
-/* harmony export */   "filterDeletedErrorNotice": function() { return /* binding */ filterDeletedErrorNotice; },
-/* harmony export */   "filterDeletedSuccessNotice": function() { return /* binding */ filterDeletedSuccessNotice; },
-/* harmony export */   "filterDuplicatedErrorNotice": function() { return /* binding */ filterDuplicatedErrorNotice; },
-/* harmony export */   "filterDuplicatedSuccessNotice": function() { return /* binding */ filterDuplicatedSuccessNotice; },
-/* harmony export */   "filterSavedErrorNotice": function() { return /* binding */ filterSavedErrorNotice; },
-/* harmony export */   "filterSavedSuccessNotice": function() { return /* binding */ filterSavedSuccessNotice; },
+/* harmony export */   "itemCreateErrorNotice": function() { return /* binding */ itemCreateErrorNotice; },
+/* harmony export */   "itemDeletedErrorNotice": function() { return /* binding */ itemDeletedErrorNotice; },
+/* harmony export */   "itemDeletedSuccessNotice": function() { return /* binding */ itemDeletedSuccessNotice; },
+/* harmony export */   "itemDuplicatedErrorNotice": function() { return /* binding */ itemDuplicatedErrorNotice; },
+/* harmony export */   "itemDuplicatedSuccessNotice": function() { return /* binding */ itemDuplicatedSuccessNotice; },
+/* harmony export */   "itemSavedErrorNotice": function() { return /* binding */ itemSavedErrorNotice; },
+/* harmony export */   "itemSavedSuccessNotice": function() { return /* binding */ itemSavedSuccessNotice; },
 /* harmony export */   "removeCopiedToClipboardNotice": function() { return /* binding */ removeCopiedToClipboardNotice; },
-/* harmony export */   "removeFilterCreateNotice": function() { return /* binding */ removeFilterCreateNotice; },
-/* harmony export */   "removeFilterDeletedNotices": function() { return /* binding */ removeFilterDeletedNotices; },
-/* harmony export */   "removeFilterDuplicatedNotices": function() { return /* binding */ removeFilterDuplicatedNotices; },
-/* harmony export */   "removeFilterSavedNotices": function() { return /* binding */ removeFilterSavedNotices; },
+/* harmony export */   "removeItemCreateNotice": function() { return /* binding */ removeItemCreateNotice; },
+/* harmony export */   "removeItemDeletedNotices": function() { return /* binding */ removeItemDeletedNotices; },
+/* harmony export */   "removeItemDuplicatedNotices": function() { return /* binding */ removeItemDuplicatedNotices; },
+/* harmony export */   "removeItemSavedNotices": function() { return /* binding */ removeItemSavedNotices; },
 /* harmony export */   "removeNotice": function() { return /* binding */ removeNotice; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
@@ -12827,53 +12847,53 @@ function copiedToClipboardNotice() {
 }
 function removeCopiedToClipboardNotice() {
   removeNotice('copied-to-clipboard');
-} // Filter Create Notices.
+} // Item Create Notices.
 
-const filterCreateErrorNoticeId = 'filter-create-error';
-function filterCreateErrorNotice(message) {
-  addSuccessNotice(message, filterCreateErrorNoticeId, '😟');
+const itemCreateErrorNoticeId = 'item-create-error';
+function itemCreateErrorNotice(message) {
+  addSuccessNotice(message, itemCreateErrorNoticeId, '😟');
 }
-function removeFilterCreateNotice() {
-  removeNotice(filterCreateErrorNoticeId);
-} // Filter deleted notices.
+function removeItemCreateNotice() {
+  removeNotice(itemCreateErrorNoticeId);
+} // Item deleted notices.
 
-const filterDeletedSuccessNoticeId = 'filter-deleted-success';
-const filterDeletedErrorNoticeId = 'filter-deleted-error';
-function filterDeletedSuccessNotice(message) {
-  addSuccessNotice(message, filterDeletedSuccessNoticeId, '😵');
+const itemDeletedSuccessNoticeId = 'item-deleted-success';
+const itemDeletedErrorNoticeId = 'item-deleted-error';
+function itemDeletedSuccessNotice(message) {
+  addSuccessNotice(message, itemDeletedSuccessNoticeId, '😵');
 }
-function filterDeletedErrorNotice(message) {
-  addSuccessNotice(message, filterDeletedErrorNoticeId, '😟');
+function itemDeletedErrorNotice(message) {
+  addSuccessNotice(message, itemDeletedErrorNoticeId, '😟');
 }
-function removeFilterDeletedNotices() {
-  removeNotice(filterDeletedSuccessNoticeId);
-  removeNotice(filterDeletedErrorNoticeId);
-} // Filter duplicated notices.
+function removeItemDeletedNotices() {
+  removeNotice(itemDeletedSuccessNoticeId);
+  removeNotice(itemDeletedErrorNoticeId);
+} // Item duplicated notices.
 
-const filterDuplicatedSuccessNoticeId = 'filter-duplicated-success';
-const filterDuplicatedErrorNoticeId = 'filter-duplicated-error';
-function filterDuplicatedSuccessNotice(message) {
-  addSuccessNotice(message, filterDuplicatedSuccessNoticeId, '🙌');
+const itemDuplicatedSuccessNoticeId = 'item-duplicated-success';
+const itemDuplicatedErrorNoticeId = 'item-duplicated-error';
+function itemDuplicatedSuccessNotice(message) {
+  addSuccessNotice(message, itemDuplicatedSuccessNoticeId, '🙌');
 }
-function filterDuplicatedErrorNotice(message) {
-  addSuccessNotice(message, filterDuplicatedErrorNoticeId, '😟');
+function itemDuplicatedErrorNotice(message) {
+  addSuccessNotice(message, itemDuplicatedErrorNoticeId, '😟');
 }
-function removeFilterDuplicatedNotices() {
-  removeNotice(filterDuplicatedSuccessNoticeId);
-  removeNotice(filterDuplicatedErrorNoticeId);
-} // Filter Save Notices.
+function removeItemDuplicatedNotices() {
+  removeNotice(itemDuplicatedSuccessNoticeId);
+  removeNotice(itemDuplicatedErrorNoticeId);
+} // Item Save Notices.
 
-const filterSaveSuccessNoticeId = 'filter-save-success';
-const filterSaveErrorNoticeId = 'filter-save-error';
-function filterSavedSuccessNotice(message) {
-  addSuccessNotice(message, filterSaveSuccessNoticeId, '👌');
+const itemSaveSuccessNoticeId = 'item-save-success';
+const itemSaveErrorNoticeId = 'item-save-error';
+function itemSavedSuccessNotice(message) {
+  addSuccessNotice(message, itemSaveSuccessNoticeId, '👌');
 }
-function filterSavedErrorNotice(message) {
-  addSuccessNotice(message, filterSaveErrorNoticeId, '😟');
+function itemSavedErrorNotice(message) {
+  addSuccessNotice(message, itemSaveErrorNoticeId, '😟');
 }
-function removeFilterSavedNotices() {
-  removeNotice(filterSaveSuccessNoticeId);
-  removeNotice(filterSaveErrorNoticeId);
+function removeItemSavedNotices() {
+  removeNotice(itemSaveSuccessNoticeId);
+  removeNotice(itemSaveErrorNoticeId);
 }
 
 /***/ }),
@@ -12900,6 +12920,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "pluginVersion": function() { return /* binding */ pluginVersion; },
 /* harmony export */   "proTag": function() { return /* binding */ proTag; },
 /* harmony export */   "removeMediaFrames": function() { return /* binding */ removeMediaFrames; },
+/* harmony export */   "slugify": function() { return /* binding */ slugify; },
 /* harmony export */   "upgradeToProLink": function() { return /* binding */ upgradeToProLink; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
@@ -12965,6 +12986,9 @@ function getEditFormLink(formId) {
 }
 function getSettingsPageLink() {
   return wcapf_admin_params.settings_page_link;
+}
+function slugify(value) {
+  return '__' + value.replace(/ /g, '_');
 }
 function getNoOfMaxTermsToRender() {
   const maxItems = parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;

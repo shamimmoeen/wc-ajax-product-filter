@@ -1,12 +1,12 @@
 import { Modal, Button, TabPanel, Icon } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { sprintf, __ } from '@wordpress/i18n';
 import { ClipboardIcon } from '../SVGIcons';
 import {
 	copiedToClipboardNotice,
 	removeCopiedToClipboardNotice,
 } from '../notices';
 
-const PublishModal = ({ isOpen: id, closeModal }) => {
+const PublishModal = ({ isOpen: id, closeModal, postType }) => {
 	const clipboardApiFound = window.isSecureContext && navigator.clipboard;
 
 	const handleCopyToClipboard = (text) => {
@@ -23,11 +23,20 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 		removeCopiedToClipboardNotice();
 	};
 
-	const gettabContent = (tab) => {
+	const getTabContent = (tab) => {
 		let description;
 		let code;
+		let shortcode;
+		let widgetName;
 
-		const shortcode = `[wcapf_filter id="${id}"]`;
+		if ('filter' === postType) {
+			shortcode = `[wcapf_filter id="${id}"]`;
+			widgetName = 'WC Ajax Product Filter';
+		} else if ('form' === postType) {
+			shortcode = `[wcapf_form id="${id}"]`;
+			widgetName = 'WC Ajax Product Filter Form';
+		}
+
 		const widgetsPageLink = wcapf_admin_params.widgets_page_link;
 
 		if ('shortcode' === tab) {
@@ -43,9 +52,12 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 			);
 			code = `<?php echo do_shortcode( '${shortcode}' ); ?>`;
 		} else {
-			description = __(
-				'If you want to use it in a widget, go to the widgets page, add <b>WC Ajax Product Filter</b> widget to the desired area.',
-				'wc-ajax-product-filter'
+			description = sprintf(
+				__(
+					'If you want to use it in a widget, go to the widgets page, add <b>%s</b> widget to the desired area.',
+					'wc-ajax-product-filter'
+				),
+				widgetName
 			);
 		}
 
@@ -94,6 +106,14 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 		);
 	};
 
+	let heading;
+
+	if ('filter' === postType) {
+		heading = __('Publish Filter', 'wc-ajax-product-filter');
+	} else if ('form' === postType) {
+		heading = __('Publish Form', 'wc-ajax-product-filter');
+	}
+
 	return (
 		id && (
 			<Modal
@@ -102,7 +122,7 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 				className='__publish_modal'
 			>
 				<>
-					<h3>{__('Publish Filter', 'wc-ajax-product-filter')}</h3>
+					<h3>{heading}</h3>
 
 					<TabPanel
 						className='__publish_tab_panel'
@@ -129,7 +149,7 @@ const PublishModal = ({ isOpen: id, closeModal }) => {
 							},
 						]}
 					>
-						{(tab) => gettabContent(tab.name)}
+						{(tab) => getTabContent(tab.name)}
 					</TabPanel>
 				</>
 			</Modal>

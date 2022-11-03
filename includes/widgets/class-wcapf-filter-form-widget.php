@@ -26,7 +26,7 @@ class WCAPF_Filter_Form_Widget extends WP_Widget {
 
 		parent::__construct(
 			false, // Base ID
-			__( 'WC Ajax Product Filter Form', 'wc-ajax-product-filter' ), // Name of Widget
+			'WC Ajax Product Filter Form', // Name of Widget
 			$widget_ops // args
 		);
 	}

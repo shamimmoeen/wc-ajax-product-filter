@@ -291,9 +291,9 @@ class WCAPF_Admin {
 		}
 
 		if ( 'wcapf_page_wcapf-form' === $hook ) {
-			// Filter forms list admin ui scripts.
+			// Forms list admin ui scripts.
 			if ( ! isset( $_GET['id'] ) ) {
-				$this->load_scripts( 'list-filter-forms' );
+				$this->load_scripts( 'list-forms' );
 			} else {
 				// Loads the media utils.
 				wp_enqueue_media();
@@ -306,8 +306,8 @@ class WCAPF_Admin {
 				 */
 				do_action( 'wcapf_load_preview_scripts' );
 
-				// Single filter form admin ui scripts.
-				$this->load_scripts( 'filter-form' );
+				// Single form admin ui scripts.
+				$this->load_scripts( 'form' );
 			}
 		}
 
@@ -344,14 +344,21 @@ class WCAPF_Admin {
 		$params['settings_page_link'] = $helper::new_settings_page_url();
 
 		$api_utils = new WCAPF_API_Utils();
+		$screen_id = $this->current_screen_id();
 
-		if ( 'toplevel_page_wcapf-filter' === $this->current_screen_id() ) {
+		if ( 'toplevel_page_wcapf-filter' === $screen_id ) {
 			if ( ! isset( $_GET['id'] ) ) {
 				$params['filters'] = $api_utils::get_filters();
 			}
 
 			if ( isset( $_GET['id'] ) ) {
 				$params['visibility_rules_data'] = $api_utils::get_visibility_rules_data();
+			}
+		}
+
+		if ( 'wcapf_page_wcapf-form' === $screen_id ) {
+			if ( ! isset( $_GET['id'] ) ) {
+				$params['forms'] = $api_utils::get_forms();
 			}
 		}
 
