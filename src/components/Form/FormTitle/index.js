@@ -19,15 +19,7 @@ const FormTitle = () => {
 	const [publishModalId, setPublishModalId] = useState(null);
 	const [loading, setLoading] = useState(false);
 
-	const {
-		title,
-		filterType,
-		filterId,
-		activeFilterData,
-		visibilityRules,
-		filtersData,
-		isDirty,
-	} = state;
+	const { isDirty, title, formId, formFilters, formSettings } = state;
 
 	useEffect(() => {
 		if (!isDirty) {
@@ -50,7 +42,7 @@ const FormTitle = () => {
 	const handleOpenPublishModal = () => {
 		removeItemSavedNotices();
 
-		setPublishModalId(filterId);
+		setPublishModalId(formId);
 	};
 
 	const handleClosePublishModal = () => {
@@ -59,51 +51,18 @@ const FormTitle = () => {
 		setPublishModalId(null);
 	};
 
-	const setNewFilterData = (data) => {
-		const {
-			detailed: {
-				post_title,
-				filter_data: newFilterData,
-				visibility_rules: visibilityRules,
-			},
-		} = data;
-
-		dispatch({ type: 'SET_DIRTY', payload: false });
-		dispatch({ type: 'SET_LOAD_PREVIEW', payload: false });
-
-		dispatch({
-			type: 'SET_TITLE',
-			payload: post_title,
-		});
-
-		const { type } = newFilterData;
-
-		if (filterType === type) {
-			dispatch({
-				type: 'SET_ACTIVE_FILTER_DATA',
-				payload: newFilterData,
-			});
-		} else {
-			const newFiltersData = { ...filtersData, [type]: newFilterData };
-
-			dispatch({ type: 'SET_FILTERS_DATA', payload: newFiltersData });
-		}
-
-		dispatch({ type: 'SET_VISIBILITY_RULES', payload: visibilityRules });
-	};
-
-	const handleSaveFilter = () => {
+	const handleSaveForm = () => {
 		removeItemSavedNotices();
 
 		setLoading(true);
 
 		const formData = new FormData();
 
-		formData.append('action', 'wcapf_save_filter');
-		formData.append('filter_title', title);
-		formData.append('filter_id', filterId);
-		formData.append('filter_data', JSON.stringify(activeFilterData));
-		formData.append('visibility_rules', JSON.stringify(visibilityRules));
+		formData.append('action', 'wcapf_save_form');
+		formData.append('form_title', title);
+		formData.append('form_id', formId);
+		formData.append('form_filters', JSON.stringify(formFilters));
+		formData.append('form_settings', JSON.stringify(formSettings));
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)
@@ -115,13 +74,10 @@ const FormTitle = () => {
 				} = res;
 
 				if (success) {
-					setNewFilterData(data);
+					dispatch({ type: 'SET_DIRTY', payload: false });
 
 					itemSavedSuccessNotice(
-						__(
-							'Filter saved successfully',
-							'wc-ajax-product-filter'
-						)
+						__('Form saved successfully', 'wc-ajax-product-filter')
 					);
 				} else {
 					itemSavedErrorNotice(data);
@@ -136,7 +92,7 @@ const FormTitle = () => {
 
 	const handleSubmit = () => {
 		if (isDirty) {
-			handleSaveFilter();
+			handleSaveForm();
 		} else {
 			handleOpenPublishModal();
 		}
@@ -153,7 +109,7 @@ const FormTitle = () => {
 			<PublishModal
 				isOpen={publishModalId}
 				closeModal={handleClosePublishModal}
-				postType={'filter'}
+				postType={'form'}
 			/>
 		</>
 	);

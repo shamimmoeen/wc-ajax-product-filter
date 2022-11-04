@@ -11,7 +11,7 @@ import Header from './Header';
 
 const FormUI = () => {
 	const { state, dispatch } = useForm();
-	const { setDirty } = useFormData(state, dispatch);
+	const { setDirty, handleRemoveAllFilters } = useFormData(state, dispatch);
 
 	const [addFilterActive, setAddFilterActive] = useState(false);
 
@@ -30,15 +30,6 @@ const FormUI = () => {
 			type: 'SET_FORM_FILTERS',
 			payload: _formFilters,
 		});
-	};
-
-	const handleRemoveFilters = () => {
-		dispatch({
-			type: 'SET_FORM_FILTERS',
-			payload: [],
-		});
-
-		setDirty();
 	};
 
 	return (
@@ -77,14 +68,14 @@ const FormUI = () => {
 								className='__form_filters'
 							>
 								{formFilters.map((item) => (
-									<FormFilter key={item.id} data={item} />
+									<FormFilter key={item.id} item={item} />
 								))}
 							</ReactSortable>
 
 							<Button
 								variant='tertiary'
 								isDestructive
-								onClick={handleRemoveFilters}
+								onClick={handleRemoveAllFilters}
 								className='__remove_all_btn'
 							>
 								{__('Remove All', 'wc-ajax-product-filter')}

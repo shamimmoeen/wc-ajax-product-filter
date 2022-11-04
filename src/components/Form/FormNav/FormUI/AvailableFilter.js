@@ -6,34 +6,10 @@ import useFormData from '../../useFormData';
 
 const AvailableFilter = ({ item }) => {
 	const { state, dispatch } = useForm();
-	const { setDirty } = useFormData(state, dispatch);
-
-	const { availableFilters, formFilters } = state;
-
-	const handleAddFilter = () => {
-		if (formFilters.find((filter) => filter.id === item.id)) {
-			return;
-		}
-
-		const _availableFilters = availableFilters.map((_item) => {
-			if (_item.id === item.id) {
-				_item.status = 'added';
-			}
-
-			return _item;
-		});
-
-		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
-
-		const _formFilters = [item, ...formFilters];
-
-		dispatch({ type: 'SET_FORM_FILTERS', payload: _formFilters });
-
-		setDirty();
-	};
+	const { handleAddFilter } = useFormData(state, dispatch);
 
 	return (
-		<div className='__item' onClick={handleAddFilter}>
+		<div className='__item' onClick={() => handleAddFilter(item)}>
 			<div>
 				<span className='__post_title'>{item.title}</span>
 				<span className='__post_id'>

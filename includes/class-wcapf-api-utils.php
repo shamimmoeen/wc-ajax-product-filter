@@ -64,6 +64,20 @@ class WCAPF_API_Utils {
 	}
 
 	/**
+	 * Gets the overridden columns used in form ui.
+	 *
+	 * @return string[]
+	 */
+	public static function get_filter_overridden_columns() {
+		return array(
+			'show_title'              => '',
+			'enable_accordion'        => '',
+			'accordion_default_state' => 'expanded',
+			'show_clear_button'       => '',
+		);
+	}
+
+	/**
 	 * Parse the filter data to be saved into the database.
 	 *
 	 * TODO: We should remove the $unparsed_field_data param when removing the classic view completely.
@@ -817,7 +831,9 @@ class WCAPF_API_Utils {
 			return $new_post_id;
 		}
 
-		// TODO: Copy the meta data.
+		$new_form_data = get_post_meta( $post_id, '_form_data', true );
+
+		update_post_meta( $new_post_id, '_form_data', $new_form_data );
 
 		return $new_post_id;
 	}
