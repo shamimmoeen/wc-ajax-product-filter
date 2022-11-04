@@ -4541,7 +4541,7 @@ const Title = _ref => {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__title_wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-    href: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getFiltersPageLink)(),
+    href: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getFormsPageLink)(),
     className: "__back_button"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
     icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_4__.BackIcon
