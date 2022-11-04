@@ -3,7 +3,7 @@ import { Button, Icon } from '@wordpress/components';
 import { useForm } from '../FormContext';
 import { BackIcon } from '../../SVGIcons';
 import Text from '../../Field/Text';
-import { getFiltersPageLink } from '../../utils';
+import { getFormsPageLink } from '../../utils';
 
 const Title = ({ loading, handleTitleChange, handleSubmit }) => {
 	const {
@@ -37,7 +37,7 @@ const Title = ({ loading, handleTitleChange, handleSubmit }) => {
 
 	return (
 		<div className='__title_wrapper'>
-			<Button href={getFiltersPageLink()} className='__back_button'>
+			<Button href={getFormsPageLink()} className='__back_button'>
 				<Icon icon={BackIcon} />
 			</Button>
 
