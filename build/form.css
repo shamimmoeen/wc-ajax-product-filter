@@ -1378,6 +1378,10 @@ body.rtl .__form_control.__media_screen_rules .components-checkbox-control__inpu
   margin: 0 0 0 6px;
 }
 
+.__no_filters_found {
+  text-align: center;
+}
+
 .__filters_drop_zone .__header {
   align-items: center;
   display: flex;

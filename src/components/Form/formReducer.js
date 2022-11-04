@@ -1,10 +1,11 @@
 export const initialState = {
 	isLoading: true,
-	title: '',
 	isDirty: false,
+	title: '',
+	formId: '',
 	availableFilters: [],
 	formFilters: [],
-	formData: {},
+	formSettings: {},
 };
 
 const formReducer = (state, action) => {
@@ -12,11 +13,14 @@ const formReducer = (state, action) => {
 		case 'SET_LOADING':
 			return { ...state, isLoading: action.payload };
 
+		case 'SET_DIRTY':
+			return { ...state, isDirty: action.payload };
+
 		case 'SET_TITLE':
 			return { ...state, title: action.payload };
 
-		case 'SET_DIRTY':
-			return { ...state, isDirty: action.payload };
+		case 'SET_FORM_ID':
+			return { ...state, formId: action.payload };
 
 		case 'SET_AVAILABLE_FILTERS':
 			return { ...state, availableFilters: action.payload };
@@ -24,8 +28,8 @@ const formReducer = (state, action) => {
 		case 'SET_FORM_FILTERS':
 			return { ...state, formFilters: action.payload };
 
-		case 'SET_FORM_DATA':
-			return { ...state, formData: action.payload };
+		case 'SET_FORM_SETTINGS':
+			return { ...state, formSettings: action.payload };
 
 		default:
 			return state;

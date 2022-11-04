@@ -58,41 +58,112 @@ class WCAPF_API {
 		// For form.
 		add_action( 'wp_ajax_wcapf_get_available_filters', array( $this, 'get_available_filters' ) );
 		add_action( 'wp_ajax_wcapf_get_form_data', array( $this, 'get_form_data' ) );
-		add_action( 'wp_ajax_save_filter_form', array( $this, 'save_filter_form' ) );
-		add_action( 'wp_ajax_get_filter_form_preview', array( $this, 'get_filter_form_preview' ) );
+		add_action( 'wp_ajax_wcapf_save_form', array( $this, 'save_form' ) );
+		add_action( 'wp_ajax_wcapf_get_form_preview', array( $this, 'get_form_preview' ) );
 		add_action( 'wp_ajax_wcapf_duplicate_form', array( $this, 'duplicate_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
 	}
 
-	public function save_filter_form() {
-		$post_id       = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
+	/**
+	 * Saves the form via ajax.
+	 *
+	 * @return void
+	 */
+	public function save_form() {
+		$post_id    = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : '';
+		$post_title = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
+
 		$_form_filters = isset( $_POST['form_filters'] ) ? $_POST['form_filters'] : '';
-		$post_title    = isset( $_POST['post_title'] ) ? $_POST['post_title'] : '';
 		$form_filters  = stripslashes( $_form_filters );
 		$form_filters  = json_decode( $form_filters, true );
 
-		// Update post data.
-		$post_data = array(
-			'ID'         => $post_id,
-			'post_title' => $post_title,
-		);
+		$_form_settings = isset( $_POST['form_settings'] ) ? $_POST['form_settings'] : '';
+		$form_settings  = stripslashes( $_form_settings );
+		$form_settings  = json_decode( $form_settings, true );
 
-		wp_update_post( $post_data );
+		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
+			$post_arr = array(
+				'ID'          => $post_id,
+				'post_title'  => $post_title,
+				'post_status' => 'publish',
+			);
 
-		$filter_ids = array();
+			$new_post_id = wp_update_post( $post_arr, true );
+		} else {
+			$post_arr = array(
+				'post_title'  => $post_title,
+				'post_type'   => 'wcapf-form',
+				'post_status' => 'publish',
+			);
 
-		foreach ( $form_filters as $filter_data ) {
-			$filter_ids[] = $filter_data['id'];
+			$new_post_id = wp_insert_post( $post_arr, true );
 		}
 
-		$parsed_data = array( 'filter_ids' => $filter_ids );
+		if ( is_wp_error( $new_post_id ) ) {
+			wp_send_json_error( $new_post_id->get_error_message() );
+		}
 
-		update_post_meta( $post_id, '_form_data', $parsed_data );
+		// Remove title, type from the filter data.
+		$parsed_filters = array();
 
-		wp_send_json_success( __( 'Updated successfully', 'wc-ajax-product-filter' ) );
+		foreach ( $form_filters as $form_filter ) {
+			if ( isset( $form_filter['title'] ) ) {
+				unset( $form_filter['title'] );
+			}
+
+			if ( isset( $form_filter['type'] ) ) {
+				unset( $form_filter['type'] );
+			}
+
+			$parsed_filters[] = $form_filter;
+		}
+
+		$parsed_data = array(
+			'filters'  => $parsed_filters,
+			'settings' => $form_settings,
+		);
+
+		update_post_meta( $new_post_id, '_form_data', $parsed_data );
+
+		wp_send_json_success( WCAPF_API_Utils::get_form_data( $new_post_id ) );
 	}
 
-	public function get_filter_form_preview() {
+	/**
+	 * Gets the form data via ajax for the edit form UI.
+	 *
+	 * @return void
+	 */
+	public function get_form_data() {
+		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
+
+		$form_data     = get_post_meta( $post_id, '_form_data', true );
+		$form_filters  = isset( $form_data['filters'] ) ? $form_data['filters'] : array();
+		$form_settings = isset( $form_data['settings'] ) ? $form_data['settings'] : array();
+
+		// Set the filter title and type.
+		$parsed_filters = array();
+
+		foreach ( $form_filters as $form_filter ) {
+			$id = isset( $form_filter['id'] ) ? $form_filter['id'] : '';
+
+			$filter_data = get_post_meta( $id, '_field_data', true );
+			$filter_type = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
+
+			$form_filter['title'] = get_the_title( $id );
+			$form_filter['type']  = $filter_type;
+
+			$parsed_filters[] = $form_filter;
+		}
+
+		wp_send_json_success( array(
+			'post_id'       => $post_id,
+			'post_title'    => get_the_title( $post_id ),
+			'form_filters'  => $parsed_filters,
+			'form_settings' => $form_settings,
+		) );
+	}
+
+	public function get_form_preview() {
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 
 		ob_start();
@@ -132,7 +203,6 @@ class WCAPF_API {
 			$post_arr = array(
 				'ID'          => $post_id,
 				'post_title'  => $post_title,
-				'post_type'   => 'wcapf-filter',
 				'post_status' => 'publish',
 			);
 
@@ -783,31 +853,6 @@ class WCAPF_API {
 	}
 
 	/**
-	 * Gets the form data via ajax.
-	 *
-	 * @return void
-	 */
-	public function get_form_data() {
-		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
-
-		$form_data    = get_post_meta( $post_id, '_form_data', true );
-		$form_filters = array();
-
-		if ( $form_data ) {
-			$filter_ids = isset( $form_data['filter_ids'] ) ? $form_data['filter_ids'] : array();
-
-			foreach ( $filter_ids as $filter_id ) {
-				$form_filters[] = WCAPF_API_Utils::get_filter_data( $filter_id );
-			}
-		}
-
-		wp_send_json_success( array(
-			'post_title'   => get_the_title( $post_id ),
-			'form_filters' => $form_filters,
-		) );
-	}
-
-	/**
 	 * Duplicates the filter via ajax.
 	 *
 	 * @return void
@@ -837,7 +882,30 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_available_filters() {
-		$filters = WCAPF_API_Utils::get_filters();
+		$filter_ids = WCAPF_API_Utils::get_filter_ids( 'publish' );
+		$columns    = WCAPF_API_Utils::get_filter_overridden_columns();
+		$filters    = array();
+
+		foreach ( $filter_ids as $filter_id ) {
+			$filter_data = get_post_meta( $filter_id, '_field_data', true );
+			$filter_type = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
+
+			$data = array(
+				'id'    => $filter_id,
+				'title' => get_the_title( $filter_id ),
+				'type'  => $filter_type,
+			);
+
+			foreach ( $columns as $column => $default_value ) {
+				if ( isset( $filter_data[ $column ] ) ) {
+					$data[ $column ] = $filter_data[ $column ];
+				} else {
+					$data[ $column ] = $default_value;
+				}
+			}
+
+			$filters[] = $data;
+		}
 
 		wp_send_json_success( $filters );
 	}

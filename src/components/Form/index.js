@@ -57,6 +57,16 @@ const Form = () => {
 					payload: formData['post_title'],
 				});
 
+				dispatch({
+					type: 'SET_FORM_ID',
+					payload: formData['post_id'],
+				});
+
+				dispatch({
+					type: 'SET_FORM_SETTINGS',
+					payload: formData['form_settings'],
+				});
+
 				const formFilters = formData['form_filters'];
 
 				dispatch({
