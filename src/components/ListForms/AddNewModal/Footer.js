@@ -1,13 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { Flex, FlexItem, Button } from '@wordpress/components';
 import classnames from 'classnames';
-import { useListFilters } from '../ListFiltersContext';
-import { disableFilterSubmission } from './utils';
+import { useListForms } from '../ListFormsContext';
 
-const Footer = ({ step, setStep, totalSteps, closeModal, handleSubmit }) => {
+const Footer = ({ step, setStep, closeModal, handleSubmit }) => {
 	const {
-		state: { title, filterType, activeFilterData },
-	} = useListFilters();
+		state: { title, isDirty },
+	} = useListForms();
 
 	const backButton = () => {
 		let content;
@@ -32,40 +31,22 @@ const Footer = ({ step, setStep, totalSteps, closeModal, handleSubmit }) => {
 	const nextButton = () => {
 		let content;
 
-		if (1 === step || (3 === totalSteps && 2 === step)) {
-			let disabled = false;
-
-			if (1 === step && !title) {
-				disabled = true;
-			} else if (3 === totalSteps && 2 === step && !filterType) {
-				disabled = true;
-			}
-
+		if (1 === step) {
 			content = (
 				<Button
 					variant='primary'
 					onClick={() => setStep(step + 1)}
-					disabled={disabled}
+					disabled={!title}
 				>
 					{__('Next', 'wc-ajax-product-filter')}
 				</Button>
 			);
 		} else {
-			let disabled = false;
-
-			if (2 === step) {
-				if (!filterType) {
-					disabled = true;
-				}
-			} else if (3 === step) {
-				disabled = disableFilterSubmission(activeFilterData);
-			}
-
 			content = (
 				<Button
 					variant='primary'
 					onClick={handleSubmit}
-					disabled={disabled}
+					disabled={!isDirty}
 				>
 					{__('Finish', 'wc-ajax-product-filter')}
 				</Button>
@@ -88,13 +69,6 @@ const Footer = ({ step, setStep, totalSteps, closeModal, handleSubmit }) => {
 						active: 2 === step,
 					})}
 				/>
-				{3 === totalSteps && (
-					<span
-						className={classnames({
-							active: 3 === step,
-						})}
-					/>
-				)}
 			</div>
 		);
 	};

@@ -2,27 +2,20 @@ import { Spinner } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import { useForm } from './FormContext';
 import axios from 'axios';
+import { merge } from 'lodash';
 import TopBar from '../TopBar';
 import FormTitle from './FormTitle';
 import FormNav from './FormNav';
 import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
+import { getAvailableFilters } from '../utils';
+import { defaultFormSettings } from '../utilsForForm';
 
 const Form = () => {
 	const {
 		state: { isLoading },
 		dispatch,
 	} = useForm();
-
-	const getAvailableFilters = () => {
-		const data = {
-			action: 'wcapf_get_available_filters',
-		};
-
-		return axios.get(wcapf_admin_params.ajaxurl, {
-			params: data,
-		});
-	};
 
 	const getFormData = () => {
 		const query = new URL(window.location.href);
@@ -62,16 +55,17 @@ const Form = () => {
 					payload: formData['post_id'],
 				});
 
-				dispatch({
-					type: 'SET_FORM_SETTINGS',
-					payload: formData['form_settings'],
-				});
-
 				const formFilters = formData['form_filters'];
+				const formSettings = formData['form_settings'];
 
 				dispatch({
 					type: 'SET_FORM_FILTERS',
-					payload: formData['form_filters'],
+					payload: formFilters,
+				});
+
+				dispatch({
+					type: 'SET_FORM_SETTINGS',
+					payload: merge(defaultFormSettings(), formSettings),
 				});
 
 				const _availableFilters = availableFilters.map((item) => {

@@ -117,7 +117,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		dispatch({ type: 'SET_FILTERS_DATA', payload: {} });
 	};
 
-	const handleFilterSubmit = () => {
+	const handleSubmit = () => {
 		removeItemCreateNotice();
 
 		setLoading(true);
@@ -200,7 +200,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 						setStep={setStep}
 						totalSteps={totalSteps}
 						closeModal={handleCloseModal}
-						handleFilterSubmit={handleFilterSubmit}
+						handleSubmit={handleSubmit}
 					/>
 				</>
 			);
@@ -210,7 +210,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	return (
 		isOpen && (
 			<Modal
-				className='__add_filter_modal'
+				className='__add_new_modal'
 				onRequestClose={handleCloseModal}
 				ref={modalRef}
 				__experimentalHideHeader

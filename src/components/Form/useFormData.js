@@ -1,4 +1,7 @@
+import useForm from '../useForm';
+
 const useFormData = (state, dispatch) => {
+	const { addFilter, removeFilter } = useForm(state, dispatch);
 	const { isDirty, availableFilters, formFilters, formSettings } = state;
 
 	const setDirty = () => {
@@ -8,44 +11,18 @@ const useFormData = (state, dispatch) => {
 		}
 	};
 
-	const handleAddFilter = (item) => {
+	const handleToggleAddFilter = (item) => {
 		if (formFilters.find((filter) => filter.id === item.id)) {
 			return;
 		}
 
-		const _availableFilters = availableFilters.map((filter) => {
-			if (filter.id === item.id) {
-				return { ...filter, status: 'added' };
-			}
-
-			return filter;
-		});
-
-		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
-
-		const _formFilters = [item, ...formFilters];
-
-		dispatch({ type: 'SET_FORM_FILTERS', payload: _formFilters });
+		addFilter(item);
 
 		setDirty();
 	};
 
 	const handleRemoveFilter = (item) => {
-		const _formFilters = formFilters.filter(
-			(filter) => filter.id !== item.id
-		);
-
-		dispatch({ type: 'SET_FORM_FILTERS', payload: _formFilters });
-
-		const _availableFilters = availableFilters.map((filter) => {
-			if (filter.id === item.id) {
-				return { ...filter, status: '' };
-			}
-
-			return filter;
-		});
-
-		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: _availableFilters });
+		removeFilter(item);
 
 		setDirty();
 	};
@@ -129,7 +106,7 @@ const useFormData = (state, dispatch) => {
 
 	return {
 		setDirty,
-		handleAddFilter,
+		handleToggleAddFilter,
 		handleRemoveFilter,
 		handleRemoveAllFilters,
 		handleFilterCheckboxChange,

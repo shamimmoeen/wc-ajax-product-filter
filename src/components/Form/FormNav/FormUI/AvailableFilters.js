@@ -1,17 +1,21 @@
 import { __ } from '@wordpress/i18n';
 import AvailableFilter from './AvailableFilter';
 import { __experimentalScrollable as Scrollable } from '@wordpress/components';
-import { useForm } from '../../FormContext';
 
-const AvailableFilters = () => {
-	const {
-		state: { availableFilters },
-	} = useForm();
-
+const AvailableFilters = ({
+	availableFilters,
+	handleToggleAddFilter,
+	forModal = false,
+}) => {
 	return (
 		<Scrollable className='__available_filters_dropdown'>
 			{availableFilters.map((item) => (
-				<AvailableFilter item={item} key={item.id} />
+				<AvailableFilter
+					item={item}
+					handleToggleAddFilter={handleToggleAddFilter}
+					forModal={forModal}
+					key={item.id}
+				/>
 			))}
 		</Scrollable>
 	);

@@ -1,10 +1,3 @@
-const initialFormSettings = {
-	show_title: '1',
-	form_submission: 'immediate',
-	disable_ajax: '',
-	media_screens: [],
-};
-
 export const initialState = {
 	isLoading: true,
 	isDirty: false,
@@ -12,7 +5,7 @@ export const initialState = {
 	formId: '',
 	availableFilters: [],
 	formFilters: [],
-	formSettings: initialFormSettings,
+	formSettings: {},
 };
 
 const formReducer = (state, action) => {
