@@ -95,17 +95,21 @@ export const Option = (props) => {
 	);
 };
 
+const Info = ({ value }) => {
+	return (
+		<span className='__info'>
+			[{sprintf(__('ID: %s', 'wc-ajax-product-filter'), value)}]
+		</span>
+	);
+};
+
 const groupInfoForSelectRule = ({ value, group }) => {
 	let html = '';
 
 	if ('archive' === group) {
 		html = <span className='__info'>{value}</span>;
 	} else if ('filter' === group) {
-		html = (
-			<span className='__info'>
-				[{sprintf(__('ID: %s', 'wc-ajax-product-filter'), value)}]
-			</span>
-		);
+		html = <Info value={value} />;
 	}
 
 	return html;
@@ -119,7 +123,7 @@ export const OptionForSelectRule = (props) => {
 		<components.Option {...props}>
 			<div className='__wrapper'>
 				<div className='__option_label'>
-					{label}
+					<span className='__name'>{label}</span>
 					{groupInfoForSelectRule(data)}
 				</div>
 				{isSelected && <Icon icon={check} className='__icon' />}
@@ -136,15 +140,8 @@ export const OptionForSelectArchive = (props) => {
 		<components.Option {...props}>
 			<div className='__wrapper'>
 				<div className='__option_label'>
-					{label}
-					<span className='__info'>
-						[
-						{sprintf(
-							__('ID: %s', 'wc-ajax-product-filter'),
-							data.value
-						)}
-						]
-					</span>
+					<span className='__name'>{label}</span>
+					<Info value={data.value} />
 				</div>
 				{isSelected && <Icon icon={check} className='__icon' />}
 			</div>
@@ -164,13 +161,25 @@ export const SingleValue = (props) => {
 	);
 };
 
+export const SingleValueForSelectArchive = (props) => {
+	const { data } = props;
+	const { label } = data;
+
+	return (
+		<components.SingleValue {...props}>
+			<span className='__name'>{label}</span>
+			<Info value={data.value} />
+		</components.SingleValue>
+	);
+};
+
 export const SingleValueForSelectRule = (props) => {
 	const { data } = props;
 	const { label } = data;
 
 	return (
 		<components.SingleValue {...props}>
-			{label}
+			<span className='__name'>{label}</span>
 			{groupInfoForSelectRule(data)}
 		</components.SingleValue>
 	);
@@ -188,14 +197,12 @@ export const Group = (props) => {
 	return <components.Group {...props} />;
 };
 
-export const FormatTermLabel = (data) => {
+export const FormatSelectMultiLabel = (data) => {
 	return (
-		<span>
-			{data.label}
-			<span className='__info'>
-				[{sprintf(__('ID: %s', 'wc-ajax-product-filter'), data.value)}]
-			</span>
-		</span>
+		<>
+			<span className='__name'>{data.label}</span>
+			<Info value={data.value} />
+		</>
 	);
 };
 

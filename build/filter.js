@@ -4903,7 +4903,7 @@ const SelectMulti = _ref => {
         placeholder: placeholder,
         noOptionsMessage: () => noOptionsMessage,
         loadingMessage: () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'wc-ajax-product-filter'),
-        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__.FormatTermLabel,
+        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__.FormatSelectMultiLabel,
         isMulti: isMultiple,
         closeMenuOnSelect: !isMultiple,
         onChange: selected => onChange(selected, id),
@@ -4927,7 +4927,7 @@ const SelectMulti = _ref => {
         placeholder: placeholder,
         noOptionsMessage: () => noOptionsMessage,
         loadingMessage: () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'wc-ajax-product-filter'),
-        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__.FormatTermLabel,
+        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__.FormatSelectMultiLabel,
         isMulti: isMultiple,
         closeMenuOnSelect: !isMultiple,
         onChange: selected => onChange(selected, id),
@@ -5140,13 +5140,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DropdownIndicator": function() { return /* binding */ DropdownIndicator; },
 /* harmony export */   "FormatGroupLabel": function() { return /* binding */ FormatGroupLabel; },
-/* harmony export */   "FormatTermLabel": function() { return /* binding */ FormatTermLabel; },
+/* harmony export */   "FormatSelectMultiLabel": function() { return /* binding */ FormatSelectMultiLabel; },
 /* harmony export */   "Group": function() { return /* binding */ Group; },
 /* harmony export */   "IndicatorSeparator": function() { return /* binding */ IndicatorSeparator; },
 /* harmony export */   "Option": function() { return /* binding */ Option; },
 /* harmony export */   "OptionForSelectArchive": function() { return /* binding */ OptionForSelectArchive; },
 /* harmony export */   "OptionForSelectRule": function() { return /* binding */ OptionForSelectRule; },
 /* harmony export */   "SingleValue": function() { return /* binding */ SingleValue; },
+/* harmony export */   "SingleValueForSelectArchive": function() { return /* binding */ SingleValueForSelectArchive; },
 /* harmony export */   "SingleValueForSelectRule": function() { return /* binding */ SingleValueForSelectRule; },
 /* harmony export */   "customStyles": function() { return /* binding */ customStyles; }
 /* harmony export */ });
@@ -5252,11 +5253,20 @@ const Option = props => {
   })));
 };
 
-const groupInfoForSelectRule = _ref2 => {
+const Info = _ref2 => {
+  let {
+    value
+  } = _ref2;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "__info"
+  }, "[", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ID: %s', 'wc-ajax-product-filter'), value), "]");
+};
+
+const groupInfoForSelectRule = _ref3 => {
   let {
     value,
     group
-  } = _ref2;
+  } = _ref3;
   let html = '';
 
   if ('archive' === group) {
@@ -5264,9 +5274,9 @@ const groupInfoForSelectRule = _ref2 => {
       className: "__info"
     }, value);
   } else if ('filter' === group) {
-    html = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      className: "__info"
-    }, "[", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ID: %s', 'wc-ajax-product-filter'), value), "]");
+    html = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Info, {
+      value: value
+    });
   }
 
   return html;
@@ -5284,7 +5294,9 @@ const OptionForSelectRule = props => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__option_label"
-  }, label, groupInfoForSelectRule(data)), isSelected && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "__name"
+  }, label), groupInfoForSelectRule(data)), isSelected && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
     icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
     className: "__icon"
   })));
@@ -5301,9 +5313,11 @@ const OptionForSelectArchive = props => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__option_label"
-  }, label, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "__info"
-  }, "[", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ID: %s', 'wc-ajax-product-filter'), data.value), "]")), isSelected && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "__name"
+  }, label), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Info, {
+    value: data.value
+  })), isSelected && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
     icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
     className: "__icon"
   })));
@@ -5320,6 +5334,19 @@ const SingleValue = props => {
     className: "__pro_tag"
   }));
 };
+const SingleValueForSelectArchive = props => {
+  const {
+    data
+  } = props;
+  const {
+    label
+  } = data;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_5__.c.SingleValue, props, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "__name"
+  }, label), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Info, {
+    value: data.value
+  }));
+};
 const SingleValueForSelectRule = props => {
   const {
     data
@@ -5327,7 +5354,9 @@ const SingleValueForSelectRule = props => {
   const {
     label
   } = data;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_5__.c.SingleValue, props, label, groupInfoForSelectRule(data));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_5__.c.SingleValue, props, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "__name"
+  }, label), groupInfoForSelectRule(data));
 };
 const Group = props => {
   if (props.data.proGroup) {
@@ -5338,10 +5367,12 @@ const Group = props => {
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_5__.c.Group, props);
 };
-const FormatTermLabel = data => {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, data.label, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "__info"
-  }, "[", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ID: %s', 'wc-ajax-product-filter'), data.value), "]"));
+const FormatSelectMultiLabel = data => {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "__name"
+  }, data.label), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Info, {
+    value: data.value
+  }));
 };
 const FormatGroupLabel = data => {
   if (data.proGroup) {
@@ -12355,9 +12386,9 @@ const SelectArchive = _ref => {
     components: {
       IndicatorSeparator: _Field_utilsForReactSelect__WEBPACK_IMPORTED_MODULE_3__.IndicatorSeparator,
       DropdownIndicator: _Field_utilsForReactSelect__WEBPACK_IMPORTED_MODULE_3__.DropdownIndicator,
+      SingleValue: _Field_utilsForReactSelect__WEBPACK_IMPORTED_MODULE_3__.SingleValueForSelectArchive,
       Option: _Field_utilsForReactSelect__WEBPACK_IMPORTED_MODULE_3__.OptionForSelectArchive
     },
-    formatOptionLabel: _Field_utilsForReactSelect__WEBPACK_IMPORTED_MODULE_3__.FormatTermLabel,
     isSearchable: true,
     loadOptions: loadOptions,
     additional: {

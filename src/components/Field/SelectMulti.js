@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
 import axios from 'axios';
-import { FormatTermLabel } from './utilsForReactSelect';
+import { FormatSelectMultiLabel } from './utilsForReactSelect';
 
 const SelectMulti = ({
 	label,
@@ -101,7 +101,7 @@ const SelectMulti = ({
 					loadingMessage={() =>
 						__('Loading...', 'wc-ajax-product-filter')
 					}
-					formatOptionLabel={FormatTermLabel}
+					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id)}
@@ -131,7 +131,7 @@ const SelectMulti = ({
 					loadingMessage={() =>
 						__('Loading...', 'wc-ajax-product-filter')
 					}
-					formatOptionLabel={FormatTermLabel}
+					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id)}
