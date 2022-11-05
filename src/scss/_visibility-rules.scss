@@ -95,31 +95,9 @@
     &.__rules {
         .components-base-control__field {
             margin: 0;
-        }
-    }
-}
 
-body {
-    &:not(.rtl) {
-        .__form_control {
-
-            &.__media_screen_rules,
-            &.__rules {
-                .components-checkbox-control__input-container {
-                    margin: 0 6px 0 0;
-                }
-            }
-        }
-    }
-
-    &.rtl {
-        .__form_control {
-
-            &.__media_screen_rules,
-            &.__rules {
-                .components-checkbox-control__input-container {
-                    margin: 0 0 0 6px;
-                }
+            .components-checkbox-control__input-container {
+                @include horizontal-space(6px);
             }
         }
     }

@@ -48,6 +48,16 @@ export function getAdditionalData() {
 	});
 }
 
+export function getAvailableFilters() {
+	const data = {
+		action: 'wcapf_get_available_filters',
+	};
+
+	return axios.get(wcapf_admin_params.ajaxurl, {
+		params: data,
+	});
+}
+
 export function getFiltersPageLink() {
 	return wcapf_admin_params.filters_page_link;
 }

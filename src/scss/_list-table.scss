@@ -1,3 +1,5 @@
+@import './mixins';
+
 .__list_table_wrapper {
     --vr-padding: 16px;
     --hr-padding: 24px;
@@ -37,12 +39,6 @@
                 min-width: 720px;
             }
         }
-
-        &.__forms_table {
-            .__Actions {
-                min-width: 130px;
-            }
-        }
     }
 
     .__list_table_inner {
@@ -71,19 +67,11 @@
                     &.__Actions {
                         padding-bottom: 0;
                         padding-top: 0;
+                        min-width: 130px;
                     }
 
-                    .__post_id,
-                    .__component_extra {
-                        color: rgba(0, 0, 0, 0.3);
-                        display: inline-flex;
-                        font-size: 12px;
-                    }
-
-                    .__post_title {
-                        font-weight: 500;
-                        text-decoration: none;
-                    }
+                    @include post-title-with-info;
+                    @include component-with-extra;
 
                     .components-button {
                         &.is-small.has-icon {
@@ -136,11 +124,6 @@ body {
                     &.__Actions {
                         padding-right: var(--hr-padding);
                     }
-
-                    .__post_id,
-                    .__component_extra {
-                        margin-left: 4px;
-                    }
                 }
             }
         }
@@ -173,11 +156,6 @@ body {
 
                     &.__Actions {
                         padding-left: var(--hr-padding);
-                    }
-
-                    .__post_id,
-                    .__component_extra {
-                        margin-right: 4px;
                     }
                 }
             }

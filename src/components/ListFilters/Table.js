@@ -74,10 +74,9 @@ const Table = ({
 						</span>
 					</td>
 					<td className='__Filter_Type'>
-						{filter.component}
+						<span className='__component'>{filter.component}</span>
 						{filter.componentExtra && (
 							<span className='__component_extra'>
-								{` `}
 								{filter.componentExtra}
 							</span>
 						)}

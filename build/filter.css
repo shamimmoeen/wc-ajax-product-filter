@@ -1370,12 +1370,11 @@ body.rtl .__sidebar .components-button {
 .__form_control.__media_screen_rules .components-base-control__field, .__form_control.__rules .components-base-control__field {
   margin: 0;
 }
-
-body:not(.rtl) .__form_control.__media_screen_rules .components-checkbox-control__input-container, body:not(.rtl) .__form_control.__rules .components-checkbox-control__input-container {
-  margin: 0 6px 0 0;
+body:not(.rtl) .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container, body:not(.rtl) .__form_control.__rules .components-base-control__field .components-checkbox-control__input-container {
+  margin-right: 6px;
 }
-body.rtl .__form_control.__media_screen_rules .components-checkbox-control__input-container, body.rtl .__form_control.__rules .components-checkbox-control__input-container {
-  margin: 0 0 0 6px;
+body.rtl .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container, body.rtl .__form_control.__rules .components-base-control__field .components-checkbox-control__input-container {
+  margin-left: 6px;
 }
 
 /*# sourceMappingURL=filter.css.map*/

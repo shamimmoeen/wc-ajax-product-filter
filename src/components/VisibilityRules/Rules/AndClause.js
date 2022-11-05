@@ -10,7 +10,7 @@ const AndClause = ({
 	handleAddingOrClause,
 }) => {
 	return (
-		<div className='and-caluse'>
+		<div className='and-clause'>
 			<div className='or-clauses'>
 				{clause.map((andClause, index) => (
 					<OrClause

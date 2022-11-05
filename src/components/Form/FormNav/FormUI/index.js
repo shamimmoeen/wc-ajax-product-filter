@@ -11,7 +11,8 @@ import Header from './Header';
 
 const FormUI = () => {
 	const { state, dispatch } = useForm();
-	const { setDirty, handleRemoveAllFilters } = useFormData(state, dispatch);
+	const { setDirty, handleToggleAddFilter, handleRemoveAllFilters } =
+		useFormData(state, dispatch);
 
 	const [addFilterActive, setAddFilterActive] = useState(false);
 
@@ -48,39 +49,44 @@ const FormUI = () => {
 						setSearchFilterActive={setAddFilterActive}
 					/>
 
-					{addFilterActive && <AvailableFilters />}
+					{addFilterActive && (
+						<AvailableFilters
+							availableFilters={availableFilters}
+							handleToggleAddFilter={handleToggleAddFilter}
+						/>
+					)}
 
-					{isEmpty(formFilters) ? (
+					{isEmpty(formFilters) && !addFilterActive && (
 						<p className='description'>
 							{__(
 								'The form is empty. Click on the plus button to start adding filters.',
 								'wc-ajax-product-filter'
 							)}
 						</p>
-					) : (
-						<>
-							<ReactSortable
-								list={formFilters}
-								setList={setFormFilters}
-								direction={'vertical'}
-								handle='.__drag_handler'
-								onSort={setDirty}
-								className='__form_filters'
-							>
-								{formFilters.map((item) => (
-									<FormFilter key={item.id} item={item} />
-								))}
-							</ReactSortable>
+					)}
 
-							<Button
-								variant='tertiary'
-								isDestructive
-								onClick={handleRemoveAllFilters}
-								className='__remove_all_btn'
-							>
-								{__('Remove All', 'wc-ajax-product-filter')}
-							</Button>
-						</>
+					<ReactSortable
+						list={formFilters}
+						setList={setFormFilters}
+						direction={'vertical'}
+						handle='.__drag_handler'
+						onSort={setDirty}
+						className='__form_filters'
+					>
+						{formFilters.map((item) => (
+							<FormFilter key={item.id} item={item} />
+						))}
+					</ReactSortable>
+
+					{!isEmpty(formFilters) && (
+						<Button
+							variant='tertiary'
+							isDestructive
+							onClick={handleRemoveAllFilters}
+							className='__remove_all_btn'
+						>
+							{__('Remove All', 'wc-ajax-product-filter')}
+						</Button>
 					)}
 				</div>
 			)}

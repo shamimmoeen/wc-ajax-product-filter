@@ -12157,7 +12157,7 @@ const AndClause = _ref => {
     handleAddingOrClause
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "and-caluse"
+    className: "and-clause"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "or-clauses"
   }, clause.map((andClause, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_OrClause__WEBPACK_IMPORTED_MODULE_3__["default"], {
@@ -12916,6 +12916,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
+/* harmony export */   "getAvailableFilters": function() { return /* binding */ getAvailableFilters; },
 /* harmony export */   "getEditFilterLink": function() { return /* binding */ getEditFilterLink; },
 /* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
 /* harmony export */   "getFiltersPageLink": function() { return /* binding */ getFiltersPageLink; },
@@ -12974,6 +12975,14 @@ function pluginVersion() {
 function getAdditionalData() {
   const data = {
     action: 'get_filter_additional_data'
+  };
+  return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
+    params: data
+  });
+}
+function getAvailableFilters() {
+  const data = {
+    action: 'wcapf_get_available_filters'
   };
   return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
     params: data

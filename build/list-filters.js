@@ -4512,15 +4512,13 @@ const Body = _ref => {
   if (1 === step) {
     content = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__step_inner __title_step"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__form_control"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
       type: 'text',
       placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter filter title', 'wc-ajax-product-filter'),
       className: "components-text-control__input",
       value: title,
       onChange: handleTitleChange
-    })));
+    }));
   } else if (2 === step) {
     content = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Filter_FilterNav_FilterUI_AvailableFilters__WEBPACK_IMPORTED_MODULE_3__["default"], {
       state: state,
@@ -4575,7 +4573,7 @@ const Footer = _ref => {
     setStep,
     totalSteps,
     closeModal,
-    handleFilterSubmit
+    handleSubmit
   } = _ref;
   const {
     state: {
@@ -4633,7 +4631,7 @@ const Footer = _ref => {
 
       content = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
         variant: "primary",
-        onClick: handleFilterSubmit,
+        onClick: handleSubmit,
         disabled: disabled
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Finish', 'wc-ajax-product-filter'));
     }
@@ -4831,7 +4829,7 @@ const AddNewModal = _ref => {
     });
   };
 
-  const handleFilterSubmit = () => {
+  const handleSubmit = () => {
     (0,_notices__WEBPACK_IMPORTED_MODULE_9__.removeItemCreateNotice)();
     setLoading(true);
     const formData = new FormData();
@@ -4897,13 +4895,13 @@ const AddNewModal = _ref => {
         setStep: setStep,
         totalSteps: totalSteps,
         closeModal: handleCloseModal,
-        handleFilterSubmit: handleFilterSubmit
+        handleSubmit: handleSubmit
       }));
     }
   };
 
   return isOpen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Modal, {
-    className: "__add_filter_modal",
+    className: "__add_new_modal",
     onRequestClose: handleCloseModal,
     ref: modalRef,
     __experimentalHideHeader: true
@@ -5144,9 +5142,11 @@ const Table = _ref => {
       className: "__post_id"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('ID', 'wc-ajax-product-filter'), ":", ` `, filterId)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
       className: "__Filter_Type"
-    }, filter.component, filter.componentExtra && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "__component"
+    }, filter.component), filter.componentExtra && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "__component_extra"
-    }, ` `, filter.componentExtra)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+    }, filter.componentExtra)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
       className: "__Filter_Key"
     }, filter.filter_key), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
       className: "__Actions"
@@ -6279,6 +6279,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getAdditionalData": function() { return /* binding */ getAdditionalData; },
+/* harmony export */   "getAvailableFilters": function() { return /* binding */ getAvailableFilters; },
 /* harmony export */   "getEditFilterLink": function() { return /* binding */ getEditFilterLink; },
 /* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
 /* harmony export */   "getFiltersPageLink": function() { return /* binding */ getFiltersPageLink; },
@@ -6337,6 +6338,14 @@ function pluginVersion() {
 function getAdditionalData() {
   const data = {
     action: 'get_filter_additional_data'
+  };
+  return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
+    params: data
+  });
+}
+function getAvailableFilters() {
+  const data = {
+    action: 'wcapf_get_available_filters'
   };
   return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
     params: data

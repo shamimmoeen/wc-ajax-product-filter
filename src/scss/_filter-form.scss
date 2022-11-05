@@ -1,3 +1,5 @@
+@import './mixins';
+
 .__no_filters_found {
 	text-align: center;
 }
@@ -40,11 +42,6 @@
 	}
 }
 
-@mixin info {
-	color: rgba(0, 0, 0, 0.3);
-	font-size: 12px;
-}
-
 .__available_filters_dropdown {
 	background-color: #ffffff;
 	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
@@ -58,24 +55,25 @@
 		justify-content: space-between;
 		padding: 10px;
 		user-select: none;
+
+		&.active {
+			background-color: #f6f7f7;
+		}
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		@include ltr {
+			border-right: 1px solid #e2e2e2;
+		}
+
+		@include rtl {
+			border-left: 1px solid #e2e2e2;
+		}
 	}
 
-	.__not_matched {
-		padding: 0 10px;
-		line-height: 40px;
-	}
-
-	.__item:last-child {
-		border-bottom: none;
-	}
-
-	.__post_title {
-		font-weight: 500;
-	}
-
-	.__post_id {
-		@include info;
-	}
+	@include post-title-with-info;
 
 	.__btn_wrapper {
 		display: inline-flex;
@@ -136,13 +134,7 @@
 			cursor: grab;
 		}
 
-		.__post_title {
-			font-weight: 500;
-		}
-
-		.__post_id {
-			@include info;
-		}
+		@include post-title-with-info;
 
 		.__accordion_toggle_button {
 			display: inline-flex;
@@ -150,26 +142,6 @@
 			.components-button {
 				border-radius: 100%;
 				padding: 0;
-			}
-		}
-	}
-}
-
-body {
-	&:not(.rtl) {
-
-		.__available_filters_dropdown .__post_id,
-		.__form_filters .__top .__post_id {
-			margin-left: 4px;
-		}
-	}
-
-	&.rtl {
-
-		.__available_filters_dropdown .__post_id,
-		.__form_filters .__top .__post_id {
-			.__post_id {
-				margin-right: 4px;
 			}
 		}
 	}
