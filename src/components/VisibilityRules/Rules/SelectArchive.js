@@ -4,8 +4,8 @@ import {
 	customStyles,
 	IndicatorSeparator,
 	DropdownIndicator,
+	SingleValueForSelectArchive,
 	OptionForSelectArchive,
-	FormatTermLabel,
 } from '../../Field/utilsForReactSelect';
 import { __ } from '@wordpress/i18n';
 
@@ -51,9 +51,9 @@ const SelectArchive = ({ value, taxonomy, onChange }) => {
 			components={{
 				IndicatorSeparator,
 				DropdownIndicator,
+				SingleValue: SingleValueForSelectArchive,
 				Option: OptionForSelectArchive,
 			}}
-			formatOptionLabel={FormatTermLabel}
 			isSearchable={true}
 			loadOptions={loadOptions}
 			additional={{

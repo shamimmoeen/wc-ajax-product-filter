@@ -207,6 +207,20 @@ body.rtl .__title_wrapper .__save_button .__icon {
   }
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__form_control {
   margin: 0 0 2em;
 }
@@ -359,10 +373,17 @@ body.rtl .__title_wrapper .__save_button .__icon {
 .__custom_react_select .__react_select__value-container--is-multi .__react_select__multi-value__label {
   font-size: unset;
 }
+body:not(.rtl) .__custom_react_select .__name {
+  margin-right: 4px;
+}
+body.rtl .__custom_react_select .__name {
+  margin-left: 4px;
+}
+
 .__custom_react_select .__info {
   color: rgba(0, 0, 0, 0.3);
+  display: inline-flex;
   font-size: 12px;
-  margin: 0 0 0 4px;
 }
 .__custom_react_select .__react_select__option--is-selected .__info {
   color: rgba(255, 255, 255, 0.5);
@@ -430,9 +451,6 @@ body.rtl .__form_control .radio-group:not(.radio-group-vertical) .components-rad
 }
 body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   padding: 0 0 0 4px;
-}
-body.rtl .__custom_react_select .__info {
-  margin: 0 4px 0 0;
 }
 
 .__pro_group .__pro_heading,

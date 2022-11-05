@@ -1,4 +1,5 @@
 @import './variables';
+@import './mixins';
 
 .__form_control {
 	margin: 0 0 2em;
@@ -280,11 +281,12 @@
 		}
 	}
 
-	// Style the info(term_id, user_id) in option.
+	.__name {
+		@include horizontal-space(4px);
+	}
+
 	.__info {
-		color: rgba(0, 0, 0, 0.3);
-		font-size: 12px;
-		margin: 0 0 0 4px;
+		@include info;
 	}
 
 	.__react_select__option--is-selected {
@@ -326,10 +328,6 @@ body.rtl {
 	.__custom_react_select {
 		.__react_select__dropdown-indicator {
 			padding: 0 0 0 4px;
-		}
-
-		.__info {
-			margin: 0 4px 0 0;
 		}
 	}
 }
