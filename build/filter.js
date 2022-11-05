@@ -12200,8 +12200,7 @@ const AndClause = _ref => {
     key: index
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     onClick: () => handleAddingOrClause(andIndex),
-    variant: "secondary",
-    isSmall: true
+    variant: "secondary"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('or', 'wc-ajax-product-filter'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('and', 'wc-ajax-product-filter')));
 };
 
@@ -12524,13 +12523,11 @@ const Rules = _ref => {
     className: "__buttons"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: handleAddingAndClause,
-    variant: "secondary",
-    isSmall: true
+    variant: "secondary"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add rule group', 'wc-ajax-product-filter')), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: handleRemoveAllRules,
     variant: "tertiary",
-    isDestructive: true,
-    isSmall: true
+    isDestructive: true
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove all', 'wc-ajax-product-filter')))))));
 };
 

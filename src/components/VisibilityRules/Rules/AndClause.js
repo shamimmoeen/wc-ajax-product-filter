@@ -25,7 +25,6 @@ const AndClause = ({
 				<Button
 					onClick={() => handleAddingOrClause(andIndex)}
 					variant='secondary'
-					isSmall
 				>
 					{__('or', 'wc-ajax-product-filter')}
 				</Button>

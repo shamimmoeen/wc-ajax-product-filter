@@ -37,7 +37,6 @@ const Rules = ({
 							<Button
 								onClick={handleAddingAndClause}
 								variant='secondary'
-								isSmall
 							>
 								{__('Add rule group', 'wc-ajax-product-filter')}
 							</Button>
@@ -46,7 +45,6 @@ const Rules = ({
 									onClick={handleRemoveAllRules}
 									variant='tertiary'
 									isDestructive
-									isSmall
 								>
 									{__('Remove all', 'wc-ajax-product-filter')}
 								</Button>

@@ -907,6 +907,17 @@ body.rtl .__available_filters .__filters .__item {
   align-items: center;
   gap: 15px;
 }
+@media (max-width: 599px) {
+  .__meta_values_modal.ajax-done .components-modal__content {
+    margin-bottom: 100px;
+  }
+  .__meta_values_modal .components-modal__content .__modal_footer {
+    flex-direction: column;
+    gap: 10px;
+    height: 100px;
+    justify-content: center;
+  }
+}
 
 :root {
   --large-gap: 40px;
@@ -1384,6 +1395,7 @@ body.rtl .__sidebar .components-button {
 .__form_control.__rules .__buttons {
   display: flex;
   gap: 4px;
+  justify-content: space-between;
 }
 .__form_control.__media_screen_rules .components-base-control__field, .__form_control.__rules .components-base-control__field {
   margin: 0;
