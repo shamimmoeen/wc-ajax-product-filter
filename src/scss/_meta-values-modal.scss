@@ -1,7 +1,7 @@
 @import './mixins';
 
 .__meta_values_modal {
-	@include fixed-height-modal;
+    @include fixed-height-modal;
 
     .components-checkbox-control__input {
         border-color: $inputBorderColor;
@@ -34,5 +34,18 @@
         display: flex;
         align-items: center;
         gap: 15px;
+    }
+
+    @media (max-width: 599px) {
+        &.ajax-done .components-modal__content {
+            margin-bottom: 100px;
+        }
+
+        .components-modal__content .__modal_footer {
+            flex-direction: column;
+            gap: 10px;
+            height: 100px;
+            justify-content: center;
+        }
     }
 }
