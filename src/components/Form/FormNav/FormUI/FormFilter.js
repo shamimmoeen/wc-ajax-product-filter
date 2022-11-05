@@ -11,8 +11,11 @@ import { accordionStates } from '../../../Filter/utils';
 
 const FormFilter = ({ item }) => {
 	const { state, dispatch } = useForm();
-	const { handleRemoveFilter, handleCheckboxChange, handleRadioChange } =
-		useFormData(state, dispatch);
+	const {
+		handleRemoveFilter,
+		handleFilterCheckboxChange,
+		handleFilterRadioChange,
+	} = useFormData(state, dispatch);
 
 	const [expanded, setExpanded] = useState(false);
 	const dragHandleRef = useRef('');
@@ -75,7 +78,11 @@ const FormFilter = ({ item }) => {
 							label={__('Show Title', 'wc-ajax-product-filter')}
 							isChecked={show_title}
 							onChange={(value) =>
-								handleCheckboxChange(id, 'show_title', value)
+								handleFilterCheckboxChange(
+									id,
+									'show_title',
+									value
+								)
 							}
 						/>
 
@@ -89,7 +96,7 @@ const FormFilter = ({ item }) => {
 									)}
 									isChecked={enable_accordion}
 									onChange={(value) =>
-										handleCheckboxChange(
+										handleFilterCheckboxChange(
 											id,
 											'enable_accordion',
 											value
@@ -107,7 +114,7 @@ const FormFilter = ({ item }) => {
 										options={accordionStates()}
 										value={accordion_default_state}
 										onChange={(value) =>
-											handleRadioChange(
+											handleFilterRadioChange(
 												id,
 												'accordion_default_state',
 												value
@@ -126,7 +133,7 @@ const FormFilter = ({ item }) => {
 											)}
 											isChecked={show_clear_button}
 											onChange={(value) =>
-												handleCheckboxChange(
+												handleFilterCheckboxChange(
 													id,
 													'show_clear_button',
 													value

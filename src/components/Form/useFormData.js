@@ -1,5 +1,5 @@
 const useFormData = (state, dispatch) => {
-	const { isDirty, availableFilters, formFilters } = state;
+	const { isDirty, availableFilters, formFilters, formSettings } = state;
 
 	const setDirty = () => {
 		if (!isDirty) {
@@ -86,25 +86,58 @@ const useFormData = (state, dispatch) => {
 		setDirty();
 	};
 
-	const handleCheckboxChange = (id, key, value) => {
+	const handleFilterCheckboxChange = (id, key, value) => {
 		handleUpdateFilter(id, key, value ? '1' : '');
 	};
 
-	const handleRadioChange = (id, key, e) => {
+	const handleFilterRadioChange = (id, key, e) => {
 		const value = e.target.value;
 
 		handleUpdateFilter(id, key, value);
 	};
 
-	const handleUpdateSettings = () => {};
+	const handleRadioChange = (e, key) => {
+		const value = e.target.value;
+
+		updateFormSettings(key, value);
+	};
+
+	const handleCheckboxChange = (value, key) => {
+		const _value = value ? '1' : '';
+
+		updateFormSettings(key, _value);
+	};
+
+	const handleTextFieldChange = (value, key) => {
+		updateFormSettings(key, value);
+	};
+
+	const updateFormSettings = (key, value) => {
+		const prevValue = formSettings[key];
+
+		if (value === prevValue) {
+			return;
+		}
+
+		dispatch({
+			type: 'SET_FORM_SETTINGS',
+			payload: { ...formSettings, [key]: value },
+		});
+
+		setDirty();
+	};
 
 	return {
 		setDirty,
 		handleAddFilter,
 		handleRemoveFilter,
 		handleRemoveAllFilters,
-		handleCheckboxChange,
+		handleFilterCheckboxChange,
+		handleFilterRadioChange,
 		handleRadioChange,
+		handleCheckboxChange,
+		handleTextFieldChange,
+		updateFormSettings,
 	};
 };
 
