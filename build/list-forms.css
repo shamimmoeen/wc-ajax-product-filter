@@ -32,6 +32,10 @@ body .__wcapf_layout .__post_data_fetching .components-spinner {
   }
 }
 
+.__description {
+  margin: 2px 0 5px;
+}
+
 /**
 * Snackbar styles.
 */
@@ -264,7 +268,7 @@ body.rtl .__list_table_wrapper .__edit_btn {
 .__add_new_modal .__title_step .components-text-control__input:not(:focus) {
   border-color: #ddd;
 }
-.__add_new_modal .__available_filters_dropdown {
+.__add_new_modal .__available_filters_wrapper {
   margin-top: 10px;
 }
 .__add_new_modal .__stepper {
@@ -361,11 +365,15 @@ body.rtl .__list_table_wrapper .__edit_btn {
   margin-top: 1.5em;
 }
 
+.__available_filters_wrapper {
+  margin-bottom: 2em;
+}
+
 .__available_filters_dropdown {
   background-color: #ffffff;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
   max-height: 163px;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 .__available_filters_dropdown .__item {
   align-items: center;
@@ -482,6 +490,10 @@ body.rtl .__form_filters .__top .__post_title {
 .__form_filters .__top .__accordion_toggle_button .components-button {
   border-radius: 100%;
   padding: 0;
+}
+
+.__filter_settings .__form_control .__inner .__input_wrapper {
+  margin: 0;
 }
 
 .__pro_group .__pro_heading,

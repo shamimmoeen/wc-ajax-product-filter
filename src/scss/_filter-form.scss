@@ -42,11 +42,15 @@
 	}
 }
 
+.__available_filters_wrapper {
+	margin-bottom: 2em;
+}
+
 .__available_filters_dropdown {
 	background-color: #ffffff;
 	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 	max-height: 163px;
-	margin-bottom: 2em;
+	margin-bottom: 1em;
 
 	.__item {
 		align-items: center;
@@ -144,5 +148,14 @@
 				padding: 0;
 			}
 		}
+	}
+}
+
+.__filter_settings {
+
+	// In filter settings we don't show the field description,
+	// that's why we don't need the extra space for smaller devices.
+	.__form_control .__inner .__input_wrapper {
+		margin: 0;
 	}
 }

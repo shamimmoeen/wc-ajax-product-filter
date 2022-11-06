@@ -3,7 +3,7 @@ import { CheckboxControl } from '@wordpress/components';
 
 const MediaScreenRules = ({ label, description, rules, onChange }) => {
 	return (
-		<div className='__form_control __media_screen_rules'>
+		<div className='__form_control __horizontal_multi_checkbox'>
 			<div className='__inner'>
 				<div className='__label'>
 					<label>{label}</label>

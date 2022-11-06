@@ -53,7 +53,7 @@ const OrClause = ({
 		}
 	};
 
-	const renderIncludeChildrent = () => {
+	const renderIncludeChildren = () => {
 		if ('archive' === group) {
 			if (
 				'product_cat' === taxonomy ||
@@ -112,7 +112,7 @@ const OrClause = ({
 
 				{renderCompareField()}
 
-				{renderIncludeChildrent()}
+				{renderIncludeChildren()}
 			</div>
 
 			<button

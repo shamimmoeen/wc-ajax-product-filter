@@ -2657,16 +2657,19 @@ const AvailableFilters = _ref => {
   let {
     availableFilters,
     handleToggleAddFilter,
+    formFilters,
     forModal = false
   } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalScrollable, {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__available_filters_wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalScrollable, {
     className: "__available_filters_dropdown"
   }, availableFilters.map(item => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AvailableFilter__WEBPACK_IMPORTED_MODULE_2__["default"], {
     item: item,
     handleToggleAddFilter: handleToggleAddFilter,
     forModal: forModal,
     key: item.id
-  })));
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)('%d/%d', formFilters.length, availableFilters.length)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (AvailableFilters);
@@ -2805,10 +2808,11 @@ const Body = _ref => {
     content = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "__step_inner"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-      className: "description"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose the filters from the below available filters.', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Form_FormNav_FormUI_AvailableFilters__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      className: "__description"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose filters from the below available filters.', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Form_FormNav_FormUI_AvailableFilters__WEBPACK_IMPORTED_MODULE_2__["default"], {
       availableFilters: availableFilters,
       handleToggleAddFilter: handleToggleAddFilter,
+      formFilters: formFilters,
       forModal: true
     }));
   }

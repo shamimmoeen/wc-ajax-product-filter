@@ -4157,16 +4157,19 @@ const AvailableFilters = _ref => {
   let {
     availableFilters,
     handleToggleAddFilter,
+    formFilters,
     forModal = false
   } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalScrollable, {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__available_filters_wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalScrollable, {
     className: "__available_filters_dropdown"
   }, availableFilters.map(item => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AvailableFilter__WEBPACK_IMPORTED_MODULE_2__["default"], {
     item: item,
     handleToggleAddFilter: handleToggleAddFilter,
     forModal: forModal,
     key: item.id
-  })));
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)('%d/%d', formFilters.length, availableFilters.length)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (AvailableFilters);
@@ -4436,7 +4439,8 @@ const FormUI = () => {
     setSearchFilterActive: setAddFilterActive
   }), addFilterActive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AvailableFilters__WEBPACK_IMPORTED_MODULE_8__["default"], {
     availableFilters: availableFilters,
-    handleToggleAddFilter: handleToggleAddFilter
+    handleToggleAddFilter: handleToggleAddFilter,
+    formFilters: formFilters
   }), (0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(formFilters) && !addFilterActive && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The form is empty. Click on the plus button to start adding filters.', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_sortablejs__WEBPACK_IMPORTED_MODULE_3__.ReactSortable, {
@@ -5506,7 +5510,7 @@ const MediaScreenRules = _ref => {
     onChange
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__form_control __media_screen_rules"
+    className: "__form_control __horizontal_multi_checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__inner"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

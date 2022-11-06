@@ -25,6 +25,10 @@
 	@media (max-width: 767px) {
 		.__inner {
 			flex-direction: column;
+
+			.__input_wrapper {
+				margin-bottom: 8px;
+			}
 		}
 	}
 
@@ -57,7 +61,7 @@
 				display: inline;
 
 				&:not(:last-child) {
-					margin: 0 10px 0 0;
+					margin: 0 12px 0 0;
 				}
 			}
 		}
@@ -73,6 +77,17 @@
 
 	// Checkbox
 	&.__checkbox_toggle {
+		.components-base-control__field {
+			margin: 0;
+		}
+	}
+
+	&.__horizontal_multi_checkbox {
+		.__input_wrapper {
+			display: flex;
+			gap: 16px;
+		}
+
 		.components-base-control__field {
 			margin: 0;
 		}
@@ -318,7 +333,7 @@ body.rtl {
 					}
 
 					&:not(:last-child) {
-						margin: 0 0 0 10px;
+						margin: 0 0 0 12px;
 					}
 				}
 			}

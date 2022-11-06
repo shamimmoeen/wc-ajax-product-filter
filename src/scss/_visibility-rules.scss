@@ -1,7 +1,11 @@
 @import './variables';
 @import './mixins';
 
-@mixin input-checkbox {
+.__visibility_rules {
+    .__form_control {
+        margin-bottom: 8px;
+    }
+
     .components-base-control__field {
         margin: 0;
 
@@ -9,34 +13,13 @@
             @include horizontal-space(6px);
         }
     }
-}
-
-.__form_control {
-    &.__media_screen_rules {
-        .__input_wrapper {
-            display: flex;
-            gap: 12px;
-        }
-    }
-
-    &.__media_screen_rules {
-        @include input-checkbox;
-    }
-}
-
-.__visibility_rules {
-    .__form_control {
-        margin-bottom: 8px;
-    }
-
-    @include input-checkbox;
 
     .components-checkbox-control__input {
         border-color: $inputBorderColor;
     }
 
-    $border-radius: 3px;
-    $gap: 6px;
+    $border-radius: 1px;
+    $gap: 8px;
 
     .or-clauses {
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -54,7 +37,7 @@
             align-items: center;
             display: flex;
             flex: 1;
-            gap: 10px;
+            gap: $gap;
             background: #f8f9fa;
             border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: $border-radius;

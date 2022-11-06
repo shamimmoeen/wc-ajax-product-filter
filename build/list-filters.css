@@ -32,6 +32,10 @@ body .__wcapf_layout .__post_data_fetching .components-spinner {
   }
 }
 
+.__description {
+  margin: 2px 0 5px;
+}
+
 /**
 * Snackbar styles.
 */
@@ -264,7 +268,7 @@ body.rtl .__list_table_wrapper .__edit_btn {
 .__add_new_modal .__title_step .components-text-control__input:not(:focus) {
   border-color: #ddd;
 }
-.__add_new_modal .__available_filters_dropdown {
+.__add_new_modal .__available_filters_wrapper {
   margin-top: 10px;
 }
 .__add_new_modal .__stepper {
@@ -362,6 +366,9 @@ body.rtl .__list_table_wrapper .__edit_btn {
   .__form_control .__inner {
     flex-direction: column;
   }
+  .__form_control .__inner .__input_wrapper {
+    margin-bottom: 8px;
+  }
 }
 .__form_control .__wrapper {
   flex: 1;
@@ -384,12 +391,19 @@ body.rtl .__list_table_wrapper .__edit_btn {
   display: inline;
 }
 .__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option:not(:last-child) {
-  margin: 0 10px 0 0;
+  margin: 0 12px 0 0;
 }
 .__form_control .radio-group.radio-group-vertical .components-radio-control__option:not(:last-child) {
   margin-bottom: 8px;
 }
 .__form_control.__checkbox_toggle .components-base-control__field {
+  margin: 0;
+}
+.__form_control.__horizontal_multi_checkbox .__input_wrapper {
+  display: flex;
+  gap: 16px;
+}
+.__form_control.__horizontal_multi_checkbox .components-base-control__field {
   margin: 0;
 }
 .__form_control #soft_limit,
@@ -568,7 +582,7 @@ body.rtl .__form_control .radio-group:not(.radio-group-vertical) .components-rad
   display: inline-block;
 }
 body.rtl .__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option:not(:last-child) {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 12px;
 }
 body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   padding: 0 0 0 4px;

@@ -53,6 +53,7 @@ const FormUI = () => {
 						<AvailableFilters
 							availableFilters={availableFilters}
 							handleToggleAddFilter={handleToggleAddFilter}
+							formFilters={formFilters}
 						/>
 					)}
 

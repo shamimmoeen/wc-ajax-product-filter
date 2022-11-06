@@ -47,7 +47,7 @@ const AvailableFilters = ({ state, dispatch, callback }) => {
 	return (
 		<div className='__available_filters'>
 			<div className='__inner'>
-				<p className='description'>
+				<p className='__description'>
 					{__(
 						'Select a component to start building the filter.',
 						'wc-ajax-product-filter'

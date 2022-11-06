@@ -7230,7 +7230,7 @@ const AvailableFilters = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__inner"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "description"
+    className: "__description"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Select a component to start building the filter.', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__filters"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.NavigableMenu, {
@@ -12129,7 +12129,7 @@ const MediaScreenRules = _ref => {
     onChange
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__form_control __media_screen_rules"
+    className: "__form_control __horizontal_multi_checkbox"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__inner"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12274,7 +12274,7 @@ const OrClause = _ref => {
     }
   };
 
-  const renderIncludeChildrent = () => {
+  const renderIncludeChildren = () => {
     if ('archive' === group) {
       if ('product_cat' === taxonomy || (0,_utils__WEBPACK_IMPORTED_MODULE_6__.isTaxonomyHierarchical)(taxonomy)) {
         return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12304,7 +12304,7 @@ const OrClause = _ref => {
     options: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getOperators)(),
     value: operator,
     onChange: selected => handleChange('operator', andIndex, orIndex, selected)
-  })), renderCompareField(), renderIncludeChildrent()), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  })), renderCompareField(), renderIncludeChildren()), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     onClick: () => handleRemove(andIndex, orIndex),
     className: "button-link button-link-delete remove-clause-btn"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
