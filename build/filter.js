@@ -12201,7 +12201,9 @@ const AndClause = _ref => {
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     onClick: () => handleAddingOrClause(andIndex),
     variant: "secondary"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('or', 'wc-ajax-product-filter'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('and', 'wc-ajax-product-filter')));
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR', 'wc-ajax-product-filter'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "and-clauses-separator"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter')));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (AndClause);
@@ -12510,7 +12512,7 @@ const Rules = _ref => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__input_wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "and-clauses"
   }, rules.map((clause, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AndClause__WEBPACK_IMPORTED_MODULE_3__["default"], {
     clause: clause,
@@ -12524,11 +12526,11 @@ const Rules = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: handleAddingAndClause,
     variant: "secondary"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add rule group', 'wc-ajax-product-filter')), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add Rule Group', 'wc-ajax-product-filter')), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: handleRemoveAllRules,
     variant: "tertiary",
     isDestructive: true
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove all', 'wc-ajax-product-filter')))))));
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove All', 'wc-ajax-product-filter')))))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Rules);

@@ -1329,7 +1329,6 @@ body.rtl .__sidebar .components-button {
 .__form_control.__rules .or-clauses {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
-  margin-bottom: 10px;
   padding: 6px;
 }
 .__form_control.__rules .or-clause {
@@ -1385,8 +1384,8 @@ body.rtl .__sidebar .components-button {
   box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
   outline: 1px solid transparent;
 }
-.__form_control.__rules p {
-  margin: 0 0 10px;
+.__form_control.__rules .and-clauses-separator {
+  margin: 10px 0;
 }
 .__form_control.__rules .__rule_select .__react_select__option--is-selected .__info,
 .__form_control.__rules .__archive_select .__react_select__option--is-selected .__info {
@@ -1396,6 +1395,12 @@ body.rtl .__sidebar .components-button {
   display: flex;
   gap: 4px;
   justify-content: space-between;
+}
+.__form_control.__rules .and-clauses .and-clause:last-child .and-clauses-separator {
+  display: none;
+}
+.__form_control.__rules .and-clauses ~ .__buttons {
+  margin-top: 1.5em;
 }
 .__form_control.__media_screen_rules .components-base-control__field, .__form_control.__rules .components-base-control__field {
   margin: 0;

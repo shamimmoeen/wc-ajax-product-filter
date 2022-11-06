@@ -20,25 +20,29 @@ const Rules = ({
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
-						<div className='and-clauses'>
-							{rules.map((clause, index) => (
-								<AndClause
-									clause={clause}
-									andIndex={index}
-									handleChange={handleChange}
-									handleRemove={handleRemove}
-									handleAddingOrClause={handleAddingOrClause}
-									key={index}
-								/>
-							))}
-						</div>
+						{!isEmpty(rules) && (
+							<div className='and-clauses'>
+								{rules.map((clause, index) => (
+									<AndClause
+										clause={clause}
+										andIndex={index}
+										handleChange={handleChange}
+										handleRemove={handleRemove}
+										handleAddingOrClause={
+											handleAddingOrClause
+										}
+										key={index}
+									/>
+								))}
+							</div>
+						)}
 
 						<div className='__buttons'>
 							<Button
 								onClick={handleAddingAndClause}
 								variant='secondary'
 							>
-								{__('Add rule group', 'wc-ajax-product-filter')}
+								{__('Add Rule Group', 'wc-ajax-product-filter')}
 							</Button>
 							{!isEmpty(rules) && (
 								<Button
@@ -46,7 +50,7 @@ const Rules = ({
 									variant='tertiary'
 									isDestructive
 								>
-									{__('Remove all', 'wc-ajax-product-filter')}
+									{__('Remove All', 'wc-ajax-product-filter')}
 								</Button>
 							)}
 						</div>

@@ -26,10 +26,12 @@ const AndClause = ({
 					onClick={() => handleAddingOrClause(andIndex)}
 					variant='secondary'
 				>
-					{__('or', 'wc-ajax-product-filter')}
+					{__('OR', 'wc-ajax-product-filter')}
 				</Button>
 			</div>
-			<p>{__('and', 'wc-ajax-product-filter')}</p>
+			<p className='and-clauses-separator'>
+				{__('AND', 'wc-ajax-product-filter')}
+			</p>
 		</div>
 	);
 };
