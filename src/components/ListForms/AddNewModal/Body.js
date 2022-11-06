@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { sprintf, __ } from '@wordpress/i18n';
 import AvailableFilters from '../../Form/FormNav/FormUI/AvailableFilters';
 import useForm from '../../useForm';
 import { useListForms } from '../ListFormsContext';
@@ -45,9 +45,9 @@ const Body = ({ step }) => {
 	} else if (2 === step) {
 		content = (
 			<div className='__step_inner'>
-				<p className='description'>
+				<p className='__description'>
 					{__(
-						'Choose the filters from the below available filters.',
+						'Choose filters from the below available filters.',
 						'wc-ajax-product-filter'
 					)}
 				</p>
@@ -55,6 +55,7 @@ const Body = ({ step }) => {
 				<AvailableFilters
 					availableFilters={availableFilters}
 					handleToggleAddFilter={handleToggleAddFilter}
+					formFilters={formFilters}
 					forModal
 				/>
 			</div>

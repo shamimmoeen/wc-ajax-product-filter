@@ -32,6 +32,10 @@ body .__wcapf_layout .__post_data_fetching .components-spinner {
   }
 }
 
+.__description {
+  margin: 2px 0 5px;
+}
+
 /**
 * Snackbar styles.
 */
@@ -241,6 +245,9 @@ body.rtl .__title_wrapper .__save_button .__icon {
   .__form_control .__inner {
     flex-direction: column;
   }
+  .__form_control .__inner .__input_wrapper {
+    margin-bottom: 8px;
+  }
 }
 .__form_control .__wrapper {
   flex: 1;
@@ -263,12 +270,19 @@ body.rtl .__title_wrapper .__save_button .__icon {
   display: inline;
 }
 .__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option:not(:last-child) {
-  margin: 0 10px 0 0;
+  margin: 0 12px 0 0;
 }
 .__form_control .radio-group.radio-group-vertical .components-radio-control__option:not(:last-child) {
   margin-bottom: 8px;
 }
 .__form_control.__checkbox_toggle .components-base-control__field {
+  margin: 0;
+}
+.__form_control.__horizontal_multi_checkbox .__input_wrapper {
+  display: flex;
+  gap: 16px;
+}
+.__form_control.__horizontal_multi_checkbox .components-base-control__field {
   margin: 0;
 }
 .__form_control #soft_limit,
@@ -447,7 +461,7 @@ body.rtl .__form_control .radio-group:not(.radio-group-vertical) .components-rad
   display: inline-block;
 }
 body.rtl .__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option:not(:last-child) {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 12px;
 }
 body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   padding: 0 0 0 4px;
@@ -1333,20 +1347,6 @@ body.rtl .__sidebar .components-button {
   }
 }
 
-.__form_control.__media_screen_rules .__input_wrapper {
-  display: flex;
-  gap: 12px;
-}
-.__form_control.__media_screen_rules .components-base-control__field {
-  margin: 0;
-}
-body:not(.rtl) .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container {
-  margin-right: 6px;
-}
-body.rtl .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container {
-  margin-left: 6px;
-}
-
 .__visibility_rules .__form_control {
   margin-bottom: 8px;
 }
@@ -1365,24 +1365,24 @@ body.rtl .__visibility_rules .components-base-control__field .components-checkbo
 }
 .__visibility_rules .or-clauses {
   border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
-  padding: 6px;
+  border-radius: 1px;
+  padding: 8px;
 }
 .__visibility_rules .or-clause {
   display: flex;
   align-items: center;
-  margin-bottom: 6px;
-  gap: 6px;
+  margin-bottom: 8px;
+  gap: 8px;
 }
 .__visibility_rules .or-clause .cols {
   align-items: center;
   display: flex;
   flex: 1;
-  gap: 10px;
+  gap: 8px;
   background: #f8f9fa;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 3px;
-  padding: 6px;
+  border-radius: 1px;
+  padding: 8px;
 }
 @media (min-width: 600px) {
   .__visibility_rules .or-clause .cols .rule {
