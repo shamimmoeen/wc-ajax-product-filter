@@ -12503,16 +12503,16 @@ const Rules = _ref => {
     handleRemoveAllRules
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__form_control __rules"
+    className: "__visibility_rules"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__form_control"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__inner"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__label"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__input_wrapper"
-  }, !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))), !(0,lodash__WEBPACK_IMPORTED_MODULE_4__.isEmpty)(rules) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "and-clauses"
   }, rules.map((clause, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AndClause__WEBPACK_IMPORTED_MODULE_3__["default"], {
     clause: clause,
@@ -12522,7 +12522,7 @@ const Rules = _ref => {
     handleAddingOrClause: handleAddingOrClause,
     key: index
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__buttons"
+    className: "__action_buttons"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     onClick: handleAddingAndClause,
     variant: "secondary"
@@ -12530,7 +12530,7 @@ const Rules = _ref => {
     onClick: handleRemoveAllRules,
     variant: "tertiary",
     isDestructive: true
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove All', 'wc-ajax-product-filter')))))));
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove All', 'wc-ajax-product-filter'))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Rules);

@@ -1319,25 +1319,62 @@ body.rtl .__sidebar .components-button {
   }
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__form_control.__media_screen_rules .__input_wrapper {
   display: flex;
   gap: 12px;
 }
-.__form_control.__rules .__inner {
-  flex-direction: column;
+.__form_control.__media_screen_rules .components-base-control__field {
+  margin: 0;
 }
-.__form_control.__rules .or-clauses {
+body:not(.rtl) .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container {
+  margin-right: 6px;
+}
+body.rtl .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container {
+  margin-left: 6px;
+}
+
+.__visibility_rules .__form_control {
+  margin-bottom: 8px;
+}
+.__visibility_rules .components-base-control__field {
+  margin: 0;
+}
+body:not(.rtl) .__visibility_rules .components-base-control__field .components-checkbox-control__input-container {
+  margin-right: 6px;
+}
+body.rtl .__visibility_rules .components-base-control__field .components-checkbox-control__input-container {
+  margin-left: 6px;
+}
+
+.__visibility_rules .components-checkbox-control__input {
+  border-color: #ddd;
+}
+.__visibility_rules .or-clauses {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   padding: 6px;
 }
-.__form_control.__rules .or-clause {
+.__visibility_rules .or-clause {
   display: flex;
   align-items: center;
   margin-bottom: 6px;
   gap: 6px;
 }
-.__form_control.__rules .or-clause .cols {
+.__visibility_rules .or-clause .cols {
   align-items: center;
   display: flex;
   flex: 1;
@@ -1348,68 +1385,59 @@ body.rtl .__sidebar .components-button {
   padding: 6px;
 }
 @media (min-width: 600px) {
-  .__form_control.__rules .or-clause .cols .rule {
+  .__visibility_rules .or-clause .cols .rule {
     width: 29%;
   }
-  .__form_control.__rules .or-clause .cols .operator {
+  .__visibility_rules .or-clause .cols .operator {
     min-width: 100px;
   }
-  .__form_control.__rules .or-clause .cols .compare {
+  .__visibility_rules .or-clause .cols .compare {
     width: 34%;
   }
-  .__form_control.__rules .or-clause .cols .include-children-checkbox {
+  .__visibility_rules .or-clause .cols .include-children-checkbox {
     min-width: 130px;
   }
 }
 @media (max-width: 599px) {
-  .__form_control.__rules .or-clause .cols {
+  .__visibility_rules .or-clause .cols {
     align-items: flex-start;
     flex-direction: column;
   }
-  .__form_control.__rules .or-clause .cols .rule,
-.__form_control.__rules .or-clause .cols .operator,
-.__form_control.__rules .or-clause .cols .compare {
+  .__visibility_rules .or-clause .cols .rule,
+.__visibility_rules .or-clause .cols .operator,
+.__visibility_rules .or-clause .cols .compare {
     width: 100%;
   }
 }
-.__form_control.__rules .button-link-delete svg {
+.__visibility_rules .button-link-delete svg {
   fill: #cc1818;
   opacity: 0.2;
   transition: opacity 0.1s linear;
 }
-.__form_control.__rules .button-link-delete:hover svg, .__form_control.__rules .button-link-delete:focus svg {
+.__visibility_rules .button-link-delete:hover svg, .__visibility_rules .button-link-delete:focus svg {
   opacity: 0.8;
 }
-.__form_control.__rules .button-link-delete:focus {
+.__visibility_rules .button-link-delete:focus {
   box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
   outline: 1px solid transparent;
 }
-.__form_control.__rules .and-clauses-separator {
-  margin: 10px 0;
+.__visibility_rules .and-clauses-separator {
+  font-weight: 500;
 }
-.__form_control.__rules .__rule_select .__react_select__option--is-selected .__info,
-.__form_control.__rules .__archive_select .__react_select__option--is-selected .__info {
+.__visibility_rules .__rule_select .__react_select__option--is-selected .__info,
+.__visibility_rules .__archive_select .__react_select__option--is-selected .__info {
   color: rgba(0, 0, 0, 0.3);
 }
-.__form_control.__rules .__buttons {
+.__visibility_rules .__action_buttons {
   display: flex;
   gap: 4px;
   justify-content: space-between;
 }
-.__form_control.__rules .and-clauses .and-clause:last-child .and-clauses-separator {
+.__visibility_rules .and-clauses .and-clause:last-child .and-clauses-separator {
   display: none;
 }
-.__form_control.__rules .and-clauses ~ .__buttons {
+.__visibility_rules .and-clauses ~ .__action_buttons {
   margin-top: 1.5em;
-}
-.__form_control.__media_screen_rules .components-base-control__field, .__form_control.__rules .components-base-control__field {
-  margin: 0;
-}
-body:not(.rtl) .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container, body:not(.rtl) .__form_control.__rules .components-base-control__field .components-checkbox-control__input-container {
-  margin-right: 6px;
-}
-body.rtl .__form_control.__media_screen_rules .components-base-control__field .components-checkbox-control__input-container, body.rtl .__form_control.__rules .components-base-control__field .components-checkbox-control__input-container {
-  margin-left: 6px;
 }
 
 :root {
