@@ -1,4 +1,15 @@
+@import './variables';
 @import './mixins';
+
+@mixin input-checkbox {
+    .components-base-control__field {
+        margin: 0;
+
+        .components-checkbox-control__input-container {
+            @include horizontal-space(6px);
+        }
+    }
+}
 
 .__form_control {
     &.__media_screen_rules {
@@ -8,107 +19,106 @@
         }
     }
 
-    &.__rules {
-        .__inner {
-            flex-direction: column;
-        }
+    &.__media_screen_rules {
+        @include input-checkbox;
+    }
+}
 
-        $border-radius: 3px;
-        $gap: 6px;
+.__visibility_rules {
+    .__form_control {
+        margin-bottom: 8px;
+    }
 
-        .or-clauses {
-            border: 1px solid rgba(0, 0, 0, 0.1);
+    @include input-checkbox;
+
+    .components-checkbox-control__input {
+        border-color: $inputBorderColor;
+    }
+
+    $border-radius: 3px;
+    $gap: 6px;
+
+    .or-clauses {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: $border-radius;
+        padding: $gap;
+    }
+
+    .or-clause {
+        display: flex;
+        align-items: center;
+        margin-bottom: $gap;
+        gap: $gap;
+
+        .cols {
+            align-items: center;
+            display: flex;
+            flex: 1;
+            gap: 10px;
+            background: #f8f9fa;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: $border-radius;
             padding: $gap;
-        }
 
-        .or-clause {
-            display: flex;
-            align-items: center;
-            margin-bottom: $gap;
-            gap: $gap;
-
-            .cols {
-                align-items: center;
-                display: flex;
-                flex: 1;
-                gap: 10px;
-                background: #f8f9fa;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-                border-radius: $border-radius;
-                padding: $gap;
-
-                @media (min-width: 600px) {
-                    .rule {
-                        width: 29%;
-                    }
-
-                    .operator {
-                        min-width: 100px;
-                    }
-
-                    .compare {
-                        width: 34%;
-                    }
-
-                    .include-children-checkbox {
-                        min-width: 130px;
-                    }
+            @media (min-width: 600px) {
+                .rule {
+                    width: 29%;
                 }
 
-                @media (max-width: 599px) {
-                    align-items: flex-start;
-                    flex-direction: column;
+                .operator {
+                    min-width: 100px;
+                }
 
-                    .rule,
-                    .operator,
-                    .compare {
-                        width: 100%;
-                    }
+                .compare {
+                    width: 34%;
+                }
+
+                .include-children-checkbox {
+                    min-width: 130px;
                 }
             }
-        }
 
-        @include button-link-delete;
+            @media (max-width: 599px) {
+                align-items: flex-start;
+                flex-direction: column;
 
-        .and-clauses-separator {
-            margin: 10px 0;
-        }
-
-        .__rule_select,
-        .__archive_select {
-            .__react_select__option--is-selected {
-                .__info {
-                    color: rgba(0, 0, 0, 0.3);
+                .rule,
+                .operator,
+                .compare {
+                    width: 100%;
                 }
-            }
-        }
-
-        .__buttons {
-            display: flex;
-            gap: 4px;
-            justify-content: space-between;
-        }
-
-        .and-clauses {
-            .and-clause:last-child .and-clauses-separator {
-                display: none;
-            }
-
-            ~.__buttons {
-                margin-top: 1.5em;
             }
         }
     }
 
-    &.__media_screen_rules,
-    &.__rules {
-        .components-base-control__field {
-            margin: 0;
+    @include button-link-delete;
 
-            .components-checkbox-control__input-container {
-                @include horizontal-space(6px);
+    .and-clauses-separator {
+        font-weight: 500;
+    }
+
+    .__rule_select,
+    .__archive_select {
+        .__react_select__option--is-selected {
+            .__info {
+                color: rgba(0, 0, 0, 0.3);
             }
+        }
+    }
+
+    .__action_buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: space-between;
+    }
+
+    .and-clauses {
+        .and-clause:last-child .and-clauses-separator {
+            display: none;
+        }
+
+        ~.__action_buttons {
+            margin-top: 1.5em;
         }
     }
 }

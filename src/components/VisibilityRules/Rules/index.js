@@ -13,49 +13,44 @@ const Rules = ({
 	handleRemoveAllRules,
 }) => {
 	return (
-		<div className='__form_control __rules'>
-			<div className='__inner'>
-				<div className='__label'>
-					<label>{label}</label>
-				</div>
-				<div className='__wrapper'>
-					<div className='__input_wrapper'>
-						{!isEmpty(rules) && (
-							<div className='and-clauses'>
-								{rules.map((clause, index) => (
-									<AndClause
-										clause={clause}
-										andIndex={index}
-										handleChange={handleChange}
-										handleRemove={handleRemove}
-										handleAddingOrClause={
-											handleAddingOrClause
-										}
-										key={index}
-									/>
-								))}
-							</div>
-						)}
-
-						<div className='__buttons'>
-							<Button
-								onClick={handleAddingAndClause}
-								variant='secondary'
-							>
-								{__('Add Rule Group', 'wc-ajax-product-filter')}
-							</Button>
-							{!isEmpty(rules) && (
-								<Button
-									onClick={handleRemoveAllRules}
-									variant='tertiary'
-									isDestructive
-								>
-									{__('Remove All', 'wc-ajax-product-filter')}
-								</Button>
-							)}
-						</div>
+		<div className='__visibility_rules'>
+			<div className='__form_control'>
+				<div className='__inner'>
+					<div className='__label'>
+						<label>{label}</label>
 					</div>
+					<div className='__wrapper'></div>
 				</div>
+			</div>
+
+			{!isEmpty(rules) && (
+				<div className='and-clauses'>
+					{rules.map((clause, index) => (
+						<AndClause
+							clause={clause}
+							andIndex={index}
+							handleChange={handleChange}
+							handleRemove={handleRemove}
+							handleAddingOrClause={handleAddingOrClause}
+							key={index}
+						/>
+					))}
+				</div>
+			)}
+
+			<div className='__action_buttons'>
+				<Button onClick={handleAddingAndClause} variant='secondary'>
+					{__('Add Rule Group', 'wc-ajax-product-filter')}
+				</Button>
+				{!isEmpty(rules) && (
+					<Button
+						onClick={handleRemoveAllRules}
+						variant='tertiary'
+						isDestructive
+					>
+						{__('Remove All', 'wc-ajax-product-filter')}
+					</Button>
+				)}
 			</div>
 		</div>
 	);
