@@ -73,7 +73,6 @@ body.rtl .components-snackbar-list {
 }
 .__edit_filter .__preview_card .components-card-header h2 {
   font-size: 1.7em;
-  font-weight: 500;
   line-height: 1;
   margin: 3px 0;
 }
@@ -254,9 +253,6 @@ body.rtl .__title_wrapper .__save_button .__icon {
 }
 .__form_control .description {
   margin-top: 8px;
-}
-.__form_control .description b {
-  font-weight: 500;
 }
 .__form_control .components-text-control__input {
   max-width: 220px;
@@ -1231,6 +1227,7 @@ body.rtl .__top_bar h2 .__icon {
 }
 
 .__sidebar .components-card-header h2 {
+  font-size: 16px;
   margin: 0;
 }
 .__sidebar .__pro_features_card,

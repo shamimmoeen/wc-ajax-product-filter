@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Icon } from '@wordpress/components';
+import { ImportIcon } from './SVGIcons';
 
 const ImportSampleFilters = ({ view, callback }) => {
 	const handleImportSampleFilters = () => {
@@ -27,14 +28,18 @@ const ImportSampleFilters = ({ view, callback }) => {
 	return (
 		<div className='__import_sample_filters'>
 			<Icon icon={'filter'} />
+
 			<h3>
 				{__(
 					"You don't have any filters yet.",
 					'wc-ajax-product-filter'
 				)}
 			</h3>
-			<p className='description'>{description}</p>
+
+			<p className='__description'>{description}</p>
+
 			<Button variant='primary' onClick={handleImportSampleFilters}>
+				<Icon icon={ImportIcon} />
 				{__('Import Sample Filters', 'wc-ajax-product-filter')}
 			</Button>
 		</div>

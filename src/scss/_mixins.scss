@@ -1,5 +1,44 @@
 @import './variables';
 
+@mixin list-table {
+    --vr-padding: 16px;
+    --hr-padding: 24px;
+
+    background-color: rgb(255, 255, 255);
+    position: relative;
+    box-shadow: rgb(0 0 0 / 10%) 0px 0px 0px 1px;
+    outline: none;
+    border-radius: 1px;
+}
+
+@mixin primary-button($button-size: false) {
+    font-weight: 500;
+    justify-content: center;
+    min-width: $button-size;
+    text-transform: uppercase;
+    gap: 7px;
+    height: 40px;
+}
+
+@mixin list-table-header($button-size) {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--vr-padding) var(--hr-padding);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    h2 {
+        font-size: 16px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .components-button {
+        @include primary-button($button-size);
+    }
+}
+
 @mixin button-link-delete {
     .button-link-delete {
         svg {

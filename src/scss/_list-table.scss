@@ -1,31 +1,10 @@
 @import './mixins';
 
 .__list_table_wrapper {
-    --vr-padding: 16px;
-    --hr-padding: 24px;
-
-    background-color: rgb(255, 255, 255);
-    position: relative;
-    box-shadow: rgb(0 0 0 / 10%) 0px 0px 0px 1px;
-    outline: none;
-    border-radius: 1px;
+    @include list-table;
 
     .__list_table_header {
-        display: flex;
-        gap: 12px;
-        justify-content: space-between;
-        align-items: center;
-        padding: var(--vr-padding) var(--hr-padding);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
-        h2 {
-            padding: 0;
-            margin: 0;
-        }
-
-        .components-button {
-            gap: 7px;
-        }
+        @include list-table-header(120px);
     }
 
     .__list_table_inner {

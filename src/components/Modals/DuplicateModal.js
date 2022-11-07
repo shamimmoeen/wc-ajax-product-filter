@@ -7,13 +7,13 @@ const DuplicateModal = ({ isOpen, closeModal, duplicateItem, postType }) => {
 	let description;
 
 	if ('filter' === postType) {
-		heading = __('Delete Filter?', 'wc-ajax-product-filter');
+		heading = __('Duplicate Filter?', 'wc-ajax-product-filter');
 		description = __(
 			'This will duplicate the filter.',
 			'wc-ajax-product-filter'
 		);
 	} else if ('form' === postType) {
-		heading = __('Delete Form?', 'wc-ajax-product-filter');
+		heading = __('Duplicate Form?', 'wc-ajax-product-filter');
 		description = __(
 			'This will duplicate the form.',
 			'wc-ajax-product-filter'

@@ -207,7 +207,7 @@ const Advanced = () => {
 			}
 
 			const description = __(
-				'Whether to hide the long list of options with a `<b>Show More/Show Less</b>` toggle.',
+				'Whether to hide the long list of options with a <b>Show More/Show Less</b> toggle.',
 				'wc-ajax-product-filter'
 			);
 

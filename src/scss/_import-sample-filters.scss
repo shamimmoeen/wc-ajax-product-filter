@@ -1,5 +1,7 @@
+@import './mixins';
+
 .__import_sample_filters {
-    min-height: 250px;
+    min-height: 270px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,9 +18,14 @@
 
     h3 {
         font-weight: 500;
+        margin-top: 1.5em;
     }
 
     p {
         margin: 0 0 2em;
+    }
+
+    .components-button {
+        @include primary-button;
     }
 }

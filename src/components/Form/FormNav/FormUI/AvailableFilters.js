@@ -10,6 +10,13 @@ const AvailableFilters = ({
 }) => {
 	return (
 		<div className='__available_filters_wrapper'>
+			<p className='__description'>
+				{__(
+					'Choose filters from the below available filters.',
+					'wc-ajax-product-filter'
+				)}
+			</p>
+
 			<Scrollable className='__available_filters_dropdown'>
 				{availableFilters.map((item) => (
 					<AvailableFilter

@@ -70,20 +70,6 @@ body.rtl .components-snackbar-list {
   }
 }
 
-:root {
-  --large-gap: 40px;
-}
-@media (max-width: 960px) {
-  :root {
-    --large-gap: 24px;
-  }
-}
-@media (max-width: 782px) {
-  :root {
-    --large-gap: 16px;
-  }
-}
-
 .__list_table_wrapper {
   --vr-padding: 16px;
   --hr-padding: 24px;
@@ -102,11 +88,17 @@ body.rtl .components-snackbar-list {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 .__list_table_wrapper .__list_table_header h2 {
-  padding: 0;
+  font-size: 16px;
   margin: 0;
+  padding: 0;
 }
 .__list_table_wrapper .__list_table_header .components-button {
+  font-weight: 500;
+  justify-content: center;
+  min-width: 120px;
+  text-transform: uppercase;
   gap: 7px;
+  height: 40px;
 }
 @media (max-width: 800px) {
   .__list_table_wrapper .__list_table_inner:not(.__forms_table) {
@@ -268,9 +260,6 @@ body.rtl .__list_table_wrapper .__edit_btn {
 .__add_new_modal .__title_step .components-text-control__input:not(:focus) {
   border-color: #ddd;
 }
-.__add_new_modal .__available_filters_wrapper {
-  margin-top: 10px;
-}
 .__add_new_modal .__stepper {
   display: flex;
   flex: 1;
@@ -343,7 +332,7 @@ body.rtl .__list_table_wrapper .__edit_btn {
   margin-bottom: 1.5em;
 }
 .__filters_drop_zone .__header .__label {
-  font-weight: 500;
+  font-size: 16px;
   margin: 0;
 }
 .__filters_drop_zone .__header .__add_filter_btn {
@@ -374,6 +363,7 @@ body.rtl .__list_table_wrapper .__edit_btn {
   box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
   max-height: 163px;
   margin-bottom: 1em;
+  margin-top: 10px;
 }
 .__available_filters_dropdown .__item {
   align-items: center;
@@ -726,6 +716,7 @@ body.rtl .__top_bar h2 .__icon {
 }
 
 .__sidebar .components-card-header h2 {
+  font-size: 16px;
   margin: 0;
 }
 .__sidebar .__pro_features_card,
@@ -868,8 +859,22 @@ body.rtl .__sidebar .components-button {
   margin-top: 2.5em;
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__import_sample_filters {
-  min-height: 250px;
+  min-height: 270px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -885,9 +890,18 @@ body.rtl .__sidebar .components-button {
 }
 .__import_sample_filters h3 {
   font-weight: 500;
+  margin-top: 1.5em;
 }
 .__import_sample_filters p {
   margin: 0 0 2em;
+}
+.__import_sample_filters .components-button {
+  font-weight: 500;
+  justify-content: center;
+  min-width: false;
+  text-transform: uppercase;
+  gap: 7px;
+  height: 40px;
 }
 
 /*# sourceMappingURL=list-forms.css.map*/

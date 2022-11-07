@@ -189,7 +189,7 @@ const MetaValuesModal = ({ open, closeModal }) => {
 		if (description) {
 			return (
 				<p
-					className='description'
+					className='__description'
 					dangerouslySetInnerHTML={{ __html: description }}
 				/>
 			);

@@ -1,6 +1,7 @@
 import { Button, Icon } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import ImportSampleFilters from '../ImportSampleFilters';
+import NoFormsFound from '../NoFormsFound';
 import {
 	CodeIcon,
 	DeleteIcon,
@@ -11,6 +12,8 @@ import {
 import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
+
+const filtersFound = wcapf_admin_params.filters_found;
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
@@ -133,6 +136,18 @@ const Table = ({
 		}
 	};
 
+	let content;
+
+	if (formsFound) {
+		content = listTable();
+	} else {
+		if (!filtersFound) {
+			content = <ImportSampleFilters view={'forms'} />;
+		} else {
+			content = <NoFormsFound />;
+		}
+	}
+
 	return (
 		<div className='__content'>
 			<div className='__list_table_wrapper'>
@@ -141,7 +156,7 @@ const Table = ({
 					<Button
 						variant='primary'
 						onClick={openAddNewModal}
-						disabled={!formsFound}
+						disabled={!filtersFound}
 					>
 						<Icon icon={PlusIcon} size={16} />
 						{__('Add New', 'wc-ajax-product-filter')}
@@ -149,11 +164,7 @@ const Table = ({
 				</div>
 
 				<div className='__list_table_inner __forms_table'>
-					{formsFound ? (
-						listTable()
-					) : (
-						<ImportSampleFilters view={'forms'} />
-					)}
+					{content}
 				</div>
 
 				{listSummary()}

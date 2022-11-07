@@ -359,7 +359,12 @@ class WCAPF_Admin {
 		if ( 'wcapf_page_wcapf-form' === $screen_id ) {
 			if ( ! isset( $_GET['id'] ) ) {
 				$params['forms'] = $api_utils::get_forms();
+				$params['filters_found'] = boolval( $api_utils::get_filters() );
 			}
+		}
+
+		if ( 'wcapf_page_wcapf-new-settings' === $screen_id ) {
+			$params['settings'] = WCAPF_Helper::get_settings();
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
