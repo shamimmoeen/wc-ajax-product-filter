@@ -181,6 +181,18 @@
 
 	// react-select (The ajax dropdown version).
 	&.react_select {
+		.__input_wrapper {
+			margin-bottom: 8px;
+		}
+
+		.__include_child_terms {
+			margin-top: 1em;
+
+			.components-base-control__field {
+				margin: 0;
+			}
+		}
+
 		@media (min-width: 768px) {
 			.__custom_react_select {
 				&.full-width {

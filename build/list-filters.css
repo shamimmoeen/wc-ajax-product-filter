@@ -460,6 +460,15 @@ body.rtl .__list_table_wrapper .__edit_btn {
 .__form_control.react_select_simple .__input_wrapper .number_display_type {
   min-width: 200px;
 }
+.__form_control.react_select .__input_wrapper {
+  margin-bottom: 8px;
+}
+.__form_control.react_select .__include_child_terms {
+  margin-top: 1em;
+}
+.__form_control.react_select .__include_child_terms .components-base-control__field {
+  margin: 0;
+}
 @media (min-width: 768px) {
   .__form_control.react_select .__custom_react_select.full-width {
     max-width: 95%;

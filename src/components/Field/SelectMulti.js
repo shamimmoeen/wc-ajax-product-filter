@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { CheckboxControl } from '@wordpress/components';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
 import axios from 'axios';
@@ -16,6 +17,10 @@ const SelectMulti = ({
 	type = 'taxonomy',
 	isUserRoles = false,
 	options,
+	showIncludeChildren = false,
+	checkboxId,
+	checkIsChecked,
+	onCheckChange,
 }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
 		let ajaxParams;
@@ -158,7 +163,23 @@ const SelectMulti = ({
 					<label htmlFor={id}>{label}</label>
 				</div>
 				<div className='__wrapper'>
-					<div className='__input_wrapper'>{renderSelect()}</div>
+					<div className='__input_wrapper'>
+						{renderSelect()}
+
+						{showIncludeChildren && (
+							<CheckboxControl
+								label={__(
+									'Include children',
+									'wc-ajax-product-filter'
+								)}
+								className='__include_child_terms'
+								checked={checkIsChecked}
+								onChange={(checked) =>
+									onCheckChange(checked, checkboxId)
+								}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
 			{description ? <p className='description'>{description}</p> : ''}

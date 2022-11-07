@@ -4803,11 +4803,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_select_async_paginate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-select-async-paginate */ "./node_modules/react-select-async-paginate/es/index.js");
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utilsForReactSelect */ "./src/components/Field/utilsForReactSelect.js");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_select_async_paginate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-select-async-paginate */ "./node_modules/react-select-async-paginate/es/index.js");
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-select */ "./node_modules/react-select/dist/react-select.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utilsForReactSelect */ "./src/components/Field/utilsForReactSelect.js");
+
 
 
 
@@ -4827,7 +4830,11 @@ const SelectMulti = _ref => {
     isMultiple = false,
     type = 'taxonomy',
     isUserRoles = false,
-    options
+    options,
+    showIncludeChildren = false,
+    checkboxId,
+    checkIsChecked,
+    onCheckChange
   } = _ref;
 
   const loadOptions = async (keyword, prevOptions, _ref2) => {
@@ -4854,7 +4861,7 @@ const SelectMulti = _ref => {
 
 
     try {
-      const res = await axios__WEBPACK_IMPORTED_MODULE_3___default().get(wcapf_admin_params.ajaxurl, {
+      const res = await axios__WEBPACK_IMPORTED_MODULE_4___default().get(wcapf_admin_params.ajaxurl, {
         params: ajaxParams
       });
       const data = res.data.data;
@@ -4897,13 +4904,13 @@ const SelectMulti = _ref => {
 
   const renderSelect = () => {
     if (isUserRoles) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__["default"], {
         value: value,
         options: options,
         placeholder: placeholder,
         noOptionsMessage: () => noOptionsMessage,
         loadingMessage: () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'wc-ajax-product-filter'),
-        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__.FormatSelectMultiLabel,
+        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_5__.FormatSelectMultiLabel,
         isMulti: isMultiple,
         closeMenuOnSelect: !isMultiple,
         onChange: selected => onChange(selected, id),
@@ -4918,7 +4925,7 @@ const SelectMulti = _ref => {
         })
       });
     } else {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select_async_paginate__WEBPACK_IMPORTED_MODULE_2__.AsyncPaginate, {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_select_async_paginate__WEBPACK_IMPORTED_MODULE_3__.AsyncPaginate, {
         value: value,
         loadOptions: loadOptions,
         additional: {
@@ -4927,7 +4934,7 @@ const SelectMulti = _ref => {
         placeholder: placeholder,
         noOptionsMessage: () => noOptionsMessage,
         loadingMessage: () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading...', 'wc-ajax-product-filter'),
-        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_4__.FormatSelectMultiLabel,
+        formatOptionLabel: _utilsForReactSelect__WEBPACK_IMPORTED_MODULE_5__.FormatSelectMultiLabel,
         isMulti: isMultiple,
         closeMenuOnSelect: !isMultiple,
         onChange: selected => onChange(selected, id),
@@ -4956,7 +4963,12 @@ const SelectMulti = _ref => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__input_wrapper"
-  }, renderSelect()))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }, renderSelect(), showIncludeChildren && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Include children', 'wc-ajax-product-filter'),
+    className: "__include_child_terms",
+    checked: checkIsChecked,
+    onChange: checked => onCheckChange(checked, checkboxId)
+  })))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, description) : '');
 };
@@ -8636,7 +8648,9 @@ const TaxonomyOptions = () => {
       limit_options,
       parent_term,
       limit_values_by_id,
+      limit_values_include_children,
       exclude_values_id,
+      exclude_values_include_children,
       use_term_slug_in_url
     },
     additionalData
@@ -8645,6 +8659,7 @@ const TaxonomyOptions = () => {
   const {
     taxonomy_hierarchical_data: hierarchicalData
   } = additionalData;
+  const taxonomyHierarchical = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.isTaxonomyHierarchical)(taxonomy, hierarchicalData);
 
   const _orderByField = () => {
     const options = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.termsOrderByOptions)();
@@ -8662,7 +8677,7 @@ const TaxonomyOptions = () => {
 
     let options;
 
-    if ((0,_utils__WEBPACK_IMPORTED_MODULE_3__.isTaxonomyHierarchical)(taxonomy, hierarchicalData)) {
+    if (taxonomyHierarchical) {
       options = _options;
     } else {
       options = _options.filter(option => 'child' !== option.value);
@@ -8687,7 +8702,11 @@ const TaxonomyOptions = () => {
         taxonomy: taxonomy,
         isMultiple: true,
         value: limit_values_by_id,
-        onChange: handleSelectTermChange
+        onChange: handleSelectTermChange,
+        showIncludeChildren: taxonomyHierarchical,
+        checkboxId: 'limit_values_include_children',
+        checkIsChecked: limit_values_include_children,
+        onCheckChange: handleCheckboxChange
       });
     }
   };
@@ -8701,7 +8720,11 @@ const TaxonomyOptions = () => {
         taxonomy: taxonomy,
         isMultiple: true,
         value: exclude_values_id,
-        onChange: handleSelectTermChange
+        onChange: handleSelectTermChange,
+        showIncludeChildren: taxonomyHierarchical,
+        checkboxId: 'exclude_values_include_children',
+        checkIsChecked: exclude_values_include_children,
+        onCheckChange: handleCheckboxChange
       });
     }
   };
@@ -10420,7 +10443,9 @@ function filterDefaultData() {
     limit_options: 'off',
     parent_term: '',
     limit_values_by_id: '',
+    limit_values_include_children: '',
     exclude_values_id: '',
+    exclude_values_include_children: '',
     order_terms_by: 'default',
     order_terms_dir: 'asc',
     enable_accordion: '',
