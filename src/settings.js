@@ -1,8 +1,14 @@
 import './settings.scss';
 import { render, StrictMode } from '@wordpress/element';
+import { SettingsProvider } from './components/Settings/SettingsContext';
+import Settings from './components/Settings';
 
 const App = () => {
-	return <h1>The settings panel</h1>;
+	return (
+		<SettingsProvider>
+			<Settings />
+		</SettingsProvider>
+	);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

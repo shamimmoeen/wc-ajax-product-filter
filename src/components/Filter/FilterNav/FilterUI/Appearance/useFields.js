@@ -300,7 +300,7 @@ const useFields = (type) => {
 					id={id}
 					label={__('Show Count', 'wc-ajax-product-filter')}
 					description={__(
-						'Whether to show the product count in options.',
+						'Whether to show the product count in filter options.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={activeFilterData[id]}

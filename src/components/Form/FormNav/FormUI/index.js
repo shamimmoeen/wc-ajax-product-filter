@@ -34,64 +34,53 @@ const FormUI = () => {
 	};
 
 	return (
-		<>
-			{isEmpty(availableFilters) ? (
-				<p className='__no_filters_found description'>
+		<div className='__filters_drop_zone'>
+			<Header
+				searchFilterActive={addFilterActive}
+				setSearchFilterActive={setAddFilterActive}
+			/>
+
+			{addFilterActive && (
+				<AvailableFilters
+					availableFilters={availableFilters}
+					handleToggleAddFilter={handleToggleAddFilter}
+					formFilters={formFilters}
+				/>
+			)}
+
+			{isEmpty(formFilters) && !addFilterActive && (
+				<p className='__description'>
 					{__(
-						'No filters found, create some filters before starting the form.',
+						'The form is empty. Click on the plus button to start adding filters.',
 						'wc-ajax-product-filter'
 					)}
 				</p>
-			) : (
-				<div className='__filters_drop_zone'>
-					<Header
-						searchFilterActive={addFilterActive}
-						setSearchFilterActive={setAddFilterActive}
-					/>
-
-					{addFilterActive && (
-						<AvailableFilters
-							availableFilters={availableFilters}
-							handleToggleAddFilter={handleToggleAddFilter}
-							formFilters={formFilters}
-						/>
-					)}
-
-					{isEmpty(formFilters) && !addFilterActive && (
-						<p className='description'>
-							{__(
-								'The form is empty. Click on the plus button to start adding filters.',
-								'wc-ajax-product-filter'
-							)}
-						</p>
-					)}
-
-					<ReactSortable
-						list={formFilters}
-						setList={setFormFilters}
-						direction={'vertical'}
-						handle='.__drag_handler'
-						onSort={setDirty}
-						className='__form_filters'
-					>
-						{formFilters.map((item) => (
-							<FormFilter key={item.id} item={item} />
-						))}
-					</ReactSortable>
-
-					{!isEmpty(formFilters) && (
-						<Button
-							variant='tertiary'
-							isDestructive
-							onClick={handleRemoveAllFilters}
-							className='__remove_all_btn'
-						>
-							{__('Remove All', 'wc-ajax-product-filter')}
-						</Button>
-					)}
-				</div>
 			)}
-		</>
+
+			<ReactSortable
+				list={formFilters}
+				setList={setFormFilters}
+				direction={'vertical'}
+				handle='.__drag_handler'
+				onSort={setDirty}
+				className='__form_filters'
+			>
+				{formFilters.map((item) => (
+					<FormFilter key={item.id} item={item} />
+				))}
+			</ReactSortable>
+
+			{!isEmpty(formFilters) && (
+				<Button
+					variant='tertiary'
+					isDestructive
+					onClick={handleRemoveAllFilters}
+					className='__remove_all_btn'
+				>
+					{__('Remove All', 'wc-ajax-product-filter')}
+				</Button>
+			)}
+		</div>
 	);
 };
 

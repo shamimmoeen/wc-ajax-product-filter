@@ -326,7 +326,7 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 		}
 
 		if (description) {
-			return <p className='description'>{description}</p>;
+			return <p className='__description'>{description}</p>;
 		}
 	};
 
@@ -343,7 +343,7 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 		return (
 			<div className='__table_header'>
 				<div className='__per_page_dropdown'>
-					<p className='description'>{info}</p>
+					<p className='__description'>{info}</p>
 				</div>
 
 				<div className='__search_box'>
@@ -361,7 +361,7 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 
 		if (totalItems > maxItems) {
 			return (
-				<p className='description large-data-hint'>
+				<p className='__description large-data-hint'>
 					{sprintf(
 						__(
 							"The number of total items is %d and rendering all of those might crash your browser. That's why we are showing the first %d items. Use the search field to find the non-rendered items.",

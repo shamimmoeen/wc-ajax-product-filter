@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { Icon, plus } from '@wordpress/icons';
+import { Icon } from '@wordpress/icons';
+import { PlusIcon } from '../../../SVGIcons';
 
 const Header = ({ searchFilterActive, setSearchFilterActive }) => {
 	const toggleSearchFilterActive = () => {
@@ -22,7 +23,7 @@ const Header = ({ searchFilterActive, setSearchFilterActive }) => {
 				className={addFilterBtnClasses}
 				onClick={toggleSearchFilterActive}
 			>
-				<Icon icon={plus} />
+				<Icon icon={PlusIcon} size={14} />
 			</Button>
 		</div>
 	);
