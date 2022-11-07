@@ -31,7 +31,9 @@ const TaxonomyOptions = () => {
 			limit_options,
 			parent_term,
 			limit_values_by_id,
+			limit_values_include_children,
 			exclude_values_id,
+			exclude_values_include_children,
 			use_term_slug_in_url,
 		},
 		additionalData,
@@ -39,6 +41,10 @@ const TaxonomyOptions = () => {
 
 	const taxonomy = getTaxonomy(filterType, _taxonomy);
 	const { taxonomy_hierarchical_data: hierarchicalData } = additionalData;
+	const taxonomyHierarchical = isTaxonomyHierarchical(
+		taxonomy,
+		hierarchicalData
+	);
 
 	const _orderByField = () => {
 		const options = termsOrderByOptions();
@@ -56,7 +62,7 @@ const TaxonomyOptions = () => {
 		const _options = taxonomyLimitByOptions();
 		let options;
 
-		if (isTaxonomyHierarchical(taxonomy, hierarchicalData)) {
+		if (taxonomyHierarchical) {
 			options = _options;
 		} else {
 			options = _options.filter((option) => 'child' !== option.value);
@@ -91,6 +97,10 @@ const TaxonomyOptions = () => {
 					isMultiple={true}
 					value={limit_values_by_id}
 					onChange={handleSelectTermChange}
+					showIncludeChildren={taxonomyHierarchical}
+					checkboxId={'limit_values_include_children'}
+					checkIsChecked={limit_values_include_children}
+					onCheckChange={handleCheckboxChange}
 				/>
 			);
 		}
@@ -110,6 +120,10 @@ const TaxonomyOptions = () => {
 					isMultiple={true}
 					value={exclude_values_id}
 					onChange={handleSelectTermChange}
+					showIncludeChildren={taxonomyHierarchical}
+					checkboxId={'exclude_values_include_children'}
+					checkIsChecked={exclude_values_include_children}
+					onCheckChange={handleCheckboxChange}
 				/>
 			);
 		}
