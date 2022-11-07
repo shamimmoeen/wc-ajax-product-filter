@@ -3893,8 +3893,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "EditIcon": function() { return /* binding */ EditIcon; },
 /* harmony export */   "ImportIcon": function() { return /* binding */ ImportIcon; },
 /* harmony export */   "PlusIcon": function() { return /* binding */ PlusIcon; },
-/* harmony export */   "SaveIcon": function() { return /* binding */ SaveIcon; },
-/* harmony export */   "SaveIcon2": function() { return /* binding */ SaveIcon2; }
+/* harmony export */   "SaveIcon": function() { return /* binding */ SaveIcon; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -3962,11 +3961,6 @@ const SaveIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElemen
   viewBox: "0 0 24 24"
 }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
   d: "M3 5.75C3 4.23122 4.23122 3 5.75 3H15.7145C16.5764 3 17.4031 3.34241 18.0126 3.9519L20.0481 5.98744C20.6576 6.59693 21 7.42358 21 8.28553V18.25C21 19.7688 19.7688 21 18.25 21H5.75C4.23122 21 3 19.7688 3 18.25V5.75ZM5.75 4.5C5.05964 4.5 4.5 5.05964 4.5 5.75V18.25C4.5 18.9404 5.05964 19.5 5.75 19.5H6V14.25C6 13.0074 7.00736 12 8.25 12H15.75C16.9926 12 18 13.0074 18 14.25V19.5H18.25C18.9404 19.5 19.5 18.9404 19.5 18.25V8.28553C19.5 7.8214 19.3156 7.37629 18.9874 7.0481L16.9519 5.01256C16.6918 4.75246 16.3582 4.58269 16 4.52344V7.25C16 8.49264 14.9926 9.5 13.75 9.5H9.25C8.00736 9.5 7 8.49264 7 7.25V4.5H5.75ZM16.5 19.5V14.25C16.5 13.8358 16.1642 13.5 15.75 13.5H8.25C7.83579 13.5 7.5 13.8358 7.5 14.25V19.5H16.5ZM8.5 4.5V7.25C8.5 7.66421 8.83579 8 9.25 8H13.75C14.1642 8 14.5 7.66421 14.5 7.25V4.5H8.5Z"
-}));
-const SaveIcon2 = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
-  viewBox: "0 0 32 32"
-}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
-  d: "M 5 5 L 5 27 L 27 27 L 27 9.59375 L 26.71875 9.28125 L 22.71875 5.28125 L 22.40625 5 Z M 7 7 L 10 7 L 10 13 L 22 13 L 22 7.4375 L 25 10.4375 L 25 25 L 23 25 L 23 16 L 9 16 L 9 25 L 7 25 Z M 12 7 L 16 7 L 16 9 L 18 9 L 18 7 L 20 7 L 20 11 L 12 11 Z M 11 18 L 21 18 L 21 25 L 11 25 Z"
 }));
 const ImportIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
   viewBox: "0 0 24 24"
