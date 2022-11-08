@@ -3,16 +3,4 @@
 @import './scss/top-bar';
 @import './scss/sidebar';
 @import './scss/form-fields';
-@import './scss/mixins';
-
-.__settings_wrapper {
-    @include list-table;
-
-    .__settings_header {
-        @include list-table-header(110px);
-    }
-
-    .__settings_fields {
-        padding: calc(var(--vr-padding) * 2) var(--hr-padding);
-    }
-}
+@import './scss/settings-page';

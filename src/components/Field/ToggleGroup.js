@@ -1,4 +1,3 @@
-import { __ } from '@wordpress/i18n';
 import { Button, ButtonGroup } from '@wordpress/components';
 import { proTag } from '../utils';
 
@@ -26,7 +25,7 @@ const ToggleGroup = ({
 							{options.map((option) => (
 								<Button
 									value={option.value}
-									key={`fradio-group-${id}-${option.value}`}
+									key={`radio-group-${id}-${option.value}`}
 									onClick={() => onChange(option.value, id)}
 									variant={
 										value === option.value ? 'primary' : ''

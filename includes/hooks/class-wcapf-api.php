@@ -62,6 +62,9 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_form_preview', array( $this, 'get_form_preview' ) );
 		add_action( 'wp_ajax_wcapf_duplicate_form', array( $this, 'duplicate_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
+
+		// Save settings.
+		add_action( 'wp_ajax_wcapf_save_settings', array( $this, 'save_settings' ) );
 	}
 
 	/**
@@ -931,6 +934,26 @@ class WCAPF_API {
 		} else {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
 		}
+	}
+
+	/**
+	 * Saves the plugin settings via ajax.
+	 *
+	 * @return void
+	 */
+	public function save_settings() {
+		$_settings = isset( $_POST['settings'] ) ? $_POST['settings'] : array();
+
+		$settings = stripslashes( $_settings );
+		$settings = json_decode( $settings, true );
+
+		if ( isset( $settings['loading_image_src'] ) ) {
+			unset( $settings['loading_image_src'] );
+		}
+
+		update_option( WCAPF_Helper::settings_option_key(), $settings );
+
+		wp_send_json_success( __( 'Settings saved successfully', 'wc-ajax-product-filter' ) );
 	}
 
 }

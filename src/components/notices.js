@@ -94,3 +94,20 @@ export function removeItemSavedNotices() {
 	removeNotice(itemSaveSuccessNoticeId);
 	removeNotice(itemSaveErrorNoticeId);
 }
+
+// Settings notices.
+const settingsSaveSuccessNoticeId = 'settings-save-success';
+const settingsSaveErrorNoticeId = 'settings-save-error';
+
+export function settingsSavedSuccessNotice(message) {
+	addSuccessNotice(message, settingsSaveSuccessNoticeId, '👌');
+}
+
+export function settingsSavedErrorNotice(message) {
+	addSuccessNotice(message, settingsSaveErrorNoticeId, '😟');
+}
+
+export function removeSettingsSavedNotices() {
+	removeNotice(settingsSaveSuccessNoticeId);
+	removeNotice(settingsSaveErrorNoticeId);
+}

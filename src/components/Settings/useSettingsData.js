@@ -10,20 +10,59 @@ const useSettingsData = (state, dispatch) => {
 	const handleRadioChange = (e, key) => {
 		const value = e.target.value;
 
-		updateSettings(key, value);
+		updateSingleSettings(key, value);
 	};
 
 	const handleCheckboxChange = (value, key) => {
 		const _value = value ? '1' : '';
 
-		updateSettings(key, _value);
+		updateSingleSettings(key, _value);
 	};
 
 	const handleTextFieldChange = (value, key) => {
-		updateSettings(key, value);
+		updateSingleSettings(key, value);
 	};
 
-	const updateSettings = (key, value) => {
+	const handleSelectChange = (selectedItem, key) => {
+		updateSingleSettings(key, selectedItem.value);
+	};
+
+	const handleImageChange = (attachment, key) => {
+		const imageId = attachment.id;
+		const imageUrl = attachment.sizes.full.url;
+
+		const prevValue = parseInt(settings[key]);
+
+		if (imageId === prevValue) {
+			return;
+		}
+
+		const primaryKey = key;
+		const secondaryKey = `${key}_src`;
+
+		const _settings = {
+			...settings,
+			[primaryKey]: imageId,
+			[secondaryKey]: imageUrl,
+		};
+
+		updateSettings(_settings);
+	};
+
+	const handleImageRemove = (key) => {
+		const primaryKey = key;
+		const secondaryKey = `${key}_src`;
+
+		const _settings = {
+			...settings,
+			[primaryKey]: '',
+			[secondaryKey]: '',
+		};
+
+		updateSettings(_settings);
+	};
+
+	const updateSingleSettings = (key, value) => {
 		const prevValue = settings[key];
 
 		if (value === prevValue) {
@@ -38,7 +77,21 @@ const useSettingsData = (state, dispatch) => {
 		setDirty();
 	};
 
-	return { handleRadioChange, handleCheckboxChange, handleTextFieldChange };
+	const updateSettings = (_settings) => {
+		dispatch({ type: 'UPDATE_SETTINGS', payload: _settings });
+
+		setDirty();
+	};
+
+	return {
+		setDirty,
+		handleRadioChange,
+		handleCheckboxChange,
+		handleTextFieldChange,
+		handleSelectChange,
+		handleImageChange,
+		handleImageRemove,
+	};
 };
 
 export default useSettingsData;

@@ -60,9 +60,11 @@ const Select = ({
 	let customClasses = '__custom_react_select __single_select';
 	let html;
 
-	if (renderAsFormField) {
+	if (id) {
 		customClasses += ` ${id}`;
+	}
 
+	if (renderAsFormField) {
 		html = (
 			<div className='__form_control react_select_simple'>
 				<div className='__inner'>

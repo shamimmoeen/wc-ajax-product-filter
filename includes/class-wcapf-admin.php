@@ -358,13 +358,25 @@ class WCAPF_Admin {
 
 		if ( 'wcapf_page_wcapf-form' === $screen_id ) {
 			if ( ! isset( $_GET['id'] ) ) {
-				$params['forms'] = $api_utils::get_forms();
+				$params['forms']         = $api_utils::get_forms();
 				$params['filters_found'] = boolval( $api_utils::get_filters() );
 			}
 		}
 
 		if ( 'wcapf_page_wcapf-new-settings' === $screen_id ) {
-			$params['settings'] = WCAPF_Helper::get_settings();
+			$settings = WCAPF_Helper::get_settings();
+
+			// Send the loading image src that will be used for our React ui.
+			if ( $settings['loading_image'] ) {
+				$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
+				$src   = $image[0];
+
+				if ( $src ) {
+					$settings['loading_image_src'] = $src;
+				}
+			}
+
+			$params['settings'] = $settings;
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

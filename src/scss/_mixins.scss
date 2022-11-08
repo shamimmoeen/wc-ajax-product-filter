@@ -113,6 +113,38 @@
     }
 }
 
+@mixin image-picker {
+    .__image_picker_button {
+        height: 30px;
+    }
+
+    .__image_picker_group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        $size: 40px;
+
+        .__thumbnail {
+            padding: 0;
+            width: $size + 6px;
+            height: $size + 6px;
+            align-items: center;
+            justify-content: center;
+
+            span {
+                border-radius: 2px;
+                background-size: $size $size;
+                display: inline-flex;
+                width: $size;
+                height: $size;
+            }
+        }
+
+        @include button-link-delete;
+    }
+}
+
 @mixin responsive-table {
     overflow-x: auto;
     padding-bottom: 15px;

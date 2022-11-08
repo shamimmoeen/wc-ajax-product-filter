@@ -8,14 +8,12 @@
 
     .__pro_features_card,
     .components-card {
-        margin-bottom: var(--large-gap);
+        &:not(:last-child) {
+            margin-bottom: var(--large-gap);
+        }
 
         @media (max-width: 1199px) {
             margin-top: var(--large-gap);
-
-            &:last-child {
-                margin-bottom: 0;
-            }
         }
     }
 
