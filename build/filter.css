@@ -935,6 +935,11 @@ body.rtl .__available_filters .__filters .__item {
   width: 32px;
   height: 32px;
 }
+.__meta_values_modal .components-modal__header-heading {
+  font-size: 1.5em;
+  font-weight: 500;
+  line-height: 1.2;
+}
 .__meta_values_modal .components-checkbox-control__input {
   border-color: #ddd;
 }
@@ -1044,6 +1049,11 @@ body.rtl .__available_filters .__filters .__item {
 .__custom_appearance_modal .__loader svg {
   width: 32px;
   height: 32px;
+}
+.__custom_appearance_modal .components-modal__header-heading {
+  font-size: 1.5em;
+  font-weight: 500;
+  line-height: 1.2;
 }
 @media (max-width: 599px) {
   .__custom_appearance_modal .wp-list-table th.__term {
@@ -1288,12 +1298,28 @@ body.rtl .__sidebar .components-button {
   margin: 0 0 4px 4px;
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__publish_modal {
   width: 46em;
 }
 .__publish_modal h3 {
+  margin: 0.5em 0 0;
+  font-size: 1.5em;
   font-weight: 500;
-  margin: 0;
+  line-height: 1.2;
 }
 .__publish_modal .__publish_tab_panel .components-tab-panel__tabs {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);

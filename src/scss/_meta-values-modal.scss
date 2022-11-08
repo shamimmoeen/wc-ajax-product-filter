@@ -3,6 +3,10 @@
 .__meta_values_modal {
     @include fixed-height-modal;
 
+    .components-modal__header-heading {
+        @include modal-heading;
+    }
+
     .components-checkbox-control__input {
         border-color: $inputBorderColor;
     }

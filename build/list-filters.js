@@ -5539,10 +5539,10 @@ const DuplicateModal = _ref => {
 
   if ('filter' === postType) {
     heading = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Duplicate Filter?', 'wc-ajax-product-filter');
-    description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This will duplicate the filter.', 'wc-ajax-product-filter');
+    description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This will duplicate the filter with all settings.', 'wc-ajax-product-filter');
   } else if ('form' === postType) {
     heading = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Duplicate Form?', 'wc-ajax-product-filter');
-    description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This will duplicate the form.', 'wc-ajax-product-filter');
+    description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This will duplicate the form with all settings.', 'wc-ajax-product-filter');
   }
 
   return isOpen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {

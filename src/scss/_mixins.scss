@@ -1,5 +1,11 @@
 @import './variables';
 
+@mixin modal-heading {
+    font-size: 1.5em;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
 @mixin list-table {
     --vr-padding: 16px;
     --hr-padding: 24px;

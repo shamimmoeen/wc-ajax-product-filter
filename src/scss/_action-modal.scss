@@ -1,4 +1,5 @@
 @import './variables';
+@import './mixins';
 
 /**
 * Delete, Duplicate Modals.
@@ -10,7 +11,7 @@
 	align-items: center;
 
 	h3 {
-		font-weight: 500;
+		@include modal-heading;
 	}
 
 	.description {

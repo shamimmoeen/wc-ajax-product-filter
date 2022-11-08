@@ -1,9 +1,12 @@
+@import './mixins';
+
 .__publish_modal {
     width: 46em;
 
     h3 {
-        font-weight: 500;
-        margin: 0;
+        margin: 0.5em 0 0;
+
+        @include modal-heading;
     }
 
     .__publish_tab_panel {

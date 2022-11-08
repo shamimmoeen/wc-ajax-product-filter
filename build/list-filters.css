@@ -228,6 +228,20 @@ body.rtl .__list_table_wrapper .__edit_btn {
   }
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__add_new_modal {
   max-width: 700px;
   width: 100%;
@@ -245,8 +259,10 @@ body.rtl .__list_table_wrapper .__edit_btn {
 }
 .__add_new_modal .__heading {
   text-align: center;
-  font-weight: 500;
   margin-top: 0;
+  font-size: 1.5em;
+  font-weight: 500;
+  line-height: 1.2;
 }
 .__add_new_modal .__step_inner {
   margin: 2.5em 0;
@@ -935,6 +951,20 @@ body.rtl .__sidebar .components-button {
   }
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 /**
 * Delete, Duplicate Modals.
 */
@@ -944,7 +974,9 @@ body.rtl .__sidebar .components-button {
   align-items: center;
 }
 .__action_modal h3 {
+  font-size: 1.5em;
   font-weight: 500;
+  line-height: 1.2;
 }
 .__action_modal .description {
   margin: 0 0 2em;
@@ -966,12 +998,28 @@ body.rtl .__sidebar .components-button {
   fill: #3fc1c9;
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__publish_modal {
   width: 46em;
 }
 .__publish_modal h3 {
+  margin: 0.5em 0 0;
+  font-size: 1.5em;
   font-weight: 500;
-  margin: 0;
+  line-height: 1.2;
 }
 .__publish_modal .__publish_tab_panel .components-tab-panel__tabs {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
