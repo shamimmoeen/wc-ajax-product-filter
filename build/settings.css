@@ -289,18 +289,14 @@ body.rtl .__top_bar h2 .__icon {
   font-size: 16px;
   margin: 0;
 }
-.__sidebar .__pro_features_card,
-.__sidebar .components-card {
+.__sidebar .__pro_features_card:not(:last-child),
+.__sidebar .components-card:not(:last-child) {
   margin-bottom: var(--large-gap);
 }
 @media (max-width: 1199px) {
   .__sidebar .__pro_features_card,
 .__sidebar .components-card {
     margin-top: var(--large-gap);
-  }
-  .__sidebar .__pro_features_card:last-child,
-.__sidebar .components-card:last-child {
-    margin-bottom: 0;
   }
 }
 .__sidebar .__card_heading {
@@ -473,6 +469,40 @@ body.rtl .__sidebar .components-button {
     max-width: 300px;
   }
 }
+.__form_control.__image_picker .__image_picker_button {
+  height: 30px;
+}
+.__form_control.__image_picker .__image_picker_group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.__form_control.__image_picker .__image_picker_group .__thumbnail {
+  padding: 0;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+}
+.__form_control.__image_picker .__image_picker_group .__thumbnail span {
+  border-radius: 2px;
+  background-size: 40px 40px;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+}
+.__form_control.__image_picker .__image_picker_group .button-link-delete svg {
+  fill: #cc1818;
+  opacity: 0.2;
+  transition: opacity 0.1s linear;
+}
+.__form_control.__image_picker .__image_picker_group .button-link-delete:hover svg, .__form_control.__image_picker .__image_picker_group .button-link-delete:focus svg {
+  opacity: 0.8;
+}
+.__form_control.__image_picker .__image_picker_group .button-link-delete:focus {
+  box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
+  outline: 1px solid transparent;
+}
 
 .__form_control.with-checkbox .__input_wrapper {
   display: flex;
@@ -639,6 +669,49 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
 }
 .__settings_wrapper .__settings_fields {
   padding: calc(var(--vr-padding) * 2) var(--hr-padding);
+}
+
+@media (min-width: 768px) {
+  .__settings_fields .__form_control .__label {
+    width: 200px;
+  }
+}
+.__settings_fields .__single_select.filter_relationships {
+  min-width: 70px;
+}
+.__settings_fields .__scroll_window_to .__input_wrapper .__single_select {
+  margin-bottom: 8px;
+}
+.__settings_fields .__scroll_window_to .__input_wrapper .__single_select.scroll_window {
+  min-width: 150px;
+}
+.__settings_fields .__scroll_window_to .__input_wrapper .__single_select.scroll_window_for {
+  min-width: 210px;
+}
+.__settings_fields .__scroll_window_to .__input_wrapper .__single_select.scroll_window_when {
+  min-width: 200px;
+}
+.__settings_fields .__scroll_window_to .__input_wrapper::after, .__settings_fields .__scroll_window_to .__input_wrapper::before {
+  content: "";
+  clear: both;
+  display: table;
+}
+body:not(.rtl) .__settings_fields .__scroll_window_to .__input_wrapper .__single_select {
+  float: left;
+}
+body:not(.rtl) .__settings_fields .__scroll_window_to .__input_wrapper .__single_select:not(:last-child) {
+  margin-right: 8px;
+}
+
+body.rtl .__settings_fields .__scroll_window_to .__input_wrapper .__single_select {
+  float: right;
+}
+body.rtl .__settings_fields .__scroll_window_to .__input_wrapper .__single_select:not(:last-child) {
+  margin-left: 8px;
+}
+
+.__settings_fields .__scroll_window_to .description {
+  margin-top: 0;
 }
 
 /*# sourceMappingURL=settings.css.map*/

@@ -6,10 +6,7 @@ import {
 	Spinner,
 	SearchControl,
 	ColorPicker,
-	Icon,
 } from '@wordpress/components';
-import { MediaUpload } from '@wordpress/media-utils';
-import { cancelCircleFilled } from '@wordpress/icons';
 import axios from 'axios';
 import { isEmpty, find } from 'lodash';
 import { useFilter } from '../../../FilterContext';
@@ -19,8 +16,8 @@ import {
 	getTimeoutForRemovingMediaFrames,
 	removeMediaFrames,
 } from '../../../../utils';
+import ImagePicker from '../../../../Field/ImagePicker';
 
-const ALLOWED_MEDIA_TYPES = ['image'];
 const modalInitialClass = '__custom_appearance_modal';
 
 const maxItems = getNoOfMaxTermsToRender();
@@ -444,59 +441,14 @@ const CustomAppearanceModal = ({ type, taxonomy, appearanceData }) => {
 
 						{'image' === type && (
 							<td className='__image'>
-								<MediaUpload
-									onSelect={(media) =>
+								<ImagePicker
+									imageId={image_id}
+									imageUrl={image_url}
+									onChange={(media) =>
 										handleChangeImage(media, option)
 									}
-									allowedTypes={ALLOWED_MEDIA_TYPES}
-									value={image_id}
-									render={({ open }) => {
-										if (image_id) {
-											return (
-												<div className='__buttons_group'>
-													<Button
-														variant='secondary'
-														className='__thumbnail'
-														onClick={open}
-													>
-														<span
-															style={{
-																backgroundImage: `url(${image_url})`,
-															}}
-														></span>
-													</Button>
-													<button
-														className='button-link button-link-delete'
-														onClick={() =>
-															handleClearImage(
-																option
-															)
-														}
-													>
-														<Icon
-															icon={
-																cancelCircleFilled
-															}
-															size={20}
-														/>
-													</button>
-												</div>
-											);
-										} else {
-											return (
-												<Button
-													className='__image_picker_button'
-													variant='secondary'
-													onClick={open}
-												>
-													{__(
-														'Select Image',
-														'wc-ajax-product-filter'
-													)}
-												</Button>
-											);
-										}
-									}}
+									onClear={() => handleClearImage(option)}
+									renderAsFormField={false}
 								/>
 							</td>
 						)}

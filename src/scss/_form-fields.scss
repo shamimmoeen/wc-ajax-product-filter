@@ -201,6 +201,11 @@
 			}
 		}
 	}
+
+	// Image Picker.
+	&.__image_picker {
+		@include image-picker;
+	}
 }
 
 // Number min, max fields with auto detect.

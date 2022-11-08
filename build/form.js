@@ -5600,7 +5600,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "removeItemDeletedNotices": function() { return /* binding */ removeItemDeletedNotices; },
 /* harmony export */   "removeItemDuplicatedNotices": function() { return /* binding */ removeItemDuplicatedNotices; },
 /* harmony export */   "removeItemSavedNotices": function() { return /* binding */ removeItemSavedNotices; },
-/* harmony export */   "removeNotice": function() { return /* binding */ removeNotice; }
+/* harmony export */   "removeNotice": function() { return /* binding */ removeNotice; },
+/* harmony export */   "removeSettingsSavedNotices": function() { return /* binding */ removeSettingsSavedNotices; },
+/* harmony export */   "settingsSavedErrorNotice": function() { return /* binding */ settingsSavedErrorNotice; },
+/* harmony export */   "settingsSavedSuccessNotice": function() { return /* binding */ settingsSavedSuccessNotice; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
@@ -5680,6 +5683,19 @@ function itemSavedErrorNotice(message) {
 function removeItemSavedNotices() {
   removeNotice(itemSaveSuccessNoticeId);
   removeNotice(itemSaveErrorNoticeId);
+} // Settings notices.
+
+const settingsSaveSuccessNoticeId = 'settings-save-success';
+const settingsSaveErrorNoticeId = 'settings-save-error';
+function settingsSavedSuccessNotice(message) {
+  addSuccessNotice(message, settingsSaveSuccessNoticeId, '👌');
+}
+function settingsSavedErrorNotice(message) {
+  addSuccessNotice(message, settingsSaveErrorNoticeId, '😟');
+}
+function removeSettingsSavedNotices() {
+  removeNotice(settingsSaveSuccessNoticeId);
+  removeNotice(settingsSaveErrorNoticeId);
 }
 
 /***/ }),
