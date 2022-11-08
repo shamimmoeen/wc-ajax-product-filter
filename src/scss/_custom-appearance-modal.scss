@@ -10,6 +10,10 @@
 .__custom_appearance_modal {
     @include fixed-height-modal;
 
+    .components-modal__header-heading {
+        @include modal-heading;
+    }
+
     .wp-list-table {
         th {
             &.__term {
