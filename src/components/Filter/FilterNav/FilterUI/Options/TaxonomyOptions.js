@@ -157,7 +157,7 @@ const TaxonomyOptions = () => {
 				id={'use_term_slug_in_url'}
 				label={__('Use Term Slug', 'wc-ajax-product-filter')}
 				description={__(
-					'Whether to use the term slug instead of id as the option value.',
+					'Whether to use term slug instead of id as the option value.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={use_term_slug_in_url}
