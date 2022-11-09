@@ -5818,7 +5818,7 @@ const Fields = () => {
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'attach_chosen_on_sorting',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Combobox for sorting dropdown', 'wc-ajax-product-filter'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ComboBox for sorting dropdown', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use jQuery Chosen library for the sorting dropdown instead of the native select element.', 'wc-ajax-product-filter'),
     isChecked: attach_chosen_on_sorting,
     onChange: handleCheckboxChange
@@ -5852,7 +5852,7 @@ const Fields = () => {
     type: 'number'
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_6__["default"], {
     id: 'filter_relationships',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter relationships', 'wc-ajax-product-filter'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Relationships', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The relationship between filters. AND - products shown will match all filters, OR - products shown will match any of the filters.', 'wc-ajax-product-filter'),
     value: filterRelationship,
     onChange: handleSelectChange,
@@ -5860,13 +5860,13 @@ const Fields = () => {
     renderAsFormField: true
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'update_count',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable auto count', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update the count number according to the applied filters.', 'wc-ajax-product-filter'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Product Count', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to update the product count number according to the applied filters.', 'wc-ajax-product-filter'),
     isChecked: update_count,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'remove_data',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove data', 'wc-ajax-product-filter'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove Data', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this setting to remove all data when uninstalling WC Ajax Product Filter via the `plugins` page.', 'wc-ajax-product-filter'),
     isChecked: remove_data,
     onChange: handleCheckboxChange

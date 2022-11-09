@@ -174,7 +174,7 @@ const useFields = (type) => {
 			return (
 				<Checkbox
 					id={id}
-					label={__('Enable Combobox', 'wc-ajax-product-filter')}
+					label={__('Enable ComboBox', 'wc-ajax-product-filter')}
 					description={__(
 						'Whether to use jQuery Chosen library instead of the native select element.',
 						'wc-ajax-product-filter'
