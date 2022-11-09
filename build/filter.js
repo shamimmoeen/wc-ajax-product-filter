@@ -8833,7 +8833,7 @@ const TaxonomyOptions = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_7__["default"], {
       id: 'use_term_slug_in_url',
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use Term Slug', 'wc-ajax-product-filter'),
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use the term slug instead of id as the option value.', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use term slug instead of id as the option value.', 'wc-ajax-product-filter'),
       isChecked: use_term_slug_in_url,
       onChange: handleCheckboxChange
     });
