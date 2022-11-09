@@ -282,7 +282,7 @@ const Advanced = () => {
 				<Text
 					id={'title_in_active_filters'}
 					label={__(
-						'Custom title in active filters',
+						'Custom title in Active Filters',
 						'wc-ajax-product-filter'
 					)}
 					description={__(

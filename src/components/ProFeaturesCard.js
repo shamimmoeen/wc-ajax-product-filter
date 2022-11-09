@@ -62,19 +62,7 @@ const ProFeaturesCard = () => {
 				</li>
 				<li>
 					{__(
-						'Use term slug as the filter value',
-						'wc-ajax-product-filter'
-					)}
-				</li>
-				<li>
-					{__(
-						'Option to include/exclude terms, show only child terms',
-						'wc-ajax-product-filter'
-					)}
-				</li>
-				<li>
-					{__(
-						'Choose the ordering of terms',
+						'Choose the ordering of terms, include/exclude terms, and use term slug as the filter value',
 						'wc-ajax-product-filter'
 					)}
 				</li>
@@ -92,7 +80,7 @@ const ProFeaturesCard = () => {
 				</li>
 				<li>
 					{__(
-						'Set conditions to determine when to display the filter',
+						'Set visibility rules to determine when to display the filter',
 						'wc-ajax-product-filter'
 					)}
 				</li>

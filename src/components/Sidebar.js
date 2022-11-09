@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
-const documentaion = __(
+const documentation = __(
 	'There you can find detailed information about how to use the plugin correctly.',
 	'wc-ajax-product-filter'
 );
@@ -24,7 +24,7 @@ const Sidebar = () => {
 					<h2>{__('Documentation', 'wc-ajax-product-filter')}</h2>
 				</CardHeader>
 				<CardBody>
-					<p dangerouslySetInnerHTML={{ __html: documentaion }} />
+					<p dangerouslySetInnerHTML={{ __html: documentation }} />
 					<div className='__buttons'>
 						<Button variant='secondary'>
 							{__('To Documentation', 'wc-ajax-product-filter')}
