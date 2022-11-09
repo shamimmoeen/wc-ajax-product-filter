@@ -138,7 +138,7 @@ const Fields = () => {
 			<Checkbox
 				id={'attach_chosen_on_sorting'}
 				label={__(
-					'Combobox for sorting dropdown',
+					'ComboBox for sorting dropdown',
 					'wc-ajax-product-filter'
 				)}
 				description={__(
@@ -210,7 +210,7 @@ const Fields = () => {
 
 			<Select
 				id={'filter_relationships'}
-				label={__('Filter relationships', 'wc-ajax-product-filter')}
+				label={__('Filter Relationships', 'wc-ajax-product-filter')}
 				description={__(
 					'The relationship between filters. AND - products shown will match all filters, OR - products shown will match any of the filters.',
 					'wc-ajax-product-filter'
@@ -223,9 +223,9 @@ const Fields = () => {
 
 			<Checkbox
 				id={'update_count'}
-				label={__('Enable auto count', 'wc-ajax-product-filter')}
+				label={__('Dynamic Product Count', 'wc-ajax-product-filter')}
 				description={__(
-					'Update the count number according to the applied filters.',
+					'Whether to update the product count number according to the applied filters.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={update_count}
@@ -234,7 +234,7 @@ const Fields = () => {
 
 			<Checkbox
 				id={'remove_data'}
-				label={__('Remove data', 'wc-ajax-product-filter')}
+				label={__('Remove Data', 'wc-ajax-product-filter')}
 				description={__(
 					'Enable this setting to remove all data when uninstalling WC Ajax Product Filter via the `plugins` page.',
 					'wc-ajax-product-filter'

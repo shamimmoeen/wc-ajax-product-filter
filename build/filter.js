@@ -7130,7 +7130,7 @@ const useFields = type => {
     if (showField) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: id,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable Combobox', 'wc-ajax-product-filter'),
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable ComboBox', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use jQuery Chosen library instead of the native select element.', 'wc-ajax-product-filter'),
         isChecked: activeFilterData[id],
         onChange: handleCheckboxChange
