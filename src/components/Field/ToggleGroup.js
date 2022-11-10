@@ -38,7 +38,12 @@ const ToggleGroup = ({
 					</div>
 				</div>
 			</div>
-			{description ? <p className='description'>{description}</p> : ''}
+			{description && (
+				<p
+					className='description'
+					dangerouslySetInnerHTML={{ __html: description }}
+				/>
+			)}
 		</div>
 	);
 };
