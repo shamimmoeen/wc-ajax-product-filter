@@ -32,7 +32,7 @@ const PostAuthorOptions = () => {
 	const _orderByField = () => {
 		const options = authorOrderByOptions();
 
-		return orderByField('post_author_order_by', options);
+		return orderByField('post_author_order_by', options, true);
 	};
 
 	const _orderDirectionField = () => {
@@ -130,6 +130,7 @@ const PostAuthorOptions = () => {
 					)}
 					isChecked={use_store_name}
 					onChange={handleCheckboxChange}
+					isPro={true}
 				/>
 			);
 		}

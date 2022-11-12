@@ -75,18 +75,7 @@ const ValueTypeText = () => {
 		let options = [];
 
 		if (haveAllDisplayTypes.includes(filterType)) {
-			const freeFilterTypes = [
-				'category',
-				'tag',
-				'attribute',
-				'product-status',
-			];
-
-			if (freeFilterTypes.includes(filterType)) {
-				options = textDisplayTypes(true);
-			} else {
-				options = textDisplayTypes();
-			}
+			options = textDisplayTypes(true);
 		} else if ('sort-by' === filterType || 'per-page' === filterType) {
 			const allOptions = textDisplayTypes();
 			const allowed = ['radio', 'select'];
@@ -186,7 +175,7 @@ const ValueTypeText = () => {
 					)}
 					isChecked={hierarchical}
 					onChange={handleCheckboxChange}
-					isPro={'category' === filterType}
+					isPro={true}
 				/>
 			);
 		}

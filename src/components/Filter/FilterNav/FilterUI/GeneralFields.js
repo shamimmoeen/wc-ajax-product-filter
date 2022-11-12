@@ -43,6 +43,8 @@ const GeneralFields = ({ state, dispatch }) => {
 	}, [post_property]);
 
 	/**
+	 * TODO: Check if key is already in use, then generate a new one.
+	 *
 	 * type = 'post-meta'
 	 * value = '_stock_status'
 	 * property = 'meta_key'

@@ -11,7 +11,7 @@ const VisibilityRules = () => {
 	const { state, dispatch } = useFilter();
 	const { setDirty } = useFilterData(state, dispatch);
 
-	const { visibilityRules } = state;
+	const { filterType, visibilityRules } = state;
 	const { media_screens, enable_rules, rules } = visibilityRules;
 
 	const updateVisibilityRules = (value) => {
@@ -161,28 +161,38 @@ const VisibilityRules = () => {
 				onChange={handleMediaScreenChange}
 			/>
 
-			<Checkbox
-				id={'enable_rules'}
-				label={__('Enable visibility rules', 'wc-ajax-product-filter')}
-				description={__(
-					'Create a set of rules to determine when the filter will be displayed.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={enable_rules}
-				onChange={handleEnableRules}
-				isPro={true}
-			/>
+			{'active-filters' !== filterType && 'reset-button' !== filterType && (
+				<>
+					<Checkbox
+						id={'enable_rules'}
+						label={__(
+							'Enable visibility rules',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Create a set of rules to determine when the filter will be displayed.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={enable_rules}
+						onChange={handleEnableRules}
+						isPro={true}
+					/>
 
-			{enable_rules && (
-				<Rules
-					label={__('Show the filter if', 'wc-ajax-product-filter')}
-					rules={rules}
-					handleChange={handleRuleChange}
-					handleRemove={handleRemoveRule}
-					handleAddingAndClause={handleAddingAndClause}
-					handleAddingOrClause={handleAddingOrClause}
-					handleRemoveAllRules={handleRemoveAllRules}
-				/>
+					{enable_rules && (
+						<Rules
+							label={__(
+								'Show the filter if',
+								'wc-ajax-product-filter'
+							)}
+							rules={rules}
+							handleChange={handleRuleChange}
+							handleRemove={handleRemoveRule}
+							handleAddingAndClause={handleAddingAndClause}
+							handleAddingOrClause={handleAddingOrClause}
+							handleRemoveAllRules={handleRemoveAllRules}
+						/>
+					)}
+				</>
 			)}
 		</>
 	);

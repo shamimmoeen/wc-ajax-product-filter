@@ -32,7 +32,6 @@ const Advanced = () => {
 			enable_accordion,
 			accordion_default_state,
 			show_clear_button,
-			title_in_active_filters,
 			enable_soft_limit,
 			enable_soft_limit_for_extended_layout,
 			soft_limit,
@@ -211,21 +210,6 @@ const Advanced = () => {
 				'wc-ajax-product-filter'
 			);
 
-			let isProFeature = false;
-
-			const filterTypes = [
-				'price',
-				'post-property',
-				'custom-taxonomy',
-				'post-meta',
-				'sort-by',
-				'per-page',
-			];
-
-			if (!filterTypes.includes(filterType)) {
-				isProFeature = true;
-			}
-
 			return (
 				<Checkbox
 					id={id}
@@ -233,7 +217,7 @@ const Advanced = () => {
 					description={description}
 					isChecked={value}
 					onChange={handleCheckboxChange}
-					isPro={isProFeature}
+					isPro={true}
 				/>
 			);
 		}
@@ -276,26 +260,6 @@ const Advanced = () => {
 		}
 	};
 
-	const activeFilterLabelField = () => {
-		if ('active-filters' !== filterType && 'reset-button' !== filterType) {
-			return (
-				<Text
-					id={'title_in_active_filters'}
-					label={__(
-						'Custom title in Active Filters',
-						'wc-ajax-product-filter'
-					)}
-					description={__(
-						'Leave blank to show the filter title.',
-						'wc-ajax-product-filter	'
-					)}
-					value={title_in_active_filters}
-					onChange={handleTextFieldChange}
-				/>
-			);
-		}
-	};
-
 	return (
 		<>
 			{enableAccordionField()}
@@ -309,8 +273,6 @@ const Advanced = () => {
 			{enableSoftLimitField()}
 
 			{visibleOptionsField()}
-
-			{activeFilterLabelField()}
 		</>
 	);
 };

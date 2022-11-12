@@ -4363,24 +4363,6 @@ const Checkbox = _ref => {
     description,
     isPro
   } = _ref;
-
-  const renderDescription = () => {
-    if (description) {
-      if ('enable_soft_limit' === id || 'enable_soft_limit_for_extended_layout' === id) {
-        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-          className: "description",
-          dangerouslySetInnerHTML: {
-            __html: description
-          }
-        });
-      } else {
-        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-          className: "description"
-        }, description);
-      }
-    }
-  };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_control __checkbox_toggle"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -4397,7 +4379,12 @@ const Checkbox = _ref => {
     checked: isChecked,
     id: id,
     onChange: value => onChange(value, id)
-  })))), renderDescription());
+  })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description",
+    dangerouslySetInnerHTML: {
+      __html: description
+    }
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Checkbox);
@@ -4507,8 +4494,11 @@ const ImagePicker = _ref3 => {
       onChange: onChange,
       onClear: onClear
     })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-      className: "description"
-    }, description));
+      className: "description",
+      dangerouslySetInnerHTML: {
+        __html: description
+      }
+    }));
   } else {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ImagePickerField, {
       imageId: imageId,
@@ -4567,9 +4557,12 @@ const Number = _ref => {
     value: value,
     onChange: onChange,
     renderAsFormField: false
-  }, rest))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
-    className: "description"
-  }, description) : '');
+  }, rest))))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
+    className: "description",
+    dangerouslySetInnerHTML: {
+      __html: description
+    }
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Number);
@@ -4664,9 +4657,12 @@ const Select = _ref2 => {
       classes: customClasses,
       portalTarget: portalTarget,
       onChange: selectedItem => onChange(selectedItem, id)
-    }), childComponent))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-      className: "description"
-    }, description) : '');
+    }), childComponent))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      className: "description",
+      dangerouslySetInnerHTML: {
+        __html: description
+      }
+    }));
   } else {
     html = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SimpleReactSelect, {
       options: options,
@@ -4774,8 +4770,11 @@ const Text = _ref2 => {
       type: type,
       isFilterKey: isFilterKey
     }, rest))))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
-      className: "description"
-    }, description));
+      className: "description",
+      dangerouslySetInnerHTML: {
+        __html: description
+      }
+    }));
   } else {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
       id: id,

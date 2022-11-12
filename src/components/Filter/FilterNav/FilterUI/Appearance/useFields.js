@@ -312,14 +312,6 @@ const useFields = (type) => {
 
 	const removeEmptyField = (id) => {
 		if (isCountEnabled()) {
-			const filterTypes = [
-				'category',
-				'tag',
-				'attribute',
-				'rating',
-				'product-status',
-			];
-
 			return (
 				<Checkbox
 					id={id}
@@ -330,7 +322,7 @@ const useFields = (type) => {
 					)}
 					isChecked={activeFilterData[id]}
 					onChange={handleCheckboxChange}
-					isPro={filterTypes.includes(filterType)}
+					isPro={true}
 				/>
 			);
 		}

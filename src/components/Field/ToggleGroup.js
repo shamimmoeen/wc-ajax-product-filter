@@ -32,6 +32,7 @@ const ToggleGroup = ({
 									}
 								>
 									{option.label}
+									{proTag(option.isPro)}
 								</Button>
 							))}
 						</ButtonGroup>

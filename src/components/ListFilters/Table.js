@@ -14,7 +14,7 @@ import { prepareFilterData } from './utils';
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
-	__('Filter Type', 'wc-ajax-product-filter'),
+	__('Component', 'wc-ajax-product-filter'),
 	__('Filter Key', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
