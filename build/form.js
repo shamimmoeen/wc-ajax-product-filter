@@ -2679,24 +2679,6 @@ const Checkbox = _ref => {
     description,
     isPro
   } = _ref;
-
-  const renderDescription = () => {
-    if (description) {
-      if ('enable_soft_limit' === id || 'enable_soft_limit_for_extended_layout' === id) {
-        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-          className: "description",
-          dangerouslySetInnerHTML: {
-            __html: description
-          }
-        });
-      } else {
-        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-          className: "description"
-        }, description);
-      }
-    }
-  };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_control __checkbox_toggle"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2713,7 +2695,12 @@ const Checkbox = _ref => {
     checked: isChecked,
     id: id,
     onChange: value => onChange(value, id)
-  })))), renderDescription());
+  })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description",
+    dangerouslySetInnerHTML: {
+      __html: description
+    }
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Checkbox);
@@ -2775,9 +2762,12 @@ const Radio = _ref => {
     checked: option.value === value
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: `${id}-${index}`
-  }, option.label, (0,_utils__WEBPACK_IMPORTED_MODULE_2__.proTag)(option.isPro))))))), description ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "description"
-  }, description) : '');
+  }, option.label, (0,_utils__WEBPACK_IMPORTED_MODULE_2__.proTag)(option.isPro))))))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description",
+    dangerouslySetInnerHTML: {
+      __html: description
+    }
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Radio);
@@ -2874,8 +2864,11 @@ const Text = _ref2 => {
       type: type,
       isFilterKey: isFilterKey
     }, rest))))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
-      className: "description"
-    }, description));
+      className: "description",
+      dangerouslySetInnerHTML: {
+        __html: description
+      }
+    }));
   } else {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InputField, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
       id: id,
@@ -2933,9 +2926,6 @@ __webpack_require__.r(__webpack_exports__);
 
 function availableFilters() {
   return [{
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Filters', 'wc-ajax-product-filter'),
-    type: 'active-filters'
-  }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Category', 'wc-ajax-product-filter'),
     type: 'category'
   }, {
@@ -2955,15 +2945,16 @@ function availableFilters() {
     type: 'product-status'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Property', 'wc-ajax-product-filter'),
-    type: 'post-property',
-    isPro: true
+    type: 'post-property'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Custom Taxonomy', 'wc-ajax-product-filter'),
-    type: 'custom-taxonomy',
-    isPro: true
+    type: 'custom-taxonomy'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Meta', 'wc-ajax-product-filter'),
-    type: 'post-meta',
+    type: 'post-meta'
+  }, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Search', 'wc-ajax-product-filter'),
+    type: 'search',
     isPro: true
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Sort by', 'wc-ajax-product-filter'),
@@ -2973,6 +2964,9 @@ function availableFilters() {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Per page', 'wc-ajax-product-filter'),
     type: 'per-page',
     isPro: true
+  }, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Active Filters', 'wc-ajax-product-filter'),
+    type: 'active-filters'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Reset Button', 'wc-ajax-product-filter'),
     type: 'reset-button'
@@ -3016,7 +3010,6 @@ function filterDefaultData() {
     field_id: '',
     get_options: 'automatically',
     use_category_images: '',
-    title_in_active_filters: '',
     // Active Filters
     active_filters_layout: 'simple',
     enable_clear_all_button: '1',
@@ -3059,7 +3052,7 @@ function filterDefaultData() {
     value_type: 'text',
     value_decimal: '',
     value_decimal_places: '2',
-    options_order_by: 'value',
+    options_order_by: 'none',
     options_order_dir: 'asc',
     options_order_type: 'alphabetical',
     // Post Meta - value type Date
@@ -3095,12 +3088,6 @@ function filterDefaultData() {
   };
 }
 
-function ratingFilterDefaultData() {
-  return {
-    options_order_dir: 'desc'
-  };
-}
-
 function perPageFilterDefaultData() {
   return {
     display_type: 'select'
@@ -3123,13 +3110,6 @@ function getFilterDefaultData(type, filterKeys) {
     var _filterKeys$type;
 
     defaultData.field_key = (_filterKeys$type = filterKeys[type]) !== null && _filterKeys$type !== void 0 ? _filterKeys$type : '';
-  } // Rating filter default options.
-
-
-  if ('rating' === type) {
-    for (const [key, value] of Object.entries(ratingFilterDefaultData())) {
-      defaultData[key] = value;
-    }
   } // Per-Page filter default options.
 
 
@@ -3189,14 +3169,13 @@ function initialFilterKeysData(activeFilterData) {
   return filterKeys;
 }
 function methodsOfGettingOptions() {
-  let forRating = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Automatically', 'wc-ajax-product-filter'),
     value: 'automatically'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Manual Entry', 'wc-ajax-product-filter'),
     value: 'manual_entry',
-    isPro: forRating
+    isPro: true
   }];
 }
 function taxonomyLimitByOptions() {
@@ -3229,7 +3208,8 @@ function termsOrderByOptions() {
     value: 'slug'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Count', 'wc-ajax-product-filter'),
-    value: 'count'
+    value: 'count',
+    isPro: true
   }];
 }
 function orderByOptions() {

@@ -8,15 +8,9 @@ const RatingOptions = () => {
 		state: { activeFilterData },
 	} = useFilter();
 
-	const { getOptionsField, orderDirectionField } = useFields();
+	const { getOptionsField } = useFields();
 
 	const { number_get_options } = activeFilterData;
-
-	const _orderDirectionField = () => {
-		if ('automatically' === number_get_options) {
-			return orderDirectionField('options_order_dir');
-		}
-	};
 
 	const manualOptions = () => {
 		if ('manual_entry' === number_get_options) {
@@ -27,8 +21,6 @@ const RatingOptions = () => {
 	return (
 		<>
 			{getOptionsField('number_get_options')}
-
-			{_orderDirectionField()}
 
 			{manualOptions()}
 		</>

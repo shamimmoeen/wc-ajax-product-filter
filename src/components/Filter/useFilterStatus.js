@@ -31,7 +31,13 @@ const useFilterStatus = () => {
 
 		let tryingPro = '';
 
-		if (enable_rules) {
+		const { filterType } = state;
+
+		if (
+			'active-filters' !== filterType &&
+			'reset-button' !== filterType &&
+			enable_rules
+		) {
 			tryingPro = proFeature('visibility-rules');
 		}
 

@@ -381,6 +381,9 @@ body.rtl .__list_table_wrapper .__edit_btn {
 .__form_control .description {
   margin-top: 8px;
 }
+.__form_control .description b {
+  font-weight: 500;
+}
 .__form_control .components-text-control__input {
   max-width: 220px;
 }

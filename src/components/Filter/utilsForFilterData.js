@@ -79,7 +79,6 @@ function taxonomyTypeFilterTryingProFeatures(
 		hierarchical,
 		hide_empty,
 		order_terms_by,
-		limit_options,
 		use_term_slug_in_url,
 		enable_soft_limit,
 	} = activeFilterData;
@@ -105,10 +104,8 @@ function taxonomyTypeFilterTryingProFeatures(
 		tryingPro = proFeature('hierarchical-view');
 	} else if ('1' === hide_empty) {
 		tryingPro = proFeature('remove-empty');
-	} else if ('default' !== order_terms_by) {
-		tryingPro = proFeature('ordering-of-terms');
-	} else if ('off' !== limit_options) {
-		tryingPro = proFeature('limit-terms');
+	} else if ('count' === order_terms_by) {
+		tryingPro = proFeature('terms-orderby-count');
 	} else if ('1' === use_term_slug_in_url) {
 		tryingPro = proFeature('term-slug-in-url');
 	} else if (
@@ -177,6 +174,124 @@ function productStatusFilterTryingProFeatures(activeFilterData) {
 		!softLimitDisabledDisplayTypes.includes(display_type)
 	) {
 		tryingPro = proFeature('soft-limit');
+	}
+
+	return tryingPro;
+}
+
+function postPropertyFilterTryingProFeatures(activeFilterData) {
+	if (foundPro) {
+		return false;
+	}
+
+	let tryingPro = false;
+
+	const {
+		display_type,
+		date_display_type,
+		hide_empty,
+		time_period_hide_empty,
+		post_author_order_by,
+		enable_soft_limit,
+		post_property,
+	} = activeFilterData;
+
+	if ('post_author' === post_property) {
+		if ('1' === hide_empty) {
+			tryingPro = proFeature('remove-empty');
+		} else if ('default' !== post_author_order_by) {
+			tryingPro = proFeature('ordering-of-filter-options');
+		} else if (
+			'1' === enable_soft_limit &&
+			!softLimitDisabledDisplayTypes.includes(display_type)
+		) {
+			tryingPro = proFeature('soft-limit');
+		}
+	} else {
+		const softLimitAllowed = [
+			'time_period_checkbox',
+			'time_period_radio',
+			'time_period_label',
+		];
+
+		if (
+			'1' === time_period_hide_empty &&
+			dateDisplayTypes.includes(date_display_type)
+		) {
+			tryingPro = proFeature('remove-empty');
+		} else if (
+			'1' === enable_soft_limit &&
+			softLimitAllowed.includes(date_display_type)
+		) {
+			tryingPro = proFeature('soft-limit');
+		}
+	}
+
+	return tryingPro;
+}
+
+function postMetaFilterTryingProFeatures(activeFilterData) {
+	if (foundPro) {
+		return false;
+	}
+
+	let tryingPro = false;
+
+	const {
+		display_type,
+		number_display_type,
+		date_display_type,
+		hide_empty,
+		number_range_hide_empty,
+		time_period_hide_empty,
+		enable_soft_limit,
+		value_type,
+	} = activeFilterData;
+
+	if ('text' === value_type) {
+		if ('1' === hide_empty) {
+			tryingPro = proFeature('remove-empty');
+		} else if ('default' !== post_author_order_by) {
+			tryingPro = proFeature('ordering-of-filter-options');
+		} else if (
+			'1' === enable_soft_limit &&
+			!softLimitDisabledDisplayTypes.includes(display_type)
+		) {
+			tryingPro = proFeature('soft-limit');
+		}
+	} else if ('number' === value_type) {
+	} else if ('date' === value_type) {
+	}
+
+	if ('post_author' === post_property) {
+		if ('1' === hide_empty) {
+			tryingPro = proFeature('remove-empty');
+		} else if ('default' !== post_author_order_by) {
+			tryingPro = proFeature('ordering-of-filter-options');
+		} else if (
+			'1' === enable_soft_limit &&
+			!softLimitDisabledDisplayTypes.includes(display_type)
+		) {
+			tryingPro = proFeature('soft-limit');
+		}
+	} else {
+		const softLimitAllowed = [
+			'time_period_checkbox',
+			'time_period_radio',
+			'time_period_label',
+		];
+
+		if (
+			'1' === time_period_hide_empty &&
+			dateDisplayTypes.includes(date_display_type)
+		) {
+			tryingPro = proFeature('remove-empty');
+		} else if (
+			'1' === enable_soft_limit &&
+			softLimitAllowed.includes(date_display_type)
+		) {
+			tryingPro = proFeature('soft-limit');
+		}
 	}
 
 	return tryingPro;
@@ -318,8 +433,10 @@ export function getFilterStatus(title, activeFilterData) {
 			break;
 
 		case 'post-property':
-			if (!foundPro) {
-				message = proFeature('post-property-filter');
+			tryingPro = postPropertyFilterTryingProFeatures(activeFilterData);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (!post_property) {
 				message = dataRequired(
 					__('Select a post property', 'wc-ajax-product-filter')
@@ -342,8 +459,17 @@ export function getFilterStatus(title, activeFilterData) {
 			break;
 
 		case 'custom-taxonomy':
-			if (!foundPro) {
-				message = proFeature('custom-taxonomy-filter');
+			// if (!foundPro) {
+			// 	message = proFeature('custom-taxonomy-filter');
+			// } else
+
+			tryingPro = taxonomyTypeFilterTryingProFeatures(
+				activeFilterData,
+				true
+			);
+
+			if (tryingPro) {
+				message = tryingPro;
 			} else if (!taxonomy) {
 				message = dataRequired(
 					__('Select a taxonomy', 'wc-ajax-product-filter')
@@ -357,9 +483,10 @@ export function getFilterStatus(title, activeFilterData) {
 			break;
 
 		case 'post-meta':
-			if (!foundPro) {
-				message = proFeature('post-meta-filter');
-			} else if (!meta_key) {
+			// if (!foundPro) {
+			// 	message = proFeature('post-meta-filter');
+			// } else
+			if (!meta_key) {
 				message = dataRequired(
 					__('Select a meta key', 'wc-ajax-product-filter')
 				);

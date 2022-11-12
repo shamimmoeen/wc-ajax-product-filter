@@ -11,7 +11,6 @@ import ToggleGroup from '../../../../Field/ToggleGroup';
 import SelectMulti from '../../../../Field/SelectMulti';
 import Checkbox from '../../../../Field/Checkbox';
 import useFields from './useFields';
-import ProFeaturesNotice from '../../../../ProFeaturesNotice';
 
 const TaxonomyOptions = () => {
 	const { state, dispatch } = useFilter();
@@ -21,7 +20,7 @@ const TaxonomyOptions = () => {
 		handleSelectTermChange,
 	} = useFilterData(state, dispatch);
 
-	const { orderByField, orderDirectionField } = useFields();
+	const { getOptionsField, orderByField, orderDirectionField } = useFields();
 
 	const {
 		filterType,
@@ -139,7 +138,7 @@ const TaxonomyOptions = () => {
 					id={'parent_term'}
 					label={__('Parent Term', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the parent term for which child terms will be available to filter the products.',
+						'Select the parent term for which child terms will be available as filter options.',
 						'wc-ajax-product-filter'
 					)}
 					taxonomy={taxonomy}
@@ -162,18 +161,14 @@ const TaxonomyOptions = () => {
 				)}
 				isChecked={use_term_slug_in_url}
 				onChange={handleCheckboxChange}
+				isPro={true}
 			/>
 		);
 	};
 
 	return (
 		<>
-			<ProFeaturesNotice
-				message={__(
-					'These settings are available only at the PRO version.',
-					'wc-ajax-product-filter'
-				)}
-			/>
+			{getOptionsField('get_options')}
 
 			{_orderByField()}
 

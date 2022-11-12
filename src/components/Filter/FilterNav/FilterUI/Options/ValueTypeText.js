@@ -43,7 +43,7 @@ const ValueTypeText = () => {
 			);
 		}
 
-		return orderByField('options_order_by', options);
+		return orderByField('options_order_by', options, true);
 	};
 
 	const _orderDirectionField = () => {

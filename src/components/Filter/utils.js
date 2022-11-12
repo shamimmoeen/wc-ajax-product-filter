@@ -4,10 +4,6 @@ import { foundProVersion } from '../utils';
 export function availableFilters() {
 	return [
 		{
-			title: __('Active Filters', 'wc-ajax-product-filter'),
-			type: 'active-filters',
-		},
-		{
 			title: __('Category', 'wc-ajax-product-filter'),
 			type: 'category',
 		},
@@ -34,16 +30,18 @@ export function availableFilters() {
 		{
 			title: __('Post Property', 'wc-ajax-product-filter'),
 			type: 'post-property',
-			isPro: true,
 		},
 		{
 			title: __('Custom Taxonomy', 'wc-ajax-product-filter'),
 			type: 'custom-taxonomy',
-			isPro: true,
 		},
 		{
 			title: __('Post Meta', 'wc-ajax-product-filter'),
 			type: 'post-meta',
+		},
+		{
+			title: __('Search', 'wc-ajax-product-filter'),
+			type: 'search',
 			isPro: true,
 		},
 		{
@@ -55,6 +53,10 @@ export function availableFilters() {
 			title: __('Per page', 'wc-ajax-product-filter'),
 			type: 'per-page',
 			isPro: true,
+		},
+		{
+			title: __('Active Filters', 'wc-ajax-product-filter'),
+			type: 'active-filters',
 		},
 		{
 			title: __('Reset Button', 'wc-ajax-product-filter'),
@@ -101,7 +103,6 @@ export function filterDefaultData() {
 		field_id: '',
 		get_options: 'automatically',
 		use_category_images: '',
-		title_in_active_filters: '',
 		// Active Filters
 		active_filters_layout: 'simple',
 		enable_clear_all_button: '1',
@@ -147,7 +148,7 @@ export function filterDefaultData() {
 		value_type: 'text',
 		value_decimal: '',
 		value_decimal_places: '2',
-		options_order_by: 'value',
+		options_order_by: 'none',
 		options_order_dir: 'asc',
 		options_order_type: 'alphabetical',
 		// Post Meta - value type Date
@@ -183,10 +184,6 @@ export function filterDefaultData() {
 	};
 }
 
-function ratingFilterDefaultData() {
-	return { options_order_dir: 'desc' };
-}
-
 function perPageFilterDefaultData() {
 	return {
 		display_type: 'select',
@@ -210,13 +207,6 @@ export function getFilterDefaultData(type, filterKeys) {
 	// Set the filter key for non variable filter types.
 	if (!variableFilterTypes.includes(type)) {
 		defaultData.field_key = filterKeys[type] ?? '';
-	}
-
-	// Rating filter default options.
-	if ('rating' === type) {
-		for (const [key, value] of Object.entries(ratingFilterDefaultData())) {
-			defaultData[key] = value;
-		}
 	}
 
 	// Per-Page filter default options.
@@ -276,7 +266,7 @@ export function initialFilterKeysData(activeFilterData) {
 	return filterKeys;
 }
 
-export function methodsOfGettingOptions(forRating = false) {
+export function methodsOfGettingOptions() {
 	return [
 		{
 			label: __('Automatically', 'wc-ajax-product-filter'),
@@ -285,7 +275,7 @@ export function methodsOfGettingOptions(forRating = false) {
 		{
 			label: __('Manual Entry', 'wc-ajax-product-filter'),
 			value: 'manual_entry',
-			isPro: forRating,
+			isPro: true,
 		},
 	];
 }
@@ -332,6 +322,7 @@ export function termsOrderByOptions() {
 		{
 			label: __('Count', 'wc-ajax-product-filter'),
 			value: 'count',
+			isPro: true,
 		},
 	];
 }
