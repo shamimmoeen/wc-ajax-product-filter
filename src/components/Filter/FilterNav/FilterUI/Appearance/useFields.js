@@ -322,7 +322,6 @@ const useFields = (type) => {
 					)}
 					isChecked={activeFilterData[id]}
 					onChange={handleCheckboxChange}
-					isPro={true}
 				/>
 			);
 		}

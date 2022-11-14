@@ -4,7 +4,7 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import { orderByOptions } from '../../../utils';
 import ManualOptions from './ManualOptions';
-import MetaValuesModal from './MetaValuesModal';
+import ManualOptionsModal from './ManualOptionsModal';
 import useFields from './useFields';
 
 const ValueTypeText = () => {
@@ -35,12 +35,13 @@ const ValueTypeText = () => {
 	}, [get_options]);
 
 	const _orderByField = () => {
-		let options = orderByOptions();
+		let _options = orderByOptions();
+		let options;
 
 		if ('automatically' === get_options) {
-			options = orderByOptions().filter(
-				(option) => 'label' !== option.value
-			);
+			options = _options.filter((option) => 'label' !== option.value);
+		} else {
+			options = _options;
 		}
 
 		return orderByField('options_order_by', options, true);
@@ -66,7 +67,7 @@ const ValueTypeText = () => {
 				<>
 					<ManualOptions openModal={openModal} />
 
-					<MetaValuesModal open={open} closeModal={closeModal} />
+					<ManualOptionsModal open={open} closeModal={closeModal} />
 				</>
 			);
 		}

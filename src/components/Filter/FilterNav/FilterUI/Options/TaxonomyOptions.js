@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { useEffect, useState } from '@wordpress/element';
 import { useFilter } from '../../../FilterContext';
 import {
 	termsOrderByOptions,
@@ -11,6 +12,8 @@ import ToggleGroup from '../../../../Field/ToggleGroup';
 import SelectMulti from '../../../../Field/SelectMulti';
 import Checkbox from '../../../../Field/Checkbox';
 import useFields from './useFields';
+import ManualOptions from './ManualOptions';
+import ManualOptionsModal from './ManualOptionsModal';
 
 const TaxonomyOptions = () => {
 	const { state, dispatch } = useFilter();
@@ -20,12 +23,20 @@ const TaxonomyOptions = () => {
 		handleSelectTermChange,
 	} = useFilterData(state, dispatch);
 
-	const { getOptionsField, orderByField, orderDirectionField } = useFields();
+	const { getOptionsField, orderDirectionField } = useFields();
+
+	const [open, setOpen] = useState(false);
+
+	const openModal = () => setOpen(true);
+
+	const closeModal = () => setOpen(false);
 
 	const {
 		filterType,
 		activeFilterData: {
+			hierarchical,
 			taxonomy: _taxonomy,
+			get_options,
 			order_terms_by,
 			limit_options,
 			parent_term,
@@ -45,10 +56,43 @@ const TaxonomyOptions = () => {
 		hierarchicalData
 	);
 
-	const _orderByField = () => {
-		const options = termsOrderByOptions();
+	useEffect(() => {
+		if (
+			((taxonomyHierarchical && '1' === hierarchical) ||
+				'automatically' === get_options) &&
+			'entry' === order_terms_by
+		) {
+			handleToggleGroupChange('default', 'order_terms_by');
+		}
+	}, [get_options, hierarchical]);
 
-		return orderByField('order_terms_by', options);
+	const _orderByField = () => {
+		let _options = termsOrderByOptions();
+		let options;
+
+		if (
+			(taxonomyHierarchical && '1' === hierarchical) ||
+			'automatically' === get_options
+		) {
+			options = _options.filter((option) => 'entry' !== option.value);
+		} else {
+			options = _options;
+		}
+
+		return (
+			<ToggleGroup
+				id={'order_terms_by'}
+				label={__('Order By', 'wc-ajax-product-filter')}
+				description={__(
+					'Field to order options by.',
+					'wc-ajax-product-filter'
+				)}
+				options={options}
+				value={order_terms_by}
+				onChange={handleToggleGroupChange}
+				isPro={true}
+			/>
+		);
 	};
 
 	const _orderDirectionField = () => {
@@ -58,32 +102,38 @@ const TaxonomyOptions = () => {
 	};
 
 	const limitOptionsField = () => {
-		const _options = taxonomyLimitByOptions();
-		let options;
+		if ('automatically' === get_options) {
+			const _options = taxonomyLimitByOptions();
+			let options;
 
-		if (taxonomyHierarchical) {
-			options = _options;
-		} else {
-			options = _options.filter((option) => 'child' !== option.value);
+			if (taxonomyHierarchical) {
+				options = _options;
+			} else {
+				const notAllowed = ['parent_only', 'child'];
+
+				options = _options.filter(
+					(option) => !notAllowed.includes(option.value)
+				);
+			}
+
+			return (
+				<ToggleGroup
+					id={'limit_options'}
+					label={__('Limit Options', 'wc-ajax-product-filter')}
+					description={__(
+						'Limit the filter options.',
+						'wc-ajax-product-filter'
+					)}
+					options={options}
+					onChange={handleToggleGroupChange}
+					value={limit_options}
+				/>
+			);
 		}
-
-		return (
-			<ToggleGroup
-				id={'limit_options'}
-				label={__('Limit Options', 'wc-ajax-product-filter')}
-				description={__(
-					'Limit the filter options.',
-					'wc-ajax-product-filter'
-				)}
-				options={options}
-				onChange={handleToggleGroupChange}
-				value={limit_options}
-			/>
-		);
 	};
 
 	const includeTermsField = () => {
-		if ('include' === limit_options) {
+		if ('automatically' === get_options && 'include' === limit_options) {
 			return (
 				<SelectMulti
 					id={'limit_values_by_id'}
@@ -106,7 +156,7 @@ const TaxonomyOptions = () => {
 	};
 
 	const excludeTermsField = () => {
-		if ('exclude' === limit_options) {
+		if ('automatically' === get_options && 'exclude' === limit_options) {
 			return (
 				<SelectMulti
 					id={'exclude_values_id'}
@@ -130,6 +180,7 @@ const TaxonomyOptions = () => {
 
 	const parentTermField = () => {
 		if (
+			'automatically' === get_options &&
 			'child' === limit_options &&
 			isTaxonomyHierarchical(taxonomy, hierarchicalData)
 		) {
@@ -166,6 +217,18 @@ const TaxonomyOptions = () => {
 		);
 	};
 
+	const manualOptions = () => {
+		if ('manual_entry' === get_options) {
+			return (
+				<>
+					<ManualOptions openModal={openModal} />
+
+					<ManualOptionsModal open={open} closeModal={closeModal} />
+				</>
+			);
+		}
+	};
+
 	return (
 		<>
 			{getOptionsField('get_options')}
@@ -183,6 +246,8 @@ const TaxonomyOptions = () => {
 			{parentTermField()}
 
 			{termSlugField()}
+
+			{manualOptions()}
 		</>
 	);
 };
