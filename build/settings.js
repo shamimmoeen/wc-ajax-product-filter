@@ -4630,7 +4630,6 @@ const Select = _ref2 => {
     value,
     onChange,
     renderAsFormField = false,
-    childComponent,
     portalTarget = false,
     isPro = false
   } = _ref2;
@@ -4660,7 +4659,7 @@ const Select = _ref2 => {
       classes: customClasses,
       portalTarget: portalTarget,
       onChange: selectedItem => onChange(selectedItem, id)
-    }), childComponent))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "description",
       dangerouslySetInnerHTML: {
         __html: description

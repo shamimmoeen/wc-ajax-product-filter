@@ -4,7 +4,6 @@ import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import ToggleGroup from '../../../../Field/ToggleGroup';
 import {
-	getCustomAppearanceModalData,
 	getTaxonomy,
 	isTaxonomyFilters,
 	isTaxonomyHierarchical,
@@ -12,7 +11,6 @@ import {
 } from '../../../utils';
 import useFields from './useFields';
 import Select from '../../../../Field/Select';
-import CustomAppearanceModal from './CustomAppearanceModal';
 
 const ValueTypeText = () => {
 	const { state, dispatch } = useFilter();
@@ -38,7 +36,6 @@ const ValueTypeText = () => {
 	const {
 		taxonomy: _taxonomy,
 		display_type,
-		custom_appearance_options,
 		use_category_images,
 		hierarchical,
 		enable_hierarchy_accordion,
@@ -46,23 +43,6 @@ const ValueTypeText = () => {
 		tooltip_position,
 		show_count_in_tooltip,
 	} = activeFilterData;
-
-	const customAppearance = () => {
-		const { type, taxonomy } = getCustomAppearanceModalData(
-			filterType,
-			activeFilterData
-		);
-
-		if (type && taxonomy) {
-			return (
-				<CustomAppearanceModal
-					type={type}
-					taxonomy={taxonomy}
-					appearanceData={custom_appearance_options}
-				/>
-			);
-		}
-	};
 
 	const displayTypeField = () => {
 		const haveAllDisplayTypes = [
@@ -113,7 +93,6 @@ const ValueTypeText = () => {
 				value={value}
 				onChange={handleSelectChange}
 				renderAsFormField={true}
-				childComponent={customAppearance()}
 			/>
 		);
 	};

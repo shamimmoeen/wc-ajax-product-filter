@@ -668,23 +668,3 @@ export function getTableData(filterType, activeFilterData) {
 
 	return { type, optionsKey };
 }
-
-export function getCustomAppearanceModalData(filterType, activeFilterData) {
-	let taxonomy = '';
-	let type = '';
-
-	if (isTaxonomyFilters(filterType)) {
-		const {
-			display_type: _type,
-			taxonomy: _taxonomy,
-			use_category_images,
-		} = activeFilterData;
-
-		if ('color' === _type || ('image' === _type && !use_category_images)) {
-			taxonomy = getTaxonomy(filterType, _taxonomy);
-			type = _type;
-		}
-	}
-
-	return { type, taxonomy };
-}

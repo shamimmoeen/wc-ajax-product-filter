@@ -55,7 +55,6 @@ const Select = ({
 	value,
 	onChange,
 	renderAsFormField = false,
-	childComponent,
 	portalTarget = false,
 	isPro = false,
 }) => {
@@ -87,8 +86,6 @@ const Select = ({
 									onChange(selectedItem, id)
 								}
 							/>
-
-							{childComponent}
 						</div>
 					</div>
 				</div>
