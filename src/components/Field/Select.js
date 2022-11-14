@@ -8,6 +8,7 @@ import {
 	Group,
 	FormatGroupLabel,
 } from '../Field/utilsForReactSelect';
+import { proTag } from '../utils';
 
 const SimpleReactSelect = ({
 	options,
@@ -56,6 +57,7 @@ const Select = ({
 	renderAsFormField = false,
 	childComponent,
 	portalTarget = false,
+	isPro = false,
 }) => {
 	let customClasses = '__custom_react_select __single_select';
 	let html;
@@ -69,7 +71,10 @@ const Select = ({
 			<div className='__form_control react_select_simple'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={id}>{label}</label>
+						<label htmlFor={id}>
+							{label}
+							{proTag(isPro)}
+						</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>

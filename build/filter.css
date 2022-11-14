@@ -290,6 +290,7 @@ body.rtl .__title_wrapper .__save_button .__icon {
 }
 .__form_control .components-button-group .components-button {
   height: 30px;
+  margin-bottom: -1px;
 }
 .__form_control .components-button-group .components-button:not(:focus) {
   box-shadow: inset 0 0 0 1px #ddd;
@@ -841,6 +842,20 @@ body.rtl .__available_filters .__filters .__item {
 .__options_table .wp-list-table.widefat .__direction .__custom_react_select {
   min-width: 80px;
 }
+.__options_table .wp-list-table.widefat .__term_id {
+  color: rgba(0, 0, 0, 0.3);
+  display: inline-flex;
+  font-size: 12px;
+}
+.__options_table .wp-list-table.widefat td .__img_preview {
+  max-height: 38px;
+  width: auto;
+}
+.__options_table .wp-list-table.widefat td .__color,
+.__options_table .wp-list-table.widefat td .__image {
+  align-items: center;
+  gap: 8px;
+}
 .__options_table .__action_buttons {
   display: flex;
   justify-content: space-between;
@@ -852,9 +867,13 @@ body.rtl .__available_filters .__filters .__item {
     gap: 10px;
   }
 }
-.__options_table .__action_buttons .components-button + .components-button {
+body:not(.rtl) .__options_table .__action_buttons .components-button + .components-button {
   margin-left: 4px;
 }
+body.rtl .__options_table .__action_buttons .components-button + .components-button {
+  margin-right: 4px;
+}
+
 @media (max-width: 599px) {
   .__options_table .__responsive_table {
     overflow-x: auto;
@@ -898,18 +917,18 @@ body.rtl .__available_filters .__filters .__item {
   }
 }
 
-.__meta_values_modal {
+.__manual_options_modal {
   width: 80em;
 }
-.__meta_values_modal.ajax-done {
+.__manual_options_modal.ajax-done {
   min-height: 70%;
 }
-.__meta_values_modal .components-modal__content::after {
+.__manual_options_modal .components-modal__content::after {
   content: "";
   display: block;
   margin-bottom: 24px;
 }
-.__meta_values_modal .components-modal__content .__modal_footer {
+.__manual_options_modal .components-modal__content .__modal_footer {
   box-sizing: border-box;
   border-top: 1px solid #ddd;
   padding: 0 32px;
@@ -924,55 +943,96 @@ body.rtl .__available_filters .__filters .__item {
   bottom: 0;
   left: 0;
 }
-.__meta_values_modal .components-modal__content .__modal_footer .components-button + .components-button {
+body:not(.rtl) .__manual_options_modal .components-modal__content .__modal_footer .components-button + .components-button {
   margin-left: 4px;
 }
-.__meta_values_modal.ajax-done .components-modal__content {
+body.rtl .__manual_options_modal .components-modal__content .__modal_footer .components-button + .components-button {
+  margin-right: 4px;
+}
+
+.__manual_options_modal.ajax-done .components-modal__content {
   padding-bottom: 0;
   margin-bottom: 60px;
 }
-.__meta_values_modal .__loader {
+.__manual_options_modal .__loader {
   text-align: center;
 }
-.__meta_values_modal .__loader svg {
+.__manual_options_modal .__loader svg {
   width: 32px;
   height: 32px;
 }
-.__meta_values_modal .components-modal__header-heading {
+.__manual_options_modal .components-modal__header-heading {
   font-size: 1.5em;
   font-weight: 500;
   line-height: 1.2;
 }
-.__meta_values_modal .components-checkbox-control__input {
+.__manual_options_modal .components-checkbox-control__input {
   border-color: #ddd;
 }
-.__meta_values_modal .components-checkbox-control .components-base-control__field {
+.__manual_options_modal .components-checkbox-control .components-base-control__field {
   margin-bottom: 0;
 }
-.__meta_values_modal .__options {
+@media (min-width: 768px) {
+  .__manual_options_modal .__header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+.__manual_options_modal .__header .__search_box .components-search-control__input {
+  height: 38px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+@media (max-width: 767px) {
+  .__manual_options_modal .__header .__results_info {
+    margin-bottom: 1em;
+  }
+  .__manual_options_modal .__header .__search_box {
+    margin-bottom: 1.5em;
+  }
+}
+.__manual_options_modal .__options {
   margin: 1em 0;
 }
-.__meta_values_modal .__options .components-base-control {
+.__manual_options_modal .__options .__option {
   background-color: #fafafa;
   border: 1px solid #eeeeee;
   display: inline-block;
   margin-bottom: 10px;
   margin-right: 10px;
+}
+.__manual_options_modal .__options .__option.__hide_option {
+  display: none;
+}
+.__manual_options_modal .__options .__option > label {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
   padding: 7px 10px;
 }
-.__meta_values_modal .__options .components-base-control .components-checkbox-control__input {
-  margin-right: 12px;
+body:not(.rtl) .__manual_options_modal .__options .__option .__label {
+  margin-right: 4px;
 }
-.__meta_values_modal .__add_options_btn_group {
+body.rtl .__manual_options_modal .__options .__option .__label {
+  margin-left: 4px;
+}
+
+.__manual_options_modal .__options .__option .__info {
+  color: rgba(0, 0, 0, 0.3);
+  display: inline-flex;
+  font-size: 12px;
+}
+.__manual_options_modal .__add_options_btn_group {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 @media (max-width: 599px) {
-  .__meta_values_modal.ajax-done .components-modal__content {
+  .__manual_options_modal.ajax-done.__meta_values_modal .components-modal__content {
     margin-bottom: 100px;
   }
-  .__meta_values_modal .components-modal__content .__modal_footer {
+  .__manual_options_modal.__meta_values_modal .components-modal__content .__modal_footer {
     flex-direction: column;
     gap: 10px;
     height: 100px;
@@ -1039,9 +1099,13 @@ body.rtl .__available_filters .__filters .__item {
   bottom: 0;
   left: 0;
 }
-.__custom_appearance_modal .components-modal__content .__modal_footer .components-button + .components-button {
+body:not(.rtl) .__custom_appearance_modal .components-modal__content .__modal_footer .components-button + .components-button {
   margin-left: 4px;
 }
+body.rtl .__custom_appearance_modal .components-modal__content .__modal_footer .components-button + .components-button {
+  margin-right: 4px;
+}
+
 .__custom_appearance_modal.ajax-done .components-modal__content {
   padding-bottom: 0;
   margin-bottom: 60px;

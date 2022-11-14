@@ -32,16 +32,17 @@ export function availableFilters() {
 			type: 'post-property',
 		},
 		{
-			title: __('Custom Taxonomy', 'wc-ajax-product-filter'),
-			type: 'custom-taxonomy',
-		},
-		{
 			title: __('Post Meta', 'wc-ajax-product-filter'),
 			type: 'post-meta',
 		},
 		{
 			title: __('Search', 'wc-ajax-product-filter'),
 			type: 'search',
+			isPro: true,
+		},
+		{
+			title: __('Custom Taxonomy', 'wc-ajax-product-filter'),
+			type: 'custom-taxonomy',
 			isPro: true,
 		},
 		{
@@ -298,6 +299,10 @@ export function taxonomyLimitByOptions() {
 			label: __('Child of', 'wc-ajax-product-filter'),
 			value: 'child',
 		},
+		{
+			label: __('Parent Only', 'wc-ajax-product-filter'),
+			value: 'parent_only',
+		},
 	];
 }
 
@@ -322,7 +327,10 @@ export function termsOrderByOptions() {
 		{
 			label: __('Count', 'wc-ajax-product-filter'),
 			value: 'count',
-			isPro: true,
+		},
+		{
+			label: __('Entry', 'wc-ajax-product-filter'),
+			value: 'entry',
 		},
 	];
 }
@@ -653,6 +661,9 @@ export function getTableData(filterType, activeFilterData) {
 	} else if ('per-page' === filterType) {
 		type = 'per-page-options';
 		optionsKey = 'per_page_options';
+	} else if (isTaxonomyFilters(filterType)) {
+		type = 'taxonomy-options';
+		optionsKey = 'manual_options';
 	}
 
 	return { type, optionsKey };

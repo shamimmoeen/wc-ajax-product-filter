@@ -1,7 +1,12 @@
 import { Button, Icon } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { sprintf, __ } from '@wordpress/i18n';
 import { ReactSortable } from 'react-sortablejs';
-import { dragHandle, cancelCircleFilled } from '@wordpress/icons';
+import {
+	dragHandle,
+	cancelCircleFilled,
+	plus,
+	closeSmall,
+} from '@wordpress/icons';
 import { isEmpty } from 'lodash';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
@@ -13,6 +18,8 @@ import {
 } from '../../../utils';
 import Select from '../../../../Field/Select';
 import Text from '../../../../Field/Text';
+import ColorInput from '../../../../Field/ColorInput';
+import { PictureIcon } from '../../../../SVGIcons';
 
 const ManualOptions = ({ openModal }) => {
 	const { state, dispatch } = useFilter();
@@ -28,6 +35,8 @@ const ManualOptions = ({ openModal }) => {
 			meta_types,
 		},
 	} = state;
+
+	const { display_type, enable_tooltip } = activeFilterData;
 
 	const statusOptions = productStatusOptions();
 	const sortDirections = orderDirectionOptions();
@@ -75,6 +84,22 @@ const ManualOptions = ({ openModal }) => {
 		return row;
 	};
 
+	const updateRows = (_rows, makeDirty = true) => {
+		const _activeFilterData = {
+			...activeFilterData,
+			[optionsKey]: _rows,
+		};
+
+		dispatch({
+			type: 'SET_ACTIVE_FILTER_DATA',
+			payload: _activeFilterData,
+		});
+
+		if (makeDirty) {
+			setDirty();
+		}
+	};
+
 	/**
 	 * @source https://github.com/SortableJS/react-sortablejs/issues/210#issuecomment-880414814
 	 */
@@ -87,60 +112,24 @@ const ManualOptions = ({ openModal }) => {
 			return;
 		}
 
-		const _activeFilterData = {
-			...activeFilterData,
-			[optionsKey]: _rows,
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
+		updateRows(_rows, false);
 	};
 
 	const handleAddOption = () => {
-		const _activeFilterData = {
-			...activeFilterData,
-			[optionsKey]: [...rows, emptyRow()],
-		};
+		const _rows = [...rows, emptyRow()];
 
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
-
-		setDirty();
+		updateRows(_rows);
 	};
 
 	const handleRemoveAll = () => {
-		const _activeFilterData = {
-			...activeFilterData,
-			[optionsKey]: [],
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
-
-		setDirty();
+		updateRows([]);
 	};
 
 	const handleRemove = (index) => {
 		const _rows = [...rows];
 		_rows.splice(index, 1);
 
-		const _activeFilterData = {
-			...activeFilterData,
-			[optionsKey]: _rows,
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
-
-		setDirty();
+		updateRows(_rows);
 	};
 
 	const handleChange = (value, index, key) => {
@@ -156,17 +145,7 @@ const ManualOptions = ({ openModal }) => {
 			return _row;
 		});
 
-		const _activeFilterData = {
-			...activeFilterData,
-			[optionsKey]: _rows,
-		};
-
-		dispatch({
-			type: 'SET_ACTIVE_FILTER_DATA',
-			payload: _activeFilterData,
-		});
-
-		setDirty();
+		updateRows(_rows);
 	};
 
 	const handleSelectChange = (selected, index, key) => {
@@ -175,6 +154,68 @@ const ManualOptions = ({ openModal }) => {
 
 	const handleInputChange = (value, key, index) => {
 		handleChange(value, index, key);
+	};
+
+	const handleRemoveSecondaryColor = (index) => {
+		const _rows = rows.map((_row, _index) => {
+			if (_index === index) {
+				return {
+					..._row,
+					secondaryColorEnabled: '',
+					secondaryColor: '',
+				};
+			}
+
+			return _row;
+		});
+
+		updateRows(_rows);
+	};
+
+	const handleAddImage = (imageId, imageUrl, index) => {
+		const _rows = rows.map((_row, _index) => {
+			if (_index === index) {
+				return { ..._row, imageId, imageUrl };
+			}
+
+			return _row;
+		});
+
+		updateRows(_rows);
+	};
+
+	const handleRemoveImage = (index) => {
+		const _rows = rows.map((_row, _index) => {
+			if (_index === index) {
+				return { ..._row, imageId: '', imageUrl: '' };
+			}
+
+			return _row;
+		});
+
+		updateRows(_rows);
+	};
+
+	const openMediaUpload = (rowIndex) => {
+		// https://rudrastyh.com/wordpress/customizable-media-uploader.html
+		const customUploader = wp
+			.media({
+				library: { type: 'image' },
+				multiple: false,
+			})
+			.on('select', function () {
+				const attachment = customUploader
+					.state()
+					.get('selection')
+					.first()
+					.toJSON();
+
+				const { id, url } = attachment;
+
+				handleAddImage(id, url, rowIndex);
+			});
+
+		customUploader.open();
 	};
 
 	const tableHeader = () => {
@@ -256,6 +297,32 @@ const ManualOptions = ({ openModal }) => {
 					</th>
 				</>
 			);
+		} else if ('taxonomy-options' === type) {
+			return (
+				<>
+					<th className='__term'>
+						{__('Term', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+					{'1' === enable_tooltip && (
+						<th className='__tooltip'>
+							{__('Tooltip', 'wc-ajax-product-filter')}
+						</th>
+					)}
+					{'color' === display_type && (
+						<th className='__color'>
+							{__('Color', 'wc-ajax-product-filter')}
+						</th>
+					)}
+					{'image' === display_type && (
+						<th className='__image'>
+							{__('Image', 'wc-ajax-product-filter')}
+						</th>
+					)}
+				</>
+			);
 		}
 	};
 
@@ -263,7 +330,6 @@ const ManualOptions = ({ openModal }) => {
 		return (
 			<div className={wrapperClass}>
 				<Text
-					id={key}
 					index={index}
 					value={value}
 					onChange={handleInputChange}
@@ -285,6 +351,107 @@ const ManualOptions = ({ openModal }) => {
 					portalTarget={document.querySelector('body')}
 				/>
 			</div>
+		);
+	};
+
+	const appearanceColumns = (row, rowIndex) => {
+		const {
+			tooltip,
+			color,
+			secondaryColorEnabled,
+			secondaryColor,
+			imageId,
+			imageUrl,
+		} = row;
+
+		return (
+			<>
+				{'1' === enable_tooltip && (
+					<td>
+						{inputField('__tooltip', rowIndex, 'tooltip', tooltip)}
+					</td>
+				)}
+
+				{'color' === display_type && (
+					<td>
+						<div className='__color'>
+							<ColorInput
+								value={color}
+								onChange={(value) =>
+									handleChange(value, rowIndex, 'color')
+								}
+							/>
+
+							{'1' === secondaryColorEnabled ? (
+								<>
+									<ColorInput
+										value={secondaryColor}
+										onChange={(value) =>
+											handleChange(
+												value,
+												rowIndex,
+												'secondaryColor'
+											)
+										}
+									/>
+
+									<Button
+										variant='link'
+										isDestructive
+										onClick={() =>
+											handleRemoveSecondaryColor(rowIndex)
+										}
+									>
+										<Icon icon={closeSmall} />
+									</Button>
+								</>
+							) : (
+								<Button
+									isSmall
+									icon={plus}
+									onClick={() =>
+										handleChange(
+											'1',
+											rowIndex,
+											'secondaryColorEnabled'
+										)
+									}
+								/>
+							)}
+						</div>
+					</td>
+				)}
+
+				{'image' === display_type && (
+					<td>
+						<div className='__image'>
+							{imageId ? (
+								<>
+									<img
+										className='__img_preview'
+										src={imageUrl}
+									/>
+
+									<Button
+										variant='link'
+										isDestructive
+										onClick={() =>
+											handleRemoveImage(rowIndex)
+										}
+									>
+										<Icon icon={closeSmall} />
+									</Button>
+								</>
+							) : (
+								<Button
+									icon={PictureIcon}
+									onClick={() => openMediaUpload(rowIndex)}
+								/>
+							)}
+						</div>
+					</td>
+				)}
+			</>
 		);
 	};
 
@@ -448,6 +615,26 @@ const ManualOptions = ({ openModal }) => {
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
+		} else if ('taxonomy-options' === type) {
+			const { value, label } = row;
+
+			return (
+				<>
+					<td>
+						<div>{label}</div>
+						<span className='__term_id'>
+							{sprintf(
+								__('ID: %d', 'wc-ajax-product-filter'),
+								value
+							)}
+						</span>
+					</td>
+
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+
+					{appearanceColumns(row, rowIndex)}
+				</>
+			);
 		}
 	};
 
@@ -511,13 +698,21 @@ const ManualOptions = ({ openModal }) => {
 	const actionButtons = () => {
 		return (
 			<div>
-				<Button variant='secondary' onClick={handleAddOption}>
-					{__('Add Option', 'wc-ajax-product-filter')}
-				</Button>
-				{'text-options' === type && (
+				{'taxonomy-options' === type ? (
 					<Button variant='secondary' onClick={openModal}>
-						{__('Browse Values', 'wc-ajax-product-filter')}
+						{__('Browse Terms', 'wc-ajax-product-filter')}
 					</Button>
+				) : (
+					<>
+						<Button variant='secondary' onClick={handleAddOption}>
+							{__('Add Option', 'wc-ajax-product-filter')}
+						</Button>
+						{'text-options' === type && (
+							<Button variant='secondary' onClick={openModal}>
+								{__('Browse Values', 'wc-ajax-product-filter')}
+							</Button>
+						)}
+					</>
 				)}
 			</div>
 		);

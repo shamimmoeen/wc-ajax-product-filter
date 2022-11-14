@@ -82,7 +82,7 @@
 		td {
 			vertical-align: middle;
 
-			> div {
+			>div {
 				display: flex;
 			}
 		}
@@ -153,6 +153,24 @@
 				min-width: 80px;
 			}
 		}
+
+		.__term_id {
+			@include info;
+		}
+
+		td {
+			.__img_preview {
+				max-height: 38px;
+				width: auto;
+			}
+
+			.__color,
+			.__image {
+				align-items: center;
+				gap: 8px;
+			}
+
+		}
 	}
 
 	.__action_buttons {
@@ -165,8 +183,8 @@
 			gap: 10px;
 		}
 
-		.components-button + .components-button {
-			margin-left: 4px;
+		.components-button+.components-button {
+			@include horizontal-space-left(4px);
 		}
 	}
 

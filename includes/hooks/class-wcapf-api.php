@@ -689,11 +689,13 @@ class WCAPF_API {
 	 */
 	public function get_custom_appearance_data() {
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
+		$number   = apply_filters( 'wcapf_max_number_of_terms_for_browse_options_modal', 99 );
 
 		$args = array(
 			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
 			'fields'     => 'id=>name',
+			'number'     => absint( $number ),
 		);
 
 		$terms    = get_terms( $args );

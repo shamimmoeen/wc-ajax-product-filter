@@ -4,6 +4,7 @@ import ToggleGroup from '../../../../Field/ToggleGroup';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
 import {
+	isTaxonomyFilters,
 	methodsOfGettingOptions,
 	orderDirectionOptions,
 	orderTypeOptions,
@@ -16,16 +17,33 @@ const useFields = () => {
 		dispatch
 	);
 
-	const { activeFilterData } = state;
+	const { filterType, activeFilterData } = state;
 
 	const getOptionsField = (id) => {
+		let description;
+		let inDetail = false;
+
+		if ('post-meta' === filterType) {
+			inDetail = true;
+		} else if (isTaxonomyFilters(filterType)) {
+			inDetail = true;
+		}
+
+		if (inDetail) {
+			description = __(
+				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatches, custom labels, and tooltips, you need to manually enter the options.'
+			);
+		} else {
+			description = __(
+				'Whether to get the options automatically or you want to add the options manually.'
+			);
+		}
+
 		return (
 			<Radio
 				id={id}
 				label={__('Get Options', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to get the options automatically or you want to add the options manually.'
-				)}
+				description={description}
 				options={methodsOfGettingOptions()}
 				value={activeFilterData[id]}
 				onChange={handleRadioChange}

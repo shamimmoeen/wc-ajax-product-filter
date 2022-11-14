@@ -102,21 +102,19 @@ const ValueTypeText = () => {
 		const value = options.find((option) => display_type === option.value);
 
 		return (
-			<>
-				<Select
-					id={'display_type'}
-					label={__('Display Type', 'wc-ajax-product-filter')}
-					description={__(
-						'Determines how the filter will be shown on the frontend.',
-						'wc-ajax-product-filter'
-					)}
-					options={options}
-					value={value}
-					onChange={handleSelectChange}
-					renderAsFormField={true}
-					childComponent={customAppearance()}
-				/>
-			</>
+			<Select
+				id={'display_type'}
+				label={__('Display Type', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines how the filter will be shown on the frontend.',
+					'wc-ajax-product-filter'
+				)}
+				options={options}
+				value={value}
+				onChange={handleSelectChange}
+				renderAsFormField={true}
+				childComponent={customAppearance()}
+			/>
 		);
 	};
 
@@ -202,27 +200,23 @@ const ValueTypeText = () => {
 	};
 
 	const enableTooltipField = () => {
-		if ('color' === display_type || 'image' === display_type) {
-			return (
-				<Checkbox
-					id={'enable_tooltip'}
-					label={__('Enable Tooltip', 'wc-ajax-product-filter')}
-					description={__(
-						'Display additional information in a tooltip when users hover over the option.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={enable_tooltip}
-					onChange={handleCheckboxChange}
-				/>
-			);
-		}
+		return (
+			<Checkbox
+				id={'enable_tooltip'}
+				label={__('Enable Tooltip', 'wc-ajax-product-filter')}
+				description={__(
+					'Display additional information in a tooltip when users hover over the option.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={enable_tooltip}
+				onChange={handleCheckboxChange}
+				isPro={true}
+			/>
+		);
 	};
 
 	const tooltipPositionField = () => {
-		if (
-			('color' === display_type || 'image' === display_type) &&
-			'1' === enable_tooltip
-		) {
+		if ('1' === enable_tooltip) {
 			return (
 				<ToggleGroup
 					id={'tooltip_position'}
@@ -257,10 +251,7 @@ const ValueTypeText = () => {
 	};
 
 	const showCountInTooltipField = () => {
-		if (
-			('color' === display_type || 'image' === display_type) &&
-			'1' === enable_tooltip
-		) {
+		if ('1' === enable_tooltip) {
 			return (
 				<Checkbox
 					id={'show_count_in_tooltip'}
