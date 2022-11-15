@@ -5701,7 +5701,8 @@ const Advanced = () => {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable clear filter', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show a button to clear the filter items.', 'wc-ajax-product-filter'),
         isChecked: show_clear_button,
-        onChange: handleCheckboxChange
+        onChange: handleCheckboxChange,
+        isPro: true
       });
     }
   };
