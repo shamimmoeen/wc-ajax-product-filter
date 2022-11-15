@@ -175,7 +175,6 @@ const VisibilityRules = () => {
 						)}
 						isChecked={enable_rules}
 						onChange={handleEnableRules}
-						isPro={true}
 					/>
 
 					{enable_rules && (

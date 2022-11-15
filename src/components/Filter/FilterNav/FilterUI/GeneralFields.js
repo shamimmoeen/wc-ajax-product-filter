@@ -248,7 +248,7 @@ const GeneralFields = ({ state, dispatch }) => {
 					id={'filter_key'}
 					label={__('Filter Key', 'wc-ajax-product-filter')}
 					description={__(
-						'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
+						'The unique key that will be used to identify the filter. Only a-z, 0-9, "_" and "-" symbols are supported.',
 						'wc-ajax-product-filter'
 					)}
 					value={field_key}

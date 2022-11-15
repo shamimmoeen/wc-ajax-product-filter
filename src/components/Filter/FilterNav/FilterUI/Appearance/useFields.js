@@ -4,11 +4,16 @@ import Radio from '../../../../Field/Radio';
 import Text from '../../../../Field/Text';
 import useFilterData from '../../../useFilterData';
 import { useFilter } from '../../../FilterContext';
+import { isTaxonomyFilters } from '../../../utils';
 
 const useFields = (type) => {
 	const { state, dispatch } = useFilter();
-	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
-		useFilterData(state, dispatch);
+	const {
+		handleRadioChange,
+		handleCheckboxChange,
+		handleTextFieldChange,
+		handleToggleGroupChange,
+	} = useFilterData(state, dispatch);
 
 	const { filterType, activeFilterData } = state;
 
@@ -16,6 +21,9 @@ const useFields = (type) => {
 		display_type,
 		enable_multiple_filter,
 		use_chosen,
+		enable_tooltip,
+		tooltip_position,
+		show_count_in_tooltip,
 		number_display_type,
 		number_range_enable_multiple_filter,
 		number_range_use_chosen,
@@ -327,6 +335,100 @@ const useFields = (type) => {
 		}
 	};
 
+	const tooltipCanBeEnabled = () => {
+		let enabled = false;
+
+		if (
+			isTaxonomyFilters(filterType) ||
+			'rating' === filterType ||
+			'product-status' === filterType
+		) {
+			if ('select' !== display_type && 'multi-select' !== display_type) {
+				enabled = true;
+			}
+		} else if ('price' === filterType) {
+			if (
+				'range_slider' !== number_display_type &&
+				'range_number' !== number_display_type &&
+				'range_select' !== number_display_type &&
+				'range_multiselect' !== number_display_type
+			) {
+				enabled = true;
+			}
+		}
+
+		return enabled;
+	};
+
+	const enableTooltipField = () => {
+		if (tooltipCanBeEnabled()) {
+			return (
+				<Checkbox
+					id={'enable_tooltip'}
+					label={__('Enable Tooltip', 'wc-ajax-product-filter')}
+					description={__(
+						'Display additional information in a tooltip when users hover over the option.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={enable_tooltip}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
+	};
+
+	const tooltipPositionField = () => {
+		if (tooltipCanBeEnabled() && '1' === enable_tooltip) {
+			return (
+				<ToggleGroup
+					id={'tooltip_position'}
+					label={__('Tooltip Position', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines on which side the tooltip will be placed.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('Top', 'wc-ajax-product-filter'),
+							value: 'top',
+						},
+						{
+							label: __('Right', 'wc-ajax-product-filter'),
+							value: 'right',
+						},
+						{
+							label: __('Bottom', 'wc-ajax-product-filter'),
+							value: 'bottom',
+						},
+						{
+							label: __('Left', 'wc-ajax-product-filter'),
+							value: 'left',
+						},
+					]}
+					onChange={handleToggleGroupChange}
+					value={tooltip_position}
+				/>
+			);
+		}
+	};
+
+	const showCountInTooltipField = () => {
+		if (tooltipCanBeEnabled() && '1' === enable_tooltip) {
+			return (
+				<Checkbox
+					id={'show_count_in_tooltip'}
+					label={__('Count in tooltip', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to show the product count in tooltip.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={show_count_in_tooltip}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
+	};
+
 	return {
 		enableMultipleFilterField,
 		queryTypeField,
@@ -336,6 +438,9 @@ const useFields = (type) => {
 		noResultsMessageField,
 		showCountField,
 		removeEmptyField,
+		enableTooltipField,
+		tooltipPositionField,
+		showCountInTooltipField,
 	};
 };
 
