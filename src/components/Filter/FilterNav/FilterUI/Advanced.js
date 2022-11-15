@@ -92,6 +92,7 @@ const Advanced = () => {
 					)}
 					isChecked={show_clear_button}
 					onChange={handleCheckboxChange}
+					isPro={true}
 				/>
 			);
 		}
