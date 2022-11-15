@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import Checkbox from '../../../../Field/Checkbox';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
-import ToggleGroup from '../../../../Field/ToggleGroup';
 import {
 	getTaxonomy,
 	isTaxonomyFilters,
@@ -14,11 +13,10 @@ import Select from '../../../../Field/Select';
 
 const ValueTypeText = () => {
 	const { state, dispatch } = useFilter();
-	const {
-		handleCheckboxChange,
-		handleToggleGroupChange,
-		handleSelectChange,
-	} = useFilterData(state, dispatch);
+	const { handleCheckboxChange, handleSelectChange } = useFilterData(
+		state,
+		dispatch
+	);
 
 	const {
 		enableMultipleFilterField,
@@ -29,6 +27,9 @@ const ValueTypeText = () => {
 		noResultsMessageField,
 		showCountField,
 		removeEmptyField,
+		enableTooltipField,
+		tooltipPositionField,
+		showCountInTooltipField,
 	} = useFields('text');
 
 	const { filterType, activeFilterData, additionalData } = state;
@@ -39,9 +40,6 @@ const ValueTypeText = () => {
 		use_category_images,
 		hierarchical,
 		enable_hierarchy_accordion,
-		enable_tooltip,
-		tooltip_position,
-		show_count_in_tooltip,
 	} = activeFilterData;
 
 	const displayTypeField = () => {
@@ -172,74 +170,6 @@ const ValueTypeText = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={enable_hierarchy_accordion}
-					onChange={handleCheckboxChange}
-				/>
-			);
-		}
-	};
-
-	const enableTooltipField = () => {
-		return (
-			<Checkbox
-				id={'enable_tooltip'}
-				label={__('Enable Tooltip', 'wc-ajax-product-filter')}
-				description={__(
-					'Display additional information in a tooltip when users hover over the option.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={enable_tooltip}
-				onChange={handleCheckboxChange}
-				isPro={true}
-			/>
-		);
-	};
-
-	const tooltipPositionField = () => {
-		if ('1' === enable_tooltip) {
-			return (
-				<ToggleGroup
-					id={'tooltip_position'}
-					label={__('Tooltip Position', 'wc-ajax-product-filter')}
-					description={__(
-						'Determines on which side the tooltip will be placed.',
-						'wc-ajax-product-filter'
-					)}
-					options={[
-						{
-							label: __('Top', 'wc-ajax-product-filter'),
-							value: 'top',
-						},
-						{
-							label: __('Right', 'wc-ajax-product-filter'),
-							value: 'right',
-						},
-						{
-							label: __('Bottom', 'wc-ajax-product-filter'),
-							value: 'bottom',
-						},
-						{
-							label: __('Left', 'wc-ajax-product-filter'),
-							value: 'left',
-						},
-					]}
-					onChange={handleToggleGroupChange}
-					value={tooltip_position}
-				/>
-			);
-		}
-	};
-
-	const showCountInTooltipField = () => {
-		if ('1' === enable_tooltip) {
-			return (
-				<Checkbox
-					id={'show_count_in_tooltip'}
-					label={__('Count in tooltip', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to show the product count in tooltip.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={show_count_in_tooltip}
 					onChange={handleCheckboxChange}
 				/>
 			);

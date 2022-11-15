@@ -34,10 +34,6 @@ export function availableFilters() {
 		{
 			title: __('Post Meta', 'wc-ajax-product-filter'),
 			type: 'post-meta',
-		},
-		{
-			title: __('Search', 'wc-ajax-product-filter'),
-			type: 'search',
 			isPro: true,
 		},
 		{
@@ -53,6 +49,11 @@ export function availableFilters() {
 		{
 			title: __('Per page', 'wc-ajax-product-filter'),
 			type: 'per-page',
+			isPro: true,
+		},
+		{
+			title: __('Search', 'wc-ajax-product-filter'),
+			type: 'search',
 			isPro: true,
 		},
 		{

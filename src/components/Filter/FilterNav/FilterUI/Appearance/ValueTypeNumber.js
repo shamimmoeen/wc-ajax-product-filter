@@ -21,6 +21,9 @@ const ValueTypeNumber = () => {
 		noResultsMessageField,
 		showCountField,
 		removeEmptyField,
+		enableTooltipField,
+		showCountInTooltipField,
+		tooltipPositionField,
 	} = useFields('number');
 
 	const {
@@ -88,7 +91,6 @@ const ValueTypeNumber = () => {
 		}
 	};
 
-	// TODO: Move to the customize section.
 	const alignValuesField = () => {
 		if ('range_slider' === number_display_type) {
 			return (
@@ -131,6 +133,12 @@ const ValueTypeNumber = () => {
 			{showCountField('number_range_show_count')}
 
 			{removeEmptyField('number_range_hide_empty')}
+
+			{enableTooltipField()}
+
+			{tooltipPositionField()}
+
+			{showCountInTooltipField()}
 		</>
 	);
 };
