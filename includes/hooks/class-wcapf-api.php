@@ -44,16 +44,17 @@ class WCAPF_API {
 	 */
 	private function init_hooks() {
 		// For filter.
-		add_action( 'wp_ajax_get_filter_data', array( $this, 'get_filter_data' ) );
+		add_action( 'wp_ajax_wcapf_get_filter_data', array( $this, 'get_filter_data' ) );
+		add_action( 'wp_ajax_wcapf_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_wcapf_save_filter', array( $this, 'save_filter' ) );
 		add_action( 'wp_ajax_wcapf_duplicate_filter', array( $this, 'duplicate_filter' ) );
 		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
-		add_action( 'wp_ajax_get_filter_additional_data', array( $this, 'get_filter_additional_data' ) );
 		add_action( 'wp_ajax_wcapf_get_filter_preview', array( $this, 'get_filter_preview' ) );
-		add_action( 'wp_ajax_get_custom_appearance_data', array( $this, 'get_custom_appearance_data' ) ); // TODO
-		add_action( 'wp_ajax_wcapf_get_taxonomy_terms', array( $this, 'get_taxonomy_terms' ) );
-		add_action( 'wp_ajax_wcapf_get_post_authors', array( $this, 'get_post_authors' ) );
-		add_action( 'wp_ajax_wcapf_get_meta_values', array( $this, 'get_meta_values' ) );
+		add_action( 'wp_ajax_wcapf_get_taxonomy_terms_for_modal', array( $this, 'get_taxonomy_terms_for_modal' ) );
+		add_action( 'wp_ajax_wcapf_get_meta_values_for_modal', array( $this, 'get_meta_values' ) );
+		add_action( 'wp_ajax_wcapf_get_post_authors_for_modal', array( $this, 'get_post_authors_for_modal' ) );
+		add_action( 'wp_ajax_wcapf_get_taxonomy_terms_for_dropdown', array( $this, 'get_taxonomy_terms_for_dropdown' ) );
+		add_action( 'wp_ajax_wcapf_get_post_authors_for_dropdown', array( $this, 'get_post_authors_for_dropdown' ) );
 
 		// For form.
 		add_action( 'wp_ajax_wcapf_get_available_filters', array( $this, 'get_available_filters' ) );
@@ -149,7 +150,7 @@ class WCAPF_API {
 		foreach ( $form_filters as $form_filter ) {
 			$id = isset( $form_filter['id'] ) ? $form_filter['id'] : '';
 
-			$filter_data = get_post_meta( $id, '_field_data', true );
+			$filter_data = WCAPF_API_Utils::get_field_data( $id );
 			$filter_type = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
 
 			$form_filter['title'] = get_the_title( $id );
@@ -335,7 +336,7 @@ class WCAPF_API {
 	 * @return array
 	 */
 	private function get_filter( $post_id ) {
-		$filter_data      = get_post_meta( $post_id, '_field_data', true );
+		$filter_data      = WCAPF_API_Utils::get_field_data( $post_id );
 		$filter_data      = $this->prepare_filter_data_for_new_ui( $filter_data );
 		$visibility_rules = WCAPF_API_Utils::prepare_filter_visibility_rules( $post_id );
 
@@ -683,11 +684,11 @@ class WCAPF_API {
 	}
 
 	/**
-	 * Gets the custom appearance data via ajax.
+	 * Gets the taxonomy terms for the manual options modal via ajax.
 	 *
 	 * @return void
 	 */
-	public function get_custom_appearance_data() {
+	public function get_taxonomy_terms_for_modal() {
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 		$number   = apply_filters( 'wcapf_max_number_of_terms_for_browse_options_modal', 99 );
 
@@ -718,7 +719,7 @@ class WCAPF_API {
 	 *
 	 * @return void
 	 */
-	public function get_taxonomy_terms() {
+	public function get_taxonomy_terms_for_dropdown() {
 		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( $_GET['only_parent'] ) : '';
 		$keyword     = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
@@ -779,7 +780,7 @@ class WCAPF_API {
 	 *
 	 * @return void
 	 */
-	public function get_post_authors() {
+	public function get_post_authors_for_dropdown() {
 		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
 		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 
@@ -892,7 +893,7 @@ class WCAPF_API {
 		$filters    = array();
 
 		foreach ( $filter_ids as $filter_id ) {
-			$filter_data = get_post_meta( $filter_id, '_field_data', true );
+			$filter_data = WCAPF_API_Utils::get_field_data( $filter_id );
 			$filter_type = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
 
 			$data = array(

@@ -50,7 +50,7 @@ class WCAPF_API_Utils {
 	 * @return array
 	 */
 	public static function get_filter_data( $id ) {
-		$filter_data = get_post_meta( $id, '_field_data', true );
+		$filter_data = self::get_field_data( $id );
 
 		return array(
 			'id'            => absint( $id ),
@@ -61,6 +61,19 @@ class WCAPF_API_Utils {
 			'post_property' => isset( $filter_data['post_property'] ) ? $filter_data['post_property'] : '',
 			'title'         => get_the_title( $id ),
 		);
+	}
+
+	public static function get_field_data( $post_id ) {
+		$field_data = get_post_meta( $post_id, '_field_data', true );
+
+		// TODO: Remove when we do the migrate done.
+		$field_type = isset( $field_data['type'] ) ? $field_data['type'] : '';
+
+		if ( 'post-property' === $field_type ) {
+			$field_data['type'] = 'post-author';
+		}
+
+		return $field_data;
 	}
 
 	/**
@@ -254,7 +267,7 @@ class WCAPF_API_Utils {
 			'price',
 			'rating',
 			'product-status',
-			'post-property',
+			'post-author',
 			'custom-taxonomy',
 			'post-meta',
 			'sort-by',
@@ -382,7 +395,7 @@ class WCAPF_API_Utils {
 		$variable_filter_types      = array_keys( $variable_filter_types_data );
 
 		foreach ( $filter_ids as $id ) {
-			$filter_data = get_post_meta( $id, '_field_data', true );
+			$filter_data = self::get_field_data( $id );
 			$filter_key  = isset( $filter_data['field_key'] ) ? $filter_data['field_key'] : '';
 			$filter_type = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
 
@@ -411,7 +424,6 @@ class WCAPF_API_Utils {
 			'attribute'       => 'taxonomy',
 			'custom-taxonomy' => 'taxonomy',
 			'post-meta'       => 'meta_key',
-			'post-property'   => 'post_property',
 		);
 	}
 
@@ -422,6 +434,7 @@ class WCAPF_API_Utils {
 			'price'          => '_price',
 			'rating'         => '_rating',
 			'product-status' => '_status',
+			'post-author'    => '_post_author',
 			'sort-by'        => '_sort_by',
 			'per-page'       => '_per_page',
 		);
@@ -478,7 +491,7 @@ class WCAPF_API_Utils {
 			return $new_post_id;
 		}
 
-		$filter_data = get_post_meta( $post_id, '_field_data', true );
+		$filter_data = self::get_field_data( $post_id );
 		$filter_type = $filter_data['type'];
 
 		if ( 'active-filters' === $filter_type || 'reset-button' === $filter_type ) {
@@ -735,7 +748,7 @@ class WCAPF_API_Utils {
 		$filters  = array();
 
 		foreach ( $_filters as $filter_id ) {
-			$filter_data = get_post_meta( $filter_id, '_field_data', true );
+			$filter_data = self::get_field_data( $filter_id );
 			$type        = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
 
 			if ( 'active-filters' === $type || 'reset-button' === $type ) {

@@ -40,7 +40,7 @@ export function pluginVersion() {
 
 export function getAdditionalData() {
 	const data = {
-		action: 'get_filter_additional_data',
+		action: 'wcapf_get_filter_additional_data',
 	};
 
 	return axios.get(wcapf_admin_params.ajaxurl, {
@@ -80,6 +80,10 @@ export function getSettingsPageLink() {
 
 export function slugify(value) {
 	return '__' + value.replace(/ /g, '_');
+}
+
+export function wcfmFound() {
+	return wcapf_admin_params.wcfm_marketplace_found;
 }
 
 export function getNoOfMaxTermsToRender() {

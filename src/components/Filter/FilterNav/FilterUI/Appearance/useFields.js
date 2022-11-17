@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
+import { useFilter } from '../../../FilterContext';
 import Checkbox from '../../../../Field/Checkbox';
 import Radio from '../../../../Field/Radio';
 import Text from '../../../../Field/Text';
 import useFilterData from '../../../useFilterData';
-import { useFilter } from '../../../FilterContext';
-import { isTaxonomyFilters } from '../../../utils';
+import ToggleGroup from '../../../../Field/ToggleGroup';
 
 const useFields = (type) => {
 	const { state, dispatch } = useFilter();
@@ -30,6 +30,7 @@ const useFields = (type) => {
 		date_display_type,
 		time_period_enable_multiple_filter,
 		time_period_use_chosen,
+		value_type,
 	} = activeFilterData;
 
 	const enableMultipleFilterField = (id) => {
@@ -338,21 +339,42 @@ const useFields = (type) => {
 	const tooltipCanBeEnabled = () => {
 		let enabled = false;
 
-		if (
-			isTaxonomyFilters(filterType) ||
-			'rating' === filterType ||
-			'product-status' === filterType
-		) {
-			if ('select' !== display_type && 'multi-select' !== display_type) {
+		const _displayTypes = ['select', 'multi-select'];
+
+		const _numberDisplayTypes = [
+			'range_slider',
+			'range_number',
+			'range_select',
+			'range_multiselect',
+		];
+
+		const _dateDisplayTypes = [
+			'input_date',
+			'input_date_range',
+			'time_period_select',
+			'time_period_multiselect',
+		];
+
+		if ('price' === filterType) {
+			if (!_numberDisplayTypes.includes(number_display_type)) {
 				enabled = true;
 			}
-		} else if ('price' === filterType) {
-			if (
-				'range_slider' !== number_display_type &&
-				'range_number' !== number_display_type &&
-				'range_select' !== number_display_type &&
-				'range_multiselect' !== number_display_type
-			) {
+		} else if ('post-meta' === filterType) {
+			if ('text' === value_type) {
+				if (!_displayTypes.includes(display_type)) {
+					enabled = true;
+				}
+			} else if ('number' === value_type) {
+				if (!_numberDisplayTypes.includes(number_display_type)) {
+					enabled = true;
+				}
+			} else if ('date' === value_type) {
+				if (!_dateDisplayTypes.includes(date_display_type)) {
+					enabled = true;
+				}
+			}
+		} else {
+			if (!_displayTypes.includes(display_type)) {
 				enabled = true;
 			}
 		}

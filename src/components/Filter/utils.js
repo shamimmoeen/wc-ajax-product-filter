@@ -28,8 +28,8 @@ export function availableFilters() {
 			type: 'product-status',
 		},
 		{
-			title: __('Post Property', 'wc-ajax-product-filter'),
-			type: 'post-property',
+			title: __('Post Author', 'wc-ajax-product-filter'),
+			type: 'post-author',
 		},
 		{
 			title: __('Post Meta', 'wc-ajax-product-filter'),
@@ -172,11 +172,10 @@ export function filterDefaultData() {
 		date_to_prefix: '',
 		date_to_postfix: '',
 		date_to_placeholder: '',
-		// Post Property
-		post_property: '',
+		// Post Author
 		post_author_order_by: 'default',
 		post_author_order_dir: 'asc',
-		include_user_roles: '',
+		include_user_roles: [],
 		// Sort by
 		sort_by_options: [],
 		// Per page
@@ -233,7 +232,6 @@ export function variableFilterTypesData() {
 		attribute: 'taxonomy',
 		'custom-taxonomy': 'taxonomy',
 		'post-meta': 'meta_key',
-		'post-property': 'post_property',
 	};
 }
 
@@ -336,23 +334,27 @@ export function termsOrderByOptions() {
 	];
 }
 
-export function orderByOptions() {
+export function metaValuesOrderByOptions() {
 	return [
 		{
 			label: __('Default', 'wc-ajax-product-filter'),
 			value: 'none',
 		},
 		{
-			label: __('Label', 'wc-ajax-product-filter'),
-			value: 'label',
-		},
-		{
 			label: __('Value', 'wc-ajax-product-filter'),
 			value: 'value',
 		},
 		{
+			label: __('Label', 'wc-ajax-product-filter'),
+			value: 'label',
+		},
+		{
 			label: __('Count', 'wc-ajax-product-filter'),
 			value: 'count',
+		},
+		{
+			label: __('Entry', 'wc-ajax-product-filter'),
+			value: 'entry',
 		},
 	];
 }
@@ -400,6 +402,10 @@ export function authorOrderByOptions() {
 		{
 			label: __('Count', 'wc-ajax-product-filter'),
 			value: 'count',
+		},
+		{
+			label: __('Entry', 'wc-ajax-product-filter'),
+			value: 'entry',
 		},
 	];
 }
@@ -645,7 +651,7 @@ export function getTableData(filterType, activeFilterData) {
 	} else if ('product-status' === filterType) {
 		type = 'product-status-options';
 		optionsKey = 'product_status_options';
-	} else if ('post-meta' === filterType || 'post-property' === filterType) {
+	} else if ('post-meta' === filterType) {
 		if ('text' === value_type) {
 			type = 'text-options';
 			optionsKey = 'manual_options';
@@ -662,6 +668,9 @@ export function getTableData(filterType, activeFilterData) {
 	} else if ('per-page' === filterType) {
 		type = 'per-page-options';
 		optionsKey = 'per_page_options';
+	} else if ('post-author' === filterType) {
+		type = 'post-author-options';
+		optionsKey = 'manual_options';
 	} else if (isTaxonomyFilters(filterType)) {
 		type = 'taxonomy-options';
 		optionsKey = 'manual_options';

@@ -1,7 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { foundProVersion } from '../utils';
-import { getTableData } from './utils';
-import { isEmpty } from 'lodash';
+import { foundProVersion, wcfmFound } from '../utils';
 
 const foundPro = foundProVersion();
 
@@ -9,27 +7,19 @@ export function proFeature(feature) {
 	return { type: 'pro-feature', feature };
 }
 
+export function dataMissing(message) {
+	return { type: 'data-missing', message };
+}
+
 export function dataRequired(message) {
 	return { type: 'data-required', message };
 }
 
-const softLimitDisabledDisplayTypes = ['select', 'multi-select'];
-
-const rangeDisplayTypes = [
-	'range_checkbox',
-	'range_radio',
-	'range_select',
-	'range_multiselect',
-	'range_label',
-];
-
-const dateDisplayTypes = [
-	'time_period_checkbox',
-	'time_period_radio',
-	'time_period_select',
-	'time_period_multiselect',
-	'time_period_label',
-];
+function filterKeyMissing() {
+	return dataRequired(
+		__('Filter key is required.', 'wc-ajax-product-filter')
+	);
+}
 
 function activeFiltersTryingProFeatures(activeFilterData) {
 	if (foundPro) {
@@ -56,19 +46,33 @@ function activeFiltersTryingProFeatures(activeFilterData) {
 	return tryingPro;
 }
 
-function filterKeyMissing(activeFilterData) {
-	const { field_key } = activeFilterData;
+function tryingSoftLimit(activeFilterData) {
+	let tryingPro = false;
 
-	if (!field_key) {
-		return true;
+	const { display_type, enable_soft_limit } = activeFilterData;
+
+	const notAllowed = ['select', 'multi-select'];
+
+	if ('1' === enable_soft_limit && !notAllowed.includes(display_type)) {
+		tryingPro = true;
 	}
 
-	return false;
+	return tryingPro;
 }
 
-function taxonomyTypeFilterTryingProFeatures(
+function tryingClearFilterButton(activeFilterData) {
+	const { show_clear_button } = activeFilterData;
+
+	if ('1' === show_clear_button) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function taxonomyFilterTryingProFeatures(
 	activeFilterData,
-	checkForHierarchy = false
+	hierarchical = false
 ) {
 	if (foundPro) {
 		return false;
@@ -76,42 +80,35 @@ function taxonomyTypeFilterTryingProFeatures(
 
 	const {
 		display_type,
-		hierarchical,
-		hide_empty,
+		hierarchical: hierarchyEnabled,
+		get_options,
 		order_terms_by,
 		use_term_slug_in_url,
-		enable_soft_limit,
 	} = activeFilterData;
 
 	const proDisplayTypes = ['color', 'image'];
 
-	const allowedHierarchicalDisplayTypes = [
-		'checkbox',
-		'radio',
-		'select',
-		'multi-select',
-	];
+	const hierarchyAllowed = ['checkbox', 'radio', 'select', 'multi-select'];
 
 	let tryingPro = false;
 
 	if (proDisplayTypes.includes(display_type)) {
 		tryingPro = proFeature(`display-type-${display_type}`);
 	} else if (
-		checkForHierarchy &&
-		allowedHierarchicalDisplayTypes.includes(display_type) &&
-		'1' === hierarchical
+		hierarchical &&
+		hierarchyAllowed.includes(display_type) &&
+		'1' === hierarchyEnabled
 	) {
 		tryingPro = proFeature('hierarchical-view');
-	} else if ('1' === hide_empty) {
-		tryingPro = proFeature('remove-empty');
-	} else if ('count' === order_terms_by) {
+	} else if ('manual_entry' === get_options) {
+		tryingPro = proFeature('manual-entry');
+	} else if ('default' !== order_terms_by) {
 		tryingPro = proFeature('terms-orderby-count');
 	} else if ('1' === use_term_slug_in_url) {
 		tryingPro = proFeature('term-slug-in-url');
-	} else if (
-		'1' === enable_soft_limit &&
-		!softLimitDisabledDisplayTypes.includes(display_type)
-	) {
+	} else if (tryingClearFilterButton(activeFilterData)) {
+		tryingPro = proFeature('clear-filter-button');
+	} else if (tryingSoftLimit(activeFilterData)) {
 		tryingPro = proFeature('soft-limit');
 	}
 
@@ -127,8 +124,18 @@ function priceFilterTryingProFeatures(activeFilterData) {
 
 	const { number_display_type } = activeFilterData;
 
-	if (rangeDisplayTypes.includes(number_display_type)) {
+	const notAllowed = [
+		'range_checkbox',
+		'range_radio',
+		'range_select',
+		'range_multiselect',
+		'range_label',
+	];
+
+	if (notAllowed.includes(number_display_type)) {
 		tryingPro = proFeature(`display-type-${number_display_type}`);
+	} else if (tryingClearFilterButton(activeFilterData)) {
+		tryingPro = proFeature('clear-filter-button');
 	}
 
 	return tryingPro;
@@ -141,17 +148,13 @@ function ratingFilterTryingProFeatures(activeFilterData) {
 
 	let tryingPro = false;
 
-	const { display_type, hide_empty, number_get_options, enable_soft_limit } =
-		activeFilterData;
+	const { number_get_options } = activeFilterData;
 
 	if ('manual_entry' === number_get_options) {
-		tryingPro = proFeature('rating-manual-entry');
-	} else if ('1' === hide_empty) {
-		tryingPro = proFeature('remove-empty');
-	} else if (
-		'1' === enable_soft_limit &&
-		!softLimitDisabledDisplayTypes.includes(display_type)
-	) {
+		tryingPro = proFeature('manual-entry');
+	} else if (tryingClearFilterButton(activeFilterData)) {
+		tryingPro = proFeature('clear-filter-button');
+	} else if (tryingSoftLimit(activeFilterData)) {
 		tryingPro = proFeature('soft-limit');
 	}
 
@@ -165,133 +168,35 @@ function productStatusFilterTryingProFeatures(activeFilterData) {
 
 	let tryingPro = false;
 
-	const { display_type, hide_empty, enable_soft_limit } = activeFilterData;
-
-	if ('1' === hide_empty) {
-		tryingPro = proFeature('remove-empty');
-	} else if (
-		'1' === enable_soft_limit &&
-		!softLimitDisabledDisplayTypes.includes(display_type)
-	) {
+	if (tryingClearFilterButton(activeFilterData)) {
+		tryingPro = proFeature('clear-filter-button');
+	} else if (tryingSoftLimit(activeFilterData)) {
 		tryingPro = proFeature('soft-limit');
 	}
 
 	return tryingPro;
 }
 
-function postPropertyFilterTryingProFeatures(activeFilterData) {
+function postAuthorFilterTryingProFeatures(activeFilterData) {
 	if (foundPro) {
 		return false;
 	}
 
 	let tryingPro = false;
 
-	const {
-		display_type,
-		date_display_type,
-		hide_empty,
-		time_period_hide_empty,
-		post_author_order_by,
-		enable_soft_limit,
-		post_property,
-	} = activeFilterData;
+	const { get_options, post_author_order_by, use_store_name } =
+		activeFilterData;
 
-	if ('post_author' === post_property) {
-		if ('1' === hide_empty) {
-			tryingPro = proFeature('remove-empty');
-		} else if ('default' !== post_author_order_by) {
-			tryingPro = proFeature('ordering-of-filter-options');
-		} else if (
-			'1' === enable_soft_limit &&
-			!softLimitDisabledDisplayTypes.includes(display_type)
-		) {
-			tryingPro = proFeature('soft-limit');
-		}
-	} else {
-		const softLimitAllowed = [
-			'time_period_checkbox',
-			'time_period_radio',
-			'time_period_label',
-		];
-
-		if (
-			'1' === time_period_hide_empty &&
-			dateDisplayTypes.includes(date_display_type)
-		) {
-			tryingPro = proFeature('remove-empty');
-		} else if (
-			'1' === enable_soft_limit &&
-			softLimitAllowed.includes(date_display_type)
-		) {
-			tryingPro = proFeature('soft-limit');
-		}
-	}
-
-	return tryingPro;
-}
-
-function postMetaFilterTryingProFeatures(activeFilterData) {
-	if (foundPro) {
-		return false;
-	}
-
-	let tryingPro = false;
-
-	const {
-		display_type,
-		number_display_type,
-		date_display_type,
-		hide_empty,
-		number_range_hide_empty,
-		time_period_hide_empty,
-		enable_soft_limit,
-		value_type,
-	} = activeFilterData;
-
-	if ('text' === value_type) {
-		if ('1' === hide_empty) {
-			tryingPro = proFeature('remove-empty');
-		} else if ('default' !== post_author_order_by) {
-			tryingPro = proFeature('ordering-of-filter-options');
-		} else if (
-			'1' === enable_soft_limit &&
-			!softLimitDisabledDisplayTypes.includes(display_type)
-		) {
-			tryingPro = proFeature('soft-limit');
-		}
-	} else if ('number' === value_type) {
-	} else if ('date' === value_type) {
-	}
-
-	if ('post_author' === post_property) {
-		if ('1' === hide_empty) {
-			tryingPro = proFeature('remove-empty');
-		} else if ('default' !== post_author_order_by) {
-			tryingPro = proFeature('ordering-of-filter-options');
-		} else if (
-			'1' === enable_soft_limit &&
-			!softLimitDisabledDisplayTypes.includes(display_type)
-		) {
-			tryingPro = proFeature('soft-limit');
-		}
-	} else {
-		const softLimitAllowed = [
-			'time_period_checkbox',
-			'time_period_radio',
-			'time_period_label',
-		];
-
-		if (
-			'1' === time_period_hide_empty &&
-			dateDisplayTypes.includes(date_display_type)
-		) {
-			tryingPro = proFeature('remove-empty');
-		} else if (
-			'1' === enable_soft_limit &&
-			softLimitAllowed.includes(date_display_type)
-		) {
-			tryingPro = proFeature('soft-limit');
-		}
+	if ('manual_entry' === get_options) {
+		tryingPro = proFeature('manual-entry');
+	} else if ('default' !== post_author_order_by) {
+		tryingPro = proFeature('ordering-of-filter-options');
+	} else if (wcfmFound() && '1' === use_store_name) {
+		tryingPro = proFeature('store-name-as-option-label');
+	} else if (tryingClearFilterButton(activeFilterData)) {
+		tryingPro = proFeature('clear-filter-button');
+	} else if (tryingSoftLimit(activeFilterData)) {
+		tryingPro = proFeature('soft-limit');
 	}
 
 	return tryingPro;
@@ -299,27 +204,13 @@ function postMetaFilterTryingProFeatures(activeFilterData) {
 
 export function getFilterStatus(title, activeFilterData) {
 	if (!title) {
-		return dataRequired(__('Title is required', 'wc-ajax-product-filter'));
+		return dataRequired(__('Title is required.', 'wc-ajax-product-filter'));
 	}
 
 	let tryingPro = '';
 	let message = '';
 
-	const {
-		type,
-		number_display_type,
-		date_display_type,
-		taxonomy,
-		post_property,
-		meta_key,
-		get_options,
-		value_type,
-		number_get_options,
-	} = activeFilterData;
-
-	const { optionsKey } = getTableData(type, activeFilterData);
-
-	const rows = activeFilterData[optionsKey];
+	const { field_key, type, taxonomy, meta_key } = activeFilterData;
 
 	switch (type) {
 		case 'active-filters':
@@ -332,47 +223,38 @@ export function getFilterStatus(title, activeFilterData) {
 			break;
 
 		case 'category':
-			tryingPro = taxonomyTypeFilterTryingProFeatures(
-				activeFilterData,
-				true
-			);
+			tryingPro = taxonomyFilterTryingProFeatures(activeFilterData, true);
 
 			if (tryingPro) {
 				message = tryingPro;
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
 
 		case 'tag':
-			tryingPro = taxonomyTypeFilterTryingProFeatures(activeFilterData);
+			tryingPro = taxonomyFilterTryingProFeatures(activeFilterData);
 
 			if (tryingPro) {
 				message = tryingPro;
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
 
 		case 'attribute':
-			tryingPro = taxonomyTypeFilterTryingProFeatures(activeFilterData);
+			tryingPro = taxonomyFilterTryingProFeatures(activeFilterData);
 
 			if (tryingPro) {
 				message = tryingPro;
 			} else if (!taxonomy) {
-				message = dataRequired(
-					__('Select an attribute', 'wc-ajax-product-filter')
+				message = dataMissing(
+					__('Please select a attribute.', 'wc-ajax-product-filter')
 				);
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
@@ -382,18 +264,8 @@ export function getFilterStatus(title, activeFilterData) {
 
 			if (tryingPro) {
 				message = tryingPro;
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else if (
-				rangeDisplayTypes.includes(number_display_type) &&
-				'manual_entry' === number_get_options &&
-				isEmpty(rows)
-			) {
-				message = dataRequired(
-					__('Add few options', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
@@ -403,14 +275,8 @@ export function getFilterStatus(title, activeFilterData) {
 
 			if (tryingPro) {
 				message = tryingPro;
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else if ('manual_entry' === number_get_options && isEmpty(rows)) {
-				message = dataRequired(
-					__('Add few options', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
@@ -420,107 +286,52 @@ export function getFilterStatus(title, activeFilterData) {
 
 			if (tryingPro) {
 				message = tryingPro;
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else if (isEmpty(rows)) {
-				message = dataRequired(
-					__('Add few options', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
 
-		case 'post-property':
-			tryingPro = postPropertyFilterTryingProFeatures(activeFilterData);
+		case 'post-author':
+			tryingPro = postAuthorFilterTryingProFeatures(activeFilterData);
 
 			if (tryingPro) {
 				message = tryingPro;
-			} else if (!post_property) {
-				message = dataRequired(
-					__('Select a post property', 'wc-ajax-product-filter')
-				);
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else if (
-				('post_date' === post_property ||
-					'post_modified' === post_property) &&
-				dateDisplayTypes.includes(date_display_type) &&
-				isEmpty(rows)
-			) {
-				message = dataRequired(
-					__('Add few options', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
 
 		case 'custom-taxonomy':
-			// if (!foundPro) {
-			// 	message = proFeature('custom-taxonomy-filter');
-			// } else
-
-			tryingPro = taxonomyTypeFilterTryingProFeatures(
-				activeFilterData,
-				true
-			);
-
-			if (tryingPro) {
-				message = tryingPro;
+			if (!foundPro) {
+				message = proFeature('custom-taxonomy-filter');
 			} else if (!taxonomy) {
-				message = dataRequired(
-					__('Select a taxonomy', 'wc-ajax-product-filter')
+				message = dataMissing(
+					__('Please select a taxonomy.', 'wc-ajax-product-filter')
 				);
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
 
 		case 'post-meta':
-			// if (!foundPro) {
-			// 	message = proFeature('post-meta-filter');
-			// } else
-			if (!meta_key) {
-				message = dataRequired(
-					__('Select a meta key', 'wc-ajax-product-filter')
+			if (!foundPro) {
+				message = proFeature('post-meta-filter');
+			} else if (!meta_key) {
+				message = dataMissing(
+					__('Please select a meta key.', 'wc-ajax-product-filter')
 				);
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else {
-				if ('text' === value_type) {
-					if ('manual_entry' === get_options && isEmpty(rows)) {
-						message = dataRequired(
-							__('Add few options', 'wc-ajax-product-filter')
-						);
-					}
-				} else if ('number' === value_type) {
-					if (
-						rangeDisplayTypes.includes(number_display_type) &&
-						'manual_entry' === number_get_options &&
-						isEmpty(rows)
-					) {
-						message = dataRequired(
-							__('Add few options', 'wc-ajax-product-filter')
-						);
-					}
-				} else if ('date' === value_type) {
-					if (
-						dateDisplayTypes.includes(date_display_type) &&
-						isEmpty(rows)
-					) {
-						message = dataRequired(
-							__('Add few options', 'wc-ajax-product-filter')
-						);
-					}
-				}
+			} else if (!field_key) {
+				message = filterKeyMissing();
+			}
+
+			break;
+
+		case 'search':
+			if (!foundPro) {
+				message = proFeature('filter-by-keyword');
 			}
 
 			break;
@@ -528,14 +339,8 @@ export function getFilterStatus(title, activeFilterData) {
 		case 'sort-by':
 			if (!foundPro) {
 				message = proFeature('sort-by-filter');
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else if (isEmpty(rows)) {
-				message = dataRequired(
-					__('Add few options', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;
@@ -543,14 +348,8 @@ export function getFilterStatus(title, activeFilterData) {
 		case 'per-page':
 			if (!foundPro) {
 				message = proFeature('per-page-filter');
-			} else if (filterKeyMissing(activeFilterData)) {
-				message = dataRequired(
-					__('Filter key is required', 'wc-ajax-product-filter')
-				);
-			} else if (isEmpty(rows)) {
-				message = dataRequired(
-					__('Add few options', 'wc-ajax-product-filter')
-				);
+			} else if (!field_key) {
+				message = filterKeyMissing();
 			}
 
 			break;

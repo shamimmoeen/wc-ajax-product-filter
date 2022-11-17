@@ -323,6 +323,32 @@ const ManualOptions = ({ openModal }) => {
 					)}
 				</>
 			);
+		} else if ('post-author-options' === type) {
+			return (
+				<>
+					<th className='__author'>
+						{__('Author', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+					{'1' === enable_tooltip && (
+						<th className='__tooltip'>
+							{__('Tooltip', 'wc-ajax-product-filter')}
+						</th>
+					)}
+					{'color' === display_type && (
+						<th className='__color'>
+							{__('Color', 'wc-ajax-product-filter')}
+						</th>
+					)}
+					{'image' === display_type && (
+						<th className='__image'>
+							{__('Image', 'wc-ajax-product-filter')}
+						</th>
+					)}
+				</>
+			);
 		}
 	};
 
@@ -621,8 +647,28 @@ const ManualOptions = ({ openModal }) => {
 			return (
 				<>
 					<td>
-						<div>{label}</div>
+						<span className='__term_name'>{label}</span>
 						<span className='__term_id'>
+							{sprintf(
+								__('ID: %d', 'wc-ajax-product-filter'),
+								value
+							)}
+						</span>
+					</td>
+
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+
+					{appearanceColumns(row, rowIndex)}
+				</>
+			);
+		} else if ('post-author-options' === type) {
+			const { value, label } = row;
+
+			return (
+				<>
+					<td>
+						<span className='__author'>{label}</span>
+						<span className='__author_id'>
 							{sprintf(
 								__('ID: %d', 'wc-ajax-product-filter'),
 								value
@@ -696,11 +742,18 @@ const ManualOptions = ({ openModal }) => {
 	};
 
 	const actionButtons = () => {
+		const browseOptionsBtnLabel = __(
+			'Browse Options',
+			'wc-ajax-product-filter'
+		);
+
+		const onlyBrowse = ['taxonomy-options', 'post-author-options'];
+
 		return (
 			<div>
-				{'taxonomy-options' === type ? (
+				{onlyBrowse.includes(type) ? (
 					<Button variant='secondary' onClick={openModal}>
-						{__('Browse Terms', 'wc-ajax-product-filter')}
+						{browseOptionsBtnLabel}
 					</Button>
 				) : (
 					<>
@@ -709,7 +762,7 @@ const ManualOptions = ({ openModal }) => {
 						</Button>
 						{'text-options' === type && (
 							<Button variant='secondary' onClick={openModal}>
-								{__('Browse Values', 'wc-ajax-product-filter')}
+								{browseOptionsBtnLabel}
 							</Button>
 						)}
 					</>

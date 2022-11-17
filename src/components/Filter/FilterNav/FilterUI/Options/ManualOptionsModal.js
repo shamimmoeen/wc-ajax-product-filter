@@ -16,10 +16,11 @@ import { getTaxonomy, isTaxonomyFilters } from '../../../utils';
 
 const modalInitialClass = '__manual_options_modal';
 
+const userRoles = wcapf_admin_params.user_roles_for_available_options_modal;
+
 const ManualOptionsModal = ({ open, closeModal }) => {
 	const [loading, setLoading] = useState(true);
 	const [options, setOptions] = useState([]);
-	const [fetched, setFetched] = useState(false);
 	const [message, setMessage] = useState('');
 	const [modalClasses, setModalClasses] = useState(modalInitialClass);
 	const [replaceOptions, toggleReplaceOptions] = useState(false);
@@ -34,7 +35,19 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 	} = state;
 
 	const taxonomy = getTaxonomy(filterType, _taxonomy);
-	const isTaxonomyModal = isTaxonomyFilters(filterType);
+
+	let optionsFor;
+	let modalType;
+
+	if (isTaxonomyFilters(filterType)) {
+		modalType = 'taxonomy';
+		optionsFor = taxonomy;
+	} else if ('post-author' === filterType) {
+		modalType = 'post-author';
+	} else {
+		modalType = 'post-meta';
+		optionsFor = meta_key;
+	}
 
 	// Fetch the options for the first time render.
 	useEffect(() => {
@@ -42,31 +55,56 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 			return;
 		}
 
-		if (fetched) {
-			return;
-		}
-
 		let ajaxParams;
 
-		if (isTaxonomyModal) {
+		if ('taxonomy' === modalType) {
 			if (!taxonomy) {
 				setLoading(false);
-				setFetched(true);
+
+				if ('attribute' === filterType) {
+					setMessage(
+						__(
+							'Please select a attribute.',
+							'wc-ajax-product-filter'
+						)
+					);
+				} else {
+					setMessage(
+						__(
+							'Please select a taxonomy.',
+							'wc-ajax-product-filter'
+						)
+					);
+				}
+
+				return;
+			}
+
+			ajaxParams = {
+				action: 'wcapf_get_taxonomy_terms_for_modal',
+				taxonomy,
+			};
+		} else if ('post-author' === modalType) {
+			if (isEmpty(userRoles)) {
+				setLoading(false);
+
 				setMessage(
-					__('Please select a taxonomy.', 'wc-ajax-product-filter')
+					__(
+						'Please select the post author roles from the plugin settings page.',
+						'wc-ajax-product-filter'
+					)
 				);
 
 				return;
 			}
 
 			ajaxParams = {
-				action: 'get_custom_appearance_data',
-				taxonomy,
+				action: 'wcapf_post_authors_for_modal',
 			};
 		} else {
 			if (!meta_key) {
 				setLoading(false);
-				setFetched(true);
+
 				setMessage(
 					__('Please select a meta key.', 'wc-ajax-product-filter')
 				);
@@ -75,7 +113,7 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 			}
 
 			ajaxParams = {
-				action: 'wcapf_get_meta_values',
+				action: 'wcapf_get_meta_values_for_modal',
 				meta_key,
 			};
 		}
@@ -85,15 +123,17 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 				params: ajaxParams,
 			})
 			.then((res) => {
-				const data = res.data.data;
-
 				setLoading(false);
-				setFetched(true);
+
+				const data = res.data.data;
 
 				if (!isEmpty(data)) {
 					const classes = `${modalInitialClass} ajax-done`;
 
-					if (isTaxonomyModal) {
+					if (
+						'taxonomy' === modalType ||
+						'post-author' === modalType
+					) {
 						const synced = syncData(data);
 						setOptions(synced);
 					} else {
@@ -105,10 +145,9 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 			})
 			.catch((err) => {
 				setLoading(false);
-				setFetched(true);
 				setMessage(
 					__(
-						'There was an error fetching the items.',
+						'There was an error fetching the options.',
 						'wc-ajax-product-filter'
 					)
 				);
@@ -117,39 +156,21 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 			});
 	}, [open]);
 
-	// Triggers after modal is closed.
+	// Reset the modal states after it is closed.
 	useEffect(() => {
 		if (open) {
 			return;
 		}
 
-		if (isTaxonomyModal) {
-			return;
-		}
-
+		setLoading(true);
+		setOptions([]);
+		setMessage('');
+		setModalClasses(modalInitialClass);
 		toggleReplaceOptions(false);
-		handleClearSelection();
+		setSearchInput('');
 	}, [open]);
 
-	useEffect(() => {
-		if (!open) {
-			return;
-		}
-
-		if (!fetched) {
-			return;
-		}
-
-		if (!isTaxonomyModal) {
-			return;
-		}
-
-		const unsynced = options;
-		const synced = syncData(unsynced);
-
-		setOptions(synced);
-	}, [open]);
-
+	// For the search box.
 	useEffect(() => {
 		let _options;
 
@@ -240,7 +261,7 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 
 		options.forEach((option) => {
 			if ('added' === option.status) {
-				if (isTaxonomyModal) {
+				if ('taxonomy' === modalType || 'post-author' === modalType) {
 					const found = oldOptions.find(
 						(_option) => _option.value == option.value
 					);
@@ -278,26 +299,28 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 		closeModal();
 	};
 
-	const modalLoader = () => {
-		if (loading) {
-			return (
-				<div className='__loader'>
-					<Spinner />
-				</div>
+	const modalHeader = () => {
+		let description;
+
+		if ('taxonomy' === modalType || 'post-meta' === modalType) {
+			description = sprintf(
+				__(
+					'Found %d options for <strong>%s</strong>.',
+					'wc-ajax-product-filter'
+				),
+				options.length,
+				optionsFor
+			);
+		} else if ('post-author' === modalType) {
+			description = sprintf(
+				__(
+					'Found %d options for user role <strong>%s</strong>.',
+					'wc-ajax-product-filter'
+				),
+				options.length,
+				optionsFor
 			);
 		}
-	};
-
-	const modalHeader = () => {
-		const itemsFor = isTaxonomyModal ? taxonomy : meta_key;
-		const description = sprintf(
-			__(
-				'Found %d items for <strong>%s</strong>.',
-				'wc-ajax-product-filter'
-			),
-			options.length,
-			itemsFor
-		);
 
 		return (
 			<div className='__header'>
@@ -317,150 +340,122 @@ const ManualOptionsModal = ({ open, closeModal }) => {
 		);
 	};
 
-	const modalInfo = () => {
-		let description = '';
+	const modalBody = () => {
+		return (
+			<div className='__options'>
+				{options.map((option, index) => {
+					return (
+						<div
+							key={`modal-option-${index}`}
+							className={classnames('__option', {
+								__hide_option: '0' === option.matched,
+							})}
+						>
+							<label>
+								<CheckboxControl
+									checked={'added' === option.status}
+									onChange={(value) =>
+										handleOptionChange(value, index)
+									}
+								/>
 
-		if (loading) {
-			return;
-		}
+								<span className='__label'>{option.label}</span>
 
-		if (fetched) {
-			if (message) {
-				description = message;
-			} else {
-				const itemsFor = isTaxonomyModal ? taxonomy : meta_key;
-
-				if (!isEmpty(options)) {
-					return modalHeader();
-				} else {
-					description = sprintf(
-						__(
-							'No items found for <strong>%s</strong>.',
-							'wc-ajax-product-filter'
-						),
-						itemsFor
-					);
-				}
-			}
-		}
-
-		if (description) {
-			return (
-				<p
-					className='__description'
-					dangerouslySetInnerHTML={{ __html: description }}
-				/>
-			);
-		}
-	};
-
-	const modalContent = () => {
-		if (fetched && !isEmpty(options)) {
-			return (
-				<div className='__options'>
-					{options.map((option, index) => {
-						let _label = option.label;
-
-						if (isTaxonomyModal) {
-							_label += <span>{option.value}</span>;
-						}
-
-						return (
-							<div
-								key={`modal-option-${index}`}
-								className={classnames('__option', {
-									__hide_option: '0' === option.matched,
-								})}
-							>
-								<label>
-									<CheckboxControl
-										checked={'added' === option.status}
-										onChange={(value) =>
-											handleOptionChange(value, index)
-										}
-									/>
-
-									<span className='__label'>
-										{option.label}
+								{'post-meta' !== modalType && (
+									<span className='__info'>
+										{sprintf(
+											__(
+												'ID: %d',
+												'wc-ajax-product-filter'
+											),
+											option.value
+										)}
 									</span>
-
-									{isTaxonomyModal && (
-										<span className='__info'>
-											{sprintf(
-												__(
-													'ID: %d',
-													'wc-ajax-product-filter'
-												),
-												option.value
-											)}
-										</span>
-									)}
-								</label>
-							</div>
-						);
-					})}
-				</div>
-			);
-		}
+								)}
+							</label>
+						</div>
+					);
+				})}
+			</div>
+		);
 	};
 
 	const modalFooter = () => {
 		return (
-			fetched &&
-			!isEmpty(options) && (
-				<div className='__modal_footer'>
-					<div>
-						<Button variant='secondary' onClick={handleSelectAll}>
-							{__('Select All', 'wc-ajax-product-filter')}
-						</Button>
-						<Button
-							variant='secondary'
-							onClick={handleClearSelection}
-						>
-							{__('Clear Selection', 'wc-ajax-product-filter')}
-						</Button>
-					</div>
-					<div className='__add_options_btn_group'>
-						{!isTaxonomyModal && (
-							<CheckboxControl
-								label={__(
-									'Replace current options?',
-									'wc-ajax-product-filter'
-								)}
-								checked={replaceOptions}
-								onChange={(value) =>
-									toggleReplaceOptions(value)
-								}
-							/>
-						)}
-						<Button variant='primary' onClick={handleAddOptions}>
-							{__('Add Options', 'wc-ajax-product-filter')}
-						</Button>
-					</div>
+			<div className='__modal_footer'>
+				<div>
+					<Button variant='secondary' onClick={handleSelectAll}>
+						{__('Select All', 'wc-ajax-product-filter')}
+					</Button>
+					<Button variant='secondary' onClick={handleClearSelection}>
+						{__('Clear Selection', 'wc-ajax-product-filter')}
+					</Button>
 				</div>
-			)
+				<div className='__add_options_btn_group'>
+					{'post-meta' === modalType && (
+						<CheckboxControl
+							label={__(
+								'Replace current options?',
+								'wc-ajax-product-filter'
+							)}
+							checked={replaceOptions}
+							onChange={(value) => toggleReplaceOptions(value)}
+						/>
+					)}
+					<Button variant='primary' onClick={handleAddOptions}>
+						{__('Add Options', 'wc-ajax-product-filter')}
+					</Button>
+				</div>
+			</div>
+		);
+	};
+
+	const modalContent = () => {
+		if (loading) {
+			return (
+				<div className='__loader'>
+					<Spinner />
+				</div>
+			);
+		}
+
+		if (message) {
+			return (
+				<p
+					className='__description'
+					dangerouslySetInnerHTML={{ __html: message }}
+				/>
+			);
+		}
+
+		if (isEmpty(options)) {
+			return __('No options found', 'wc-ajax-product-filter');
+		}
+
+		return (
+			<>
+				{modalHeader()}
+
+				{modalBody()}
+
+				{modalFooter()}
+			</>
 		);
 	};
 
 	const _modalClasses = classnames(modalClasses, {
-		__meta_values_modal: !isTaxonomyModal,
+		__meta_values_modal: 'post-meta' === modalType,
 	});
 
 	return (
 		<>
 			{open && (
 				<Modal
-					title={__('Add Options', 'wc-ajax-product-filter')}
+					title={__('Available Options', 'wc-ajax-product-filter')}
 					onRequestClose={closeModal}
 					className={_modalClasses}
 				>
-					{modalLoader()}
-
-					{modalInfo()}
-
 					{modalContent()}
-
-					{modalFooter()}
 				</Modal>
 			)}
 		</>

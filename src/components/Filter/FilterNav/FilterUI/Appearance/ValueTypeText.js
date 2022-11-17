@@ -40,6 +40,7 @@ const ValueTypeText = () => {
 		use_category_images,
 		hierarchical,
 		enable_hierarchy_accordion,
+		value_type,
 	} = activeFilterData;
 
 	const displayTypeField = () => {
@@ -61,6 +62,8 @@ const ValueTypeText = () => {
 			options = allOptions.filter((option) =>
 				allowed.includes(option.value)
 			);
+		} else if ('post-meta' === filterType && 'text' === value_type) {
+			options = textDisplayTypes(true);
 		} else {
 			let allOptions;
 

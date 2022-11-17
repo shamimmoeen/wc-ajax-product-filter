@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Flex, FlexItem, Button } from '@wordpress/components';
 import classnames from 'classnames';
 import { useListFilters } from '../ListFiltersContext';
-import { disableFilterSubmission } from './utils';
+import { disableFilterSubmission, tryingProFilterType } from './utils';
 
 const Footer = ({ step, setStep, totalSteps, closeModal, handleSubmit }) => {
 	const {
@@ -35,10 +35,12 @@ const Footer = ({ step, setStep, totalSteps, closeModal, handleSubmit }) => {
 		if (1 === step || (3 === totalSteps && 2 === step)) {
 			let disabled = false;
 
-			if (1 === step && !title) {
-				disabled = true;
-			} else if (3 === totalSteps && 2 === step && !filterType) {
-				disabled = true;
+			if (1 === step) {
+				disabled = !title;
+			} else {
+				if (!filterType || tryingProFilterType(filterType)) {
+					disabled = true;
+				}
 			}
 
 			content = (
@@ -54,7 +56,7 @@ const Footer = ({ step, setStep, totalSteps, closeModal, handleSubmit }) => {
 			let disabled = false;
 
 			if (2 === step) {
-				if (!filterType) {
+				if (!filterType || tryingProFilterType(filterType)) {
 					disabled = true;
 				}
 			} else if (3 === step) {

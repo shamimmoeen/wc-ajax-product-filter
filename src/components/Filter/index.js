@@ -28,7 +28,7 @@ const Filter = () => {
 		const id = query.searchParams.get('id');
 
 		const data = {
-			action: 'get_filter_data',
+			action: 'wcapf_get_filter_data',
 			post_id: id,
 		};
 

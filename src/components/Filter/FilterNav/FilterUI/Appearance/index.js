@@ -24,10 +24,7 @@ const Appearance = () => {
 			fields = <ActiveFilters />;
 		} else if ('price' === filterType) {
 			fields = <ValueTypeNumber />;
-		} else if (
-			'post-meta' === filterType ||
-			'post-property' === filterType
-		) {
+		} else if ('post-meta' === filterType) {
 			if ('text' === value_type) {
 				fields = <ValueTypeText />;
 			} else if ('number' === value_type) {

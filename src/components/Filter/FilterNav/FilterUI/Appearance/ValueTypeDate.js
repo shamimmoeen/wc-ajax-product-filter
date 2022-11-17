@@ -21,6 +21,9 @@ const ValueTypeDate = () => {
 		noResultsMessageField,
 		showCountField,
 		removeEmptyField,
+		enableTooltipField,
+		tooltipPositionField,
+		showCountInTooltipField,
 	} = useFields('date');
 
 	const {
@@ -173,6 +176,12 @@ const ValueTypeDate = () => {
 			{showCountField('time_period_show_count')}
 
 			{removeEmptyField('time_period_hide_empty')}
+
+			{enableTooltipField()}
+
+			{tooltipPositionField()}
+
+			{showCountInTooltipField()}
 		</>
 	);
 };

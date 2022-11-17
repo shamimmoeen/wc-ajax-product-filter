@@ -20,27 +20,11 @@ const useFields = () => {
 	const { filterType, activeFilterData } = state;
 
 	const getOptionsField = (id) => {
-		const { value_type } = activeFilterData;
 		let description;
-		let version = 'short';
 
-		if ('post-meta' === filterType) {
-			version = 'long';
-		} else if (isTaxonomyFilters(filterType)) {
-			version = 'long';
-		} else if ('price' === filterType || 'rating' === filterType) {
-			version = 'long-without-color-image';
-		} else if ('post-property' === filterType && 'text' === value_type) {
-			version = 'long-without-color-image';
-		}
-
-		if ('long' === version) {
+		if (isTaxonomyFilters(filterType) || 'post-meta' === filterType) {
 			description = __(
-				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatches, custom labels, and tooltips, you need to manually enter the options.'
-			);
-		} else if ('long-without-color-image' === version) {
-			description = __(
-				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For custom labels, and tooltips, you need to manually enter the options.'
+				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatches, you need to manually enter the options.'
 			);
 		} else {
 			description = __(

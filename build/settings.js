@@ -6469,7 +6469,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "proTag": function() { return /* binding */ proTag; },
 /* harmony export */   "removeMediaFrames": function() { return /* binding */ removeMediaFrames; },
 /* harmony export */   "slugify": function() { return /* binding */ slugify; },
-/* harmony export */   "upgradeToProLink": function() { return /* binding */ upgradeToProLink; }
+/* harmony export */   "upgradeToProLink": function() { return /* binding */ upgradeToProLink; },
+/* harmony export */   "wcfmFound": function() { return /* binding */ wcfmFound; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -6514,7 +6515,7 @@ function pluginVersion() {
 }
 function getAdditionalData() {
   const data = {
-    action: 'get_filter_additional_data'
+    action: 'wcapf_get_filter_additional_data'
   };
   return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
     params: data
@@ -6545,6 +6546,9 @@ function getSettingsPageLink() {
 }
 function slugify(value) {
   return '__' + value.replace(/ /g, '_');
+}
+function wcfmFound() {
+  return wcapf_admin_params.wcfm_marketplace_found;
 }
 function getNoOfMaxTermsToRender() {
   const maxItems = parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;
