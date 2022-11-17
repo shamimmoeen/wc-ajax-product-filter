@@ -40,6 +40,7 @@ const FilterPreview = () => {
 	const [previewLoading, setPreviewLoading] = useState(false);
 
 	const { type, message } = filterStatus;
+	const noticeType = 'data-missing' === type ? 'info' : 'error';
 
 	useEffect(() => {
 		if (!filterPreview) {
@@ -113,7 +114,7 @@ const FilterPreview = () => {
 					</CardHeader>
 					<CardBody>
 						{message ? (
-							<Notice status='info' isDismissible={false}>
+							<Notice status={noticeType} isDismissible={false}>
 								{message}
 							</Notice>
 						) : (

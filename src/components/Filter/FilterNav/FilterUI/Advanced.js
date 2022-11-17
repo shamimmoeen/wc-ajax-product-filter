@@ -156,10 +156,7 @@ const Advanced = () => {
 			_display_type = display_type;
 		} else if ('price' === filterType) {
 			_display_type = number_display_type;
-		} else if (
-			'post-meta' === filterType ||
-			'post-property' === filterType
-		) {
+		} else if ('post-meta' === filterType) {
 			if ('text' === value_type) {
 				_display_type = display_type;
 			} else if ('number' === value_type) {

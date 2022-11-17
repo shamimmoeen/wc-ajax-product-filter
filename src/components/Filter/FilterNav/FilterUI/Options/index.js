@@ -16,7 +16,7 @@ const Options = () => {
 	const renderFields = () => {
 		let fields;
 
-		const { value_type, post_property } = activeFilterData;
+		const { value_type } = activeFilterData;
 
 		if (isTaxonomyFilters(filterType)) {
 			fields = <TaxonomyOptions />;
@@ -34,16 +34,8 @@ const Options = () => {
 			} else if ('date' === value_type) {
 				fields = <ValueTypeDate />;
 			}
-		} else if ('post-property' === filterType) {
-			if ('post_author' === post_property) {
-				fields = <PostAuthorOptions />;
-			} else if ('text' === value_type) {
-				fields = <ValueTypeText />;
-			} else if ('number' === value_type) {
-				fields = <ValueTypeNumber />;
-			} else if ('date' === value_type) {
-				fields = <ValueTypeDate />;
-			}
+		} else if ('post-author' === filterType) {
+			fields = <PostAuthorOptions />;
 		} else if ('sort-by' === filterType) {
 			fields = <ManualOptions />;
 		} else if ('per-page' === filterType) {

@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect } from '@wordpress/element';
 import { has } from 'lodash';
 import { wpFeSanitizeTitle } from '../../wp-fe-sanitize-title';
 import Listbox from '../../../Field/Listbox';
@@ -21,26 +20,10 @@ const GeneralFields = ({ state, dispatch }) => {
 
 	const { filterType, activeFilterData, additionalData, filterKeys } = state;
 
-	const {
-		field_key,
-		value_type,
-		value_decimal,
-		value_decimal_places,
-		post_property,
-	} = activeFilterData;
+	const { field_key, value_type, value_decimal, value_decimal_places } =
+		activeFilterData;
 
 	const { initial_filter_keys: initialFilterKeysData } = additionalData;
-
-	useEffect(() => {
-		if ('post-property' !== filterType) {
-			return;
-		}
-
-		const { post_property_data } = additionalData;
-		const propertyType = post_property_data[post_property] ?? 'text';
-
-		setActiveFilterData('value_type', propertyType, false);
-	}, [post_property]);
 
 	/**
 	 * TODO: Check if key is already in use, then generate a new one.
@@ -174,42 +157,6 @@ const GeneralFields = ({ state, dispatch }) => {
 		}
 	};
 
-	const handlePostPropertyChange = (value) => {
-		const { type, post_property } = activeFilterData;
-
-		if (value === post_property) {
-			return;
-		}
-
-		handleVariableFilterTypesChange(type, value, 'post_property');
-	};
-
-	const postPropertyField = () => {
-		if ('post-property' === filterType) {
-			const data = additionalData['post_properties'];
-			let options = [];
-
-			for (const [value, { label }] of Object.entries(data)) {
-				options.push({ label, value });
-			}
-
-			return (
-				<Listbox
-					label={__('Post Property', 'wc-ajax-product-filter')}
-					description={__(
-						'Select the post property that values will be available as filter options.',
-						'wc-ajax-product-filter'
-					)}
-					id={'post_property'}
-					options={options}
-					value={post_property}
-					onChange={handlePostPropertyChange}
-					searchable={false}
-				/>
-			);
-		}
-	};
-
 	const handleFilterKeyChange = (filterKey) => {
 		setActiveFilterData('field_key', filterKey);
 
@@ -336,8 +283,6 @@ const GeneralFields = ({ state, dispatch }) => {
 				{taxonomyField()}
 
 				{postMetaField()}
-
-				{postPropertyField()}
 
 				{filterKeyField()}
 

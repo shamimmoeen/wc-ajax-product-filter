@@ -15,67 +15,15 @@ function getProFilterTypes() {
 }
 
 export function tryingProFilterType(filterType) {
-	return getProFilterTypes().includes(filterType);
-}
-
-export function proFilterTypeMessage(filterType) {
-	let message;
-
-	switch (filterType) {
-		case 'post-property':
-			message = __(
-				'Filter by post property is a PRO feature.',
-				'wc-ajax-product-filter'
-			);
-
-			break;
-
-		case 'custom-taxonomy':
-			message = __(
-				'Filter by custom taxonomy is a PRO feature.',
-				'wc-ajax-product-filter'
-			);
-
-			break;
-
-		case 'post-meta':
-			message = __(
-				'Filter by post meta is a PRO feature.',
-				'wc-ajax-product-filter'
-			);
-
-			break;
-
-		case 'sort-by':
-			message = __(
-				'Sort by filter is a PRO feature.',
-				'wc-ajax-product-filter'
-			);
-
-			break;
-
-		case 'per-page':
-			message = __(
-				'Per page filter is a PRO feature.',
-				'wc-ajax-product-filter'
-			);
-
-			break;
+	if (foundProVersion()) {
+		return false;
 	}
 
-	return message;
+	return getProFilterTypes().includes(filterType);
 }
 
 export function disableFilterSubmission(activeFilterData) {
 	const { type } = activeFilterData;
-
-	if (!foundProVersion() && getProFilterTypes().includes(type)) {
-		return true;
-	}
-
-	if ('active-filters' === type || 'reset-button' === type) {
-		return false;
-	}
 
 	const { field_key } = activeFilterData;
 
@@ -83,16 +31,12 @@ export function disableFilterSubmission(activeFilterData) {
 		return true;
 	}
 
-	const { taxonomy, post_property, meta_key } = activeFilterData;
+	const { taxonomy, meta_key } = activeFilterData;
 
 	let disabled = false;
 
 	if ('attribute' === type || 'custom-taxonomy' === type) {
 		if (!taxonomy) {
-			disabled = true;
-		}
-	} else if ('post-property' === type) {
-		if (!post_property) {
 			disabled = true;
 		}
 	} else if ('post-meta' === type) {

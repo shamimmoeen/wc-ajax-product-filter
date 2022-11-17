@@ -27,13 +27,13 @@ const SelectMulti = ({
 
 		if ('author' === type) {
 			ajaxParams = {
-				action: 'wcapf_get_post_authors',
+				action: 'wcapf_get_post_authors_for_dropdown',
 				keyword,
 				page,
 			};
 		} else {
 			ajaxParams = {
-				action: 'wcapf_get_taxonomy_terms',
+				action: 'wcapf_get_taxonomy_terms_for_dropdown',
 				taxonomy,
 				only_parent: onlyParent,
 				keyword,
@@ -95,6 +95,8 @@ const SelectMulti = ({
 		noOptionsMessage = __('No terms found', 'wc-ajax-product-filter');
 	}
 
+	const loadingMessage = __('Loading...', 'wc-ajax-product-filter');
+
 	const renderSelect = () => {
 		if (isUserRoles) {
 			return (
@@ -103,9 +105,7 @@ const SelectMulti = ({
 					options={options}
 					placeholder={placeholder}
 					noOptionsMessage={() => noOptionsMessage}
-					loadingMessage={() =>
-						__('Loading...', 'wc-ajax-product-filter')
-					}
+					loadingMessage={() => loadingMessage}
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
@@ -133,9 +133,7 @@ const SelectMulti = ({
 					}}
 					placeholder={placeholder}
 					noOptionsMessage={() => noOptionsMessage}
-					loadingMessage={() =>
-						__('Loading...', 'wc-ajax-product-filter')
-					}
+					loadingMessage={() => loadingMessage}
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}

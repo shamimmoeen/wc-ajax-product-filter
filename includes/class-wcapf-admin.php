@@ -353,6 +353,9 @@ class WCAPF_Admin {
 
 			if ( isset( $_GET['id'] ) ) {
 				$params['visibility_rules_data'] = $api_utils::get_visibility_rules_data();
+
+				// $params['user_roles_for_available_options_modal'] = array( 'administrator', 'shop_manager' );
+				$params['user_roles_for_available_options_modal'] = array();
 			}
 		}
 

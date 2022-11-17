@@ -87,7 +87,11 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 			return;
 		}
 
-		const filtersWithoutOptions = ['active-filters', 'reset-button'];
+		const filtersWithoutOptions = [
+			'search',
+			'active-filters',
+			'reset-button',
+		];
 
 		if (filtersWithoutOptions.includes(filterType)) {
 			if (3 === totalSteps) {

@@ -26,9 +26,7 @@ const TaxonomyOptions = () => {
 	const { getOptionsField, orderDirectionField } = useFields();
 
 	const [open, setOpen] = useState(false);
-
 	const openModal = () => setOpen(true);
-
 	const closeModal = () => setOpen(false);
 
 	const {
@@ -55,25 +53,23 @@ const TaxonomyOptions = () => {
 		taxonomy,
 		hierarchicalData
 	);
+	const isHierarchyEnabled = taxonomyHierarchical && '1' === hierarchical;
 
 	useEffect(() => {
-		if (
-			((taxonomyHierarchical && '1' === hierarchical) ||
-				'automatically' === get_options) &&
-			'entry' === order_terms_by
-		) {
+		if ('automatically' !== get_options) {
+			return;
+		}
+
+		if ('entry' === order_terms_by) {
 			handleToggleGroupChange('default', 'order_terms_by');
 		}
-	}, [get_options, hierarchical]);
+	}, [get_options]);
 
 	const _orderByField = () => {
 		let _options = termsOrderByOptions();
 		let options;
 
-		if (
-			(taxonomyHierarchical && '1' === hierarchical) ||
-			'automatically' === get_options
-		) {
+		if (isHierarchyEnabled || 'automatically' === get_options) {
 			options = _options.filter((option) => 'entry' !== option.value);
 		} else {
 			options = _options;

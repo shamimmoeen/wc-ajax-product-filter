@@ -2,10 +2,12 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useFilter } from '../../../FilterContext';
 import useFilterData from '../../../useFilterData';
-import { orderByOptions } from '../../../utils';
+import { metaValuesOrderByOptions } from '../../../utils';
 import ManualOptions from './ManualOptions';
 import ManualOptionsModal from './ManualOptionsModal';
 import useFields from './useFields';
+
+const orderTypesForManualEntry = ['label', 'entry'];
 
 const ValueTypeText = () => {
 	const { state, dispatch } = useFilter();
@@ -19,9 +21,7 @@ const ValueTypeText = () => {
 	} = useFields();
 
 	const [open, setOpen] = useState(false);
-
 	const openModal = () => setOpen(true);
-
 	const closeModal = () => setOpen(false);
 
 	const {
@@ -29,17 +29,23 @@ const ValueTypeText = () => {
 	} = state;
 
 	useEffect(() => {
-		if ('automatically' === get_options && 'label' === options_order_by) {
+		if ('automatically' !== get_options) {
+			return;
+		}
+
+		if (orderTypesForManualEntry.includes(options_order_by)) {
 			handleToggleGroupChange('none', 'options_order_by');
 		}
 	}, [get_options]);
 
 	const _orderByField = () => {
-		let _options = orderByOptions();
+		let _options = metaValuesOrderByOptions();
 		let options;
 
 		if ('automatically' === get_options) {
-			options = _options.filter((option) => 'label' !== option.value);
+			options = _options.filter(
+				(option) => !orderTypesForManualEntry.includes(option.value)
+			);
 		} else {
 			options = _options;
 		}

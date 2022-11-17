@@ -842,6 +842,9 @@ body.rtl .__available_filters .__filters .__item {
 .__options_table .wp-list-table.widefat .__direction .__custom_react_select {
   min-width: 80px;
 }
+.__options_table .wp-list-table.widefat .__term_name {
+  display: block;
+}
 .__options_table .wp-list-table.widefat .__term_id {
   color: rgba(0, 0, 0, 0.3);
   display: inline-flex;

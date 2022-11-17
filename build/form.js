@@ -2907,9 +2907,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "initialFilterKeysData": function() { return /* binding */ initialFilterKeysData; },
 /* harmony export */   "isTaxonomyFilters": function() { return /* binding */ isTaxonomyFilters; },
 /* harmony export */   "isTaxonomyHierarchical": function() { return /* binding */ isTaxonomyHierarchical; },
+/* harmony export */   "metaValuesOrderByOptions": function() { return /* binding */ metaValuesOrderByOptions; },
 /* harmony export */   "methodsOfGettingOptions": function() { return /* binding */ methodsOfGettingOptions; },
 /* harmony export */   "numberDisplayTypes": function() { return /* binding */ numberDisplayTypes; },
-/* harmony export */   "orderByOptions": function() { return /* binding */ orderByOptions; },
 /* harmony export */   "orderDirectionOptions": function() { return /* binding */ orderDirectionOptions; },
 /* harmony export */   "orderTypeOptions": function() { return /* binding */ orderTypeOptions; },
 /* harmony export */   "productStatusOptions": function() { return /* binding */ productStatusOptions; },
@@ -2943,8 +2943,8 @@ function availableFilters() {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Product Status', 'wc-ajax-product-filter'),
     type: 'product-status'
   }, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Property', 'wc-ajax-product-filter'),
-    type: 'post-property'
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Author', 'wc-ajax-product-filter'),
+    type: 'post-author'
   }, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post Meta', 'wc-ajax-product-filter'),
     type: 'post-meta',
@@ -3075,11 +3075,10 @@ function filterDefaultData() {
     date_to_prefix: '',
     date_to_postfix: '',
     date_to_placeholder: '',
-    // Post Property
-    post_property: '',
+    // Post Author
     post_author_order_by: 'default',
     post_author_order_dir: 'asc',
-    include_user_roles: '',
+    include_user_roles: [],
     // Sort by
     sort_by_options: [],
     // Per page
@@ -3133,8 +3132,7 @@ function variableFilterTypesData() {
   return {
     attribute: 'taxonomy',
     'custom-taxonomy': 'taxonomy',
-    'post-meta': 'meta_key',
-    'post-property': 'post_property'
+    'post-meta': 'meta_key'
   };
 }
 function initialFilterKeysData(activeFilterData) {
@@ -3218,19 +3216,22 @@ function termsOrderByOptions() {
     value: 'entry'
   }];
 }
-function orderByOptions() {
+function metaValuesOrderByOptions() {
   return [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Default', 'wc-ajax-product-filter'),
     value: 'none'
   }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
-    value: 'label'
-  }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Value', 'wc-ajax-product-filter'),
     value: 'value'
   }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
+    value: 'label'
+  }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Count', 'wc-ajax-product-filter'),
     value: 'count'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Entry', 'wc-ajax-product-filter'),
+    value: 'entry'
   }];
 }
 function orderDirectionOptions() {
@@ -3264,6 +3265,9 @@ function authorOrderByOptions() {
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Count', 'wc-ajax-product-filter'),
     value: 'count'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Entry', 'wc-ajax-product-filter'),
+    value: 'entry'
   }];
 }
 function authorLimitByOptions() {
@@ -3457,7 +3461,7 @@ function getTableData(filterType, activeFilterData) {
   } else if ('product-status' === filterType) {
     type = 'product-status-options';
     optionsKey = 'product_status_options';
-  } else if ('post-meta' === filterType || 'post-property' === filterType) {
+  } else if ('post-meta' === filterType) {
     if ('text' === value_type) {
       type = 'text-options';
       optionsKey = 'manual_options';
@@ -3474,6 +3478,9 @@ function getTableData(filterType, activeFilterData) {
   } else if ('per-page' === filterType) {
     type = 'per-page-options';
     optionsKey = 'per_page_options';
+  } else if ('post-author' === filterType) {
+    type = 'post-author-options';
+    optionsKey = 'manual_options';
   } else if (isTaxonomyFilters(filterType)) {
     type = 'taxonomy-options';
     optionsKey = 'manual_options';
@@ -5769,7 +5776,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "proTag": function() { return /* binding */ proTag; },
 /* harmony export */   "removeMediaFrames": function() { return /* binding */ removeMediaFrames; },
 /* harmony export */   "slugify": function() { return /* binding */ slugify; },
-/* harmony export */   "upgradeToProLink": function() { return /* binding */ upgradeToProLink; }
+/* harmony export */   "upgradeToProLink": function() { return /* binding */ upgradeToProLink; },
+/* harmony export */   "wcfmFound": function() { return /* binding */ wcfmFound; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -5814,7 +5822,7 @@ function pluginVersion() {
 }
 function getAdditionalData() {
   const data = {
-    action: 'get_filter_additional_data'
+    action: 'wcapf_get_filter_additional_data'
   };
   return axios__WEBPACK_IMPORTED_MODULE_1___default().get(wcapf_admin_params.ajaxurl, {
     params: data
@@ -5845,6 +5853,9 @@ function getSettingsPageLink() {
 }
 function slugify(value) {
   return '__' + value.replace(/ /g, '_');
+}
+function wcfmFound() {
+  return wcapf_admin_params.wcfm_marketplace_found;
 }
 function getNoOfMaxTermsToRender() {
   const maxItems = parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;

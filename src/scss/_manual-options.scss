@@ -154,6 +154,10 @@
 			}
 		}
 
+		.__term_name {
+			display: block;
+		}
+
 		.__term_id {
 			@include info;
 		}
