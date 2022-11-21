@@ -1,6 +1,9 @@
 /*!**************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/settings.scss ***!
   \**************************************************************************************************************************************************************************************************************************************************************************/
+body {
+  background-color: #fff;
+}
 body.auto-fold #wpcontent,
 body #wpcontent {
   padding-left: 0;
@@ -199,10 +202,25 @@ body.rtl .__pro_tag::before {
   margin: 0 4px 0 0;
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
 .__top_bar {
   align-items: center;
   background-color: #fff;
-  border-bottom: 1px solid #ccd0d4;
+  border-bottom: 1px solid #ededed;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -285,6 +303,25 @@ body.rtl .__top_bar h2 .__icon {
   margin-left: 4px;
 }
 
+:root {
+  --large-gap: 40px;
+}
+@media (max-width: 960px) {
+  :root {
+    --large-gap: 24px;
+  }
+}
+@media (max-width: 782px) {
+  :root {
+    --large-gap: 16px;
+  }
+}
+
+.__sidebar .components-card {
+  border: 1px solid #ededed;
+  border-radius: 2px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
+}
 .__sidebar .components-card-header h2 {
   font-size: 16px;
   margin: 0;
@@ -379,8 +416,24 @@ body.rtl .__sidebar .components-button {
 }
 .__form_control .components-text-control__input,
 .__form_control .components-checkbox-control__input,
-.__form_control .components-radio-control__input {
+.__form_control .components-radio-control__input,
+.__form_control .components-textarea-control__input {
   border-color: #ddd;
+}
+.__form_control .components-textarea-control__input {
+  font-size: 13px;
+  line-height: normal;
+  width: 100%;
+  padding: 6px 8px;
+  box-shadow: transparent 0 0 0;
+  transition: box-shadow 0.1s linear 0s;
+  border-radius: 2px;
+  max-width: 300px;
+}
+.__form_control .components-textarea-control__input:focus {
+  border-color: var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 0.5px var(--wp-admin-theme-color);
+  outline: transparent solid 2px;
 }
 .__form_control .radio-group:not(.radio-group-vertical) .components-radio-control__option {
   display: inline;
@@ -400,10 +453,6 @@ body.rtl .__sidebar .components-button {
 }
 .__form_control.__horizontal_multi_checkbox .components-base-control__field {
   margin: 0;
-}
-.__form_control #soft_limit,
-.__form_control #soft_limit_for_extended_layout {
-  max-width: 60px;
 }
 .__form_control .components-button-group .components-button {
   height: 30px;
@@ -455,6 +504,30 @@ body.rtl .__sidebar .components-button {
 .__form_control.react_select_simple .__input_wrapper .date_display_type,
 .__form_control.react_select_simple .__input_wrapper .number_display_type {
   min-width: 200px;
+}
+.__form_control.react_select_simple .__input_wrapper .type,
+.__form_control.react_select_simple .__input_wrapper .meta_key {
+  min-width: 220px;
+}
+.__form_control.react_select_simple .__input_wrapper .type .__react_select__group {
+  padding-bottom: 8px;
+}
+.__form_control.react_select_simple .__input_wrapper .type .__react_select__group-heading {
+  font-size: 100%;
+  font-weight: normal;
+  margin-bottom: 8px;
+  text-transform: none;
+}
+.__form_control.react_select_simple .__input_wrapper .order_terms_by,
+.__form_control.react_select_simple .__input_wrapper .limit_options,
+.__form_control.react_select_simple .__input_wrapper .options_order_by,
+.__form_control.react_select_simple .__input_wrapper .post_author_order_by {
+  min-width: 150px;
+}
+.__form_control.react_select_simple .__input_wrapper .display_type .__react_select__option .__pro_tag,
+.__form_control.react_select_simple .__input_wrapper .date_display_type .__react_select__option .__pro_tag,
+.__form_control.react_select_simple .__input_wrapper .number_display_type .__react_select__option .__pro_tag {
+  display: none;
 }
 .__form_control.react_select .__input_wrapper {
   margin-bottom: 8px;
@@ -557,7 +630,6 @@ body.rtl .__custom_react_select .__name {
 .__custom_react_select .__info {
   color: rgba(0, 0, 0, 0.3);
   display: inline-flex;
-  font-size: 12px;
 }
 .__custom_react_select .__react_select__option--is-selected .__info {
   color: rgba(255, 255, 255, 0.5);
@@ -579,10 +651,14 @@ body.rtl .__custom_react_select .__name {
   justify-content: space-between;
   align-items: center;
 }
-.__custom_react_select.__single_select .__react_select__group .__react_select__option {
+body:not(.rtl) .__custom_react_select.__single_select .__react_select__group .__react_select__option {
   padding-left: 16px;
+}
+
+body.rtl .__custom_react_select.__single_select .__react_select__group .__react_select__option {
   padding-right: 16px;
 }
+
 .__custom_react_select.__single_select .__pro_group .__react_select__option {
   padding-left: 8px;
   padding-right: 8px;
@@ -605,10 +681,14 @@ body.rtl .__custom_react_select .__name {
   justify-content: space-between;
   align-items: center;
 }
-.__react_select__menu-portal .__react_select__group .__react_select__option {
+body:not(.rtl) .__react_select__menu-portal .__react_select__group .__react_select__option {
   padding-left: 16px;
+}
+
+body.rtl .__react_select__menu-portal .__react_select__group .__react_select__option {
   padding-right: 16px;
 }
+
 .__react_select__menu-portal .__pro_group .__react_select__option {
   padding-left: 8px;
   padding-right: 8px;
@@ -645,10 +725,11 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   --vr-padding: 16px;
   --hr-padding: 24px;
   background-color: rgb(255, 255, 255);
-  position: relative;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+  border: 1px solid #ededed;
+  border-radius: 2px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
   outline: none;
-  border-radius: 1px;
+  position: relative;
 }
 .__settings_wrapper .__settings_header {
   display: flex;
@@ -716,6 +797,10 @@ body.rtl .__settings_fields .__scroll_window_to .__input_wrapper .__single_selec
 
 .__settings_fields .__scroll_window_to .description {
   margin-top: 0;
+}
+
+.__form_control.react_select .__custom_react_select.full-width.author_roles {
+  max-width: 570px;
 }
 
 /*# sourceMappingURL=settings.css.map*/

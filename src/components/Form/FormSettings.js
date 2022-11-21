@@ -1,35 +1,19 @@
 import { __ } from '@wordpress/i18n';
-import Checkbox from '../../Field/Checkbox';
-import Radio from '../../Field/Radio';
-import MediaScreenRules from '../../VisibilityRules/MediaScreenRules';
-import { useForm } from '../FormContext';
-import useFormData from '../useFormData';
+import Checkbox from '../Field/Checkbox';
+import Radio from '../Field/Radio';
+import { useForm } from './FormContext';
+import useFormSettings from './useFormSettings';
 
 const FormSettings = () => {
 	const { state, dispatch } = useForm();
-	const { handleCheckboxChange, handleRadioChange, updateFormSettings } =
-		useFormData(state, dispatch);
+	const { handleCheckboxChange, handleRadioChange } = useFormSettings(
+		state,
+		dispatch
+	);
 
 	const {
-		formSettings: {
-			show_title,
-			form_submission,
-			disable_ajax,
-			media_screens,
-		},
+		formSettings: { show_title, form_submission, disable_ajax },
 	} = state;
-
-	const handleMediaScreenChange = (value) => {
-		let values = [...media_screens];
-
-		if (values.includes(value)) {
-			values = values.filter((_value) => _value !== value);
-		} else {
-			values.push(value);
-		}
-
-		updateFormSettings('media_screens', values);
-	};
 
 	return (
 		<>
@@ -59,7 +43,6 @@ const FormSettings = () => {
 					{
 						label: __('Submit Button', 'wc-ajax-product-filter'),
 						value: 'submit',
-						isPro: true,
 					},
 				]}
 				onChange={handleRadioChange}
@@ -75,17 +58,6 @@ const FormSettings = () => {
 					'Whether to show the form title before the filters.',
 					'wc-ajax-product-filter'
 				)}
-				isPro={true}
-			/>
-
-			<MediaScreenRules
-				label={__('Hide form on', 'wc-ajax-product-filter')}
-				description={__(
-					'Select screen sizes where you want to hide the form.',
-					'wc-ajax-product-filter'
-				)}
-				rules={media_screens}
-				onChange={handleMediaScreenChange}
 			/>
 		</>
 	);

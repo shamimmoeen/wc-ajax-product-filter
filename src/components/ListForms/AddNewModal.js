@@ -1,64 +1,24 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Icon, Modal, Spinner } from '@wordpress/components';
+import { Button, Flex, Icon, Modal, Spinner } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { itemCreateErrorNotice, removeItemCreateNotice } from '../../notices';
-import { getAvailableFilters, getEditFormLink } from '../../utils';
-import { defaultFormSettings } from '../../utilsForForm';
-import { useListForms } from '../ListFormsContext';
-import { CheckIcon } from '../../SVGIcons';
-import Body from './Body';
-import Footer from './Footer';
+import { itemCreateErrorNotice, removeItemCreateNotice } from '../notices';
+import { getEditFormLink } from '../utils';
+import { useListForms } from './ListFormsContext';
+import { CheckIcon } from '../SVGIcons';
 import axios from 'axios';
+import { defaultFormSettings } from '../utilsForForm';
 
 const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	const {
-		state: { title, forms, formFilters },
+		state: { forms },
 		dispatch,
 	} = useListForms();
 
-	const [loading, setLoading] = useState(true);
-	const [step, setStep] = useState(1);
+	const [title, setTitle] = useState('');
+	const [loading, setLoading] = useState(false);
 	const [newItemId, setNewItemId] = useState('');
 
 	const modalRef = useRef(null);
-
-	useEffect(() => {
-		if (!isOpen) {
-			return;
-		}
-
-		getAvailableFilters()
-			.then((res) => {
-				const {
-					data: { data: availableFilters },
-				} = res;
-
-				dispatch({
-					type: 'SET_AVAILABLE_FILTERS',
-					payload: availableFilters,
-				});
-
-				setLoading(false);
-			})
-			.catch((err) => console.log(err));
-	}, [isOpen]);
-
-	// Focus the modal when step gets changed.
-	useEffect(() => {
-		if (!isOpen) {
-			return;
-		}
-
-		if (!modalRef.current) {
-			return;
-		}
-
-		if (step < 2) {
-			return;
-		}
-
-		modalRef.current.children[0].focus();
-	}, [step]);
 
 	// Focus the modal when loading state gets changed.
 	useEffect(() => {
@@ -70,10 +30,6 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 			return;
 		}
 
-		if (step < 2) {
-			return;
-		}
-
 		if (loading) {
 			return;
 		}
@@ -81,18 +37,19 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		modalRef.current.children[0].focus();
 	}, [loading]);
 
+	const handleTitleChange = (e) => {
+		removeItemCreateNotice();
+
+		setTitle(e.target.value);
+	};
+
 	const handleCloseModal = () => {
 		removeItemCreateNotice();
 
 		setAddNewModalOpen(false);
-		setStep(1);
-		setLoading(true);
+		setLoading(false);
 		setNewItemId('');
-
-		dispatch({ type: 'SET_DIRTY', payload: false });
-		dispatch({ type: 'SET_TITLE', payload: '' });
-		dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: [] });
-		dispatch({ type: 'SET_FORM_FILTERS', payload: [] });
+		setTitle('');
 	};
 
 	const handleSubmit = () => {
@@ -104,7 +61,6 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 
 		formData.append('action', 'wcapf_save_form');
 		formData.append('form_title', title);
-		formData.append('form_filters', JSON.stringify(formFilters));
 		formData.append('form_settings', JSON.stringify(defaultFormSettings()));
 
 		axios
@@ -145,9 +101,9 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 				<div className='__filter_response'>
 					<Icon icon={CheckIcon} />
 					<h4>{__('Form was created', 'wc-ajax-product-filter')}</h4>
-					<p className='description'>
+					<p className='__description'>
 						{__(
-							'Now you can edit all the settings of this form.',
+							'Now you can add filters and edit the settings of this form.',
 							'wc-ajax-product-filter'
 						)}
 					</p>
@@ -167,14 +123,33 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		} else {
 			return (
 				<>
-					<Body step={step} />
+					<div className='__step_inner __title_step'>
+						<input
+							type={'text'}
+							placeholder={__(
+								'Enter form title',
+								'wc-ajax-product-filter'
+							)}
+							className='components-text-control__input'
+							value={title}
+							onChange={handleTitleChange}
+						/>
+					</div>
 
-					<Footer
-						step={step}
-						setStep={setStep}
-						closeModal={handleCloseModal}
-						handleSubmit={handleSubmit}
-					/>
+					<Flex justify={'space-between'}>
+						<Button variant='secondary' onClick={handleCloseModal}>
+							{__('Cancel', 'wc-ajax-product-filter')}
+						</Button>
+
+						<Button
+							variant='primary'
+							onClick={handleSubmit}
+							disabled={!title}
+							className='__next_btn'
+						>
+							{__('Next', 'wc-ajax-product-filter')}
+						</Button>
+					</Flex>
 				</>
 			);
 		}

@@ -1,119 +1,65 @@
 @import './mixins';
 
-.__no_filters_found {
-	text-align: center;
+@mixin header-column-sizes {
+	.__title {
+		flex: 1.2;
+	}
+
+	.__type {
+		flex: 1.3;
+	}
+
+	.__key {
+		flex: .9;
+	}
+
+	.__display {
+		flex: .8;
+	}
 }
 
 .__filters_drop_zone {
-	.__header {
-		align-items: center;
+	margin: 0 auto;
+	max-width: 900px;
+
+	.__filters_list_header {
 		display: flex;
+		font-weight: 500;
 		justify-content: space-between;
-		margin-bottom: 1.5em;
+		margin: 0 16px 1em;
+		padding: 0 calc(24px + 8px);
+		gap: 16px;
 
-		.__label {
-			font-size: 16px;
-			margin: 0;
-		}
-
-		.__add_filter_btn {
-			padding: 0;
-			height: 34px;
-			width: 34px;
-			justify-content: center;
-
-			svg {
-				transition: transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
-			}
-
-			&.active,
-			&.active:hover {
-				background-color: #1e1e1e;
-			}
-
-			&.active svg {
-				transform: rotate(45deg);
-			}
-		}
+		@include header-column-sizes;
 	}
 
-	.__remove_all_btn {
+	.__add_filter_btn {
 		margin-top: 1.5em;
-	}
-}
-
-.__available_filters_wrapper {
-	margin-bottom: 2em;
-}
-
-.__available_filters_dropdown {
-	background-color: #ffffff;
-	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-	max-height: 163px;
-	margin-bottom: 1em;
-	margin-top: 10px;
-
-	.__item {
-		align-items: center;
-		border-bottom: 1px solid #e2e2e2;
-		display: flex;
-		justify-content: space-between;
-		padding: 10px;
-		user-select: none;
-
-		&.active {
-			background-color: #f6f7f7;
-		}
-
-		&:last-child {
-			border-bottom: none;
-		}
 
 		@include ltr {
-			border-right: 1px solid #e2e2e2;
+			padding-right: 16px;
 		}
 
 		@include rtl {
-			border-left: 1px solid #e2e2e2;
+			padding-left: 16px;
 		}
 	}
 
-	@include post-title-with-info;
+	.__empty_form {
+		@include empty-content;
 
-	.__btn_wrapper {
-		display: inline-flex;
-		align-items: center;
+		border: 1px solid $separatorBorderColor;
 
-		.components-button {
-			padding: 0;
-			height: 20px;
+		.__add_filter_btn {
+			margin-top: 0;
 		}
 	}
 }
 
 .__form_filters {
 	.__item {
-		border: 1px solid #ddd;
-		box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
-		color: #1d2327;
-		font-size: 13px;
-		line-height: 1.4em;
-
 		&:not(:last-child) {
-			margin: 0 0 10px;
-		}
-	}
-
-	.__accordion_body {
-		border-top: 1px solid #ddd;
-		padding: 15px;
-
-		.__override_info {
-			margin: 0 0 2em;
-		}
-
-		.__action_buttons {
-			margin-top: 1.5em;
+			margin: 0 0 1em;
 		}
 	}
 
@@ -124,39 +70,102 @@
 		justify-content: space-between;
 		padding: 10px 15px;
 		user-select: none;
+		border: 1px solid $separatorBorderColor;
+		border-radius: $blockBorderRadius;
 
-		.__tt {
-			display: flex;
-			gap: 8px;
-			align-items: center;
+		&.open {
+			background-color: #f0f6fc;
+			border-color: #D8EBF5;
+			border-radius: $blockBorderRadius $blockBorderRadius 0 0;
+		}
 
-			.__drag_handle_wrapper {
-				display: inline-flex;
-			}
+		.__drag_handle_wrapper {
+			display: inline-flex;
 		}
 
 		.__drag_handler {
 			cursor: grab;
 		}
 
-		@include post-title-with-info;
+		._filter_header {
+			align-items: center;
+			display: flex;
+			justify-content: space-between;
+			flex: 1;
+			gap: 16px;
+
+			@include header-column-sizes;
+
+			.__title {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.__filter_type {
+				@include horizontal-space(4px);
+			}
+
+			.__meta_key {
+				@include info;
+			}
+		}
 
 		.__accordion_toggle_button {
 			display: inline-flex;
+		}
+	}
 
-			.components-button {
-				border-radius: 100%;
-				padding: 0;
+	.__accordion_body {
+		border-style: solid;
+		border-color: $separatorBorderColor;
+		border-width: 0 1px 1px;
+		border-radius: 0 0 $blockBorderRadius $blockBorderRadius;
+
+		.components-tab-panel__tabs {
+			border: none;
+			justify-content: flex-start;
+			gap: 24px;
+
+			.components-tab-panel__tabs-item {
+				font-weight: normal;
+				font-size: 12.5px;
+				padding-left: 0;
+				padding-right: 0;
+
+				&:not(.active-tab) {
+					color: #667085;
+				}
+			}
+		}
+
+		.components-tab-panel__tab-content {
+			padding: 24px;
+			max-width: unset;
+			min-height: unset;
+			margin: unset;
+
+			.__form_control {
+				&:first-child {
+					margin-top: .5em;
+				}
+			}
+		}
+
+		>.__action_buttons {
+			background-color: #f8f9fa;
+			padding: 16px 24px;
+		}
+
+		.__remove_popover {
+			.components-popover__content {
+				width: auto;
 			}
 		}
 	}
 }
 
-.__filter_settings {
-
-	// In filter settings we don't show the field description,
-	// that's why we don't need the extra space for smaller devices.
-	.__form_control .__inner .__input_wrapper {
-		margin: 0;
-	}
+.__form_settings {
+	max-width: 775px;
+	margin: 0 auto;
 }

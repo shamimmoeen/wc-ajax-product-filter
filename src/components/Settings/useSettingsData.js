@@ -62,6 +62,10 @@ const useSettingsData = (state, dispatch) => {
 		updateSettings(_settings);
 	};
 
+	const handleAuthorRolesChange = (selected, key) => {
+		updateSingleSettings(key, selected);
+	};
+
 	const updateSingleSettings = (key, value) => {
 		const prevValue = settings[key];
 
@@ -91,6 +95,7 @@ const useSettingsData = (state, dispatch) => {
 		handleSelectChange,
 		handleImageChange,
 		handleImageRemove,
+		handleAuthorRolesChange,
 	};
 };
 

@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
-import { PlusIcon } from './SVGIcons';
+import { PlusIcon } from '../SVGIcons';
 
+// TODO: Change the wrapper className.
 const NoFormsFound = () => {
 	return (
 		<div className='__import_sample_filters'>

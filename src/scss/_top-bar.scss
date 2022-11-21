@@ -1,7 +1,10 @@
+@import './variables';
+
 .__top_bar {
     align-items: center;
     background-color: #fff;
-    border-bottom: 1px solid #ccd0d4;
+    border-bottom: 1px solid $separatorBorderColor;
+    box-shadow: $separatorBoxShadow;
     display: flex;
     justify-content: space-between;
     gap: 20px;

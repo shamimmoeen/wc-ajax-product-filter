@@ -154,11 +154,13 @@
 			}
 		}
 
-		.__term_name {
+		.__term_name,
+		.__author_name {
 			display: block;
 		}
 
-		.__term_id {
+		.__term_id,
+		.__author_id {
 			@include info;
 		}
 

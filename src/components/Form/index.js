@@ -1,21 +1,17 @@
-import { Spinner } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import { useForm } from './FormContext';
 import axios from 'axios';
 import { merge } from 'lodash';
 import TopBar from '../TopBar';
 import FormTitle from './FormTitle';
-import FormNav from './FormNav';
+import FormTabPanel from './FormTabPanel';
 import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
 import { getAvailableFilters } from '../utils';
 import { defaultFormSettings } from '../utilsForForm';
 
 const Form = () => {
-	const {
-		state: { isLoading },
-		dispatch,
-	} = useForm();
+	const { dispatch } = useForm();
 
 	const getFormData = () => {
 		const query = new URL(window.location.href);
@@ -44,16 +40,6 @@ const Form = () => {
 				const {
 					data: { data: formData },
 				} = resFormFilters;
-
-				dispatch({
-					type: 'SET_TITLE',
-					payload: formData['post_title'],
-				});
-
-				dispatch({
-					type: 'SET_FORM_ID',
-					payload: formData['post_id'],
-				});
 
 				const formFilters = formData['form_filters'];
 				const formSettings = formData['form_settings'];
@@ -95,27 +81,17 @@ const Form = () => {
 	return (
 		<>
 			<div className='__wcapf_admin'>
-				<TopBar view={'forms'} />
+				<TopBar view={'form'} />
 
-				<div className='__wcapf_layout'>
-					{isLoading ? (
-						<div className='__post_data_fetching'>
-							<Spinner />
+				<div className='__edit_filter'>
+					<div className='__edit_filter_from'>
+						<div className='__content'>
+							<FormTitle />
+							<FormTabPanel />
 						</div>
-					) : (
-						<div className='__main __edit_filter'>
-							<div className='__edit_filter_from'>
-								<div className='__content'>
-									<FormTitle />
-									<FormNav />
-								</div>
-							</div>
+					</div>
 
-							<div className='__sidebar'>
-								<FormPreview />
-							</div>
-						</div>
-					)}
+					<FormPreview />
 				</div>
 
 				<Notifications />

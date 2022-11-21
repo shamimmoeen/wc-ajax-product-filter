@@ -43,35 +43,9 @@
         }
     }
 
-    .__stepper {
-        display: flex;
-        flex: 1;
+    .__next_btn {
+        min-width: 64px;
         justify-content: center;
-
-        ._dots {
-            span {
-                width: 12px;
-                height: 12px;
-                margin: 0 4px;
-                background-color: rgba(0, 0, 0, 0.15);
-                border-radius: 50%;
-                display: inline-block;
-
-                &.active {
-                    background-color: var(--wp-admin-theme-color);
-                }
-            }
-        }
-    }
-
-    .__left,
-    .__right {
-        width: 80px;
-    }
-
-    .__right {
-        display: flex;
-        justify-content: flex-end;
     }
 
     .__filter_response {
@@ -79,7 +53,7 @@
 
         h4 {
             font-weight: 500;
-            font-size: 1.2em;
+            font-size: 1.3em;
         }
 
         svg {

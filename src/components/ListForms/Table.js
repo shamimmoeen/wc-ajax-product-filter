@@ -1,7 +1,6 @@
 import { Button, Icon } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
-import ImportSampleFilters from '../ImportSampleFilters';
-import NoFormsFound from '../NoFormsFound';
+import NoFormsFound from './NoFormsFound';
 import {
 	CodeIcon,
 	DeleteIcon,
@@ -13,8 +12,7 @@ import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 
-const filtersFound = wcapf_admin_params.filters_found;
-
+// TODO: Add form location column.
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
@@ -141,11 +139,7 @@ const Table = ({
 	if (formsFound) {
 		content = listTable();
 	} else {
-		if (!filtersFound) {
-			content = <ImportSampleFilters view={'forms'} />;
-		} else {
-			content = <NoFormsFound />;
-		}
+		content = <NoFormsFound />;
 	}
 
 	return (
@@ -153,11 +147,8 @@ const Table = ({
 			<div className='__list_table_wrapper'>
 				<div className='__list_table_header'>
 					<h2>{__('List of Forms', 'wc-ajax-product-filter')}</h2>
-					<Button
-						variant='primary'
-						onClick={openAddNewModal}
-						disabled={!filtersFound}
-					>
+
+					<Button variant='primary' onClick={openAddNewModal}>
 						<Icon icon={PlusIcon} size={16} />
 						{__('Add New', 'wc-ajax-product-filter')}
 					</Button>

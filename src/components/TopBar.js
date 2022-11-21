@@ -38,7 +38,8 @@ const TopBar = ({ view }) => {
 				</h2>
 
 				{navMenus.map((menu) => {
-					const menuClass = view === menu.id ? 'is-active' : '';
+					const _view = 'form' === view ? 'forms' : view;
+					const menuClass = _view === menu.id ? 'is-active' : '';
 
 					return (
 						<a className={menuClass} href={menu.href} key={menu.id}>
@@ -48,30 +49,36 @@ const TopBar = ({ view }) => {
 				})}
 			</div>
 
-			<div className='__cta'>
-				{!foundProVersion() && (
-					<a
-						href={upgradeToProLink()}
-						className='__upgrade_btn'
-						target='_blank'
-					>
-						<Icon icon={DiamondIcon} size={18} />
-						{__('Upgrade to PRO', 'wc-ajax-product-filter')}
-					</a>
-				)}
+			{'form' !== view && (
+				<div className='__cta'>
+					{!foundProVersion() && (
+						<a
+							href={upgradeToProLink()}
+							className='__upgrade_btn'
+							target='_blank'
+						>
+							<Icon icon={DiamondIcon} size={18} />
+							{__('Upgrade to PRO', 'wc-ajax-product-filter')}
+						</a>
+					)}
 
-				<div className='__plan'>
-					<div>{__('You are on the', 'wc-ajax-product-filter')}</div>
-					<div>
-						{foundProVersion() ? __('PRO Plan') : __('FREE Plan')}
+					<div className='__plan'>
+						<div>
+							{__('You are on the', 'wc-ajax-product-filter')}
+						</div>
+						<div>
+							{foundProVersion()
+								? __('PRO Plan')
+								: __('FREE Plan')}
+						</div>
+					</div>
+
+					<div className='__version'>
+						<div>{__('Version', 'wc-ajax-product-filter')}</div>
+						<div>{pluginVersion()}</div>
 					</div>
 				</div>
-
-				<div className='__version'>
-					<div>{__('Version', 'wc-ajax-product-filter')}</div>
-					<div>{pluginVersion()}</div>
-				</div>
-			</div>
+			)}
 		</div>
 	);
 };

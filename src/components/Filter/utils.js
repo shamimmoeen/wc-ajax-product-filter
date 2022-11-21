@@ -4,16 +4,8 @@ import { foundProVersion } from '../utils';
 export function availableFilters() {
 	return [
 		{
-			title: __('Category', 'wc-ajax-product-filter'),
-			type: 'category',
-		},
-		{
-			title: __('Tag', 'wc-ajax-product-filter'),
-			type: 'tag',
-		},
-		{
-			title: __('Attribute', 'wc-ajax-product-filter'),
-			type: 'attribute',
+			title: __('Taxonomy', 'wc-ajax-product-filter'),
+			type: 'taxonomy',
 		},
 		{
 			title: __('Price', 'wc-ajax-product-filter'),
@@ -34,35 +26,6 @@ export function availableFilters() {
 		{
 			title: __('Post Meta', 'wc-ajax-product-filter'),
 			type: 'post-meta',
-			isPro: true,
-		},
-		{
-			title: __('Custom Taxonomy', 'wc-ajax-product-filter'),
-			type: 'custom-taxonomy',
-			isPro: true,
-		},
-		{
-			title: __('Sort by', 'wc-ajax-product-filter'),
-			type: 'sort-by',
-			isPro: true,
-		},
-		{
-			title: __('Per page', 'wc-ajax-product-filter'),
-			type: 'per-page',
-			isPro: true,
-		},
-		{
-			title: __('Search', 'wc-ajax-product-filter'),
-			type: 'search',
-			isPro: true,
-		},
-		{
-			title: __('Active Filters', 'wc-ajax-product-filter'),
-			type: 'active-filters',
-		},
-		{
-			title: __('Reset Button', 'wc-ajax-product-filter'),
-			type: 'reset-button',
 		},
 	];
 }
