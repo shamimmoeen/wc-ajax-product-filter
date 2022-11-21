@@ -1,4 +1,12 @@
+@import './variables';
+
 .__sidebar {
+    .components-card {
+        border: 1px solid $separatorBorderColor;
+        border-radius: $blockBorderRadius;
+        box-shadow: $blockBoxShadow;
+    }
+
     .components-card-header {
         h2 {
             font-size: 16px;

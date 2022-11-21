@@ -1,12 +1,20 @@
 import { CheckboxControl } from '@wordpress/components';
 import { proTag } from '../utils';
 
-const Checkbox = ({ id, label, isChecked, onChange, description, isPro }) => {
+const Checkbox = ({
+	id,
+	index = '',
+	label,
+	isChecked,
+	onChange,
+	description,
+	isPro,
+}) => {
 	return (
 		<div className='__form_control __checkbox_toggle'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={id}>
+					<label htmlFor={`${id}-${index}`}>
 						{label}
 						{proTag(isPro)}
 					</label>
@@ -15,8 +23,8 @@ const Checkbox = ({ id, label, isChecked, onChange, description, isPro }) => {
 					<div className='__input_wrapper'>
 						<CheckboxControl
 							checked={isChecked}
-							id={id}
-							onChange={(value) => onChange(value, id)}
+							id={`${id}-${index}`}
+							onChange={(value) => onChange(value, id, index)}
 						/>
 					</div>
 				</div>

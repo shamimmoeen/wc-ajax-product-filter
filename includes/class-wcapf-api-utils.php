@@ -15,6 +15,205 @@
  */
 class WCAPF_API_Utils {
 
+	public static function get_filter_types() {
+		return array(
+			array(
+				'label'   => __( 'Taxonomy', 'wc-ajax-product-filter' ),
+				'value'   => 'taxonomy',
+				'options' => self::get_available_taxonomies(),
+			),
+			array(
+				'label' => __( 'Price', 'wc-ajax-product-filter' ),
+				'value' => 'price',
+			),
+			array(
+				'label' => __( 'Rating', 'wc-ajax-product-filter' ),
+				'value' => 'rating',
+			),
+			array(
+				'label' => __( 'Product Status', 'wc-ajax-product-filter' ),
+				'value' => 'product-status',
+			),
+			array(
+				'label' => __( 'Post Author', 'wc-ajax-product-filter' ),
+				'value' => 'post-author',
+			),
+			array(
+				'label' => __( 'Post Meta', 'wc-ajax-product-filter' ),
+				'value' => 'post-meta',
+			),
+		);
+	}
+
+	public static function get_available_taxonomies() {
+		$tax_data   = get_object_taxonomies( 'product', 'objects' );
+		$taxonomies = array();
+
+		$main_taxonomies     = array( 'product_cat', 'product_tag' );
+		$optional_taxonomies = array( 'product_type', 'product_visibility', 'product_shipping_class' );
+		$attributes          = wc_get_attribute_taxonomy_names();
+		$array               = array_merge( $main_taxonomies, $optional_taxonomies, $attributes );
+		$others              = array();
+
+		foreach ( $tax_data as $taxonomy ) {
+			$name = $taxonomy->name;
+
+			if ( ! in_array( $name, $array ) ) {
+				$others[] = $name;
+			}
+		}
+
+		$final_array = array_merge( $main_taxonomies, $attributes, $others, $optional_taxonomies );
+
+		foreach ( $final_array as $name ) {
+			$taxonomies[] = array(
+				'label'           => $tax_data[ $name ]->label,
+				'value'           => $name,
+				'type'            => 'taxonomy',
+				'taxHierarchical' => is_taxonomy_hierarchical( $name ),
+			);
+		}
+
+		return $taxonomies;
+	}
+
+	/**
+	 * Gets the meta keys for post type product.
+	 *
+	 * @noinspection SqlNoDataSourceInspection
+	 * @noinspection SqlDialectInspection
+	 *
+	 * @source https://stackoverflow.com/a/54017483
+	 *
+	 * @return array
+	 */
+	public static function get_available_meta_keys() {
+		global $wpdb;
+
+		$post_type = 'product';
+
+		$query = $wpdb->prepare(
+			"
+				SELECT DISTINCT($wpdb->postmeta.meta_key)
+		        FROM $wpdb->posts
+		        LEFT JOIN $wpdb->postmeta
+		        ON $wpdb->posts.ID = $wpdb->postmeta.post_id
+		        WHERE $wpdb->posts.post_type = %s
+				AND $wpdb->postmeta.meta_key IS NOT NULL
+				ORDER BY $wpdb->postmeta.meta_key
+				",
+			$post_type
+		);
+
+		$results   = $wpdb->get_col( $query );
+		$meta_keys = array();
+
+		foreach ( $results as $result ) {
+			$meta_keys[] = array(
+				'value' => $result,
+				'label' => $result,
+			);
+		}
+
+		return $meta_keys;
+	}
+
+	public static function display_date_formats() {
+		return apply_filters(
+			'wcapf_display_date_formats',
+			array(
+				array(
+					'label' => current_time( 'd-m-Y' ) . ' (d-m-Y)',
+					'value' => 'dd-mm-yy',
+				),
+				array(
+					'label' => current_time( 'Y-m-d' ) . ' (Y-m-d)',
+					'value' => 'yy-mm-dd',
+				),
+			)
+		);
+	}
+
+	public static function product_status_options() {
+		return apply_filters(
+			'wcapf_product_status_options',
+			array(
+				array(
+					'label' => __( 'Featured', 'wc-ajax-product-filter' ),
+					'value' => 'featured',
+				),
+				array(
+					'label' => __( 'On Sale', 'wc-ajax-product-filter' ),
+					'value' => 'on_sale',
+				),
+			)
+		);
+	}
+
+	public static function time_period_options() {
+		$_time_period_options = WCAPF_PRO_Helper::get_time_period_options();
+		$time_period_options  = array();
+
+		foreach ( $_time_period_options as $time_period_key => $time_period_label ) {
+			$time_period_options[] = array(
+				'label' => $time_period_label,
+				'value' => $time_period_key,
+			);
+		}
+
+		return $time_period_options;
+	}
+
+	public static function user_role_options() {
+		$_user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
+		$user_roles  = array();
+
+		foreach ( $_user_roles as $role_value => $role_label ) {
+			$user_roles[] = array(
+				'label' => $role_label,
+				'value' => $role_value,
+			);
+		}
+
+		return $user_roles;
+	}
+
+	/**
+	 * Gets the plugin settings for our React UI.
+	 *
+	 * @return array
+	 */
+	public static function get_settings() {
+		$settings = WCAPF_Helper::get_settings();
+
+		// Send the loading image src.
+		if ( isset( $settings['loading_image'] ) ) {
+			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
+			$src   = $image[0];
+
+			if ( $src ) {
+				$settings['loading_image_src'] = $src;
+			}
+		}
+
+		// Send the author roles with labels.
+		if ( $settings['author_roles'] ) {
+			$array       = WCAPF_Product_Filter_Utils::get_user_roles();
+			$with_labels = array();
+
+			foreach ( $settings['author_roles'] as $role_name ) {
+				$with_labels[] = array(
+					'label' => $array[ $role_name ],
+					'value' => $role_name,
+				);
+			}
+
+			$settings['author_roles'] = $with_labels;
+		}
+
+		return $settings;
+	}
+
 	/**
 	 * Gets the filters.
 	 *

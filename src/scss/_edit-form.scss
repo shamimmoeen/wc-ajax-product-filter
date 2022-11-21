@@ -1,51 +1,87 @@
+@import './variables';
+@import './mixins';
+
 .__edit_filter {
 	--vr-padding: 16px;
 	--hr-padding: 24px;
 
-	.__content {
-		background-color: rgb(255, 255, 255);
-		position: relative;
-		box-shadow: rgb(0 0 0 / 10%) 0px 0px 0px 1px;
-		outline: none;
-		border-radius: 1px;
-	}
+	.__edit_filter_from {
+		background-color: #fff;
 
-	.__preview_card {
-		.components-card-header {
-			justify-content: space-between;
-			gap: 16px;
+		.__title_wrapper {
+			padding: 2.5em var(--large-gap) 1em;
+			border-bottom: none;
+		}
 
-			h2 {
-				font-size: 1.7em;
-				line-height: 1;
-				margin: 3px 0;
+		.__form_tab_panel {
+			>.components-tab-panel__tabs {
+				background: none;
+				box-shadow: 0 10px 10px rgb(0 0 0 / 2%);
 			}
 
-			.components-spinner {
-				margin: 0;
-			}
-
-			.__preview_note {
-				color: #757575;
-				font-size: unset;
-				font-weight: normal;
-				margin: 0 0 0 4px;
+			>.components-tab-panel__tab-content {
+				.__loader {
+					@include loader;
+				}
 			}
 		}
 	}
-}
 
-body {
-	&.rtl {
-		.__edit_filter {
-			.__preview_card {
-				.components-card-header {
-					.__preview_note {
-						display: inline-block;
-						margin: 0 4px 0 0;
-					}
-				}
+	.__preview_card {
+		background-color: #fff;
+
+		.__inner {
+			padding: var(--large-gap);
+		}
+
+		.__preview_label {
+			font-size: 30px;
+			font-weight: 500;
+			line-height: 1;
+			margin: 0 0 1em;
+		}
+	}
+
+	@media (min-width: 1240px) {
+		--preview-size: 400px;
+
+		.__preview_card {
+			position: fixed;
+			top: 32px;
+			width: var(--preview-size);
+			height: 100%;
+
+			.__inner {
+				padding: 50px;
 			}
+		}
+
+		@include ltr {
+			.__edit_filter_from {
+				margin-right: var(--preview-size);
+			}
+
+			.__preview_card {
+				box-shadow: inset 10px 0 30px rgb(0 0 0 / 5%);
+				right: 0;
+			}
+		}
+
+		@include rtl {
+			.__edit_filter_from {
+				margin-left: var(--preview-size);
+			}
+
+			.__preview_card {
+				box-shadow: inset -10px 0 30px rgb(0 0 0 / 5%);
+				left: 0;
+			}
+		}
+	}
+
+	@media (max-width: 1239px) {
+		.__preview_card {
+			box-shadow: inset 0 10px 30px rgb(0 0 0 / 5%);
 		}
 	}
 }

@@ -308,6 +308,12 @@ class WCAPF_Admin {
 
 				// Single form admin ui scripts.
 				$this->load_scripts( 'form' );
+
+				// Loads the js script that converts our filter key into slug.
+				wp_enqueue_script(
+					'wcapf-sanitize-title',
+					WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js'
+				);
 			}
 		}
 
@@ -359,27 +365,32 @@ class WCAPF_Admin {
 			}
 		}
 
+		$user_roles = WCAPF_API_Utils::user_role_options();
+
 		if ( 'wcapf_page_wcapf-form' === $screen_id ) {
 			if ( ! isset( $_GET['id'] ) ) {
-				$params['forms']         = $api_utils::get_forms();
-				$params['filters_found'] = boolval( $api_utils::get_filters() );
+				$params['forms'] = $api_utils::get_forms();
+			} else {
+				$post_id  = $_GET['id'];
+				$settings = WCAPF_Helper::get_settings();
+
+				$params['filter_types']   = WCAPF_API_Utils::get_filter_types();
+				$params['meta_keys']      = WCAPF_API_Utils::get_available_meta_keys();
+				$params['date_formats']   = WCAPF_API_Utils::display_date_formats();
+				$params['status_options'] = WCAPF_API_Utils::product_status_options();
+				$params['time_periods']   = WCAPF_API_Utils::time_period_options();
+				$params['user_roles']     = $user_roles;
+				$params['author_roles']   = $settings['author_roles'];
+				$params['form_data']      = array(
+					'post_id'    => $post_id,
+					'post_title' => get_the_title( $post_id ),
+				);
 			}
 		}
 
 		if ( 'wcapf_page_wcapf-new-settings' === $screen_id ) {
-			$settings = WCAPF_Helper::get_settings();
-
-			// Send the loading image src that will be used for our React ui.
-			if ( $settings['loading_image'] ) {
-				$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
-				$src   = $image[0];
-
-				if ( $src ) {
-					$settings['loading_image_src'] = $src;
-				}
-			}
-
-			$params['settings'] = $settings;
+			$params['user_roles'] = $user_roles;
+			$params['settings']   = WCAPF_API_Utils::get_settings();
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

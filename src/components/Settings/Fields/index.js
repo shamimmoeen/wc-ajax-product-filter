@@ -7,6 +7,7 @@ import Select from '../../Field/Select';
 import Number from '../../Field/Number';
 import ImagePicker from '../../Field/ImagePicker';
 import ScrollWindowTo from './ScrollWindowTo';
+import SelectMulti from '../../Field/SelectMulti';
 
 const filterRelationshipOptions = [
 	{
@@ -19,6 +20,8 @@ const filterRelationshipOptions = [
 	},
 ];
 
+const userRoles = wcapf_admin_params.user_roles;
+
 const Fields = () => {
 	const { state, dispatch } = useSettings();
 	const {
@@ -27,6 +30,7 @@ const Fields = () => {
 		handleSelectChange,
 		handleImageChange,
 		handleImageRemove,
+		handleAuthorRolesChange,
 	} = useSettingsData(state, dispatch);
 
 	const {
@@ -44,6 +48,7 @@ const Fields = () => {
 			scroll_to_top_offset,
 			scroll_window,
 			scroll_window_custom_element,
+			author_roles,
 			filter_relationships,
 			update_count,
 			remove_data,
@@ -207,6 +212,21 @@ const Fields = () => {
 					type={'number'}
 				/>
 			)}
+
+			<SelectMulti
+				id={'author_roles'}
+				label={__('Author Roles', 'wc-ajax-product-filter')}
+				description={__(
+					'Select the roles; matched authors must have at least one of these roles.',
+					'wc-ajax-product-filter'
+				)}
+				isMultiple={true}
+				value={author_roles}
+				onChange={handleAuthorRolesChange}
+				type={'author'}
+				isUserRoles={true}
+				options={userRoles}
+			/>
 
 			<Select
 				id={'filter_relationships'}

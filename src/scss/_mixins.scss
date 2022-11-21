@@ -11,10 +11,37 @@
     --hr-padding: 24px;
 
     background-color: rgb(255, 255, 255);
-    position: relative;
-    box-shadow: rgb(0 0 0 / 10%) 0px 0px 0px 1px;
+    border: 1px solid $separatorBorderColor;
+    border-radius: $blockBorderRadius;
+    box-shadow: $blockBoxShadow;
     outline: none;
-    border-radius: 1px;
+    position: relative;
+}
+
+@mixin empty-content {
+    min-height: 270px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 24px;
+    text-align: center;
+
+    .dashicon {
+        width: 40px;
+        height: 40px;
+        font-size: 40px;
+        color: #babbbc;
+    }
+
+    h3 {
+        font-weight: 500;
+        margin-top: 1.5em;
+    }
+
+    p {
+        margin: 0 0 2em;
+    }
 }
 
 @mixin primary-button($button-size: false) {
@@ -103,6 +130,15 @@
     }
 }
 
+@mixin loader($size: 32px) {
+    text-align: center;
+
+    .components-spinner {
+        width: $size;
+        height: $size;
+    }
+}
+
 @mixin fixed-height-modal {
     width: 80em;
 
@@ -146,12 +182,7 @@
     }
 
     .__loader {
-        text-align: center;
-
-        svg {
-            width: 32px;
-            height: 32px;
-        }
+        @include loader;
     }
 }
 
@@ -197,7 +228,6 @@
 @mixin info {
     color: rgba(0, 0, 0, 0.3);
     display: inline-flex;
-    font-size: 12px;
 }
 
 @mixin post-title-with-info {

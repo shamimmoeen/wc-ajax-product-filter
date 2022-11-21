@@ -51,6 +51,8 @@ class WCAPF_Filter_Shortcode {
 			return '';
 		}
 
+		return '';
+
 		$field_data = get_post_meta( $id, '_field_data', true );
 
 		$field_type  = isset( $field_data['type'] ) ? $field_data['type'] : '';

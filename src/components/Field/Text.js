@@ -1,5 +1,4 @@
 import { useLayoutEffect, useState } from '@wordpress/element';
-import { wpFeSanitizeTitle } from '../Filter/wp-fe-sanitize-title';
 
 const InputField = ({
 	id,
@@ -7,7 +6,6 @@ const InputField = ({
 	initialValue,
 	onChange,
 	type = 'text',
-	isFilterKey,
 	...rest
 }) => {
 	const [value, setValue] = useState(initialValue);
@@ -17,21 +15,13 @@ const InputField = ({
 	}, [initialValue]);
 
 	const handleInputChange = (e) => {
-		let _value;
-
-		if (isFilterKey) {
-			_value = wpFeSanitizeTitle(e.target.value);
-		} else {
-			_value = e.target.value;
-		}
-
-		setValue(_value);
+		setValue(e.target.value);
 	};
 
 	return (
 		<input
 			type={type}
-			id={id}
+			id={`${id}-${index}`}
 			className='components-text-control__input'
 			value={value}
 			onChange={handleInputChange}
@@ -44,8 +34,8 @@ const InputField = ({
 const Text = ({
 	label,
 	id,
+	index = '',
 	value,
-	index, // Index is used on the manual options table
 	onChange,
 	description,
 	type = 'text',
@@ -58,7 +48,7 @@ const Text = ({
 			<div className='__form_control'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={id}>{label}</label>
+						<label htmlFor={`${id}-${index}`}>{label}</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
@@ -68,7 +58,6 @@ const Text = ({
 								initialValue={value}
 								onChange={onChange}
 								type={type}
-								isFilterKey={isFilterKey}
 								{...rest}
 							/>
 						</div>
@@ -90,7 +79,6 @@ const Text = ({
 				initialValue={value}
 				onChange={onChange}
 				type={type}
-				isFilterKey={isFilterKey}
 				{...rest}
 			/>
 		);

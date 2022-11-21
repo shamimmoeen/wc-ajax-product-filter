@@ -51,9 +51,12 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
 		add_action( 'wp_ajax_wcapf_get_filter_preview', array( $this, 'get_filter_preview' ) );
 		add_action( 'wp_ajax_wcapf_get_taxonomy_terms_for_modal', array( $this, 'get_taxonomy_terms_for_modal' ) );
-		add_action( 'wp_ajax_wcapf_get_meta_values_for_modal', array( $this, 'get_meta_values' ) );
+		add_action( 'wp_ajax_wcapf_get_meta_values_for_modal', array( $this, 'get_meta_values_for_modal' ) );
 		add_action( 'wp_ajax_wcapf_get_post_authors_for_modal', array( $this, 'get_post_authors_for_modal' ) );
-		add_action( 'wp_ajax_wcapf_get_taxonomy_terms_for_dropdown', array( $this, 'get_taxonomy_terms_for_dropdown' ) );
+		add_action( 'wp_ajax_wcapf_get_taxonomy_terms_for_dropdown', array(
+			$this,
+			'get_taxonomy_terms_for_dropdown',
+		) );
 		add_action( 'wp_ajax_wcapf_get_post_authors_for_dropdown', array( $this, 'get_post_authors_for_dropdown' ) );
 
 		// For form.
@@ -816,7 +819,7 @@ class WCAPF_API {
 	 *
 	 * @return void
 	 */
-	public function get_meta_values() {
+	public function get_meta_values_for_modal() {
 		$meta_key = isset( $_GET['meta_key'] ) ? sanitize_text_field( $_GET['meta_key'] ) : '';
 
 		$values   = WCAPF_PRO_Helper::get_available_meta_values( $meta_key );
@@ -827,6 +830,34 @@ class WCAPF_API {
 				$response[] = array(
 					'value' => $value,
 					'label' => $value,
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Gets the post authors via ajax.
+	 *
+	 * @return void
+	 */
+	public function get_post_authors_for_modal() {
+		$roles = isset( $_GET['roles'] ) ? $_GET['roles'] : array();
+
+		$args = array(
+			'role__in' => $roles,
+			'fields'   => array( 'ID', 'display_name' ),
+		);
+
+		$users    = get_users( $args );
+		$response = array();
+
+		if ( $users ) {
+			foreach ( $users as $user ) {
+				$response[] = array(
+					'label' => $user->display_name,
+					'value' => $user->ID,
 				);
 			}
 		}
@@ -950,13 +981,29 @@ class WCAPF_API {
 		$settings = stripslashes( $_settings );
 		$settings = json_decode( $settings, true );
 
-		if ( isset( $settings['loading_image_src'] ) ) {
-			unset( $settings['loading_image_src'] );
-		}
+		$settings = $this->sanitize_settings_data( $settings );
 
 		update_option( WCAPF_Helper::settings_option_key(), $settings );
 
 		wp_send_json_success( __( 'Settings saved successfully', 'wc-ajax-product-filter' ) );
+	}
+
+	private function sanitize_settings_data( $settings ) {
+		if ( isset( $settings['loading_image_src'] ) ) {
+			unset( $settings['loading_image_src'] );
+		}
+
+		if ( $settings['author_roles'] ) {
+			$without_labels = array();
+
+			foreach ( $settings['author_roles'] as $role ) {
+				$without_labels[] = $role['value'];
+			}
+
+			$settings['author_roles'] = $without_labels;
+		}
+
+		return $settings;
 	}
 
 }

@@ -503,6 +503,7 @@ class WCAPF_Settings_Page {
 			'scroll_window_when'                  => 'after',
 			'scroll_window_custom_element'        => '',
 			'scroll_to_top_offset'                => '100',
+			'author_roles'                        => array( 'administrator', 'shop_manager' ),
 			'filter_relationships'                => 'and',
 			'update_count'                        => '1',
 			'remove_data'                         => '',

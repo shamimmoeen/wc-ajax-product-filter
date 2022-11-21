@@ -4,6 +4,7 @@ import { proTag } from '../utils';
 const Radio = ({
 	label,
 	id,
+	index = '',
 	value,
 	options,
 	isVertical,
@@ -15,7 +16,7 @@ const Radio = ({
 		<div className='__form_control'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={id}>
+					<label>
 						{label}
 						{proTag(isPro)}
 					</label>
@@ -26,23 +27,22 @@ const Radio = ({
 					})}
 				>
 					<div className='__input_wrapper'>
-						{options.map((option, index) => (
+						{options.map((option, optionIndex) => (
 							<div
-								key={`${id}-${index}`}
-								className={classnames(
-									'components-radio-control__option'
-								)}
+								key={`${id}-${index}-${optionIndex}`}
+								className='components-radio-control__option'
 							>
 								<input
-									id={`${id}-${index}`}
+									id={`${id}-${index}-${optionIndex}`}
 									className='components-radio-control__input'
 									type='radio'
-									name={id}
 									value={option.value}
-									onChange={(e) => onChange(e, id)}
+									onChange={(e) => onChange(e, id, index)}
 									checked={option.value === value}
 								/>
-								<label htmlFor={`${id}-${index}`}>
+								<label
+									htmlFor={`${id}-${index}-${optionIndex}`}
+								>
 									{option.label}
 									{proTag(option.isPro)}
 								</label>

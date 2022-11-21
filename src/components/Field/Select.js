@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { default as ReactSelect } from 'react-select';
 import {
 	customStyles,
@@ -11,14 +12,18 @@ import {
 import { proTag } from '../utils';
 
 const SimpleReactSelect = ({
+	id,
+	index = '',
 	options,
 	value,
 	onChange,
 	classes,
+	isSearchable,
 	portalTarget,
 }) => {
 	return (
 		<ReactSelect
+			inputId={`${id}-${index}`}
 			components={{
 				IndicatorSeparator,
 				DropdownIndicator,
@@ -27,7 +32,10 @@ const SimpleReactSelect = ({
 				Group,
 			}}
 			formatGroupLabel={FormatGroupLabel}
-			isSearchable={false}
+			isSearchable={isSearchable}
+			noOptionsMessage={() =>
+				__('No option found', 'wc-ajax-product-filter')
+			}
 			options={options}
 			value={value}
 			onChange={onChange}
@@ -49,11 +57,13 @@ const SimpleReactSelect = ({
 
 const Select = ({
 	id,
+	index,
 	label,
 	description,
 	options,
 	value,
 	onChange,
+	isSearchable = false,
 	renderAsFormField = false,
 	portalTarget = false,
 	isPro = false,
@@ -70,7 +80,7 @@ const Select = ({
 			<div className='__form_control react_select_simple'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={id}>
+						<label htmlFor={`${id}-${index}`}>
 							{label}
 							{proTag(isPro)}
 						</label>
@@ -78,12 +88,15 @@ const Select = ({
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
 							<SimpleReactSelect
+								id={id}
+								index={index}
 								options={options}
 								value={value}
 								classes={customClasses}
+								isSearchable={isSearchable}
 								portalTarget={portalTarget}
 								onChange={(selectedItem) =>
-									onChange(selectedItem, id)
+									onChange(selectedItem, id, index)
 								}
 							/>
 						</div>
@@ -100,11 +113,14 @@ const Select = ({
 	} else {
 		html = (
 			<SimpleReactSelect
+				id={id}
+				index={index}
 				options={options}
 				value={value}
 				classes={customClasses}
 				portalTarget={portalTarget}
 				onChange={(selectedItem) => onChange(selectedItem)}
+				isSearchable={isSearchable}
 			/>
 		);
 	}

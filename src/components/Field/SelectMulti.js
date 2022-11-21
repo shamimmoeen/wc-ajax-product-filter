@@ -8,6 +8,7 @@ import { FormatSelectMultiLabel } from './utilsForReactSelect';
 const SelectMulti = ({
 	label,
 	id,
+	index = '',
 	description,
 	value,
 	onChange,
@@ -65,9 +66,9 @@ const SelectMulti = ({
 	let _classnames;
 
 	if (isMultiple) {
-		_classnames = '__custom_react_select full-width';
+		_classnames = `__custom_react_select full-width ${id}`;
 	} else {
-		_classnames = '__custom_react_select fixed-width';
+		_classnames = `__custom_react_select fixed-width ${id}`;
 	}
 
 	let placeholder;
@@ -101,6 +102,7 @@ const SelectMulti = ({
 		if (isUserRoles) {
 			return (
 				<ReactSelect
+					inputId={`${id}-${index}`}
 					value={value}
 					options={options}
 					placeholder={placeholder}
@@ -109,7 +111,7 @@ const SelectMulti = ({
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
-					onChange={(selected) => onChange(selected, id)}
+					onChange={(selected) => onChange(selected, id, index)}
 					isClearable
 					className={_classnames}
 					classNamePrefix='__react_select'
@@ -126,6 +128,7 @@ const SelectMulti = ({
 		} else {
 			return (
 				<AsyncPaginate
+					inputId={`${id}-${index}`}
 					value={value}
 					loadOptions={loadOptions}
 					additional={{
@@ -137,7 +140,7 @@ const SelectMulti = ({
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
 					closeMenuOnSelect={!isMultiple}
-					onChange={(selected) => onChange(selected, id)}
+					onChange={(selected) => onChange(selected, id, index)}
 					isClearable
 					className={_classnames}
 					classNamePrefix='__react_select'
@@ -158,7 +161,7 @@ const SelectMulti = ({
 		<div className='__form_control react_select'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={id}>{label}</label>
+					<label htmlFor={`${id}-${index}`}>{label}</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
@@ -173,7 +176,7 @@ const SelectMulti = ({
 								className='__include_child_terms'
 								checked={checkIsChecked}
 								onChange={(checked) =>
-									onCheckChange(checked, checkboxId)
+									onCheckChange(checked, checkboxId, index)
 								}
 							/>
 						)}

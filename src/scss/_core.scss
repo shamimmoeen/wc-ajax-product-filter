@@ -1,4 +1,5 @@
 body {
+	background-color: #fff;
 
 	&.auto-fold #wpcontent,
 	#wpcontent {
@@ -17,6 +18,7 @@ body {
 	.__wcapf_layout {
 		padding: var(--large-gap);
 
+		// TODO: Maybe redundant.
 		.__post_data_fetching {
 			margin: 5em 0;
 			text-align: center;

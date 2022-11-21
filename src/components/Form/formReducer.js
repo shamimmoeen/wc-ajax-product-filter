@@ -1,8 +1,11 @@
+const title = wcapf_admin_params.form_data['post_title'];
+const formId = wcapf_admin_params.form_data['post_id'];
+
 export const initialState = {
 	isLoading: true,
 	isDirty: false,
-	title: '',
-	formId: '',
+	title,
+	formId,
 	availableFilters: [],
 	formFilters: [],
 	formSettings: {},

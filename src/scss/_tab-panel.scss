@@ -22,6 +22,7 @@
 		}
 	}
 
+	// TODO: Remove unnecessary css codes.
 	&.filter_ui {
 		.__available_filters {
 			margin-bottom: 2em;
@@ -35,8 +36,6 @@
 	&:not(.filter_ui),
 	.__filter_ui_tab_panel {
 		.components-tab-panel__tab-content {
-			margin: 0 auto;
-			max-width: 775px;
 			min-height: 120px;
 			padding: 40px;
 
