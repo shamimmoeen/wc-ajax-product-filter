@@ -7,11 +7,20 @@ import FormTitle from './FormTitle';
 import FormTabPanel from './FormTabPanel';
 import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
-import { getAvailableFilters } from '../utils';
 import { defaultFormSettings } from '../utilsForForm';
 
 const Form = () => {
 	const { dispatch } = useForm();
+
+	const getAvailableFilters = () => {
+		const data = {
+			action: 'wcapf_get_available_filters',
+		};
+
+		return axios.get(wcapf_admin_params.ajaxurl, {
+			params: data,
+		});
+	};
 
 	const getFormData = () => {
 		const query = new URL(window.location.href);
@@ -43,6 +52,18 @@ const Form = () => {
 
 				const formFilters = formData['form_filters'];
 				const formSettings = formData['form_settings'];
+
+				// The accordion states of form filters.
+				const accordionStates = [];
+
+				for (let index = 0; index < formFilters.length; index++) {
+					accordionStates[index] = false;
+				}
+
+				dispatch({
+					type: 'SET_ACCORDION_STATES',
+					payload: accordionStates,
+				});
 
 				dispatch({
 					type: 'SET_FORM_FILTERS',

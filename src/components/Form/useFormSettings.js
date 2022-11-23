@@ -5,7 +5,9 @@ const useFormSettings = (state, dispatch) => {
 
 	const { formSettings } = state;
 
-	const handleRadioChange = (value, key) => {
+	const handleRadioChange = (e, key) => {
+		const value = e.target.value;
+
 		updateFormSettings(key, value);
 	};
 

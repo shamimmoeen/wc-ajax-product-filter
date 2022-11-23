@@ -1,8 +1,8 @@
 import { sprintf, __ } from '@wordpress/i18n';
-import { merge } from 'lodash';
+import { isEmpty, merge, find } from 'lodash';
 import { foundProVersion } from '../utils';
 
-export function newFilterData(index) {
+export function newFilterData(index, formFilters) {
 	let title;
 
 	if (index > 1) {
@@ -11,24 +11,119 @@ export function newFilterData(index) {
 		title = __('New Filter', 'wc-ajax-product-filter');
 	}
 
-	return merge(filterDefaultData(), {
+	let data = {};
+
+	const types = wcapf_admin_params.filter_types;
+
+	const _taxonomyTypes = find(types, { value: 'taxonomy' });
+	const taxonomyTypes = _taxonomyTypes.options;
+
+	for (let index = 0; index < taxonomyTypes.length; index++) {
+		const taxonomyType = taxonomyTypes[index];
+		const { type, value: taxonomy, taxHierarchical } = taxonomyType;
+
+		const found = find(formFilters, { type, taxonomy });
+
+		if (!found) {
+			data = {
+				type,
+				taxonomy,
+				taxHierarchical: taxHierarchical ? '1' : '',
+			};
+
+			break;
+		}
+	}
+
+	if (isEmpty(data)) {
+		for (let index = 0; index < types.length; index++) {
+			const otherType = types[index];
+
+			if ('taxonomy' !== otherType.value) {
+				const { value: type } = otherType;
+
+				const found = find(formFilters, { type });
+
+				if (!found) {
+					data = { type: otherType.value };
+
+					break;
+				}
+			}
+		}
+	}
+
+	if (isEmpty(data)) {
+		data = { type: 'post-meta' };
+	}
+
+	return merge(filterDefaultData(), data, {
 		isNew: true,
 		uniqueIndex: index,
 		title,
 	});
 }
 
+export function getFilterTypes(otherFilters) {
+	const _filterTypes = wcapf_admin_params.filter_types;
+
+	const _taxonomyTypes = find(_filterTypes, { value: 'taxonomy' });
+	const taxonomyOptions = _taxonomyTypes.options;
+
+	const taxonomyTypes = taxonomyOptions.map((taxonomyType) => {
+		const { value } = taxonomyType;
+
+		if (find(otherFilters, { taxonomy: value })) {
+			return { ...taxonomyType, isDisabled: true };
+		}
+
+		return taxonomyType;
+	});
+
+	const filterTypes = _filterTypes.map((filterType) => {
+		const { value } = filterType;
+
+		if ('taxonomy' === value) {
+			return { ...filterType, options: taxonomyTypes };
+		} else if ('post-meta' === value) {
+			return filterType;
+		} else {
+			if (find(otherFilters, { type: value })) {
+				return { ...filterType, isDisabled: true };
+			}
+
+			return filterType;
+		}
+	});
+
+	return filterTypes;
+}
+
+export function getMetaKeys(otherFilters) {
+	const _metaKeys = wcapf_admin_params.meta_keys;
+
+	const metaKeys = _metaKeys.map((metaKey) => {
+		if (find(otherFilters, { meta_key: metaKey.value })) {
+			return { ...metaKey, isDisabled: true };
+		}
+
+		return metaKey;
+	});
+
+	return metaKeys;
+}
+
 export function filterDefaultData() {
 	return {
 		id: '',
 		title: '',
-		type: 'post-author',
+		type: '',
 		taxonomy: '',
 		taxHierarchical: '',
 		meta_key: '',
 		isACF: '',
 		value_type: 'text',
-		field_key: 'post-author',
+		field_key: '',
 		// Taxonomy
 		display_type: 'checkbox',
 		query_type: 'and',
@@ -119,6 +214,10 @@ export function filterDefaultData() {
 		enable_reduce_height: 'no',
 		soft_limit: '5',
 		max_height: '200',
+		// Error
+		type_error: '',
+		meta_key_error: '',
+		field_key_error: '',
 	};
 }
 
@@ -499,58 +598,6 @@ export function accordionStates() {
 			value: 'collapsed',
 		},
 	];
-}
-
-// TODO: Delete these.
-export function getMetaOptions(meta_keys) {
-	const metaOptions = [];
-
-	for (const key in meta_keys) {
-		const option = { label: key, value: key };
-
-		metaOptions.push(option);
-	}
-
-	return metaOptions;
-}
-
-export function getTaxonomy(filterType, taxonomy) {
-	let _taxonomy;
-
-	if ('category' === filterType) {
-		_taxonomy = 'product_cat';
-	} else if ('tag' === filterType) {
-		_taxonomy = 'product_tag';
-	} else {
-		_taxonomy = taxonomy;
-	}
-
-	return _taxonomy;
-}
-
-export function isTaxonomyHierarchical(currentTaxonomy, hierarchicalData) {
-	let hierarchical;
-
-	if ('product_cat' === currentTaxonomy) {
-		hierarchical = true;
-	} else if ('product_tag' === currentTaxonomy) {
-		hierarchical = false;
-	} else {
-		hierarchical = hierarchicalData[currentTaxonomy];
-	}
-
-	return hierarchical;
-}
-
-export function isTaxonomyFilters(filterType) {
-	const taxonomyFilterTypes = [
-		'category',
-		'tag',
-		'attribute',
-		'custom-taxonomy',
-	];
-
-	return taxonomyFilterTypes.includes(filterType);
 }
 
 export function getTableData(filterType, filterData) {

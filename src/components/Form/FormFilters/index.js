@@ -1,14 +1,15 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { Button, Flex, Icon } from '@wordpress/components';
+import { Button, Flex, Icon, Notice } from '@wordpress/components';
 import { plus } from '@wordpress/icons';
 import { ReactSortable } from 'react-sortablejs';
-import { isEmpty, uniqueId } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useForm } from '../FormContext';
 import useFormData from '../useFormData';
 import Filter from './Filter';
 import NoFiltersFound from './NoFiltersFound';
 import { newFilterData } from '../utils';
+import { arrayMove } from '../../utils';
 
 const FormFilters = () => {
 	const { state, dispatch } = useForm();
@@ -16,7 +17,7 @@ const FormFilters = () => {
 
 	const [addFilterIndex, setAddFilterIndex] = useState(1);
 
-	const { formFilters } = state;
+	const { accordionStates, formFilters, saveError } = state;
 
 	const setFormFilters = (_formFilters, sortable, store) => {
 		if (!sortable) {
@@ -33,9 +34,20 @@ const FormFilters = () => {
 		});
 	};
 
-	const addFilter = () => {
-		const newFilter = newFilterData(addFilterIndex);
+	const sortAccordionStates = ({ newIndex, oldIndex }) => {
+		// It changes the state also, don't need to dispatch the event.
+		arrayMove(accordionStates, newIndex, oldIndex);
+	};
 
+	const addFilter = () => {
+		const newStates = [...accordionStates, true];
+
+		dispatch({
+			type: 'SET_ACCORDION_STATES',
+			payload: newStates,
+		});
+
+		const newFilter = newFilterData(addFilterIndex, formFilters);
 		const _formFilters = [...formFilters, newFilter];
 
 		dispatch({
@@ -48,24 +60,18 @@ const FormFilters = () => {
 		setAddFilterIndex((old) => old + 1);
 	};
 
-	const handleRemoveFilter = (index) => {
-		const _formFilters = [...formFilters];
-		_formFilters.splice(index, 1);
-
-		dispatch({
-			type: 'SET_FORM_FILTERS',
-			payload: _formFilters,
-		});
-
-		setDirty();
-	};
-
 	return (
 		<div className='__filters_drop_zone'>
 			{isEmpty(formFilters) ? (
 				<NoFiltersFound addFilter={addFilter} />
 			) : (
 				<>
+					{saveError && (
+						<Notice status='error' isDismissible={false}>
+							{saveError}
+						</Notice>
+					)}
+
 					<div className='__filters_list_header'>
 						<div className='__title'>
 							{__('Title', 'wc-ajax-product-filter')}
@@ -87,6 +93,7 @@ const FormFilters = () => {
 						direction={'vertical'}
 						handle='.__drag_handler'
 						onSort={setDirty}
+						onChange={sortAccordionStates}
 						className='__form_filters'
 					>
 						{formFilters.map((filter, index) => {
@@ -96,17 +103,14 @@ const FormFilters = () => {
 										key={filter.uniqueIndex}
 										index={index}
 										filter={filter}
-										handleRemoveFilter={handleRemoveFilter}
-										initialExpand
 									/>
 								);
 							} else {
 								return (
 									<Filter
-										key={uniqueId()}
+										key={filter.id}
 										index={index}
 										filter={filter}
-										handleRemoveFilter={handleRemoveFilter}
 									/>
 								);
 							}

@@ -1,10 +1,13 @@
 const useFormData = (state, dispatch) => {
-	const { isDirty } = state;
+	const { isDirty, saveError } = state;
 
 	const setDirty = () => {
 		if (!isDirty) {
 			dispatch({ type: 'SET_DIRTY', payload: true });
-			dispatch({ type: 'SET_LOAD_PREVIEW', payload: true });
+		}
+
+		if (saveError) {
+			dispatch({ type: 'SET_ERROR', payload: '' });
 		}
 	};
 

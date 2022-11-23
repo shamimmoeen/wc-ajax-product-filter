@@ -54,7 +54,7 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 			}
 
 			ajaxParams = {
-				action: 'wcapf_get_taxonomy_terms_for_modal',
+				action: 'wcapf_get_terms_for_modal',
 				taxonomy,
 			};
 		} else if ('post-author' === type) {
@@ -260,8 +260,6 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 					data['name'] = option.label;
 				}
 
-				console.log(data);
-
 				newOptions.push(data);
 			}
 		});
@@ -310,8 +308,8 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 		} else if ('post-author' === type) {
 			description = sprintf(
 				_n(
-					'Found %d user for roles in <strong>%s</strong>.',
-					'Found %d users for roles in <strong>%s</strong>.',
+					'Found %d author for roles of <strong>%s</strong>.',
+					'Found %d authors for roles of <strong>%s</strong>.',
 					foundOptions,
 					'wc-ajax-product-filter'
 				),

@@ -6,9 +6,8 @@ import Select from '../../Field/Select';
 import ToggleGroup from '../../Field/ToggleGroup';
 import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
-
-const filterTypes = wcapf_admin_params.filter_types;
-const metaKeys = wcapf_admin_params.meta_keys;
+import { Notice } from '@wordpress/components';
+import { getFilterTypes, getMetaKeys } from '../utils';
 
 const General = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -16,8 +15,8 @@ const General = ({ index }) => {
 	const {
 		handleFilterTypeChange,
 		handleFilterKeyChange,
+		handleMetaKeyChange,
 		handleTextFieldChange,
-		handleSelectChange,
 		handleToggleGroupChange,
 		handleCheckboxChange,
 	} = useFormFilterData(state, dispatch);
@@ -27,15 +26,49 @@ const General = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
+		id,
 		title,
+		type_error,
 		type,
 		taxonomy,
+		meta_key_error,
 		meta_key,
 		value_type,
 		value_decimal,
 		value_decimal_places,
+		field_key_error,
 		field_key,
 	} = filter;
+
+	let typeDisabledInfo;
+	let filterKeyDisabledInfo;
+
+	if (id) {
+		typeDisabledInfo = __(
+			'Filter type can not be changed after it is saved. But you can permanently remove the filter and add a new one.',
+			'wc-ajax-product-filter'
+		);
+
+		filterKeyDisabledInfo = __(
+			'Filter key can not be changed after it is saved. But you can change the filter keys globally from "Settings > Filter Keys" section.',
+			'wc-ajax-product-filter'
+		);
+	}
+
+	let filterTypes;
+	let metaKeys;
+
+	if (id) {
+		filterTypes = wcapf_admin_params.filter_types;
+		metaKeys = wcapf_admin_params.meta_keys;
+	} else {
+		const otherFilters = [...formFilters];
+		otherFilters.splice(index, 1);
+
+		filterTypes = getFilterTypes(otherFilters);
+
+		metaKeys = getMetaKeys(otherFilters);
+	}
 
 	let filterType;
 
@@ -66,6 +99,12 @@ const General = ({ index }) => {
 				onChange={handleTextFieldChange}
 			/>
 
+			{type_error && (
+				<Notice status='error' isDismissible={false}>
+					{type_error}
+				</Notice>
+			)}
+
 			<Select
 				id={'type'}
 				index={index}
@@ -77,11 +116,19 @@ const General = ({ index }) => {
 				options={filterTypes}
 				value={filterType}
 				onChange={handleFilterTypeChange}
+				isDisabled={id}
 				renderAsFormField
+				tooltip={typeDisabledInfo}
 			/>
 
 			{'post-meta' === type && (
 				<>
+					{meta_key_error && (
+						<Notice status='error' isDismissible={false}>
+							{meta_key_error}
+						</Notice>
+					)}
+
 					<Select
 						id={'meta_key'}
 						index={index}
@@ -92,8 +139,9 @@ const General = ({ index }) => {
 						)}
 						options={metaKeys}
 						value={metaKey}
-						onChange={handleSelectChange}
+						onChange={handleMetaKeyChange}
 						isSearchable={true}
+						isDisabled={id}
 						renderAsFormField
 					/>
 
@@ -121,6 +169,7 @@ const General = ({ index }) => {
 						]}
 						onChange={handleToggleGroupChange}
 						value={value_type}
+						isDisabled={id}
 					/>
 				</>
 			)}
@@ -159,6 +208,12 @@ const General = ({ index }) => {
 				</>
 			)}
 
+			{field_key_error && (
+				<Notice status='error' isDismissible={false}>
+					{field_key_error}
+				</Notice>
+			)}
+
 			<Text
 				id={'field_key'}
 				index={index}
@@ -169,6 +224,8 @@ const General = ({ index }) => {
 				)}
 				value={field_key}
 				onChange={handleFilterKeyChange}
+				isDisabled={id}
+				tooltip={filterKeyDisabledInfo}
 			/>
 		</>
 	);

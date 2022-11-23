@@ -9,6 +9,7 @@ import {
 	Group,
 	FormatGroupLabel,
 } from '../Field/utilsForReactSelect';
+import TippyTooltip from '../TippyTooltip';
 import { proTag } from '../utils';
 
 const SimpleReactSelect = ({
@@ -20,6 +21,7 @@ const SimpleReactSelect = ({
 	classes,
 	isSearchable,
 	portalTarget,
+	isDisabled,
 }) => {
 	return (
 		<ReactSelect
@@ -41,6 +43,7 @@ const SimpleReactSelect = ({
 			onChange={onChange}
 			styles={customStyles}
 			className={classes}
+			isDisabled={isDisabled}
 			menuPortalTarget={portalTarget}
 			classNamePrefix='__react_select'
 			theme={(theme) => ({
@@ -67,6 +70,8 @@ const Select = ({
 	renderAsFormField = false,
 	portalTarget = false,
 	isPro = false,
+	isDisabled = false,
+	tooltip,
 }) => {
 	let customClasses = '__custom_react_select __single_select';
 	let html;
@@ -94,11 +99,13 @@ const Select = ({
 								value={value}
 								classes={customClasses}
 								isSearchable={isSearchable}
+								isDisabled={isDisabled}
 								portalTarget={portalTarget}
 								onChange={(selectedItem) =>
 									onChange(selectedItem, id, index)
 								}
 							/>
+							{tooltip && <TippyTooltip content={tooltip} />}
 						</div>
 					</div>
 				</div>
@@ -118,6 +125,7 @@ const Select = ({
 				options={options}
 				value={value}
 				classes={customClasses}
+				isDisabled={isDisabled}
 				portalTarget={portalTarget}
 				onChange={(selectedItem) => onChange(selectedItem)}
 				isSearchable={isSearchable}

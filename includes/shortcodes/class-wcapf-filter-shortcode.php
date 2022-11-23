@@ -43,6 +43,8 @@ class WCAPF_Filter_Shortcode {
 		$id   = $attrs['id'];
 		$post = get_post( $id );
 
+		return '';
+
 		if ( 'wcapf-filter' !== $post->post_type ) {
 			return '';
 		}
@@ -50,8 +52,6 @@ class WCAPF_Filter_Shortcode {
 		if ( 'publish' !== $post->post_status ) {
 			return '';
 		}
-
-		return '';
 
 		$field_data = get_post_meta( $id, '_field_data', true );
 

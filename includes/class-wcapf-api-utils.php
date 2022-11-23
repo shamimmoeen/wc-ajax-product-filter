@@ -15,6 +15,11 @@
  */
 class WCAPF_API_Utils {
 
+	/**
+	 * Gets the filter types.
+	 *
+	 * @return array[]
+	 */
 	public static function get_filter_types() {
 		return array(
 			array(
@@ -45,6 +50,11 @@ class WCAPF_API_Utils {
 		);
 	}
 
+	/**
+	 * Gets the available taxonomies after sorting them.
+	 *
+	 * @return array
+	 */
 	public static function get_available_taxonomies() {
 		$tax_data   = get_object_taxonomies( 'product', 'objects' );
 		$taxonomies = array();
@@ -118,6 +128,10 @@ class WCAPF_API_Utils {
 		return $meta_keys;
 	}
 
+	public static function get_filter_keys() {
+
+	}
+
 	public static function display_date_formats() {
 		return apply_filters(
 			'wcapf_display_date_formats',
@@ -151,7 +165,7 @@ class WCAPF_API_Utils {
 	}
 
 	public static function time_period_options() {
-		$_time_period_options = WCAPF_PRO_Helper::get_time_period_options();
+		$_time_period_options = WCAPF_Helper::get_time_period_options();
 		$time_period_options  = array();
 
 		foreach ( $_time_period_options as $time_period_key => $time_period_label ) {

@@ -59,7 +59,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 
 		const formData = new FormData();
 
-		formData.append('action', 'wcapf_save_form');
+		formData.append('action', 'wcapf_add_form');
 		formData.append('form_title', title);
 		formData.append('form_settings', JSON.stringify(defaultFormSettings()));
 

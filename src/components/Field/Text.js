@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from '@wordpress/element';
+import TippyTooltip from '../TippyTooltip';
 
 const InputField = ({
 	id,
@@ -6,6 +7,7 @@ const InputField = ({
 	initialValue,
 	onChange,
 	type = 'text',
+	isDisabled,
 	...rest
 }) => {
 	const [value, setValue] = useState(initialValue);
@@ -23,6 +25,7 @@ const InputField = ({
 			type={type}
 			id={`${id}-${index}`}
 			className='components-text-control__input'
+			disabled={isDisabled}
 			value={value}
 			onChange={handleInputChange}
 			onBlur={() => onChange(value, id, index)}
@@ -41,6 +44,8 @@ const Text = ({
 	type = 'text',
 	renderAsFormField = true,
 	isFilterKey = false,
+	isDisabled = false,
+	tooltip,
 	...rest
 }) => {
 	if (renderAsFormField) {
@@ -58,8 +63,11 @@ const Text = ({
 								initialValue={value}
 								onChange={onChange}
 								type={type}
+								isDisabled={isDisabled}
 								{...rest}
 							/>
+
+							{tooltip && <TippyTooltip content={tooltip} />}
 						</div>
 					</div>
 				</div>
@@ -79,6 +87,7 @@ const Text = ({
 				initialValue={value}
 				onChange={onChange}
 				type={type}
+				isDisabled={isDisabled}
 				{...rest}
 			/>
 		);

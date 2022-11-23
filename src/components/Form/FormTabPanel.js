@@ -1,8 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import { Spinner, TabPanel } from '@wordpress/components';
+import { Spinner } from '@wordpress/components';
 import { useForm } from './FormContext';
 import FormFilters from './FormFilters';
 import FormSettings from './FormSettings';
+import CustomTabPanel from './CustomTabPanel';
 
 const FormTabPanel = () => {
 	const {
@@ -10,7 +11,7 @@ const FormTabPanel = () => {
 	} = useForm();
 
 	return (
-		<TabPanel
+		<CustomTabPanel
 			className='__tab_panel __form_tab_panel'
 			activeClass='active-tab'
 			tabs={[
@@ -50,7 +51,7 @@ const FormTabPanel = () => {
 					}
 				}
 			}}
-		</TabPanel>
+		</CustomTabPanel>
 	);
 };
 
