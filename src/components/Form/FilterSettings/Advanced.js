@@ -167,7 +167,7 @@ const Advanced = ({ index }) => {
 						value: 'no',
 					},
 					{
-						label: __('Max Height', 'wc-ajax-product-filter'),
+						label: __('Set Max Height', 'wc-ajax-product-filter'),
 						value: 'max_height',
 					},
 					{

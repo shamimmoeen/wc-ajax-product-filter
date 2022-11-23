@@ -92,6 +92,7 @@ const useFormFilterData = (state, dispatch) => {
 		if ('taxonomy' === type) {
 			updateFilterType(index, type, value, {
 				[key]: type,
+				type_error: '',
 				taxonomy: value,
 				taxHierarchical: taxHierarchical ? '1' : '',
 			});
@@ -99,13 +100,29 @@ const useFormFilterData = (state, dispatch) => {
 			return;
 		}
 
-		updateFilterType(index, key, value, { [key]: value });
+		updateFilterType(index, key, value, { [key]: value, type_error: '' });
 	};
 
 	const handleFilterKeyChange = (value, key, index) => {
 		const filterKey = wpFeSanitizeTitle(value);
+		const many = { [key]: filterKey };
 
-		updateFilter(index, [key], filterKey);
+		if (filterKey && formFilters[index]['field_key_error']) {
+			many['field_key_error'] = '';
+		}
+
+		updateFilterMany(index, [key], filterKey, many);
+	};
+
+	const handleMetaKeyChange = (selectedItem, key, index) => {
+		const value = selectedItem.value;
+		const many = { [key]: value };
+
+		if (value && formFilters[index]['meta_key_error']) {
+			many['meta_key_error'] = '';
+		}
+
+		updateFilterMany(index, [key], value, many);
 	};
 
 	const handleHierarchyChange = (_value, key, index) => {
@@ -208,6 +225,7 @@ const useFormFilterData = (state, dispatch) => {
 	return {
 		handleFilterTypeChange,
 		handleFilterKeyChange,
+		handleMetaKeyChange,
 		handleHierarchyChange,
 		handleGetOptionsChange,
 		handleCheckboxChange,

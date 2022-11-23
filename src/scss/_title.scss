@@ -1,3 +1,5 @@
+@import './mixins';
+
 .__title_wrapper {
 	align-items: center;
 	border-bottom: 1px solid rgb(0 0 0 / 5%);
@@ -22,6 +24,10 @@
 		svg {
 			width: 20px;
 			height: 20px;
+
+			@include rtl {
+				transform: rotate(180deg);
+			}
 		}
 	}
 
@@ -40,23 +46,7 @@
 		justify-content: center;
 
 		.__icon {
-			margin: 0 7px 0 0;
-		}
-	}
-}
-
-body.rtl {
-	.__title_wrapper {
-		.__back_button {
-			svg {
-				transform: rotate(180deg);
-			}
-		}
-
-		.__save_button {
-			.__icon {
-				margin: 0 0 0 7px;
-			}
+			@include horizontal-space(7px);
 		}
 	}
 }

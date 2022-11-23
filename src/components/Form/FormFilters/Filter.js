@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useRef, useState } from '@wordpress/element';
+import { useRef } from '@wordpress/element';
 import { Button, Dropdown, TabPanel } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
 import { useForm } from '../FormContext';
@@ -12,15 +12,19 @@ import {
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
+import useFormData from '../useFormData';
 
 const filterTypes = wcapf_admin_params.filter_types;
 
-const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
-	const {
-		state: { formFilters },
-	} = useForm();
+const Filter = ({ index }) => {
+	const { state, dispatch } = useForm();
 
-	const [expanded, setExpanded] = useState(initialExpand);
+	const { setDirty } = useFormData(state, dispatch);
+
+	const { accordionStates, formFilters } = state;
+
+	const isExpanded = accordionStates[index];
+
 	const dragHandleRef = useRef('');
 	const toggleIconRef = useRef('');
 
@@ -29,8 +33,15 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 			return;
 		}
 
-		const _expanded = !expanded;
-		setExpanded(_expanded);
+		const newStates = accordionStates.map((state, _index) => {
+			if (_index === index) {
+				return !isExpanded;
+			}
+
+			return state;
+		});
+
+		dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
 	};
 
 	const closeFilter = (e) => {
@@ -39,8 +50,28 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 		toggleIconRef.current.focus();
 	};
 
-	const toggleIcon = expanded ? chevronUp : chevronDown;
-	const topClass = expanded ? '__top open' : '__top';
+	const handleRemoveFilter = () => {
+		const _formFilters = [...formFilters];
+		_formFilters.splice(index, 1);
+
+		dispatch({
+			type: 'SET_FORM_FILTERS',
+			payload: _formFilters,
+		});
+
+		const _newAccordionStates = [...accordionStates];
+		_newAccordionStates.splice(index, 1);
+
+		dispatch({
+			type: 'SET_ACCORDION_STATES',
+			payload: _newAccordionStates,
+		});
+
+		setDirty();
+	};
+
+	const toggleIcon = isExpanded ? chevronUp : chevronDown;
+	const topClass = isExpanded ? '__top open' : '__top';
 
 	const filter = formFilters[index];
 
@@ -114,12 +145,11 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 					<Button isSmall icon={toggleIcon} ref={toggleIconRef} />
 				</div>
 			</div>
-			{expanded && (
+			{isExpanded && (
 				<div className='__accordion_body'>
 					<TabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='options'
 						tabs={[
 							{
 								name: 'general',
@@ -189,9 +219,7 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 									{` `}
 									<button
 										className='button-link button-link-delete'
-										onClick={() =>
-											handleRemoveFilter(index)
-										}
+										onClick={handleRemoveFilter}
 									>
 										{__('Remove', 'wc-ajax-product-filter')}
 									</button>

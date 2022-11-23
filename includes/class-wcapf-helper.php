@@ -16,15 +16,6 @@
 class WCAPF_Helper {
 
 	/**
-	 * Determines if we show the pro features modal.
-	 *
-	 * @return bool
-	 */
-	public static function show_pro_version_offer() {
-		return apply_filters( 'wcapf_show_pro_offer', true );
-	}
-
-	/**
 	 * @return bool
 	 */
 	public static function found_pro_version() {
@@ -32,34 +23,25 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The filters list page url.
+	 * The forms page url.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
-	public static function filters_list_page_url() {
-		return menu_page_url( 'wcapf-filter', false );
+	public static function forms_page_url() {
+		return menu_page_url( 'wcapf', false );
 	}
 
 	/**
-	 * The forms list page url.
+	 * The seo rules page url.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
-	public static function forms_list_page_url() {
-		return menu_page_url( 'wcapf-form', false );
-	}
-
-	/**
-	 * The settings page url.
-	 *
-	 * @return string
-	 */
-	public static function new_settings_page_url() {
-		return menu_page_url( 'wcapf-new-settings', false );
+	public static function seo_rules_page_url() {
+		return menu_page_url( 'wcapf-seo-rules', false );
 	}
 
 	/**
@@ -69,6 +51,236 @@ class WCAPF_Helper {
 	 */
 	public static function settings_page_url() {
 		return menu_page_url( 'wcapf-settings', false );
+	}
+
+	/**
+	 * The upgrade page url.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function upgrade_page_url() {
+		return menu_page_url( 'wcapf-upgrade', false );
+	}
+
+	/**
+	 * Gets the meta keys for post type product.
+	 *
+	 * @noinspection SqlNoDataSourceInspection
+	 * @noinspection SqlDialectInspection
+	 *
+	 * @source https://stackoverflow.com/a/54017483
+	 *
+	 * @return array
+	 */
+	public static function get_meta_keys() {
+		global $wpdb;
+
+		$post_type = 'product';
+
+		$query = $wpdb->prepare(
+			"
+				SELECT DISTINCT($wpdb->postmeta.meta_key)
+		        FROM $wpdb->posts
+		        LEFT JOIN $wpdb->postmeta
+		        ON $wpdb->posts.ID = $wpdb->postmeta.post_id
+		        WHERE $wpdb->posts.post_type = %s
+				AND $wpdb->postmeta.meta_key IS NOT NULL
+				ORDER BY $wpdb->postmeta.meta_key
+				",
+			$post_type
+		);
+
+		$query = apply_filters( 'wcapf_meta_keys_sql_query', $query );
+
+		$results = $wpdb->get_col( $query );
+
+		return apply_filters( 'wcapf_product_meta_keys', $results );
+	}
+
+	/**
+	 * Gets the available meta values for the given meta key.
+	 *
+	 * @noinspection SqlNoDataSourceInspection
+	 * @noinspection SqlDialectInspection
+	 *
+	 * @source https://wordpress.stackexchange.com/q/9394
+	 *
+	 * @return array
+	 */
+	public static function get_available_meta_values( $meta_key ) {
+		global $wpdb;
+
+		$post_type     = 'product';
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+
+		$query = $wpdb->prepare(
+			"
+				SELECT DISTINCT $wpdb->postmeta.meta_value
+				FROM $wpdb->postmeta
+				INNER JOIN $wpdb->posts
+				ON $wpdb->postmeta.post_id = $wpdb->posts.ID
+		        WHERE $wpdb->posts.post_type = %s
+		        AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')
+				AND $wpdb->postmeta.meta_key = %s
+				AND $wpdb->postmeta.meta_value <> ''
+				GROUP BY $wpdb->postmeta.meta_value
+				ORDER BY $wpdb->postmeta.meta_value
+				",
+			$post_type,
+			$meta_key
+		);
+
+		$query = apply_filters( 'wcapf_available_meta_values_sql_query', $query, $meta_key );
+
+		$results = $wpdb->get_col( $query );
+
+		return apply_filters( 'wcapf_product_meta_values', $results, $meta_key );
+	}
+
+	/**
+	 * Gets the time period options.
+	 *
+	 * @return array
+	 */
+	public static function get_time_period_options( $with_ranges = false ) {
+		$options = array();
+
+		$ranges = array(
+			'today'        => __( 'Today', 'wc-ajax-product-filter-pro' ),
+			'yesterday'    => __( 'Yesterday', 'wc-ajax-product-filter-pro' ),
+			'this-week'    => __( 'This week', 'wc-ajax-product-filter-pro' ),
+			'last-week'    => __( 'Last week', 'wc-ajax-product-filter-pro' ),
+			'this-month'   => __( 'This month', 'wc-ajax-product-filter-pro' ),
+			'last-month'   => __( 'Last month', 'wc-ajax-product-filter-pro' ),
+			'last-14-days' => __( 'Last 14 days', 'wc-ajax-product-filter-pro' ),
+			'last-30-days' => __( 'Last 30 days', 'wc-ajax-product-filter-pro' ),
+			'last-90-days' => __( 'Last 90 days', 'wc-ajax-product-filter-pro' ),
+			'this-year'    => __( 'This year', 'wc-ajax-product-filter-pro' ),
+			'last-year'    => __( 'Last year', 'wc-ajax-product-filter-pro' ),
+		);
+
+		$range_separator = WCAPF_Helper::range_values_separator();
+
+		$timestamp = current_time( 'timestamp' );
+		$format    = 'Y-m-d';
+		$today     = date( $format, $timestamp );
+
+		foreach ( $ranges as $value => $label ) {
+			$range = '';
+
+			switch ( $value ) {
+				case 'today':
+					$start = date( $format, strtotime( $today ) );
+					$range = $start . $range_separator . $start;
+
+					break;
+
+				case 'yesterday':
+					$start = date( $format, strtotime( $today . ' -1 day' ) );
+					$range = $start . $range_separator . $start;
+
+					break;
+
+				case 'this-week':
+					$date = new DateTime();
+
+					$current_year = date( 'Y' );
+					$current_week = $date->format( 'W' );
+
+					$dto = new DateTime();
+					$dto->setISODate( $current_year, $current_week );
+					$start = $dto->format( $format );
+					$dto->modify( '+6 days' );
+					$end = $dto->format( $format );
+
+					$range = $start . $range_separator . $end;
+
+					break;
+
+				case 'last-week':
+					$previous_week = strtotime( '-1 week +1 day' );
+
+					$start_week = strtotime( 'last sunday midnight', $previous_week );
+					$end_week   = strtotime( 'next saturday', $start_week );
+
+					$start_week = date( $format, $start_week );
+					$end_week   = date( $format, $end_week );
+
+					$range = $start_week . $range_separator . $end_week;
+
+					break;
+
+				case 'this-month':
+					$start = date( 'Y-m-01' );
+					$end   = date( 'Y-m-t' );
+
+					$range = $start . $range_separator . $end;
+
+					break;
+
+				case 'last-month':
+					$start = date( $format, strtotime( 'first day of previous month' ) );
+					$end   = date( $format, strtotime( 'last day of previous month' ) );
+
+					$range = $start . $range_separator . $end;
+
+					break;
+
+				case 'last-14-days':
+					$start = date( $format, strtotime( $today . ' -13 days' ) );
+					$range = $start . $range_separator . $today;
+
+					break;
+
+				case 'last-30-days':
+					$start = date( $format, strtotime( $today . ' -29 days' ) );
+					$range = $start . $range_separator . $today;
+
+					break;
+
+				case 'last-90-days':
+					$start = date( $format, strtotime( $today . ' -89 days' ) );
+					$range = $start . $range_separator . $today;
+
+					break;
+
+				case 'this-year':
+					$start = date( $format, strtotime( 'first day of January 1st' ) );
+					$end   = date( $format, strtotime( 'last day of December 31st' ) );
+
+					$range = $start . $range_separator . $end;
+
+					break;
+
+				case 'last-year':
+					$start = date( $format, strtotime( 'last year January 1st' ) );
+					$end   = date( $format, strtotime( 'last year December 31st' ) );
+
+					$range = $start . $range_separator . $end;
+
+					break;
+			}
+
+			if ( ! $range ) {
+				continue;
+			}
+
+			$options[] = array(
+				'value' => $value,
+				'label' => $label,
+				'range' => $range,
+			);
+		}
+
+		$time_period_options = apply_filters( 'wcapf_time_period_options', $options );
+
+		if ( $with_ranges ) {
+			return $time_period_options;
+		}
+
+		return wp_list_pluck( $time_period_options, 'label', 'value' );
 	}
 
 	/**
@@ -85,61 +297,6 @@ class WCAPF_Helper {
 		}
 
 		return apply_filters( 'wcapf_filterable_post_statuses', $post_statuses );
-	}
-
-	/**
-	 * The available search form fields.
-	 *
-	 * @return array
-	 */
-	public static function available_search_fields() {
-		$fields = array(
-			array(
-				'type'     => 'active-filters',
-				'name'     => __( 'Active Filters', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'category',
-				'name'     => __( 'Filter by Category', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'tag',
-				'name'     => __( 'Filter by Tag', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'attribute',
-				'name'     => __( 'Filter by Attribute', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'price',
-				'name'     => __( 'Filter by Price', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'rating',
-				'name'     => __( 'Filter by Rating', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'product-status',
-				'name'     => __( 'Filter by Product Status', 'wc-ajax-product-filter' ),
-				'position' => 5,
-			),
-			array(
-				'type'     => 'reset-button',
-				'name'     => __( 'Reset Button', 'wc-ajax-product-filter' ),
-				'position' => 15,
-			),
-		);
-
-		$fields = apply_filters( 'wcapf_available_search_fields', $fields );
-		$fields = wp_list_sort( $fields, 'position' );
-
-		return wp_list_pluck( $fields, 'name', 'type' );
 	}
 
 	/**
@@ -172,25 +329,6 @@ class WCAPF_Helper {
 		$types = array( 'category', 'tag', 'attribute' );
 
 		return apply_filters( 'wcapf_taxonomy_field_types', $types );
-	}
-
-	/**
-	 * Renders the field's form for the given instance.
-	 *
-	 * @param array $field_instance The field's instance.
-	 *
-	 * @return void
-	 */
-	public static function render_field_form_by_instance( $field_instance ) {
-		$type       = isset( $field_instance['type'] ) ? $field_instance['type'] : '';
-		$class_name = self::get_field_class_name_by_type( $type );
-
-		if ( ! $class_name ) {
-			return;
-		}
-
-		$field = self::get_field_instance( $type, $field_instance );
-		$field->form();
 	}
 
 	/**

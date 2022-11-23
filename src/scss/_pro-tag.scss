@@ -1,3 +1,5 @@
+@import './mixins';
+
 .__pro_group .__pro_heading,
 .__pro_settings,
 .__upgrade_btn,
@@ -31,6 +33,14 @@
 			position: relative;
 			margin-bottom: 10px;
 
+			@include ltr {
+				padding-left: 2em;
+			}
+
+			@include rtl {
+				padding-right: 2em;
+			}
+
 			&::before {
 				content: '\f147';
 				font-family: dashicons;
@@ -43,8 +53,15 @@
 				font-size: 20px;
 				vertical-align: top;
 				position: absolute;
-				left: 0;
 				top: 0;
+
+				@include ltr {
+					left: 0;
+				}
+
+				@include rtl {
+					right: 0;
+				}
 			}
 		}
 	}
@@ -98,6 +115,8 @@ a.__upgrade_btn {
 	padding: 2px 4px;
 	border-radius: 4px;
 	font-size: 12px;
+
+	@include horizontal-space-left(4px);
 }
 
 .__pro_tag {
@@ -131,44 +150,6 @@ a.__upgrade_btn {
 
 		.__pro_heading {
 			@include pro-tag;
-		}
-	}
-}
-
-body {
-	&:not(.rtl) {
-		.__pro_features_card {
-			li {
-				padding-left: 2em;
-
-				&::before {
-					left: 0;
-				}
-			}
-		}
-
-		.__pro_tag {
-			&::before {
-				margin: 0 0 0 4px;
-			}
-		}
-	}
-
-	&.rtl {
-		.__pro_features_card {
-			li {
-				padding-right: 2em;
-
-				&::before {
-					right: 0;
-				}
-			}
-		}
-
-		.__pro_tag {
-			&::before {
-				margin: 0 4px 0 0;
-			}
 		}
 	}
 }

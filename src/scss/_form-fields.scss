@@ -115,7 +115,7 @@
 	// Button Group
 	.components-button-group {
 		.components-button {
-			height: 30px;
+			height: 28px;
 			margin-bottom: -1px;
 
 			&:not(:focus) {
@@ -262,6 +262,12 @@
 	&.__image_picker {
 		@include image-picker;
 	}
+
+	.__help_info {
+		margin: 5px;
+		position: relative;
+		top: 3px;
+	}
 }
 
 // Number min, max fields with auto detect.
@@ -317,6 +323,12 @@
 			justify-content: space-between;
 			align-items: center;
 		}
+
+		&.__react_select__option--is-disabled {
+			.__option_label {
+				color: hsl(0, 0%, 80%);
+			}
+		}
 	}
 
 	.__react_select__group {
@@ -353,6 +365,14 @@
 	.__react_select__indicator-separator,
 	.__react_select__dropdown-indicator {
 		border-color: $inputBorderColor;
+	}
+
+	.__react_select__control--is-disabled {
+		background-color: rgba(255, 255, 255, 0.5);
+
+		.__react_select__indicators {
+			display: none;
+		}
 	}
 
 	.__react_select__input {

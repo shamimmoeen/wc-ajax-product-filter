@@ -22,7 +22,7 @@ const Radio = ({
 					</label>
 				</div>
 				<div
-					className={classnames('__wrapper', 'radio-group', {
+					className={classnames('__wrapper', 'radio-group', id, {
 						'radio-group-vertical': isVertical,
 					})}
 				>

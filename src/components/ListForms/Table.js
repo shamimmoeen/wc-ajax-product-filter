@@ -149,7 +149,7 @@ const Table = ({
 					<h2>{__('List of Forms', 'wc-ajax-product-filter')}</h2>
 
 					<Button variant='primary' onClick={openAddNewModal}>
-						<Icon icon={PlusIcon} size={16} />
+						<Icon icon={PlusIcon} size={14} />
 						{__('Add New', 'wc-ajax-product-filter')}
 					</Button>
 				</div>

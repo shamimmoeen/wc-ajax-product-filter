@@ -11,6 +11,7 @@ const ToggleGroup = ({
 	onChange,
 	description,
 	isPro,
+	isDisabled = false,
 }) => {
 	return (
 		<div className='__form_control'>
@@ -34,6 +35,7 @@ const ToggleGroup = ({
 									variant={
 										value === option.value ? 'primary' : ''
 									}
+									disabled={isDisabled}
 								>
 									{option.label}
 									{proTag(option.isPro)}

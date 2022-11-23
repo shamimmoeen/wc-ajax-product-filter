@@ -12,7 +12,7 @@ const ProFeaturesCard = () => {
 						'wc-ajax-product-filter'
 					)}
 					{` `}
-					<a href={upgradeToProLink()} target='_blank'>
+					<a href={upgradeToProLink()}>
 						{__('Upgrade Now', 'wc-ajax-product-filter')}
 					</a>
 				</p>

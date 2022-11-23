@@ -28,13 +28,13 @@ const SelectMulti = ({
 
 		if ('author' === type) {
 			ajaxParams = {
-				action: 'wcapf_get_post_authors_for_dropdown',
+				action: 'wcapf_get_authors_for_dropdown',
 				keyword,
 				page,
 			};
 		} else {
 			ajaxParams = {
-				action: 'wcapf_get_taxonomy_terms_for_dropdown',
+				action: 'wcapf_get_terms_for_dropdown',
 				taxonomy,
 				only_parent: onlyParent,
 				keyword,

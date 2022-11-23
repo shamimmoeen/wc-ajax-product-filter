@@ -3,8 +3,8 @@ import { Icon } from '@wordpress/components';
 import { DiamondIcon } from './SVGIcons';
 import {
 	foundProVersion,
-	getFiltersPageLink,
 	getFormsPageLink,
+	getSeoRulesPageLink,
 	getSettingsPageLink,
 	pluginVersion,
 	upgradeToProLink,
@@ -12,14 +12,14 @@ import {
 
 const navMenus = [
 	{
-		label: __('Filters', 'wc-ajax-product-filter'),
-		id: 'filters',
-		href: getFiltersPageLink(),
-	},
-	{
 		label: __('Forms', 'wc-ajax-product-filter'),
 		id: 'forms',
 		href: getFormsPageLink(),
+	},
+	{
+		label: __('SEO Rules', 'wc-ajax-product-filter'),
+		id: 'seo-rules',
+		href: getSeoRulesPageLink(),
 	},
 	{
 		label: __('Settings', 'wc-ajax-product-filter'),
@@ -52,11 +52,7 @@ const TopBar = ({ view }) => {
 			{'form' !== view && (
 				<div className='__cta'>
 					{!foundProVersion() && (
-						<a
-							href={upgradeToProLink()}
-							className='__upgrade_btn'
-							target='_blank'
-						>
+						<a href={upgradeToProLink()} className='__upgrade_btn'>
 							<Icon icon={DiamondIcon} size={18} />
 							{__('Upgrade to PRO', 'wc-ajax-product-filter')}
 						</a>

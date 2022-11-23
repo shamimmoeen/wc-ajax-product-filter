@@ -128,40 +128,19 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-settings-page.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-frontend-scripts.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-visibility-rules.php';
-
-		// Loads the meta boxes.
-		require_once WCAPF_PLUGIN_DIR . '/includes/meta-boxes/class-wcapf-filter-meta-box.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/meta-boxes/class-wcapf-filter-form-meta-box.php';
 
 		// Loads the filter types.
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-author.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-meta.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-product-status.php';
-
-		// Loads the field groups.
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-text.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/field-groups/class-wcapf-field-group-number.php';
-
-		// Loads the fields.
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-active-filters.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-taxonomy.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-category.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-tag.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-attribute.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-price.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-rating.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-product-status.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/fields/class-wcapf-field-reset-button.php';
 
 		// Loads the hooks.
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-api.php';
