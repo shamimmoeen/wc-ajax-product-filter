@@ -36,8 +36,9 @@ const General = ({ index }) => {
 		value_type,
 		value_decimal,
 		value_decimal_places,
-		field_key_error,
 		field_key,
+		field_key_error,
+		field_key_error_,
 	} = filter;
 
 	let typeDisabledInfo;
@@ -94,6 +95,14 @@ const General = ({ index }) => {
 	}
 
 	const metaKey = metaKeys.find((option) => option.value === meta_key);
+
+	let fieldKeyError;
+
+	if (!globalFilterKey && field_key_error) {
+		fieldKeyError = field_key_error;
+	} else if (field_key_error_) {
+		fieldKeyError = field_key_error_;
+	}
 
 	return (
 		<>
@@ -218,9 +227,9 @@ const General = ({ index }) => {
 				</>
 			)}
 
-			{!globalFilterKey && field_key_error && (
+			{fieldKeyError && (
 				<Notice status='error' isDismissible={false}>
-					{field_key_error}
+					{fieldKeyError}
 				</Notice>
 			)}
 

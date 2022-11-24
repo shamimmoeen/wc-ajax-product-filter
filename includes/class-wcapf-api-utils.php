@@ -141,18 +141,24 @@ class WCAPF_API_Utils {
 			$meta_key  = isset( $data['meta_key'] ) ? $data['meta_key'] : '';
 			$field_key = isset( $data['field_key'] ) ? $data['field_key'] : '';
 
-			if ( 'taxonomy' === $filter_type && $filter_taxonomy === $taxonomy ) {
-				$filter_key = $field_key;
+			if ( $type === $filter_type ) {
+				if ( 'taxonomy' === $type ) {
+					if ( $filter_taxonomy === $taxonomy ) {
+						$filter_key = $field_key;
 
-				break;
-			} elseif ( 'post-meta' === $filter_type && $filter_meta_key === $meta_key ) {
-				$filter_key = $field_key;
+						break;
+					}
+				} elseif ( 'post-meta' === $type ) {
+					if ( $filter_meta_key === $meta_key ) {
+						$filter_key = $field_key;
 
-				break;
-			} elseif ( $type === $filter_type ) {
-				$filter_key = $field_key;
+						break;
+					}
+				} else {
+					$filter_key = $field_key;
 
-				break;
+					break;
+				}
 			}
 		}
 
@@ -178,7 +184,6 @@ class WCAPF_API_Utils {
 			$type         = isset( $filter_data[0] ) ? $filter_data[0] : '';
 			$filter_type  = $type;
 			$property     = isset( $filter_data[1] ) ? $filter_data[1] : '';
-			$value_type   = isset( $filter_data[2] ) ? $filter_data[2] : 'text';
 
 			$data = array(
 				'id'        => $filter_id,
@@ -187,11 +192,9 @@ class WCAPF_API_Utils {
 			);
 
 			if ( 'taxonomy' === $type ) {
-				$data['value_type'] = $value_type;
-				$data['taxonomy']   = $property;
+				$data['taxonomy'] = $property;
 			} else if ( 'post-meta' === $type ) {
-				$data['value_type'] = $value_type;
-				$data['meta_key']   = $property;
+				$data['meta_key'] = $property;
 			}
 
 			$filter_keys[] = $data;

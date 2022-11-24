@@ -10557,8 +10557,9 @@ const General = _ref => {
     value_type,
     value_decimal,
     value_decimal_places,
+    field_key,
     field_key_error,
-    field_key
+    field_key_error_
   } = filter;
   let typeDisabledInfo;
   let filterKeyDisabledInfo;
@@ -10598,6 +10599,14 @@ const General = _ref => {
   }
 
   const metaKey = metaKeys.find(option => option.value === meta_key);
+  let fieldKeyError;
+
+  if (!globalFilterKey && field_key_error) {
+    fieldKeyError = field_key_error;
+  } else if (field_key_error_) {
+    fieldKeyError = field_key_error_;
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'title',
     index: index,
@@ -10666,10 +10675,10 @@ const General = _ref => {
     value: value_decimal_places,
     onChange: handleTextFieldChange,
     min: 0
-  })), !globalFilterKey && field_key_error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Notice, {
+  })), fieldKeyError && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Notice, {
     status: "error",
     isDismissible: false
-  }, field_key_error), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, fieldKeyError), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'field_key',
     index: index,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter key', 'wc-ajax-product-filter'),
@@ -13655,6 +13664,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const genericErrorMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Please fix the errors below.', 'wc-ajax-product-filter');
+
 const FormTitle = () => {
   const {
     state,
@@ -13715,7 +13726,7 @@ const FormTitle = () => {
     const invalidFormFilters = [];
     let isValid = true;
     formFilters.forEach((formFilter, index) => {
-      const _formFilter = (0,lodash__WEBPACK_IMPORTED_MODULE_5__.omit)(formFilter, ['type_error', 'meta_key_error', 'field_key_error']);
+      const _formFilter = (0,lodash__WEBPACK_IMPORTED_MODULE_5__.omit)(formFilter, ['type_error', 'meta_key_error', 'field_key_error', 'field_key_error_']);
 
       let dataRequired = false;
 
@@ -13764,7 +13775,7 @@ const FormTitle = () => {
     if (!isValid) {
       dispatch({
         type: 'SET_ERROR',
-        payload: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Please fix the errors below.', 'wc-ajax-product-filter')
+        payload: genericErrorMessage
       });
 
       if ('filters' !== currentTab) {
@@ -13858,6 +13869,59 @@ const FormTitle = () => {
           payload: false
         });
         (0,_notices__WEBPACK_IMPORTED_MODULE_6__.itemSavedSuccessNotice)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form saved successfully', 'wc-ajax-product-filter'));
+      } else if (data.errors) {
+        dispatch({
+          type: 'SET_ERROR',
+          payload: genericErrorMessage
+        });
+        const errorsData = data['errors'];
+        console.log(errorsData); // TODO: Remove.
+
+        const formFiltersWithErrors = formFilters.map((formFilter, index) => {
+          const error = (0,lodash__WEBPACK_IMPORTED_MODULE_5__.find)(errorsData, {
+            order: index
+          });
+
+          if (error) {
+            const {
+              key,
+              message
+            } = error;
+            return { ...formFilter,
+              [key]: message
+            };
+          }
+
+          return formFilter;
+        });
+        dispatch({
+          type: 'SET_FORM_FILTERS',
+          payload: formFiltersWithErrors
+        });
+        const newStates = accordionStates.map((isExpanded, index) => {
+          const error = (0,lodash__WEBPACK_IMPORTED_MODULE_5__.find)(errorsData, {
+            order: index
+          });
+
+          if (error) {
+            return true;
+          } else if (isExpanded) {
+            return false;
+          }
+
+          return isExpanded;
+        });
+        dispatch({
+          type: 'SET_ACCORDION_STATES',
+          payload: newStates
+        });
+
+        if ('filters' !== currentTab) {
+          dispatch({
+            type: 'SET_CURRENT_TAB',
+            payload: 'filters'
+          });
+        }
       } else {
         (0,_notices__WEBPACK_IMPORTED_MODULE_6__.itemSavedErrorNotice)(data);
       }
@@ -14235,12 +14299,13 @@ const useFormFilterData = (state, dispatch) => {
       value,
       type,
       taxHierarchical
-    } = selectedItem;
+    } = selectedItem; // Also remove the server side field key error.
 
     if ('taxonomy' === type) {
       updateFilterType(index, type, value, {
         [key]: type,
         type_error: '',
+        field_key_error_: '',
         taxonomy: value,
         taxHierarchical: taxHierarchical ? '1' : ''
       });
@@ -14249,19 +14314,21 @@ const useFormFilterData = (state, dispatch) => {
 
     updateFilterType(index, key, value, {
       [key]: value,
-      type_error: ''
+      type_error: '',
+      field_key_error_: ''
     });
   };
 
   const handleFilterKeyChange = (value, key, index) => {
-    const filterKey = wpFeSanitizeTitle(value);
-    const many = {
-      [key]: filterKey
-    };
+    const filterKey = wpFeSanitizeTitle(value); // Remove both client and server side errors when changed.
 
-    if (filterKey && formFilters[index]['field_key_error']) {
-      many['field_key_error'] = '';
-    }
+    const many = {
+      [key]: filterKey,
+      field_key_error: '',
+      field_key_error_: ''
+    }; // if (filterKey && formFilters[index]['field_key_error']) {
+    // 	many['field_key_error'] = '';
+    // }
 
     updateFilterMany(index, [key], filterKey, many);
   };
@@ -14810,7 +14877,9 @@ function filterDefaultData() {
     // Error
     type_error: '',
     meta_key_error: '',
-    field_key_error: ''
+    field_key_error: '',
+    field_key_error_: '' // Comes from server side.
+
   };
 } // These data gets reset after filter type is changed.
 

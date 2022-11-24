@@ -71,6 +71,8 @@ class WCAPF_API {
 
 		$post_arr = array(
 			'post_title'   => $form_title,
+			'post_type'    => 'wcapf-form',
+			'post_status'  => 'publish',
 			'post_content' => wp_json_encode( $form_settings ),
 		);
 
@@ -96,7 +98,16 @@ class WCAPF_API {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
 		}
 
-		$filter_ids   = json_decode( $form->post_excerpt );
+		$args = array(
+			'post_type'   => 'wcapf-filter',
+			'post_status' => 'publish',
+			'nopaging'    => true,
+			'post_parent' => $post_id,
+			'order'       => 'ASC',
+			'orderby'     => 'menu_order',
+		);
+
+		$filter_ids   = get_posts( $args );
 		$form_filters = array();
 
 		foreach ( $filter_ids as $filter_id ) {
@@ -126,7 +137,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function save_form() {
-		$form_id    = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : '';
+		$form_id    = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0;
 		$form_title = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
 
 		$_form_filters = isset( $_POST['form_filters'] ) ? $_POST['form_filters'] : '';
@@ -137,51 +148,76 @@ class WCAPF_API {
 		$form_settings  = stripslashes( $_form_settings );
 		$form_settings  = json_decode( $form_settings, true );
 
+		if ( ! $form_id || 'wcapf-form' !== get_post_type( $form_id ) ) {
+			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
+		}
+
 		$post_arr = array(
+			'ID'           => $form_id,
 			'post_title'   => $form_title,
 			'post_content' => wp_json_encode( $form_settings ),
 		);
 
-		if ( $form_id && 'wcapf-form' === get_post_type( $form_id ) ) {
-			$post_arr['ID'] = $form_id;
-
-			$new_form_id = wp_update_post( $post_arr, true );
-		} else {
-			$post_arr['post_type']   = 'wcapf-form';
-			$post_arr['post_status'] = 'publish';
-
-			$new_form_id = wp_insert_post( $post_arr, true );
-		}
+		$new_form_id = wp_update_post( $post_arr, true );
 
 		if ( is_wp_error( $new_form_id ) ) {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
 
-		$valid_types = wp_list_pluck( WCAPF_API_Utils::get_filter_types(), 'value' );
-		$filter_ids  = array();
-		$filters     = array();
+		$valid_types  = wp_list_pluck( WCAPF_API_Utils::get_filter_types(), 'value' );
+		$filter_types = array();
+		$filters      = array();
+		$errors       = array();
 
 		if ( $form_filters ) {
-			foreach ( $form_filters as $filter ) {
+			foreach ( $form_filters as $filter_order => $filter ) {
 				$filter_title = isset( $filter['title'] ) ? sanitize_text_field( $filter['title'] ) : '';
 				$filter_id    = isset( $filter['id'] ) ? absint( $filter['id'] ) : 0;
 				$post_name    = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
 				$type         = isset( $filter['type'] ) ? sanitize_text_field( $filter['type'] ) : '';
-				$value_type   = isset( $filter['value_type'] ) ? sanitize_text_field( $filter['value_type'] ) : 'text';
 
 				if ( ! in_array( $type, $valid_types ) ) {
 					continue;
 				}
 
+				$global_filter_key = WCAPF_API_Utils::get_global_filter_key( $filter );
+
 				// Try to grab the global filter key when possible.
+				if ( $global_filter_key ) {
+					$post_name = $global_filter_key;
+				}
+
 				if ( ! $post_name ) {
-					$post_name = WCAPF_API_Utils::get_global_filter_key( $filter );
+					continue;
+				}
 
-					if ( ! $post_name ) {
-						continue;
-					}
+				$error_data = array();
 
-					$filter['field_key'] = $post_name;
+				if ( post_type_exists( $post_name ) ) {
+					$error_data = array(
+						'key'       => 'field_key_error_',
+						'message'   => __( 'There is a post type with this filter key, it\'ll create conflict.', 'wc-ajax-product-filter' ),
+						'order'     => $filter_order,
+						'field_key' => $post_name,
+					);
+				} elseif ( ! WCAPF_Helper::found_pro_version() && taxonomy_exists( $post_name ) ) {
+					$error_data = array(
+						'key'       => 'field_key_error_',
+						'message'   => __( 'Taxonomy name can\'t be used as a filter key, it\'ll create conflict in the free version.', 'wc-ajax-product-filter' ),
+						'order'     => $filter_order,
+						'field_key' => $post_name,
+					);
+				}
+
+				if ( $error_data ) {
+					$errors[] = $error_data;
+
+					continue;
+				}
+
+				// Don't proceed if error found from previous filters.
+				if ( $errors ) {
+					continue;
 				}
 
 				if ( 'taxonomy' === $type ) {
@@ -191,7 +227,7 @@ class WCAPF_API {
 						continue;
 					}
 
-					$filter_type = $type . '>' . $taxonomy . '>' . $value_type;
+					$filter_type = $type . '>' . $taxonomy;
 				} elseif ( 'post-meta' === $type ) {
 					$meta_key = isset( $filter['meta_key'] ) ? sanitize_text_field( $filter['meta_key'] ) : '';
 
@@ -199,10 +235,17 @@ class WCAPF_API {
 						continue;
 					}
 
-					$filter_type = $type . '>' . $meta_key . '>' . $value_type;
+					$filter_type = $type . '>' . $meta_key;
 				} else {
 					$filter_type = $type;
 				}
+
+				// Don't add same filter type in a form multiple times.
+				if ( in_array( $filter_type, $filter_types ) ) {
+					continue;
+				}
+
+				$filter_types[] = $filter_type;
 
 				$post_arr = array( 'post_title' => $filter_title );
 
@@ -213,13 +256,8 @@ class WCAPF_API {
 				} else {
 					$post_arr['post_type']    = 'wcapf-filter';
 					$post_arr['post_status']  = 'publish';
-					$post_arr['post_name']    = $post_name;
 					$post_arr['post_parent']  = $new_form_id;
 					$post_arr['post_excerpt'] = $filter_type;
-
-					add_filter( 'pre_wp_unique_post_slug', function () use ( $post_name ) {
-						return $post_name;
-					} );
 
 					$new_filter_id = wp_insert_post( $post_arr, true );
 				}
@@ -228,31 +266,30 @@ class WCAPF_API {
 					continue;
 				}
 
-				$filter['id'] = $new_filter_id;
+				$filter['field_key'] = $post_name;
+				$filter['id']        = $new_filter_id;
 
 				$post_arr = array(
 					'ID'           => $new_filter_id,
 					'post_content' => wp_json_encode( $filter ),
+					'post_name'    => $post_name,
+					'menu_order'   => $filter_order,
 				);
+
+				add_filter( 'pre_wp_unique_post_slug', function () use ( $post_name ) {
+					return $post_name;
+				} );
 
 				$new_filter_id = wp_update_post( $post_arr, true );
 
 				if ( ! is_wp_error( $new_filter_id ) ) {
-					$filter_ids[] = $new_filter_id;
-					$filters[]    = $filter;
+					$filters[] = $filter;
 				}
 			}
 		}
 
-		$post_arr = array(
-			'ID'           => $new_form_id,
-			'post_excerpt' => wp_json_encode( $filter_ids ),
-		);
-
-		$new_form_id = wp_update_post( $post_arr, true );
-
-		if ( is_wp_error( $new_form_id ) ) {
-			wp_send_json_error( $new_form_id->get_error_message() );
+		if ( $errors ) {
+			wp_send_json_error( array( 'errors' => $errors ) );
 		}
 
 		$response = array(

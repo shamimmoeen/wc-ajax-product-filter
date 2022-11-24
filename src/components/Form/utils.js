@@ -283,6 +283,7 @@ export function filterDefaultData() {
 		type_error: '',
 		meta_key_error: '',
 		field_key_error: '',
+		field_key_error_: '', // Comes from server side.
 	};
 }
 

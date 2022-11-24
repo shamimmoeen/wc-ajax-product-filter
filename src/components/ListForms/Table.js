@@ -12,9 +12,9 @@ import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 
-// TODO: Add form location column.
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
+	__('Available on', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
 
@@ -60,6 +60,10 @@ const Table = ({
 
 			const isDeleting = filterId === deletingItemId;
 			const isDuplicating = filterId === duplicatingItemId;
+			const availableOn = __(
+				'All product archive pages',
+				'wc-ajax-product-filter'
+			);
 
 			return (
 				<tr key={filterId}>
@@ -72,6 +76,7 @@ const Table = ({
 							{filterId}
 						</span>
 					</td>
+					<td className='__Available_on'>{availableOn}</td>
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
