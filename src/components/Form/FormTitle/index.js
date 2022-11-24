@@ -9,11 +9,12 @@ import {
 	itemSavedSuccessNotice,
 	itemSavedErrorNotice,
 	removeItemSavedNotices,
+	removeFilterDeletedNotices,
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
 import { foundProVersion } from '../../utils';
-import { filterDefaultData } from '../utils';
+import { getFilterKeyError, filterDefaultData } from '../utils';
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();
@@ -26,6 +27,7 @@ const FormTitle = () => {
 		isDirty,
 		title,
 		formId,
+		filterKeys,
 		currentTab,
 		accordionStates,
 		formFilters,
@@ -38,6 +40,7 @@ const FormTitle = () => {
 		}
 
 		removeItemSavedNotices();
+		removeFilterDeletedNotices();
 	}, [isDirty]);
 
 	const handleTitleChange = (value) => {
@@ -99,13 +102,17 @@ const FormTitle = () => {
 				);
 			}
 
-			if (isEmpty(_formFilter['field_key'])) {
+			const filterKeyError = getFilterKeyError(
+				filterKeys,
+				_formFilter,
+				formFilters,
+				index
+			);
+
+			if (filterKeyError) {
 				dataRequired = true;
 
-				_formFilter['field_key_error'] = __(
-					'Filter key is required.',
-					'wc-ajax-product-filter'
-				);
+				_formFilter['field_key_error'] = filterKeyError;
 			}
 
 			if (dataRequired) {
@@ -225,6 +232,21 @@ const FormTitle = () => {
 				} = res;
 
 				if (success) {
+					dispatch({
+						type: 'SET_FILTER_KEYS',
+						payload: data.filter_keys,
+					});
+
+					dispatch({
+						type: 'SET_FORM_FILTERS',
+						payload: data.form_filters,
+					});
+
+					dispatch({
+						type: 'SET_FORM_SETTINGS',
+						payload: data.form_settings,
+					});
+
 					dispatch({ type: 'SET_DIRTY', payload: false });
 
 					itemSavedSuccessNotice(

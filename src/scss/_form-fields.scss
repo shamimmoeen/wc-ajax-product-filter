@@ -216,18 +216,6 @@
 			.post_author_order_by {
 				min-width: 150px;
 			}
-
-			// Temporarily hide the pro tag in option.
-			.display_type,
-			.date_display_type,
-			.number_display_type {
-				.__react_select__option {
-					.__pro_tag {
-						display: none;
-					}
-				}
-			}
-
 		}
 	}
 

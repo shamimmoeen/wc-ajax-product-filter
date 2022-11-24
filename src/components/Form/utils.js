@@ -113,6 +113,71 @@ export function getMetaKeys(otherFilters) {
 	return metaKeys;
 }
 
+export function getGlobalFilterKey(filterKeys, filter) {
+	const { id, type, taxonomy, meta_key } = filter;
+
+	if (id) {
+		return;
+	}
+
+	if ('taxonomy' === type) {
+		const found = find(filterKeys, { type, taxonomy });
+
+		if (found) {
+			return found.field_key;
+		}
+	} else if ('post-meta' === type) {
+		const found = find(filterKeys, { type, meta_key });
+
+		if (found) {
+			return found.field_key;
+		}
+	} else {
+		const found = find(filterKeys, { type });
+
+		if (found) {
+			return found.field_key;
+		}
+	}
+}
+
+export function getFilterKeyError(
+	filterKeys,
+	filter,
+	formFilters,
+	currentFilterIndex
+) {
+	if (filter['id']) {
+		return;
+	}
+
+	let filterKeyError;
+	const field_key = filter['field_key'];
+
+	if (isEmpty(field_key)) {
+		const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+
+		if (!globalFilterKey) {
+			filterKeyError = __(
+				'Filter key is required.',
+				'wc-ajax-product-filter'
+			);
+		}
+	} else {
+		const otherFilters = [...formFilters];
+		otherFilters.splice(currentFilterIndex, 1);
+
+		if (find(otherFilters, { field_key })) {
+			filterKeyError = __(
+				'Filter key is in use by another filter type.',
+				'wc-ajax-product-filter'
+			);
+		}
+	}
+
+	return filterKeyError;
+}
+
 export function filterDefaultData() {
 	return {
 		id: '',

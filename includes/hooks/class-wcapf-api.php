@@ -57,6 +57,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_form_preview', array( $this, 'get_form_preview' ) );
 		add_action( 'wp_ajax_wcapf_duplicate_form', array( $this, 'duplicate_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
+		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
 
 		// Save settings.
 		add_action( 'wp_ajax_wcapf_save_settings', array( $this, 'save_settings' ) );
@@ -113,6 +114,7 @@ class WCAPF_API {
 		wp_send_json_success( array(
 			'post_id'       => $post_id,
 			'post_title'    => get_the_title( $post_id ),
+			'filter_keys'   => WCAPF_API_Utils::get_filter_keys(),
 			'form_filters'  => $form_filters,
 			'form_settings' => $form_settings,
 		) );
@@ -171,6 +173,17 @@ class WCAPF_API {
 					continue;
 				}
 
+				// Try to grab the global filter key when possible.
+				if ( ! $post_name ) {
+					$post_name = WCAPF_API_Utils::get_global_filter_key( $filter );
+
+					if ( ! $post_name ) {
+						continue;
+					}
+
+					$filter['field_key'] = $post_name;
+				}
+
 				if ( 'taxonomy' === $type ) {
 					$taxonomy = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
 
@@ -203,6 +216,10 @@ class WCAPF_API {
 					$post_arr['post_name']    = $post_name;
 					$post_arr['post_parent']  = $new_form_id;
 					$post_arr['post_excerpt'] = $filter_type;
+
+					add_filter( 'pre_wp_unique_post_slug', function () use ( $post_name ) {
+						return $post_name;
+					} );
 
 					$new_filter_id = wp_insert_post( $post_arr, true );
 				}
@@ -239,6 +256,7 @@ class WCAPF_API {
 		}
 
 		$response = array(
+			'filter_keys'   => WCAPF_API_Utils::get_filter_keys(),
 			'form_filters'  => $filters,
 			'form_settings' => $form_settings,
 		);
@@ -527,6 +545,29 @@ class WCAPF_API {
 			}
 		} else {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
+	 * Deletes the filter via ajax.
+	 *
+	 * @return void
+	 */
+	public function delete_filter() {
+		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
+
+		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
+			$delete = wp_delete_post( $post_id, true );
+
+			if ( $delete ) {
+				wp_send_json_success( __( 'Filter deleted successfully', 'wc-ajax-product-filter' ) );
+			} else {
+				wp_send_json_error(
+					__( 'There was a problem deleting the filter, please try again.', 'wc-ajax-product-filter' )
+				);
+			}
+		} else {
+			wp_send_json_error( __( 'Invalid filter id', 'wc-ajax-product-filter' ) );
 		}
 	}
 

@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useRef } from '@wordpress/element';
+import { useRef, useState } from '@wordpress/element';
 import { Button, Dropdown, TabPanel } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
 import { useForm } from '../FormContext';
@@ -7,12 +7,18 @@ import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
 import {
 	dateDisplayTypes,
+	getGlobalFilterKey,
 	numberDisplayTypes,
 	textDisplayTypes,
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
 import useFormData from '../useFormData';
+import axios from 'axios';
+import {
+	filterDeletedErrorNotice,
+	removeFilterDeletedNotices,
+} from '../../notices';
 
 const filterTypes = wcapf_admin_params.filter_types;
 
@@ -21,7 +27,24 @@ const Filter = ({ index }) => {
 
 	const { setDirty } = useFormData(state, dispatch);
 
-	const { accordionStates, formFilters } = state;
+	const [deleteBtnBusy, setDeleteBtnBusy] = useState(false);
+
+	const { filterKeys, accordionStates, formFilters } = state;
+
+	const filter = formFilters[index];
+
+	const {
+		id,
+		title,
+		type,
+		taxonomy,
+		meta_key,
+		value_type,
+		field_key,
+		display_type,
+		number_display_type,
+		date_display_type,
+	} = filter;
 
 	const isExpanded = accordionStates[index];
 
@@ -29,6 +52,8 @@ const Filter = ({ index }) => {
 	const toggleIconRef = useRef('');
 
 	const toggleExpand = (e) => {
+		removeFilterDeletedNotices();
+
 		if (dragHandleRef.current.contains(e.target)) {
 			return;
 		}
@@ -50,7 +75,7 @@ const Filter = ({ index }) => {
 		toggleIconRef.current.focus();
 	};
 
-	const handleRemoveFilter = () => {
+	const dispatchDeleteFilter = () => {
 		const _formFilters = [...formFilters];
 		_formFilters.splice(index, 1);
 
@@ -67,25 +92,58 @@ const Filter = ({ index }) => {
 			payload: _newAccordionStates,
 		});
 
+		if (id) {
+			const _filterKeys = filterKeys.filter((data) => data.id !== id);
+
+			dispatch({
+				type: 'SET_FILTER_KEYS',
+				payload: _filterKeys,
+			});
+		}
+
 		setDirty();
+	};
+
+	const handleDeleteFilter = (callback) => {
+		if (id) {
+			callback();
+
+			setDeleteBtnBusy(true);
+
+			const data = {
+				action: 'wcapf_delete_filter',
+				post_id: id,
+			};
+
+			axios
+				.get(wcapf_admin_params.ajaxurl, {
+					params: data,
+				})
+				.then((res) => {
+					setDeleteBtnBusy(false);
+
+					const {
+						data: { data, success },
+					} = res;
+
+					if (success) {
+						dispatchDeleteFilter();
+					} else {
+						filterDeletedErrorNotice(data);
+					}
+				})
+				.catch((err) => {
+					setDeleteBtnBusy(false);
+
+					filterDeletedErrorNotice(err.message);
+				});
+		} else {
+			dispatchDeleteFilter();
+		}
 	};
 
 	const toggleIcon = isExpanded ? chevronUp : chevronDown;
 	const topClass = isExpanded ? '__top open' : '__top';
-
-	const filter = formFilters[index];
-
-	const {
-		title,
-		type,
-		taxonomy,
-		meta_key,
-		value_type,
-		field_key,
-		display_type,
-		number_display_type,
-		date_display_type,
-	} = filter;
 
 	let filterType;
 
@@ -118,6 +176,8 @@ const Filter = ({ index }) => {
 		(option) => option.value === _displayType
 	);
 
+	const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+
 	return (
 		<div className='__item'>
 			<div className={topClass} onClick={toggleExpand}>
@@ -137,7 +197,9 @@ const Filter = ({ index }) => {
 							<span className='__meta_key'>{meta_key}</span>
 						)}
 					</div>
-					<div className='__key'>{field_key}</div>
+					<div className='__key'>
+						{globalFilterKey ? globalFilterKey : field_key}
+					</div>
 					<div className='__display'>{displayType.label}</div>
 				</div>
 
@@ -192,9 +254,9 @@ const Filter = ({ index }) => {
 					</TabPanel>
 
 					<div className='__action_buttons'>
-						<button className='button-link' onClick={closeFilter}>
+						<Button variant='link' onClick={closeFilter}>
 							{__('Close', 'wc-ajax-product-filter')}
-						</button>
+						</Button>
 						{` | `}
 						<Dropdown
 							popoverProps={{ noArrow: false }}
@@ -202,13 +264,16 @@ const Filter = ({ index }) => {
 							position='top center'
 							focusOnMount={true}
 							renderToggle={({ isOpen, onToggle }) => (
-								<button
-									className='button-link button-link-delete'
+								<Button
+									variant='link'
+									isDestructive
+									isBusy={deleteBtnBusy}
+									disabled={deleteBtnBusy}
 									onClick={onToggle}
 									aria-expanded={isOpen}
 								>
-									{__('Remove', 'wc-ajax-product-filter')}
-								</button>
+									{__('Delete', 'wc-ajax-product-filter')}
+								</Button>
 							)}
 							renderContent={({ onToggle }) => (
 								<>
@@ -217,19 +282,19 @@ const Filter = ({ index }) => {
 										'wc-ajax-product-filter'
 									)}
 									{` `}
-									<button
-										className='button-link button-link-delete'
-										onClick={handleRemoveFilter}
+									<Button
+										variant='link'
+										isDestructive
+										onClick={() =>
+											handleDeleteFilter(onToggle)
+										}
 									>
-										{__('Remove', 'wc-ajax-product-filter')}
-									</button>
+										{__('Delete', 'wc-ajax-product-filter')}
+									</Button>
 									{` `}
-									<button
-										className='button-link'
-										onClick={onToggle}
-									>
+									<Button variant='link' onClick={onToggle}>
 										{__('Cancel', 'wc-ajax-product-filter')}
-									</button>
+									</Button>
 								</>
 							)}
 						/>

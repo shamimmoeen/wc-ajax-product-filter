@@ -12,16 +12,6 @@ import { defaultFormSettings } from '../utilsForForm';
 const Form = () => {
 	const { dispatch } = useForm();
 
-	const getAvailableFilters = () => {
-		const data = {
-			action: 'wcapf_get_available_filters',
-		};
-
-		return axios.get(wcapf_admin_params.ajaxurl, {
-			params: data,
-		});
-	};
-
 	const getFormData = () => {
 		const query = new URL(window.location.href);
 		const id = query.searchParams.get('id');
@@ -37,21 +27,20 @@ const Form = () => {
 	};
 
 	useEffect(() => {
-		Promise.all([getAvailableFilters(), getFormData()])
-			.then((results) => {
-				const resAvailableFilters = results[0];
-				const resFormFilters = results[1];
-
-				const {
-					data: { data: availableFilters },
-				} = resAvailableFilters;
-
+		getFormData()
+			.then((response) => {
 				const {
 					data: { data: formData },
-				} = resFormFilters;
+				} = response;
 
+				const filterKeys = formData['filter_keys'];
 				const formFilters = formData['form_filters'];
 				const formSettings = formData['form_settings'];
+
+				dispatch({
+					type: 'SET_FILTER_KEYS',
+					payload: filterKeys,
+				});
 
 				// The accordion states of form filters.
 				const accordionStates = [];
@@ -73,19 +62,6 @@ const Form = () => {
 				dispatch({
 					type: 'SET_FORM_SETTINGS',
 					payload: merge(defaultFormSettings(), formSettings),
-				});
-
-				const _availableFilters = availableFilters.map((item) => {
-					if (formFilters.find((filter) => filter.id === item.id)) {
-						return { ...item, status: 'added' };
-					}
-
-					return item;
-				});
-
-				dispatch({
-					type: 'SET_AVAILABLE_FILTERS',
-					payload: _availableFilters,
 				});
 
 				dispatch({ type: 'SET_LOADING', payload: false });

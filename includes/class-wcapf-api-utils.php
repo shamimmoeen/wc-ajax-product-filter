@@ -128,8 +128,76 @@ class WCAPF_API_Utils {
 		return $meta_keys;
 	}
 
-	public static function get_filter_keys() {
+	public static function get_global_filter_key( $filter ) {
+		$filter_keys     = self::get_filter_keys();
+		$filter_type     = isset( $filter['type'] ) ? $filter['type'] : '';
+		$filter_taxonomy = isset( $filter['taxonomy'] ) ? $filter['taxonomy'] : '';
+		$filter_meta_key = isset( $filter['meta_key'] ) ? $filter['meta_key'] : '';
+		$filter_key      = '';
 
+		foreach ( $filter_keys as $data ) {
+			$type      = isset( $data['type'] ) ? $data['type'] : '';
+			$taxonomy  = isset( $data['taxonomy'] ) ? $data['taxonomy'] : '';
+			$meta_key  = isset( $data['meta_key'] ) ? $data['meta_key'] : '';
+			$field_key = isset( $data['field_key'] ) ? $data['field_key'] : '';
+
+			if ( 'taxonomy' === $filter_type && $filter_taxonomy === $taxonomy ) {
+				$filter_key = $field_key;
+
+				break;
+			} elseif ( 'post-meta' === $filter_type && $filter_meta_key === $meta_key ) {
+				$filter_key = $field_key;
+
+				break;
+			} elseif ( $type === $filter_type ) {
+				$filter_key = $field_key;
+
+				break;
+			}
+		}
+
+		return $filter_key;
+	}
+
+	public static function get_filter_keys() {
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+				'nopaging'    => true,
+			)
+		);
+
+		$filter_keys = array();
+
+		foreach ( $filters as $filter ) {
+			$filter_id    = $filter->ID;
+			$filter_key   = $filter->post_name;
+			$post_excerpt = $filter->post_excerpt;
+			$filter_data  = explode( '>', $post_excerpt );
+			$type         = isset( $filter_data[0] ) ? $filter_data[0] : '';
+			$filter_type  = $type;
+			$property     = isset( $filter_data[1] ) ? $filter_data[1] : '';
+			$value_type   = isset( $filter_data[2] ) ? $filter_data[2] : 'text';
+
+			$data = array(
+				'id'        => $filter_id,
+				'type'      => $filter_type,
+				'field_key' => $filter_key,
+			);
+
+			if ( 'taxonomy' === $type ) {
+				$data['value_type'] = $value_type;
+				$data['taxonomy']   = $property;
+			} else if ( 'post-meta' === $type ) {
+				$data['value_type'] = $value_type;
+				$data['meta_key']   = $property;
+			}
+
+			$filter_keys[] = $data;
+		}
+
+		return $filter_keys;
 	}
 
 	public static function display_date_formats() {

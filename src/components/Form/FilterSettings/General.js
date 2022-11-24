@@ -7,7 +7,7 @@ import ToggleGroup from '../../Field/ToggleGroup';
 import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
 import { Notice } from '@wordpress/components';
-import { getFilterTypes, getMetaKeys } from '../utils';
+import { getGlobalFilterKey, getFilterTypes, getMetaKeys } from '../utils';
 
 const General = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -21,7 +21,7 @@ const General = ({ index }) => {
 		handleCheckboxChange,
 	} = useFormFilterData(state, dispatch);
 
-	const { formFilters } = state;
+	const { filterKeys, formFilters } = state;
 
 	const filter = formFilters[index];
 
@@ -45,7 +45,7 @@ const General = ({ index }) => {
 
 	if (id) {
 		typeDisabledInfo = __(
-			'Filter type can not be changed after it is saved. But you can permanently remove the filter and add a new one.',
+			'Filter type can not be changed after it is saved. But you can permanently delete the filter and add a new one.',
 			'wc-ajax-product-filter'
 		);
 
@@ -57,6 +57,7 @@ const General = ({ index }) => {
 
 	let filterTypes;
 	let metaKeys;
+	let globalFilterKey;
 
 	if (id) {
 		filterTypes = wcapf_admin_params.filter_types;
@@ -68,6 +69,15 @@ const General = ({ index }) => {
 		filterTypes = getFilterTypes(otherFilters);
 
 		metaKeys = getMetaKeys(otherFilters);
+
+		globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+
+		if (globalFilterKey) {
+			filterKeyDisabledInfo = __(
+				'This key is already assigned for this filter type and can\'t be changed from here. But you can change the filter keys globally from "Settings > Filter Keys" section.',
+				'wc-ajax-product-filter'
+			);
+		}
 	}
 
 	let filterType;
@@ -208,7 +218,7 @@ const General = ({ index }) => {
 				</>
 			)}
 
-			{field_key_error && (
+			{!globalFilterKey && field_key_error && (
 				<Notice status='error' isDismissible={false}>
 					{field_key_error}
 				</Notice>
@@ -222,9 +232,9 @@ const General = ({ index }) => {
 					'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
 					'wc-ajax-product-filter'
 				)}
-				value={field_key}
+				value={globalFilterKey ? globalFilterKey : field_key}
 				onChange={handleFilterKeyChange}
-				isDisabled={id}
+				isDisabled={id || globalFilterKey}
 				tooltip={filterKeyDisabledInfo}
 			/>
 		</>

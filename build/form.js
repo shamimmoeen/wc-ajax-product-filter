@@ -10542,6 +10542,7 @@ const General = _ref => {
     handleCheckboxChange
   } = (0,_useFormFilterData__WEBPACK_IMPORTED_MODULE_3__["default"])(state, dispatch);
   const {
+    filterKeys,
     formFilters
   } = state;
   const filter = formFilters[index];
@@ -10563,12 +10564,13 @@ const General = _ref => {
   let filterKeyDisabledInfo;
 
   if (id) {
-    typeDisabledInfo = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter type can not be changed after it is saved. But you can permanently remove the filter and add a new one.', 'wc-ajax-product-filter');
+    typeDisabledInfo = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter type can not be changed after it is saved. But you can permanently delete the filter and add a new one.', 'wc-ajax-product-filter');
     filterKeyDisabledInfo = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter key can not be changed after it is saved. But you can change the filter keys globally from "Settings > Filter Keys" section.', 'wc-ajax-product-filter');
   }
 
   let filterTypes;
   let metaKeys;
+  let globalFilterKey;
 
   if (id) {
     filterTypes = wcapf_admin_params.filter_types;
@@ -10578,6 +10580,11 @@ const General = _ref => {
     otherFilters.splice(index, 1);
     filterTypes = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.getFilterTypes)(otherFilters);
     metaKeys = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.getMetaKeys)(otherFilters);
+    globalFilterKey = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.getGlobalFilterKey)(filterKeys, filter);
+
+    if (globalFilterKey) {
+      filterKeyDisabledInfo = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This key is already assigned for this filter type and can\'t be changed from here. But you can change the filter keys globally from "Settings > Filter Keys" section.', 'wc-ajax-product-filter');
+    }
   }
 
   let filterType;
@@ -10659,7 +10666,7 @@ const General = _ref => {
     value: value_decimal_places,
     onChange: handleTextFieldChange,
     min: 0
-  })), field_key_error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Notice, {
+  })), !globalFilterKey && field_key_error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Notice, {
     status: "error",
     isDismissible: false
   }, field_key_error), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -10667,9 +10674,9 @@ const General = _ref => {
     index: index,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter key', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.', 'wc-ajax-product-filter'),
-    value: field_key,
+    value: globalFilterKey ? globalFilterKey : field_key,
     onChange: handleFilterKeyChange,
-    isDisabled: id,
+    isDisabled: id || globalFilterKey,
     tooltip: filterKeyDisabledInfo
   }));
 };
@@ -12803,10 +12810,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-up.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-down.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/drag-handle.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-up.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-down.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/drag-handle.js");
 /* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../FormContext */ "./src/components/Form/FormContext.js");
 /* harmony import */ var _FilterSettings_General__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../FilterSettings/General */ "./src/components/Form/FilterSettings/General.js");
 /* harmony import */ var _FilterSettings_Appearance__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../FilterSettings/Appearance */ "./src/components/Form/FilterSettings/Appearance/index.js");
@@ -12814,6 +12821,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FilterSettings_Options__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../FilterSettings/Options */ "./src/components/Form/FilterSettings/Options/index.js");
 /* harmony import */ var _FilterSettings_Advanced__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../FilterSettings/Advanced */ "./src/components/Form/FilterSettings/Advanced.js");
 /* harmony import */ var _useFormData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../useFormData */ "./src/components/Form/useFormData.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _notices__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../notices */ "./src/components/notices.js");
+
+
 
 
 
@@ -12839,15 +12851,32 @@ const Filter = _ref => {
   const {
     setDirty
   } = (0,_useFormData__WEBPACK_IMPORTED_MODULE_9__["default"])(state, dispatch);
+  const [deleteBtnBusy, setDeleteBtnBusy] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const {
+    filterKeys,
     accordionStates,
     formFilters
   } = state;
+  const filter = formFilters[index];
+  const {
+    id,
+    title,
+    type,
+    taxonomy,
+    meta_key,
+    value_type,
+    field_key,
+    display_type,
+    number_display_type,
+    date_display_type
+  } = filter;
   const isExpanded = accordionStates[index];
   const dragHandleRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)('');
   const toggleIconRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)('');
 
   const toggleExpand = e => {
+    (0,_notices__WEBPACK_IMPORTED_MODULE_11__.removeFilterDeletedNotices)();
+
     if (dragHandleRef.current.contains(e.target)) {
       return;
     }
@@ -12870,7 +12899,7 @@ const Filter = _ref => {
     toggleIconRef.current.focus();
   };
 
-  const handleRemoveFilter = () => {
+  const dispatchDeleteFilter = () => {
     const _formFilters = [...formFilters];
 
     _formFilters.splice(index, 1);
@@ -12887,23 +12916,54 @@ const Filter = _ref => {
       type: 'SET_ACCORDION_STATES',
       payload: _newAccordionStates
     });
+
+    if (id) {
+      const _filterKeys = filterKeys.filter(data => data.id !== id);
+
+      dispatch({
+        type: 'SET_FILTER_KEYS',
+        payload: _filterKeys
+      });
+    }
+
     setDirty();
   };
 
-  const toggleIcon = isExpanded ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_11__["default"];
+  const handleDeleteFilter = callback => {
+    if (id) {
+      callback();
+      setDeleteBtnBusy(true);
+      const data = {
+        action: 'wcapf_delete_filter',
+        post_id: id
+      };
+      axios__WEBPACK_IMPORTED_MODULE_10___default().get(wcapf_admin_params.ajaxurl, {
+        params: data
+      }).then(res => {
+        setDeleteBtnBusy(false);
+        const {
+          data: {
+            data,
+            success
+          }
+        } = res;
+
+        if (success) {
+          dispatchDeleteFilter();
+        } else {
+          (0,_notices__WEBPACK_IMPORTED_MODULE_11__.filterDeletedErrorNotice)(data);
+        }
+      }).catch(err => {
+        setDeleteBtnBusy(false);
+        (0,_notices__WEBPACK_IMPORTED_MODULE_11__.filterDeletedErrorNotice)(err.message);
+      });
+    } else {
+      dispatchDeleteFilter();
+    }
+  };
+
+  const toggleIcon = isExpanded ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__["default"];
   const topClass = isExpanded ? '__top open' : '__top';
-  const filter = formFilters[index];
-  const {
-    title,
-    type,
-    taxonomy,
-    meta_key,
-    value_type,
-    field_key,
-    display_type,
-    number_display_type,
-    date_display_type
-  } = filter;
   let filterType;
 
   if ('taxonomy' === type) {
@@ -12930,6 +12990,7 @@ const Filter = _ref => {
   }
 
   const displayType = displayTypes.find(option => option.value === _displayType);
+  const globalFilterKey = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getGlobalFilterKey)(filterKeys, filter);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__item"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12938,9 +12999,9 @@ const Filter = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__drag_handle_wrapper",
     ref: dragHandleRef
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"], {
     className: "__drag_handler",
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__["default"]
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__["default"]
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "_filter_header"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -12953,7 +13014,7 @@ const Filter = _ref => {
     className: "__meta_key"
   }, meta_key)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__key"
-  }, field_key), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, globalFilterKey ? globalFilterKey : field_key), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__display"
   }, displayType.label)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__accordion_toggle_button"
@@ -13007,8 +13068,8 @@ const Filter = _ref => {
     }
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__action_buttons"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "button-link",
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: "link",
     onClick: closeFilter
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Close', 'wc-ajax-product-filter')), ` | `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Dropdown, {
     popoverProps: {
@@ -13022,21 +13083,25 @@ const Filter = _ref => {
         isOpen,
         onToggle
       } = _ref2;
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-        className: "button-link button-link-delete",
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+        variant: "link",
+        isDestructive: true,
+        isBusy: deleteBtnBusy,
+        disabled: deleteBtnBusy,
         onClick: onToggle,
         "aria-expanded": isOpen
-      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove', 'wc-ajax-product-filter'));
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Delete', 'wc-ajax-product-filter'));
     },
     renderContent: _ref3 => {
       let {
         onToggle
       } = _ref3;
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Are you sure?', 'wc-ajax-product-filter'), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-        className: "button-link button-link-delete",
-        onClick: handleRemoveFilter
-      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Remove', 'wc-ajax-product-filter')), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-        className: "button-link",
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Are you sure?', 'wc-ajax-product-filter'), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+        variant: "link",
+        isDestructive: true,
+        onClick: () => handleDeleteFilter(onToggle)
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Delete', 'wc-ajax-product-filter')), ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+        variant: "link",
         onClick: onToggle
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cancel', 'wc-ajax-product-filter')));
     }
@@ -13604,6 +13669,7 @@ const FormTitle = () => {
     isDirty,
     title,
     formId,
+    filterKeys,
     currentTab,
     accordionStates,
     formFilters,
@@ -13615,6 +13681,7 @@ const FormTitle = () => {
     }
 
     (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeItemSavedNotices)();
+    (0,_notices__WEBPACK_IMPORTED_MODULE_6__.removeFilterDeletedNotices)();
   }, [isDirty]);
 
   const handleTitleChange = value => {
@@ -13662,9 +13729,11 @@ const FormTitle = () => {
         _formFilter['meta_key_error'] = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta key is required.', 'wc-ajax-product-filter');
       }
 
-      if ((0,lodash__WEBPACK_IMPORTED_MODULE_5__.isEmpty)(_formFilter['field_key'])) {
+      const filterKeyError = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.getFilterKeyError)(filterKeys, _formFilter, formFilters, index);
+
+      if (filterKeyError) {
         dataRequired = true;
-        _formFilter['field_key_error'] = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter key is required.', 'wc-ajax-product-filter');
+        _formFilter['field_key_error'] = filterKeyError;
       }
 
       if (dataRequired) {
@@ -13773,6 +13842,18 @@ const FormTitle = () => {
 
       if (success) {
         dispatch({
+          type: 'SET_FILTER_KEYS',
+          payload: data.filter_keys
+        });
+        dispatch({
+          type: 'SET_FORM_FILTERS',
+          payload: data.form_filters
+        });
+        dispatch({
+          type: 'SET_FORM_SETTINGS',
+          payload: data.form_settings
+        });
+        dispatch({
           type: 'SET_DIRTY',
           payload: false
         });
@@ -13827,9 +13908,9 @@ const initialState = {
   isDirty: false,
   title,
   formId,
+  filterKeys: [],
   currentTab: 'filters',
   accordionStates: [],
-  availableFilters: [],
   formFilters: [],
   formSettings: {},
   saveError: ''
@@ -13857,6 +13938,11 @@ const formReducer = (state, action) => {
         formId: action.payload
       };
 
+    case 'SET_FILTER_KEYS':
+      return { ...state,
+        filterKeys: action.payload
+      };
+
     case 'SET_CURRENT_TAB':
       return { ...state,
         currentTab: action.payload
@@ -13865,11 +13951,6 @@ const formReducer = (state, action) => {
     case 'SET_ACCORDION_STATES':
       return { ...state,
         accordionStates: action.payload
-      };
-
-    case 'SET_AVAILABLE_FILTERS':
-      return { ...state,
-        availableFilters: action.payload
       };
 
     case 'SET_FORM_FILTERS':
@@ -13934,15 +14015,6 @@ const Form = () => {
     dispatch
   } = (0,_FormContext__WEBPACK_IMPORTED_MODULE_1__.useForm)();
 
-  const getAvailableFilters = () => {
-    const data = {
-      action: 'wcapf_get_available_filters'
-    };
-    return axios__WEBPACK_IMPORTED_MODULE_2___default().get(wcapf_admin_params.ajaxurl, {
-      params: data
-    });
-  };
-
   const getFormData = () => {
     const query = new URL(window.location.href);
     const id = query.searchParams.get('id');
@@ -13956,21 +14028,19 @@ const Form = () => {
   };
 
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    Promise.all([getAvailableFilters(), getFormData()]).then(results => {
-      const resAvailableFilters = results[0];
-      const resFormFilters = results[1];
-      const {
-        data: {
-          data: availableFilters
-        }
-      } = resAvailableFilters;
+    getFormData().then(response => {
       const {
         data: {
           data: formData
         }
-      } = resFormFilters;
+      } = response;
+      const filterKeys = formData['filter_keys'];
       const formFilters = formData['form_filters'];
-      const formSettings = formData['form_settings']; // The accordion states of form filters.
+      const formSettings = formData['form_settings'];
+      dispatch({
+        type: 'SET_FILTER_KEYS',
+        payload: filterKeys
+      }); // The accordion states of form filters.
 
       const accordionStates = [];
 
@@ -13989,21 +14059,6 @@ const Form = () => {
       dispatch({
         type: 'SET_FORM_SETTINGS',
         payload: (0,lodash__WEBPACK_IMPORTED_MODULE_3__.merge)((0,_utilsForForm__WEBPACK_IMPORTED_MODULE_9__.defaultFormSettings)(), formSettings)
-      });
-
-      const _availableFilters = availableFilters.map(item => {
-        if (formFilters.find(filter => filter.id === item.id)) {
-          return { ...item,
-            status: 'added'
-          };
-        }
-
-        return item;
-      });
-
-      dispatch({
-        type: 'SET_AVAILABLE_FILTERS',
-        payload: _availableFilters
       });
       dispatch({
         type: 'SET_LOADING',
@@ -14418,7 +14473,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "dateDisplayTypes": function() { return /* binding */ dateDisplayTypes; },
 /* harmony export */   "filterDefaultData": function() { return /* binding */ filterDefaultData; },
 /* harmony export */   "filterTypeDependentFields": function() { return /* binding */ filterTypeDependentFields; },
+/* harmony export */   "getFilterKeyError": function() { return /* binding */ getFilterKeyError; },
 /* harmony export */   "getFilterTypes": function() { return /* binding */ getFilterTypes; },
+/* harmony export */   "getGlobalFilterKey": function() { return /* binding */ getGlobalFilterKey; },
 /* harmony export */   "getMetaKeys": function() { return /* binding */ getMetaKeys; },
 /* harmony export */   "getTableData": function() { return /* binding */ getTableData; },
 /* harmony export */   "manualEntryOrderTypes": function() { return /* binding */ manualEntryOrderTypes; },
@@ -14581,6 +14638,73 @@ function getMetaKeys(otherFilters) {
   });
 
   return metaKeys;
+}
+function getGlobalFilterKey(filterKeys, filter) {
+  const {
+    id,
+    type,
+    taxonomy,
+    meta_key
+  } = filter;
+
+  if (id) {
+    return;
+  }
+
+  if ('taxonomy' === type) {
+    const found = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(filterKeys, {
+      type,
+      taxonomy
+    });
+
+    if (found) {
+      return found.field_key;
+    }
+  } else if ('post-meta' === type) {
+    const found = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(filterKeys, {
+      type,
+      meta_key
+    });
+
+    if (found) {
+      return found.field_key;
+    }
+  } else {
+    const found = (0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(filterKeys, {
+      type
+    });
+
+    if (found) {
+      return found.field_key;
+    }
+  }
+}
+function getFilterKeyError(filterKeys, filter, formFilters, currentFilterIndex) {
+  if (filter['id']) {
+    return;
+  }
+
+  let filterKeyError;
+  const field_key = filter['field_key'];
+
+  if ((0,lodash__WEBPACK_IMPORTED_MODULE_1__.isEmpty)(field_key)) {
+    const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+
+    if (!globalFilterKey) {
+      filterKeyError = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter key is required.', 'wc-ajax-product-filter');
+    }
+  } else {
+    const otherFilters = [...formFilters];
+    otherFilters.splice(currentFilterIndex, 1);
+
+    if ((0,lodash__WEBPACK_IMPORTED_MODULE_1__.find)(otherFilters, {
+      field_key
+    })) {
+      filterKeyError = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Filter key is in use by another filter type.', 'wc-ajax-product-filter');
+    }
+  }
+
+  return filterKeyError;
 }
 function filterDefaultData() {
   return {
@@ -15413,6 +15537,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "addErrorNotice": function() { return /* binding */ addErrorNotice; },
 /* harmony export */   "addSuccessNotice": function() { return /* binding */ addSuccessNotice; },
 /* harmony export */   "copiedToClipboardNotice": function() { return /* binding */ copiedToClipboardNotice; },
+/* harmony export */   "filterDeletedErrorNotice": function() { return /* binding */ filterDeletedErrorNotice; },
 /* harmony export */   "itemCreateErrorNotice": function() { return /* binding */ itemCreateErrorNotice; },
 /* harmony export */   "itemDeletedErrorNotice": function() { return /* binding */ itemDeletedErrorNotice; },
 /* harmony export */   "itemDeletedSuccessNotice": function() { return /* binding */ itemDeletedSuccessNotice; },
@@ -15421,6 +15546,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "itemSavedErrorNotice": function() { return /* binding */ itemSavedErrorNotice; },
 /* harmony export */   "itemSavedSuccessNotice": function() { return /* binding */ itemSavedSuccessNotice; },
 /* harmony export */   "removeCopiedToClipboardNotice": function() { return /* binding */ removeCopiedToClipboardNotice; },
+/* harmony export */   "removeFilterDeletedNotices": function() { return /* binding */ removeFilterDeletedNotices; },
 /* harmony export */   "removeItemCreateNotice": function() { return /* binding */ removeItemCreateNotice; },
 /* harmony export */   "removeItemDeletedNotices": function() { return /* binding */ removeItemDeletedNotices; },
 /* harmony export */   "removeItemDuplicatedNotices": function() { return /* binding */ removeItemDuplicatedNotices; },
@@ -15508,6 +15634,14 @@ function itemSavedErrorNotice(message) {
 function removeItemSavedNotices() {
   removeNotice(itemSaveSuccessNoticeId);
   removeNotice(itemSaveErrorNoticeId);
+} // Filter Delete Notices.
+
+const filterDeleteNoticeId = 'filter-delete-error';
+function filterDeletedErrorNotice(message) {
+  addSuccessNotice(message, filterDeleteNoticeId, '😟');
+}
+function removeFilterDeletedNotices() {
+  removeNotice(filterDeleteNoticeId);
 } // Settings notices.
 
 const settingsSaveSuccessNoticeId = 'settings-save-success';
