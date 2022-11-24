@@ -9956,6 +9956,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "addErrorNotice": function() { return /* binding */ addErrorNotice; },
 /* harmony export */   "addSuccessNotice": function() { return /* binding */ addSuccessNotice; },
 /* harmony export */   "copiedToClipboardNotice": function() { return /* binding */ copiedToClipboardNotice; },
+/* harmony export */   "filterDeletedErrorNotice": function() { return /* binding */ filterDeletedErrorNotice; },
 /* harmony export */   "itemCreateErrorNotice": function() { return /* binding */ itemCreateErrorNotice; },
 /* harmony export */   "itemDeletedErrorNotice": function() { return /* binding */ itemDeletedErrorNotice; },
 /* harmony export */   "itemDeletedSuccessNotice": function() { return /* binding */ itemDeletedSuccessNotice; },
@@ -9964,6 +9965,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "itemSavedErrorNotice": function() { return /* binding */ itemSavedErrorNotice; },
 /* harmony export */   "itemSavedSuccessNotice": function() { return /* binding */ itemSavedSuccessNotice; },
 /* harmony export */   "removeCopiedToClipboardNotice": function() { return /* binding */ removeCopiedToClipboardNotice; },
+/* harmony export */   "removeFilterDeletedNotices": function() { return /* binding */ removeFilterDeletedNotices; },
 /* harmony export */   "removeItemCreateNotice": function() { return /* binding */ removeItemCreateNotice; },
 /* harmony export */   "removeItemDeletedNotices": function() { return /* binding */ removeItemDeletedNotices; },
 /* harmony export */   "removeItemDuplicatedNotices": function() { return /* binding */ removeItemDuplicatedNotices; },
@@ -10051,6 +10053,14 @@ function itemSavedErrorNotice(message) {
 function removeItemSavedNotices() {
   removeNotice(itemSaveSuccessNoticeId);
   removeNotice(itemSaveErrorNoticeId);
+} // Filter Delete Notices.
+
+const filterDeleteNoticeId = 'filter-delete-error';
+function filterDeletedErrorNotice(message) {
+  addSuccessNotice(message, filterDeleteNoticeId, '😟');
+}
+function removeFilterDeletedNotices() {
+  removeNotice(filterDeleteNoticeId);
 } // Settings notices.
 
 const settingsSaveSuccessNoticeId = 'settings-save-success';

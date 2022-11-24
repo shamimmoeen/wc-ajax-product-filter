@@ -609,11 +609,6 @@ body.rtl .__sidebar .components-button {
 .__form_control.react_select_simple .__input_wrapper .post_author_order_by {
   min-width: 150px;
 }
-.__form_control.react_select_simple .__input_wrapper .display_type .__react_select__option .__pro_tag,
-.__form_control.react_select_simple .__input_wrapper .date_display_type .__react_select__option .__pro_tag,
-.__form_control.react_select_simple .__input_wrapper .number_display_type .__react_select__option .__pro_tag {
-  display: none;
-}
 .__form_control.react_select .__input_wrapper {
   margin-bottom: 8px;
 }
