@@ -2750,9 +2750,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- // TODO: Add form location column.
 
-const headers = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'wc-ajax-product-filter')];
+const headers = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Available on', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'wc-ajax-product-filter')];
 
 const Table = _ref => {
   let {
@@ -2785,6 +2784,9 @@ const Table = _ref => {
     const filterTitle = form.title ? form.title : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('(no title)', 'wc-ajax-product-filter');
     const isDeleting = filterId === deletingItemId;
     const isDuplicating = filterId === duplicatingItemId;
+
+    const availableOn = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All product archive pages', 'wc-ajax-product-filter');
+
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
       key: filterId
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
@@ -2795,6 +2797,8 @@ const Table = _ref => {
     }, filterTitle), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
       className: "__post_id"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('ID', 'wc-ajax-product-filter'), ":", ` `, filterId)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+      className: "__Available_on"
+    }, availableOn), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
       className: "__Actions"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
       icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_4__.DeleteIcon,

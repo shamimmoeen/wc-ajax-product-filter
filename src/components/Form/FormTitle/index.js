@@ -3,7 +3,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { useForm } from '../FormContext';
 import useFormData from '../useFormData';
 import axios from 'axios';
-import { pick, omit, isEmpty } from 'lodash';
+import { find, pick, omit, isEmpty } from 'lodash';
 import {
 	removeCopiedToClipboardNotice,
 	itemSavedSuccessNotice,
@@ -15,6 +15,11 @@ import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
 import { foundProVersion } from '../../utils';
 import { getFilterKeyError, filterDefaultData } from '../utils';
+
+const genericErrorMessage = __(
+	'Please fix the errors below.',
+	'wc-ajax-product-filter'
+);
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();
@@ -77,6 +82,7 @@ const FormTitle = () => {
 				'type_error',
 				'meta_key_error',
 				'field_key_error',
+				'field_key_error_',
 			]);
 
 			let dataRequired = false;
@@ -140,10 +146,7 @@ const FormTitle = () => {
 		if (!isValid) {
 			dispatch({
 				type: 'SET_ERROR',
-				payload: __(
-					'Please fix the errors below.',
-					'wc-ajax-product-filter'
-				),
+				payload: genericErrorMessage,
 			});
 
 			if ('filters' !== currentTab) {
@@ -252,6 +255,63 @@ const FormTitle = () => {
 					itemSavedSuccessNotice(
 						__('Form saved successfully', 'wc-ajax-product-filter')
 					);
+				} else if (data.errors) {
+					dispatch({
+						type: 'SET_ERROR',
+						payload: genericErrorMessage,
+					});
+
+					const errorsData = data['errors'];
+
+					console.log(errorsData); // TODO: Remove.
+
+					const formFiltersWithErrors = formFilters.map(
+						(formFilter, index) => {
+							const error = find(errorsData, { order: index });
+
+							if (error) {
+								const { key, message } = error;
+
+								return {
+									...formFilter,
+									[key]: message,
+								};
+							}
+
+							return formFilter;
+						}
+					);
+
+					dispatch({
+						type: 'SET_FORM_FILTERS',
+						payload: formFiltersWithErrors,
+					});
+
+					const newStates = accordionStates.map(
+						(isExpanded, index) => {
+							const error = find(errorsData, { order: index });
+
+							if (error) {
+								return true;
+							} else if (isExpanded) {
+								return false;
+							}
+
+							return isExpanded;
+						}
+					);
+
+					dispatch({
+						type: 'SET_ACCORDION_STATES',
+						payload: newStates,
+					});
+
+					if ('filters' !== currentTab) {
+						dispatch({
+							type: 'SET_CURRENT_TAB',
+							payload: 'filters',
+						});
+					}
 				} else {
 					itemSavedErrorNotice(data);
 				}

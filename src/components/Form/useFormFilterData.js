@@ -89,10 +89,13 @@ const useFormFilterData = (state, dispatch) => {
 	const handleFilterTypeChange = (selectedItem, key, index) => {
 		const { value, type, taxHierarchical } = selectedItem;
 
+		// Also remove the server side field key error.
+
 		if ('taxonomy' === type) {
 			updateFilterType(index, type, value, {
 				[key]: type,
 				type_error: '',
+				field_key_error_: '',
 				taxonomy: value,
 				taxHierarchical: taxHierarchical ? '1' : '',
 			});
@@ -100,16 +103,26 @@ const useFormFilterData = (state, dispatch) => {
 			return;
 		}
 
-		updateFilterType(index, key, value, { [key]: value, type_error: '' });
+		updateFilterType(index, key, value, {
+			[key]: value,
+			type_error: '',
+			field_key_error_: '',
+		});
 	};
 
 	const handleFilterKeyChange = (value, key, index) => {
 		const filterKey = wpFeSanitizeTitle(value);
-		const many = { [key]: filterKey };
 
-		if (filterKey && formFilters[index]['field_key_error']) {
-			many['field_key_error'] = '';
-		}
+		// Remove both client and server side errors when changed.
+		const many = {
+			[key]: filterKey,
+			field_key_error: '',
+			field_key_error_: '',
+		};
+
+		// if (filterKey && formFilters[index]['field_key_error']) {
+		// 	many['field_key_error'] = '';
+		// }
 
 		updateFilterMany(index, [key], filterKey, many);
 	};
