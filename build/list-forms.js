@@ -2483,8 +2483,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _utilsForForm__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utilsForForm */ "./src/components/utilsForForm.js");
-/* harmony import */ var _ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../ProFeaturesNotice */ "./src/components/ProFeaturesNotice.js");
-
 
 
 
@@ -2573,14 +2571,6 @@ const AddNewModal = _ref => {
     });
   };
 
-  const proNotice = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The free version supports only one form. Upgrade to pro to show different forms on different archive pages.', 'wc-ajax-product-filter');
-
-  let addNewFormDisabled = false;
-
-  if (!(0,_utils__WEBPACK_IMPORTED_MODULE_4__.foundProVersion)() && forms.length >= 1) {
-    addNewFormDisabled = true;
-  }
-
   const modalContent = () => {
     if (loading) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2603,17 +2593,14 @@ const AddNewModal = _ref => {
         href: (0,_utils__WEBPACK_IMPORTED_MODULE_4__.getEditFormLink)(newItemId)
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit Form', 'wc-ajax-product-filter'))));
     } else {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, addNewFormDisabled && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_9__["default"], {
-        message: proNotice
-      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "__step_inner __title_step"
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
         type: 'text',
         placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter form title', 'wc-ajax-product-filter'),
         className: "components-text-control__input",
         value: title,
-        onChange: handleTitleChange,
-        disabled: addNewFormDisabled
+        onChange: handleTitleChange
       })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Flex, {
         justify: 'space-between'
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
@@ -2622,7 +2609,7 @@ const AddNewModal = _ref => {
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cancel', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
         variant: "primary",
         onClick: handleSubmit,
-        disabled: !title || addNewFormDisabled,
+        disabled: !title,
         className: "__next_btn"
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Next', 'wc-ajax-product-filter'))));
     }
@@ -2807,9 +2794,7 @@ const Table = _ref => {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
       href: form.editLink,
       className: "__post_title"
-    }, formTitle), (0,_utils__WEBPACK_IMPORTED_MODULE_5__.foundProVersion)() && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      className: "__post_id"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('ID', 'wc-ajax-product-filter'), ":", ` `, formId)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+    }, formTitle)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
       className: "__Available_on"
     }, availableOn), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
       className: "__Actions"
@@ -2819,7 +2804,7 @@ const Table = _ref => {
       isBusy: isDeleting,
       disabled: isDeleting,
       isSmall: true
-    }), (0,_utils__WEBPACK_IMPORTED_MODULE_5__.foundProVersion)() && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
       icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_4__.DuplicateIcon,
       onClick: () => openDuplicateModal(formId),
       isBusy: isDuplicating,
@@ -3258,38 +3243,6 @@ const Notifications = () => {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Notifications);
-
-/***/ }),
-
-/***/ "./src/components/ProFeaturesNotice.js":
-/*!*********************************************!*\
-  !*** ./src/components/ProFeaturesNotice.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/components/utils.js");
-
-
-
-
-const ProFeaturesNotice = _ref => {
-  let {
-    message
-  } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.foundProVersion)() && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__pro_settings"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, message, ` `, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.upgradeToProLink)()
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade', 'wc-ajax-product-filter')))));
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (ProFeaturesNotice);
 
 /***/ }),
 
