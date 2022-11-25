@@ -9512,7 +9512,7 @@ const Advanced = _ref => {
   } = state;
   const filter = formFilters[index];
   const {
-    hide_title,
+    show_title,
     enable_accordion,
     accordion_default_state,
     help_text,
@@ -9523,19 +9523,19 @@ const Advanced = _ref => {
     max_height
   } = filter;
 
-  const hideTitleField = () => {
+  const showTitleField = () => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      id: 'hide_title',
+      id: 'show_title',
       index: index,
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hide Title', 'wc-ajax-product-filter'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show Title', 'wc-ajax-product-filter'),
       description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to hide the filter title.', 'wc-ajax-product-filter'),
-      isChecked: hide_title,
+      isChecked: show_title,
       onChange: handleCheckboxChange
     });
   };
 
   const enableAccordionField = () => {
-    if (!hide_title) {
+    if ('1' === show_title) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'enable_accordion',
         index: index,
@@ -9548,7 +9548,7 @@ const Advanced = _ref => {
   };
 
   const accordionDefaultSateField = () => {
-    if (!hide_title && '1' === enable_accordion) {
+    if ('1' === show_title && '1' === enable_accordion) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'accordion_default_state',
         index: index,
@@ -9562,7 +9562,7 @@ const Advanced = _ref => {
   };
 
   const tooltipField = () => {
-    if (!hide_title) {
+    if ('1' === show_title) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Textarea__WEBPACK_IMPORTED_MODULE_5__["default"], {
         id: 'help_text',
         index: index,
@@ -9656,7 +9656,7 @@ const Advanced = _ref => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, hideTitleField(), enableAccordionField(), accordionDefaultSateField(), tooltipField(), emptyOptionsField(), enableSearchField(), reduceHeightField(), filterMaxHeightField(), visibleOptionsField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, showTitleField(), enableAccordionField(), accordionDefaultSateField(), tooltipField(), emptyOptionsField(), enableSearchField(), reduceHeightField(), filterMaxHeightField(), visibleOptionsField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Advanced);
@@ -14907,7 +14907,7 @@ function filterDefaultData() {
     post_author_order_dir: 'asc',
     include_user_roles: [],
     // Advanced Settings
-    hide_title: '',
+    show_title: '1',
     enable_accordion: '',
     accordion_default_state: 'expanded',
     help_text: '',
