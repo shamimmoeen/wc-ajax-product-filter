@@ -8,7 +8,7 @@ import {
 	EditIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { foundProVersion, slugify } from '../utils';
+import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 
@@ -71,12 +71,6 @@ const Table = ({
 						<a href={form.editLink} className='__post_title'>
 							{formTitle}
 						</a>
-						{foundProVersion() && (
-							<span className='__post_id'>
-								{__('ID', 'wc-ajax-product-filter')}:{` `}
-								{formId}
-							</span>
-						)}
 					</td>
 					<td className='__Available_on'>{availableOn}</td>
 					<td className='__Actions'>
@@ -87,15 +81,13 @@ const Table = ({
 							disabled={isDeleting}
 							isSmall
 						/>
-						{foundProVersion() && (
-							<Button
-								icon={DuplicateIcon}
-								onClick={() => openDuplicateModal(formId)}
-								isBusy={isDuplicating}
-								disabled={isDuplicating}
-								isSmall
-							/>
-						)}
+						<Button
+							icon={DuplicateIcon}
+							onClick={() => openDuplicateModal(formId)}
+							isBusy={isDuplicating}
+							disabled={isDuplicating}
+							isSmall
+						/>
 						<Button
 							icon={CodeIcon}
 							onClick={() => openPublishModal(formId)}
