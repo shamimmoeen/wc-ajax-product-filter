@@ -1,5 +1,5 @@
 import { sprintf, __ } from '@wordpress/i18n';
-import { isEmpty, merge, find } from 'lodash';
+import { concat, isEmpty, merge, find } from 'lodash';
 import { foundProVersion } from '../utils';
 
 export function newFilterData(index, formFilters) {
@@ -555,8 +555,31 @@ export function textDisplayTypes(withPro = false) {
 	return options;
 }
 
+function mergeDisplayTypes(freeOptions, proOptions, withPro = false) {
+	let options;
+
+	if (withPro && !foundProVersion()) {
+		const _proOptions = proOptions.map((option) => {
+			option.isPro = true;
+
+			return option;
+		});
+
+		options = concat(freeOptions, [
+			{
+				proGroup: true,
+				options: _proOptions,
+			},
+		]);
+	} else {
+		options = concat(freeOptions, proOptions);
+	}
+
+	return options;
+}
+
 export function numberDisplayTypes(withPro = false) {
-	const options = [
+	const freeOptions = [
 		{
 			label: __('Range - Slider', 'wc-ajax-product-filter'),
 			value: 'range_slider',
@@ -565,6 +588,9 @@ export function numberDisplayTypes(withPro = false) {
 			label: __('Range - Number', 'wc-ajax-product-filter'),
 			value: 'range_number',
 		},
+	];
+
+	const proOptions = [
 		{
 			label: __('Range - Checkbox', 'wc-ajax-product-filter'),
 			value: 'range_checkbox',
@@ -587,25 +613,11 @@ export function numberDisplayTypes(withPro = false) {
 		},
 	];
 
-	if (withPro && !foundProVersion()) {
-		const allowed = ['range_slider', 'range_number'];
-
-		return options.map((option) => {
-			if (allowed.includes(option.value)) {
-				return option;
-			} else {
-				option.isPro = true;
-
-				return option;
-			}
-		});
-	}
-
-	return options;
+	return mergeDisplayTypes(freeOptions, proOptions, withPro);
 }
 
 export function dateDisplayTypes(withPro = false) {
-	const options = [
+	const freeOptions = [
 		{
 			label: __('Input - Date', 'wc-ajax-product-filter'),
 			value: 'input_date',
@@ -614,6 +626,9 @@ export function dateDisplayTypes(withPro = false) {
 			label: __('Input - Date Range', 'wc-ajax-product-filter'),
 			value: 'input_date_range',
 		},
+	];
+
+	const proOptions = [
 		{
 			label: __('Time Period - Checkbox', 'wc-ajax-product-filter'),
 			value: 'time_period_checkbox',
@@ -636,21 +651,7 @@ export function dateDisplayTypes(withPro = false) {
 		},
 	];
 
-	if (withPro && !foundProVersion()) {
-		const allowed = ['input_date', 'input_date_range'];
-
-		return options.map((option) => {
-			if (allowed.includes(option.value)) {
-				return option;
-			} else {
-				option.isPro = true;
-
-				return option;
-			}
-		});
-	}
-
-	return options;
+	return mergeDisplayTypes(freeOptions, proOptions, withPro);
 }
 
 export function accordionStates() {

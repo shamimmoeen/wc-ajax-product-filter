@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
+import { find } from 'lodash';
 import Checkbox from '../../../Field/Checkbox';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
+import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import { dateDisplayTypes } from '../../utils';
@@ -42,10 +44,22 @@ const ValueTypeDate = ({ index }) => {
 
 	const displayTypeField = () => {
 		const options = dateDisplayTypes(true);
+		let value;
 
-		const value = options.find(
-			(option) => date_display_type === option.value
-		);
+		value = options.find((option) => option.value === date_display_type);
+
+		if (!foundProVersion()) {
+			const freeDisplayTypes = ['input_date', 'input_date_range'];
+
+			if (!freeDisplayTypes.includes(date_display_type)) {
+				const _proOptions = find(options, { proGroup: true });
+				const proOptions = _proOptions.options;
+
+				value = proOptions.find(
+					(option) => option.value === date_display_type
+				);
+			}
+		}
 
 		return (
 			<Select
