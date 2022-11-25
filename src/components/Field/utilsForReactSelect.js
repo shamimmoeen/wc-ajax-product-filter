@@ -187,11 +187,7 @@ export const SingleValueForSelectRule = (props) => {
 
 export const Group = (props) => {
 	if (props.data.proGroup) {
-		return (
-			<div className='__pro_group'>
-				<components.Group {...props} />
-			</div>
-		);
+		return <components.Group {...props} className='__pro_group' />;
 	}
 
 	return <components.Group {...props} />;

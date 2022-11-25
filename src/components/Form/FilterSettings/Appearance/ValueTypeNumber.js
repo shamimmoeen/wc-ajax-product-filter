@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
+import { find } from 'lodash';
 import Checkbox from '../../../Field/Checkbox';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
+import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import { numberDisplayTypes } from '../../utils';
@@ -38,10 +40,22 @@ const ValueTypeNumber = ({ index }) => {
 
 	const displayTypeField = () => {
 		const options = numberDisplayTypes(true);
+		let value;
 
-		const value = options.find(
-			(option) => number_display_type === option.value
-		);
+		value = options.find((option) => option.value === number_display_type);
+
+		if (!foundProVersion()) {
+			const freeDisplayTypes = ['range_slider', 'range_number'];
+
+			if (!freeDisplayTypes.includes(number_display_type)) {
+				const _proOptions = find(options, { proGroup: true });
+				const proOptions = _proOptions.options;
+
+				value = proOptions.find(
+					(option) => option.value === number_display_type
+				);
+			}
+		}
 
 		return (
 			<Select

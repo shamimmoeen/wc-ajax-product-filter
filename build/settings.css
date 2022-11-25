@@ -583,8 +583,12 @@ body.rtl .__sidebar .components-button {
 .__form_control.react_select_simple .__input_wrapper {
   display: flex;
 }
-.__form_control.react_select_simple .__input_wrapper .display_type {
-  min-width: 140px;
+.__form_control.react_select_simple .__input_wrapper .display_type,
+.__form_control.react_select_simple .__input_wrapper .order_terms_by,
+.__form_control.react_select_simple .__input_wrapper .limit_options,
+.__form_control.react_select_simple .__input_wrapper .options_order_by,
+.__form_control.react_select_simple .__input_wrapper .post_author_order_by {
+  min-width: 150px;
 }
 .__form_control.react_select_simple .__input_wrapper .date_display_type,
 .__form_control.react_select_simple .__input_wrapper .number_display_type {
@@ -602,12 +606,6 @@ body.rtl .__sidebar .components-button {
   font-weight: normal;
   margin-bottom: 8px;
   text-transform: none;
-}
-.__form_control.react_select_simple .__input_wrapper .order_terms_by,
-.__form_control.react_select_simple .__input_wrapper .limit_options,
-.__form_control.react_select_simple .__input_wrapper .options_order_by,
-.__form_control.react_select_simple .__input_wrapper .post_author_order_by {
-  min-width: 150px;
 }
 .__form_control.react_select .__input_wrapper {
   margin-bottom: 8px;
@@ -745,17 +743,16 @@ body.rtl .__custom_react_select .__name {
 .__custom_react_select.__single_select .__react_select__option.__react_select__option--is-disabled .__option_label {
   color: hsl(0deg, 0%, 80%);
 }
-body:not(.rtl) .__custom_react_select.__single_select .__react_select__group .__react_select__option {
+body:not(.rtl) .__custom_react_select.__single_select .__react_select__group:not(.__pro_group) .__react_select__option {
   padding-left: 16px;
 }
 
-body.rtl .__custom_react_select.__single_select .__react_select__group .__react_select__option {
+body.rtl .__custom_react_select.__single_select .__react_select__group:not(.__pro_group) .__react_select__option {
   padding-right: 16px;
 }
 
-.__custom_react_select.__single_select .__pro_group .__react_select__option {
-  padding-left: 8px;
-  padding-right: 8px;
+.__custom_react_select.__single_select .__pro_group .__react_select__option .__pro_tag {
+  display: none;
 }
 
 .__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover {
@@ -778,17 +775,16 @@ body.rtl .__custom_react_select.__single_select .__react_select__group .__react_
 .__react_select__menu-portal .__react_select__option.__react_select__option--is-disabled .__option_label {
   color: hsl(0deg, 0%, 80%);
 }
-body:not(.rtl) .__react_select__menu-portal .__react_select__group .__react_select__option {
+body:not(.rtl) .__react_select__menu-portal .__react_select__group:not(.__pro_group) .__react_select__option {
   padding-left: 16px;
 }
 
-body.rtl .__react_select__menu-portal .__react_select__group .__react_select__option {
+body.rtl .__react_select__menu-portal .__react_select__group:not(.__pro_group) .__react_select__option {
   padding-right: 16px;
 }
 
-.__react_select__menu-portal .__pro_group .__react_select__option {
-  padding-left: 8px;
-  padding-right: 8px;
+.__react_select__menu-portal .__pro_group .__react_select__option .__pro_tag {
+  display: none;
 }
 
 /**

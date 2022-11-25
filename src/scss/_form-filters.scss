@@ -10,17 +10,18 @@
 	}
 
 	.__key {
-		flex: .9;
+		flex: .8;
 	}
 
 	.__display {
-		flex: .8;
+		flex: .9;
 	}
 }
 
 .__filters_drop_zone {
 	margin: 0 auto;
 	max-width: 900px;
+	padding-bottom: 8em; // Add extra space for the filter type dropdown.
 
 	.components-notice {
 		margin: 0 0 1.5em;
@@ -106,7 +107,8 @@
 
 			@include header-column-sizes;
 
-			.__title {
+			.__title,
+			.__display {
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
