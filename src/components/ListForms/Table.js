@@ -8,7 +8,7 @@ import {
 	EditIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { slugify } from '../utils';
+import { foundProVersion, slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 
@@ -53,48 +53,52 @@ const Table = ({
 		forms.map((_form) => {
 			const form = prepareFormData(_form);
 
-			const filterId = form.id;
-			const filterTitle = form.title
+			const formId = form.id;
+			const formTitle = form.title
 				? form.title
 				: __('(no title)', 'wc-ajax-product-filter');
 
-			const isDeleting = filterId === deletingItemId;
-			const isDuplicating = filterId === duplicatingItemId;
+			const isDeleting = formId === deletingItemId;
+			const isDuplicating = formId === duplicatingItemId;
 			const availableOn = __(
 				'All product archive pages',
 				'wc-ajax-product-filter'
 			);
 
 			return (
-				<tr key={filterId}>
+				<tr key={formId}>
 					<td className='__Title'>
 						<a href={form.editLink} className='__post_title'>
-							{filterTitle}
+							{formTitle}
 						</a>
-						<span className='__post_id'>
-							{__('ID', 'wc-ajax-product-filter')}:{` `}
-							{filterId}
-						</span>
+						{foundProVersion() && (
+							<span className='__post_id'>
+								{__('ID', 'wc-ajax-product-filter')}:{` `}
+								{formId}
+							</span>
+						)}
 					</td>
 					<td className='__Available_on'>{availableOn}</td>
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
-							onClick={() => openDeleteModal(filterId)}
+							onClick={() => openDeleteModal(formId)}
 							isBusy={isDeleting}
 							disabled={isDeleting}
 							isSmall
 						/>
-						<Button
-							icon={DuplicateIcon}
-							onClick={() => openDuplicateModal(filterId)}
-							isBusy={isDuplicating}
-							disabled={isDuplicating}
-							isSmall
-						/>
+						{foundProVersion() && (
+							<Button
+								icon={DuplicateIcon}
+								onClick={() => openDuplicateModal(formId)}
+								isBusy={isDuplicating}
+								disabled={isDuplicating}
+								isSmall
+							/>
+						)}
 						<Button
 							icon={CodeIcon}
-							onClick={() => openPublishModal(filterId)}
+							onClick={() => openPublishModal(formId)}
 							isSmall
 						/>
 						<Button

@@ -76,7 +76,6 @@ const ListForms = () => {
 				<PublishModal
 					isOpen={publishModalId}
 					closeModal={handleClosePublishModal}
-					postType={postType}
 				/>
 
 				<Notifications />

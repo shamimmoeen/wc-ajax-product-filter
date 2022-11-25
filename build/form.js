@@ -13988,8 +13988,7 @@ const FormTitle = () => {
     handleSubmit: handleSubmit
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Modals_PublishModal__WEBPACK_IMPORTED_MODULE_8__["default"], {
     isOpen: publishModalId,
-    closeModal: handleClosePublishModal,
-    postType: 'form'
+    closeModal: handleClosePublishModal
   }));
 };
 
@@ -15244,10 +15243,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _SVGIcons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../SVGIcons */ "./src/components/SVGIcons.js");
-/* harmony import */ var _notices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../notices */ "./src/components/notices.js");
-
-
 
 
 
@@ -15255,115 +15250,25 @@ __webpack_require__.r(__webpack_exports__);
 const PublishModal = _ref => {
   let {
     isOpen: id,
-    closeModal,
-    postType
+    closeModal
   } = _ref;
-  const clipboardApiFound = window.isSecureContext && navigator.clipboard;
-
-  const handleCopyToClipboard = text => {
-    if (!clipboardApiFound) {
-      return;
-    }
-
-    navigator.clipboard.writeText(text);
-    (0,_notices__WEBPACK_IMPORTED_MODULE_4__.copiedToClipboardNotice)();
-  };
-
-  const handleTabChange = () => {
-    (0,_notices__WEBPACK_IMPORTED_MODULE_4__.removeCopiedToClipboardNotice)();
-  };
-
-  const getTabContent = tab => {
-    let description;
-    let code;
-    let shortcode;
-    let widgetName;
-
-    if ('filter' === postType) {
-      shortcode = `[wcapf_filter id="${id}"]`;
-      widgetName = 'WC Ajax Product Filter';
-    } else if ('form' === postType) {
-      shortcode = `[wcapf_form id="${id}"]`;
-      widgetName = 'WC Ajax Product Filter Form';
-    }
-
-    const widgetsPageLink = wcapf_admin_params.widgets_page_link;
-
-    if ('shortcode' === tab) {
-      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to publish using shortcode, just copy code below and use it.', 'wc-ajax-product-filter');
-      code = shortcode;
-    } else if ('php-code' === tab) {
-      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to publish using PHP code, just copy code below and use it.', 'wc-ajax-product-filter');
-      code = `<?php echo do_shortcode( '${shortcode}' ); ?>`;
-    } else {
-      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to use it in a widget, go to the widgets page, add <b>%s</b> widget to the desired area.', 'wc-ajax-product-filter'), widgetName);
-    }
-
-    let classes = '__code';
-
-    if (clipboardApiFound) {
-      classes += ' __clipboard-api-found';
-    }
-
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__publish_tab_content"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-      dangerouslySetInnerHTML: {
-        __html: description
-      }
-    }), ('shortcode' === tab || 'php-code' === tab) && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: classes,
-      tabIndex: 0,
-      onClick: () => handleCopyToClipboard(code)
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__text"
-    }, code), clipboardApiFound && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Icon, {
-      icon: _SVGIcons__WEBPACK_IMPORTED_MODULE_3__.ClipboardIcon,
-      size: 24
-    })), 'widget' === tab && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__link"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-      variant: "primary",
-      href: widgetsPageLink,
-      target: "_blank"
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go to Widgets', 'wc-ajax-product-filter'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "__buttons"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
-      variant: "secondary",
-      onClick: closeModal
-    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'wc-ajax-product-filter'))));
-  };
-
-  let heading;
-
-  if ('filter' === postType) {
-    heading = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Publish Filter', 'wc-ajax-product-filter');
-  } else if ('form' === postType) {
-    heading = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Publish Form', 'wc-ajax-product-filter');
-  }
-
+  const description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go to the widgets page, add <b>%s</b> widget to the desired area.', 'wc-ajax-product-filter'), 'WC Ajax Product Filter');
+  const widgetsPageLink = wcapf_admin_params.widgets_page_link;
   return id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
     onRequestClose: closeModal,
     __experimentalHideHeader: true,
     className: "__publish_modal"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, heading), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TabPanel, {
-    className: "__publish_tab_panel",
-    activeClass: "active-tab",
-    onSelect: handleTabChange,
-    tabs: [{
-      name: 'shortcode',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Shortcode', 'wc-ajax-product-filter'),
-      className: 'shortcode'
-    }, {
-      name: 'php-code',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('PHP Code', 'wc-ajax-product-filter'),
-      className: 'php-code'
-    }, {
-      name: 'widget',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Widget', 'wc-ajax-product-filter'),
-      className: 'widget'
-    }]
-  }, tab => getTabContent(tab.name))));
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Publish Form', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    dangerouslySetInnerHTML: {
+      __html: description
+    }
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "__link"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+    variant: "primary",
+    href: widgetsPageLink,
+    target: "_blank"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go to Widgets', 'wc-ajax-product-filter'))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (PublishModal);
