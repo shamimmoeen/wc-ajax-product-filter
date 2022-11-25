@@ -342,7 +342,6 @@ const FormTitle = () => {
 			<PublishModal
 				isOpen={publishModalId}
 				closeModal={handleClosePublishModal}
-				postType={'form'}
 			/>
 		</>
 	);

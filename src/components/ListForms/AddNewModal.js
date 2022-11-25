@@ -2,11 +2,12 @@ import { __ } from '@wordpress/i18n';
 import { Button, Flex, Icon, Modal, Spinner } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { itemCreateErrorNotice, removeItemCreateNotice } from '../notices';
-import { getEditFormLink } from '../utils';
+import { foundProVersion, getEditFormLink } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { CheckIcon } from '../SVGIcons';
 import axios from 'axios';
 import { defaultFormSettings } from '../utilsForForm';
+import ProFeaturesNotice from '../ProFeaturesNotice';
 
 const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	const {
@@ -89,6 +90,17 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 			});
 	};
 
+	const proNotice = __(
+		'The free version supports only one form. Upgrade to pro to show different forms on different archive pages.',
+		'wc-ajax-product-filter'
+	);
+
+	let addNewFormDisabled = false;
+
+	if (!foundProVersion() && forms.length >= 1) {
+		addNewFormDisabled = true;
+	}
+
 	const modalContent = () => {
 		if (loading) {
 			return (
@@ -123,6 +135,10 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		} else {
 			return (
 				<>
+					{addNewFormDisabled && (
+						<ProFeaturesNotice message={proNotice} />
+					)}
+
 					<div className='__step_inner __title_step'>
 						<input
 							type={'text'}
@@ -133,6 +149,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 							className='components-text-control__input'
 							value={title}
 							onChange={handleTitleChange}
+							disabled={addNewFormDisabled}
 						/>
 					</div>
 
@@ -144,7 +161,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 						<Button
 							variant='primary'
 							onClick={handleSubmit}
-							disabled={!title}
+							disabled={!title || addNewFormDisabled}
 							className='__next_btn'
 						>
 							{__('Next', 'wc-ajax-product-filter')}
