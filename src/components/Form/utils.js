@@ -270,7 +270,7 @@ export function filterDefaultData() {
 		post_author_order_dir: 'asc',
 		include_user_roles: [],
 		// Advanced Settings
-		hide_title: '',
+		show_title: '1',
 		enable_accordion: '',
 		accordion_default_state: 'expanded',
 		help_text: '',

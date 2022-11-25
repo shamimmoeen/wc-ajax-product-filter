@@ -18,7 +18,7 @@ const Advanced = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
-		hide_title,
+		show_title,
 		enable_accordion,
 		accordion_default_state,
 		help_text,
@@ -29,24 +29,24 @@ const Advanced = ({ index }) => {
 		max_height,
 	} = filter;
 
-	const hideTitleField = () => {
+	const showTitleField = () => {
 		return (
 			<Checkbox
-				id={'hide_title'}
+				id={'show_title'}
 				index={index}
-				label={__('Hide Title', 'wc-ajax-product-filter')}
+				label={__('Show Title', 'wc-ajax-product-filter')}
 				description={__(
 					'Whether to hide the filter title.',
 					'wc-ajax-product-filter'
 				)}
-				isChecked={hide_title}
+				isChecked={show_title}
 				onChange={handleCheckboxChange}
 			/>
 		);
 	};
 
 	const enableAccordionField = () => {
-		if (!hide_title) {
+		if ('1' === show_title) {
 			return (
 				<Checkbox
 					id={'enable_accordion'}
@@ -64,7 +64,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const accordionDefaultSateField = () => {
-		if (!hide_title && '1' === enable_accordion) {
+		if ('1' === show_title && '1' === enable_accordion) {
 			return (
 				<Radio
 					id={'accordion_default_state'}
@@ -86,7 +86,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const tooltipField = () => {
-		if (!hide_title) {
+		if ('1' === show_title) {
 			return (
 				<Textarea
 					id={'help_text'}
@@ -225,7 +225,7 @@ const Advanced = ({ index }) => {
 
 	return (
 		<>
-			{hideTitleField()}
+			{showTitleField()}
 
 			{enableAccordionField()}
 
