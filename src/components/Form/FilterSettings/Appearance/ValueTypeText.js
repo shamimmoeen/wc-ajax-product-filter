@@ -92,7 +92,6 @@ const ValueTypeText = ({ index }) => {
 					)}
 					isChecked={hierarchical}
 					onChange={handleHierarchyChange}
-					isPro={true}
 				/>
 			);
 		}

@@ -9,6 +9,7 @@ const Checkbox = ({
 	onChange,
 	description,
 	isPro,
+	isDisabled,
 }) => {
 	return (
 		<div className='__form_control __checkbox_toggle'>
@@ -25,6 +26,7 @@ const Checkbox = ({
 							checked={isChecked}
 							id={`${id}-${index}`}
 							onChange={(value) => onChange(value, id, index)}
+							disabled={isDisabled}
 						/>
 					</div>
 				</div>

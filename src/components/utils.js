@@ -1,3 +1,5 @@
+import { concat } from 'lodash';
+
 export function foundProVersion() {
 	// return wcapf_admin_params.foundPro;
 	return false;
@@ -64,4 +66,27 @@ export function arrayMove(arr, fromIndex, toIndex) {
 	var element = arr[fromIndex];
 	arr.splice(fromIndex, 1);
 	arr.splice(toIndex, 0, element);
+}
+
+export function mergeSelectOptions(freeOptions, proOptions, withPro = false) {
+	let options;
+
+	if (withPro && !foundProVersion()) {
+		const _proOptions = proOptions.map((option) => {
+			option.isPro = true;
+
+			return option;
+		});
+
+		options = concat(freeOptions, [
+			{
+				proGroup: true,
+				options: _proOptions,
+			},
+		]);
+	} else {
+		options = concat(freeOptions, proOptions);
+	}
+
+	return options;
 }

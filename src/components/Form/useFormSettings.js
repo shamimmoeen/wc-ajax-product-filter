@@ -21,6 +21,10 @@ const useFormSettings = (state, dispatch) => {
 		updateFormSettings(key, value);
 	};
 
+	const handleSelectChange = (selectedItem, key) => {
+		updateFormSettings(key, selectedItem.value);
+	};
+
 	const updateFormSettings = (key, value) => {
 		const prevValue = formSettings[key];
 
@@ -40,6 +44,7 @@ const useFormSettings = (state, dispatch) => {
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
+		handleSelectChange,
 	};
 };
 

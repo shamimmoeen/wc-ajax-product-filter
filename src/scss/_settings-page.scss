@@ -1,3 +1,4 @@
+@import './variables';
 @import './mixins';
 
 .__settings_wrapper {
@@ -6,13 +7,11 @@
     .__settings_header {
         @include list-table-header(110px);
     }
-
-    .__settings_fields {
-        padding: calc(var(--vr-padding) * 2) var(--hr-padding);
-    }
 }
 
-.__settings_fields {
+.__settings_tab {
+    @include inner-tab;
+
     @media (min-width: 768px) {
         .__form_control .__label {
             width: 200px;
@@ -75,6 +74,52 @@
             margin-top: 0;
         }
     }
+
+    .__global_filter_keys_heading {
+        margin: .5em 0 2em;
+    }
+
+    .__global_filter_keys {
+        .__filter_key {
+            align-items: center;
+            display: flex;
+            margin: 0 0 1.5em;
+            gap: 15px;
+
+            .__label {
+                font-weight: 500;
+
+                @media (min-width: 600px) {
+                    min-width: 200px;
+                }
+            }
+        }
+
+        .__drag_handle_wrapper {
+            display: inline-flex;
+
+            .__drag_handler {
+                cursor: grab;
+            }
+        }
+
+        @media (max-width: 599px) {
+            .__label {
+                flex: .8;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .__value {
+                flex: 1;
+            }
+        }
+    }
+}
+
+.__filter_key .components-text-control__input {
+    border-color: $inputBorderColor;
 }
 
 .__form_control.react_select .__custom_react_select.full-width.author_roles {

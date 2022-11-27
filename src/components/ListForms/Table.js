@@ -8,13 +8,15 @@ import {
 	EditIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { slugify } from '../utils';
+import { foundProVersion, slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 
+const WCAPF_PRO = foundProVersion();
+
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
-	__('Available on', 'wc-ajax-product-filter'),
+	__('Filter on', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
 
@@ -61,7 +63,7 @@ const Table = ({
 			const isDeleting = formId === deletingItemId;
 			const isDuplicating = formId === duplicatingItemId;
 			const availableOn = __(
-				'All product archive pages',
+				'Product archive pages',
 				'wc-ajax-product-filter'
 			);
 
@@ -81,16 +83,18 @@ const Table = ({
 							disabled={isDeleting}
 							isSmall
 						/>
-						<Button
-							icon={DuplicateIcon}
-							onClick={() => openDuplicateModal(formId)}
-							isBusy={isDuplicating}
-							disabled={isDuplicating}
-							isSmall
-						/>
+						{WCAPF_PRO && (
+							<Button
+								icon={DuplicateIcon}
+								onClick={() => openDuplicateModal(formId)}
+								isBusy={isDuplicating}
+								disabled={isDuplicating}
+								isSmall
+							/>
+						)}
 						<Button
 							icon={CodeIcon}
-							onClick={() => openPublishModal(formId)}
+							onClick={openPublishModal}
 							isSmall
 						/>
 						<Button

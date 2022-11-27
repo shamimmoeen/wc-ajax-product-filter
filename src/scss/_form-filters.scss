@@ -134,35 +134,7 @@
 		border-width: 0 1px 1px;
 		border-radius: 0 0 $blockBorderRadius $blockBorderRadius;
 
-		.components-tab-panel__tabs {
-			border: none;
-			justify-content: flex-start;
-			gap: 24px;
-
-			.components-tab-panel__tabs-item {
-				font-weight: normal;
-				font-size: 12.5px;
-				padding-left: 0;
-				padding-right: 0;
-
-				&:not(.active-tab) {
-					color: #667085;
-				}
-			}
-		}
-
-		.components-tab-panel__tab-content {
-			padding: 24px;
-			max-width: unset;
-			min-height: unset;
-			margin: unset;
-
-			.__form_control {
-				&:first-child {
-					margin-top: .5em;
-				}
-			}
-		}
+		@include inner-tab;
 
 		.components-notice {
 			border: none;
@@ -197,4 +169,11 @@
 .__form_settings {
 	max-width: 775px;
 	margin: 0 auto;
+	padding-bottom: 8em;
+
+	@media (min-width: 768px) {
+		.__form_control .__label {
+			width: 200px;
+		}
+	}
 }

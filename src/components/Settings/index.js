@@ -1,9 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { Button, Icon } from '@wordpress/components';
+import { Button, Icon, TabPanel } from '@wordpress/components';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
-import Fields from './Fields';
 import Notifications from '../Notifications';
 import { useSettings } from './SettingsContext';
 import { SaveIcon } from '../SVGIcons';
@@ -13,6 +12,11 @@ import {
 	settingsSavedErrorNotice,
 	settingsSavedSuccessNotice,
 } from '../notices';
+import General from './Tabs/General';
+import FilterKeys from './Tabs/FilterKeys';
+import Miscellaneous from './Tabs/Miscellaneous';
+import LoaderOverlay from './Tabs/LoaderOverlay';
+import Others from './Tabs/Others';
 
 const Settings = () => {
 	const {
@@ -85,9 +89,61 @@ const Settings = () => {
 								</Button>
 							</div>
 
-							<div className='__settings_fields'>
-								<Fields />
-							</div>
+							<TabPanel
+								className='__tab_panel __settings_tab'
+								activeClass='active-tab'
+								tabs={[
+									{
+										name: 'general',
+										title: __(
+											'General',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
+										name: 'others',
+										title: __(
+											'Others',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
+										name: 'loader-overlay',
+										title: __(
+											'Loader & Overlay',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
+										name: 'filter-keys',
+										title: __(
+											'Filter Keys',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
+										name: 'miscellaneous',
+										title: __(
+											'Miscellaneous',
+											'wc-ajax-product-filter'
+										),
+									},
+								]}
+							>
+								{({ name }) => {
+									if ('general' === name) {
+										return <General />;
+									} else if ('others' === name) {
+										return <Others />;
+									} else if ('loader-overlay' === name) {
+										return <LoaderOverlay />;
+									} else if ('filter-keys' === name) {
+										return <FilterKeys />;
+									} else if ('miscellaneous' === name) {
+										return <Miscellaneous />;
+									}
+								}}
+							</TabPanel>
 						</div>
 					</div>
 
