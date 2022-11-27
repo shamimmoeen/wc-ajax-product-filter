@@ -29,7 +29,7 @@ const ListForms = () => {
 		handleOpenDuplicateModal,
 		handleCloseDuplicateModal,
 		handleDuplicateItem,
-		publishModalId,
+		publishModalOpen,
 		handleOpenPublishModal,
 		handleClosePublishModal,
 		deletingItemId,
@@ -74,7 +74,7 @@ const ListForms = () => {
 				/>
 
 				<PublishModal
-					isOpen={publishModalId}
+					isOpen={publishModalOpen}
 					closeModal={handleClosePublishModal}
 				/>
 

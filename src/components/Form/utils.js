@@ -1,6 +1,6 @@
 import { sprintf, __ } from '@wordpress/i18n';
-import { concat, isEmpty, merge, find } from 'lodash';
-import { foundProVersion } from '../utils';
+import { isEmpty, merge, find } from 'lodash';
+import { foundProVersion, mergeSelectOptions } from '../utils';
 
 export function newFilterData(index, formFilters) {
 	let title;
@@ -274,11 +274,12 @@ export function filterDefaultData() {
 		enable_accordion: '',
 		accordion_default_state: 'expanded',
 		help_text: '',
-		options_with_no_products: 'remove',
 		enable_search_field: '',
 		enable_reduce_height: 'no',
 		soft_limit: '5',
 		max_height: '200',
+		show_in_active_filters: '1',
+		prepend_title_in_active_filters: '',
 		// Error
 		type_error: '',
 		meta_key_error: '',
@@ -555,29 +556,6 @@ export function textDisplayTypes(withPro = false) {
 	return options;
 }
 
-function mergeDisplayTypes(freeOptions, proOptions, withPro = false) {
-	let options;
-
-	if (withPro && !foundProVersion()) {
-		const _proOptions = proOptions.map((option) => {
-			option.isPro = true;
-
-			return option;
-		});
-
-		options = concat(freeOptions, [
-			{
-				proGroup: true,
-				options: _proOptions,
-			},
-		]);
-	} else {
-		options = concat(freeOptions, proOptions);
-	}
-
-	return options;
-}
-
 export function numberDisplayTypes(withPro = false) {
 	const freeOptions = [
 		{
@@ -613,7 +591,7 @@ export function numberDisplayTypes(withPro = false) {
 		},
 	];
 
-	return mergeDisplayTypes(freeOptions, proOptions, withPro);
+	return mergeSelectOptions(freeOptions, proOptions, withPro);
 }
 
 export function dateDisplayTypes(withPro = false) {
@@ -651,7 +629,7 @@ export function dateDisplayTypes(withPro = false) {
 		},
 	];
 
-	return mergeDisplayTypes(freeOptions, proOptions, withPro);
+	return mergeSelectOptions(freeOptions, proOptions, withPro);
 }
 
 export function accordionStates() {

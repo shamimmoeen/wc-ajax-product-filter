@@ -318,7 +318,7 @@ const useFields = (type, index) => {
 				<Checkbox
 					id={id}
 					index={index}
-					label={__('Show Count', 'wc-ajax-product-filter')}
+					label={__('Show count', 'wc-ajax-product-filter')}
 					description={__(
 						'Whether to show the product count in filter options.',
 						'wc-ajax-product-filter'
@@ -382,7 +382,7 @@ const useFields = (type, index) => {
 				<Checkbox
 					id={'enable_tooltip'}
 					index={index}
-					label={__('Enable Tooltip', 'wc-ajax-product-filter')}
+					label={__('Enable tooltip', 'wc-ajax-product-filter')}
 					description={__(
 						'Display additional information in a tooltip when users hover over the option.',
 						'wc-ajax-product-filter'
@@ -400,7 +400,7 @@ const useFields = (type, index) => {
 				<ToggleGroup
 					id={'tooltip_position'}
 					index={index}
-					label={__('Tooltip Position', 'wc-ajax-product-filter')}
+					label={__('Tooltip position', 'wc-ajax-product-filter')}
 					description={__(
 						'Determines on which side the tooltip will be placed.',
 						'wc-ajax-product-filter'

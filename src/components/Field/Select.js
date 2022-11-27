@@ -60,7 +60,7 @@ const SimpleReactSelect = ({
 
 const Select = ({
 	id,
-	index,
+	index = '',
 	label,
 	description,
 	options,

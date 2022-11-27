@@ -4,6 +4,7 @@ const DropdownColorPicker = ({ value, onChange }) => {
 	return (
 		<Dropdown
 			position='bottom right'
+			popoverProps={{ noArrow: false }}
 			renderToggle={({ isOpen, onToggle }) => (
 				<div className='components-circular-option-picker__option-wrapper'>
 					<Button

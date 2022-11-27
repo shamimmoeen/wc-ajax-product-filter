@@ -212,12 +212,10 @@ const Filter = ({ index }) => {
 					<TabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='appearance'
 						tabs={[
 							{
 								name: 'general',
 								title: __('General', 'wc-ajax-product-filter'),
-								className: 'general',
 							},
 							{
 								name: 'appearance',
@@ -225,23 +223,18 @@ const Filter = ({ index }) => {
 									'Appearance',
 									'wc-ajax-product-filter'
 								),
-								className: 'appearance',
 							},
 							{
 								name: 'options',
 								title: __('Options', 'wc-ajax-product-filter'),
-								className: 'options',
 							},
 							{
 								name: 'advanced',
 								title: __('Advanced', 'wc-ajax-product-filter'),
-								className: 'advanced',
 							},
 						]}
 					>
-						{(tab) => {
-							const { name } = tab;
-
+						{({ name }) => {
 							if ('general' === name) {
 								return <General index={index} />;
 							} else if ('appearance' === name) {

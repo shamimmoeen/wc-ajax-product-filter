@@ -25,7 +25,7 @@ const FormTitle = () => {
 	const { state, dispatch } = useForm();
 	const { setDirty } = useFormData(state, dispatch);
 
-	const [publishModalId, setPublishModalId] = useState(null);
+	const [publishModalOpen, setPublishModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const {
@@ -61,13 +61,13 @@ const FormTitle = () => {
 	const handleOpenPublishModal = () => {
 		removeItemSavedNotices();
 
-		setPublishModalId(formId);
+		setPublishModalOpen(true);
 	};
 
 	const handleClosePublishModal = () => {
 		removeCopiedToClipboardNotice();
 
-		setPublishModalId(null);
+		setPublishModalOpen(false);
 	};
 
 	const formFiltersAreValid = () => {
@@ -174,8 +174,6 @@ const FormTitle = () => {
 
 		filters.forEach((filter) => {
 			const defaultData = pick(filterDefaultData(), [
-				'hierarchical',
-				'enable_hierarchy_accordion',
 				'get_options',
 				'order_terms_by',
 				'order_terms_dir',
@@ -189,14 +187,6 @@ const FormTitle = () => {
 			]);
 
 			const sanitized = { ...filter, ...defaultData };
-
-			if ('disable' === sanitized['options_with_no_products']) {
-				sanitized['options_with_no_products'] = 'remove';
-			}
-
-			if ('soft_limit' === sanitized['enable_reduce_height']) {
-				sanitized['enable_reduce_height'] = 'no';
-			}
 
 			sanitizedFilters.push(sanitized);
 		});
@@ -340,7 +330,7 @@ const FormTitle = () => {
 			/>
 
 			<PublishModal
-				isOpen={publishModalId}
+				isOpen={publishModalOpen}
 				closeModal={handleClosePublishModal}
 			/>
 		</>

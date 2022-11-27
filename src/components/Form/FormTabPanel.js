@@ -18,21 +18,14 @@ const FormTabPanel = () => {
 				{
 					name: 'filters',
 					title: __('Filters', 'wc-ajax-product-filter'),
-					className: 'filters',
 				},
 				{
 					name: 'settings',
 					title: __('Settings', 'wc-ajax-product-filter'),
-					className: 'settings',
-				},
-				{
-					name: 'customize',
-					title: __('Customize', 'wc-ajax-product-filter'),
-					className: 'customize',
 				},
 			]}
 		>
-			{(tab) => {
+			{({ name }) => {
 				if (isLoading) {
 					return (
 						<div className='__loader'>
@@ -40,9 +33,9 @@ const FormTabPanel = () => {
 						</div>
 					);
 				} else {
-					if (tab.name === 'filters') {
+					if (name === 'filters') {
 						return <FormFilters />;
-					} else if (tab.name === 'settings') {
+					} else if (name === 'settings') {
 						return (
 							<div className='__form_settings'>
 								<FormSettings />

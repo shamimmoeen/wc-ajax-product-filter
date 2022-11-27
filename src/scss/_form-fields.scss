@@ -44,6 +44,12 @@
 		}
 	}
 
+	.__help_info {
+		margin: 5px;
+		position: relative;
+		top: 3px;
+	}
+
 	.components-text-control__input {
 		max-width: 220px;
 	}
@@ -183,6 +189,12 @@
 		.__input_wrapper {
 			display: flex;
 
+			.__help_info {
+				align-items: center;
+				display: inline-flex;
+				position: unset;
+			}
+
 			.display_type,
 			.order_terms_by,
 			.limit_options,
@@ -212,6 +224,14 @@
 					margin-bottom: 8px;
 					text-transform: none;
 				}
+			}
+
+			.place_for {
+				min-width: 220px;
+			}
+
+			.form_visibility {
+				min-width: 220px;
 			}
 		}
 	}
@@ -247,12 +267,6 @@
 	&.__image_picker {
 		@include image-picker;
 	}
-
-	.__help_info {
-		margin: 5px;
-		position: relative;
-		top: 3px;
-	}
 }
 
 // Number min, max fields with auto detect.
@@ -274,6 +288,10 @@
 			}
 		}
 	}
+}
+
+.filter_on {
+	min-width: 220px;
 }
 
 /**

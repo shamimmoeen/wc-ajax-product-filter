@@ -22,11 +22,12 @@ const Advanced = ({ index }) => {
 		enable_accordion,
 		accordion_default_state,
 		help_text,
-		options_with_no_products,
 		enable_search_field,
 		enable_reduce_height,
 		soft_limit,
 		max_height,
+		show_in_active_filters,
+		prepend_title_in_active_filters,
 	} = filter;
 
 	const showTitleField = () => {
@@ -34,9 +35,9 @@ const Advanced = ({ index }) => {
 			<Checkbox
 				id={'show_title'}
 				index={index}
-				label={__('Show Title', 'wc-ajax-product-filter')}
+				label={__('Show title', 'wc-ajax-product-filter')}
 				description={__(
-					'Whether to hide the filter title.',
+					'Whether to show the filter title before the filter options.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={show_title}
@@ -51,7 +52,7 @@ const Advanced = ({ index }) => {
 				<Checkbox
 					id={'enable_accordion'}
 					index={index}
-					label={__('Enable Accordion', 'wc-ajax-product-filter')}
+					label={__('Enable accordion', 'wc-ajax-product-filter')}
 					description={__(
 						'Place more filters by collapsing the filter options.',
 						'wc-ajax-product-filter'
@@ -85,7 +86,7 @@ const Advanced = ({ index }) => {
 		}
 	};
 
-	const tooltipField = () => {
+	const helpTextField = () => {
 		if ('1' === show_title) {
 			return (
 				<Textarea
@@ -102,36 +103,6 @@ const Advanced = ({ index }) => {
 				/>
 			);
 		}
-	};
-
-	const emptyOptionsField = () => {
-		return (
-			<Radio
-				id={'options_with_no_products'}
-				index={index}
-				label={__('Options with no products', 'wc-ajax-product-filter')}
-				description={__(
-					"Determines what do we do for the filter options that don't have any products.",
-					'wc-ajax-product-filter'
-				)}
-				options={[
-					{
-						label: __('Remove', 'wc-ajax-product-filter'),
-						value: 'remove',
-					},
-					{
-						label: __(
-							'Show in disabled state',
-							'wc-ajax-product-filter'
-						),
-						value: 'disable',
-						isPro: true,
-					},
-				]}
-				onChange={handleRadioChange}
-				value={options_with_no_products}
-			/>
-		);
 	};
 
 	// TODO: Hide it when applicable.
@@ -156,7 +127,7 @@ const Advanced = ({ index }) => {
 			<Radio
 				id={'enable_reduce_height'}
 				index={index}
-				label={__('Reduce Height', 'wc-ajax-product-filter')}
+				label={__('Reduce height', 'wc-ajax-product-filter')}
 				description={__(
 					'Enable this if you want to reduce the filter height.',
 					'wc-ajax-product-filter'
@@ -167,13 +138,12 @@ const Advanced = ({ index }) => {
 						value: 'no',
 					},
 					{
-						label: __('Set Max Height', 'wc-ajax-product-filter'),
+						label: __('Set max height', 'wc-ajax-product-filter'),
 						value: 'max_height',
 					},
 					{
 						label: __('Soft Limit', 'wc-ajax-product-filter'),
 						value: 'soft_limit',
-						isPro: true,
 					},
 				]}
 				onChange={handleRadioChange}
@@ -223,6 +193,41 @@ const Advanced = ({ index }) => {
 		}
 	};
 
+	const showInActiveFiltersField = () => {
+		return (
+			<Checkbox
+				id={'show_in_active_filters'}
+				index={index}
+				label={__('Show in Active Filters', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines if we show the selected options for this filter in active filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={show_in_active_filters}
+				onChange={handleCheckboxChange}
+			/>
+		);
+	};
+
+	const prependTitleInActiveFiltersField = () => {
+		return (
+			<Checkbox
+				id={'prepend_title_in_active_filters'}
+				index={index}
+				label={__(
+					'Prepend title in Active Filters',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Determines if we show the filter title before the selected options for this filter in active filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={prepend_title_in_active_filters}
+				onChange={handleCheckboxChange}
+			/>
+		);
+	};
+
 	return (
 		<>
 			{showTitleField()}
@@ -231,9 +236,7 @@ const Advanced = ({ index }) => {
 
 			{accordionDefaultSateField()}
 
-			{tooltipField()}
-
-			{emptyOptionsField()}
+			{helpTextField()}
 
 			{enableSearchField()}
 
@@ -242,6 +245,10 @@ const Advanced = ({ index }) => {
 			{filterMaxHeightField()}
 
 			{visibleOptionsField()}
+
+			{showInActiveFiltersField()}
+
+			{prependTitleInActiveFiltersField()}
 		</>
 	);
 };
