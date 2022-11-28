@@ -1,4 +1,5 @@
 import { Button, ColorPicker, Dropdown } from '@wordpress/components';
+import { proTag } from '../utils';
 
 const DropdownColorPicker = ({ value, onChange }) => {
 	return (
@@ -31,10 +32,10 @@ const DropdownColorPicker = ({ value, onChange }) => {
 
 const ColorInput = ({
 	label,
-	id,
 	value,
 	onChange,
 	description,
+	isPro,
 	renderAsFormField = false,
 }) => {
 	if (renderAsFormField) {
@@ -42,7 +43,10 @@ const ColorInput = ({
 			<div className='__form_control'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={id}>{label}</label>
+						<label>
+							{label}
+							{proTag(isPro)}
+						</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>

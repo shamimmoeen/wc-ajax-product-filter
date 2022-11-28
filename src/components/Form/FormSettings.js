@@ -144,7 +144,7 @@ const FormSettings = () => {
 				renderAsFormField
 			/>
 
-			{'always' !== form_visibility && (
+			{'always_display' !== form_visibility && (
 				<Text
 					id={'opening_button_label'}
 					label={__('Opening button label', 'wc-ajax-product-filter')}

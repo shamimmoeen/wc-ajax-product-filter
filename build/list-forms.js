@@ -2543,7 +2543,27 @@ const AddNewModal = _ref => {
     setTitle('');
   };
 
-  const handleSubmit = () => {
+  const formSubmissionDisabled = () => {
+    if ((0,_utils__WEBPACK_IMPORTED_MODULE_4__.foundProVersion)()) {
+      return false;
+    }
+
+    if (forms.length >= 1) {
+      return true;
+    }
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    if (!title) {
+      return;
+    }
+
+    if (formSubmissionDisabled()) {
+      return;
+    }
+
     (0,_notices__WEBPACK_IMPORTED_MODULE_3__.removeItemCreateNotice)();
     setLoading(true);
     const formData = new FormData();
@@ -2575,16 +2595,6 @@ const AddNewModal = _ref => {
     });
   };
 
-  const formSubmissionDisabled = () => {
-    if ((0,_utils__WEBPACK_IMPORTED_MODULE_4__.foundProVersion)()) {
-      return false;
-    }
-
-    if (forms.length >= 1) {
-      return true;
-    }
-  };
-
   const modalContent = () => {
     if (loading) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2611,6 +2621,8 @@ const AddNewModal = _ref => {
         message: proMessage
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "__step_inner __title_step"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+        onSubmit: handleSubmit
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
         type: 'text',
         placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enter form title', 'wc-ajax-product-filter'),
@@ -2618,7 +2630,7 @@ const AddNewModal = _ref => {
         value: title,
         onChange: handleTitleChange,
         disabled: formSubmissionDisabled()
-      })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Flex, {
+      }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Flex, {
         justify: 'space-between'
       }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
         variant: "secondary",
@@ -2626,7 +2638,7 @@ const AddNewModal = _ref => {
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cancel', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
         variant: "primary",
         onClick: handleSubmit,
-        disabled: !title && formSubmissionDisabled(),
+        disabled: !title,
         className: "__next_btn"
       }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Next', 'wc-ajax-product-filter'))));
     }
@@ -3221,7 +3233,7 @@ const PublishModal = _ref => {
     let description;
     let code;
     const shortcode = `[wcapf_form"]`;
-    const widgetName = 'WCAPF Form';
+    const widgetName = 'WC Ajax Product Filter — Form';
     const widgetsPageLink = wcapf_admin_params.widgets_page_link;
 
     if ('shortcode' === tab) {
@@ -3231,7 +3243,7 @@ const PublishModal = _ref => {
       description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to publish using PHP code, just copy code below and use it.', 'wc-ajax-product-filter');
       code = `<?php echo do_shortcode( '${shortcode}' ); ?>`;
     } else {
-      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('If you want to use it in a widget, go to the widgets page, add <b>%s</b> widget to the desired area.', 'wc-ajax-product-filter'), widgetName);
+      description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go to the widgets page, add <b>%s</b> widget to the desired area.', 'wc-ajax-product-filter'), widgetName);
     }
 
     let classes = '__code';
@@ -3922,6 +3934,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
 /* harmony export */   "getFormsPageLink": function() { return /* binding */ getFormsPageLink; },
+/* harmony export */   "getInputId": function() { return /* binding */ getInputId; },
 /* harmony export */   "getSeoRulesPageLink": function() { return /* binding */ getSeoRulesPageLink; },
 /* harmony export */   "getSettingsPageLink": function() { return /* binding */ getSettingsPageLink; },
 /* harmony export */   "isProFeature": function() { return /* binding */ isProFeature; },
@@ -3941,6 +3954,21 @@ __webpack_require__.r(__webpack_exports__);
 function foundProVersion() {
   // return wcapf_admin_params.foundPro;
   return false;
+}
+function getInputId(id) {
+  let index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  let subIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+  let fieldId = id;
+
+  if ('' !== index) {
+    fieldId += '-' + index;
+  }
+
+  if ('' !== subIndex) {
+    fieldId += '-' + subIndex;
+  }
+
+  return fieldId;
 } // To disable the input element.
 
 function isProFeature(isProFeature) {
@@ -4039,10 +4067,6 @@ __webpack_require__.r(__webpack_exports__);
 function defaultFormSettings() {
   return {
     place_for: '',
-    filter_relationship: 'and',
-    dynamic_product_count: '1',
-    options_with_no_products: 'remove',
-    remove_empty_filter: '',
     filter_mode: 'immediate',
     form_visibility: 'always_display',
     show_form_title: '',
@@ -4053,7 +4077,7 @@ function defaultFormSettings() {
 function formVisibilityOptions() {
   const freeOptions = [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Always display', 'wc-ajax-product-filter'),
-    value: 'always'
+    value: 'always_display'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Click button on desktop', 'wc-ajax-product-filter'),
     value: 'click_button_on_desktop'

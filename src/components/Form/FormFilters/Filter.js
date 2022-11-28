@@ -145,7 +145,9 @@ const Filter = ({ index }) => {
 	const toggleIcon = isExpanded ? chevronUp : chevronDown;
 	const topClass = isExpanded ? '__top open' : '__top';
 
+	let filterTitle = title;
 	let filterType;
+	let filterKey = field_key;
 
 	if ('taxonomy' === type) {
 		const taxonomyOption = filterTypes.find(
@@ -156,6 +158,16 @@ const Filter = ({ index }) => {
 		filterType = taxonomies.find((option) => option.value === taxonomy);
 	} else {
 		filterType = filterTypes.find((option) => option.value === type);
+	}
+
+	if (!filterTitle) {
+		filterTitle = filterType.label;
+	}
+
+	if (!filterKey) {
+		if ('post-meta' !== type) {
+			filterKey = filterType.value;
+		}
 	}
 
 	let displayTypes;
@@ -186,7 +198,7 @@ const Filter = ({ index }) => {
 				</div>
 
 				<div className='_filter_header'>
-					<div className='__title'>{title}</div>
+					<div className='__title'>{filterTitle}</div>
 					<div className='__type'>
 						{filterType && (
 							<span className='__filter_type'>
@@ -198,7 +210,7 @@ const Filter = ({ index }) => {
 						)}
 					</div>
 					<div className='__key'>
-						{globalFilterKey ? globalFilterKey : field_key}
+						{globalFilterKey ? globalFilterKey : filterKey}
 					</div>
 					<div className='__display'>{displayType.label}</div>
 				</div>

@@ -53,7 +53,6 @@ const ImagePickerField = ({ imageId, imageUrl, onChange, onClear }) => {
 
 const ImagePicker = ({
 	label,
-	id,
 	imageId,
 	imageUrl,
 	onChange,
@@ -67,7 +66,7 @@ const ImagePicker = ({
 			<div className='__form_control __image_picker'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={id}>
+						<label>
 							{label}
 							{proTag(isPro)}
 						</label>

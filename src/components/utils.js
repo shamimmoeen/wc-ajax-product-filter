@@ -5,6 +5,20 @@ export function foundProVersion() {
 	return false;
 }
 
+export function getInputId(id, index = '', subIndex = '') {
+	let fieldId = id;
+
+	if ('' !== index) {
+		fieldId += '-' + index;
+	}
+
+	if ('' !== subIndex) {
+		fieldId += '-' + subIndex;
+	}
+
+	return fieldId;
+}
+
 // To disable the input element.
 export function isProFeature(isProFeature) {
 	if (foundProVersion()) {

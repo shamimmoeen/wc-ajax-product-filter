@@ -9,6 +9,10 @@ const scrollWindowOptions = [
 		value: 'results',
 	},
 	{
+		label: __('Form container', 'wc-ajax-product-filter'),
+		value: 'form',
+	},
+	{
 		label: __('Custom element', 'wc-ajax-product-filter'),
 		value: 'custom',
 	},
@@ -20,7 +24,7 @@ const scrollWindowOptions = [
 
 const scrollWindowForOptions = [
 	{
-		label: __('Both in desktop and mobile', 'wc-ajax-product-filter'),
+		label: __('Desktop and mobile', 'wc-ajax-product-filter'),
 		value: 'both',
 	},
 	{

@@ -4,6 +4,7 @@ import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
 import axios from 'axios';
 import { FormatSelectMultiLabel } from './utilsForReactSelect';
+import { getInputId } from '../utils';
 
 const SelectMulti = ({
 	label,
@@ -98,11 +99,13 @@ const SelectMulti = ({
 
 	const loadingMessage = __('Loading...', 'wc-ajax-product-filter');
 
+	const inputId = getInputId(id, index);
+
 	const renderSelect = () => {
 		if (isUserRoles) {
 			return (
 				<ReactSelect
-					inputId={`${id}-${index}`}
+					inputId={inputId}
 					value={value}
 					options={options}
 					placeholder={placeholder}
@@ -128,7 +131,7 @@ const SelectMulti = ({
 		} else {
 			return (
 				<AsyncPaginate
-					inputId={`${id}-${index}`}
+					inputId={inputId}
 					value={value}
 					loadOptions={loadOptions}
 					additional={{
@@ -161,7 +164,7 @@ const SelectMulti = ({
 		<div className='__form_control react_select'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={`${id}-${index}`}>{label}</label>
+					<label htmlFor={inputId}>{label}</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>

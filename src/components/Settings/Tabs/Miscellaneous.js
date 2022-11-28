@@ -8,11 +8,22 @@ const Miscellaneous = () => {
 	const { handleCheckboxChange } = useSettingsData(state, dispatch);
 
 	const {
-		settings: { send_anonymous_data, remove_data },
+		settings: { debug_mode, send_anonymous_data, remove_data },
 	} = state;
 
 	return (
 		<>
+			<Checkbox
+				id={'debug_mode'}
+				label={__('Debug Mode', 'wc-ajax-product-filter')}
+				description={__(
+					'This will help you to configure the plugin correctly.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={debug_mode}
+				onChange={handleCheckboxChange}
+			/>
+
 			<Checkbox
 				id={'send_anonymous_data'}
 				label={__('Send anonymous data', 'wc-ajax-product-filter')}
