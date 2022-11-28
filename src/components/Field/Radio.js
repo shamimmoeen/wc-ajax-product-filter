@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { proTag } from '../utils';
+import { getInputId, proTag } from '../utils';
 
 const Radio = ({
 	label,
@@ -27,27 +27,29 @@ const Radio = ({
 					})}
 				>
 					<div className='__input_wrapper'>
-						{options.map((option, optionIndex) => (
-							<div
-								key={`${id}-${index}-${optionIndex}`}
-								className='components-radio-control__option'
-							>
-								<input
-									id={`${id}-${index}-${optionIndex}`}
-									className='components-radio-control__input'
-									type='radio'
-									value={option.value}
-									onChange={(e) => onChange(e, id, index)}
-									checked={option.value === value}
-								/>
-								<label
-									htmlFor={`${id}-${index}-${optionIndex}`}
+						{options.map((option, optionIndex) => {
+							const inputId = getInputId(id, index, optionIndex);
+
+							return (
+								<div
+									key={inputId}
+									className='components-radio-control__option'
 								>
-									{option.label}
-									{proTag(option.isPro)}
-								</label>
-							</div>
-						))}
+									<input
+										id={inputId}
+										className='components-radio-control__input'
+										type='radio'
+										value={option.value}
+										onChange={(e) => onChange(e, id, index)}
+										checked={option.value === value}
+									/>
+									<label htmlFor={inputId}>
+										{option.label}
+										{proTag(option.isPro)}
+									</label>
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			</div>

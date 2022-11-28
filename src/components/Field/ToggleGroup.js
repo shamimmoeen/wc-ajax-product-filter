@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@wordpress/components';
-import { proTag } from '../utils';
+import { getInputId, proTag } from '../utils';
 
 // TODO: Replace it with ToggleGroupControl.
 const ToggleGroup = ({
@@ -25,22 +25,32 @@ const ToggleGroup = ({
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
 						<ButtonGroup>
-							{options.map((option) => (
-								<Button
-									value={option.value}
-									key={`${id}-${option.value}-${index}`}
-									onClick={() =>
-										onChange(option.value, id, index)
-									}
-									variant={
-										value === option.value ? 'primary' : ''
-									}
-									disabled={isDisabled}
-								>
-									{option.label}
-									{proTag(option.isPro)}
-								</Button>
-							))}
+							{options.map((option) => {
+								const inputId = getInputId(
+									id,
+									index,
+									option.value
+								);
+
+								return (
+									<Button
+										value={option.value}
+										key={inputId}
+										onClick={() =>
+											onChange(option.value, id, index)
+										}
+										variant={
+											value === option.value
+												? 'primary'
+												: ''
+										}
+										disabled={isDisabled}
+									>
+										{option.label}
+										{proTag(option.isPro)}
+									</Button>
+								);
+							})}
 						</ButtonGroup>
 					</div>
 				</div>

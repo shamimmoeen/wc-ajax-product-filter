@@ -1,16 +1,8 @@
-import { sprintf, __ } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { isEmpty, merge, find } from 'lodash';
 import { foundProVersion, mergeSelectOptions } from '../utils';
 
 export function newFilterData(index, formFilters) {
-	let title;
-
-	if (index > 1) {
-		title = sprintf(__('New Filter (%d)', 'wc-ajax-product-filter'), index);
-	} else {
-		title = __('New Filter', 'wc-ajax-product-filter');
-	}
-
 	let data = {};
 
 	const types = wcapf_admin_params.filter_types;
@@ -45,7 +37,7 @@ export function newFilterData(index, formFilters) {
 				const found = find(formFilters, { type });
 
 				if (!found) {
-					data = { type: otherType.value };
+					data = { type };
 
 					break;
 				}
@@ -60,7 +52,6 @@ export function newFilterData(index, formFilters) {
 	return merge(filterDefaultData(), data, {
 		isNew: true,
 		uniqueIndex: index,
-		title,
 	});
 }
 

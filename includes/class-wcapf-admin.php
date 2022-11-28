@@ -43,7 +43,7 @@ class WCAPF_Admin {
 		$forms_page_action_link = sprintf(
 			'<a href="%1$s">%2$s</a>',
 			esc_url( WCAPF_Helper::forms_page_url() ),
-			__( 'Forms', 'wc-ajax-product-filter' )
+			__( 'Add Filters', 'wc-ajax-product-filter' )
 		);
 
 		$settings_page_action_link = sprintf(

@@ -1,7 +1,9 @@
 import { useLayoutEffect, useState } from '@wordpress/element';
 import TippyTooltip from '../TippyTooltip';
+import { getInputId } from '../utils';
 
 const InputField = ({
+	inputId,
 	id,
 	index,
 	initialValue,
@@ -23,7 +25,7 @@ const InputField = ({
 	return (
 		<input
 			type={type}
-			id={`${id}-${index}`}
+			id={inputId}
 			className='components-text-control__input'
 			disabled={isDisabled}
 			value={value}
@@ -48,16 +50,19 @@ const Text = ({
 	tooltip,
 	...rest
 }) => {
+	const inputId = getInputId(id, index);
+
 	if (renderAsFormField) {
 		return (
 			<div className='__form_control'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={`${id}-${index}`}>{label}</label>
+						<label htmlFor={inputId}>{label}</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
 							<InputField
+								inputId={inputId}
 								id={id}
 								index={index}
 								initialValue={value}
@@ -82,6 +87,7 @@ const Text = ({
 	} else {
 		return (
 			<InputField
+				inputId={inputId}
 				id={id}
 				index={index}
 				initialValue={value}

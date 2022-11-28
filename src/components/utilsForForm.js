@@ -4,10 +4,6 @@ import { mergeSelectOptions } from './utils';
 export function defaultFormSettings() {
 	return {
 		place_for: '',
-		filter_relationship: 'and',
-		dynamic_product_count: '1',
-		options_with_no_products: 'remove',
-		remove_empty_filter: '',
 		filter_mode: 'immediate',
 		form_visibility: 'always_display',
 		show_form_title: '',
@@ -20,7 +16,7 @@ export function formVisibilityOptions() {
 	const freeOptions = [
 		{
 			label: __('Always display', 'wc-ajax-product-filter'),
-			value: 'always',
+			value: 'always_display',
 		},
 		{
 			label: __('Click button on desktop', 'wc-ajax-product-filter'),

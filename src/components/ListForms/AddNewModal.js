@@ -58,7 +58,27 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		setTitle('');
 	};
 
-	const handleSubmit = () => {
+	const formSubmissionDisabled = () => {
+		if (foundProVersion()) {
+			return false;
+		}
+
+		if (forms.length >= 1) {
+			return true;
+		}
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		if (!title) {
+			return;
+		}
+
+		if (formSubmissionDisabled()) {
+			return;
+		}
+
 		removeItemCreateNotice();
 
 		setLoading(true);
@@ -93,16 +113,6 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 
 				itemCreateErrorNotice(err.message);
 			});
-	};
-
-	const formSubmissionDisabled = () => {
-		if (foundProVersion()) {
-			return false;
-		}
-
-		if (forms.length >= 1) {
-			return true;
-		}
 	};
 
 	const modalContent = () => {
@@ -144,17 +154,19 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 					)}
 
 					<div className='__step_inner __title_step'>
-						<input
-							type={'text'}
-							placeholder={__(
-								'Enter form title',
-								'wc-ajax-product-filter'
-							)}
-							className='components-text-control__input'
-							value={title}
-							onChange={handleTitleChange}
-							disabled={formSubmissionDisabled()}
-						/>
+						<form onSubmit={handleSubmit}>
+							<input
+								type={'text'}
+								placeholder={__(
+									'Enter form title',
+									'wc-ajax-product-filter'
+								)}
+								className='components-text-control__input'
+								value={title}
+								onChange={handleTitleChange}
+								disabled={formSubmissionDisabled()}
+							/>
+						</form>
 					</div>
 
 					<Flex justify={'space-between'}>
@@ -165,7 +177,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 						<Button
 							variant='primary'
 							onClick={handleSubmit}
-							disabled={!title && formSubmissionDisabled()}
+							disabled={!title}
 							className='__next_btn'
 						>
 							{__('Next', 'wc-ajax-product-filter')}

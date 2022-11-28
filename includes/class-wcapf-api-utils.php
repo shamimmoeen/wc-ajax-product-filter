@@ -28,20 +28,24 @@ class WCAPF_API_Utils {
 				'options' => self::get_available_taxonomies(),
 			),
 			array(
-				'label' => __( 'Price', 'wc-ajax-product-filter' ),
-				'value' => 'price',
+				'label'       => __( 'Price', 'wc-ajax-product-filter' ),
+				'value'       => 'price',
+				'default_key' => 'price',
 			),
 			array(
-				'label' => __( 'Rating', 'wc-ajax-product-filter' ),
-				'value' => 'rating',
+				'label'       => __( 'Rating', 'wc-ajax-product-filter' ),
+				'value'       => 'rating',
+				'default_key' => 'rating',
 			),
 			array(
-				'label' => __( 'Product Status', 'wc-ajax-product-filter' ),
-				'value' => 'product-status',
+				'label'       => __( 'Product Status', 'wc-ajax-product-filter' ),
+				'value'       => 'product-status',
+				'default_key' => 'status',
 			),
 			array(
-				'label' => __( 'Post Author', 'wc-ajax-product-filter' ),
-				'value' => 'post-author',
+				'label'       => __( 'Post Author', 'wc-ajax-product-filter' ),
+				'value'       => 'post-author',
+				'default_key' => 'post-author',
 			),
 			array(
 				'label' => __( 'Post Meta', 'wc-ajax-product-filter' ),
@@ -81,6 +85,7 @@ class WCAPF_API_Utils {
 				'value'           => $name,
 				'type'            => 'taxonomy',
 				'taxHierarchical' => is_taxonomy_hierarchical( $name ),
+				'default_key'     => '',
 			);
 		}
 
@@ -272,7 +277,7 @@ class WCAPF_API_Utils {
 		$settings = WCAPF_Helper::get_settings();
 
 		// Send the loading image src.
-		if ( isset( $settings['loading_image'] ) ) {
+		if ( ! empty( $settings['loading_image'] ) ) {
 			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
 			$src   = $image[0];
 

@@ -17,6 +17,7 @@ import FilterKeys from './Tabs/FilterKeys';
 import Miscellaneous from './Tabs/Miscellaneous';
 import LoaderOverlay from './Tabs/LoaderOverlay';
 import Others from './Tabs/Others';
+import SEO from './Tabs/SEO';
 
 const Settings = () => {
 	const {
@@ -122,6 +123,13 @@ const Settings = () => {
 										),
 									},
 									{
+										name: 'seo',
+										title: __(
+											'SEO',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
 										name: 'miscellaneous',
 										title: __(
 											'Miscellaneous',
@@ -139,6 +147,8 @@ const Settings = () => {
 										return <LoaderOverlay />;
 									} else if ('filter-keys' === name) {
 										return <FilterKeys />;
+									} else if ('seo' === name) {
+										return <SEO />;
 									} else if ('miscellaneous' === name) {
 										return <Miscellaneous />;
 									}

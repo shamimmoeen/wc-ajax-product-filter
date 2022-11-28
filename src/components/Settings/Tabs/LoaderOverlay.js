@@ -6,7 +6,6 @@ import useSettingsData from '../useSettingsData';
 import Number from '../../Field/Number';
 import ImagePicker from '../../Field/ImagePicker';
 import ScrollWindowTo from './ScrollWindowTo';
-import ProFeaturesNotice from '../../ProFeaturesNotice';
 
 const LoaderOverlay = () => {
 	const { state, dispatch } = useSettings();
@@ -38,13 +37,6 @@ const LoaderOverlay = () => {
 
 	return (
 		<>
-			<ProFeaturesNotice
-				message={__(
-					'These settings are available only at the pro version.',
-					'wc-ajax-product-filter'
-				)}
-			/>
-
 			<Checkbox
 				id={'loading_animation'}
 				label={__('Loading Animation', 'wc-ajax-product-filter')}
@@ -58,8 +50,7 @@ const LoaderOverlay = () => {
 
 			{'1' === loading_animation && (
 				<ImagePicker
-					id={'loading_image'}
-					label={__('Loading Image', 'wc-ajax-product-filter')}
+					label={__('Custom loading image', 'wc-ajax-product-filter')}
 					description={__(
 						'Change the default loading image.',
 						'wc-ajax-product-filter'
@@ -68,6 +59,7 @@ const LoaderOverlay = () => {
 					imageUrl={loading_image_src}
 					onChange={handleLoaderImageChange}
 					onClear={handleLoaderImageClear}
+					isPro
 				/>
 			)}
 
@@ -95,7 +87,7 @@ const LoaderOverlay = () => {
 					id={'scroll_to_top_offset'}
 					label={__('Scroll to top offset', 'wc-ajax-product-filter')}
 					description={__(
-						'You can change this value to adjust the scroll to position, eg: 100.',
+						'If you have a sticky header or something like that you need to give the height of that element for an accurate result.',
 						'wc-ajax-product-filter'
 					)}
 					value={scroll_to_top_offset}

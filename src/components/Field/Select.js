@@ -10,11 +10,10 @@ import {
 	FormatGroupLabel,
 } from '../Field/utilsForReactSelect';
 import TippyTooltip from '../TippyTooltip';
-import { proTag } from '../utils';
+import { getInputId, proTag } from '../utils';
 
 const SimpleReactSelect = ({
-	id,
-	index = '',
+	inputId,
 	options,
 	value,
 	onChange,
@@ -25,7 +24,7 @@ const SimpleReactSelect = ({
 }) => {
 	return (
 		<ReactSelect
-			inputId={`${id}-${index}`}
+			inputId={inputId}
 			components={{
 				IndicatorSeparator,
 				DropdownIndicator,
@@ -80,12 +79,14 @@ const Select = ({
 		customClasses += ` ${id}`;
 	}
 
+	const inputId = getInputId(id, index);
+
 	if (renderAsFormField) {
 		html = (
 			<div className='__form_control react_select_simple'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={`${id}-${index}`}>
+						<label htmlFor={inputId}>
 							{label}
 							{proTag(isPro)}
 						</label>
@@ -93,8 +94,7 @@ const Select = ({
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
 							<SimpleReactSelect
-								id={id}
-								index={index}
+								inputId={inputId}
 								options={options}
 								value={value}
 								classes={customClasses}
@@ -120,8 +120,7 @@ const Select = ({
 	} else {
 		html = (
 			<SimpleReactSelect
-				id={id}
-				index={index}
+				inputId={inputId}
 				options={options}
 				value={value}
 				classes={customClasses}

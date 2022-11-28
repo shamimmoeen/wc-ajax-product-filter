@@ -70,7 +70,7 @@ const General = () => {
 				id={'disable_empty_options'}
 				label={__('Disable empty options', 'wc-ajax-product-filter')}
 				description={__(
-					'By default we remove the options with no products. Enable this if you want to show them as disabled.',
+					'By default we remove the options that will return zero results. Enable this if you want to show them as disabled.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={disable_empty_options}
@@ -102,7 +102,6 @@ const General = () => {
 			/>
 
 			<ColorInput
-				id={'primary_color'}
 				label={__('Primary Color', 'wc-ajax-product-filter')}
 				description={__(
 					'Set a primary color according to your theme.',
