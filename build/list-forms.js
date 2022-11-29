@@ -2496,7 +2496,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const proMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade to pro to create multiple forms to show on different archives and pages.', 'wc-ajax-product-filter');
+const proMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upgrade to PRO to create multiple forms to show on different archives and pages.', 'wc-ajax-product-filter');
 
 const AddNewModal = _ref => {
   let {
@@ -4066,12 +4066,13 @@ __webpack_require__.r(__webpack_exports__);
 
 function defaultFormSettings() {
   return {
-    place_for: '',
     filter_mode: 'immediate',
     form_visibility: 'always_display',
     show_form_title: '',
     show_active_filters: '',
-    show_reset_button: ''
+    show_reset_button: '',
+    place_for: '' // Mask it
+
   };
 }
 function formVisibilityOptions() {

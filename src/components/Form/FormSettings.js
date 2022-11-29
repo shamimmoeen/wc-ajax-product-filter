@@ -44,7 +44,7 @@ const FormSettings = () => {
 	const filterOn = filterOnOptions[0];
 
 	const filterOnTooltip = __(
-		'Upgrade to pro to select taxonomies and pages.',
+		'Upgrade to PRO to select taxonomies and pages.',
 		'wc-ajax-product-filter'
 	);
 
@@ -99,7 +99,7 @@ const FormSettings = () => {
 
 			<Radio
 				id={'filter_mode'}
-				label={__('Filter mode', 'wc-ajax-product-filter')}
+				label={__('Filter Mode', 'wc-ajax-product-filter')}
 				description={__(
 					'Immediate: filtering starts when any change occurs, Submit button: filtering starts after clicking on a button.',
 					'wc-ajax-product-filter'
@@ -133,7 +133,7 @@ const FormSettings = () => {
 
 			<Select
 				id={'form_visibility'}
-				label={__('Form visibility', 'wc-ajax-product-filter')}
+				label={__('Form Visibility', 'wc-ajax-product-filter')}
 				description={__(
 					'Determines how the form will be displayed on different devices.',
 					'wc-ajax-product-filter'

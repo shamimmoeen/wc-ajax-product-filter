@@ -12,6 +12,14 @@
 .__settings_tab {
     @include inner-tab;
 
+    .__scrollable-y {
+        overflow-y: auto;
+
+        .components-tab-panel__tabs {
+            min-width: 470px;
+        }
+    }
+
     @media (min-width: 768px) {
         .__form_control .__label {
             width: 200px;
@@ -76,7 +84,11 @@
     }
 
     .__global_filter_keys_heading {
-        margin: .5em 0 2em;
+        margin: .5em 0 1.5em;
+
+        ~.__description {
+            margin-bottom: 2em;
+        }
     }
 
     .__global_filter_keys {

@@ -3,12 +3,12 @@ import { mergeSelectOptions } from './utils';
 
 export function defaultFormSettings() {
 	return {
-		place_for: '',
 		filter_mode: 'immediate',
 		form_visibility: 'always_display',
 		show_form_title: '',
 		show_active_filters: '',
 		show_reset_button: '',
+		place_for: '', // Mask it
 	};
 }
 

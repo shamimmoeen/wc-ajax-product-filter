@@ -160,13 +160,23 @@ const Filter = ({ index }) => {
 		filterType = filterTypes.find((option) => option.value === type);
 	}
 
+	// Default filter title.
 	if (!filterTitle) {
 		filterTitle = filterType.label;
+
+		if ('post-meta' === type && meta_key) {
+			filterTitle += `[${meta_key}]`;
+		}
 	}
 
+	// Default filter key.
 	if (!filterKey) {
-		if ('post-meta' !== type) {
-			filterKey = filterType.value;
+		if ('post-meta' === type) {
+			if (meta_key) {
+				filterKey = meta_key;
+			}
+		} else {
+			filterKey = filterType.key;
 		}
 	}
 

@@ -14,7 +14,6 @@ import { useInstanceId } from '@wordpress/compose';
  * Internal dependencies
  */
 import { Button, NavigableMenu } from '@wordpress/components';
-import { useForm } from './FormContext';
 
 const TabButton = ({ tabId, onClick, children, selected, ...rest }) => (
 	<Button
@@ -37,9 +36,10 @@ export default function CustomTabPanel({
 	orientation = 'horizontal',
 	activeClass = 'is-active',
 	onSelect = noop,
+	state,
+	dispatch,
+	scrollable,
 }) {
-	const { state, dispatch } = useForm();
-
 	const { currentTab } = state;
 
 	const instanceId = useInstanceId(CustomTabPanel, 'tab-panel');
@@ -68,31 +68,62 @@ export default function CustomTabPanel({
 
 	return (
 		<div className={className}>
-			<NavigableMenu
-				role='tablist'
-				orientation={orientation}
-				onNavigate={onNavigate}
-				className='components-tab-panel__tabs'
-			>
-				{tabs.map((tab) => (
-					<TabButton
-						className={classnames(
-							'components-tab-panel__tabs-item',
-							tab.className,
-							{
-								[activeClass]: tab.name === currentTab,
-							}
-						)}
-						tabId={`${instanceId}-${tab.name}`}
-						aria-controls={`${instanceId}-${tab.name}-view`}
-						selected={tab.name === currentTab}
-						key={tab.name}
-						onClick={partial(handleClick, tab.name)}
+			{scrollable ? (
+				<div className='__scrollable-y'>
+					<NavigableMenu
+						role='tablist'
+						orientation={orientation}
+						onNavigate={onNavigate}
+						className='components-tab-panel__tabs'
 					>
-						{tab.title}
-					</TabButton>
-				))}
-			</NavigableMenu>
+						{tabs.map((tab) => (
+							<TabButton
+								className={classnames(
+									'components-tab-panel__tabs-item',
+									tab.className,
+									{
+										[activeClass]: tab.name === currentTab,
+									}
+								)}
+								tabId={`${instanceId}-${tab.name}`}
+								aria-controls={`${instanceId}-${tab.name}-view`}
+								selected={tab.name === currentTab}
+								key={tab.name}
+								onClick={partial(handleClick, tab.name)}
+							>
+								{tab.title}
+							</TabButton>
+						))}
+					</NavigableMenu>
+				</div>
+			) : (
+				<NavigableMenu
+					role='tablist'
+					orientation={orientation}
+					onNavigate={onNavigate}
+					className='components-tab-panel__tabs'
+				>
+					{tabs.map((tab) => (
+						<TabButton
+							className={classnames(
+								'components-tab-panel__tabs-item',
+								tab.className,
+								{
+									[activeClass]: tab.name === currentTab,
+								}
+							)}
+							tabId={`${instanceId}-${tab.name}`}
+							aria-controls={`${instanceId}-${tab.name}-view`}
+							selected={tab.name === currentTab}
+							key={tab.name}
+							onClick={partial(handleClick, tab.name)}
+						>
+							{tab.title}
+						</TabButton>
+					))}
+				</NavigableMenu>
+			)}
+
 			{selectedTab && (
 				<div
 					key={selectedId}

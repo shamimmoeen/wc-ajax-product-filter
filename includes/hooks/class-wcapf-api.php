@@ -164,10 +164,13 @@ class WCAPF_API {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
 
-		$valid_types  = wp_list_pluck( WCAPF_API_Utils::get_filter_types(), 'value' );
-		$filter_types = array();
-		$filters      = array();
-		$errors       = array();
+		$found_pro = WCAPF_Helper::found_pro_version();
+
+		$possible_types = WCAPF_API_Utils::get_filter_types();
+		$valid_types    = wp_list_pluck( $possible_types, 'value' );
+		$filter_types   = array();
+		$filters        = array();
+		$errors         = array();
 
 		if ( $form_filters ) {
 			foreach ( $form_filters as $filter_order => $filter ) {
@@ -175,9 +178,28 @@ class WCAPF_API {
 				$filter_id    = isset( $filter['id'] ) ? absint( $filter['id'] ) : 0;
 				$post_name    = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
 				$type         = isset( $filter['type'] ) ? sanitize_text_field( $filter['type'] ) : '';
+				$taxonomy     = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
+				$meta_key     = isset( $filter['meta_key'] ) ? sanitize_text_field( $filter['meta_key'] ) : '';
 
 				if ( ! in_array( $type, $valid_types ) ) {
 					continue;
+				}
+
+				if ( 'taxonomy' === $type && ! $taxonomy ) {
+					continue;
+				} elseif ( 'post-meta' === $type && ! $meta_key ) {
+					continue;
+				}
+
+				if ( 'taxonomy' === $type ) {
+					$taxonomy_index    = array_search( 'taxonomy', array_column( $possible_types, 'value' ) );
+					$taxonomy_options  = $possible_types[ $taxonomy_index ];
+					$taxonomy_types    = $taxonomy_options['options'];
+					$filter_type_index = array_search( $taxonomy, array_column( $taxonomy_types, 'value' ) );
+					$filter_type_data  = $taxonomy_types[ $filter_type_index ];
+				} else {
+					$filter_type_index = array_search( $type, array_column( $possible_types, 'value' ) );
+					$filter_type_data  = $possible_types[ $filter_type_index ];
 				}
 
 				$global_filter_key = WCAPF_API_Utils::get_global_filter_key( $filter );
@@ -187,26 +209,33 @@ class WCAPF_API {
 					$post_name = $global_filter_key;
 				}
 
+				// Set default filter key.
 				if ( ! $post_name ) {
-					continue;
+					if ( 'post-meta' === $type ) {
+						$post_name = $meta_key;
+					} else {
+						$post_name = $filter_type_data['key'];
+					}
 				}
 
 				$error_data = array();
 
-				if ( post_type_exists( $post_name ) ) {
-					$error_data = array(
-						'key'       => 'field_key_error_',
-						'message'   => __( 'There is a post type with this filter key, it\'ll create conflict.', 'wc-ajax-product-filter' ),
-						'order'     => $filter_order,
-						'field_key' => $post_name,
-					);
-				} elseif ( ! WCAPF_Helper::found_pro_version() && taxonomy_exists( $post_name ) ) {
-					$error_data = array(
-						'key'       => 'field_key_error_',
-						'message'   => __( 'Taxonomy name can\'t be used as a filter key, it\'ll create conflict in the free version.', 'wc-ajax-product-filter' ),
-						'order'     => $filter_order,
-						'field_key' => $post_name,
-					);
+				if ( ! $found_pro ) {
+					if ( post_type_exists( $post_name ) ) {
+						$error_data = array(
+							'key'       => 'field_key_error_',
+							'message'   => __( 'In the FREE version of the plugin direct post type name can\'t be used as a filter key, it\'ll create conflict. Please make it unique by adding an underscore.', 'wc-ajax-product-filter' ),
+							'order'     => $filter_order,
+							'field_key' => $post_name,
+						);
+					} elseif ( ! WCAPF_Helper::found_pro_version() && taxonomy_exists( $post_name ) ) {
+						$error_data = array(
+							'key'       => 'field_key_error_',
+							'message'   => __( 'In the FREE version of the plugin direct taxonomy name can\'t be used as a filter key, it\'ll create conflict. Please make it unique by adding an underscore.', 'wc-ajax-product-filter' ),
+							'order'     => $filter_order,
+							'field_key' => $post_name,
+						);
+					}
 				}
 
 				if ( $error_data ) {
@@ -247,6 +276,14 @@ class WCAPF_API {
 
 				$filter_types[] = $filter_type;
 
+				if ( ! $filter_title ) {
+					if ( 'post-meta' === $type ) {
+						$filter_title = $filter_type_data['label'] . '[' . $meta_key . ']';
+					} else {
+						$filter_title = $filter_type_data['label'];
+					}
+				}
+
 				$post_arr = array( 'post_title' => $filter_title );
 
 				if ( $filter_id && 'wcapf-filter' === get_post_type( $filter_id ) ) {
@@ -266,8 +303,9 @@ class WCAPF_API {
 					continue;
 				}
 
-				$filter['field_key'] = $post_name;
 				$filter['id']        = $new_filter_id;
+				$filter['title']     = $filter_title;
+				$filter['field_key'] = $post_name;
 
 				$post_arr = array(
 					'ID'           => $new_filter_id,

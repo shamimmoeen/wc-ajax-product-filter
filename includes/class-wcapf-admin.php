@@ -248,6 +248,14 @@ class WCAPF_Admin {
 			}
 		}
 
+		// SEO Rules page admin ui scripts.
+		if ( 'wcapf_page_wcapf-seo-rules' === $hook ) {
+			// Loads the media utils.
+			wp_enqueue_media();
+
+			$this->load_scripts( 'seo-rules' );
+		}
+
 		// Settings page admin ui scripts.
 		if ( 'wcapf_page_wcapf-settings' === $hook ) {
 			// Loads the media utils.
@@ -306,6 +314,8 @@ class WCAPF_Admin {
 		if ( 'wcapf_page_wcapf-settings' === $screen_id ) {
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = $utils::get_settings();
+
+			$params['global_filter_keys'] = $utils::get_filter_keys( true );
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

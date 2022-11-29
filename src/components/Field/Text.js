@@ -57,7 +57,28 @@ const Text = ({
 			<div className='__form_control'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={inputId}>{label}</label>
+						<label htmlFor={inputId}>
+							{label}
+							{'field_key' === id && (
+								<TippyTooltip
+									content={
+										<>
+											For example, the URL will be
+											<br />
+											?/color=blue&size=large
+											<br />
+											where color & size are the filter
+											keys.
+											<br />
+											<br />
+											In the PRO version, the URL will be
+											<br />
+											/color-blue/size-large
+										</>
+									}
+								/>
+							)}
+						</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
