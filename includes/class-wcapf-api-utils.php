@@ -16,83 +16,6 @@
 class WCAPF_API_Utils {
 
 	/**
-	 * Gets the filter types.
-	 *
-	 * @return array[]
-	 */
-	public static function get_filter_types() {
-		return array(
-			array(
-				'label'   => __( 'Taxonomy', 'wc-ajax-product-filter' ),
-				'value'   => 'taxonomy',
-				'options' => self::get_available_taxonomies(),
-			),
-			array(
-				'label'       => __( 'Price', 'wc-ajax-product-filter' ),
-				'value'       => 'price',
-				'default_key' => 'price',
-			),
-			array(
-				'label'       => __( 'Rating', 'wc-ajax-product-filter' ),
-				'value'       => 'rating',
-				'default_key' => 'rating',
-			),
-			array(
-				'label'       => __( 'Product Status', 'wc-ajax-product-filter' ),
-				'value'       => 'product-status',
-				'default_key' => 'status',
-			),
-			array(
-				'label'       => __( 'Post Author', 'wc-ajax-product-filter' ),
-				'value'       => 'post-author',
-				'default_key' => 'post-author',
-			),
-			array(
-				'label' => __( 'Post Meta', 'wc-ajax-product-filter' ),
-				'value' => 'post-meta',
-			),
-		);
-	}
-
-	/**
-	 * Gets the available taxonomies after sorting them.
-	 *
-	 * @return array
-	 */
-	public static function get_available_taxonomies() {
-		$tax_data   = get_object_taxonomies( 'product', 'objects' );
-		$taxonomies = array();
-
-		$main_taxonomies     = array( 'product_cat', 'product_tag' );
-		$optional_taxonomies = array( 'product_type', 'product_visibility', 'product_shipping_class' );
-		$attributes          = wc_get_attribute_taxonomy_names();
-		$array               = array_merge( $main_taxonomies, $optional_taxonomies, $attributes );
-		$others              = array();
-
-		foreach ( $tax_data as $taxonomy ) {
-			$name = $taxonomy->name;
-
-			if ( ! in_array( $name, $array ) ) {
-				$others[] = $name;
-			}
-		}
-
-		$final_array = array_merge( $main_taxonomies, $attributes, $others, $optional_taxonomies );
-
-		foreach ( $final_array as $name ) {
-			$taxonomies[] = array(
-				'label'           => $tax_data[ $name ]->label,
-				'value'           => $name,
-				'type'            => 'taxonomy',
-				'taxHierarchical' => is_taxonomy_hierarchical( $name ),
-				'default_key'     => '',
-			);
-		}
-
-		return $taxonomies;
-	}
-
-	/**
 	 * Gets the meta keys for post type product.
 	 *
 	 * @noinspection SqlNoDataSourceInspection
@@ -170,16 +93,21 @@ class WCAPF_API_Utils {
 		return $filter_key;
 	}
 
-	public static function get_filter_keys() {
+	public static function get_filter_keys( $global = false ) {
 		$filters = get_posts(
 			array(
 				'post_type'   => 'wcapf-filter',
 				'post_status' => 'publish',
 				'nopaging'    => true,
+				'order'       => 'ASC',
 			)
 		);
 
 		$filter_keys = array();
+
+		$filter_types       = self::get_filter_types();
+		$taxonomy_options   = self::get_available_taxonomies();
+		$global_filter_keys = array();
 
 		foreach ( $filters as $filter ) {
 			$filter_id    = $filter->ID;
@@ -202,10 +130,130 @@ class WCAPF_API_Utils {
 				$data['meta_key'] = $property;
 			}
 
-			$filter_keys[] = $data;
+			if ( $global ) {
+				unset( $data['id'] );
+
+				if ( 'taxonomy' === $type ) {
+					$data_index    = array_search( $property, array_column( $taxonomy_options, 'value' ) );
+					$taxonomy_data = $taxonomy_options[ $data_index ];
+					$data['label'] = $taxonomy_data['label'];
+				} else {
+					$data_index  = array_search( $type, array_column( $filter_types, 'value' ) );
+					$filter_data = $filter_types[ $data_index ];
+
+					$label = $filter_data['label'];
+
+					if ( 'post-meta' === $type ) {
+						$label .= '[' . $property . ']';
+					}
+
+					$data['label'] = $label;
+				}
+
+				$data['type'] = $post_excerpt;
+
+				if ( ! in_array( $post_excerpt, $global_filter_keys ) ) {
+					$filter_keys[] = $data;
+
+					$global_filter_keys[] = $post_excerpt;
+				}
+			} else {
+				$filter_keys[] = $data;
+			}
 		}
 
 		return $filter_keys;
+	}
+
+	/**
+	 * Gets the filter types.
+	 *
+	 * @return array[]
+	 */
+	public static function get_filter_types() {
+		return array(
+			array(
+				'label'   => __( 'Taxonomy', 'wc-ajax-product-filter' ),
+				'value'   => 'taxonomy',
+				'options' => self::get_available_taxonomies(),
+			),
+			array(
+				'label' => __( 'Price', 'wc-ajax-product-filter' ),
+				'value' => 'price',
+				'key'   => 'price',
+			),
+			array(
+				'label' => __( 'Rating', 'wc-ajax-product-filter' ),
+				'value' => 'rating',
+				'key'   => 'rating',
+			),
+			array(
+				'label' => __( 'Product Status', 'wc-ajax-product-filter' ),
+				'value' => 'product-status',
+				'key'   => 'product-status',
+			),
+			array(
+				'label' => __( 'Post Author', 'wc-ajax-product-filter' ),
+				'value' => 'post-author',
+				'key'   => 'post-author',
+			),
+			array(
+				'label' => __( 'Post Meta', 'wc-ajax-product-filter' ),
+				'value' => 'post-meta',
+			),
+		);
+	}
+
+	/**
+	 * Gets the available taxonomies after sorting them.
+	 *
+	 * @return array
+	 */
+	public static function get_available_taxonomies() {
+		$tax_data   = get_object_taxonomies( 'product', 'objects' );
+		$taxonomies = array();
+
+		$main_taxonomies     = array( 'product_cat', 'product_tag' );
+		$optional_taxonomies = array( 'product_type', 'product_visibility', 'product_shipping_class' );
+		$attributes          = wc_get_attribute_taxonomy_names();
+		$array               = array_merge( $main_taxonomies, $optional_taxonomies, $attributes );
+		$others              = array();
+
+		foreach ( $tax_data as $taxonomy ) {
+			$name = $taxonomy->name;
+
+			if ( ! in_array( $name, $array ) ) {
+				$others[] = $name;
+			}
+		}
+
+		$final_array = array_merge( $main_taxonomies, $attributes, $others, $optional_taxonomies );
+
+		$found_pro = WCAPF_Helper::found_pro_version();
+
+		foreach ( $final_array as $name ) {
+			if ( in_array( $name, $main_taxonomies ) || in_array( $name, $optional_taxonomies ) ) {
+				$default_filter_key = str_replace( '_', '-', $name );
+			} elseif ( in_array( $name, $attributes ) ) {
+				$default_filter_key = str_replace( 'pa_', '', $name );
+			} else {
+				if ( ! $found_pro ) {
+					$default_filter_key = '_' . $name;
+				} else {
+					$default_filter_key = $name;
+				}
+			}
+
+			$taxonomies[] = array(
+				'label'           => $tax_data[ $name ]->label,
+				'value'           => $name,
+				'type'            => 'taxonomy',
+				'taxHierarchical' => is_taxonomy_hierarchical( $name ),
+				'key'             => $default_filter_key,
+			);
+		}
+
+		return $taxonomies;
 	}
 
 	public static function display_date_formats() {

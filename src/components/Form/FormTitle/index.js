@@ -265,6 +265,10 @@ const FormTitle = () => {
 								return {
 									...formFilter,
 									[key]: message,
+									// Reset client side errors.
+									type_error: '',
+									meta_key_error: '',
+									field_key_error: '',
 								};
 							}
 
@@ -307,6 +311,8 @@ const FormTitle = () => {
 				}
 			})
 			.catch((err) => {
+				console.log(err);
+
 				setLoading(false);
 
 				itemSavedErrorNotice(err.message);

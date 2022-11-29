@@ -16,6 +16,20 @@
 	.__display {
 		flex: .9;
 	}
+
+	@media (max-width: 767px) {
+
+		.__key,
+		.__display {
+			display: none;
+		}
+	}
+
+	@media (max-width: 599px) {
+		.__type {
+			display: none;
+		}
+	}
 }
 
 .__filters_drop_zone {

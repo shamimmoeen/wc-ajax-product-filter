@@ -3,7 +3,7 @@ import { upgradeToProLink } from './utils';
 
 const ProFeaturesCard = () => {
 	return (
-		<div className='__pro_features_card-56'>
+		<div className='__pro_features_card'>
 			<div className='__heading'>
 				<h2>{__('Need more features?', 'wc-ajax-product-filter')}</h2>
 				<p>
@@ -17,7 +17,7 @@ const ProFeaturesCard = () => {
 					</a>
 				</p>
 			</div>
-			{/* <ul>
+			<ul>
 				<li>
 					{__(
 						'Filter by Custom Taxonomy, Post Meta',
@@ -84,7 +84,7 @@ const ProFeaturesCard = () => {
 						'wc-ajax-product-filter'
 					)}
 				</li>
-			</ul> */}
+			</ul>
 		</div>
 	);
 };

@@ -145,25 +145,48 @@ export function getFilterKeyError(
 	let filterKeyError;
 	const field_key = filter['field_key'];
 
+	// We'll use the default key.
 	if (isEmpty(field_key)) {
-		const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+		return;
+	}
 
-		if (!globalFilterKey) {
-			filterKeyError = __(
-				'Filter key is required.',
-				'wc-ajax-product-filter'
-			);
-		}
-	} else {
-		const otherFilters = [...formFilters];
-		otherFilters.splice(currentFilterIndex, 1);
+	const otherFilters = [];
 
-		if (find(otherFilters, { field_key })) {
-			filterKeyError = __(
-				'Filter key is in use by another filter type.',
-				'wc-ajax-product-filter'
-			);
+	const filterTypes = wcapf_admin_params.filter_types;
+	const taxonomyType = find(filterTypes, { value: 'taxonomy' });
+	const taxonomyTypes = taxonomyType.options;
+
+	for (let index = 0; index < formFilters.length; index++) {
+		if (index === currentFilterIndex) {
+			continue;
 		}
+
+		const formFilter = formFilters[index];
+
+		// We'll use the default key.
+		if (isEmpty(formFilter['field_key'])) {
+			const { type, taxonomy, meta_key } = formFilter;
+
+			if ('taxonomy' === type) {
+				const taxonomyData = find(taxonomyTypes, { value: taxonomy });
+				formFilter['field_key'] = taxonomyData['key'];
+			} else if ('post-meta' === type) {
+				formFilter['field_key'] = `_${meta_key}`;
+			} else {
+				const typeData = find(filterTypes, { value: type });
+				formFilter['field_key'] = typeData['key'];
+			}
+		}
+
+		otherFilters.push(formFilter);
+	}
+
+	if (find(otherFilters, { field_key })) {
+		console.log(find(otherFilters, { field_key }));
+		filterKeyError = __(
+			'Filter key is in use by another filter type.',
+			'wc-ajax-product-filter'
+		);
 	}
 
 	return filterKeyError;
@@ -232,8 +255,10 @@ export function filterDefaultData() {
 		// Product Status
 		product_status_options: [],
 		// Post Meta
+		is_acf: '',
 		value_decimal: '',
 		value_decimal_places: '2',
+		date_input_format: 'timestamp',
 		options_order_by: 'none',
 		options_order_dir: 'asc',
 		options_order_type: 'alphabetical',

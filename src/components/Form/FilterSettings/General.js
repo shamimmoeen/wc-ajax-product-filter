@@ -8,6 +8,7 @@ import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
 import { Notice } from '@wordpress/components';
 import { getGlobalFilterKey, getFilterTypes, getMetaKeys } from '../utils';
+import Radio from '../../Field/Radio';
 
 const General = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -17,7 +18,8 @@ const General = ({ index }) => {
 		handleFilterKeyChange,
 		handleMetaKeyChange,
 		handleTextFieldChange,
-		handleToggleGroupChange,
+		handleRadioChange,
+		handleSelectChange,
 		handleCheckboxChange,
 	} = useFormFilterData(state, dispatch);
 
@@ -34,8 +36,10 @@ const General = ({ index }) => {
 		meta_key_error,
 		meta_key,
 		value_type,
+		is_acf,
 		value_decimal,
 		value_decimal_places,
+		date_input_format,
 		field_key,
 		field_key_error,
 		field_key_error_,
@@ -109,7 +113,7 @@ const General = ({ index }) => {
 			<Text
 				id={'title'}
 				index={index}
-				label={__('Filter title', 'wc-ajax-product-filter')}
+				label={__('Filter Title', 'wc-ajax-product-filter')}
 				description={__(
 					'Give a title to the filter which will appear before the filter options.',
 					'wc-ajax-product-filter'
@@ -127,7 +131,7 @@ const General = ({ index }) => {
 			<Select
 				id={'type'}
 				index={index}
-				label={__('Filter type', 'wc-ajax-product-filter')}
+				label={__('Filter Type', 'wc-ajax-product-filter')}
 				description={__(
 					'Select the filter type by which you want to filter the products.',
 					'wc-ajax-product-filter'
@@ -164,7 +168,7 @@ const General = ({ index }) => {
 						renderAsFormField
 					/>
 
-					<ToggleGroup
+					<Radio
 						id={'value_type'}
 						index={index}
 						label={__('Value Type', 'wc-ajax-product-filter')}
@@ -180,17 +184,33 @@ const General = ({ index }) => {
 							{
 								label: __('Number', 'wc-ajax-product-filter'),
 								value: 'number',
+								isPro: true,
 							},
 							{
 								label: __('Date', 'wc-ajax-product-filter'),
 								value: 'date',
+								isPro: true,
 							},
 						]}
-						onChange={handleToggleGroupChange}
+						onChange={handleRadioChange}
 						value={value_type}
 						isDisabled={id}
 					/>
 				</>
+			)}
+
+			{'post-meta' === type && 'text' === value_type && (
+				<Checkbox
+					id={'is_acf'}
+					index={index}
+					label={__('Is ACF Field', 'wc-ajax-product-filter')}
+					description={__(
+						'Enable this if this is a field of <b>Advanced Custom Fields</b>. If enabled the labels and values will be synced directly.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={is_acf}
+					onChange={handleCheckboxChange}
+				/>
 			)}
 
 			{'post-meta' === type && 'number' === value_type && (
@@ -227,6 +247,30 @@ const General = ({ index }) => {
 				</>
 			)}
 
+			{'post-meta' === type && 'date' === value_type && (
+				<Radio
+					id={'date_input_format'}
+					index={index}
+					label={__('Date Input Format', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines the format of the date saved in the database.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('Timestamp', 'wc-ajax-product-filter'),
+							value: 'timestamp',
+						},
+						{
+							label: __('YYYYMMDD', 'wc-ajax-product-filter'),
+							value: 'yyyymmdd',
+						},
+					]}
+					value={date_input_format}
+					onChange={handleRadioChange}
+				/>
+			)}
+
 			{fieldKeyError && (
 				<Notice status='error' isDismissible={false}>
 					{fieldKeyError}
@@ -236,9 +280,9 @@ const General = ({ index }) => {
 			<Text
 				id={'field_key'}
 				index={index}
-				label={__('Filter key', 'wc-ajax-product-filter')}
+				label={__('Filter Key', 'wc-ajax-product-filter')}
 				description={__(
-					'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
+					'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported. If empty the default will be used.',
 					'wc-ajax-product-filter'
 				)}
 				value={globalFilterKey ? globalFilterKey : field_key}

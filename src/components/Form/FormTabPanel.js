@@ -3,15 +3,17 @@ import { Spinner } from '@wordpress/components';
 import { useForm } from './FormContext';
 import FormFilters from './FormFilters';
 import FormSettings from './FormSettings';
-import CustomTabPanel from './CustomTabPanel';
+import CustomTabPanel from '../CustomTabPanel';
 
 const FormTabPanel = () => {
-	const {
-		state: { isLoading },
-	} = useForm();
+	const { state, dispatch } = useForm();
+
+	const { isLoading } = state;
 
 	return (
 		<CustomTabPanel
+			state={state}
+			dispatch={dispatch}
 			className='__tab_panel __form_tab_panel'
 			activeClass='active-tab'
 			tabs={[

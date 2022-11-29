@@ -348,6 +348,7 @@ body.rtl .__title_wrapper .__save_button .__icon {
   font-weight: 500;
 }
 .__form_control .__help_info {
+  cursor: help;
   margin: 5px;
   position: relative;
   top: 3px;
@@ -1153,6 +1154,17 @@ body.rtl .__sidebar .components-button {
 .__filters_drop_zone .__filters_list_header .__display {
   flex: 0.9;
 }
+@media (max-width: 767px) {
+  .__filters_drop_zone .__filters_list_header .__key,
+.__filters_drop_zone .__filters_list_header .__display {
+    display: none;
+  }
+}
+@media (max-width: 599px) {
+  .__filters_drop_zone .__filters_list_header .__type {
+    display: none;
+  }
+}
 .__filters_drop_zone .__add_filter_btn {
   margin-top: 1.5em;
 }
@@ -1240,6 +1252,17 @@ body.rtl .__filters_drop_zone .__add_filter_btn {
 }
 .__form_filters .__top ._filter_header .__display {
   flex: 0.9;
+}
+@media (max-width: 767px) {
+  .__form_filters .__top ._filter_header .__key,
+.__form_filters .__top ._filter_header .__display {
+    display: none;
+  }
+}
+@media (max-width: 599px) {
+  .__form_filters .__top ._filter_header .__type {
+    display: none;
+  }
 }
 .__form_filters .__top ._filter_header .__title,
 .__form_filters .__top ._filter_header .__display {

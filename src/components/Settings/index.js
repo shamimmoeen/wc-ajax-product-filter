@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { Button, Icon, TabPanel } from '@wordpress/components';
+import { Button, Icon } from '@wordpress/components';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
 import Notifications from '../Notifications';
@@ -18,12 +18,12 @@ import Miscellaneous from './Tabs/Miscellaneous';
 import LoaderOverlay from './Tabs/LoaderOverlay';
 import Others from './Tabs/Others';
 import SEO from './Tabs/SEO';
+import CustomTabPanel from '../CustomTabPanel';
 
 const Settings = () => {
-	const {
-		state: { isDirty, settings },
-		dispatch,
-	} = useSettings();
+	const { state, dispatch } = useSettings();
+
+	const { isDirty, settings, globalFilterKeys } = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
 
@@ -42,6 +42,7 @@ const Settings = () => {
 
 		formData.append('action', 'wcapf_save_settings');
 		formData.append('settings', JSON.stringify(settings));
+		formData.append('filter_keys', JSON.stringify(globalFilterKeys));
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)
@@ -90,7 +91,10 @@ const Settings = () => {
 								</Button>
 							</div>
 
-							<TabPanel
+							<CustomTabPanel
+								state={state}
+								dispatch={dispatch}
+								scrollable
 								className='__tab_panel __settings_tab'
 								activeClass='active-tab'
 								tabs={[
@@ -109,9 +113,9 @@ const Settings = () => {
 										),
 									},
 									{
-										name: 'loader-overlay',
+										name: 'loader-scroll-to',
 										title: __(
-											'Loader & Overlay',
+											'Loader & Scroll To',
 											'wc-ajax-product-filter'
 										),
 									},
@@ -143,7 +147,7 @@ const Settings = () => {
 										return <General />;
 									} else if ('others' === name) {
 										return <Others />;
-									} else if ('loader-overlay' === name) {
+									} else if ('loader-scroll-to' === name) {
 										return <LoaderOverlay />;
 									} else if ('filter-keys' === name) {
 										return <FilterKeys />;
@@ -153,7 +157,7 @@ const Settings = () => {
 										return <Miscellaneous />;
 									}
 								}}
-							</TabPanel>
+							</CustomTabPanel>
 						</div>
 					</div>
 
