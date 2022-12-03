@@ -1118,6 +1118,12 @@ jQuery( document ).ready( function( $ ) {
 		resetFilters( $button );
 	} );
 
+	$body.on( 'click', '.wcapf-reset-filters-btn', function() {
+		const $button = $( this );
+
+		resetFilters( $button );
+	} );
+
 	$wcapfNavFilters.on( 'click', '.wcapf-reset-filters-btn', function( event ) {
 		event.preventDefault();
 

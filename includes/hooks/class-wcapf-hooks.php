@@ -47,6 +47,21 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
+		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
+	}
+
+	public function content_top() {
+		global $wp_query;
+
+		echo '<input type="checkbox" id="show_query" /><label for="show_query">Show Query</label>';
+
+		echo '<div class="query">';
+		echo '<pre>';
+		print_r( $wp_query->request );
+		echo '</pre>';
+		echo '</div>';
+
+		echo '<style>.query {display: none} #show_query:checked ~ .query {display: block;}</style>';
 	}
 
 	/**

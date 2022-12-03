@@ -65,28 +65,31 @@ class WCAPF_Product_Filter {
 		$url = $_SERVER['QUERY_STRING'];
 		parse_str( $url, $query );
 
-		$chosen     = array();
-		$taxonomies = array();
-		$attributes = array();
-		$price      = array();
-		$statuses   = array();
+		$chosen      = array();
+		$taxonomies  = array();
+		$price       = array();
+		$statuses    = array();
+		$post_author = array();
+		$post_metas  = array();
 
 		$filters_data = $this->filters_data( $query );
 
 		$range_display_types = WCAPF_Helper::range_number_filter_types();
+		$attribute_names     = wc_get_attribute_taxonomy_names();
 
 		$already_filtered = array();
 
 		foreach ( $filters_data as $filter_key => $_filter_data ) {
 			$field_instance = new WCAPF_Field_Instance( $_filter_data );
-			$filter_type    = $field_instance->filter_type;
 			$field_type     = $field_instance->type;
 			$display_type   = $field_instance->display_type;
 			$filter_values  = $query[ $filter_key ];
 
-			if ( 'taxonomy' === $filter_type ) {
-				if ( 'attribute' === $field_type ) {
-					$attributes[ $filter_key ] = $this->set_attribute_filter_data( $filter_values, $field_instance );
+			if ( 'taxonomy' === $field_type || 'rating' === $field_type ) {
+				$taxonomy = $field_instance->taxonomy;
+
+				if ( in_array( $taxonomy, $attribute_names ) ) {
+					$taxonomies[ $filter_key ] = $this->set_attribute_filter_data( $filter_values, $field_instance );
 				} else {
 					$taxonomies[ $filter_key ] = $this->set_taxonomy_filter_data( $filter_values, $field_instance );
 				}
@@ -96,18 +99,27 @@ class WCAPF_Product_Filter {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
 
 				$already_filtered[] = $filter_key;
-			} elseif ( 'product-status' === $filter_type ) {
+			} elseif ( 'product-status' === $field_type ) {
 				$statuses[ $filter_key ] = $this->set_filter_by_product_status_data( $filter_values, $field_instance );
+
+				$already_filtered[] = $filter_key;
+			} elseif ( 'post-author' === $field_type ) {
+				$post_author[ $filter_key ] = $this->set_filter_by_post_author_data( $filter_values, $field_instance );
+
+				$already_filtered[] = $filter_key;
+			} elseif ( 'post-meta' === $field_type ) {
+				$post_metas[ $filter_key ] = $this->set_filter_by_post_meta_data( $filter_values, $field_instance );
 
 				$already_filtered[] = $filter_key;
 			}
 		}
 
-		$chosen['taxonomy']  = $taxonomies;
-		$chosen['attribute'] = $attributes;
-		$chosen['price']     = $price;
+		$chosen['taxonomy'] = $taxonomies;
+		$chosen['price']    = $price;
 
 		$chosen['product-status'] = $statuses;
+		$chosen['post-author']    = $post_author;
+		$chosen['post-meta']      = $post_metas;
 
 		$chosen = $this->set_default_sorting_data( $chosen );
 
@@ -121,53 +133,109 @@ class WCAPF_Product_Filter {
 			$remaining_filters[ $_filter_key ] = $filters_data[ $_filter_key ];
 		}
 
+		// echo '<pre>';
+		// print_r( $chosen );
+		// echo '</pre>';
+
 		return apply_filters( 'wcapf_chosen_filters', $chosen, $remaining_filters, $query );
 	}
 
 	/**
+	 * TODO: Modified.
+	 *
 	 * @param array $query The key, values array from the $_GET variable.
 	 *
 	 * @return array
 	 */
 	protected function filters_data( $query ) {
+		global $wcapf_form;
+		$form = $this->get_relevant_form();
+
+		if ( ! $form ) {
+			return array();
+		}
+
+		$wcapf_form = $form;
+
 		$filters_data = array();
 
 		if ( $query ) {
 			$filter_keys = array_keys( $query );
 			$filter_keys = array_map( 'sanitize_title', $filter_keys );
 
-			$args = array(
-				'post_type'   => 'wcapf-filter',
-				'post_status' => 'publish',
-				'nopaging'    => true,
-				'fields'      => 'ids',
-				'meta_query'  => array(
-					array(
-						'key'   => '_filter_key',
-						'value' => $filter_keys,
-					),
-				),
-			);
+			foreach ( $form['filters'] as $filter ) {
+				$field_key = $filter['key'];
 
-			$args = apply_filters( 'wcapf_filters_data_query_args', $args );
-
-			$filters = get_posts( $args );
-
-			if ( $filters ) {
-				foreach ( $filters as $filter_id ) {
-					$field_data = get_post_meta( $filter_id, '_field_data', true );
-					$field_key  = isset( $field_data['field_key'] ) ? $field_data['field_key'] : '';
-
-					if ( ! $field_key ) {
-						continue;
-					}
-
-					$filters_data[ $field_key ] = $field_data;
+				if ( in_array( $field_key, $filter_keys ) ) {
+					$filters_data[ $field_key ] = $filter['settings'];
 				}
 			}
 		}
 
 		return apply_filters( 'wcapf_filters_data', $filters_data );
+	}
+
+	private function get_relevant_form() {
+		$form_data = array();
+
+		$forms = get_posts(
+			array(
+				'post_type'      => 'wcapf-form',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'order'          => 'ASC',
+			)
+		);
+
+		if ( ! $forms ) {
+			return $form_data;
+		}
+
+		$form    = $forms[0];
+		$form_id = $form->ID;
+
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+				'post_parent' => $form_id,
+				'nopaging'    => true,
+				'orderby'     => 'menu_order',
+				'order'       => 'ASC',
+			)
+		);
+
+		$form_data['form_id']    = $form_id;
+		$form_data['form_title'] = $form->post_title;
+		$form_data['settings']   = json_decode( $form->post_content, true );
+
+		$form_filters = array();
+
+		$wcapf_settings = WCAPF_Helper::get_settings();
+		$update_count   = '';
+
+		if ( isset( $wcapf_settings['update_count'] ) && $wcapf_settings['update_count'] ) {
+			$update_count = '1';
+		}
+
+		foreach ( $filters as $filter ) {
+			$settings = json_decode( $filter->post_content, true );
+
+			$settings['hide_empty']   = '1';
+			$settings['update_count'] = $update_count;
+
+			$form_filters[] = array(
+				'id'       => $filter->ID,
+				'title'    => $filter->post_title,
+				'key'      => $filter->post_name,
+				'type'     => $filter->post_excerpt,
+				'settings' => $settings,
+			);
+		}
+
+		$form_data['filters'] = $form_filters;
+
+		return $form_data;
 	}
 
 	/**
@@ -293,7 +361,9 @@ class WCAPF_Product_Filter {
 		$join = '';
 
 		if ( 'or' === $query_type ) {
-			$join .= "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
+			$join_alias = $utils::get_table_join_alias( $filter_key );
+
+			$join .= "LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
 		} else {
 			foreach ( $term_ids as $index => $value ) {
 				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
@@ -315,8 +385,10 @@ class WCAPF_Product_Filter {
 			}
 
 			if ( $term_ids ) {
+				$join_alias = $utils::get_table_join_alias( $filter_key );
+
 				$ids   = $utils::get_ids_sql( $term_ids );
-				$where = "$filter_key.term_taxonomy_id IN $ids";
+				$where = "$join_alias.term_taxonomy_id IN $ids";
 			} else {
 				$where = '1=0';
 			}
@@ -578,6 +650,143 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * @param string               $filter_value   The filter value.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	private function set_filter_by_post_author_data( $filter_value, $field_instance ) {
+		$query_type = $field_instance->query_type;
+		$property   = $field_instance->post_property;
+		$filter_id  = $field_instance->filter_id;
+
+		$active_filters = array();
+
+		global $wpdb;
+
+		$join             = '';
+		$clauses          = array();
+		$or_filter_values = array();
+
+		$utils = new WCAPF_Product_Filter_Utils;
+
+		$alias = $utils::get_table_join_alias( $property );
+
+		$value_alias = "$wpdb->posts.$alias";
+
+		$property_values = $utils::get_chosen_filter_values( $filter_value );
+
+		foreach ( $property_values as $value ) {
+			// Active filters data.
+			$active_filters[ $value ] = $this->get_label_for_post_author( $value );
+
+			if ( 'or' === $query_type ) {
+				$or_filter_values[] = $value;
+			} else {
+				$clauses[] = "$value_alias = '$value'";
+			}
+		}
+
+		$where = $utils::get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses );
+
+		return array(
+			'query_type'     => $query_type,
+			'values'         => $property_values,
+			'join'           => $join,
+			'where'          => $where,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
+		);
+	}
+
+	/**
+	 * @param string $value
+	 *
+	 * @return mixed|string
+	 */
+	private function get_label_for_post_author( $value ) {
+		$args  = array( 'include' => array( $value ) );
+		$users = WCAPF_Product_Filter_Utils::get_users( $args );
+		$label = '';
+
+		foreach ( $users as $user ) {
+			if ( $value === $user['id'] ) {
+				$label = $user['name'];
+				break;
+			}
+		}
+
+		return $label;
+	}
+
+	/**
+	 * @param string               $filter_value
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return array
+	 */
+	private function set_filter_by_post_meta_data( $filter_value, $field_instance ) {
+		$filter_key = $field_instance->filter_key;
+		$query_type = $field_instance->query_type;
+		$meta_key   = $field_instance->meta_key;
+		$filter_id  = $field_instance->filter_id;
+
+		$active_filters = array();
+
+		$utils = new WCAPF_Product_Filter_Utils;
+
+		$meta_values = $utils::get_chosen_filter_values( $filter_value );
+
+		global $wpdb;
+
+		$join             = '';
+		$clauses          = array();
+		$or_filter_values = array();
+
+		if ( 'and' === $query_type ) {
+			foreach ( $meta_values as $index => $meta_value ) {
+				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
+
+				$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+				$join .= " AND $join_alias.meta_key = '$meta_key')";
+			}
+		} else {
+			$join_alias = $utils::get_table_join_alias( $filter_key );
+
+			$join .= "LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+			$join .= " AND $join_alias.meta_key = '$meta_key')";
+		}
+
+		$value_alias = $utils::get_table_join_alias( $filter_key ) . '.meta_value';
+
+		foreach ( $meta_values as $index => $meta_value ) {
+			// Active filters data.
+			$active_filters[ $meta_value ] = $meta_value;
+
+			if ( 'or' === $query_type ) {
+				$or_filter_values[] = $meta_value;
+			} else {
+				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
+
+				$value_alias = "$join_alias.meta_value";
+
+				$clauses[] = "$value_alias = '$meta_value'";
+			}
+		}
+
+		$where = $utils::get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses );
+
+		return array(
+			'query_type'     => $query_type,
+			'values'         => $meta_values,
+			'join'           => $join,
+			'where'          => $where,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
+		);
+	}
+
+	/**
 	 * Sets data for the default sorting.
 	 *
 	 * @param array $chosen The chosen filters array.
@@ -644,6 +853,10 @@ function wcapf_posts_clauses( $args, $wp_query ) {
 
 	$args['join']  .= $filter->get_full_join_clause();
 	$args['where'] .= $filter->get_full_where_clause();
+
+	// echo '<pre>';
+	// print_r( $args );
+	// echo '</pre>';
 
 	/**
 	 * The filter to apply the sort-by filter.

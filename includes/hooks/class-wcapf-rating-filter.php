@@ -43,7 +43,7 @@ class WCAPF_Rating_Filter {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_filter( 'wcapf_taxonomy_field_types', array( $this, 'set_rating_as_taxonomy_field' ) );
+		// add_filter( 'wcapf_taxonomy_field_types', array( $this, 'set_rating_as_taxonomy_field' ) );
 		add_filter( 'wcapf_field_taxonomy', array( $this, 'set_rating_taxonomy_name' ), 10, 2 );
 
 		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms_query_args' ), 10, 2 );

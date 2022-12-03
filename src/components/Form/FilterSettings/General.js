@@ -3,7 +3,6 @@ import { useForm } from '../FormContext';
 import useFormFilterData from '../useFormFilterData';
 import Text from '../../Field/Text';
 import Select from '../../Field/Select';
-import ToggleGroup from '../../Field/ToggleGroup';
 import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
 import { Notice } from '@wordpress/components';
@@ -19,7 +18,6 @@ const General = ({ index }) => {
 		handleMetaKeyChange,
 		handleTextFieldChange,
 		handleRadioChange,
-		handleSelectChange,
 		handleCheckboxChange,
 	} = useFormFilterData(state, dispatch);
 
@@ -60,8 +58,10 @@ const General = ({ index }) => {
 		);
 	}
 
+	let filterTitle = title;
 	let filterTypes;
 	let metaKeys;
+	let filterKey = field_key;
 	let globalFilterKey;
 
 	if (id) {
@@ -98,6 +98,26 @@ const General = ({ index }) => {
 		filterType = filterTypes.find((option) => option.value === type);
 	}
 
+	// Default filter title.
+	if (!filterTitle) {
+		filterTitle = filterType.label;
+
+		if ('post-meta' === type && meta_key) {
+			filterTitle += `[${meta_key}]`;
+		}
+	}
+
+	// Default filter key.
+	if (!filterKey) {
+		if ('post-meta' === type) {
+			if (meta_key) {
+				filterKey = meta_key;
+			}
+		} else {
+			filterKey = filterType.key;
+		}
+	}
+
 	const metaKey = metaKeys.find((option) => option.value === meta_key);
 
 	let fieldKeyError;
@@ -119,6 +139,7 @@ const General = ({ index }) => {
 					'wc-ajax-product-filter'
 				)}
 				value={title}
+				placeholder={filterTitle}
 				onChange={handleTextFieldChange}
 			/>
 
@@ -143,6 +164,32 @@ const General = ({ index }) => {
 				renderAsFormField
 				tooltip={typeDisabledInfo}
 			/>
+
+			{'taxonomy' === type && (
+				<Radio
+					id={'value_type'}
+					index={index}
+					label={__('Value Type', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines the taxonomy terms value type.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('Text', 'wc-ajax-product-filter'),
+							value: 'text',
+						},
+						{
+							label: __('Number', 'wc-ajax-product-filter'),
+							value: 'number',
+							isPro: true,
+						},
+					]}
+					onChange={handleRadioChange}
+					value={value_type}
+					isDisabled={id}
+				/>
+			)}
 
 			{'post-meta' === type && (
 				<>
@@ -220,7 +267,7 @@ const General = ({ index }) => {
 						index={index}
 						label={__('Value is decimal', 'wc-ajax-product-filter')}
 						description={__(
-							'Whether the meta values have decimal places.',
+							"Enable this if the meta values have decimal places. It'll filter the products more accurately.",
 							'wc-ajax-product-filter'
 						)}
 						isChecked={value_decimal}
@@ -282,10 +329,11 @@ const General = ({ index }) => {
 				index={index}
 				label={__('Filter Key', 'wc-ajax-product-filter')}
 				description={__(
-					'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported. If empty the default will be used.',
+					'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
 					'wc-ajax-product-filter'
 				)}
 				value={globalFilterKey ? globalFilterKey : field_key}
+				placeholder={filterKey}
 				onChange={handleFilterKeyChange}
 				isDisabled={id || globalFilterKey}
 				tooltip={filterKeyDisabledInfo}

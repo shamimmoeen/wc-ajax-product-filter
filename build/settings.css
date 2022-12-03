@@ -707,6 +707,11 @@ body.rtl .__sidebar .components-button {
   outline: 1px solid transparent;
 }
 
+.__form_fields_separator {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin: 2em 0;
+}
+
 .__form_control.with-checkbox .__input_wrapper {
   display: flex;
   gap: 12px;
@@ -1017,6 +1022,9 @@ body.rtl .__settings_tab .__scroll_window_to .__input_wrapper .__single_select:n
   .__settings_tab .__global_filter_keys .__value {
     flex: 1;
   }
+}
+.__settings_tab .__pro_settings {
+  text-align: center;
 }
 
 .__filter_key .components-text-control__input {

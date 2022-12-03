@@ -1,4 +1,6 @@
 import { __ } from '@wordpress/i18n';
+import Checkbox from '../../Field/Checkbox';
+import Select from '../../Field/Select';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
 import { foundProVersion } from '../../utils';
 
@@ -9,9 +11,41 @@ const SEO = () => {
 		<>
 			<ProFeaturesNotice
 				message={__(
-					'These settings are available only at the PRO version.',
+					'Upgrade to PRO to unlock all SEO features.',
 					'wc-ajax-product-filter'
 				)}
+			/>
+
+			<Select
+				id={'scroll_window_for'}
+				label={__('Add "robots" Meta Tag', 'wc-ajax-product-filter')}
+				description={__(
+					'Add "robots" meta tag in head tag of HTML page if filters have been activated.',
+					'wc-ajax-product-filter'
+				)}
+				// value={scrollWindowFor}
+				options={[
+					{ label: 'Disabled', value: 'disabled' },
+					{ label: 'Disabled', value: 'disabled' },
+				]}
+				// onChange={(selected) =>
+				// 	handleSelectChange(selected, 'scroll_window_for')
+				// }
+				renderAsFormField
+			/>
+
+			<Checkbox
+				id={'loading_animation'}
+				label={__(
+					'Add "nofollow" to filter anchors',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Whether to show an animation while the results are fetching.',
+					'wc-ajax-product-filter'
+				)}
+				// isChecked={loading_animation}
+				// onChange={handleCheckboxChange}
 			/>
 
 			{WCAPF_PRO && (

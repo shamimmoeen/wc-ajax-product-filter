@@ -9,10 +9,6 @@ const scrollWindowOptions = [
 		value: 'results',
 	},
 	{
-		label: __('Form container', 'wc-ajax-product-filter'),
-		value: 'form',
-	},
-	{
 		label: __('Custom element', 'wc-ajax-product-filter'),
 		value: 'custom',
 	},

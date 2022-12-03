@@ -285,6 +285,13 @@
     }
 }
 
+@mixin help-info {
+    cursor: help;
+    margin: 5px;
+    position: relative;
+    top: 3px;
+}
+
 @mixin ltr {
     $self: &;
 

@@ -92,6 +92,30 @@ abstract class WCAPF_Filter_Type {
 	abstract protected function prepare_items();
 
 	/**
+	 * @param $ranges
+	 * @param $filtered_count
+	 *
+	 * @return array
+	 */
+	public function get_filtered_ranges_counts( $ranges, $filtered_count ) {
+		if ( ! $ranges ) {
+			return array();
+		}
+
+		$updated_count = array();
+
+		foreach ( $ranges as $range ) {
+			$id    = $range['id'];
+			$count = isset( $filtered_count[ $id ] ) ? $filtered_count[ $id ] : 0;
+
+			$range['count']  = $count;
+			$updated_count[] = $range;
+		}
+
+		return $updated_count;
+	}
+
+	/**
 	 * Exclude the empty items.
 	 *
 	 * @param array $items The items.
@@ -120,14 +144,11 @@ abstract class WCAPF_Filter_Type {
 	 * @return bool
 	 */
 	protected function auto_count_enabled() {
-		$settings = WCAPF_Helper::get_settings();
-		$enabled  = false;
-
-		if ( isset( $settings['update_count'] ) && $settings['update_count'] ) {
-			$enabled = true;
-		}
-
-		return apply_filters( 'wcapf_filter_update_count', $enabled, $this->field );
+		return apply_filters(
+			'wcapf_filter_update_count',
+			$this->field->get_sub_field_value( 'update_count' ),
+			$this->field
+		);
 	}
 
 	/**

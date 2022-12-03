@@ -1,8 +1,7 @@
 import { concat } from 'lodash';
 
 export function foundProVersion() {
-	// return wcapf_admin_params.foundPro;
-	return false;
+	return wcapf_admin_params.found_pro || false;
 }
 
 export function getInputId(id, index = '', subIndex = '') {

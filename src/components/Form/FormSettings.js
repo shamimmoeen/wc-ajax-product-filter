@@ -1,3 +1,4 @@
+import { CheckboxControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Radio from '../Field/Radio';
@@ -21,8 +22,6 @@ const FormSettings = () => {
 
 	const {
 		formSettings: {
-			disable_empty_options,
-			remove_empty_filters,
 			filter_mode,
 			submit_button_label,
 			form_visibility,
@@ -73,29 +72,7 @@ const FormSettings = () => {
 				isDisabled={!WCAPF_PRO}
 			/>
 
-			{/* <Checkbox
-				id={'disable_empty_options'}
-				label={__('Disable empty options', 'wc-ajax-product-filter')}
-				description={__(
-					'By default we remove the options with no products. Enable this if you want to show them as disabled.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={disable_empty_options}
-				onChange={handleCheckboxChange}
-				isPro
-			/>
-
-			<Checkbox
-				id={'remove_empty_filters'}
-				label={__('Remove empty filters', 'wc-ajax-product-filter')}
-				isChecked={remove_empty_filters}
-				onChange={handleCheckboxChange}
-				description={__(
-					"Whether to remove the filters that don't have any options.",
-					'wc-ajax-product-filter'
-				)}
-				isPro
-			/> */}
+			<div className='__form_fields_separator' />
 
 			<Radio
 				id={'filter_mode'}
@@ -113,23 +90,69 @@ const FormSettings = () => {
 						label: __('Submit button', 'wc-ajax-product-filter'),
 						value: 'submit',
 					},
+					{
+						label: __('Apply button', 'wc-ajax-product-filter'),
+						value: 'apply',
+					},
 				]}
 				onChange={handleRadioChange}
 				value={filter_mode}
 			/>
 
 			{'submit' === filter_mode && (
-				<Text
-					id={'submit_button_label'}
-					label={__('Submit button label', 'wc-ajax-product-filter')}
-					description={__(
-						'Leave it empty to show the default label.',
-						'wc-ajax-product-filter'
-					)}
-					value={submit_button_label}
-					onChange={handleTextFieldChange}
-				/>
+				<>
+					<Text
+						id={'submit_button_label'}
+						label={__(
+							'Submit button label',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Leave it empty to show the default label.',
+							'wc-ajax-product-filter'
+						)}
+						value={submit_button_label}
+						onChange={handleTextFieldChange}
+					/>
+
+					<div className='__form_control __horizontal_multi_checkbox'>
+						<div className='__inner'>
+							<div className='__label'>
+								<label>
+									{__('Auto Sync')}
+									<span class='__pro_tag'></span>
+								</label>
+							</div>
+							<div className='__wrapper'>
+								<div className='__input_wrapper'>
+									<CheckboxControl
+										label={__(
+											'Filters',
+											'wc-ajax-product-filter'
+										)}
+										// checked={rules.includes('mobile')}
+										// onChange={() => onChange('mobile')}
+									/>
+
+									<CheckboxControl
+										label={__(
+											'Products',
+											'wc-ajax-product-filter'
+										)}
+										// checked={rules.includes('tablet')}
+										// onChange={() => onChange('tablet')}
+									/>
+								</div>
+							</div>
+						</div>
+						<p className='description'>
+							{'Determines what to update in submit button mode.'}
+						</p>
+					</div>
+				</>
 			)}
+
+			<div className='__form_fields_separator' />
 
 			<Select
 				id={'form_visibility'}
@@ -156,6 +179,8 @@ const FormSettings = () => {
 					onChange={handleTextFieldChange}
 				/>
 			)}
+
+			<div className='__form_fields_separator' />
 
 			<Checkbox
 				id={'show_form_title'}

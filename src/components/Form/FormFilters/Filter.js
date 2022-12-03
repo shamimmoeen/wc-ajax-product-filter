@@ -6,10 +6,10 @@ import { useForm } from '../FormContext';
 import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
 import {
+	allTextDisplayTypes,
 	dateDisplayTypes,
 	getGlobalFilterKey,
 	numberDisplayTypes,
-	textDisplayTypes,
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
@@ -190,7 +190,7 @@ const Filter = ({ index }) => {
 		displayTypes = dateDisplayTypes();
 		_displayType = date_display_type;
 	} else {
-		displayTypes = textDisplayTypes();
+		displayTypes = allTextDisplayTypes();
 		_displayType = display_type;
 	}
 

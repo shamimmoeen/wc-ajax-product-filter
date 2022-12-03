@@ -333,7 +333,7 @@ const useFields = (type, index) => {
 	const tooltipCanBeEnabled = () => {
 		let enabled = false;
 
-		const _displayTypes = ['select', 'multi-select'];
+		const _displayTypes = ['select', 'multi-select', 'hierarchy-select'];
 
 		const _numberDisplayTypes = [
 			'range_slider',

@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import { ReactSortable } from 'react-sortablejs';
 import useSettingsData from '../useSettingsData';
 import { useSettings } from '../SettingsContext';
+import ProFeaturesNotice from '../../ProFeaturesNotice';
 
 const FilterKeys = () => {
 	const { state, dispatch } = useSettings();
@@ -50,6 +51,13 @@ const FilterKeys = () => {
 
 	return (
 		<>
+			<ProFeaturesNotice
+				message={__(
+					'Changing the order of filters keys is a PRO feature.',
+					'wc-ajax-product-filter'
+				)}
+			/>
+
 			<h4 className='__global_filter_keys_heading'>
 				{__('Global filter keys and order', 'wc-ajax-product-filter')}
 			</h4>

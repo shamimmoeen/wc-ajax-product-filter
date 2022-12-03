@@ -20,7 +20,11 @@ const Options = ({ index }) => {
 		let fields;
 
 		if ('taxonomy' === filterType) {
-			fields = <TaxonomyOptions index={index} />;
+			if ('number' === value_type) {
+				fields = <ValueTypeNumber index={index} />;
+			} else {
+				fields = <TaxonomyOptions index={index} />;
+			}
 		} else if ('price' === filterType) {
 			fields = <ValueTypeNumber index={index} />;
 		} else if ('rating' === filterType) {

@@ -115,6 +115,10 @@ const PublishModal = ({ isOpen, closeModal }) => {
 						onSelect={handleTabChange}
 						tabs={[
 							{
+								name: 'widget',
+								title: __('Widget', 'wc-ajax-product-filter'),
+							},
+							{
 								name: 'shortcode',
 								title: __(
 									'Shortcode',
@@ -124,10 +128,6 @@ const PublishModal = ({ isOpen, closeModal }) => {
 							{
 								name: 'php-code',
 								title: __('PHP Code', 'wc-ajax-product-filter'),
-							},
-							{
-								name: 'widget',
-								title: __('Widget', 'wc-ajax-product-filter'),
 							},
 						]}
 					>

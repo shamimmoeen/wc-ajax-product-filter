@@ -113,12 +113,19 @@ const Settings = () => {
 										),
 									},
 									{
-										name: 'loader-scroll-to',
+										name: 'css-javascript',
 										title: __(
-											'Loader & Scroll To',
+											'CSS & JavaScript',
 											'wc-ajax-product-filter'
 										),
 									},
+									// {
+									// 	name: 'loader-scroll-to',
+									// 	title: __(
+									// 		'Loader & Scroll To',
+									// 		'wc-ajax-product-filter'
+									// 	),
+									// },
 									{
 										name: 'filter-keys',
 										title: __(
@@ -147,6 +154,8 @@ const Settings = () => {
 										return <General />;
 									} else if ('others' === name) {
 										return <Others />;
+									} else if ('css-javascript' === name) {
+										return <LoaderOverlay />;
 									} else if ('loader-scroll-to' === name) {
 										return <LoaderOverlay />;
 									} else if ('filter-keys' === name) {

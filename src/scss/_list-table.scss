@@ -35,6 +35,10 @@
                     font-weight: 500;
                     padding: 0 var(--vr-padding);
                     height: 36px;
+
+                    .__help_info {
+                        @include help-info;
+                    }
                 }
             }
 
