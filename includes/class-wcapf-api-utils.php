@@ -15,47 +15,6 @@
  */
 class WCAPF_API_Utils {
 
-	/**
-	 * Gets the meta keys for post type product.
-	 *
-	 * @noinspection SqlNoDataSourceInspection
-	 * @noinspection SqlDialectInspection
-	 *
-	 * @source https://stackoverflow.com/a/54017483
-	 *
-	 * @return array
-	 */
-	public static function get_available_meta_keys() {
-		global $wpdb;
-
-		$post_type = 'product';
-
-		$query = $wpdb->prepare(
-			"
-				SELECT DISTINCT($wpdb->postmeta.meta_key)
-		        FROM $wpdb->posts
-		        LEFT JOIN $wpdb->postmeta
-		        ON $wpdb->posts.ID = $wpdb->postmeta.post_id
-		        WHERE $wpdb->posts.post_type = %s
-				AND $wpdb->postmeta.meta_key IS NOT NULL
-				ORDER BY $wpdb->postmeta.meta_key
-				",
-			$post_type
-		);
-
-		$results   = $wpdb->get_col( $query );
-		$meta_keys = array();
-
-		foreach ( $results as $result ) {
-			$meta_keys[] = array(
-				'value' => $result,
-				'label' => $result,
-			);
-		}
-
-		return $meta_keys;
-	}
-
 	public static function get_global_filter_key( $filter ) {
 		$filter_keys     = self::get_filter_keys();
 		$filter_type     = isset( $filter['type'] ) ? $filter['type'] : '';

@@ -92,12 +92,15 @@ const useFormFilterData = (state, dispatch) => {
 		// Also remove the server side field key error.
 
 		if ('taxonomy' === type) {
+			// Also reset the display type.
+
 			updateFilterType(index, type, value, {
 				[key]: type,
 				type_error: '',
 				field_key_error_: '',
 				taxonomy: value,
 				taxHierarchical: taxHierarchical ? '1' : '',
+				display_type: 'checkbox',
 			});
 
 			return;

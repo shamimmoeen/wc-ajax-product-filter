@@ -162,7 +162,7 @@ class WCAPF_Field_Instance {
 		$this->query_type             = $query_type;
 		$this->enable_multiple_filter = $enable_multiple_filter;
 
-		$this->filter_id  = $this->get_sub_field_value( 'field_id' );
+		$this->filter_id  = $this->get_sub_field_value( 'id' );
 		$this->filter_key = $this->get_sub_field_value( 'field_key' );
 
 		$this->filter_type  = $this->get_filter_type();
@@ -175,15 +175,13 @@ class WCAPF_Field_Instance {
 		$this->value_type       = $this->get_value_type();
 		$this->number_data_type = $this->get_number_data_type();
 
-		$this->post_property = $this->get_sub_field_value( 'post_property' );
+		$this->post_property = $this->get_post_property();
 
 		$this->use_store_name = $this->is_store_name_enabled();
 
 		$this->custom_appearance_options = $this->get_appearance_data();
 
 		$this->form_id = $this->get_sub_field_value( 'form_id' );
-
-		$this->use_custom_title = $this->is_custom_title_enabled();
 	}
 
 	/**
@@ -300,38 +298,11 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function get_taxonomy() {
-		if ( 'taxonomy' !== $this->get_filter_type() ) {
-			return '';
+		if ( 'rating' === $this->get_field_type() ) {
+			return 'product_visibility';
 		}
 
-		return $this->get_taxonomy_from_field_instance();
-	}
-
-	/**
-	 * @return string
-	 */
-	private function get_taxonomy_from_field_instance() {
-		$field_type = $this->get_field_type();
-
-		switch ( $field_type ) {
-			case 'category':
-				$taxonomy = 'product_cat';
-				break;
-
-			case 'tag':
-				$taxonomy = 'product_tag';
-				break;
-
-			case 'attribute':
-				$taxonomy = $this->get_sub_field_value( 'taxonomy' );
-				break;
-
-			default:
-				$taxonomy = '';
-				break;
-		}
-
-		return apply_filters( 'wcapf_field_taxonomy', $taxonomy, $field_type, $this->instance );
+		return $this->get_sub_field_value( 'taxonomy' );
 	}
 
 	/**
@@ -410,6 +381,18 @@ class WCAPF_Field_Instance {
 		return apply_filters( 'wcapf_number_data_type', $data_type, $this->instance );
 	}
 
+	private function get_post_property() {
+		$type = $this->get_field_type();
+
+		if ( 'post-author' === $type ) {
+			return 'post_author';
+		} elseif ( 'post-date' === $type ) {
+			return 'post_date';
+		} else {
+			return 'post_modified';
+		}
+	}
+
 	/**
 	 * @since 3.3.0
 	 *
@@ -430,23 +413,6 @@ class WCAPF_Field_Instance {
 		$options = $this->get_sub_field_value( 'custom_appearance_options' );
 
 		return apply_filters( 'wcapf_field_instance_appearance_options', $options, $this );
-	}
-
-	/**
-	 * Determines if show custom title instead of filter title in the active filters' widget.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	private function is_custom_title_enabled() {
-		$for_preview = $this->get_sub_field_value( 'for_preview' );
-
-		if ( $for_preview ) {
-			return true;
-		}
-
-		return boolval( $this->get_sub_field_value( 'use_custom_title' ) );
 	}
 
 }

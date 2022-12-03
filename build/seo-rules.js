@@ -608,8 +608,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function foundProVersion() {
-  // return wcapf_admin_params.foundPro;
-  return false;
+  return wcapf_admin_params.found_pro || false;
 }
 function getInputId(id) {
   let index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';

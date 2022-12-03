@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { isEmpty, merge, find } from 'lodash';
-import { foundProVersion, mergeSelectOptions } from '../utils';
+import { mergeSelectOptions } from '../utils';
 
 export function newFilterData(index, formFilters) {
 	let data = {};
@@ -510,41 +510,31 @@ export function authorLimitByOptions() {
 	];
 }
 
-export function productStatusOptions() {
-	return [
-		{
-			label: __('Featured', 'wc-ajax-product-filter'),
-			value: 'featured',
-		},
-		{
-			label: __('On Sale', 'wc-ajax-product-filter'),
-			value: 'on_sale',
-		},
-	];
-}
+const textFreeDisplayTypes = [
+	{
+		label: __('Checkbox', 'wc-ajax-product-filter'),
+		value: 'checkbox',
+	},
+	{
+		label: __('Radio', 'wc-ajax-product-filter'),
+		value: 'radio',
+	},
+	{
+		label: __('Select', 'wc-ajax-product-filter'),
+		value: 'select',
+	},
+	{
+		label: __('Multi select', 'wc-ajax-product-filter'),
+		value: 'multi-select',
+	},
+	{
+		label: __('Label', 'wc-ajax-product-filter'),
+		value: 'label',
+	},
+];
 
-export function textDisplayTypes(withPro = false) {
-	const options = [
-		{
-			label: __('Checkbox', 'wc-ajax-product-filter'),
-			value: 'checkbox',
-		},
-		{
-			label: __('Radio', 'wc-ajax-product-filter'),
-			value: 'radio',
-		},
-		{
-			label: __('Select', 'wc-ajax-product-filter'),
-			value: 'select',
-		},
-		{
-			label: __('Multi select', 'wc-ajax-product-filter'),
-			value: 'multi-select',
-		},
-		{
-			label: __('Label', 'wc-ajax-product-filter'),
-			value: 'label',
-		},
+function textProDisplayTypes(taxHierarchical = false) {
+	const textProDisplayTypes = [
 		{
 			label: __('Color', 'wc-ajax-product-filter'),
 			value: 'color',
@@ -555,21 +545,38 @@ export function textDisplayTypes(withPro = false) {
 		},
 	];
 
-	if (withPro && !foundProVersion()) {
-		const proDisplayTypes = ['color', 'image'];
-
-		return options.map((option) => {
-			if (!proDisplayTypes.includes(option.value)) {
-				return option;
-			} else {
-				option.isPro = true;
-
-				return option;
-			}
+	if (taxHierarchical) {
+		textProDisplayTypes.push({
+			label: __('Hierarchy Select', 'wc-ajax-product-filter'),
+			value: 'hierarchy-select',
 		});
 	}
 
-	return options;
+	return textProDisplayTypes;
+}
+
+export function taxonomyDisplayTypes(withPro = false, taxHierarchical = false) {
+	return mergeSelectOptions(
+		textFreeDisplayTypes,
+		textProDisplayTypes(taxHierarchical),
+		withPro
+	);
+}
+
+export function postMetaDisplayTypes(withPro = false) {
+	return mergeSelectOptions(
+		textFreeDisplayTypes,
+		textProDisplayTypes(),
+		withPro
+	);
+}
+
+export function textDisplayTypes() {
+	return textFreeDisplayTypes;
+}
+
+export function allTextDisplayTypes() {
+	return mergeSelectOptions(textFreeDisplayTypes, textProDisplayTypes(true));
 }
 
 export function numberDisplayTypes(withPro = false) {
@@ -693,4 +700,8 @@ export function getTableData(filterType, filterData) {
 	}
 
 	return { type, optionsKey };
+}
+
+export function hierarchicalDisplayTypes() {
+	return ['checkbox', 'radio', 'select', 'multi-select'];
 }

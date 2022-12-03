@@ -87,7 +87,7 @@ const LoaderOverlay = () => {
 					id={'scroll_to_top_offset'}
 					label={__('Scroll to top offset', 'wc-ajax-product-filter')}
 					description={__(
-						'If you have a sticky header or something like that you need to give the height of that element for an accurate result.',
+						'If you have a sticky header or page title that you want to include in the viewport then give the height of those in px.',
 						'wc-ajax-product-filter'
 					)}
 					value={scroll_to_top_offset}

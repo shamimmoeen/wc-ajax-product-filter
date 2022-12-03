@@ -420,4 +420,88 @@ class WCAPF_Product_Filter_Utils {
 		return apply_filters( 'wcapf_user_roles', $all_roles );
 	}
 
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_users( $args = array(), $use_store_name = '' ) {
+		$defaults = array( 'fields' => array( 'ID', 'display_name' ) );
+		$args     = wp_parse_args( $args, $defaults );
+		$users    = get_users( $args );
+
+		$_items = array();
+
+		foreach ( $users as $user ) {
+			$user_id = $user->ID;
+			$name    = $user->display_name;
+			$count   = 0;
+
+			// TODO: Extract to pro.
+			if ( $use_store_name ) {
+				$meta_key   = self::store_name_meta_key();
+				$store_name = get_user_meta( $user_id, $meta_key, true );
+
+				if ( $store_name ) {
+					$name = $store_name;
+				}
+			}
+
+			$_items[ $user_id ] = array(
+				'id'    => $user_id,
+				'name'  => $name,
+				'count' => $count,
+			);
+		}
+
+		return $_items;
+	}
+
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function store_name_meta_key() {
+		return 'wcfmmp_store_name';
+	}
+
+	/**
+	 * @param string $query_type
+	 * @param array  $or_filter_values
+	 * @param string $value_alias
+	 * @param array  $clauses
+	 *
+	 * @return string
+	 */
+	public static function get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses ) {
+		if ( 'or' === $query_type ) {
+			if ( $or_filter_values ) {
+				$or_clauses = "('" . implode( "','", $or_filter_values ) . "')";
+
+				$where = "$value_alias IN $or_clauses";
+			} elseif ( $clauses ) {
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . implode( ' OR ', $clauses ) . ' )';
+				} else {
+					$where = implode( ' OR ', $clauses );
+				}
+			} else {
+				$where = '1=0';
+			}
+		} else {
+			if ( $clauses ) {
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . implode( ' AND ', $clauses ) . ' )';
+				} else {
+					$where = implode( ' AND ', $clauses );
+				}
+			} else {
+				$where = '1=0';
+			}
+		}
+
+		return $where;
+	}
+
 }

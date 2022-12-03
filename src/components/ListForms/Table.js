@@ -11,8 +11,14 @@ import {
 import { foundProVersion, slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
+import TippyTooltip from '../TippyTooltip';
 
 const WCAPF_PRO = foundProVersion();
+
+const filterOnTooltip = __(
+	'Determines where you want to show the form to filter the products.',
+	'wc-ajax-product-filter'
+);
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
@@ -38,12 +44,14 @@ const Table = ({
 		return (
 			<tr>
 				{headers.map((item) => {
+					const id = slugify(item);
+
 					return (
-						<th
-							className={slugify(item)}
-							key={`posts-table-${item}`}
-						>
+						<th className={id} key={`posts-table-${item}`}>
 							{item}
+							{'__Filter_on' === id && (
+								<TippyTooltip content={filterOnTooltip} />
+							)}
 						</th>
 					);
 				})}

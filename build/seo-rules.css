@@ -431,6 +431,12 @@ body.rtl .__top_bar h2 .__icon {
   padding: 0 var(--vr-padding);
   height: 36px;
 }
+.__list_table_wrapper .__list_table_inner table thead th .__help_info {
+  cursor: help;
+  margin: 5px;
+  position: relative;
+  top: 3px;
+}
 .__list_table_wrapper .__list_table_inner table tbody td {
   border-bottom: 1px solid #e2e4e7;
   padding: var(--vr-padding) var(--vr-padding);
@@ -831,6 +837,11 @@ body.rtl .__sidebar .components-button {
 .__form_control.__image_picker .__image_picker_group .button-link-delete:focus {
   box-shadow: 0 0 0 1px rgba(204, 24, 24, 0.8), 0 0 2px 1px rgba(204, 24, 24, 0.6);
   outline: 1px solid transparent;
+}
+
+.__form_fields_separator {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin: 2em 0;
 }
 
 .__form_control.with-checkbox .__input_wrapper {

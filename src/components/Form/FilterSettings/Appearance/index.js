@@ -16,7 +16,9 @@ const Appearance = ({ index }) => {
 	const renderFields = () => {
 		let fields;
 
-		if ('price' === type) {
+		if ('taxonomy' === type && 'number' === value_type) {
+			fields = <ValueTypeNumber index={index} />;
+		} else if ('price' === type) {
 			fields = <ValueTypeNumber index={index} />;
 		} else if ('post-meta' === type) {
 			if ('text' === value_type) {

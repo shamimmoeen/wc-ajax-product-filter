@@ -74,7 +74,7 @@ class WCAPF_Helper {
 	 *
 	 * @return array
 	 */
-	public static function get_meta_keys() {
+	public static function get_available_meta_keys() {
 		global $wpdb;
 
 		$post_type = 'product';
@@ -92,11 +92,17 @@ class WCAPF_Helper {
 			$post_type
 		);
 
-		$query = apply_filters( 'wcapf_meta_keys_sql_query', $query );
+		$results   = $wpdb->get_col( $query );
+		$meta_keys = array();
 
-		$results = $wpdb->get_col( $query );
+		foreach ( $results as $result ) {
+			$meta_keys[] = array(
+				'value' => $result,
+				'label' => $result,
+			);
+		}
 
-		return apply_filters( 'wcapf_product_meta_keys', $results );
+		return $meta_keys;
 	}
 
 	/**
@@ -137,6 +143,22 @@ class WCAPF_Helper {
 		$results = $wpdb->get_col( $query );
 
 		return apply_filters( 'wcapf_product_meta_values', $results, $meta_key );
+	}
+
+	/**
+	 * The filtering works for the products with these post statuses.
+	 *
+	 * @return array
+	 */
+	public static function filterable_post_statuses() {
+		$post_statuses = array( 'publish' );
+
+		// Shop managers can see the private products, the filtering should work there.
+		if ( current_user_can( 'manage_woocommerce' ) ) {
+			$post_statuses[] = 'private';
+		}
+
+		return apply_filters( 'wcapf_filterable_post_statuses', $post_statuses );
 	}
 
 	/**
@@ -284,19 +306,10 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * The filtering works for the products with these post statuses.
-	 *
-	 * @return array
+	 * @return string
 	 */
-	public static function filterable_post_statuses() {
-		$post_statuses = array( 'publish' );
-
-		// Shop managers can see the private products, the filtering should work there.
-		if ( current_user_can( 'manage_woocommerce' ) ) {
-			$post_statuses[] = 'private';
-		}
-
-		return apply_filters( 'wcapf_filterable_post_statuses', $post_statuses );
+	public static function range_values_separator() {
+		return '~';
 	}
 
 	/**
@@ -332,6 +345,20 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Gets the field's instance.
+	 *
+	 * @param string $type           The field type.
+	 * @param array  $field_instance The field's instance.
+	 *
+	 * @return WCAPF_Field
+	 */
+	public static function get_field_instance( $type, $field_instance = array() ) {
+		$class = self::get_field_class_name_by_type( $type );
+
+		return new $class( $field_instance );
+	}
+
+	/**
 	 * Gets the field's class name for the given type.
 	 *
 	 * @param string $type The field type.
@@ -361,20 +388,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Gets the field's instance.
-	 *
-	 * @param string $type           The field type.
-	 * @param array  $field_instance The field's instance.
-	 *
-	 * @return WCAPF_Field
-	 */
-	public static function get_field_instance( $type, $field_instance = array() ) {
-		$class = self::get_field_class_name_by_type( $type );
-
-		return new $class( $field_instance );
-	}
-
-	/**
 	 * Gets the product status options.
 	 *
 	 * @return array
@@ -397,13 +410,6 @@ class WCAPF_Helper {
 	 */
 	public static function product_status_option_markup( $data = array() ) {
 		WCAPF_Template_Loader::get_instance()->load( 'admin/field-templates/product-status-option-row', $data );
-	}
-
-	/**
-	 * @return string
-	 */
-	public static function range_values_separator() {
-		return '~';
 	}
 
 	/**
@@ -598,6 +604,10 @@ class WCAPF_Helper {
 	public static function get_reset_filters_button_markup( $button_label, $tag = 'button' ) {
 		$active_filters = self::get_active_filters_data();
 		$filter_keys    = array_keys( $active_filters );
+
+		if ( ! $button_label ) {
+			$button_label = __( 'Reset', 'wc-ajax-product-filter' );
+		}
 
 		if ( $filter_keys ) {
 			$keys = implode( ',', $filter_keys );

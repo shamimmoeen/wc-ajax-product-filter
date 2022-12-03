@@ -45,10 +45,7 @@
 	}
 
 	.__help_info {
-		cursor: help;
-		margin: 5px;
-		position: relative;
-		top: 3px;
+		@include help-info;
 	}
 
 	.components-text-control__input {
@@ -269,6 +266,12 @@
 		@include image-picker;
 	}
 }
+
+.__form_fields_separator {
+	border-bottom: 1px solid rgba(0, 0, 0, .05);
+	margin: 2em 0;
+}
+
 
 // Number min, max fields with auto detect.
 .__form_control {

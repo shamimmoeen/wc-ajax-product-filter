@@ -5,7 +5,7 @@ import Radio from '../../Field/Radio';
 import Textarea from '../../Field/Textarea';
 import { useForm } from '../FormContext';
 import useFormFilterData from '../useFormFilterData';
-import { accordionStates } from '../utils';
+import { accordionStates, hierarchicalDisplayTypes } from '../utils';
 
 const Advanced = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -18,6 +18,13 @@ const Advanced = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
+		type,
+		taxHierarchical,
+		display_type,
+		number_display_type,
+		date_display_type,
+		hierarchical,
+		value_type,
 		show_title,
 		enable_accordion,
 		accordion_default_state,
@@ -122,38 +129,111 @@ const Advanced = ({ index }) => {
 		);
 	};
 
+	const reduceHeightPossible = () => {
+		const hierarchicalDisplayTypes = [
+			'checkbox',
+			'radio',
+			'select',
+			'multi-select',
+		];
+
+		if (
+			'taxonomy' === type &&
+			taxHierarchical &&
+			hierarchicalDisplayTypes.includes(display_type) &&
+			'1' === hierarchical
+		) {
+			return false;
+		}
+
+		if (
+			'taxonomy' === type &&
+			taxHierarchical &&
+			'hierarchy-select' === display_type
+		) {
+			return false;
+		}
+
+		let show;
+		let _display_type;
+
+		if ('taxonomy' === type) {
+			_display_type = display_type;
+		} else if ('price' === type) {
+			_display_type = number_display_type;
+		} else if ('post-author' === type) {
+			_display_type = display_type;
+		} else if ('post-meta' === type) {
+			if ('text' === value_type) {
+				_display_type = display_type;
+			} else if ('number' === value_type) {
+				_display_type = number_display_type;
+			} else if ('date' === value_type) {
+				_display_type = date_display_type;
+			}
+		} else {
+			_display_type = display_type;
+		}
+
+		const notAllowedDisplayTypes = [
+			'select',
+			'multi-select',
+			'range_slider',
+			'range_number',
+			'range_select',
+			'range_multiselect',
+			'input_date',
+			'input_date_range',
+			'time_period_select',
+			'time_period_multiselect',
+		];
+
+		if (notAllowedDisplayTypes.includes(_display_type)) {
+			show = false;
+		} else {
+			show = true;
+		}
+
+		return show;
+	};
+
 	const reduceHeightField = () => {
-		return (
-			<Radio
-				id={'enable_reduce_height'}
-				index={index}
-				label={__('Reduce height', 'wc-ajax-product-filter')}
-				description={__(
-					'Enable this if you want to reduce the filter height.',
-					'wc-ajax-product-filter'
-				)}
-				options={[
-					{
-						label: __('No', 'wc-ajax-product-filter'),
-						value: 'no',
-					},
-					{
-						label: __('Set max height', 'wc-ajax-product-filter'),
-						value: 'max_height',
-					},
-					{
-						label: __('Soft Limit', 'wc-ajax-product-filter'),
-						value: 'soft_limit',
-					},
-				]}
-				onChange={handleRadioChange}
-				value={enable_reduce_height}
-			/>
-		);
+		if (reduceHeightPossible()) {
+			return (
+				<Radio
+					id={'enable_reduce_height'}
+					index={index}
+					label={__('Reduce height', 'wc-ajax-product-filter')}
+					description={__(
+						'Enable this if you want to reduce the filter height.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('No', 'wc-ajax-product-filter'),
+							value: 'no',
+						},
+						{
+							label: __(
+								'Set max height',
+								'wc-ajax-product-filter'
+							),
+							value: 'max_height',
+						},
+						{
+							label: __('Soft Limit', 'wc-ajax-product-filter'),
+							value: 'soft_limit',
+						},
+					]}
+					onChange={handleRadioChange}
+					value={enable_reduce_height}
+				/>
+			);
+		}
 	};
 
 	const filterMaxHeightField = () => {
-		if ('max_height' === enable_reduce_height) {
+		if ('max_height' === enable_reduce_height && reduceHeightPossible()) {
 			return (
 				<Number
 					id={max_height}
@@ -172,7 +252,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const visibleOptionsField = () => {
-		if ('soft_limit' === enable_reduce_height) {
+		if ('soft_limit' === enable_reduce_height && reduceHeightPossible()) {
 			return (
 				<Number
 					id={soft_limit}
@@ -248,7 +328,7 @@ const Advanced = ({ index }) => {
 
 			{showInActiveFiltersField()}
 
-			{prependTitleInActiveFiltersField()}
+			{/* {prependTitleInActiveFiltersField()} */}
 		</>
 	);
 };

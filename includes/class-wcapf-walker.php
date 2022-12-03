@@ -212,24 +212,21 @@ class WCAPF_Walker {
 	 * @return array
 	 */
 	private function active_filters() {
-		$filter_key  = $this->filter_key;
-		$filter_type = $this->filter_type;
-		$field_type  = $this->type;
+		$filter_key = $this->filter_key;
+		$field_type = $this->type;
 
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
-		if ( 'attribute' === $field_type ) {
-			$filter_type = 'attribute';
-		} elseif ( 'price' === $field_type ) {
-			$filter_type = 'price';
+		if ( 'rating' === $field_type ) {
+			$field_type = 'taxonomy';
 		}
 
 		// We have grouped the filters based on filter types.
-		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
+		$filters = isset( $chosen_filters[ $field_type ] ) ? $chosen_filters[ $field_type ] : array();
 
 		$filter_data = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 
-		return apply_filters( 'wcapf_walker_filter_data', $filter_data, $filter_type );
+		return apply_filters( 'wcapf_walker_filter_data', $filter_data, $field_type );
 	}
 
 	/**
@@ -270,7 +267,7 @@ class WCAPF_Walker {
 					'name'  => $this->all_items_label,
 					'count' => '-1',
 					'depth' => 1,
-				)
+				),
 			);
 
 			$items = array_merge( $all_items, $items );

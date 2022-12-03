@@ -81,12 +81,12 @@ const General = () => {
 			<Checkbox
 				id={'remove_empty_filters'}
 				label={__('Remove empty filters', 'wc-ajax-product-filter')}
-				isChecked={remove_empty_filters}
-				onChange={handleCheckboxChange}
 				description={__(
 					"Whether to remove the filters that don't have any options.",
 					'wc-ajax-product-filter'
 				)}
+				isChecked={remove_empty_filters}
+				onChange={handleCheckboxChange}
 				isPro
 			/>
 
@@ -101,7 +101,7 @@ const General = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			<ColorInput
+			{/* <ColorInput
 				label={__('Primary Color', 'wc-ajax-product-filter')}
 				description={__(
 					'Set a primary color according to your theme.',
@@ -110,7 +110,7 @@ const General = () => {
 				value={primary_color}
 				onChange={handlePrimaryColorChange}
 				renderAsFormField
-			/>
+			/> */}
 		</>
 	);
 };

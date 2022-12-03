@@ -279,7 +279,6 @@ class WCAPF_Admin {
 		$helper = new WCAPF_Helper();
 		$utils  = new WCAPF_API_Utils();
 
-		$params['found_pro']           = $helper::found_pro_version();
 		$params['forms_page_link']     = $helper::forms_page_url();
 		$params['seo_rules_page_link'] = $helper::seo_rules_page_url();
 		$params['settings_page_link']  = $helper::settings_page_url();
@@ -295,7 +294,7 @@ class WCAPF_Admin {
 				$settings = $helper::get_settings();
 
 				$params['filter_types']   = $utils::get_filter_types();
-				$params['meta_keys']      = $utils::get_available_meta_keys();
+				$params['meta_keys']      = $helper::get_available_meta_keys();
 				$params['date_formats']   = $utils::display_date_formats();
 				$params['status_options'] = $utils::product_status_options();
 				$params['time_periods']   = $utils::time_period_options();

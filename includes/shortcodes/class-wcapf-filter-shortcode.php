@@ -35,40 +35,9 @@ class WCAPF_Filter_Shortcode {
 		return $instance;
 	}
 
-	public function register_shortcode( $attrs ) {
-		$attrs = shortcode_atts( array(
-			'id' => '',
-		), $attrs );
-
-		$id   = $attrs['id'];
-		$post = get_post( $id );
-
-		return '';
-
-		if ( 'wcapf-filter' !== $post->post_type ) {
-			return '';
-		}
-
-		if ( 'publish' !== $post->post_status ) {
-			return '';
-		}
-
-		$field_data = get_post_meta( $id, '_field_data', true );
-
-		$field_type  = isset( $field_data['type'] ) ? $field_data['type'] : '';
-		$field_class = WCAPF_Helper::get_field_class_name_by_type( $field_type );
-
-		if ( ! $field_class ) {
-			return '';
-		}
-
-		$field = WCAPF_Helper::get_field_instance( $field_type, $field_data );
-
-		ob_start();
-
-		$field->filter_form();
-
-		return ob_get_clean();
+	public function register_shortcode() {
+		// No more wcapf_filter shortcode, renders the wcapf_form shortcode instead.
+		return do_shortcode('[wcapf_form]');
 	}
 
 }

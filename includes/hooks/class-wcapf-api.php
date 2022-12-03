@@ -307,6 +307,13 @@ class WCAPF_API {
 				$filter['title']     = $filter_title;
 				$filter['field_key'] = $post_name;
 
+				/**
+				 * The hooks for altering/sanitizing the filter data.
+				 *
+				 * TODO: Parse the manual options.
+				 */
+				$filter = apply_filters( 'wcapf_filter_data', $filter );
+
 				$post_arr = array(
 					'ID'           => $new_filter_id,
 					'post_content' => wp_json_encode( $filter ),
@@ -479,8 +486,6 @@ class WCAPF_API {
 
 	/**
 	 * Gets the meta values via ajax.
-	 *
-	 * TODO: Move the helper method from pro to free.
 	 *
 	 * @return void
 	 */
