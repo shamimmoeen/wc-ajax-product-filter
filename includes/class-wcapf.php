@@ -135,6 +135,7 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-frontend-scripts.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-url-builder.php';
 
 		// Loads the filter types.
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';

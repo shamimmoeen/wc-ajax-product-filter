@@ -51,7 +51,21 @@ class WCAPF_Hooks {
 	}
 
 	public function content_top() {
-		global $wp_query;
+		global $wp_query, $wcapf_filter_keys, $wp;
+
+		// echo '<pre>';
+		// print_r( $wp_query );
+		// echo '</pre>';
+
+		// echo '<pre>';
+		// print_r( $wcapf_filter_keys );
+		// echo '</pre>';
+
+		// $url_builder = new WCAPF_URL_Builder( 'product-cat', true );
+
+		// echo $url_builder->get_filter_url( '16', true );
+		// echo '<br/>';
+		// echo '<br/>';
 
 		echo '<input type="checkbox" id="show_query" /><label for="show_query">Show Query</label>';
 

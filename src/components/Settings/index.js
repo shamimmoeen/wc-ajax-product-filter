@@ -15,8 +15,8 @@ import {
 import General from './Tabs/General';
 import FilterKeys from './Tabs/FilterKeys';
 import Miscellaneous from './Tabs/Miscellaneous';
-import LoaderOverlay from './Tabs/LoaderOverlay';
-import Others from './Tabs/Others';
+import CSSJavaScript from './Tabs/CSSJavaScript';
+import Integration from './Tabs/Integration';
 import SEO from './Tabs/SEO';
 import CustomTabPanel from '../CustomTabPanel';
 
@@ -94,7 +94,6 @@ const Settings = () => {
 							<CustomTabPanel
 								state={state}
 								dispatch={dispatch}
-								scrollable
 								className='__tab_panel __settings_tab'
 								activeClass='active-tab'
 								tabs={[
@@ -106,9 +105,9 @@ const Settings = () => {
 										),
 									},
 									{
-										name: 'others',
+										name: 'integration',
 										title: __(
-											'Others',
+											'Integration',
 											'wc-ajax-product-filter'
 										),
 									},
@@ -119,13 +118,6 @@ const Settings = () => {
 											'wc-ajax-product-filter'
 										),
 									},
-									// {
-									// 	name: 'loader-scroll-to',
-									// 	title: __(
-									// 		'Loader & Scroll To',
-									// 		'wc-ajax-product-filter'
-									// 	),
-									// },
 									{
 										name: 'filter-keys',
 										title: __(
@@ -152,12 +144,10 @@ const Settings = () => {
 								{({ name }) => {
 									if ('general' === name) {
 										return <General />;
-									} else if ('others' === name) {
-										return <Others />;
+									} else if ('integration' === name) {
+										return <Integration />;
 									} else if ('css-javascript' === name) {
-										return <LoaderOverlay />;
-									} else if ('loader-scroll-to' === name) {
-										return <LoaderOverlay />;
+										return <CSSJavaScript />;
 									} else if ('filter-keys' === name) {
 										return <FilterKeys />;
 									} else if ('seo' === name) {

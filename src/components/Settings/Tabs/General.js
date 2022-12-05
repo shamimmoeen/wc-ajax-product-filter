@@ -3,7 +3,7 @@ import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
 import useSettingsData from '../useSettingsData';
 import Select from '../../Field/Select';
-import ColorInput from '../../Field/ColorInput';
+import Radio from '../../Field/Radio';
 
 const filterRelationshipOptions = [
 	{
@@ -16,29 +16,40 @@ const filterRelationshipOptions = [
 	},
 ];
 
+const removeEmptyOptions = [
+	{
+		label: __('Never show', 'wc-ajax-product-filter'),
+		value: 'show',
+	},
+	{
+		label: __('Always show', 'wc-ajax-product-filter'),
+		value: 'remove',
+	},
+	{
+		label: __('Show as disabled', 'wc-ajax-product-filter'),
+		value: 'disable',
+		isPro: true,
+	},
+];
+
 const General = () => {
 	const { state, dispatch } = useSettings();
-	const { handleCheckboxChange, handleTextFieldChange, handleSelectChange } =
+	const { handleCheckboxChange, handleRadioChange, handleSelectChange } =
 		useSettingsData(state, dispatch);
 
 	const {
 		settings: {
 			filter_relationships,
 			update_count,
-			disable_empty_options,
+			remove_empty,
 			remove_empty_filters,
 			disable_ajax,
-			primary_color,
 		},
 	} = state;
 
 	const filterRelationship = filterRelationshipOptions.find(
 		(option) => option.value === filter_relationships
 	);
-
-	const handlePrimaryColorChange = (value) => {
-		handleTextFieldChange(value, 'primary_color');
-	};
 
 	return (
 		<>
@@ -66,16 +77,19 @@ const General = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			<Checkbox
-				id={'disable_empty_options'}
-				label={__('Disable empty options', 'wc-ajax-product-filter')}
-				description={__(
-					'By default we remove the options that will return zero results. Enable this if you want to show them as disabled.',
+			<Radio
+				id={'remove_empty'}
+				label={__(
+					'Options with zero products',
 					'wc-ajax-product-filter'
 				)}
-				isChecked={disable_empty_options}
-				onChange={handleCheckboxChange}
-				isPro
+				description={__(
+					'Determines what do we do with the options with zero products.',
+					'wc-ajax-product-filter'
+				)}
+				options={removeEmptyOptions}
+				value={remove_empty}
+				onChange={handleRadioChange}
 			/>
 
 			<Checkbox
@@ -100,17 +114,6 @@ const General = () => {
 				isChecked={disable_ajax}
 				onChange={handleCheckboxChange}
 			/>
-
-			{/* <ColorInput
-				label={__('Primary Color', 'wc-ajax-product-filter')}
-				description={__(
-					'Set a primary color according to your theme.',
-					'wc-ajax-product-filter'
-				)}
-				value={primary_color}
-				onChange={handlePrimaryColorChange}
-				renderAsFormField
-			/> */}
 		</>
 	);
 };

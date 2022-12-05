@@ -247,22 +247,20 @@ jQuery( document ).ready( function( $ ) {
 					return;
 				}
 
-				$body.trigger( 'wcapf-nouislider-before-filter-products', [ $item, values ] );
-
 				const minValue = parseFloat( values[ 0 ] );
 				const maxValue = parseFloat( values[ 1 ] );
 
+				console.log( 'minValue', minValue, $item );
+				console.log( 'maxValue', maxValue, $item );
+
 				if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
-					const query = removeQueryStringParameter( filterKey );
-					history.pushState( {}, '', query );
+					// Remove range filter.
+					requestFilter( $item.data( 'clear-filter-url' ) );
 				} else {
-					const filterValString = minValue + rangeValuesSeparator + maxValue;
-					updateQueryStringParameter( filterKey, filterValString );
+					// Add range filter.
+					const url = $item.data( 'url' ).replace( '%1s', minValue ).replace( '%2s', maxValue );
+					requestFilter( url );
 				}
-
-				filterProducts();
-
-				$body.trigger( 'wcapf-nouislider-after-filter-products', [ $item, values ] );
 			}
 
 			slider.noUiSlider.on( 'change', function( values ) {
@@ -439,6 +437,7 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
+		// todo: check if ajax disabled.
 		$body.find( '.woocommerce-ordering' ).each( function() {
 			const $orderingForm = $( this );
 
@@ -904,6 +903,7 @@ jQuery( document ).ready( function( $ ) {
 		const $container = $( wcapf_params.shop_loop_container );
 		const selector   = wcapf_params.pagination_container + ' a';
 
+		// todo: check if ajax disabled.
 		if ( $container.length ) {
 			$container.on( 'click', selector, function( e ) {
 				e.preventDefault();
@@ -945,6 +945,17 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 
+	function requestFilter( url ) {
+		if ( ! url ) {
+			return;
+		}
+
+		window.location.href = url;
+
+		// TODO: Filter the products conditionally.
+		// filterProducts();
+	}
+
 	// Handle the filter request for list field.
 	$wcapfNavFilters.on(
 		'change',
@@ -952,10 +963,9 @@ jQuery( document ).ready( function( $ ) {
 		function( event ) {
 			event.preventDefault();
 
-			const $item       = $( this );
-			const filterValue = $item.val();
+			const $item = $( this );
 
-			handleFilterRequest( $item, filterValue );
+			requestFilter( $item.data( 'url' ) );
 		}
 	);
 
@@ -963,33 +973,28 @@ jQuery( document ).ready( function( $ ) {
 	$wcapfNavFilters.on( 'click', '.wcapf-labeled-nav .item:not(.disabled)', function( event ) {
 		event.preventDefault();
 
-		const $item       = $( this );
-		const filterValue = $item.attr( 'data-value' );
+		const $item = $( this );
 
-		handleFilterRequest( $item, filterValue );
+		requestFilter( $item.data( 'url' ) );
 	} );
 
 	// Handle the filter request for display type select fields.
 	$wcapfNavFilters.on( 'change', 'select', function( event ) {
 		event.preventDefault();
 
-		const $item       = $( this );
-		const filterValue = $item.val();
+		const $select        = $( this );
+		const values         = $select.val();
+		const filterURL      = $select.data( 'url' );
+		const clearFilterURL = $select.data( 'clear-filter-url' );
+		let url;
 
-		const $field    = $item.closest( '.wcapf-single-filter' );
-		const fieldID   = $field.attr( 'data-id' );
-		const fieldData = fields[ fieldID ];
-		const filterKey = fieldData.filterKey;
-
-		if ( ! filterValue.length ) {
-			const query = removeQueryStringParameter( filterKey );
-			history.pushState( {}, '', query );
+		if ( values.length ) {
+			url = filterURL.replace( '%s', values.toString() );
 		} else {
-			const filterValString = filterValue.toString();
-			updateQueryStringParameter( filterKey, filterValString );
+			url = clearFilterURL;
 		}
 
-		filterProducts();
+		requestFilter( url );
 	} );
 
 	/**

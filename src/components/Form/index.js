@@ -46,7 +46,11 @@ const Form = () => {
 				const accordionStates = [];
 
 				for (let index = 0; index < formFilters.length; index++) {
-					accordionStates[index] = false;
+					if (index === 0) {
+						accordionStates[index] = true;
+					} else {
+						accordionStates[index] = false;
+					}
 				}
 
 				dispatch({

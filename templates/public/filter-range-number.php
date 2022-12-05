@@ -18,6 +18,8 @@
  * @var string $value_prefix
  * @var string $value_postfix
  * @var string $values_separator
+ * @var string $filter_url
+ * @var string $clear_filter_url
  */
 
 $input_name = $filter_key . '[]';
@@ -27,6 +29,8 @@ $_attrs = array();
 $_attrs[] = 'data-range-min-value="' . $range_min_value . '"';
 $_attrs[] = 'data-range-max-value="' . $range_max_value . '"';
 $_attrs[] = 'data-filter-key="' . $filter_key . '"';
+$_attrs[] = 'data-url="' . esc_url( $filter_url ) . '"';
+$_attrs[] = 'data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
 $attrs = implode( ' ', $_attrs );
 ?>

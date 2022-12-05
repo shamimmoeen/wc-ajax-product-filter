@@ -97,6 +97,7 @@
 		user-select: none;
 		border: 1px solid $separatorBorderColor;
 		border-radius: $blockBorderRadius;
+		position: relative;
 
 		&.open {
 			background-color: #f0f6fc;
@@ -140,6 +141,19 @@
 		.__accordion_toggle_button {
 			display: inline-flex;
 		}
+
+		.__pro_tag {
+			position: absolute;
+			top: -8px;
+
+			@include ltr {
+				right: -10px;
+			}
+
+			@include rtl {
+				left: -10px;
+			}
+		}
 	}
 
 	.__accordion_body {
@@ -163,18 +177,6 @@
 		.__remove_popover {
 			.components-popover__content {
 				width: auto;
-			}
-		}
-
-		@media (max-width: 599px) {
-			.enable_reduce_height .__input_wrapper {
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-
-				.components-radio-control__option {
-					margin: 0;
-				}
 			}
 		}
 	}

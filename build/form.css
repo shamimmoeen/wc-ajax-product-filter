@@ -386,6 +386,18 @@ body.rtl .__title_wrapper .__save_button .__icon {
 .__form_control .radio-group.radio-group-vertical .components-radio-control__option:not(:last-child) {
   margin-bottom: 8px;
 }
+@media (max-width: 599px) {
+  .__form_control .remove_empty .__input_wrapper,
+.__form_control .enable_reduce_height .__input_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .__form_control .remove_empty .__input_wrapper .components-radio-control__option,
+.__form_control .enable_reduce_height .__input_wrapper .components-radio-control__option {
+    margin: 0;
+  }
+}
 .__form_control.__checkbox_toggle .components-base-control__field {
   margin: 0;
 }
@@ -412,27 +424,6 @@ body.rtl .__title_wrapper .__save_button .__icon {
 }
 .__form_control .components-radio-control__option.disabled label {
   color: #777;
-}
-.__form_control .__form_input_listbox {
-  max-width: 200px;
-  width: 100%;
-  border: 1px solid #ddd;
-  border-radius: 2px;
-  padding: 2px;
-}
-.__form_control .__form_input_listbox .__item {
-  padding: 2px 8px;
-  cursor: pointer;
-}
-.__form_control .__form_input_listbox .__item:not(:last-child) {
-  border-bottom: 1px solid #fff;
-}
-.__form_control .__form_input_listbox .__item:focus, .__form_control .__form_input_listbox .__item:hover {
-  background: rgba(0, 116, 217, 0.1);
-}
-.__form_control .__form_input_listbox .__item.active {
-  background: var(--wp-admin-theme-color);
-  color: #fff;
 }
 .__form_control.number .components-text-control__input {
   max-width: 100px;
@@ -530,18 +521,6 @@ body.rtl .__title_wrapper .__save_button .__icon {
 .__form_fields_separator {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   margin: 2em 0;
-}
-
-.__form_control.with-checkbox .__input_wrapper {
-  display: flex;
-  gap: 12px;
-}
-.__form_control.with-checkbox .__input_wrapper .checkbox-wrapper {
-  display: flex;
-  align-items: center;
-}
-.__form_control.with-checkbox .__input_wrapper .checkbox-wrapper .components-checkbox-control .components-base-control__field {
-  margin: 0;
 }
 
 .filter_on {
@@ -1226,6 +1205,7 @@ body.rtl .__filters_drop_zone .__add_filter_btn {
           user-select: none;
   border: 1px solid #ededed;
   border-radius: 2px;
+  position: relative;
 }
 .__form_filters .__top.open {
   background-color: #f0f6fc;
@@ -1289,6 +1269,18 @@ body.rtl .__form_filters .__top ._filter_header .__filter_type {
 .__form_filters .__top .__accordion_toggle_button {
   display: inline-flex;
 }
+.__form_filters .__top .__pro_tag {
+  position: absolute;
+  top: -8px;
+}
+body:not(.rtl) .__form_filters .__top .__pro_tag {
+  right: -10px;
+}
+
+body.rtl .__form_filters .__top .__pro_tag {
+  left: -10px;
+}
+
 .__form_filters .__accordion_body {
   border-style: solid;
   border-color: #ededed;
@@ -1328,16 +1320,6 @@ body.rtl .__form_filters .__top ._filter_header .__filter_type {
 }
 .__form_filters .__accordion_body .__remove_popover .components-popover__content {
   width: auto;
-}
-@media (max-width: 599px) {
-  .__form_filters .__accordion_body .enable_reduce_height .__input_wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .__form_filters .__accordion_body .enable_reduce_height .__input_wrapper .components-radio-control__option {
-    margin: 0;
-  }
 }
 
 .__form_settings {

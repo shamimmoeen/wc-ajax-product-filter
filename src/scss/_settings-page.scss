@@ -12,11 +12,15 @@
 .__settings_tab {
     @include inner-tab;
 
-    .__scrollable-y {
-        overflow-y: auto;
+    .components-tab-panel__tabs {
+        overflow-x: auto;
 
-        .components-tab-panel__tabs {
-            min-width: 470px;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .components-tab-panel__tabs-item {
+            flex-shrink: 0;
         }
     }
 

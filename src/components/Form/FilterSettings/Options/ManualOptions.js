@@ -642,6 +642,14 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 				'wc-ajax-product-filter'
 			)
 		);
+	} else if ('taxonomy' === filterType || 'post-meta' === filterType) {
+		// TODO: Integrate column settings.
+		description = sprintf(
+			__(
+				'Add the options that will be available to the filter. <b>Note:</b> Uncheck the label column if you do not want to modify from the column settings.',
+				'wc-ajax-product-filter'
+			)
+		);
 	}
 
 	return (
