@@ -740,6 +740,9 @@ body.rtl .__sidebar .components-button {
 .__form_control.number .components-text-control__input {
   max-width: 100px;
 }
+.__form_control .components-text-control__input.input-small {
+  max-width: 100px;
+}
 .__form_control.react_select_simple .__input_wrapper {
   display: flex;
 }

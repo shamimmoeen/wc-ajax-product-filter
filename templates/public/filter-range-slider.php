@@ -18,6 +18,9 @@
  * @var string $value_prefix
  * @var string $value_postfix
  * @var string $values_separator
+ * @var string $text_before_min_value
+ * @var string $text_before_max_value
+ * @var string $format_numbers
  * @var string $decimal_places
  * @var string $thousand_separator
  * @var string $decimal_separator
@@ -51,13 +54,23 @@ $wrapper_classes = 'range-wrapper';
 
 $wrapper_classes .= ' display-values-as-' . $display_values_as;
 $wrapper_classes .= $align_at_the_end ? ' align-values-end-without-separator' : '';
+
+// Do the formatting.
+if ( $format_numbers ) {
+	$min_value = number_format( $min_value, $decimal_places, $decimal_separator, $thousand_separator );
+	$max_value = number_format( $max_value, $decimal_places, $decimal_separator, $thousand_separator );
+}
 ?>
 
-<div class="wcapf-range-slider" <?php echo $attrs; ?>>
+<div class="wcapf-range-slider preset-2" <?php echo $attrs; ?>>
 	<div class="<?php echo esc_attr( $wrapper_classes ); ?>">
 		<span class="wcapf-range-start">
+			<?php if ( $text_before_min_value ) : ?>
+				<span class="wcapf-min-value-prefix"><?php echo wp_kses_post( $text_before_min_value ); ?></span>
+			<?php endif; ?>
+
 			<?php if ( $value_prefix ) : ?>
-				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
+				<span class="wcapf-range-prefix"><?php echo wp_kses_post( $value_prefix ); ?></span>
 			<?php endif; ?>
 
 			<?php if ( 'plain_text' === $display_values_as ) : ?>
@@ -75,17 +88,21 @@ $wrapper_classes .= $align_at_the_end ? ' align-values-end-without-separator' : 
 			<?php endif; ?>
 
 			<?php if ( $value_postfix ) : ?>
-				<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
+				<span class="wcapf-range-postfix"><?php echo wp_kses_post( $value_postfix ); ?></span>
 			<?php endif; ?>
 		</span>
 
 		<?php if ( $values_separator ) : ?>
-			<span class="wcapf-range-separator"><?php echo esc_html( $values_separator ); ?></span>
+			<span class="wcapf-range-separator"><?php echo wp_kses_post( $values_separator ); ?></span>
 		<?php endif; ?>
 
 		<span class="wcapf-range-end">
+			<?php if ( $text_before_max_value ) : ?>
+				<span class="wcapf-max-value-prefix"><?php echo wp_kses_post( $text_before_max_value ); ?></span>
+			<?php endif; ?>
+
 			<?php if ( $value_prefix ) : ?>
-				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
+				<span class="wcapf-range-prefix"><?php echo wp_kses_post( $value_prefix ); ?></span>
 			<?php endif; ?>
 
 			<?php if ( 'plain_text' === $display_values_as ) : ?>
@@ -103,10 +120,10 @@ $wrapper_classes .= $align_at_the_end ? ' align-values-end-without-separator' : 
 			<?php endif; ?>
 
 			<?php if ( $value_postfix ) : ?>
-				<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
+				<span class="wcapf-range-postfix"><?php echo wp_kses_post( $value_postfix ); ?></span>
 			<?php endif; ?>
 		</span>
 	</div>
 
-	<div id="<?php echo esc_attr( $slider_id ); ?>" class="wcapf-noui-slider"></div>
+	<div id="<?php echo esc_attr( $slider_id ); ?>" class="wcapf-ui-slider"></div>
 </div>

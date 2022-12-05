@@ -39,7 +39,7 @@ $attrs = implode( ' ', $_attrs );
 	<div class="range-wrapper">
 		<span class="wcapf-range-start">
 			<?php if ( $value_prefix ) : ?>
-				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
+				<span class="wcapf-range-prefix"><?php echo wp_kses_post( $value_prefix ); ?></span>
 			<?php endif; ?>
 
 			<label>
@@ -56,17 +56,17 @@ $attrs = implode( ' ', $_attrs );
 			</label>
 
 			<?php if ( $value_postfix ) : ?>
-				<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
+				<span class="wcapf-range-postfix"><?php echo wp_kses_post( $value_postfix ); ?></span>
 			<?php endif; ?>
 		</span>
 
 		<?php if ( $values_separator ) : ?>
-			<span class="wcapf-range-separator"><?php echo esc_html( $values_separator ); ?></span>
+			<span class="wcapf-range-separator"><?php echo wp_kses_post( $values_separator ); ?></span>
 		<?php endif; ?>
 
 		<span class="wcapf-range-end">
 			<?php if ( $value_prefix ) : ?>
-				<span class="wcapf-range-prefix"><?php echo esc_html( $value_prefix ); ?></span>
+				<span class="wcapf-range-prefix"><?php echo wp_kses_post( $value_prefix ); ?></span>
 			<?php endif; ?>
 
 			<label>
@@ -83,7 +83,7 @@ $attrs = implode( ' ', $_attrs );
 			</label>
 
 			<?php if ( $value_postfix ) : ?>
-				<span class="wcapf-range-postfix"><?php echo esc_html( $value_postfix ); ?></span>
+				<span class="wcapf-range-postfix"><?php echo wp_kses_post( $value_postfix ); ?></span>
 			<?php endif; ?>
 		</span>
 	</div>

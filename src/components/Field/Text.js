@@ -10,6 +10,7 @@ const InputField = ({
 	onChange,
 	type = 'text',
 	isDisabled,
+	customClass,
 	...rest
 }) => {
 	const [value, setValue] = useState(initialValue);
@@ -22,11 +23,17 @@ const InputField = ({
 		setValue(e.target.value);
 	};
 
+	let classes = 'components-text-control__input';
+
+	if (customClass) {
+		classes += ` ${customClass}`;
+	}
+
 	return (
 		<input
 			type={type}
 			id={inputId}
-			className='components-text-control__input'
+			className={classes}
 			disabled={isDisabled}
 			value={value}
 			onChange={handleInputChange}
@@ -48,6 +55,7 @@ const Text = ({
 	isFilterKey = false,
 	isDisabled = false,
 	tooltip,
+	customClass,
 	...rest
 }) => {
 	const inputId = getInputId(id, index);
@@ -90,6 +98,7 @@ const Text = ({
 								onChange={onChange}
 								type={type}
 								isDisabled={isDisabled}
+								customClass={customClass}
 								{...rest}
 							/>
 
@@ -115,6 +124,7 @@ const Text = ({
 				onChange={onChange}
 				type={type}
 				isDisabled={isDisabled}
+				customClass={customClass}
 				{...rest}
 			/>
 		);
