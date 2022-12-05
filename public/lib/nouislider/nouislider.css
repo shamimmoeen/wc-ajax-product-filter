@@ -140,12 +140,11 @@
 .wcapf-noui-handle {
   border-radius: var(--wcapf-nouislider-handle-border-radius);
   background: var(--wcapf-nouislider-handle-bg-color);
-  cursor: default;
+  cursor: pointer;
 }
 /* Disabled state;
  */
-[disabled] .wcapf-noui-handle,
-[disabled] .wcapf-noui-connect {
+[disabled] {
   opacity: var(--wcapf-nouislider-disabled-opacity);
 }
 [disabled].wcapf-noui-target,

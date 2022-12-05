@@ -155,7 +155,8 @@
 .wcapf-range-slider {
 	padding-bottom: var(--wcapf-range-slider-bottom-padding);
 
-	input[type="text"] {
+	input[type="text"],
+	input[type="number"] {
 		max-width: var(--wcapf-range-filter-input-max-width);
 	}
 

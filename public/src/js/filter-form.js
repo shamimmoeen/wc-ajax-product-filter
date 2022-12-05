@@ -178,7 +178,7 @@ jQuery( document ).ready( function( $ ) {
 
 	// Initialize noUISlider.
 	function initNoUISlider() {
-		if ( ! jQuery().slider ) {
+		if ( 'undefined' === typeof noUiSlider ) {
 			return;
 		}
 
@@ -194,15 +194,16 @@ jQuery( document ).ready( function( $ ) {
 			const $item = $( this );
 
 			const filterKey = $item.attr( 'data-filter-key' );
-			const $slider   = $item.find( '.wcapf-ui-slider' );
+			const $slider   = $item.find( '.wcapf-noui-slider' );
 
 			// If slider is already initialized then don't reinitialize again.
-			if ( $slider.hasClass( 'ui-slider' ) ) {
+			if ( $slider.hasClass( 'wcapf-noui-target' ) ) {
 				return;
 			}
 
 			const sliderId          = $slider.attr( 'id' );
 			const displayValuesAs   = $item.attr( 'data-display-values-as' );
+			const formatNumbers     = $item.attr( 'data-format-numbers' );
 			const rangeMinValue     = parseFloat( $item.attr( 'data-range-min-value' ) );
 			const rangeMaxValue     = parseFloat( $item.attr( 'data-range-max-value' ) );
 			const step              = parseFloat( $item.attr( 'data-step' ) );
@@ -214,22 +215,30 @@ jQuery( document ).ready( function( $ ) {
 			const $minValue         = $item.find( '.min-value' );
 			const $maxValue         = $item.find( '.max-value' );
 
-			const sliderElm = $( '#' + sliderId );
+			const slider = document.getElementById( sliderId );
 
-			sliderElm.slider( {
-				range: true,
-				min: rangeMinValue,
-				max: rangeMaxValue,
+			noUiSlider.create( slider, {
+				start: [ minValue, maxValue ],
 				step,
-				values: [ minValue, maxValue ],
-				slide: function( event, ui ) {
-					$( '#amount' ).val( '$' + ui.values[ 0 ] + ' - $' + ui.values[ 1 ] );
+				connect: true,
+				cssPrefix: 'wcapf-noui-',
+				range: {
+					'min': rangeMinValue,
+					'max': rangeMaxValue,
 				}
 			} );
 
-			sliderElm.on( 'slide', function( e, { values } ) {
-				const minValue = number_format( values[ 0 ], decimalPlaces, decimalSeparator, thousandSeparator );
-				const maxValue = number_format( values[ 1 ], decimalPlaces, decimalSeparator, thousandSeparator );
+			slider.noUiSlider.on( 'update', function( values ) {
+				let minValue;
+				let maxValue;
+
+				if ( formatNumbers ) {
+					minValue = number_format( values[ 0 ], decimalPlaces, decimalSeparator, thousandSeparator );
+					maxValue = number_format( values[ 1 ], decimalPlaces, decimalSeparator, thousandSeparator );
+				} else {
+					minValue = parseFloat( values[ 0 ] );
+					maxValue = parseFloat( values[ 1 ] );
+				}
 
 				if ( 'plain_text' === displayValuesAs ) {
 					$minValue.html( minValue );
@@ -239,7 +248,7 @@ jQuery( document ).ready( function( $ ) {
 					$maxValue.val( maxValue );
 				}
 
-				$body.trigger( 'wcapf-ui-slider-update', [ $item, values ] );
+				$body.trigger( 'wcapf-nouislider-update', [ $item, values ] );
 			} );
 
 			function filterProductsAccordingToSlider( values ) {
@@ -260,14 +269,14 @@ jQuery( document ).ready( function( $ ) {
 				}
 			}
 
-			sliderElm.on( 'slidechange', function( e, { values } ) {
+			slider.noUiSlider.on( 'change', function( values ) {
 				// Clear any previously set timer before setting a fresh one
 				clearTimeout( $item.data( 'timer' ) );
 
 				$item.data( 'timer', setTimeout( function() {
 					$item.removeData( 'timer' );
 
-					// filterProductsAccordingToSlider( values );
+					filterProductsAccordingToSlider( values );
 				}, delay ) );
 			} );
 
@@ -284,9 +293,9 @@ jQuery( document ).ready( function( $ ) {
 
 					const minValue = $input.val();
 
-					sliderElm.set( [ minValue, null ] );
+					slider.noUiSlider.set( [ minValue, null ] );
 
-					filterProductsAccordingToSlider( sliderElm.noUiSlider.get() );
+					filterProductsAccordingToSlider( slider.noUiSlider.get() );
 				}, delay ) );
 			} );
 
@@ -303,9 +312,9 @@ jQuery( document ).ready( function( $ ) {
 
 					const maxValue = $input.val();
 
-					sliderElm.noUiSlider.set( [ null, maxValue ] );
+					slider.noUiSlider.set( [ null, maxValue ] );
 
-					filterProductsAccordingToSlider( sliderElm.noUiSlider.get() );
+					filterProductsAccordingToSlider( slider.noUiSlider.get() );
 				}, delay ) );
 			} );
 		} );
@@ -489,6 +498,7 @@ jQuery( document ).ready( function( $ ) {
 	function disableLabels() {
 		const selectors = '.wcapf-labeled-nav .item, .wcapf-active-filters .item';
 
+		// TODO: Add disabled attribute.
 		$wcapfSingleFilters.find( selectors ).addClass( 'disabled' );
 	}
 
@@ -999,6 +1009,7 @@ jQuery( document ).ready( function( $ ) {
 	 */
 	const rangeNumberSelectors = '.wcapf-range-number .min-value, .wcapf-range-number .max-value';
 
+	// TODO: Maybe use 'change' event.
 	$wcapfNumberRangeFilters.on( 'input', rangeNumberSelectors, function( event ) {
 		event.preventDefault();
 
@@ -1059,12 +1070,15 @@ jQuery( document ).ready( function( $ ) {
 				$rangeNumber.find( '.max-value' ).val( maxValue );
 			}
 
+			const $filter = $item.closest( '.wcapf-range-number' );
+
 			if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
-				const query = removeQueryStringParameter( filterKey );
-				history.pushState( {}, '', query );
+				// Remove range filter.
+				requestFilter( $filter.data( 'clear-filter-url' ) );
 			} else {
-				const filterValString = minValue + rangeValuesSeparator + maxValue;
-				updateQueryStringParameter( filterKey, filterValString );
+				// Add range filter.
+				const url = $filter.data( 'url' ).replace( '%1s', minValue ).replace( '%2s', maxValue );
+				requestFilter( url );
 			}
 
 			filterProducts();
