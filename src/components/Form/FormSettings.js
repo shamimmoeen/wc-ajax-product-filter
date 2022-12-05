@@ -72,7 +72,7 @@ const FormSettings = () => {
 				isDisabled={!WCAPF_PRO}
 			/>
 
-			<div className='__form_fields_separator' />
+			{/* <div className='__form_fields_separator' /> */}
 
 			<Radio
 				id={'filter_mode'}
@@ -86,10 +86,10 @@ const FormSettings = () => {
 						label: __('Immediate', 'wc-ajax-product-filter'),
 						value: 'immediate',
 					},
-					{
-						label: __('Submit button', 'wc-ajax-product-filter'),
-						value: 'submit',
-					},
+					// {
+					// 	label: __('Submit button', 'wc-ajax-product-filter'),
+					// 	value: 'submit',
+					// },
 					{
 						label: __('Apply button', 'wc-ajax-product-filter'),
 						value: 'apply',
@@ -99,7 +99,7 @@ const FormSettings = () => {
 				value={filter_mode}
 			/>
 
-			{'submit' === filter_mode && (
+			{'apply' === filter_mode && (
 				<>
 					<Text
 						id={'submit_button_label'}
@@ -152,7 +152,7 @@ const FormSettings = () => {
 				</>
 			)}
 
-			<div className='__form_fields_separator' />
+			{/* <div className='__form_fields_separator' /> */}
 
 			<Select
 				id={'form_visibility'}
@@ -180,7 +180,7 @@ const FormSettings = () => {
 				/>
 			)}
 
-			<div className='__form_fields_separator' />
+			{/* <div className='__form_fields_separator' /> */}
 
 			<Checkbox
 				id={'show_form_title'}

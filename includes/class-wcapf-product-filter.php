@@ -148,7 +148,13 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function filters_data( $query ) {
-		global $wcapf_form;
+		global $wcapf_form, $wcapf_filter_keys;
+
+		$filter_keys = WCAPF_API_Utils::get_filter_keys( true );
+		$filter_keys = wp_list_pluck( $filter_keys, 'field_key' );
+
+		$wcapf_filter_keys = $filter_keys;
+
 		$form = $this->get_relevant_form();
 
 		if ( ! $form ) {
@@ -191,8 +197,15 @@ class WCAPF_Product_Filter {
 			return $form_data;
 		}
 
-		$form    = $forms[0];
-		$form_id = $form->ID;
+		$form     = $forms[0];
+		$form_id  = $form->ID;
+		$base_url = '';
+
+		if ( is_shop() ) {
+			$base_url = get_permalink( wc_get_page_id( 'shop' ) );
+		} elseif ( is_product_taxonomy() ) {
+			$base_url = get_term_link( get_queried_object_id() );
+		}
 
 		$filters = get_posts(
 			array(
@@ -205,6 +218,7 @@ class WCAPF_Product_Filter {
 			)
 		);
 
+		$form_data['base_url']   = $base_url;
 		$form_data['form_id']    = $form_id;
 		$form_data['form_title'] = $form->post_title;
 		$form_data['settings']   = json_decode( $form->post_content, true );
@@ -223,6 +237,7 @@ class WCAPF_Product_Filter {
 
 			$settings['hide_empty']   = '1';
 			$settings['update_count'] = $update_count;
+			$settings['form_id']      = $form_id;
 
 			$form_filters[] = array(
 				'id'       => $filter->ID,
@@ -895,3 +910,6 @@ function wcapf_set_product_query( $q ) {
 }
 
 add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
+
+// Prevent redirect to product page while filtering on the search page and getting a single result.
+add_filter( 'woocommerce_redirect_single_search_result', '__return_false' );

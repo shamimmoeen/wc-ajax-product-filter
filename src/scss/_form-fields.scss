@@ -98,6 +98,20 @@
 		}
 	}
 
+	@media (max-width: 599px) {
+
+		.remove_empty .__input_wrapper,
+		.enable_reduce_height .__input_wrapper {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+
+			.components-radio-control__option {
+				margin: 0;
+			}
+		}
+	}
+
 	// Checkbox
 	&.__checkbox_toggle {
 		.components-base-control__field {
@@ -143,34 +157,6 @@
 
 			label {
 				color: $inputDisabledColor;
-			}
-		}
-	}
-
-	// Listbox
-	.__form_input_listbox {
-		max-width: 200px;
-		width: 100%;
-		border: 1px solid $inputBorderColor;
-		border-radius: 2px;
-		padding: 2px;
-
-		.__item {
-			padding: 2px 8px;
-			cursor: pointer;
-
-			&:not(:last-child) {
-				border-bottom: 1px solid #fff;
-			}
-
-			&:focus,
-			&:hover {
-				background: rgba(0, 116, 217, 0.1);
-			}
-
-			&.active {
-				background: var(--wp-admin-theme-color);
-				color: #fff;
 			}
 		}
 	}
@@ -272,27 +258,6 @@
 	margin: 2em 0;
 }
 
-
-// Number min, max fields with auto detect.
-.__form_control {
-	&.with-checkbox {
-		.__input_wrapper {
-			display: flex;
-			gap: 12px;
-
-			.checkbox-wrapper {
-				display: flex;
-				align-items: center;
-
-				.components-checkbox-control {
-					.components-base-control__field {
-						margin: 0;
-					}
-				}
-			}
-		}
-	}
-}
 
 .filter_on {
 	min-width: 220px;

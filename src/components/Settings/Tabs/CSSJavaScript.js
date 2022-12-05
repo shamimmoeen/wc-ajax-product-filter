@@ -6,8 +6,9 @@ import useSettingsData from '../useSettingsData';
 import Number from '../../Field/Number';
 import ImagePicker from '../../Field/ImagePicker';
 import ScrollWindowTo from './ScrollWindowTo';
+import ColorInput from '../../Field/ColorInput';
 
-const LoaderOverlay = () => {
+const CSSJavaScript = () => {
 	const { state, dispatch } = useSettings();
 	const {
 		handleCheckboxChange,
@@ -18,6 +19,8 @@ const LoaderOverlay = () => {
 
 	const {
 		settings: {
+			primary_color,
+			stylish_checkbox_radio,
 			loading_animation,
 			loading_image,
 			loading_image_src,
@@ -26,6 +29,10 @@ const LoaderOverlay = () => {
 			scroll_window_custom_element,
 		},
 	} = state;
+
+	const handlePrimaryColorChange = (value) => {
+		handleTextFieldChange(value, 'primary_color');
+	};
 
 	const handleLoaderImageChange = (media) => {
 		handleImageChange(media, 'loading_image');
@@ -37,6 +44,31 @@ const LoaderOverlay = () => {
 
 	return (
 		<>
+			<ColorInput
+				label={__('Primary Color', 'wc-ajax-product-filter')}
+				description={__(
+					'Set a primary color according to your theme.',
+					'wc-ajax-product-filter'
+				)}
+				value={primary_color}
+				onChange={handlePrimaryColorChange}
+				renderAsFormField
+			/>
+
+			<Checkbox
+				id={'stylish_checkbox_radio'}
+				label={__(
+					'Stylish checkbox & radio buttons',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Enable this if you want stylish checkbox and radio buttons instead of native design.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={stylish_checkbox_radio}
+				onChange={handleCheckboxChange}
+			/>
+
 			<Checkbox
 				id={'loading_animation'}
 				label={__('Loading Animation', 'wc-ajax-product-filter')}
@@ -99,4 +131,4 @@ const LoaderOverlay = () => {
 	);
 };
 
-export default LoaderOverlay;
+export default CSSJavaScript;

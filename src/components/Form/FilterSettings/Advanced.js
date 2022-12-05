@@ -112,35 +112,11 @@ const Advanced = ({ index }) => {
 		}
 	};
 
-	// TODO: Hide it when applicable.
-	const enableSearchField = () => {
-		return (
-			<Checkbox
-				id={'enable_search_field'}
-				index={index}
-				label={__('Search Field', 'wc-ajax-product-filter')}
-				description={__(
-					'Adds a search field to narrow down the filter options.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={enable_search_field}
-				onChange={handleCheckboxChange}
-			/>
-		);
-	};
-
-	const reduceHeightPossible = () => {
-		const hierarchicalDisplayTypes = [
-			'checkbox',
-			'radio',
-			'select',
-			'multi-select',
-		];
-
+	const isApplicable = (field = 'reduce-height') => {
 		if (
 			'taxonomy' === type &&
 			taxHierarchical &&
-			hierarchicalDisplayTypes.includes(display_type) &&
+			hierarchicalDisplayTypes().includes(display_type) &&
 			'1' === hierarchical
 		) {
 			return false;
@@ -175,18 +151,29 @@ const Advanced = ({ index }) => {
 			_display_type = display_type;
 		}
 
-		const notAllowedDisplayTypes = [
-			'select',
-			'multi-select',
-			'range_slider',
-			'range_number',
-			'range_select',
-			'range_multiselect',
-			'input_date',
-			'input_date_range',
-			'time_period_select',
-			'time_period_multiselect',
-		];
+		let notAllowedDisplayTypes;
+
+		if ('reduce-height' === field) {
+			notAllowedDisplayTypes = [
+				'select',
+				'multi-select',
+				'range_slider',
+				'range_number',
+				'range_select',
+				'range_multiselect',
+				'input_date',
+				'input_date_range',
+				'time_period_select',
+				'time_period_multiselect',
+			];
+		} else {
+			notAllowedDisplayTypes = [
+				'range_slider',
+				'range_number',
+				'input_date',
+				'input_date_range',
+			];
+		}
 
 		if (notAllowedDisplayTypes.includes(_display_type)) {
 			show = false;
@@ -197,8 +184,26 @@ const Advanced = ({ index }) => {
 		return show;
 	};
 
+	const enableSearchField = () => {
+		if (isApplicable('search')) {
+			return (
+				<Checkbox
+					id={'enable_search_field'}
+					index={index}
+					label={__('Search Field', 'wc-ajax-product-filter')}
+					description={__(
+						'Adds a search field to narrow down the filter options.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={enable_search_field}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
+	};
+
 	const reduceHeightField = () => {
-		if (reduceHeightPossible()) {
+		if (isApplicable()) {
 			return (
 				<Radio
 					id={'enable_reduce_height'}
@@ -233,7 +238,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const filterMaxHeightField = () => {
-		if ('max_height' === enable_reduce_height && reduceHeightPossible()) {
+		if ('max_height' === enable_reduce_height && isApplicable()) {
 			return (
 				<Number
 					id={max_height}
@@ -252,7 +257,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const visibleOptionsField = () => {
-		if ('soft_limit' === enable_reduce_height && reduceHeightPossible()) {
+		if ('soft_limit' === enable_reduce_height && isApplicable()) {
 			return (
 				<Number
 					id={soft_limit}

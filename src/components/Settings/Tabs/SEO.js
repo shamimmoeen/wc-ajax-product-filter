@@ -34,20 +34,6 @@ const SEO = () => {
 				renderAsFormField
 			/>
 
-			<Checkbox
-				id={'loading_animation'}
-				label={__(
-					'Add "nofollow" to filter anchors',
-					'wc-ajax-product-filter'
-				)}
-				description={__(
-					'Whether to show an animation while the results are fetching.',
-					'wc-ajax-product-filter'
-				)}
-				// isChecked={loading_animation}
-				// onChange={handleCheckboxChange}
-			/>
-
 			{WCAPF_PRO && (
 				<>
 					<h4>{__('Indexing Filters', 'wc-ajax-product-filter')}</h4>

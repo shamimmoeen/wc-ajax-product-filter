@@ -102,18 +102,24 @@
 	}
 }
 
-.wcapf-labeled-nav {
-	> div {
-		cursor: pointer;
-		display: inline-block;
+@mixin label {
+	background: inherit;
+	color: inherit;
+	cursor: pointer;
+	font-weight: inherit;
+	display: inline-block;
+	outline-offset: -1px;
+}
 
-		@include label_disable;
+.wcapf-labeled-nav {
+	> .item {
+		@include label;
 	}
 
 	&.display-type-label {
 		margin-bottom: calc(var(--wcapf-labeled-nav-margin) * -1);
 
-		> div {
+		> .item {
 			border: var(--wcapf-labeled-nav-border-size) solid var(--wcapf-filter-outline-color);
 			border-radius: var(--wcapf-labeled-nav-border-radius);
 			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
@@ -191,11 +197,11 @@ a.wcapf-reset-filters-btn {
 	.active-items {
 		margin: 0 0 calc(var(--wcapf-labeled-nav-margin) * -1);
 
-		> div {
+		> .item {
+			@include label;
+
 			border: var(--wcapf-labeled-nav-border-size) solid var(--wcapf-filter-outline-color);
 			border-radius: var(--wcapf-labeled-nav-border-radius);
-			cursor: pointer;
-			display: inline-block;
 			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
 			padding: var(--wcapf-active-filters-nav-vr-padding) var(--wcapf-active-filters-nav-hr-padding);
 
@@ -203,8 +209,6 @@ a.wcapf-reset-filters-btn {
 				content: '\00D7';
 				margin: 0 0 0 5px;
 			}
-
-			@include label_disable;
 		}
 
 		.empty-filter-message {

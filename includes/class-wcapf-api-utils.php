@@ -52,6 +52,11 @@ class WCAPF_API_Utils {
 		return $filter_key;
 	}
 
+	/**
+	 * @param $global
+	 *
+	 * @return array
+	 */
 	public static function get_filter_keys( $global = false ) {
 		$filters = get_posts(
 			array(

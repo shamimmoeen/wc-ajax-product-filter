@@ -49,6 +49,8 @@ class WCAPF_Frontend_Scripts {
 	/**
 	 * Loads the frontend scripts.
 	 *
+	 * TODO: Conditionally load the scripts.
+	 *
 	 * @param bool $for_preview Determines if the scripts should be loaded for preview purposes.
 	 *
 	 * @return void
@@ -113,6 +115,10 @@ class WCAPF_Frontend_Scripts {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/loadingoverlay/loadingoverlay.min.js' ),
 			true
 		);
+
+		// TODO: Conditionally load the scripts.
+		wp_enqueue_script( 'selectWoo' );
+		wp_enqueue_style( 'select2' );
 
 		$deps = array( 'jquery' );
 

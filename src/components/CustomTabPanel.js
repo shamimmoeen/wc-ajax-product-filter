@@ -38,7 +38,6 @@ export default function CustomTabPanel({
 	onSelect = noop,
 	state,
 	dispatch,
-	scrollable,
 }) {
 	const { currentTab } = state;
 
@@ -68,61 +67,31 @@ export default function CustomTabPanel({
 
 	return (
 		<div className={className}>
-			{scrollable ? (
-				<div className='__scrollable-y'>
-					<NavigableMenu
-						role='tablist'
-						orientation={orientation}
-						onNavigate={onNavigate}
-						className='components-tab-panel__tabs'
+			<NavigableMenu
+				role='tablist'
+				orientation={orientation}
+				onNavigate={onNavigate}
+				className='components-tab-panel__tabs'
+			>
+				{tabs.map((tab) => (
+					<TabButton
+						className={classnames(
+							'components-tab-panel__tabs-item',
+							tab.className,
+							{
+								[activeClass]: tab.name === currentTab,
+							}
+						)}
+						tabId={`${instanceId}-${tab.name}`}
+						aria-controls={`${instanceId}-${tab.name}-view`}
+						selected={tab.name === currentTab}
+						key={tab.name}
+						onClick={partial(handleClick, tab.name)}
 					>
-						{tabs.map((tab) => (
-							<TabButton
-								className={classnames(
-									'components-tab-panel__tabs-item',
-									tab.className,
-									{
-										[activeClass]: tab.name === currentTab,
-									}
-								)}
-								tabId={`${instanceId}-${tab.name}`}
-								aria-controls={`${instanceId}-${tab.name}-view`}
-								selected={tab.name === currentTab}
-								key={tab.name}
-								onClick={partial(handleClick, tab.name)}
-							>
-								{tab.title}
-							</TabButton>
-						))}
-					</NavigableMenu>
-				</div>
-			) : (
-				<NavigableMenu
-					role='tablist'
-					orientation={orientation}
-					onNavigate={onNavigate}
-					className='components-tab-panel__tabs'
-				>
-					{tabs.map((tab) => (
-						<TabButton
-							className={classnames(
-								'components-tab-panel__tabs-item',
-								tab.className,
-								{
-									[activeClass]: tab.name === currentTab,
-								}
-							)}
-							tabId={`${instanceId}-${tab.name}`}
-							aria-controls={`${instanceId}-${tab.name}-view`}
-							selected={tab.name === currentTab}
-							key={tab.name}
-							onClick={partial(handleClick, tab.name)}
-						>
-							{tab.title}
-						</TabButton>
-					))}
-				</NavigableMenu>
-			)}
+						{tab.title}
+					</TabButton>
+				))}
+			</NavigableMenu>
 
 			{selectedTab && (
 				<div

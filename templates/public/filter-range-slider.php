@@ -24,6 +24,8 @@
  * @var string $slider_id
  * @var string $display_values_as
  * @var string $align_at_the_end
+ * @var string $filter_url
+ * @var string $clear_filter_url
  */
 
 $input_name = $filter_key . '[]';
@@ -40,6 +42,8 @@ $_attrs[] = 'data-decimal-places="' . $decimal_places . '"';
 $_attrs[] = 'data-thousand-separator="' . $thousand_separator . '"';
 $_attrs[] = 'data-decimal-separator="' . $decimal_separator . '"';
 $_attrs[] = 'data-display-values-as="' . $display_values_as . '"';
+$_attrs[] = 'data-url="' . esc_url( $filter_url ) . '"';
+$_attrs[] = 'data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
 $attrs = implode( ' ', $_attrs );
 

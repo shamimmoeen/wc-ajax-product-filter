@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
+import Checkbox from '../../../Field/Checkbox';
 import Number from '../../../Field/Number';
 import Text from '../../../Field/Text';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
-import FieldNumber from './FieldNumber';
 import ManualOptions from './ManualOptions';
 import useFields from './useFields';
 
@@ -24,10 +24,9 @@ const ValueTypeNumber = ({ index }) => {
 	const {
 		number_display_type,
 		number_get_options,
+		auto_detect_min_max,
 		min_value,
-		min_value_auto_detect,
 		max_value,
-		max_value_auto_detect,
 		step,
 		value_prefix,
 		value_postfix,
@@ -73,88 +72,101 @@ const ValueTypeNumber = ({ index }) => {
 		if (showField) {
 			return (
 				<div className='number-ui-options'>
-					<div className='cols-wrapper'>
-						<FieldNumber
-							id={'min_value'}
-							index={index}
-							label={__('Min Value', 'wc-ajax-product-filter')}
-							description={__(
-								'The minimum value that a user can select.',
-								'wc-ajax-product-filter'
-							)}
-							disabled={'1' === min_value_auto_detect}
-							value={min_value}
-							onChange={handleTextFieldChange}
-							checkboxId={'min_value_auto_detect'}
-							checkIsChecked={min_value_auto_detect}
-							onCheckChange={handleCheckboxChange}
-						/>
-						<FieldNumber
-							id={'max_value'}
-							index={index}
-							label={__('Max Value', 'wc-ajax-product-filter')}
-							description={__(
-								'The maximum value that a user can select.',
-								'wc-ajax-product-filter'
-							)}
-							disabled={'1' === max_value_auto_detect}
-							value={max_value}
-							onChange={handleTextFieldChange}
-							checkboxId={'max_value_auto_detect'}
-							checkIsChecked={max_value_auto_detect}
-							onCheckChange={handleCheckboxChange}
-						/>
-						<Number
-							id={'step'}
-							index={index}
-							label={__('Step', 'wc-ajax-product-filter')}
-							description={__(
-								'The step specifies the size of the increment.',
-								'wc-ajax-product-filter'
-							)}
-							value={step}
-							onChange={handleTextFieldChange}
-						/>
-					</div>
-					<div className='cols-wrapper'>
-						<Text
-							id={'value_prefix'}
-							index={index}
-							label={__('Value Prefix', 'wc-ajax-product-filter')}
-							description={__(
-								'Text to appear before the values. Example: A currency symbol, $.',
-								'wc-ajax-product-filter'
-							)}
-							value={value_prefix}
-							onChange={handleTextFieldChange}
-						/>
-						<Text
-							id={'value_postfix'}
-							index={index}
-							label={__(
-								'Value Postfix',
-								'wc-ajax-product-filter'
-							)}
-							description={__(
-								'Text to appear after the values. Example: A currency symbol, €.',
-								'wc-ajax-product-filter'
-							)}
-							value={value_postfix}
-							onChange={handleTextFieldChange}
-						/>
-						<Text
-							id={'values_separator'}
-							index={index}
-							label={__(
-								'Values Separator',
-								'wc-ajax-product-filter'
-							)}
-							value={values_separator}
-							onChange={handleTextFieldChange}
-						/>
-					</div>
+					<Checkbox
+						id={'auto_detect_min_max'}
+						index={index}
+						label={__(
+							'Auto detect Min and Max',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Whether to detect the min and max value from the database.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={auto_detect_min_max}
+						onChange={handleCheckboxChange}
+					/>
+
+					{'1' !== auto_detect_min_max && (
+						<>
+							<Number
+								id={'min_value'}
+								index={index}
+								label={__(
+									'Min Value',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'The minimum value that a user can select.',
+									'wc-ajax-product-filter'
+								)}
+								value={min_value}
+								onChange={handleTextFieldChange}
+							/>
+
+							<Number
+								id={'max_value'}
+								index={index}
+								label={__(
+									'Max Value',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'The maximum value that a user can select.',
+									'wc-ajax-product-filter'
+								)}
+								value={max_value}
+								onChange={handleTextFieldChange}
+							/>
+						</>
+					)}
+
+					<Number
+						id={'step'}
+						index={index}
+						label={__('Step', 'wc-ajax-product-filter')}
+						description={__(
+							'The step specifies the size of the increment amount.',
+							'wc-ajax-product-filter'
+						)}
+						value={step}
+						onChange={handleTextFieldChange}
+					/>
+
+					<Text
+						id={'value_prefix'}
+						index={index}
+						label={__('Value Prefix', 'wc-ajax-product-filter')}
+						description={__(
+							'Text to appear before the values. Example: A currency symbol, $.',
+							'wc-ajax-product-filter'
+						)}
+						value={value_prefix}
+						onChange={handleTextFieldChange}
+					/>
+
+					<Text
+						id={'value_postfix'}
+						index={index}
+						label={__('Value Postfix', 'wc-ajax-product-filter')}
+						description={__(
+							'Text to appear after the values. Example: A currency symbol, €.',
+							'wc-ajax-product-filter'
+						)}
+						value={value_postfix}
+						onChange={handleTextFieldChange}
+					/>
+
+					<Text
+						id={'values_separator'}
+						index={index}
+						label={__('Values Separator', 'wc-ajax-product-filter')}
+						value={values_separator}
+						onChange={handleTextFieldChange}
+					/>
+
 					{'range_number' !== number_display_type && (
-						<div className='cols-wrapper'>
+						<>
 							<Number
 								id={'decimal_places'}
 								index={index}
@@ -165,6 +177,7 @@ const ValueTypeNumber = ({ index }) => {
 								value={decimal_places}
 								onChange={handleTextFieldChange}
 							/>
+
 							<Text
 								id={'thousand_separator'}
 								index={index}
@@ -175,6 +188,7 @@ const ValueTypeNumber = ({ index }) => {
 								value={thousand_separator}
 								onChange={handleTextFieldChange}
 							/>
+
 							<Text
 								id={'decimal_separator'}
 								index={index}
@@ -185,7 +199,7 @@ const ValueTypeNumber = ({ index }) => {
 								value={decimal_separator}
 								onChange={handleTextFieldChange}
 							/>
-						</div>
+						</>
 					)}
 				</div>
 			);

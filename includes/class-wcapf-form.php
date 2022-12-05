@@ -1,5 +1,18 @@
 <?php
+/**
+ * The filter form class.
+ *
+ * @since      4.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     wptools.io
+ */
 
+/**
+ * WCAPF_Form class.
+ *
+ * @since 4.0.0
+ */
 class WCAPF_Form {
 
 	/**
@@ -258,6 +271,8 @@ class WCAPF_Form {
 
 		$slider_id = $filter_key . '-slider-' . $filter_id;
 
+		$url_builder = new WCAPF_URL_Builder( $filter_key );
+
 		$data = array(
 			'filter_key'         => $filter_key,
 			'min_value'          => $min_value,
@@ -274,6 +289,8 @@ class WCAPF_Form {
 			'slider_id'          => $slider_id,
 			'display_values_as'  => $display_values_as,
 			'align_at_the_end'   => $align_at_the_end,
+			'filter_url'         => $url_builder->get_range_url(),
+			'clear_filter_url'   => $url_builder->get_clear_filter_url(),
 		);
 
 		WCAPF_Template_Loader::get_instance()->load( $template, $data );

@@ -156,6 +156,18 @@ class WCAPF_Walker {
 	private $active_ancestors;
 
 	/**
+	 * The term id for current taxonomy archive page.
+	 *
+	 * @var int
+	 */
+	private $current_tax;
+
+	/**
+	 * @var WCAPF_URL_Builder
+	 */
+	private $url_builder;
+
+	/**
 	 * The constructor.
 	 *
 	 * @param WCAPF_Field_Instance $field The field instance.
@@ -166,6 +178,8 @@ class WCAPF_Walker {
 		$this->active_filters   = $this->active_filters();
 		$this->active_items     = $this->active_items();
 		$this->active_ancestors = $this->active_ancestors();
+		$this->current_tax      = get_queried_object_id();
+		$this->url_builder      = new WCAPF_URL_Builder( $this->filter_key, $this->enable_multiple_filter );
 	}
 
 	/**
@@ -407,9 +421,10 @@ class WCAPF_Walker {
 		$checked      = '';
 		$input_markup = '';
 		$filter_key   = $this->filter_key;
+		$item_active  = $this->item_active( $item );
 		$input_name   = $filter_key;
 
-		if ( $this->item_active( $item ) ) {
+		if ( $item_active ) {
 			$checked .= ' checked="checked"';
 		}
 
@@ -421,11 +436,21 @@ class WCAPF_Walker {
 		$item_value = rawurlencode( $item['id'] );
 		$_form_id   = $this->form_id ? $this->form_id . '-' : '';
 		$unique_id  = $filter_key . '-input-' . $this->filter_id . '-' . $_form_id . $item_id;
+		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
 
 		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
 		$input_markup .= ' id="' . $unique_id . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
 		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
+		$input_markup .= ' data-url="' . esc_url( $filter_url ) . '"';
+
+		/**
+		 * Why does the checkbox stay checked when reloading the page?
+		 *
+		 * @source https://stackoverflow.com/a/471140
+		 */
+		$input_markup .= ' autocomplete="off"';
+
 		$input_markup .= $checked . '>';
 
 		$inner = $this->menu_item_inner( $item, $unique_id, $depth );
@@ -571,6 +596,12 @@ class WCAPF_Walker {
 			$input_attrs .= ' data-no-results-message="' . esc_attr( $no_results_message ) . '"';
 		}
 
+		$filter_url       = $this->url_builder->get_dropdown_url();
+		$clear_filter_url = $this->url_builder->get_clear_filter_url();
+
+		$input_attrs .= ' data-url="' . esc_url( $filter_url ) . '"';
+		$input_attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
+
 		$html = '<select class="' . $input_classes . '"';
 		$html .= ' name="' . esc_attr( $input_name ) . '"';
 		$html .= $input_attrs;
@@ -594,13 +625,20 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	private function dropdown_item( $item ) {
-		$option = '';
+		$item_active = $this->item_active( $item );
 
-		$selected = $this->item_active( $item ) ? ' selected="selected"' : '';
+		$option = '';
+		$attrs  = '';
+
+		if ( $item_active ) {
+			$attrs .= ' selected="selected"';
+		}
 
 		$item_value = rawurlencode( $item['id'] );
 
-		$option .= '<option value="' . esc_attr( $item_value ) . '"' . $selected . '>';
+		$attrs .= ' value="' . esc_attr( $item_value ) . '"';
+
+		$option .= '<option' . $attrs . '>';
 
 		if ( $this->hierarchical ) {
 			$option .= $this->dropdown_item_indent( $item );
@@ -672,22 +710,21 @@ class WCAPF_Walker {
 	}
 
 	private function labeled_item( $item, $index ) {
-		$attrs   = '';
-		$classes = 'item';
+		$attrs       = '';
+		$classes     = 'item';
+		$item_active = $this->item_active( $item );
 
-		if ( $this->item_active( $item ) ) {
+		if ( $item_active ) {
 			$classes .= ' checked';
 		}
 
 		$item_value = rawurlencode( $item['id'] );
-
-		$attrs .= ' data-value="' . esc_attr( $item_value ) . '"';
-		$attrs .= ' tabindex="0"';
+		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
 
 		$classes = apply_filters( 'wcapf_labeled_item_classes', $classes, $index, $this, $item );
 		$attrs   = apply_filters( 'wcapf_labeled_item_attrs', $attrs, $item, $this );
 
-		$html = '<div class="' . $classes . '"' . $attrs . '>';
+		$html = '<button class="' . $classes . '" data-url="' . esc_url( $filter_url ) . '"' . $attrs . '>';
 
 		$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
 		$html  .= wp_kses_post( $label );
@@ -696,7 +733,7 @@ class WCAPF_Walker {
 			$html .= '<span class="count">' . $item['count'] . '</span>';
 		}
 
-		$html .= '</div>';
+		$html .= '</button>';
 
 		return $html;
 	}

@@ -6,7 +6,7 @@ import useSettingsData from '../useSettingsData';
 
 const userRoles = wcapf_admin_params.user_roles;
 
-const Others = () => {
+const Integration = () => {
 	const { state, dispatch } = useSettings();
 	const { handleCheckboxChange, handleAuthorRolesChange } = useSettingsData(
 		state,
@@ -119,4 +119,4 @@ const Others = () => {
 	);
 };
 
-export default Others;
+export default Integration;
