@@ -12553,7 +12553,7 @@ const ValueTypeNumber = _ref => {
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear between the min and max values. To add spaces, please use character entity.', 'wc-ajax-product-filter'),
         value: values_separator,
         onChange: handleTextFieldChange
-      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      }), 'range_number' !== number_display_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'text_before_min_value',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text before min value', 'wc-ajax-product-filter'),
@@ -12574,7 +12574,7 @@ const ValueTypeNumber = _ref => {
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to format the numbers.', 'wc-ajax-product-filter'),
         isChecked: format_numbers,
         onChange: handleCheckboxChange
-      }), 'range_number' !== number_display_type && '1' === format_numbers && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      }), '1' === format_numbers && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_3__["default"], {
         id: 'decimal_places',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Places', 'wc-ajax-product-filter'),
@@ -12594,7 +12594,7 @@ const ValueTypeNumber = _ref => {
         value: decimal_separator,
         onChange: handleTextFieldChange,
         customClass: "input-small"
-      })));
+      }))));
     }
   };
 

@@ -45,6 +45,7 @@ $_attrs[] = 'data-decimal-places="' . $decimal_places . '"';
 $_attrs[] = 'data-thousand-separator="' . $thousand_separator . '"';
 $_attrs[] = 'data-decimal-separator="' . $decimal_separator . '"';
 $_attrs[] = 'data-display-values-as="' . $display_values_as . '"';
+$_attrs[] = 'data-format-numbers="' . $format_numbers . '"';
 $_attrs[] = 'data-url="' . esc_url( $filter_url ) . '"';
 $_attrs[] = 'data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
@@ -55,14 +56,17 @@ $wrapper_classes = 'range-wrapper';
 $wrapper_classes .= ' display-values-as-' . $display_values_as;
 $wrapper_classes .= $align_at_the_end ? ' align-values-end-without-separator' : '';
 
+$input_type = 'number';
+
 // Do the formatting.
 if ( $format_numbers ) {
-	$min_value = number_format( $min_value, $decimal_places, $decimal_separator, $thousand_separator );
-	$max_value = number_format( $max_value, $decimal_places, $decimal_separator, $thousand_separator );
+	$input_type = 'text';
+	$min_value  = number_format( $min_value, $decimal_places, $decimal_separator, $thousand_separator );
+	$max_value  = number_format( $max_value, $decimal_places, $decimal_separator, $thousand_separator );
 }
 ?>
 
-<div class="wcapf-range-slider preset-2" <?php echo $attrs; ?>>
+<div class="wcapf-range-slider preset-1" <?php echo $attrs; ?>>
 	<div class="<?php echo esc_attr( $wrapper_classes ); ?>">
 		<span class="wcapf-range-start">
 			<?php if ( $text_before_min_value ) : ?>
@@ -78,7 +82,7 @@ if ( $format_numbers ) {
 			<?php else: ?>
 				<label>
 					<input
-						type="text"
+						type="<?php echo esc_attr( $input_type ); ?>"
 						class="min-value"
 						name="<?php echo esc_attr( $input_name ); ?>"
 						value="<?php echo esc_attr( $min_value ); ?>"
@@ -110,7 +114,7 @@ if ( $format_numbers ) {
 			<?php else: ?>
 				<label>
 					<input
-						type="text"
+						type="<?php echo esc_attr( $input_type ); ?>"
 						class="max-value"
 						name="<?php echo esc_attr( $input_name ); ?>"
 						value="<?php echo esc_attr( $max_value ); ?>"
@@ -125,5 +129,5 @@ if ( $format_numbers ) {
 		</span>
 	</div>
 
-	<div id="<?php echo esc_attr( $slider_id ); ?>" class="wcapf-ui-slider"></div>
+	<div id="<?php echo esc_attr( $slider_id ); ?>" class="wcapf-noui-slider"></div>
 </div>

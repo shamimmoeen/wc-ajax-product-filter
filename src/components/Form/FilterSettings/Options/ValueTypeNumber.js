@@ -174,87 +174,93 @@ const ValueTypeNumber = ({ index }) => {
 						onChange={handleTextFieldChange}
 					/>
 
-					<Text
-						id={'text_before_min_value'}
-						index={index}
-						label={__(
-							'Text before min value',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Text to appear before the min value. To add spaces, please use character entity.',
-							'wc-ajax-product-filter'
-						)}
-						value={text_before_min_value}
-						onChange={handleTextFieldChange}
-					/>
+					{'range_number' !== number_display_type && (
+						<>
+							<Text
+								id={'text_before_min_value'}
+								index={index}
+								label={__(
+									'Text before min value',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'Text to appear before the min value. To add spaces, please use character entity.',
+									'wc-ajax-product-filter'
+								)}
+								value={text_before_min_value}
+								onChange={handleTextFieldChange}
+							/>
 
-					<Text
-						id={'text_before_max_value'}
-						index={index}
-						label={__(
-							'Text before max value',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Text to appear before the max value. To add spaces, please use character entity.',
-							'wc-ajax-product-filter'
-						)}
-						value={text_before_max_value}
-						onChange={handleTextFieldChange}
-					/>
+							<Text
+								id={'text_before_max_value'}
+								index={index}
+								label={__(
+									'Text before max value',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'Text to appear before the max value. To add spaces, please use character entity.',
+									'wc-ajax-product-filter'
+								)}
+								value={text_before_max_value}
+								onChange={handleTextFieldChange}
+							/>
 
-					<Checkbox
-						id={'format_numbers'}
-						index={index}
-						label={__('Format Numbers', 'wc-ajax-product-filter')}
-						description={__(
-							'Enable this if you want to format the numbers.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={format_numbers}
-						onChange={handleCheckboxChange}
-					/>
+							<Checkbox
+								id={'format_numbers'}
+								index={index}
+								label={__(
+									'Format Numbers',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'Enable this if you want to format the numbers.',
+									'wc-ajax-product-filter'
+								)}
+								isChecked={format_numbers}
+								onChange={handleCheckboxChange}
+							/>
 
-					{'range_number' !== number_display_type &&
-						'1' === format_numbers && (
-							<>
-								<Number
-									id={'decimal_places'}
-									index={index}
-									label={__(
-										'Decimal Places',
-										'wc-ajax-product-filter'
-									)}
-									value={decimal_places}
-									onChange={handleTextFieldChange}
-								/>
+							{'1' === format_numbers && (
+								<>
+									<Number
+										id={'decimal_places'}
+										index={index}
+										label={__(
+											'Decimal Places',
+											'wc-ajax-product-filter'
+										)}
+										value={decimal_places}
+										onChange={handleTextFieldChange}
+									/>
 
-								<Text
-									id={'thousand_separator'}
-									index={index}
-									label={__(
-										'Thousand Separator',
-										'wc-ajax-product-filter'
-									)}
-									value={thousand_separator}
-									onChange={handleTextFieldChange}
-									customClass='input-small'
-								/>
+									<Text
+										id={'thousand_separator'}
+										index={index}
+										label={__(
+											'Thousand Separator',
+											'wc-ajax-product-filter'
+										)}
+										value={thousand_separator}
+										onChange={handleTextFieldChange}
+										customClass='input-small'
+									/>
 
-								<Text
-									id={'decimal_separator'}
-									index={index}
-									label={__(
-										'Decimal Separator',
-										'wc-ajax-product-filter'
-									)}
-									value={decimal_separator}
-									onChange={handleTextFieldChange}
-									customClass='input-small'
-								/>
-							</>
-						)}
+									<Text
+										id={'decimal_separator'}
+										index={index}
+										label={__(
+											'Decimal Separator',
+											'wc-ajax-product-filter'
+										)}
+										value={decimal_separator}
+										onChange={handleTextFieldChange}
+										customClass='input-small'
+									/>
+								</>
+							)}
+						</>
+					)}
 				</div>
 			);
 		}
