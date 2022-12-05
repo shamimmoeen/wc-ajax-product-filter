@@ -168,6 +168,10 @@
 		}
 	}
 
+	.components-text-control__input.input-small {
+		max-width: 100px;
+	}
+
 	// react-select (The simple version like CustomSelectControl).
 	&.react_select_simple {
 		.__input_wrapper {

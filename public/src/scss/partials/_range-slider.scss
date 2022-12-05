@@ -1,0 +1,133 @@
+.wcapf-range-slider {
+	.ui-slider {
+		position: relative;
+	}
+
+	.ui-slider .ui-slider-handle {
+		position: absolute;
+		z-index: 2;
+		cursor: pointer;
+		-ms-touch-action: none;
+		touch-action: none;
+	}
+
+	.ui-slider .ui-slider-range {
+		position: absolute;
+		z-index: 1;
+	}
+
+	.ui-state-disabled {
+		opacity: .35;
+	}
+
+	.ui-state-disabled {
+		cursor: default !important;
+		pointer-events: none;
+	}
+
+	/* support: IE8 - See #6727 */
+	.ui-slider.ui-state-disabled .ui-slider-handle,
+	.ui-slider.ui-state-disabled .ui-slider-range {
+		filter: inherit;
+	}
+
+	.ui-slider-horizontal .ui-slider-range {
+		top: 0;
+		height: 100%;
+	}
+
+	&.preset-1 {
+		--wcapf-range-primary-color: 52, 93, 187;
+
+		.ui-slider {
+			height: 10px;
+			border-radius: 5px;
+			background-color: rgba(var(--wcapf-range-primary-color), 0.1);
+		}
+
+		.ui-slider-range {
+			background-color: rgba(var(--wcapf-range-primary-color), 1);
+		}
+
+		.ui-slider-handle {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			transform: translate(-15px, -10px);
+			background-color: rgba(var(--wcapf-range-primary-color), 1);
+		}
+
+		/* Interaction states
+		----------------------------------*/
+		.ui-state-default {
+			border: none;
+			outline: none;
+		}
+
+		.ui-state-hover,
+		.ui-state-focus {
+			box-shadow: 0 0 0 10px rgba(var(--wcapf-range-primary-color), .1);
+		}
+
+		.ui-state-active {
+			box-shadow: 0 0 0 10px rgba(var(--wcapf-range-primary-color), .3);
+		}
+	}
+
+	&.preset-2 {
+		--wcapf-range-primary-color: 52, 93, 187;
+
+		.ui-slider {
+			height: 14px;
+			border-radius: 10px;
+			background-color: rgba(var(--wcapf-range-primary-color), 0.1);
+		}
+
+		.ui-slider-range {
+			background-color: rgba(var(--wcapf-range-primary-color), 1);
+		}
+
+		.ui-slider-handle {
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			transform: translate(-14px, -7px);
+			background-color: #fff;
+			box-shadow: 0 3px 8px rgba(0, 0, 0, .4);
+		}
+
+		/* Interaction states
+		----------------------------------*/
+		.ui-state-default {
+			border: none;
+			outline: none;
+		}
+
+		.ui-state-hover,
+		.ui-state-focus {
+			border: 1px solid #ddd;
+		}
+
+		.ui-state-active {
+			border: 1px solid #aaaaaa;
+		}
+	}
+}
+
+/* Interaction states
+	----------------------------------*/
+.ui-state-default {
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6;
+}
+
+.ui-state-hover,
+.ui-state-focus {
+	border: 1px solid #999999;
+	background: #dadada;
+}
+
+.ui-state-active {
+	border: 1px solid #aaaaaa;
+	background: #ffffff;
+}

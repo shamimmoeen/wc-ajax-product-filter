@@ -9014,6 +9014,7 @@ const InputField = _ref => {
     onChange,
     type = 'text',
     isDisabled,
+    customClass,
     ...rest
   } = _ref;
   const [value, setValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialValue);
@@ -9025,10 +9026,16 @@ const InputField = _ref => {
     setValue(e.target.value);
   };
 
+  let classes = 'components-text-control__input';
+
+  if (customClass) {
+    classes += ` ${customClass}`;
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("input", (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({
     type: type,
     id: inputId,
-    className: "components-text-control__input",
+    className: classes,
     disabled: isDisabled,
     value: value,
     onChange: handleInputChange,
@@ -9049,6 +9056,7 @@ const Text = _ref2 => {
     isFilterKey = false,
     isDisabled = false,
     tooltip,
+    customClass,
     ...rest
   } = _ref2;
   const inputId = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getInputId)(id, index);
@@ -9075,7 +9083,8 @@ const Text = _ref2 => {
       initialValue: value,
       onChange: onChange,
       type: type,
-      isDisabled: isDisabled
+      isDisabled: isDisabled,
+      customClass: customClass
     }, rest)), tooltip && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
       content: tooltip
     })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("p", {
@@ -9092,7 +9101,8 @@ const Text = _ref2 => {
       initialValue: value,
       onChange: onChange,
       type: type,
-      isDisabled: isDisabled
+      isDisabled: isDisabled,
+      customClass: customClass
     }, rest));
   }
 };

@@ -212,25 +212,27 @@ class WCAPF_Form {
 			$template = 'public/filter-range-number';
 		}
 
+		$auto_detect           = $field_instance->get_sub_field_value( 'auto_detect_min_max' );
 		$range_min_value       = $field_instance->get_sub_field_value( 'min_value' );
 		$range_max_value       = $field_instance->get_sub_field_value( 'max_value' );
 		$step                  = $field_instance->get_sub_field_value( 'step' );
-		$range_min_auto_detect = $field_instance->get_sub_field_value( 'min_value_auto_detect' );
-		$range_max_auto_detect = $field_instance->get_sub_field_value( 'max_value_auto_detect' );
 		$value_prefix          = $field_instance->get_sub_field_value( 'value_prefix' );
 		$value_postfix         = $field_instance->get_sub_field_value( 'value_postfix' );
 		$values_separator      = $field_instance->get_sub_field_value( 'values_separator' );
+		$text_before_min_value = $field_instance->get_sub_field_value( 'text_before_min_value' );
+		$text_before_max_value = $field_instance->get_sub_field_value( 'text_before_max_value' );
+		$format_numbers        = $field_instance->get_sub_field_value( 'format_numbers' );
 		$decimal_places        = $field_instance->get_sub_field_value( 'decimal_places' );
 		$thousand_separator    = $field_instance->get_sub_field_value( 'thousand_separator' );
 		$decimal_separator     = $field_instance->get_sub_field_value( 'decimal_separator' );
 		$display_values_as     = $field_instance->get_sub_field_value( 'number_range_slider_display_values_as' );
 		$align_at_the_end      = $field_instance->get_sub_field_value( 'align_values_at_the_end' );
 
-		if ( $range_min_auto_detect ) {
+		if ( $auto_detect ) {
 			$range_min_value = isset( $range_min_max['min'] ) ? $range_min_max['min'] : '';
 		}
 
-		if ( $range_max_auto_detect ) {
+		if ( $auto_detect ) {
 			$range_max_value = isset( $range_min_max['max'] ) ? $range_min_max['max'] : '';
 		}
 
@@ -274,23 +276,26 @@ class WCAPF_Form {
 		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
 		$data = array(
-			'filter_key'         => $filter_key,
-			'min_value'          => $min_value,
-			'max_value'          => $max_value,
-			'range_min_value'    => $range_min_value,
-			'range_max_value'    => $range_max_value,
-			'step'               => $step,
-			'value_prefix'       => $value_prefix,
-			'value_postfix'      => $value_postfix,
-			'values_separator'   => $values_separator,
-			'decimal_places'     => $decimal_places,
-			'thousand_separator' => $thousand_separator,
-			'decimal_separator'  => $decimal_separator,
-			'slider_id'          => $slider_id,
-			'display_values_as'  => $display_values_as,
-			'align_at_the_end'   => $align_at_the_end,
-			'filter_url'         => $url_builder->get_range_url(),
-			'clear_filter_url'   => $url_builder->get_clear_filter_url(),
+			'filter_key'            => $filter_key,
+			'min_value'             => $min_value,
+			'max_value'             => $max_value,
+			'range_min_value'       => $range_min_value,
+			'range_max_value'       => $range_max_value,
+			'step'                  => $step,
+			'value_prefix'          => $value_prefix,
+			'value_postfix'         => $value_postfix,
+			'values_separator'      => $values_separator,
+			'text_before_min_value' => $text_before_min_value,
+			'text_before_max_value' => $text_before_max_value,
+			'format_numbers'        => $format_numbers,
+			'decimal_places'        => $decimal_places,
+			'thousand_separator'    => $thousand_separator,
+			'decimal_separator'     => $decimal_separator,
+			'slider_id'             => $slider_id,
+			'display_values_as'     => $display_values_as,
+			'align_at_the_end'      => $align_at_the_end,
+			'filter_url'            => $url_builder->get_range_url(),
+			'clear_filter_url'      => $url_builder->get_clear_filter_url(),
 		);
 
 		WCAPF_Template_Loader::get_instance()->load( $template, $data );

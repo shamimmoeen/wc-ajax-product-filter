@@ -354,6 +354,7 @@ class WCAPF_Product_Filter_Utils {
 		$separator = WCAPF_Helper::range_values_separator();
 		$range     = explode( $separator, $value );
 
+		// TODO: Try with string or null values.
 		$range_min = $range[0];
 		$range_max = $range[1];
 

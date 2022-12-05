@@ -178,7 +178,7 @@ jQuery( document ).ready( function( $ ) {
 
 	// Initialize noUISlider.
 	function initNoUISlider() {
-		if ( 'undefined' === typeof noUiSlider ) {
+		if ( ! jQuery().slider ) {
 			return;
 		}
 
@@ -194,10 +194,10 @@ jQuery( document ).ready( function( $ ) {
 			const $item = $( this );
 
 			const filterKey = $item.attr( 'data-filter-key' );
-			const $slider   = $item.find( '.wcapf-noui-slider' );
+			const $slider   = $item.find( '.wcapf-ui-slider' );
 
 			// If slider is already initialized then don't reinitialize again.
-			if ( $slider.hasClass( 'wcapf-noui-target' ) ) {
+			if ( $slider.hasClass( 'ui-slider' ) ) {
 				return;
 			}
 
@@ -214,20 +214,20 @@ jQuery( document ).ready( function( $ ) {
 			const $minValue         = $item.find( '.min-value' );
 			const $maxValue         = $item.find( '.max-value' );
 
-			const slider = document.getElementById( sliderId );
+			const sliderElm = $( '#' + sliderId );
 
-			noUiSlider.create( slider, {
-				start: [ minValue, maxValue ],
+			sliderElm.slider( {
+				range: true,
+				min: rangeMinValue,
+				max: rangeMaxValue,
 				step,
-				connect: true,
-				cssPrefix: 'wcapf-noui-',
-				range: {
-					'min': rangeMinValue,
-					'max': rangeMaxValue,
+				values: [ minValue, maxValue ],
+				slide: function( event, ui ) {
+					$( '#amount' ).val( '$' + ui.values[ 0 ] + ' - $' + ui.values[ 1 ] );
 				}
 			} );
 
-			slider.noUiSlider.on( 'update', function( values ) {
+			sliderElm.on( 'slide', function( e, { values } ) {
 				const minValue = number_format( values[ 0 ], decimalPlaces, decimalSeparator, thousandSeparator );
 				const maxValue = number_format( values[ 1 ], decimalPlaces, decimalSeparator, thousandSeparator );
 
@@ -239,7 +239,7 @@ jQuery( document ).ready( function( $ ) {
 					$maxValue.val( maxValue );
 				}
 
-				$body.trigger( 'wcapf-nouislider-update', [ $item, values ] );
+				$body.trigger( 'wcapf-ui-slider-update', [ $item, values ] );
 			} );
 
 			function filterProductsAccordingToSlider( values ) {
@@ -249,9 +249,6 @@ jQuery( document ).ready( function( $ ) {
 
 				const minValue = parseFloat( values[ 0 ] );
 				const maxValue = parseFloat( values[ 1 ] );
-
-				console.log( 'minValue', minValue, $item );
-				console.log( 'maxValue', maxValue, $item );
 
 				if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
 					// Remove range filter.
@@ -263,14 +260,14 @@ jQuery( document ).ready( function( $ ) {
 				}
 			}
 
-			slider.noUiSlider.on( 'change', function( values ) {
+			sliderElm.on( 'slidechange', function( e, { values } ) {
 				// Clear any previously set timer before setting a fresh one
 				clearTimeout( $item.data( 'timer' ) );
 
 				$item.data( 'timer', setTimeout( function() {
 					$item.removeData( 'timer' );
 
-					filterProductsAccordingToSlider( values );
+					// filterProductsAccordingToSlider( values );
 				}, delay ) );
 			} );
 
@@ -287,9 +284,9 @@ jQuery( document ).ready( function( $ ) {
 
 					const minValue = $input.val();
 
-					slider.noUiSlider.set( [ minValue, null ] );
+					sliderElm.set( [ minValue, null ] );
 
-					filterProductsAccordingToSlider( slider.noUiSlider.get() );
+					filterProductsAccordingToSlider( sliderElm.noUiSlider.get() );
 				}, delay ) );
 			} );
 
@@ -306,9 +303,9 @@ jQuery( document ).ready( function( $ ) {
 
 					const maxValue = $input.val();
 
-					slider.noUiSlider.set( [ null, maxValue ] );
+					sliderElm.noUiSlider.set( [ null, maxValue ] );
 
-					filterProductsAccordingToSlider( slider.noUiSlider.get() );
+					filterProductsAccordingToSlider( sliderElm.noUiSlider.get() );
 				}, delay ) );
 			} );
 		} );
