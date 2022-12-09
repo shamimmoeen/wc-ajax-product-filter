@@ -97,8 +97,14 @@ jQuery( document ).ready( function( $ ) {
 			const searchThreshold = parseInt( wcapf_params.chosen_lib_search_threshold );
 
 			if ( searchThreshold ) {
-				options[ 'disable_search_threshold' ] = searchThreshold;
+				// options[ 'disable_search_threshold' ] = searchThreshold;
 			}
+
+			// options[ 'display_selected_options' ] = false;
+
+			// minimumResultsForSearch: 20
+
+			// options['minimumResultsForSearch'] = -1;
 
 			$this.chosen( options );
 		} );
@@ -193,6 +199,7 @@ jQuery( document ).ready( function( $ ) {
 		$root.find( '.wcapf-range-slider' ).each( function() {
 			const $item = $( this );
 
+			// TODO: Remove filter key.
 			const filterKey = $item.attr( 'data-filter-key' );
 			const $slider   = $item.find( '.wcapf-noui-slider' );
 
@@ -957,7 +964,7 @@ jQuery( document ).ready( function( $ ) {
 			return;
 		}
 
-		window.location.href = url;
+		// window.location.href = url;
 
 		// TODO: Filter the products conditionally.
 		// filterProducts();
@@ -1015,73 +1022,85 @@ jQuery( document ).ready( function( $ ) {
 
 		const $item = $( this );
 
+		const $rangeNumber      = $item.closest( '.wcapf-range-number' );
+		const formatNumbers     = $rangeNumber.attr( 'data-format-numbers' );
+		const rangeMinValue     = parseFloat( $rangeNumber.attr( 'data-range-min-value' ) );
+		const rangeMaxValue     = parseFloat( $rangeNumber.attr( 'data-range-max-value' ) );
+		const decimalPlaces     = $rangeNumber.attr( 'data-decimal-places' );
+		const thousandSeparator = $rangeNumber.attr( 'data-thousand-separator' );
+		const decimalSeparator  = $rangeNumber.attr( 'data-decimal-separator' );
+
 		// Clear any previously set timer before setting a fresh one
 		clearTimeout( $item.data( 'timer' ) );
+
+		function getValue( floatValue ) {
+			if ( formatNumbers ) {
+				return number_format( floatValue, decimalPlaces, decimalSeparator, thousandSeparator );
+			}
+
+			return floatValue;
+		}
 
 		$item.data( 'timer', setTimeout( function() {
 			$item.removeData( 'timer' );
 
-			const $rangeNumber  = $item.closest( '.wcapf-range-number' );
-			const filterKey     = $rangeNumber.attr( 'data-filter-key' );
-			const rangeMinValue = $rangeNumber.attr( 'data-range-min-value' );
-			const rangeMaxValue = $rangeNumber.attr( 'data-range-max-value' );
-			let minValue        = $rangeNumber.find( '.min-value' ).val();
-			let maxValue        = $rangeNumber.find( '.max-value' ).val();
+			let minValue = parseFloat( $rangeNumber.find( '.min-value' ).val() );
+			let maxValue = parseFloat( $rangeNumber.find( '.max-value' ).val() );
 
 			// Force the minValue not to be empty.
-			if ( ! minValue.length ) {
+			if ( isNaN( minValue ) ) {
 				minValue = rangeMinValue;
 
-				$rangeNumber.find( '.min-value' ).val( minValue );
+				$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
+			} else {
+				$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
 			}
 
 			// Force the maxValue not to be empty.
-			if ( ! maxValue.length ) {
+			if ( isNaN( maxValue ) ) {
 				maxValue = rangeMaxValue;
 
-				$rangeNumber.find( '.max-value' ).val( maxValue );
+				$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
+			} else {
+				$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
 			}
 
 			// Force the minValue not to go below the rangeMinValue.
-			if ( parseFloat( minValue ) < parseFloat( rangeMinValue ) ) {
+			if ( minValue < rangeMinValue ) {
 				minValue = rangeMinValue;
 
-				$rangeNumber.find( '.min-value' ).val( minValue );
+				$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
 			}
 
 			// Force the minValue not to go up the rangeMaxValue.
-			if ( parseFloat( minValue ) > parseFloat( rangeMaxValue ) ) {
+			if ( minValue > rangeMaxValue ) {
 				minValue = rangeMaxValue;
 
-				$rangeNumber.find( '.min-value' ).val( minValue );
+				$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
 			}
 
 			// Force the maxValue not to go up the rangeMaxValue.
-			if ( parseFloat( maxValue ) > parseFloat( rangeMaxValue ) ) {
+			if ( maxValue > rangeMaxValue ) {
 				maxValue = rangeMaxValue;
 
-				$rangeNumber.find( '.max-value' ).val( maxValue );
+				$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
 			}
 
 			// Force the maxValue not to go below the minValue.
-			if ( parseFloat( minValue ) > parseFloat( maxValue ) ) {
+			if ( minValue > maxValue ) {
 				maxValue = minValue;
 
-				$rangeNumber.find( '.max-value' ).val( maxValue );
+				$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
 			}
-
-			const $filter = $item.closest( '.wcapf-range-number' );
 
 			if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
 				// Remove range filter.
-				requestFilter( $filter.data( 'clear-filter-url' ) );
+				requestFilter( $rangeNumber.data( 'clear-filter-url' ) );
 			} else {
 				// Add range filter.
-				const url = $filter.data( 'url' ).replace( '%1s', minValue ).replace( '%2s', maxValue );
+				const url = $rangeNumber.data( 'url' ).replace( '%1s', minValue ).replace( '%2s', maxValue );
 				requestFilter( url );
 			}
-
-			filterProducts();
 		}, delay ) );
 	} );
 

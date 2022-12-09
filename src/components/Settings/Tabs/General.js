@@ -18,11 +18,11 @@ const filterRelationshipOptions = [
 
 const removeEmptyOptions = [
 	{
-		label: __('Never show', 'wc-ajax-product-filter'),
+		label: __('Always show', 'wc-ajax-product-filter'),
 		value: 'show',
 	},
 	{
-		label: __('Always show', 'wc-ajax-product-filter'),
+		label: __('Never show', 'wc-ajax-product-filter'),
 		value: 'remove',
 	},
 	{

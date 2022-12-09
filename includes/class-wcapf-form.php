@@ -174,11 +174,11 @@ class WCAPF_Form {
 
 		$walker = new WCAPF_Walker( $field_instance );
 
-		$range_number_filters = WCAPF_Helper::range_number_filter_types();
+		$range_input_display_types = WCAPF_Helper::range_input_display_types();
 
 		$classes = array();
 
-		if ( in_array( $display_type, $range_number_filters ) ) {
+		if ( in_array( $display_type, $range_input_display_types ) ) {
 			$classes[] = 'wcapf-number-range-filter';
 		} else {
 			$classes[] = 'wcapf-nav-filter';
@@ -188,8 +188,8 @@ class WCAPF_Form {
 
 		$this->before_field( $classes, $field_instance );
 
-		if ( in_array( $display_type, $range_number_filters ) ) {
-			$this->render_range_number_filter( $field_instance, $items );
+		if ( in_array( $display_type, $range_input_display_types ) ) {
+			$this->render_range_input_filter( $field_instance, $items );
 		} else {
 			echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
@@ -198,20 +198,17 @@ class WCAPF_Form {
 	}
 
 	/**
+	 * TODO: Update the min, max bound according to the applied filters.
+	 *
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 * @param array                $range_min_max  The filter range min, max value.
 	 *
 	 * @return void
 	 */
-	protected function render_range_number_filter( $field_instance, $range_min_max ) {
-		$display_type = $field_instance->display_type;
-
-		if ( 'range_slider' === $display_type ) {
-			$template = 'public/filter-range-slider';
-		} else {
-			$template = 'public/filter-range-number';
-		}
-
+	protected function render_range_input_filter( $field_instance, $range_min_max ) {
+		$display_type          = $field_instance->display_type;
+		$display_values_as     = $field_instance->get_sub_field_value( 'number_range_slider_display_values_as' );
+		$align_at_the_end      = $field_instance->get_sub_field_value( 'align_values_at_the_end' );
 		$auto_detect           = $field_instance->get_sub_field_value( 'auto_detect_min_max' );
 		$range_min_value       = $field_instance->get_sub_field_value( 'min_value' );
 		$range_max_value       = $field_instance->get_sub_field_value( 'max_value' );
@@ -225,8 +222,6 @@ class WCAPF_Form {
 		$decimal_places        = $field_instance->get_sub_field_value( 'decimal_places' );
 		$thousand_separator    = $field_instance->get_sub_field_value( 'thousand_separator' );
 		$decimal_separator     = $field_instance->get_sub_field_value( 'decimal_separator' );
-		$display_values_as     = $field_instance->get_sub_field_value( 'number_range_slider_display_values_as' );
-		$align_at_the_end      = $field_instance->get_sub_field_value( 'align_values_at_the_end' );
 
 		if ( $auto_detect ) {
 			$range_min_value = isset( $range_min_max['min'] ) ? $range_min_max['min'] : '';
@@ -277,6 +272,9 @@ class WCAPF_Form {
 
 		$data = array(
 			'filter_key'            => $filter_key,
+			'display_type'          => $display_type,
+			'display_values_as'     => $display_values_as,
+			'align_at_the_end'      => $align_at_the_end,
 			'min_value'             => $min_value,
 			'max_value'             => $max_value,
 			'range_min_value'       => $range_min_value,
@@ -292,13 +290,11 @@ class WCAPF_Form {
 			'thousand_separator'    => $thousand_separator,
 			'decimal_separator'     => $decimal_separator,
 			'slider_id'             => $slider_id,
-			'display_values_as'     => $display_values_as,
-			'align_at_the_end'      => $align_at_the_end,
 			'filter_url'            => $url_builder->get_range_url(),
 			'clear_filter_url'      => $url_builder->get_clear_filter_url(),
 		);
 
-		WCAPF_Template_Loader::get_instance()->load( $template, $data );
+		WCAPF_Template_Loader::get_instance()->load( 'range', $data );
 	}
 
 	/**

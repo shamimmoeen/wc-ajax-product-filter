@@ -74,8 +74,8 @@ class WCAPF_Product_Filter {
 
 		$filters_data = $this->filters_data( $query );
 
-		$range_display_types = WCAPF_Helper::range_number_filter_types();
-		$attribute_names     = wc_get_attribute_taxonomy_names();
+		$range_input_display_types = WCAPF_Helper::range_input_display_types();
+		$attribute_names           = wc_get_attribute_taxonomy_names();
 
 		$already_filtered = array();
 
@@ -95,7 +95,7 @@ class WCAPF_Product_Filter {
 				}
 
 				$already_filtered[] = $filter_key;
-			} elseif ( 'price' === $field_type && in_array( $display_type, $range_display_types ) ) {
+			} elseif ( 'price' === $field_type && in_array( $display_type, $range_input_display_types ) ) {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
 
 				$already_filtered[] = $filter_key;

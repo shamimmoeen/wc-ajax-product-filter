@@ -116,10 +116,6 @@ class WCAPF_Frontend_Scripts {
 			true
 		);
 
-		// TODO: Conditionally load the scripts.
-		wp_enqueue_script( 'selectWoo' );
-		wp_enqueue_style( 'select2' );
-
 		$deps = array( 'jquery' );
 
 		/**

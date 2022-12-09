@@ -10028,14 +10028,14 @@ const ValueTypeNumber = _ref => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'number_range_slider_display_values_as',
         index: index,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display values as', 'wc-ajax-product-filter'),
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Display slider values as', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the slider values will be shown on the frontend.', 'wc-ajax-product-filter'),
         options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Plain Text', 'wc-ajax-product-filter'),
-          value: 'plain_text'
-        }, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Input Field', 'wc-ajax-product-filter'),
           value: 'input_field'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Plain Text', 'wc-ajax-product-filter'),
+          value: 'plain_text'
         }],
         onChange: handleRadioChange,
         value: number_range_slider_display_values_as
@@ -10044,12 +10044,23 @@ const ValueTypeNumber = _ref => {
   };
 
   const alignValuesField = () => {
-    if ('range_slider' === number_display_type) {
+    if ('range_slider' === number_display_type || 'range_number' === number_display_type) {
+      let label;
+      let description;
+
+      if ('range_slider' === number_display_type) {
+        label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Justify slider values', 'wc-ajax-product-filter');
+        description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to justify the slider values by distributing space between or around them.', 'wc-ajax-product-filter');
+      } else {
+        label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Justify input fields', 'wc-ajax-product-filter');
+        description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to justify the input fields by distributing space between or around them.', 'wc-ajax-product-filter');
+      }
+
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
         id: 'align_values_at_the_end',
         index: index,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Align values', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to align the slider values in the line; first item is on the start line, last item on the end line.', 'wc-ajax-product-filter'),
+        label: label,
+        description: description,
         isChecked: align_values_at_the_end,
         onChange: handleCheckboxChange
       });
@@ -10395,13 +10406,13 @@ const useFields = (type, index) => {
         id: id,
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Query Type', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND: products that have both options, OR: products that matched any option.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR: products that matched any option, AND: products that have both options.', 'wc-ajax-product-filter'),
         options: [{
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter'),
-          value: 'and'
-        }, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('OR', 'wc-ajax-product-filter'),
           value: 'or'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('AND', 'wc-ajax-product-filter'),
+          value: 'and'
         }],
         onChange: handleRadioChange,
         value: filter[id]
@@ -10448,7 +10459,7 @@ const useFields = (type, index) => {
         id: id,
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable ComboBox', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use jQuery Chosen library instead of the native select element.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Turns the native select element into a custom select box with improved design and behavior.', 'wc-ajax-product-filter'),
         isChecked: filter[id],
         onChange: handleCheckboxChange
       });
@@ -10811,7 +10822,7 @@ const General = _ref => {
     id: 'value_type',
     index: index,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Type', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the taxonomy terms value type.', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the value type of taxonomy terms.', 'wc-ajax-product-filter'),
     options: [{
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'wc-ajax-product-filter'),
       value: 'text'
@@ -12458,6 +12469,7 @@ const ValueTypeNumber = _ref => {
   const filter = formFilters[index];
   const {
     number_display_type,
+    number_range_slider_display_values_as,
     number_get_options,
     auto_detect_min_max,
     min_value,
@@ -12500,9 +12512,7 @@ const ValueTypeNumber = _ref => {
     }
 
     if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-        className: "number-ui-options"
-      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'auto_detect_min_max',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Auto detect Min and Max', 'wc-ajax-product-filter'),
@@ -12529,12 +12539,13 @@ const ValueTypeNumber = _ref => {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Step', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the size of the increment amount.', 'wc-ajax-product-filter'),
         value: step,
-        onChange: handleTextFieldChange
+        onChange: handleTextFieldChange,
+        min: "1"
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'value_prefix',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Prefix', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the values. Example: A currency symbol, $.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This should be used for the unit. Example: $', 'wc-ajax-product-filter'),
         value: value_prefix,
         onChange: handleTextFieldChange,
         customClass: "input-small"
@@ -12542,7 +12553,7 @@ const ValueTypeNumber = _ref => {
         id: 'value_postfix',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Postfix', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear after the values. Example: A currency symbol, €.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This should be used for the unit. Example: €', 'wc-ajax-product-filter'),
         value: value_postfix,
         onChange: handleTextFieldChange,
         customClass: "input-small"
@@ -12550,24 +12561,24 @@ const ValueTypeNumber = _ref => {
         id: 'values_separator',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Values Separator', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear between the min and max values. To add spaces, please use character entity.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear between the min and max values. Example: –', 'wc-ajax-product-filter'),
         value: values_separator,
         onChange: handleTextFieldChange
-      }), 'range_number' !== number_display_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      }), 'range_slider' === number_display_type && 'plain_text' === number_range_slider_display_values_as && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'text_before_min_value',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text before min value', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the min value. To add spaces, please use character entity.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the min value.', 'wc-ajax-product-filter'),
         value: text_before_min_value,
         onChange: handleTextFieldChange
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'text_before_max_value',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text before max value', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the max value. To add spaces, please use character entity.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text to appear before the max value.', 'wc-ajax-product-filter'),
         value: text_before_max_value,
         onChange: handleTextFieldChange
-      }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: 'format_numbers',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Format Numbers', 'wc-ajax-product-filter'),
@@ -12579,7 +12590,9 @@ const ValueTypeNumber = _ref => {
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Places', 'wc-ajax-product-filter'),
         value: decimal_places,
-        onChange: handleTextFieldChange
+        onChange: handleTextFieldChange,
+        min: "1",
+        max: "6"
       }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: 'thousand_separator',
         index: index,
@@ -12594,7 +12607,7 @@ const ValueTypeNumber = _ref => {
         value: decimal_separator,
         onChange: handleTextFieldChange,
         customClass: "input-small"
-      }))));
+      })));
     }
   };
 
@@ -13236,7 +13249,7 @@ const Filter = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
     className: "__tab_panel",
     activeClass: "active-tab",
-    initialTabName: "options",
+    initialTabName: "appearance",
     tabs: [{
       name: 'general',
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('General', 'wc-ajax-product-filter')
@@ -15119,9 +15132,9 @@ function filterDefaultData() {
     field_key: '',
     // Taxonomy
     display_type: 'checkbox',
-    query_type: 'and',
+    query_type: 'or',
     all_items_label: '',
-    use_chosen: '',
+    use_chosen: '1',
     chosen_no_results_message: '',
     enable_multiple_filter: '',
     hierarchical: '',
@@ -15142,10 +15155,10 @@ function filterDefaultData() {
     exclude_values_include_children: '',
     // Price Filter
     number_display_type: 'range_slider',
-    number_range_slider_display_values_as: 'plain_text',
+    number_range_slider_display_values_as: 'input_field',
     align_values_at_the_end: '1',
     number_range_enable_multiple_filter: '',
-    number_range_query_type: 'and',
+    number_range_query_type: 'or',
     number_range_select_all_items_label: '',
     number_range_use_chosen: '',
     number_range_chosen_no_results_message: '',
@@ -15158,14 +15171,14 @@ function filterDefaultData() {
     auto_detect_min_max: '1',
     min_value: '0',
     max_value: '100',
-    step: '10',
+    step: '1',
     value_prefix: '',
     value_postfix: '',
-    values_separator: '-',
+    values_separator: '–',
     text_before_min_value: '',
     text_before_max_value: '',
     format_numbers: '',
-    decimal_places: '0',
+    decimal_places: '2',
     thousand_separator: '',
     decimal_separator: '.',
     // Product Status
@@ -15182,7 +15195,7 @@ function filterDefaultData() {
     date_display_type: 'input_date',
     date_format: 'dd-mm-yy',
     time_period_enable_multiple_filter: '',
-    time_period_query_type: 'and',
+    time_period_query_type: 'or',
     time_period_select_all_items_label: '',
     time_period_use_chosen: '',
     time_period_chosen_no_results_message: '',
@@ -15361,7 +15374,7 @@ const textFreeDisplayTypes = [{
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select', 'wc-ajax-product-filter'),
   value: 'select'
 }, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Multi select', 'wc-ajax-product-filter'),
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Multiselect', 'wc-ajax-product-filter'),
   value: 'multi-select'
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Label', 'wc-ajax-product-filter'),
@@ -15449,7 +15462,7 @@ function dateDisplayTypes() {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Select', 'wc-ajax-product-filter'),
     value: 'time_period_select'
   }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Multi select', 'wc-ajax-product-filter'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Multiselect', 'wc-ajax-product-filter'),
     value: 'time_period_multiselect'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Time Period - Label', 'wc-ajax-product-filter'),
@@ -15555,7 +15568,7 @@ const PublishModal = _ref => {
   const getTabContent = tab => {
     let description;
     let code;
-    const shortcode = `[wcapf_form"]`;
+    const shortcode = `[wcapf_form]`;
     const widgetName = 'WC Ajax Product Filter — Form';
     const widgetsPageLink = wcapf_admin_params.widgets_page_link;
 

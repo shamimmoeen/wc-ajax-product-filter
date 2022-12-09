@@ -118,17 +118,17 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Query Type', 'wc-ajax-product-filter')}
 					description={__(
-						'AND: products that have both options, OR: products that matched any option.',
+						'OR: products that matched any option, AND: products that have both options.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
 						{
-							label: __('AND', 'wc-ajax-product-filter'),
-							value: 'and',
-						},
-						{
 							label: __('OR', 'wc-ajax-product-filter'),
 							value: 'or',
+						},
+						{
+							label: __('AND', 'wc-ajax-product-filter'),
+							value: 'and',
 						},
 					]}
 					onChange={handleRadioChange}
@@ -193,7 +193,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Enable ComboBox', 'wc-ajax-product-filter')}
 					description={__(
-						'Whether to use jQuery Chosen library instead of the native select element.',
+						'Turns the native select element into a custom select box with improved design and behavior.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={filter[id]}
