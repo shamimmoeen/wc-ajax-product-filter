@@ -23,6 +23,7 @@ const ValueTypeNumber = ({ index }) => {
 
 	const {
 		number_display_type,
+		number_range_slider_display_values_as,
 		number_get_options,
 		auto_detect_min_max,
 		min_value,
@@ -74,7 +75,7 @@ const ValueTypeNumber = ({ index }) => {
 
 		if (showField) {
 			return (
-				<div className='number-ui-options'>
+				<>
 					<Checkbox
 						id={'auto_detect_min_max'}
 						index={index}
@@ -134,6 +135,7 @@ const ValueTypeNumber = ({ index }) => {
 						)}
 						value={step}
 						onChange={handleTextFieldChange}
+						min='1'
 					/>
 
 					<Text
@@ -141,7 +143,7 @@ const ValueTypeNumber = ({ index }) => {
 						index={index}
 						label={__('Value Prefix', 'wc-ajax-product-filter')}
 						description={__(
-							'Text to appear before the values. Example: A currency symbol, $.',
+							'This should be used for the unit. Example: $',
 							'wc-ajax-product-filter'
 						)}
 						value={value_prefix}
@@ -154,7 +156,7 @@ const ValueTypeNumber = ({ index }) => {
 						index={index}
 						label={__('Value Postfix', 'wc-ajax-product-filter')}
 						description={__(
-							'Text to appear after the values. Example: A currency symbol, €.',
+							'This should be used for the unit. Example: €',
 							'wc-ajax-product-filter'
 						)}
 						value={value_postfix}
@@ -167,101 +169,102 @@ const ValueTypeNumber = ({ index }) => {
 						index={index}
 						label={__('Values Separator', 'wc-ajax-product-filter')}
 						description={__(
-							'Text to appear between the min and max values. To add spaces, please use character entity.',
+							'Text to appear between the min and max values. Example: –',
 							'wc-ajax-product-filter'
 						)}
 						value={values_separator}
 						onChange={handleTextFieldChange}
 					/>
 
-					{'range_number' !== number_display_type && (
+					{'range_slider' === number_display_type &&
+						'plain_text' ===
+							number_range_slider_display_values_as && (
+							<>
+								<Text
+									id={'text_before_min_value'}
+									index={index}
+									label={__(
+										'Text before min value',
+										'wc-ajax-product-filter'
+									)}
+									description={__(
+										'Text to appear before the min value.',
+										'wc-ajax-product-filter'
+									)}
+									value={text_before_min_value}
+									onChange={handleTextFieldChange}
+								/>
+
+								<Text
+									id={'text_before_max_value'}
+									index={index}
+									label={__(
+										'Text before max value',
+										'wc-ajax-product-filter'
+									)}
+									description={__(
+										'Text to appear before the max value.',
+										'wc-ajax-product-filter'
+									)}
+									value={text_before_max_value}
+									onChange={handleTextFieldChange}
+								/>
+							</>
+						)}
+
+					<Checkbox
+						id={'format_numbers'}
+						index={index}
+						label={__('Format Numbers', 'wc-ajax-product-filter')}
+						description={__(
+							'Enable this if you want to format the numbers.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={format_numbers}
+						onChange={handleCheckboxChange}
+					/>
+
+					{'1' === format_numbers && (
 						<>
-							<Text
-								id={'text_before_min_value'}
+							<Number
+								id={'decimal_places'}
 								index={index}
 								label={__(
-									'Text before min value',
+									'Decimal Places',
 									'wc-ajax-product-filter'
 								)}
-								description={__(
-									'Text to appear before the min value. To add spaces, please use character entity.',
-									'wc-ajax-product-filter'
-								)}
-								value={text_before_min_value}
+								value={decimal_places}
 								onChange={handleTextFieldChange}
+								min='1'
+								max='6'
 							/>
 
 							<Text
-								id={'text_before_max_value'}
+								id={'thousand_separator'}
 								index={index}
 								label={__(
-									'Text before max value',
+									'Thousand Separator',
 									'wc-ajax-product-filter'
 								)}
-								description={__(
-									'Text to appear before the max value. To add spaces, please use character entity.',
-									'wc-ajax-product-filter'
-								)}
-								value={text_before_max_value}
+								value={thousand_separator}
 								onChange={handleTextFieldChange}
+								customClass='input-small'
 							/>
 
-							<Checkbox
-								id={'format_numbers'}
+							<Text
+								id={'decimal_separator'}
 								index={index}
 								label={__(
-									'Format Numbers',
+									'Decimal Separator',
 									'wc-ajax-product-filter'
 								)}
-								description={__(
-									'Enable this if you want to format the numbers.',
-									'wc-ajax-product-filter'
-								)}
-								isChecked={format_numbers}
-								onChange={handleCheckboxChange}
+								value={decimal_separator}
+								onChange={handleTextFieldChange}
+								customClass='input-small'
 							/>
-
-							{'1' === format_numbers && (
-								<>
-									<Number
-										id={'decimal_places'}
-										index={index}
-										label={__(
-											'Decimal Places',
-											'wc-ajax-product-filter'
-										)}
-										value={decimal_places}
-										onChange={handleTextFieldChange}
-									/>
-
-									<Text
-										id={'thousand_separator'}
-										index={index}
-										label={__(
-											'Thousand Separator',
-											'wc-ajax-product-filter'
-										)}
-										value={thousand_separator}
-										onChange={handleTextFieldChange}
-										customClass='input-small'
-									/>
-
-									<Text
-										id={'decimal_separator'}
-										index={index}
-										label={__(
-											'Decimal Separator',
-											'wc-ajax-product-filter'
-										)}
-										value={decimal_separator}
-										onChange={handleTextFieldChange}
-										customClass='input-small'
-									/>
-								</>
-							)}
 						</>
 					)}
-				</div>
+				</>
 			);
 		}
 	};

@@ -9880,10 +9880,10 @@ const filterRelationshipOptions = [{
   value: 'or'
 }];
 const removeEmptyOptions = [{
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Never show', 'wc-ajax-product-filter'),
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Always show', 'wc-ajax-product-filter'),
   value: 'show'
 }, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Always show', 'wc-ajax-product-filter'),
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Never show', 'wc-ajax-product-filter'),
   value: 'remove'
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show as disabled', 'wc-ajax-product-filter'),
@@ -10178,14 +10178,14 @@ const scrollWindowOptions = [{
   value: 'none'
 }];
 const scrollWindowForOptions = [{
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop and mobile', 'wc-ajax-product-filter'),
-  value: 'both'
-}, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop only', 'wc-ajax-product-filter'),
   value: 'desktop'
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mobile only', 'wc-ajax-product-filter'),
   value: 'mobile'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop and mobile', 'wc-ajax-product-filter'),
+  value: 'both'
 }];
 const scrollWindowWhenOptions = [{
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Immediately', 'wc-ajax-product-filter'),

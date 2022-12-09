@@ -1,0 +1,19 @@
+@mixin ltr {
+	$self: &;
+
+	@at-root body:not(.rtl) {
+		#{$self} {
+			@content;
+		}
+	}
+}
+
+@mixin rtl {
+	$self: &;
+
+	@at-root body.rtl {
+		#{$self} {
+			@content;
+		}
+	}
+}

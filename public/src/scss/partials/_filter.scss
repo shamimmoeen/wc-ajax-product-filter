@@ -1,5 +1,9 @@
+@import "../mixins";
+
 .wcapf-field-title {
 	margin: 0;
+	padding: 0;
+	font-size: var(--wcapf-field-title-font-size);
 }
 
 .wcapf-single-filter {
@@ -27,6 +31,33 @@
 
 		ul {
 			padding: 0 0 0 var(--wcapf-layered-nav-list-child-left-padding);
+		}
+	}
+
+	// TODO: Should be applied for native input elements.
+	li {
+		input[type="checkbox"],
+		input[type="radio"] {
+			@include ltr {
+				margin-right: var(--wcapf-native-checkbox-radio-space);
+
+				~ label {
+					margin-left: 0;
+				}
+			}
+
+			@include rtl {
+				margin-left: var(--wcapf-native-checkbox-radio-space);
+
+				~ label {
+					margin-right: 0;
+				}
+			}
+
+			&:focus-visible {
+				outline-offset: 1px;
+				outline: 1px dotted var(--wcapf-primary-color);
+			}
 		}
 	}
 
@@ -104,11 +135,14 @@
 
 @mixin label {
 	background: inherit;
+	box-shadow: none;
 	color: inherit;
 	cursor: pointer;
-	font-weight: inherit;
 	display: inline-block;
-	outline-offset: -1px;
+	font-size: 1em;
+	font-weight: normal;
+	line-height: 1;
+	outline: none;
 }
 
 .wcapf-labeled-nav {
@@ -125,6 +159,10 @@
 			margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
 			padding: var(--wcapf-labeled-nav-vr-padding) var(--wcapf-labeled-nav-hr-padding);
 
+			&:focus-visible {
+				border-color: var(--wcapf-primary-color);
+			}
+
 			&.checked {
 				background-color: var(--wcapf-filter-outline-color);
 
@@ -136,48 +174,128 @@
 	}
 }
 
-.wcapf-range-number,
-.wcapf-range-slider {
-	.range-wrapper {
+// The focus-within style of the chosen single dropdown.
+.wcapf-dropdown-nav .chosen-container-single.chosen-container-active:not(.chosen-with-drop) a {
+	border-color: var(--wcapf-primary-color);
+}
+
+.wcapf-range-wrapper {
+	.range-values {
 		> span {
 			align-items: center;
 			display: inline-flex; // Remove extra whitespace between span elements
+			white-space: nowrap;
 		}
 	}
-}
 
-.wcapf-range-number {
-	input[type="number"] {
+	input[type="text"] {
+		font-size: var(--wcapf-range-filter-input-font-size);
+		background-color: var(--wcapf-range-filter-input-bg-color);
+		border-style: solid;
+		border-width: var(--wcapf-range-filter-input-border-size);
+		border-color: var(--wcapf-range-filter-input-border-color);
+		border-radius: var(--wcapf-range-filter-input-border-radius);
+		box-shadow: none;
+		color: var(--wcapf-range-filter-input-color);
+		line-height: normal;
 		max-width: var(--wcapf-range-filter-input-max-width);
+		margin: 0;
+		outline: none;
+		padding: var(--wcapf-range-filter-input-padding);
+
+		&:focus {
+			border-color: var(--wcapf-primary-color);
+		}
+	}
+
+	.justify-values {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		gap: 0.875em;
+
+		&.display-values-as-plain_text {
+			.wcapf-range-separator {
+				display: none;
+			}
+		}
+
+		&.display-values-as-input_field {
+			input[type="text"],
+			input[type="number"] {
+				max-width: unset;
+				width: 100%;
+			}
+		}
+	}
+
+	.display-values-as-input_field {
+		.wcapf-range-start,
+		.wcapf-range-end {
+			position: relative;
+		}
+
+		.wcapf-range-unit {
+			position: absolute;
+		}
+
+		@mixin unit-left {
+			input[type="text"],
+			input[type="number"] {
+				text-align: right;
+				padding-left: var(--wcapf-range-filter-unit-size);
+				padding-right: calc(var(--wcapf-range-filter-input-padding) * 1.2);
+			}
+
+			.wcapf-range-unit {
+				left: .75em;
+			}
+		}
+
+		@mixin unit-right {
+			input[type="text"],
+			input[type="number"] {
+				text-align: left;
+				padding-right: var(--wcapf-range-filter-unit-size);
+				padding-left: calc(var(--wcapf-range-filter-input-padding) * 1.2);
+			}
+
+			.wcapf-range-unit {
+				right: .75em;
+			}
+		}
+
+		&.unit-position-left {
+			@include ltr {
+				@include unit-left;
+			}
+
+			@include rtl {
+				@include unit-right;
+			}
+		}
+
+		&.unit-position-right {
+			@include ltr {
+				@include unit-right;
+			}
+
+			@include rtl {
+				@include unit-left;
+			}
+		}
 	}
 }
 
 .wcapf-range-slider {
 	padding-bottom: var(--wcapf-range-slider-bottom-padding);
 
-	input[type="text"],
-	input[type="number"] {
-		max-width: var(--wcapf-range-filter-input-max-width);
+	.display-values-as-input_field {
+		margin-bottom: var(--wcapf-nouislider-input-field-margin-bottom);
 	}
 
-	.range-wrapper {
-		&.display-values-as-input_field {
-			margin-bottom: var(--wcapf-nouislider-input-field-margin-bottom);
-		}
-
-		&.display-values-as-plain_text {
-			margin-bottom: var(--wcapf-nouislider-plain-text-margin-bottom);
-		}
-
-		&.align-values-end-without-separator {
-			align-items: center;
-			display: flex;
-			justify-content: space-between;
-
-			.wcapf-range-separator {
-				display: none;
-			}
-		}
+	.display-values-as-plain_text {
+		margin-bottom: var(--wcapf-nouislider-plain-text-margin-bottom);
 	}
 }
 

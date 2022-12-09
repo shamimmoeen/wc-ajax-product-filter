@@ -20,16 +20,16 @@ const scrollWindowOptions = [
 
 const scrollWindowForOptions = [
 	{
-		label: __('Desktop and mobile', 'wc-ajax-product-filter'),
-		value: 'both',
-	},
-	{
 		label: __('Desktop only', 'wc-ajax-product-filter'),
 		value: 'desktop',
 	},
 	{
 		label: __('Mobile only', 'wc-ajax-product-filter'),
 		value: 'mobile',
+	},
+	{
+		label: __('Desktop and mobile', 'wc-ajax-product-filter'),
+		value: 'both',
 	},
 ];
 

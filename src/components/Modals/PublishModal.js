@@ -27,7 +27,7 @@ const PublishModal = ({ isOpen, closeModal }) => {
 		let description;
 		let code;
 
-		const shortcode = `[wcapf_form"]`;
+		const shortcode = `[wcapf_form]`;
 		const widgetName = 'WC Ajax Product Filter — Form';
 
 		const widgetsPageLink = wcapf_admin_params.widgets_page_link;

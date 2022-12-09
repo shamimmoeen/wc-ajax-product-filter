@@ -111,13 +111,17 @@ class WCAPF_API {
 		$form_filters = array();
 
 		foreach ( $filter_ids as $filter_id ) {
-			$filter = get_post( $filter_id );
+			$post = get_post( $filter_id );
 
-			if ( ! $filter || 'wcapf-filter' !== $filter->post_type ) {
+			if ( ! $post || 'wcapf-filter' !== $post->post_type ) {
 				continue;
 			}
 
-			$form_filters[] = json_decode( $filter->post_content );
+			$filter = json_decode( $post->post_content, true );
+
+			$filter = $this->parse_filter_settings( $filter, false );
+
+			$form_filters[] = $filter;
 		}
 
 		$form_settings = json_decode( $form->post_content );
@@ -129,6 +133,29 @@ class WCAPF_API {
 			'form_filters'  => $form_filters,
 			'form_settings' => $form_settings,
 		) );
+	}
+
+	private function parse_filter_settings( $filter, $for_db = true ) {
+		// Preserve spaces in values separator.
+		$value_may_have_spaces = array(
+			'value_prefix',
+			'value_postfix',
+			'values_separator',
+			'text_before_min_value',
+			'text_before_max_value',
+		);
+
+		foreach ( $value_may_have_spaces as $key ) {
+			$value = isset( $filter[ $key ] ) ? $filter[ $key ] : '';
+
+			if ( $for_db ) {
+				$filter[ $key ] = str_replace( ' ', '&nbsp;', $value );
+			} else {
+				$filter[ $key ] = str_replace( '&nbsp;', ' ', $value );
+			}
+		}
+
+		return $filter;
 	}
 
 	/**
@@ -155,7 +182,7 @@ class WCAPF_API {
 		$post_arr = array(
 			'ID'           => $form_id,
 			'post_title'   => $form_title,
-			'post_content' => wp_json_encode( $form_settings ),
+			'post_content' => wp_json_encode( $form_settings, JSON_UNESCAPED_UNICODE ),
 		);
 
 		$new_form_id = wp_update_post( $post_arr, true );
@@ -314,9 +341,11 @@ class WCAPF_API {
 				 */
 				$filter = apply_filters( 'wcapf_filter_data', $filter );
 
+				$filter = $this->parse_filter_settings( $filter );
+
 				$post_arr = array(
 					'ID'           => $new_filter_id,
-					'post_content' => wp_json_encode( $filter ),
+					'post_content' => wp_json_encode( $filter, JSON_UNESCAPED_UNICODE ),
 					'post_name'    => $post_name,
 					'menu_order'   => $filter_order,
 				);
@@ -337,9 +366,15 @@ class WCAPF_API {
 			wp_send_json_error( array( 'errors' => $errors ) );
 		}
 
+		$filters_for_ui = array();
+
+		foreach ( $filters as $filter ) {
+			$filters_for_ui[] = $this->parse_filter_settings( $filter, false );
+		}
+
 		$response = array(
 			'filter_keys'   => WCAPF_API_Utils::get_filter_keys(),
-			'form_filters'  => $filters,
+			'form_filters'  => $filters_for_ui,
 			'form_settings' => $form_settings,
 		);
 

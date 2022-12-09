@@ -49,6 +49,24 @@ function frontendCss() {
 		.pipe( touch() );
 }
 
+function chosenCss() {
+	const DEST = './public/lib/chosen';
+
+	return src( './public/lib/chosen/chosen.scss' )
+		.pipe( sourcemaps.init() )
+		.pipe( sass.sync( { outputStyle: 'expanded' } ).on( 'error', sass.logError ) )
+		.pipe( autoPrefix() )
+		.pipe( sourcemaps.write() )
+		.pipe( dest( DEST ) ) // Output non-minified css file
+		.pipe( browserSync.stream() )
+
+		.pipe( minCss() )
+		.pipe( rename( { extname: '.min.css' } ) )
+		.pipe( dest( DEST ) ) // Output minified css file
+
+		.pipe( touch() );
+}
+
 /**
  * @source https://github.com/gulpjs/gulp/blob/master/docs/recipes/minified-and-non-minified.md
  */
@@ -111,6 +129,7 @@ function browser() {
 
 	watch( './admin/src/scss/**/*.scss', backendCss );
 	watch( './public/src/scss/**/*.scss', frontendCss );
+	watch( './public/lib/chosen/chosen.scss', chosenCss );
 	watch( './admin/src/js/**/*.js', backendJs ).on( 'change', browserSync.reload );
 	watch( './public/src/js/**/*.js', frontendJs ).on( 'change', browserSync.reload );
 }

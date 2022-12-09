@@ -54,7 +54,7 @@ class WCAPF_Price_Filter {
 	 */
 	public function set_price_min_max( $items, $instance ) {
 		$display_type         = $instance->display_type;
-		$range_number_filters = WCAPF_Helper::range_number_filter_types();
+		$range_number_filters = WCAPF_Helper::range_input_display_types();
 
 		if ( in_array( $display_type, $range_number_filters ) ) {
 			return WCAPF_Product_Filter_Utils::get_price_range( $instance );

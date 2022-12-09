@@ -80,19 +80,22 @@ const ValueTypeNumber = ({ index }) => {
 				<Radio
 					id={'number_range_slider_display_values_as'}
 					index={index}
-					label={__('Display values as', 'wc-ajax-product-filter')}
+					label={__(
+						'Display slider values as',
+						'wc-ajax-product-filter'
+					)}
 					description={__(
 						'Determines how the slider values will be shown on the frontend.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
 						{
-							label: __('Plain Text', 'wc-ajax-product-filter'),
-							value: 'plain_text',
-						},
-						{
 							label: __('Input Field', 'wc-ajax-product-filter'),
 							value: 'input_field',
+						},
+						{
+							label: __('Plain Text', 'wc-ajax-product-filter'),
+							value: 'plain_text',
 						},
 					]}
 					onChange={handleRadioChange}
@@ -103,16 +106,35 @@ const ValueTypeNumber = ({ index }) => {
 	};
 
 	const alignValuesField = () => {
-		if ('range_slider' === number_display_type) {
+		if (
+			'range_slider' === number_display_type ||
+			'range_number' === number_display_type
+		) {
+			let label;
+			let description;
+
+			if ('range_slider' === number_display_type) {
+				label = __('Justify slider values', 'wc-ajax-product-filter');
+
+				description = __(
+					'Whether to justify the slider values by distributing space between or around them.',
+					'wc-ajax-product-filter'
+				);
+			} else {
+				label = __('Justify input fields', 'wc-ajax-product-filter');
+
+				description = __(
+					'Whether to justify the input fields by distributing space between or around them.',
+					'wc-ajax-product-filter'
+				);
+			}
+
 			return (
 				<Checkbox
 					id={'align_values_at_the_end'}
 					index={index}
-					label={__('Align values', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to align the slider values in the line; first item is on the start line, last item on the end line.',
-						'wc-ajax-product-filter'
-					)}
+					label={label}
+					description={description}
 					isChecked={align_values_at_the_end}
 					onChange={handleCheckboxChange}
 				/>

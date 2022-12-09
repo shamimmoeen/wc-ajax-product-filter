@@ -1,5 +1,5 @@
 .wcapf-range-slider {
-	--primary-color: 52, 93, 187;
+	//--primary-color: 52, 93, 187;
 
 	&.preset-1 {
 		--target-border-radius: 10px;
@@ -144,6 +144,9 @@
 		--wcapf-nouislider-handle-hr-size: var(--handle-size);
 		--wcapf-nouislider-handle-vr-size: var(--handle-size);
 
+		--wcapf-nouislider-input-field-margin-bottom: 1.9em;
+		--wcapf-nouislider-plain-text-margin-bottom: 1.4em;
+
 		.wcapf-noui-slider {
 			.wcapf-noui-handle {
 				border: 2px solid rgba(var(--primary-color), 1);
@@ -152,8 +155,11 @@
 			&:not([disabled]) .wcapf-noui-handle {
 				outline: none;
 
-				&:hover,
-				&:focus {
+				&:hover {
+					box-shadow: 0 0 0 8px rgba(var(--primary-color), .1);
+				}
+
+				&:focus-visible {
 					box-shadow: 0 0 0 8px rgba(var(--primary-color), .1);
 				}
 

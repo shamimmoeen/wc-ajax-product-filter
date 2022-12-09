@@ -415,8 +415,8 @@ class WCAPF_Helper {
 	/**
 	 * @return array
 	 */
-	public static function range_number_filter_types() {
-		return apply_filters( 'wcapf_range_number_filter_types', array( 'range_slider', 'range_number' ) );
+	public static function range_input_display_types() {
+		return array( 'range_slider', 'range_number' );
 	}
 
 	/**

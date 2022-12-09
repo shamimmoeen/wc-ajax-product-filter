@@ -171,7 +171,7 @@ const General = ({ index }) => {
 					index={index}
 					label={__('Value Type', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines the taxonomy terms value type.',
+						'Determines the value type of taxonomy terms.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
