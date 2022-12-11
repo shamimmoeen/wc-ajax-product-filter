@@ -117,11 +117,6 @@
 
 	.chosen-container {
 		width: 100% !important; // Important is required to make the 'chosen' element full-width.
-
-		a {
-			font-weight: normal;
-			text-decoration: none;
-		}
 	}
 }
 
@@ -143,6 +138,10 @@
 	font-weight: normal;
 	line-height: 1;
 	outline: none;
+	text-transform: none;
+	letter-spacing: normal;
+	min-height: auto;
+	height: auto;
 }
 
 .wcapf-labeled-nav {
@@ -174,11 +173,6 @@
 	}
 }
 
-// The focus-within style of the chosen single dropdown.
-.wcapf-dropdown-nav .chosen-container-single.chosen-container-active:not(.chosen-with-drop) a {
-	border-color: var(--wcapf-primary-color);
-}
-
 .wcapf-range-wrapper {
 	.range-values {
 		> span {
@@ -196,15 +190,18 @@
 		border-color: var(--wcapf-range-filter-input-border-color);
 		border-radius: var(--wcapf-range-filter-input-border-radius);
 		box-shadow: none;
-		color: var(--wcapf-range-filter-input-color);
-		line-height: normal;
+		line-height: 1;
 		max-width: var(--wcapf-range-filter-input-max-width);
 		margin: 0;
 		outline: none;
 		padding: var(--wcapf-range-filter-input-padding);
+		min-height: auto;
+		height: auto;
 
 		&:focus {
 			border-color: var(--wcapf-primary-color);
+			box-shadow: none;
+			outline: none;
 		}
 	}
 
