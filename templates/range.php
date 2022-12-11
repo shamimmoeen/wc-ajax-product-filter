@@ -28,6 +28,7 @@
  * @var string $thousand_separator
  * @var string $decimal_separator
  * @var string $slider_id
+ * @var string $slider_preset
  * @var string $filter_url
  * @var string $clear_filter_url
  */
@@ -90,7 +91,7 @@ $range_wrapper_classes = 'wcapf-range-wrapper';
 // Add slider preset class.
 if ( 'range_slider' === $display_type ) {
 	$range_wrapper_classes .= ' wcapf-range-slider';
-	$range_wrapper_classes .= ! empty( $slider_preset ) ? ' ' . $slider_preset : ' preset-5'; // TODO: Apply default preset.
+	$range_wrapper_classes .= ! empty( $slider_preset ) ? ' ' . $slider_preset : ' preset-1';
 } else {
 	$range_wrapper_classes .= ' wcapf-range-number';
 }

@@ -638,9 +638,13 @@ class WCAPF_Walker {
 
 		$attrs .= ' value="' . esc_attr( $item_value ) . '"';
 
+		if ( $this->hierarchical && $this->use_chosen ) {
+			$attrs .= ' class="depth-' . esc_attr( $item['depth'] ) . '"';
+		}
+
 		$option .= '<option' . $attrs . '>';
 
-		if ( $this->hierarchical ) {
+		if ( $this->hierarchical && ! $this->use_chosen ) {
 			$option .= $this->dropdown_item_indent( $item );
 		}
 

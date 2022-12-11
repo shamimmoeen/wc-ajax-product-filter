@@ -260,6 +260,7 @@ class WCAPF_Field_Instance {
 	private function parse_all_items_label( $all_items_label ) {
 		$type = $this->get_sub_field_value( 'type' );
 
+		// TODO: Prepare all items label.
 		if ( ! $all_items_label ) {
 			switch ( $type ) {
 				case 'category':

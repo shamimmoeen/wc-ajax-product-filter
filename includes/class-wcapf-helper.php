@@ -442,7 +442,7 @@ class WCAPF_Helper {
 	 * @return string
 	 */
 	public static function get_field_relations() {
-		$settings = WCAPF_Helper::get_settings();
+		$settings = self::get_settings();
 
 		return isset( $settings['filter_relationships'] ) ? $settings['filter_relationships'] : 'and';
 	}
@@ -735,6 +735,36 @@ class WCAPF_Helper {
 	 */
 	public static function is_wcfm_marketplace_found() {
 		return class_exists( 'WCFMmp' );
+	}
+
+	/**
+	 * Gets the primary color.
+	 *
+	 * @return array
+	 */
+	public static function get_primary_color() {
+		$settings = self::get_settings();
+
+		$hex = isset( $settings['primary_color'] ) ? $settings['primary_color'] : '#345DBB';
+
+		list( $r, $g, $b ) = sscanf( $hex, "#%02x%02x%02x" );
+
+		return array( $r, $g, $b );
+	}
+
+	/**
+	 * Gets the primary color.
+	 *
+	 * @return array
+	 */
+	public static function get_primary_accent_color() {
+		$settings = self::get_settings();
+
+		$hex = isset( $settings['primary_accent_color'] ) ? $settings['primary_accent_color'] : '#ffffff';
+
+		list( $r, $g, $b ) = sscanf( $hex, "#%02x%02x%02x" );
+
+		return array( $r, $g, $b );
 	}
 
 }

@@ -88,6 +88,17 @@ class WCAPF_Frontend_Scripts {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
 		);
 
+		// Add css variables.
+		list( $r, $g, $b ) = WCAPF_Helper::get_primary_color();
+		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_primary_accent_color();
+
+		$variables = ":root {
+			--wcapf-primary-color-rgb: $r, $g, $b;
+			--wcapf-primary-accent-color-rgb: $r2, $g2, $b2;
+		}";
+
+		wp_add_inline_style( 'wc-ajax-product-filter-public-styles', $variables );
+
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
 			? '.min.js'
 			: '.js';
@@ -181,6 +192,7 @@ class WCAPF_Frontend_Scripts {
 		}
 
 		$params = array(
+			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => 800, // In milliseconds.
 			'chosen_lib_search_threshold'              => 10,
 			'preserve_hierarchy_accordion_state'       => true,

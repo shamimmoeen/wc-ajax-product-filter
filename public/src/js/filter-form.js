@@ -8,6 +8,7 @@
  */
 
 const wcapf_params = wcapf_params || {
+	'is_rtl': '',
 	'filter_input_delay': '',
 	'chosen_lib_search_threshold': '',
 	'preserve_hierarchy_accordion_state': '',
@@ -86,13 +87,22 @@ jQuery( document ).ready( function( $ ) {
 
 		$root.find( '.wcapf-chosen-select' ).each( function() {
 			const $this   = $( this );
-			const options = {};
+			const options = {
+				inherit_select_classes: true,
+				inherit_option_classes: true,
+			};
+
+			if ( wcapf_params.is_rtl ) {
+				options['rtl'] = true;
+			}
 
 			const noResultsMessage = $this.attr( 'data-no-results-message' );
 
 			if ( noResultsMessage ) {
 				options[ 'no_results_text' ] = noResultsMessage;
 			}
+
+			// options[ 'disable_search' ] = true;
 
 			const searchThreshold = parseInt( wcapf_params.chosen_lib_search_threshold );
 
