@@ -1,0 +1,25 @@
+.wcapf-use-focus {
+	// For range inputs.
+	.wcapf-range-wrapper {
+		input[type="text"] {
+			&:focus {
+				border-color: var(--wcapf-primary-color);
+			}
+		}
+	}
+
+	// For native select(improved).
+	.wcapf-select-improved {
+		&:focus {
+			border-color: var(--wcapf-primary-color);
+		}
+	}
+
+	// For chosen single select.
+	.wcapf-chosen-select.chosen-container-active {
+		&:not(.chosen-with-drop) .chosen-choices,
+		&:not(.chosen-with-drop) .chosen-single {
+			border-color: var(--wcapf-chosen-active-color);
+		}
+	}
+}

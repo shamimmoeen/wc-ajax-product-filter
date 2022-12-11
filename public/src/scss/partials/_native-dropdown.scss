@@ -1,0 +1,42 @@
+@import "../data-image";
+@import "../mixins";
+
+.wcapf-dropdown-nav .wcapf-select-improved {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	outline: 0;
+	box-shadow: none;
+	font-size: 1em;
+	cursor: pointer;
+	text-overflow: '';
+	text-indent: 0.01px;
+	padding: .625em;
+	border: 1px solid var(--wcapf-dropdown-border-color);
+	color: var(--wcapf-dropdown-text-color);
+	background-color: #fff;
+
+	&:not(.wcapf-select-multiple) {
+		background-image: var(--wcapf-chevrons-icon);
+		background-repeat: no-repeat;
+		background-size: 0.9375em;
+
+		@include ltr {
+			background-position: right 0.3125em top 52%;
+			padding-right: 1.625em;
+		}
+
+		@include rtl {
+			background-position: left 0.3125em top 52%;
+			padding-left: 1.625em;
+		}
+	}
+
+	::-ms-expand {
+		display: none;
+	}
+
+	option {
+		padding: .625em;
+	}
+}

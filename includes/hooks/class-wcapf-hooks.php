@@ -43,11 +43,29 @@ class WCAPF_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
+		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
 		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
+	}
+
+	/**
+	 * Adds the classes into the body element.
+	 *
+	 * @param array $classes The classes.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public function add_body_classes( $classes ) {
+		if ( WCAPF_Helper::use_focus_style() ) {
+			$classes[] = 'wcapf-use-focus';
+		}
+
+		return $classes;
 	}
 
 	public function content_top() {
