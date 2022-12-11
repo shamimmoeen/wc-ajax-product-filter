@@ -38,6 +38,8 @@
 	li {
 		input[type="checkbox"],
 		input[type="radio"] {
+			margin: 0;
+
 			@include ltr {
 				margin-right: var(--wcapf-native-checkbox-radio-space);
 
@@ -199,7 +201,6 @@
 		height: auto;
 
 		&:focus {
-			border-color: var(--wcapf-primary-color);
 			box-shadow: none;
 			outline: none;
 		}

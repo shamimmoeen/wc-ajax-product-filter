@@ -582,6 +582,14 @@ class WCAPF_Walker {
 			$input_classes = 'wcapf-chosen-select';
 		} else {
 			$input_classes = 'wcapf-select';
+
+			if ( apply_filters( 'wcapf_try_to_improve_native_select', true ) ) {
+				$input_classes .= ' wcapf-select-improved';
+
+				if ( 'multiselect' === $display_type ) {
+					$input_classes .= ' wcapf-select-multiple';
+				}
+			}
 		}
 
 		$all_items_label = $this->all_items_label;

@@ -738,7 +738,20 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Determines if we enable the focus styles.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function use_focus_style() {
+		return apply_filters( 'wcapf_use_focus_style', true );
+	}
+
+	/**
 	 * Gets the primary color.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
@@ -754,6 +767,8 @@ class WCAPF_Helper {
 
 	/**
 	 * Gets the primary color.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
