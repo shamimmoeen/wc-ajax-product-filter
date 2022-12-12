@@ -35,6 +35,28 @@
 	}
 
 	&.preset-1 {
+		--handle-size: 1.5em;
+
+		--wcapf-nouislider-target-size: 0.25em;
+		--wcapf-nouislider-target-bg-color: #eef0f7;
+		--wcapf-nouislider-target-border-radius: 0;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-border-radius: 50%;
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				border: 1px solid #dee1e9;
+				box-shadow: rgba(17, 17, 26, 0.1) 0 1px 0;
+			}
+
+			@include focus-style-1;
+		}
+	}
+
+	&.preset-2 {
 		--handle-size: 1.3125em;
 
 		--wcapf-nouislider-target-size: 0.1875em;
@@ -53,7 +75,7 @@
 		}
 	}
 
-	&.preset-2 {
+	&.preset-3 {
 		--handle-size: 1.375em;
 
 		--wcapf-nouislider-target-size: 0.375em;
@@ -71,7 +93,7 @@
 		}
 	}
 
-	&.preset-3 {
+	&.preset-4 {
 		--handle-size: 1.75em;
 
 		--wcapf-nouislider-target-size: 0.875em;
@@ -89,7 +111,7 @@
 		}
 	}
 
-	&.preset-4 {
+	&.preset-5 {
 		--handle-size: 1.125em;
 
 		--wcapf-nouislider-target-size: 0.25em;
@@ -103,7 +125,7 @@
 		}
 	}
 
-	&.preset-5 {
+	&.preset-6 {
 		--handle-size: 1.625em;
 
 		--wcapf-nouislider-target-bg-color: rgba(var(--wcapf-primary-color-rgb), 0.1);
@@ -118,7 +140,7 @@
 		}
 	}
 
-	&.preset-6 {
+	&.preset-7 {
 		--handle-size: 1.5em;
 
 		--wcapf-nouislider-target-size: 0.5em;
@@ -133,7 +155,7 @@
 		}
 	}
 
-	&.preset-7 {
+	&.preset-8 {
 		--handle-size: 1.125em;
 
 		--wcapf-nouislider-target-size: 0.3125em;
@@ -148,7 +170,7 @@
 		}
 	}
 
-	&.preset-8 {
+	&.preset-9 {
 		--handle-size: 1.5em;
 
 		--wcapf-nouislider-target-size: 0.375em;
@@ -166,7 +188,7 @@
 		}
 	}
 
-	&.preset-9 {
+	&.preset-10 {
 		--target-border-radius: 0;
 		--handle-size: 1.75em;
 
@@ -187,7 +209,7 @@
 		}
 	}
 
-	&.preset-10 {
+	&.preset-11 {
 		--handle-size: 1.5em;
 
 		--wcapf-nouislider-target-size: 0.5em;
