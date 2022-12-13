@@ -14,7 +14,7 @@
 	padding-top: var(--wcapf-filter-inner-top-padding);
 }
 
-.wcapf-layered-nav {
+.wcapf-nav-filter .wcapf-layered-nav {
 	ul {
 		list-style-type: none;
 		margin: 0;
@@ -25,7 +25,7 @@
 		width: 100%;
 	}
 
-	li {
+	ul li {
 		margin: 0;
 		padding: var(--wcapf-layered-nav-list-vertical-spacing) 0;
 
@@ -34,32 +34,61 @@
 		}
 	}
 
-	// TODO: Should be applied for native input elements.
 	li {
-		input[type="checkbox"],
-		input[type="radio"] {
-			margin: 0;
-			outline: none;
+		.wcapf-layered-nav-item {
+			display: flex;
+			align-items: center;
 
-			@include ltr {
-				margin-right: var(--wcapf-native-checkbox-radio-space);
+			input[type="checkbox"],
+			input[type="radio"] {
+				margin: 0;
+				padding: 0;
+				outline: none;
 
-				~ label {
-					margin-left: 0;
+				@include ltr {
+					margin-right: var(--wcapf-native-checkbox-radio-space);
+				}
+
+				@include rtl {
+					margin-left: var(--wcapf-native-checkbox-radio-space);
 				}
 			}
 
-			@include rtl {
-				margin-left: var(--wcapf-native-checkbox-radio-space);
+			label {
+				font-weight: normal;
+				font-size: 1em;
+				color: inherit;
+				text-transform: none;
+				padding: 0;
+				margin: 0;
 
-				~ label {
-					margin-right: 0;
+				span {
+					display: inline-block;
+
+					// First space is the actual label, second span shows the count.
+					&:first-child {
+						@include ltr {
+							margin-right: 0.25em;
+						}
+
+						@include rtl {
+							margin-left: 0.25em;
+						}
+					}
 				}
 			}
+		}
+	}
 
-			&:focus-visible {
-				outline-offset: 1px;
-				outline: 1px dotted var(--wcapf-primary-color);
+	// The focus style of native checkbox and radio.
+	&:not(.stylish-checkbox-radio) {
+		li {
+			input[type="checkbox"],
+			input[type="radio"] {
+				&:focus-visible {
+					outline-offset: 1px;
+					outline: 1px dotted var(--wcapf-primary-color);
+				}
 			}
 		}
 	}
@@ -204,6 +233,7 @@
 		&:focus {
 			box-shadow: none;
 			outline: none;
+			background-color: var(--wcapf-range-filter-input-bg-color); // For storefront theme
 		}
 	}
 

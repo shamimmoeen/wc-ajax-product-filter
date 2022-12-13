@@ -1,0 +1,79 @@
+.stylish-checkbox-radio {
+	&.preset-2 {
+		*,
+		::before,
+		::after {
+			box-sizing: border-box;
+		}
+
+		// Increase the vertical spacing when using stylish checkbox and radio.
+		//--wcapf-layered-nav-list-vertical-spacing: .4em;
+
+		--wcapf-stylish-checkbox-radio-size: 16px;
+		--wcapf-stylish-checkbox-radio-border-color: var(--wcapf-dropdown-border-color);
+		--wcapf-stylish-checkbox-radio-border-size: 1px;
+		--wcapf-stylish-checkbox-border-radius: 2px;
+		--wcapf-stylish-checkbox-checked-width: 5px;
+		--wcapf-stylish-checkbox-checked-height: 9px;
+		--wcapf-stylish-radio-checked-size: 6px;
+
+		input:where([type="checkbox"], [type="radio"]) {
+			-webkit-appearance: none;
+			appearance: none;
+			width: var(--wcapf-stylish-checkbox-radio-size);
+			height: var(--wcapf-stylish-checkbox-radio-size);
+			border: var(--wcapf-stylish-checkbox-radio-border-size) solid var(--wcapf-stylish-checkbox-radio-border-color);
+			border-radius: var(--wcapf-stylish-checkbox-border-radius);
+			background-color: #fff;
+			position: relative;
+			outline: none;
+			display: inline-flex;
+			flex-shrink: 0;
+
+			&:focus {
+				outline: none;
+			}
+
+			&:focus-visible {
+				border-color: var(--wcapf-primary-color);
+			}
+		}
+
+		input[type="radio"] {
+			border-radius: 50%;
+		}
+
+		input:where([type="checkbox"], [type="radio"]):disabled {
+			background: #eee;
+		}
+
+		input[type="checkbox"]:checked {
+			&::before {
+				content: '';
+				left: 50%;
+				top: calc(50% - 1px);
+				transform: translate(-50%, -50%) rotate(45deg);
+				width: var(--wcapf-stylish-checkbox-checked-width);
+				height: var(--wcapf-stylish-checkbox-checked-height);
+				border-style: solid;
+				border-color: var(--wcapf-primary-color);
+				border-width: 0 2px 2px 0;
+				position: absolute;
+			}
+		}
+
+		input[type="radio"]:checked {
+			&::before {
+				content: '';
+				width: var(--wcapf-stylish-radio-checked-size);
+				height: var(--wcapf-stylish-radio-checked-size);
+				background-color: var(--wcapf-primary-color);
+				border-radius: 10px;
+				left: 50%;
+				top: 50%;
+				position: absolute;
+				transform: translate(-50%, -50%);
+			}
+		}
+	}
+}
