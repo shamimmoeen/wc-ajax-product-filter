@@ -749,6 +749,17 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Determines if we enable the focus styles.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function use_stylish_checkbox_radio() {
+		return apply_filters( 'wcapf_use_stylish_checkbox_radio', true );
+	}
+
+	/**
 	 * Gets the primary color.
 	 *
 	 * @since 4.0.0

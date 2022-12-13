@@ -419,7 +419,7 @@ $chosen-search: var(--wcapf-search-icon);
 			position: relative;
 			padding: 0 1.25em 0 .375em; // 20px, 8px
 			border: var(--wcapf-chosen-search-choice-border-size) solid var(--wcapf-chosen-search-choice-border-color);
-			border-radius: 3px;
+			border-radius: var(--wcapf-chosen-border-radius);
 			max-width: 100%;
 			background-color: var(--wcapf-chosen-active-color);
 			color: var(--wcapf-chosen-active-text-color);

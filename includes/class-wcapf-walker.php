@@ -158,6 +158,8 @@ class WCAPF_Walker {
 	/**
 	 * The term id for current taxonomy archive page.
 	 *
+	 * TODO: Show the term as checked for the current term page.
+	 *
 	 * @var int
 	 */
 	private $current_tax;
@@ -294,6 +296,7 @@ class WCAPF_Walker {
 
 		if ( in_array( $display_type, $list_types ) ) {
 			$wrapper_classes = 'wcapf-layered-nav display-type-' . $display_type;
+			$wrapper_classes .= ' stylish-checkbox-radio preset-2';
 		} elseif ( in_array( $display_type, $dropdown_types ) ) {
 			$wrapper_classes = 'wcapf-dropdown-nav';
 		} else {
@@ -455,8 +458,10 @@ class WCAPF_Walker {
 
 		$inner = $this->menu_item_inner( $item, $unique_id, $depth );
 
+		$html .= '<div class="wcapf-layered-nav-item">';
 		$html .= $input_markup;
 		$html .= $inner;
+		$html .= '</div>';
 
 		return $html;
 	}
@@ -555,6 +560,7 @@ class WCAPF_Walker {
 
 			$html .= '<li' . $attrs . '>';
 			$html .= $this->menu_item( $item, $depth );
+			$html .= '</li>';
 		}
 
 		$html .= '</ul>';
