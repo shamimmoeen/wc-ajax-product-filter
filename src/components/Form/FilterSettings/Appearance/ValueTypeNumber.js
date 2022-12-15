@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { find } from 'lodash';
-import Checkbox from '../../../Field/Checkbox';
+import ToggleGroup from '../../../Field/ToggleGroup';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
 import { foundProVersion } from '../../../utils';
@@ -12,7 +12,7 @@ import useFields from './useFields';
 const ValueTypeNumber = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
+	const { handleRadioChange, handleToggleGroupChange, handleSelectChange } =
 		useFormFilterData(state, dispatch);
 
 	const { formFilters } = state;
@@ -35,7 +35,7 @@ const ValueTypeNumber = ({ index }) => {
 	const {
 		number_display_type,
 		number_range_slider_display_values_as,
-		align_values_at_the_end,
+		alignment,
 	} = filter;
 
 	const displayTypeField = () => {
@@ -105,38 +105,36 @@ const ValueTypeNumber = ({ index }) => {
 		}
 	};
 
-	const alignValuesField = () => {
+	const alignmentField = () => {
 		if (
-			'range_slider' === number_display_type ||
-			'range_number' === number_display_type
+			'range_slider' === number_display_type &&
+			'plain_text' === number_range_slider_display_values_as
 		) {
-			let label;
-			let description;
-
-			if ('range_slider' === number_display_type) {
-				label = __('Justify slider values', 'wc-ajax-product-filter');
-
-				description = __(
-					'Whether to justify the slider values by distributing space between or around them.',
-					'wc-ajax-product-filter'
-				);
-			} else {
-				label = __('Justify input fields', 'wc-ajax-product-filter');
-
-				description = __(
-					'Whether to justify the input fields by distributing space between or around them.',
-					'wc-ajax-product-filter'
-				);
-			}
-
 			return (
-				<Checkbox
-					id={'align_values_at_the_end'}
+				<ToggleGroup
+					id={'alignment'}
 					index={index}
-					label={label}
-					description={description}
-					isChecked={align_values_at_the_end}
-					onChange={handleCheckboxChange}
+					label={__('Alignment', 'wc-ajax-product-filter')}
+					description={__(
+						'Whether to align the text in the center or justified by distributing space between them.',
+						'wc-ajax-product-filter'
+					)}
+					options={[
+						{
+							label: __('Default', 'wc-ajax-product-filter'),
+							value: 'default',
+						},
+						{
+							label: __('Centered', 'wc-ajax-product-filter'),
+							value: 'centered',
+						},
+						{
+							label: __('Justified', 'wc-ajax-product-filter'),
+							value: 'justified',
+						},
+					]}
+					value={alignment}
+					onChange={handleToggleGroupChange}
 				/>
 			);
 		}
@@ -148,7 +146,7 @@ const ValueTypeNumber = ({ index }) => {
 
 			{displayValuesField()}
 
-			{alignValuesField()}
+			{alignmentField()}
 
 			{enableMultipleFilterField('number_range_enable_multiple_filter')}
 

@@ -12,7 +12,7 @@
  * @var string $filter_key
  * @var string $display_type
  * @var string $display_values_as
- * @var string $align_at_the_end
+ * @var string $alignment
  * @var string $min_value
  * @var string $max_value
  * @var string $range_min_value
@@ -104,8 +104,16 @@ if ( 'range_number' === $display_type ) {
 }
 
 $wrapper_classes .= ' display-values-as-' . $display_values_as;
-$wrapper_classes .= $align_at_the_end ? ' justify-values' : '';
-$wrapper_classes .= ' unit-position-' . $unit_position;
+
+if ( $unit_position ) {
+	$wrapper_classes .= ' unit-position-' . $unit_position;
+}
+
+if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
+	$wrapper_classes .= ' justify-between';
+} elseif ( 'centered' === $alignment ) {
+	$wrapper_classes .= ' justify-center';
+}
 ?>
 
 <div class="<?php echo esc_attr( $range_wrapper_classes ); ?>" <?php echo $attrs; ?>>

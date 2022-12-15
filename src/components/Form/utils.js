@@ -229,7 +229,7 @@ export function filterDefaultData() {
 		// Price Filter
 		number_display_type: 'range_slider',
 		number_range_slider_display_values_as: 'input_field',
-		align_values_at_the_end: '1',
+		alignment: 'default',
 		number_range_enable_multiple_filter: '',
 		number_range_query_type: 'or',
 		number_range_select_all_items_label: '',
