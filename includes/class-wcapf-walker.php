@@ -296,7 +296,7 @@ class WCAPF_Walker {
 
 		if ( in_array( $display_type, $list_types ) ) {
 			$wrapper_classes = 'wcapf-layered-nav display-type-' . $display_type;
-			$wrapper_classes .= ' stylish-checkbox-radio preset-2';
+			$wrapper_classes .= ' stylish-checkbox-radio';
 		} elseif ( in_array( $display_type, $dropdown_types ) ) {
 			$wrapper_classes = 'wcapf-dropdown-nav';
 		} else {
@@ -346,17 +346,16 @@ class WCAPF_Walker {
 			foreach ( $items as $item ) {
 				$increment ++;
 
-				$depth = $item['depth'];
-
 				if ( 1 === $increment ) {
 					$html .= $this->hierarchical_menu_start_markup( $parent );
 				}
 
-				$html .= '<li>';
-				$html .= $this->menu_item( $item, $depth );
+				$has_children = isset( $item['children'] );
 
-				if ( isset( $item['children'] ) ) {
-					$html .= $this->get_hierarchy_accordion_html( $item );
+				$html .= '<li>';
+				$html .= $this->menu_item( $item, $has_children );
+
+				if ( $has_children ) {
 					$html .= $this->build_hierarchical_menu( $item['children'], $item );
 				}
 
@@ -414,12 +413,12 @@ class WCAPF_Walker {
 	/**
 	 * Menu item.
 	 *
-	 * @param array $item  The item array.
-	 * @param int   $depth The item depth.
+	 * @param array $item         The item array.
+	 * @param bool  $has_children Determines if we insert the accordion toggle.
 	 *
 	 * @return string
 	 */
-	private function menu_item( $item, $depth ) {
+	private function menu_item( $item, $has_children = false ) {
 		$html         = '';
 		$checked      = '';
 		$input_markup = '';
@@ -431,21 +430,18 @@ class WCAPF_Walker {
 			$checked .= ' checked="checked"';
 		}
 
-		if ( $this->enable_multiple_filter ) {
-			$input_name .= '[]';
-		}
-
 		$item_id    = $item['id'];
 		$item_value = rawurlencode( $item['id'] );
 		$_form_id   = $this->form_id ? $this->form_id . '-' : '';
-		$unique_id  = $filter_key . '-input-' . $this->filter_id . '-' . $_form_id . $item_id;
+		$unique_id  = $filter_key . '-' . $this->filter_id . '-' . $_form_id . $item_id;
 		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
 
 		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
-		$input_markup .= ' id="' . $unique_id . '"';
+		$input_markup .= ' id="' . esc_attr( $unique_id ) . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
 		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
 		$input_markup .= ' data-url="' . esc_url( $filter_url ) . '"';
+		$input_markup .= ' aria-invalid="false"';
 
 		/**
 		 * Why does the checkbox stay checked when reloading the page?
@@ -456,11 +452,37 @@ class WCAPF_Walker {
 
 		$input_markup .= $checked . '>';
 
-		$inner = $this->menu_item_inner( $item, $unique_id, $depth );
+		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
+
+		$inner = '<span class="wcapf-layered-nav-item-label">';
+		$inner .= wp_kses_post( $name );
+
+		$count = $item['count'];
+
+		if ( $this->show_count && '-1' !== $count ) {
+			$for_screen_reader = sprintf(
+				_n( '%d product', '%d products', $count, 'wc-ajax-product-filter' ),
+				number_format_i18n( $count )
+			);
+
+			$inner .= '<span class="wcapf-nav-item-count">';
+			$inner .= '<span aria-hidden="true">' . esc_html( $count ) . '</span>';
+			$inner .= '<span class="screen-reader-text">' . esc_html( $for_screen_reader ) . '</span>';
+			$inner .= '</span>';
+		}
+
+		$inner .= '</span>';
 
 		$html .= '<div class="wcapf-layered-nav-item">';
+		$html .= '<label for="' . esc_attr( $unique_id ) . '">';
 		$html .= $input_markup;
 		$html .= $inner;
+		$html .= '</label>';
+
+		if ( $has_children ) {
+			$html .= $this->get_hierarchy_accordion_html( $item, $unique_id );
+		}
+
 		$html .= '</div>';
 
 		return $html;
@@ -490,49 +512,30 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * Menu item inner content.
-	 *
-	 * @param array $item  The item array.
-	 * @param mixed $depth The item depth.
+	 * @param array  $item      The item data.
+	 * @param string $unique_id The unique identifier.
 	 *
 	 * @return string
 	 */
-	private function menu_item_inner( $item, $unique_id, $depth = null ) {
-		$inner = '<label for="' . esc_attr( $unique_id ) . '">';
-
-		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
-
-		$inner .= '<span>' . wp_kses_post( $name ) . '</span>';
-
-		$count = $item['count'];
-
-		if ( $this->show_count && '-1' !== $count ) {
-			$inner .= '<span class="count">' . esc_html( $count ) . '</span>';
-		}
-
-		$inner .= '</label>';
-
-		return apply_filters( 'wcapf_tree_item_inner', $inner, $item, $unique_id, $this, $depth );
-	}
-
-	/**
-	 * @param array $item The item data.
-	 *
-	 * @return string
-	 */
-	private function get_hierarchy_accordion_html( $item ) {
+	private function get_hierarchy_accordion_html( $item, $unique_id ) {
 		$html = '';
 
 		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
-			$classes = 'hierarchy-accordion-toggle';
+			$classes   = 'wcapf-hierarchy-accordion-toggle';
+			$is_active = 'false';
 
 			if ( $this->item_active_as_ancestor( $item ) ) {
-				$classes .= ' active';
+				$is_active = 'true';
 			}
 
-			$toggle_content = apply_filters( 'wcapf_hierarchy_accordion_toggle_content', '' );
+			$aria_label = sprintf( __( 'Expand/Collapse %s', 'wc-ajax-product-filter' ), $item['name'] );
 
-			$html .= '<span class="' . esc_attr( $classes ) . '" tabindex="0">' . $toggle_content . '</span>';
+			$html .= '<span';
+			$html .= ' class="' . $classes . '"';
+			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
+			$html .= ' aria-label="' . esc_attr( $aria_label ) . '"';
+			$html .= ' data-id="' . $unique_id . '"';
+			$html .= '></span>';
 		}
 
 		return $html;
@@ -545,7 +548,6 @@ class WCAPF_Walker {
 	 */
 	private function build_non_hierarchical_menu( $items ) {
 		$html  = '';
-		$depth = 0;
 		$index = 0;
 
 		if ( ! $items ) {
@@ -559,7 +561,7 @@ class WCAPF_Walker {
 			$attrs = apply_filters( 'wcapf_non_hierarchical_menu_item_attrs', '', $index, $this, $item );
 
 			$html .= '<li' . $attrs . '>';
-			$html .= $this->menu_item( $item, $depth );
+			$html .= $this->menu_item( $item );
 			$html .= '</li>';
 		}
 
@@ -748,7 +750,7 @@ class WCAPF_Walker {
 		$html  .= wp_kses_post( $label );
 
 		if ( $this->show_count ) {
-			$html .= '<span class="count">' . $item['count'] . '</span>';
+			$html .= '<span class="wcapf-nav-item-count">' . $item['count'] . '</span>';
 		}
 
 		$html .= '</button>';
@@ -771,6 +773,32 @@ class WCAPF_Walker {
 		$wrapper_attrs .= 'data-filter-key="' . $this->filter_key . '"';
 
 		return $wrapper_attrs;
+	}
+
+	/**
+	 * Menu item inner content.
+	 *
+	 * @param array $item  The item array.
+	 * @param mixed $depth The item depth.
+	 *
+	 * @return string
+	 */
+	private function menu_item_inner( $item, $unique_id, $depth = null ) {
+		$inner = '<label for="' . esc_attr( $unique_id ) . '">';
+
+		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
+
+		$inner .= '<span>' . wp_kses_post( $name ) . '</span>';
+
+		$count = $item['count'];
+
+		if ( $this->show_count && '-1' !== $count ) {
+			$inner .= '<span class="wcapf-nav-item-count">' . esc_html( $count ) . '</span>';
+		}
+
+		$inner .= '</label>';
+
+		return apply_filters( 'wcapf_tree_item_inner', $inner, $item, $unique_id, $this, $depth );
 	}
 
 }

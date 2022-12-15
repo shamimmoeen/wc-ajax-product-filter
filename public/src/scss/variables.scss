@@ -20,9 +20,6 @@ body {
 	--wcapf-filter-checked-outline-color: #333;
 	--wcapf-filter-inner-top-padding: 1em; // 1.4em
 	--wcapf-filter-outline-color: #e9e9e9; // #ddd // #d8d8da // #ccd0dc // #ced4da // #e9e9e9
-	--wcapf-hierarchy-accordion-toggle-bg-color: #ddd;
-	--wcapf-hierarchy-accordion-toggle-size: 14px;
-	--wcapf-hierarchy-accordion-toggle-space: .4em;
 	--wcapf-labeled-nav-border-radius: 0.375em;
 	--wcapf-labeled-nav-border-size: 1px;
 	--wcapf-labeled-nav-count-opacity: .8;
@@ -32,7 +29,7 @@ body {
 	--wcapf-layered-nav-item-disabled-cursor: not-allowed;
 	--wcapf-layered-nav-item-disabled-opacity: .5;
 	--wcapf-layered-nav-list-child-left-padding: 1.618em;
-	--wcapf-layered-nav-list-vertical-spacing: .2em;
+	--wcapf-layered-nav-list-vertical-spacing: .4em;
 	--wcapf-nouislider-input-field-margin-bottom: 1.5em;
 	--wcapf-nouislider-plain-text-margin-bottom: 1em;
 	--wcapf-range-slider-bottom-padding: 1em;
@@ -51,13 +48,13 @@ body {
 	--wcapf-range-filter-input-height: 2.5em;
 	--wcapf-range-filter-input-padding: 0.625em;
 	--wcapf-range-filter-unit-size: 2em;
-	--wcapf-range-filter-input-max-width: 80px;
+	--wcapf-range-filter-input-max-width: 110px;
 	--wcapf-range-filter-input-border-size: 1px;
 	--wcapf-range-filter-input-border-color: #ced4da;
 	--wcapf-range-filter-input-border-radius: 0.25em;
 
-	// Native Checkbox/Radio
-	--wcapf-native-checkbox-radio-space: 0.5em;
+	// Checkbox/Radio
+	--wcapf-checkbox-radio-space: 0.5em;
 
 	--wcapf-dropdown-border-color: #ced4da; // #ccd0dc // #d8d8da // #ced4da
 	--wcapf-dropdown-text-color: inherit;
