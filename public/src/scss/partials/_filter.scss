@@ -215,7 +215,11 @@
 		}
 	}
 
-	.justify-values {
+	.justify-center {
+		text-align: center;
+	}
+
+	.justify-between {
 		align-items: center;
 		display: flex;
 		justify-content: space-between;

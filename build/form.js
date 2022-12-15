@@ -9938,7 +9938,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Field/ToggleGroup */ "./src/components/Field/ToggleGroup.js");
 /* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Field/Radio */ "./src/components/Field/Radio.js");
 /* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Field/Select */ "./src/components/Field/Select.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils */ "./src/components/utils.js");
@@ -9968,7 +9968,7 @@ const ValueTypeNumber = _ref => {
   } = (0,_FormContext__WEBPACK_IMPORTED_MODULE_7__.useForm)();
   const {
     handleRadioChange,
-    handleCheckboxChange,
+    handleToggleGroupChange,
     handleSelectChange
   } = (0,_useFormFilterData__WEBPACK_IMPORTED_MODULE_8__["default"])(state, dispatch);
   const {
@@ -9990,7 +9990,7 @@ const ValueTypeNumber = _ref => {
   const {
     number_display_type,
     number_range_slider_display_values_as,
-    align_values_at_the_end
+    alignment
   } = filter;
 
   const displayTypeField = () => {
@@ -10043,31 +10043,30 @@ const ValueTypeNumber = _ref => {
     }
   };
 
-  const alignValuesField = () => {
-    if ('range_slider' === number_display_type || 'range_number' === number_display_type) {
-      let label;
-      let description;
-
-      if ('range_slider' === number_display_type) {
-        label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Justify slider values', 'wc-ajax-product-filter');
-        description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to justify the slider values by distributing space between or around them.', 'wc-ajax-product-filter');
-      } else {
-        label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Justify input fields', 'wc-ajax-product-filter');
-        description = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to justify the input fields by distributing space between or around them.', 'wc-ajax-product-filter');
-      }
-
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: 'align_values_at_the_end',
+  const alignmentField = () => {
+    if ('range_slider' === number_display_type && 'plain_text' === number_range_slider_display_values_as) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ToggleGroup__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        id: 'alignment',
         index: index,
-        label: label,
-        description: description,
-        isChecked: align_values_at_the_end,
-        onChange: handleCheckboxChange
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Alignment', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to align the text in the center or justified by distributing space between them.', 'wc-ajax-product-filter'),
+        options: [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Default', 'wc-ajax-product-filter'),
+          value: 'default'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Centered', 'wc-ajax-product-filter'),
+          value: 'centered'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Justified', 'wc-ajax-product-filter'),
+          value: 'justified'
+        }],
+        value: alignment,
+        onChange: handleToggleGroupChange
       });
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), alignValuesField(), enableMultipleFilterField('number_range_enable_multiple_filter'), queryTypeField('number_range_query_type'), allItemsLabelField('number_range_select_all_items_label'), useChosenField('number_range_use_chosen'), allItemsLabelFieldForUseChosen('number_range_select_all_items_label'), noResultsMessageField('number_range_chosen_no_results_message'), showCountField('number_range_show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), alignmentField(), enableMultipleFilterField('number_range_enable_multiple_filter'), queryTypeField('number_range_query_type'), allItemsLabelField('number_range_select_all_items_label'), useChosenField('number_range_use_chosen'), allItemsLabelFieldForUseChosen('number_range_select_all_items_label'), noResultsMessageField('number_range_chosen_no_results_message'), showCountField('number_range_show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ValueTypeNumber);
@@ -15156,7 +15155,7 @@ function filterDefaultData() {
     // Price Filter
     number_display_type: 'range_slider',
     number_range_slider_display_values_as: 'input_field',
-    align_values_at_the_end: '1',
+    alignment: 'default',
     number_range_enable_multiple_filter: '',
     number_range_query_type: 'or',
     number_range_select_all_items_label: '',
