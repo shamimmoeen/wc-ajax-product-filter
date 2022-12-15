@@ -24,17 +24,21 @@ class WCAPF_Form {
 		if ( $form ) {
 			$this->form = $form;
 		} else {
-			$this->form = $this->get_form();
+			$this->form = $this->retrieve_form();
 		}
 	}
 
-	public function get_form() {
+	private function retrieve_form() {
 		global $wcapf_form;
 
 		return $wcapf_form;
 	}
 
 	public function render_form() {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
 		echo '<div class="wcapf-filter-form" id="' . $this->get_property( 'form_id' ) . '">';
 
 		if ( $this->get_property( 'show_form_title' ) ) {
@@ -74,6 +78,16 @@ class WCAPF_Form {
 
 		echo '</div><!-- end form fields -->';
 		echo '</div><!-- end form -->';
+
+		$this->set_done();
+	}
+
+	private function should_we_proceed() {
+		if ( isset( $this->form['found'] ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private function get_property( $property ) {
@@ -373,6 +387,12 @@ class WCAPF_Form {
 		$this->before_field( $classes, $field_instance );
 		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		$this->after_field( $field_instance );
+	}
+
+	private function set_done() {
+		global $wcapf_form;
+
+		$wcapf_form['found'] = true;
 	}
 
 }

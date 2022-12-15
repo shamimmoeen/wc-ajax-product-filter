@@ -144,7 +144,7 @@
 }
 /* Disabled state;
  */
-[disabled] {
+.wcapf-noui-slider[disabled] {
   opacity: var(--wcapf-nouislider-disabled-opacity);
 }
 [disabled].wcapf-noui-target,

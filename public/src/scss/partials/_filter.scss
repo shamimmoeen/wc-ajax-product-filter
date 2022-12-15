@@ -1,5 +1,9 @@
 @import "../mixins";
 
+.wcapf-single-filter {
+	@include box-sizing;
+}
+
 .wcapf-field-title {
 	margin: 0;
 	padding: 0;
@@ -16,65 +20,68 @@
 
 .wcapf-nav-filter .wcapf-layered-nav {
 	ul {
+		border: none;
 		list-style-type: none;
 		margin: 0;
-	}
-
-	> ul {
 		padding: 0;
 		width: 100%;
 	}
 
 	ul li {
+		border: none;
 		margin: 0;
-		padding: var(--wcapf-layered-nav-list-vertical-spacing) 0;
+		padding: 0;
+
+		&:not(:last-child) {
+			margin-bottom: var(--wcapf-layered-nav-list-vertical-spacing);
+		}
 
 		ul {
-			padding: 0 0 0 var(--wcapf-layered-nav-list-child-left-padding);
+			li:first-child {
+				margin-top: var(--wcapf-layered-nav-list-vertical-spacing);
+			}
+
+			@include ltr {
+				padding-left: var(--wcapf-layered-nav-list-child-left-padding);
+			}
+
+			@include rtl {
+				padding-right: var(--wcapf-layered-nav-list-child-left-padding);
+			}
 		}
 	}
 
 	li {
 		.wcapf-layered-nav-item {
-			display: flex;
 			align-items: center;
+			justify-content: space-between;
+			display: flex;
+			position: relative;
+
+			label {
+				align-items: center;
+				color: inherit;
+				cursor: pointer;
+				display: flex;
+				font-size: 1em;
+				font-weight: normal;
+				margin: 0;
+				padding: 0;
+				text-transform: none;
+			}
 
 			input[type="checkbox"],
 			input[type="radio"] {
 				margin: 0;
 				padding: 0;
-				outline: none;
+				cursor: pointer;
 
 				@include ltr {
-					margin-right: var(--wcapf-native-checkbox-radio-space);
+					margin-right: var(--wcapf-checkbox-radio-space);
 				}
 
 				@include rtl {
-					margin-left: var(--wcapf-native-checkbox-radio-space);
-				}
-			}
-
-			label {
-				font-weight: normal;
-				font-size: 1em;
-				color: inherit;
-				text-transform: none;
-				padding: 0;
-				margin: 0;
-
-				span {
-					display: inline-block;
-
-					// First space is the actual label, second span shows the count.
-					&:first-child {
-						@include ltr {
-							margin-right: 0.25em;
-						}
-
-						@include rtl {
-							margin-left: 0.25em;
-						}
-					}
+					margin-left: var(--wcapf-checkbox-radio-space);
 				}
 			}
 		}
@@ -85,41 +92,12 @@
 		li {
 			input[type="checkbox"],
 			input[type="radio"] {
+				outline: none;
+
 				&:focus-visible {
 					outline-offset: 1px;
 					outline: 1px dotted var(--wcapf-primary-color);
 				}
-			}
-		}
-	}
-
-	.item-children {
-		> li:first-child {
-			padding-top: calc(var(--wcapf-layered-nav-list-vertical-spacing) * 2);
-		}
-
-		> li:last-child {
-			padding-bottom: 0;
-		}
-	}
-
-	.hierarchy-accordion-toggle {
-		background-color: var(--wcapf-hierarchy-accordion-toggle-bg-color);
-		cursor: pointer;
-		display: inline-block;
-		line-height: var(--wcapf-hierarchy-accordion-toggle-size);
-		margin-left: var(--wcapf-hierarchy-accordion-toggle-space);
-		text-align: center;
-		user-select: none;
-		width: var(--wcapf-hierarchy-accordion-toggle-size);
-
-		&::before {
-			content: '+';
-		}
-
-		&.active {
-			&::before {
-				content: '-';
 			}
 		}
 	}
@@ -128,7 +106,7 @@
 .wcapf-layered-nav,
 .wcapf-labeled-nav {
 	&:not(.display-type-color):not(.display-type-image) {
-		.count {
+		.wcapf-nav-item-count {
 			opacity: .6;
 
 			&::before {
@@ -161,7 +139,7 @@
 }
 
 @mixin label {
-	background: inherit;
+	background: #fff;
 	box-shadow: none;
 	color: inherit;
 	cursor: pointer;
@@ -197,7 +175,7 @@
 			&.checked {
 				background-color: var(--wcapf-filter-outline-color);
 
-				.count {
+				.wcapf-nav-item-count {
 					opacity: var(--wcapf-labeled-nav-count-opacity);
 				}
 			}
@@ -215,13 +193,13 @@
 	}
 
 	input[type="text"] {
-		font-size: var(--wcapf-range-filter-input-font-size);
 		background-color: var(--wcapf-range-filter-input-bg-color);
 		border-style: solid;
 		border-width: var(--wcapf-range-filter-input-border-size);
 		border-color: var(--wcapf-range-filter-input-border-color);
 		border-radius: var(--wcapf-range-filter-input-border-radius);
 		box-shadow: none;
+		font-size: var(--wcapf-range-filter-input-font-size);
 		line-height: 1;
 		max-width: var(--wcapf-range-filter-input-max-width);
 		margin: 0;
@@ -241,7 +219,7 @@
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
-		gap: 0.875em;
+		gap: 0.625em;
 
 		&.display-values-as-plain_text {
 			.wcapf-range-separator {

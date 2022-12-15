@@ -93,7 +93,7 @@ jQuery( document ).ready( function( $ ) {
 			};
 
 			if ( wcapf_params.is_rtl ) {
-				options['rtl'] = true;
+				options[ 'rtl' ] = true;
 			}
 
 			const noResultsMessage = $this.attr( 'data-no-results-message' );
@@ -132,11 +132,14 @@ jQuery( document ).ready( function( $ ) {
 			$root = $wcapfNavFilters;
 		}
 
-		$root.find( '.hierarchy-accordion-toggle' ).on( 'click', function() {
-			const $this  = $( this );
-			const $child = $this.parent( 'li' ).children( 'ul' );
+		function toggleAccordion( $el ) {
+			// Check to see if the button is pressed
+			const pressed = $el.attr( 'aria-pressed' ) === 'true';
 
-			$this.toggleClass( 'active' );
+			// Change aria-pressed to the opposite state
+			$el.attr( 'aria-pressed', ! pressed );
+
+			const $child = $el.closest( 'li' ).children( 'ul' );
 
 			if ( wcapf_params.enable_animation_for_hierarchy_accordion ) {
 				$child.slideToggle(
@@ -145,6 +148,19 @@ jQuery( document ).ready( function( $ ) {
 				);
 			} else {
 				$child.toggle();
+			}
+		}
+
+		$root.find( '.wcapf-hierarchy-accordion-toggle' ).on( 'click', function() {
+			toggleAccordion( $( this ) );
+		} );
+
+		$root.find( '.wcapf-hierarchy-accordion-toggle' ).on( 'keydown', function( e ) {
+			if ( e.key === ' ' || e.key === 'Enter' || e.key === 'Spacebar' ) {
+				// Prevent the default action to stop scrolling when space is pressed
+				e.preventDefault();
+
+				toggleAccordion( $( this ) );
 			}
 		} );
 	}
