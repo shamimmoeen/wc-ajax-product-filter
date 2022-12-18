@@ -26,7 +26,6 @@ const FormSettings = () => {
 			submit_button_label,
 			form_visibility,
 			opening_button_label,
-			show_form_title,
 			show_active_filters,
 			show_reset_button,
 			reset_button_label,
@@ -93,6 +92,7 @@ const FormSettings = () => {
 					{
 						label: __('Apply button', 'wc-ajax-product-filter'),
 						value: 'apply',
+						isPro: true,
 					},
 				]}
 				onChange={handleRadioChange}
@@ -120,7 +120,7 @@ const FormSettings = () => {
 							<div className='__label'>
 								<label>
 									{__('Auto Sync')}
-									<span class='__pro_tag'></span>
+									<span className='__pro_tag'></span>
 								</label>
 							</div>
 							<div className='__wrapper'>
@@ -181,17 +181,6 @@ const FormSettings = () => {
 			)}
 
 			{/* <div className='__form_fields_separator' /> */}
-
-			<Checkbox
-				id={'show_form_title'}
-				label={__('Show form title', 'wc-ajax-product-filter')}
-				isChecked={show_form_title}
-				onChange={handleCheckboxChange}
-				description={__(
-					'Whether to show the form title before the filters.',
-					'wc-ajax-product-filter'
-				)}
-			/>
 
 			<Checkbox
 				id={'show_active_filters'}

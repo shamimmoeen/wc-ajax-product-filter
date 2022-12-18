@@ -10,7 +10,8 @@
 	--wcapf-stylish-checkbox-checked-height: 12px;
 	--wcapf-stylish-radio-checked-size: 6px;
 
-	input:where([type="checkbox"], [type="radio"]) {
+	input[type="checkbox"],
+	input[type="radio"] {
 		-webkit-appearance: none;
 		appearance: none;
 		width: var(--wcapf-stylish-checkbox-radio-size);

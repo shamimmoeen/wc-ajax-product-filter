@@ -194,6 +194,7 @@ class WCAPF_Frontend_Scripts {
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => 800, // In milliseconds.
+			'chosen_no_results_text'                   => __( 'No results for:', 'wc-ajax-product-filter' ),
 			'chosen_lib_search_threshold'              => 10,
 			'preserve_hierarchy_accordion_state'       => true,
 			'enable_animation_for_hierarchy_accordion' => true,

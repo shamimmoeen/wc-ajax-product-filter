@@ -19,7 +19,6 @@ const Integration = () => {
 			enable_pagination_via_ajax,
 			sorting_control,
 			show_sorting_data_in_active_filters,
-			attach_chosen_on_sorting,
 			author_roles,
 			active_filters_on_top,
 		},
@@ -27,6 +26,20 @@ const Integration = () => {
 
 	return (
 		<>
+			<Checkbox
+				id={'active_filters_on_top'}
+				label={__(
+					'Active Filters on top of products',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Enable this if you want to show the active filters on top of the products, only works on product archive pages.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={active_filters_on_top}
+				onChange={handleCheckboxChange}
+			/>
+
 			{'1' !== disable_ajax && (
 				<>
 					<Checkbox
@@ -66,24 +79,10 @@ const Integration = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Whether to show the sort by data in active filters.',
+					'Enable this if you want to show the sort by data comes from the default product sorting dropdown in active filters.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={show_sorting_data_in_active_filters}
-				onChange={handleCheckboxChange}
-			/>
-
-			<Checkbox
-				id={'attach_chosen_on_sorting'}
-				label={__(
-					'ComboBox for sorting dropdown',
-					'wc-ajax-product-filter'
-				)}
-				description={__(
-					'Use jQuery Chosen library for the sorting dropdown instead of the native select element.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={attach_chosen_on_sorting}
 				onChange={handleCheckboxChange}
 			/>
 
@@ -100,20 +99,6 @@ const Integration = () => {
 				type={'author'}
 				isUserRoles={true}
 				options={userRoles}
-			/>
-
-			<Checkbox
-				id={'active_filters_on_top'}
-				label={__(
-					'Active Filters on top of products',
-					'wc-ajax-product-filter'
-				)}
-				description={__(
-					'Enable this if you want to show the active filters on top of the products, only works on product archive pages.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={active_filters_on_top}
-				onChange={handleCheckboxChange}
 			/>
 		</>
 	);

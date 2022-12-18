@@ -1,7 +1,7 @@
 import { Button, ColorPicker, Dropdown } from '@wordpress/components';
 import { proTag } from '../utils';
 
-const DropdownColorPicker = ({ value, onChange }) => {
+const DropdownColorPicker = ({ value, onChange, disableAlpha }) => {
 	return (
 		<Dropdown
 			position='bottom right'
@@ -24,6 +24,7 @@ const DropdownColorPicker = ({ value, onChange }) => {
 					color={value}
 					onChange={(color) => onChange(color)}
 					defaultValue='#fff'
+					disableAlpha={disableAlpha}
 				/>
 			)}
 		/>
@@ -36,6 +37,7 @@ const ColorInput = ({
 	onChange,
 	description,
 	isPro,
+	disableAlpha = true,
 	renderAsFormField = false,
 }) => {
 	if (renderAsFormField) {
@@ -53,6 +55,7 @@ const ColorInput = ({
 							<DropdownColorPicker
 								value={value}
 								onChange={onChange}
+								disableAlpha={disableAlpha}
 							/>
 						</div>
 					</div>

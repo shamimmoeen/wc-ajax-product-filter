@@ -209,7 +209,7 @@ export function filterDefaultData() {
 		all_items_label: '',
 		use_chosen: '1',
 		chosen_no_results_message: '',
-		enable_multiple_filter: '',
+		enable_multiple_filter: '1',
 		hierarchical: '',
 		enable_hierarchy_accordion: '',
 		show_count: '1',

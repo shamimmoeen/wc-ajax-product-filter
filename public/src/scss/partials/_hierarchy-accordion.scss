@@ -1,28 +1,32 @@
 @import "../mixins";
 
-.wcapf-layered-nav-item {
-	--wcapf-hierarchy-accordion-button-size: 18px;
-	--wcapf-hierarchy-accordion-button-hr-space: .4em;
-	--wcapf-hierarchy-accordion-toggle-size: 13px;
-	--wcapf-accordion-toggle-width: 1px;
-	--wcapf-hierarchy-accordion-toggle-color: #666;
+.has-hierarchy-accordion {
+	.wcapf-filter-item {
+		--wcapf-hierarchy-accordion-button-size: 18px;
+		--wcapf-hierarchy-accordion-button-hr-space: .4em;
+		--wcapf-hierarchy-accordion-toggle-size: 13px;
+		--wcapf-accordion-toggle-width: 1px;
+		--wcapf-hierarchy-accordion-toggle-color: #666;
 
-	@include ltr {
-		padding-right: calc(var(--wcapf-hierarchy-accordion-button-size) + var(--wcapf-hierarchy-accordion-button-hr-space));
-	}
+		@include ltr {
+			padding-right: calc(var(--wcapf-hierarchy-accordion-button-size) + var(--wcapf-hierarchy-accordion-button-hr-space));
+		}
 
-	@include rtl {
-		padding-left: calc(var(--wcapf-hierarchy-accordion-button-size) + var(--wcapf-hierarchy-accordion-button-hr-space));
+		@include rtl {
+			padding-left: calc(var(--wcapf-hierarchy-accordion-button-size) + var(--wcapf-hierarchy-accordion-button-hr-space));
+		}
 	}
 }
 
 .wcapf-hierarchy-accordion-toggle {
+	border-radius: 2px;
 	cursor: pointer;
-	width: var(--wcapf-hierarchy-accordion-button-size);
 	height: var(--wcapf-hierarchy-accordion-button-size);
+	margin-top: calc(calc(var(--wcapf-hierarchy-accordion-button-size) / 2) * -1);
 	position: absolute;
 	top: 50%;
-	margin-top: calc(calc(var(--wcapf-hierarchy-accordion-button-size) / 2) * -1);
+	user-select: none;
+	width: var(--wcapf-hierarchy-accordion-button-size);
 
 	@include ltr {
 		right: 0;
