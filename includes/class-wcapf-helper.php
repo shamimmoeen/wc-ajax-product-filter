@@ -756,7 +756,35 @@ class WCAPF_Helper {
 	 * @return bool
 	 */
 	public static function use_stylish_checkbox_radio() {
-		return apply_filters( 'wcapf_use_stylish_checkbox_radio', true );
+		$settings = self::get_settings();
+
+		return isset( $settings['stylish_checkbox_radio'] ) ? $settings['stylish_checkbox_radio'] : '';
+	}
+
+	/**
+	 * Determines if we use combobox instead of native select element.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function use_combobox() {
+		$settings = self::get_settings();
+
+		return isset( $settings['use_chosen'] ) ? $settings['use_chosen'] : '';
+	}
+
+	/**
+	 * Determines if we try to improve the native select element.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function improve_native_select() {
+		$settings = self::get_settings();
+
+		return isset( $settings['improve_native_select'] ) ? $settings['improve_native_select'] : '';
 	}
 
 	/**

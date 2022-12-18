@@ -10,6 +10,7 @@
 const wcapf_params = wcapf_params || {
 	'is_rtl': '',
 	'filter_input_delay': '',
+	'chosen_no_results_text': '',
 	'chosen_lib_search_threshold': '',
 	'preserve_hierarchy_accordion_state': '',
 	'enable_animation_for_hierarchy_accordion': '',

@@ -21,9 +21,14 @@ const CSSJavaScript = () => {
 		settings: {
 			primary_color,
 			stylish_checkbox_radio,
+			use_chosen,
+			attach_chosen_on_sorting,
+			improve_native_select,
 			loading_animation,
 			loading_image,
 			loading_image_src,
+			loading_overlay,
+			loading_overlay_color,
 			scroll_to_top_offset,
 			scroll_window,
 			scroll_window_custom_element,
@@ -40,6 +45,10 @@ const CSSJavaScript = () => {
 
 	const handleLoaderImageClear = () => {
 		handleImageRemove('loading_image');
+	};
+
+	const handleOverlayColorChange = (value) => {
+		handleTextFieldChange(value, 'loading_overlay_color');
 	};
 
 	return (
@@ -70,6 +79,49 @@ const CSSJavaScript = () => {
 			/>
 
 			<Checkbox
+				id={'use_chosen'}
+				label={__('Enable ComboBox', 'wc-ajax-product-filter')}
+				description={__(
+					'Turns the native select element into a custom select box with improved design and behavior.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={use_chosen}
+				onChange={handleCheckboxChange}
+			/>
+
+			{/* {'1' === use_chosen && (
+				<Checkbox
+					id={'attach_chosen_on_sorting'}
+					label={__(
+						'ComboBox for sorting dropdown',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Attach combobox for the default sorting dropdown instead of the native select element.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={attach_chosen_on_sorting}
+					onChange={handleCheckboxChange}
+				/>
+			)} */}
+
+			{'1' !== use_chosen && (
+				<Checkbox
+					id={'improve_native_select'}
+					label={__(
+						'Improve native select element',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Uncheck this if your theme already implements the design for the native select element.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={improve_native_select}
+					onChange={handleCheckboxChange}
+				/>
+			)}
+
+			<Checkbox
 				id={'loading_animation'}
 				label={__('Loading Animation', 'wc-ajax-product-filter')}
 				description={__(
@@ -92,6 +144,35 @@ const CSSJavaScript = () => {
 					onChange={handleLoaderImageChange}
 					onClear={handleLoaderImageClear}
 					isPro
+				/>
+			)}
+
+			<Checkbox
+				id={'loading_overlay'}
+				label={__('Loading Overlay', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to show an overlay while the results are fetching.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={loading_overlay}
+				onChange={handleCheckboxChange}
+			/>
+
+			{'1' === loading_overlay && (
+				<ColorInput
+					label={__(
+						'Loading Overlay Color',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Set a loading overlay color according to your theme.',
+						'wc-ajax-product-filter'
+					)}
+					value={loading_overlay_color}
+					onChange={handleOverlayColorChange}
+					isPro
+					disableAlpha={false}
+					renderAsFormField
 				/>
 			)}
 

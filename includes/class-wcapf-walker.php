@@ -135,6 +135,13 @@ class WCAPF_Walker {
 	public $form_id;
 
 	/**
+	 * The walker items.
+	 *
+	 * @var array
+	 */
+	private $items;
+
+	/**
 	 * The active filters.
 	 *
 	 * @var array
@@ -177,6 +184,7 @@ class WCAPF_Walker {
 	public function __construct( $field ) {
 		$this->set_properties( $field );
 
+		$this->items            = $this->set_items( $field );
 		$this->active_filters   = $this->active_filters();
 		$this->active_items     = $this->active_items();
 		$this->active_ancestors = $this->active_ancestors();
@@ -220,6 +228,45 @@ class WCAPF_Walker {
 		}
 
 		$this->field_data = apply_filters( 'wcapf_walker_field_data', array(), $field );
+	}
+
+	/**
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return array
+	 */
+	private function set_items( $field_instance ) {
+		$type  = $this->type;
+		$items = array();
+
+		switch ( $type ) {
+			case 'taxonomy':
+			case 'rating':
+				$field = new WCAPF_Filter_Type_Taxonomy( $field_instance );
+				$items = $field->get_items();
+
+				break;
+
+			case 'product-status':
+				$filter = new WCAPF_Filter_Type_Product_Status( $field_instance );
+				$items  = $filter->get_items();
+
+				break;
+
+			case 'post-author':
+				$filter = new WCAPF_Filter_Type_Post_Author( $field_instance );
+				$items  = $filter->get_items();
+
+				break;
+
+			case 'post-meta':
+				$filter = new WCAPF_Filter_Type_Post_Meta( $field_instance );
+				$items  = $filter->get_items();
+
+				break;
+		}
+
+		return $items;
 	}
 
 	/**
@@ -269,10 +316,9 @@ class WCAPF_Walker {
 
 	/**
 	 * Build the menu.
-	 *
-	 * @param array $items The array of items.
 	 */
-	public function build_menu( $items ) {
+	public function build_menu() {
+		$items        = $this->items;
 		$display_type = $this->display_type;
 		$show_count   = $this->show_count;
 
@@ -291,23 +337,37 @@ class WCAPF_Walker {
 
 		$items = apply_filters( 'wcapf_menu_items', $items, $this );
 
-		$list_types     = array( 'checkbox', 'radio' );
-		$dropdown_types = array( 'select', 'multiselect' );
+		$dropdown_types    = array( 'select', 'multiselect' );
+		$native_list_types = array( 'checkbox', 'radio' );
+		$wrapper_classes   = array();
 
-		if ( in_array( $display_type, $list_types ) ) {
-			$wrapper_classes = 'wcapf-layered-nav display-type-' . $display_type;
-			$wrapper_classes .= ' stylish-checkbox-radio';
-		} elseif ( in_array( $display_type, $dropdown_types ) ) {
-			$wrapper_classes = 'wcapf-dropdown-nav';
+		if ( in_array( $display_type, $dropdown_types ) ) {
+			$wrapper_classes[] = 'wcapf-dropdown-wrapper';
 		} else {
-			$wrapper_classes = 'wcapf-labeled-nav display-type-' . $display_type;
+			$wrapper_classes[] = 'wcapf-list-wrapper';
+
+			if ( in_array( $display_type, $native_list_types ) ) {
+				$wrapper_classes[] = 'list-type-native';
+
+				// Stylish checkbox and radio.
+				if ( WCAPF_Helper::use_stylish_checkbox_radio() ) {
+					$wrapper_classes[] = 'stylish-checkbox-radio';
+				}
+
+				// Hierarchy List.
+				if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
+					$wrapper_classes[] = 'has-hierarchy-accordion';
+				}
+			} else {
+				$wrapper_classes[] = 'display-type-' . $display_type;
+
+				if ( $show_count ) {
+					$wrapper_classes[] = 'show-count';
+				}
+			}
 		}
 
-		if ( $show_count ) {
-			$wrapper_classes .= ' show-count';
-		}
-
-		if ( in_array( $display_type, $list_types ) ) {
+		if ( in_array( $display_type, $native_list_types ) ) {
 			if ( $this->hierarchical ) {
 				$html = $this->build_hierarchical_menu( $items );
 			} else {
@@ -319,9 +379,9 @@ class WCAPF_Walker {
 			$html = $this->build_labeled_nav( $items );
 		}
 
-		$attrs = $this->get_wrapper_attrs();
+		$wrapper_classes = implode( ' ', $wrapper_classes );
 
-		$menu = '<div class="' . esc_attr( $wrapper_classes ) . '" ' . $attrs . '>';
+		$menu = '<div class="' . esc_attr( $wrapper_classes ) . '">';
 		$menu .= $html;
 		$menu .= '</div>';
 
@@ -352,7 +412,7 @@ class WCAPF_Walker {
 
 				$has_children = isset( $item['children'] );
 
-				$html .= '<li>';
+				$html .= '<li class="wcapf-filter-option">';
 				$html .= $this->menu_item( $item, $has_children );
 
 				if ( $has_children ) {
@@ -378,11 +438,10 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	private function hierarchical_menu_start_markup( $parent ) {
-		$attrs = '';
+		$classes = 'wcapf-filter-options';
+		$attrs   = '';
 
 		if ( $parent ) {
-			$attrs .= ' class="item-children"';
-
 			if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
 				if ( $this->item_active_as_ancestor( $parent ) ) {
 					$attrs .= ' style="display: block;"';
@@ -392,7 +451,7 @@ class WCAPF_Walker {
 			}
 		}
 
-		return '<ul' . $attrs . '>';
+		return '<ul class="' . $classes . '"' . $attrs . '>';
 	}
 
 	/**
@@ -422,6 +481,7 @@ class WCAPF_Walker {
 		$html         = '';
 		$checked      = '';
 		$input_markup = '';
+		$display_type = $this->display_type;
 		$filter_key   = $this->filter_key;
 		$item_active  = $this->item_active( $item );
 		$input_name   = $filter_key;
@@ -436,7 +496,17 @@ class WCAPF_Walker {
 		$unique_id  = $filter_key . '-' . $this->filter_id . '-' . $_form_id . $item_id;
 		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
 
-		$input_markup .= '<input type="' . esc_attr( $this->display_type ) . '"';
+		if ( 'checkbox' === $display_type || 'radio' === $display_type ) {
+			$input_type = $display_type;
+		} else {
+			if ( ! $this->enable_multiple_filter ) {
+				$input_type = 'radio';
+			} else {
+				$input_type = 'checkbox';
+			}
+		}
+
+		$input_markup .= '<input type="' . esc_attr( $input_type ) . '"';
 		$input_markup .= ' id="' . esc_attr( $unique_id ) . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
 		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
@@ -454,7 +524,7 @@ class WCAPF_Walker {
 
 		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
 
-		$inner = '<span class="wcapf-layered-nav-item-label">';
+		$inner = '<span class="wcapf-filter-item-label">';
 		$inner .= wp_kses_post( $name );
 
 		$count = $item['count'];
@@ -473,7 +543,7 @@ class WCAPF_Walker {
 
 		$inner .= '</span>';
 
-		$html .= '<div class="wcapf-layered-nav-item">';
+		$html .= '<div class="wcapf-filter-item">';
 		$html .= '<label for="' . esc_attr( $unique_id ) . '">';
 		$html .= $input_markup;
 		$html .= $inner;
@@ -554,13 +624,13 @@ class WCAPF_Walker {
 			return $html;
 		}
 
-		$html .= '<ul>';
+		$html .= '<ul class="wcapf-filter-options">';
 
 		foreach ( $items as $item ) {
 			$index ++;
 			$attrs = apply_filters( 'wcapf_non_hierarchical_menu_item_attrs', '', $index, $this, $item );
 
-			$html .= '<li' . $attrs . '>';
+			$html .= '<li class="wcapf-filter-option"' . $attrs . '>';
 			$html .= $this->menu_item( $item );
 			$html .= '</li>';
 		}
@@ -586,12 +656,12 @@ class WCAPF_Walker {
 			$input_multiple = ' multiple="multiple"';
 		}
 
-		if ( $this->use_chosen ) {
+		if ( WCAPF_Helper::use_combobox() ) {
 			$input_classes = 'wcapf-chosen-select';
 		} else {
 			$input_classes = 'wcapf-select';
 
-			if ( apply_filters( 'wcapf_try_to_improve_native_select', true ) ) {
+			if ( WCAPF_Helper::improve_native_select() ) {
 				$input_classes .= ' wcapf-select-improved';
 
 				if ( 'multiselect' === $display_type ) {
@@ -606,6 +676,7 @@ class WCAPF_Walker {
 			$input_attrs .= 'data-placeholder="' . esc_attr( $all_items_label ) . '"';
 		}
 
+		// todo: should be removed
 		$no_results_message = $this->no_results_message;
 
 		if ( $no_results_message ) {
@@ -721,10 +792,18 @@ class WCAPF_Walker {
 		$html  = '';
 		$index = 0;
 
+		$html .= '<ul class="wcapf-filter-options">';
+
 		foreach ( $items as $item ) {
 			$index ++;
+			$attrs = '';
+
+			$html .= '<li class="wcapf-filter-option"' . $attrs . '>';
 			$html .= $this->labeled_item( $item, $index );
+			$html .= '</li>';
 		}
+
+		$html .= '</ul>';
 
 		return $html;
 	}
@@ -755,24 +834,9 @@ class WCAPF_Walker {
 
 		$html .= '</button>';
 
+		$html = $this->menu_item( $item );
+
 		return $html;
-	}
-
-	/**
-	 * @return string
-	 */
-	private function get_wrapper_attrs() {
-		$wrapper_attrs = '';
-
-		if ( $this->enable_multiple_filter ) {
-			$wrapper_attrs .= 'data-multiple-filter="1"';
-		} else {
-			$wrapper_attrs .= 'data-multiple-filter="0"';
-		}
-
-		$wrapper_attrs .= 'data-filter-key="' . $this->filter_key . '"';
-
-		return $wrapper_attrs;
 	}
 
 	/**

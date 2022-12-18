@@ -9,10 +9,6 @@
 	}
 
 	.wcapf-noui-slider:not([disabled]) {
-		.wcapf-noui-target:not(.wcapf-noui-state-drag) {
-			cursor: pointer;
-		}
-
 		.wcapf-noui-handle {
 			cursor: grab;
 			outline: none;

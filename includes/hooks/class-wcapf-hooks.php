@@ -69,6 +69,8 @@ class WCAPF_Hooks {
 	}
 
 	public function content_top() {
+
+
 		global $wp_query, $wcapf_filter_keys, $wp;
 
 		// echo '<pre>';

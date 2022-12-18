@@ -13,7 +13,7 @@
  *
  * @since 4.0.0
  */
-class WCAPF_Form {
+final class WCAPF_Form {
 
 	/**
 	 * @var $form array
@@ -39,33 +39,23 @@ class WCAPF_Form {
 			return;
 		}
 
-		echo '<div class="wcapf-filter-form" id="' . $this->get_property( 'form_id' ) . '">';
+		echo '<div class="wcapf-filter-form">';
 
-		if ( $this->get_property( 'show_form_title' ) ) {
-			echo '<h3>' . esc_html( $this->get_property( 'form_title' ) ) . '</h3>';
-		}
-
-		echo '<div class="wcapf-form-fields">';
+		// TODO: Show active filters.
 
 		if ( $this->get_fields() ) {
 			foreach ( $this->get_fields() as $field ) {
 				$field_instance = new WCAPF_Field_Instance( $field['settings'] );
 				$field_type     = $field_instance->type;
 
-				// echo $field_type;
+				if ( 'price' === $field_type ) {
+					$this->render_price_filter( $field_instance );
+				} else {
+					$walker = new WCAPF_Walker( $field_instance );
 
-				if ( 'taxonomy' === $field_type ) {
-					$this->render_taxonomy_field( $field_instance );
-				} elseif ( 'price' === $field_type ) {
-					$this->render_price_field( $field_instance );
-				} elseif ( 'rating' === $field_type ) {
-					$this->render_rating_field( $field_instance );
-				} elseif ( 'product-status' === $field_type ) {
-					$this->render_product_status_field( $field_instance );
-				} elseif ( 'post-author' === $field_type ) {
-					$this->render_post_author_field( $field_instance );
-				} elseif ( 'post-meta' === $field_type ) {
-					$this->render_post_meta_field( $field_instance );
+					$this->before_filter( $field_instance );
+					echo $walker->build_menu(); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+					$this->after_filter();
 				}
 			}
 		}
@@ -76,7 +66,6 @@ class WCAPF_Form {
 			echo '</div>';
 		}
 
-		echo '</div><!-- end form fields -->';
 		echo '</div><!-- end form -->';
 
 		$this->set_done();
@@ -90,92 +79,8 @@ class WCAPF_Form {
 		return true;
 	}
 
-	private function get_property( $property ) {
-		if ( 'form_id' === $property ) {
-			return isset( $this->form[ $property ] ) ? $this->form[ $property ] : '';
-		} elseif ( 'form_title' === $property ) {
-			return isset( $this->form[ $property ] ) ? $this->form[ $property ] : '';
-		} else {
-			return isset( $this->form['settings'][ $property ] ) ? $this->form['settings'][ $property ] : '';
-		}
-	}
-
 	private function get_fields() {
 		return isset( $this->form['filters'] ) ? $this->form['filters'] : array();
-	}
-
-	/**
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return void
-	 */
-	private function render_taxonomy_field( $field_instance ) {
-		$walker = new WCAPF_Walker( $field_instance );
-
-		$field = new WCAPF_Filter_Type_Taxonomy( $field_instance );
-		$items = $field->get_items();
-
-		$classes = array( 'wcapf-nav-filter' );
-
-		if ( $field_instance->hierarchical && $field_instance->enable_hierarchy_accordion ) {
-			$classes[] = 'hierarchy-accordion';
-		}
-
-		$this->before_field( $classes, $field_instance );
-		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		$this->after_field( $field_instance );
-	}
-
-	/**
-	 * Renders the field's start markup.
-	 *
-	 * @param array                $classes        The field classes.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return void
-	 */
-	private function before_field( $classes, $field_instance ) {
-		array_unshift( $classes, 'wcapf-single-filter' );
-
-		$classes[] = 'wcapf-' . $field_instance->type . '-filter';
-
-		$classes = apply_filters( 'wcapf_field_classes', $classes, $field_instance );
-
-		$field_classes = implode( ' ', $classes );
-		$show_title    = $field_instance->get_sub_field_value( 'show_title' );
-		$filter_id     = $field_instance->get_sub_field_value( 'id' );
-		$filter_title  = $field_instance->get_sub_field_value( 'title' );
-
-		echo '<div class="' . esc_attr( $field_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
-
-		do_action( 'wcapf_content_field_inner_start', $field_instance );
-
-		$heading = '';
-
-		if ( $show_title ) {
-			$heading = '<h4 class="wcapf-field-title">' . esc_html( $filter_title ) . '</h4>';
-		}
-
-		echo apply_filters( 'wcapf_field_heading', $heading, $field_instance );
-
-		$field_inner_attributes = apply_filters( 'wcapf_field_inner_attributes', '', $field_instance );
-
-		echo '<div class="wcapf-field-inner"' . $field_inner_attributes . '>';
-	}
-
-	/**
-	 * Renders the field's end markup.
-	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return void
-	 */
-	private function after_field( $field_instance ) {
-		echo '</div>'; // Ends .wcapf-field-inner
-
-		do_action( 'wcapf_content_field_inner_end', $field_instance );
-
-		echo '</div>';
 	}
 
 	/**
@@ -183,32 +88,77 @@ class WCAPF_Form {
 	 *
 	 * @return void
 	 */
-	private function render_price_field( $field_instance ) {
+	private function render_price_filter( $field_instance ) {
 		$display_type = $field_instance->display_type;
 
 		$walker = new WCAPF_Walker( $field_instance );
 
 		$range_input_display_types = WCAPF_Helper::range_input_display_types();
 
-		$classes = array();
-
-		if ( in_array( $display_type, $range_input_display_types ) ) {
-			$classes[] = 'wcapf-number-range-filter';
-		} else {
-			$classes[] = 'wcapf-nav-filter';
-		}
-
 		$items = apply_filters( 'wcapf_price_filter_items', array(), $field_instance );
 
-		$this->before_field( $classes, $field_instance );
+		$this->before_filter( $field_instance );
 
 		if ( in_array( $display_type, $range_input_display_types ) ) {
 			$this->render_range_input_filter( $field_instance, $items );
 		} else {
-			echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+			echo $walker->build_menu(); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
 
-		$this->after_field( $field_instance );
+		$this->after_filter();
+	}
+
+	/**
+	 * Renders the filter's start markup.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return void
+	 */
+	private function before_filter( $field_instance ) {
+		$classes = apply_filters(
+			'wcapf_filter_classes',
+			$this->get_filter_classes( $field_instance ),
+			$field_instance
+		);
+
+		$filter_classes = implode( ' ', $classes );
+		$show_title     = $field_instance->get_sub_field_value( 'show_title' );
+		$filter_title   = $field_instance->get_sub_field_value( 'title' );
+
+		echo '<div class="' . esc_attr( $filter_classes ) . '">';
+
+		if ( $show_title ) {
+			echo '<h4 class="wcapf-filter-title">' . esc_html( $filter_title ) . '</h4>';
+		}
+
+		// TODO: Apply the accordion style here.
+		echo '<div class="wcapf-filter-inner">';
+	}
+
+	/**
+	 * Gets the filter wrapper classes.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 *
+	 * @return array
+	 */
+	private function get_filter_classes( $field_instance ) {
+		$classes = array( 'wcapf-filter' );
+
+		$type = $field_instance->type;
+
+		if ( 'taxonomy' === $type ) {
+			$classes[] = 'wcapf-filter-taxonomy-' . $field_instance->taxonomy;
+		} elseif ( 'post-meta' === $type ) {
+			$classes[] = 'wcapf-filter-meta-' . $field_instance->meta_key;
+		} else {
+			$classes[] = 'wcapf-filter-' . $type;
+		}
+
+		// TODO: Add accordion classes.
+
+		return $classes;
 	}
 
 	/**
@@ -312,81 +262,17 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Renders the filter's end markup.
 	 *
 	 * @return void
 	 */
-	private function render_rating_field( $field_instance ) {
-		$walker = new WCAPF_Walker( $field_instance );
-
-		if ( WCAPF_Helper::found_pro_version() ) {
-			$_items = array();
-		} else {
-			$filter = new WCAPF_Filter_Type_Taxonomy( $field_instance );
-			$_items = $filter->get_items();
-		}
-
-		$items = apply_filters( 'wcapf_rating_filter_items', $_items, $field_instance );
-
-		$classes = array( 'wcapf-nav-filter' );
-
-		$this->before_field( $classes, $field_instance );
-		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		$this->after_field( $field_instance );
+	private function after_filter() {
+		echo '</div>'; // Ends .wcapf-filter-inner
+		echo '</div>'; // Ends .wcapf-filter
 	}
 
-	/**
-	 * @param WCAPF_Field_Instance $field_instance
-	 *
-	 * @return void
-	 */
-	private function render_product_status_field( $field_instance ) {
-		$walker = new WCAPF_Walker( $field_instance );
-
-		$filter = new WCAPF_Filter_Type_Product_Status( $field_instance );
-		$items  = $filter->get_items();
-
-		$classes = array( 'wcapf-nav-filter' );
-
-		$this->before_field( $classes, $field_instance );
-		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		$this->after_field( $field_instance );
-	}
-
-	/**
-	 * @param WCAPF_Field_Instance $field_instance
-	 *
-	 * @return void
-	 */
-	private function render_post_author_field( $field_instance ) {
-		$walker = new WCAPF_Walker( $field_instance );
-
-		$filter = new WCAPF_Filter_Type_Post_Author( $field_instance );
-		$items  = $filter->get_items();
-
-		$classes = array( 'wcapf-nav-filter' );
-
-		$this->before_field( $classes, $field_instance );
-		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		$this->after_field( $field_instance );
-	}
-
-	/**
-	 * @param WCAPF_Field_Instance $field_instance
-	 *
-	 * @return void
-	 */
-	private function render_post_meta_field( $field_instance ) {
-		$walker = new WCAPF_Walker( $field_instance );
-
-		$filter = new WCAPF_Filter_Type_Post_Meta( $field_instance );
-		$items  = $filter->get_items();
-
-		$classes = array( 'wcapf-nav-filter' );
-
-		$this->before_field( $classes, $field_instance );
-		echo $walker->build_menu( $items ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		$this->after_field( $field_instance );
+	private function get_property( $property ) {
+		return isset( $this->form['settings'][ $property ] ) ? $this->form['settings'][ $property ] : '';
 	}
 
 	private function set_done() {

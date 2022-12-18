@@ -3,7 +3,7 @@
 	--wcapf-chosen-text-color: inherit;
 	--wcapf-chosen-input-placeholder-color: var(--wcapf-chosen-text-color);
 	--wcapf-chosen-active-color: var(--wcapf-primary-color, #5897fb);
-	--wcapf-chosen-active-text-color: #fff;
+	--wcapf-chosen-active-text-color: var(--wcapf-primary-accent-color, #fff);
 	--wcapf-chosen-hover-color: var(--wcapf-primary-color, #3875d7);
 	--wcapf-chosen-border-color: var(--wcapf-dropdown-border-color); // #ccd0dc // #d8d8da // #ced4da
 	--wcapf-chosen-group-color: #999;
@@ -153,6 +153,7 @@ $chosen-search: var(--wcapf-search-icon);
 		line-height: 1;
 		outline: none;
 		min-height: auto;
+		min-width: unset;
 
 		&:hover,
 		&:active {
@@ -228,7 +229,7 @@ $chosen-search: var(--wcapf-search-icon);
 			display: block;
 			width: 100%;
 			height: 100%;
-			background: $chosen-chevrons no-repeat right 0.3125em top 52%; // 5px
+			background: $chosen-chevrons no-repeat right 0.3125em top 50%; // 5px
 			background-size: 0.9375em; // 15px
 		}
 	}
@@ -366,6 +367,7 @@ $chosen-search: var(--wcapf-search-icon);
 		border: var(--wcapf-chosen-border-size) solid var(--wcapf-chosen-border-color);
 		background-color: var(--wcapf-chosen-background-color);
 		cursor: text;
+		line-height: 1;
 	}
 
 	.chosen-choices li {
@@ -377,6 +379,7 @@ $chosen-search: var(--wcapf-search-icon);
 		text-transform: none;
 		min-height: auto;
 		height: auto;
+		line-height: 1;
 
 		margin: var(--wcapf-chosen-choice-item-space) 0 0 var(--wcapf-chosen-choice-item-space);
 
@@ -420,7 +423,7 @@ $chosen-search: var(--wcapf-search-icon);
 			padding: 0 1.25em 0 .375em; // 20px, 8px
 			border: var(--wcapf-chosen-search-choice-border-size) solid var(--wcapf-chosen-search-choice-border-color);
 			border-radius: var(--wcapf-chosen-border-radius);
-			max-width: 100%;
+			max-width: unset;
 			background-color: var(--wcapf-chosen-active-color);
 			color: var(--wcapf-chosen-active-text-color);
 			line-height: calc(var(--wcapf-chosen-height) - calc((var(--wcapf-chosen-choice-item-space) + var(--wcapf-chosen-border-size)) * 2));
@@ -510,7 +513,7 @@ $chosen-search: var(--wcapf-search-icon);
 		padding: 4px 5px;
 		border: 1px solid #aaa;
 		border-radius: 4px;
-		max-width: 100%;
+		max-width: unset;
 		background-color: #eeeeee;
 		color: #333;
 		line-height: 12px; // We are not using the tagging feature.
@@ -591,7 +594,7 @@ $chosen-search: var(--wcapf-search-icon);
 
 	&.chosen-container-single {
 		.chosen-single div b {
-			background: $chosen-chevrons no-repeat left 0.3125em top 52%; // 5px
+			background: $chosen-chevrons no-repeat left 0.3125em top 50%; // 5px
 			background-size: 0.9375em; // 15px
 		}
 	}

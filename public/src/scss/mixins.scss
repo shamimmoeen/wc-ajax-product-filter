@@ -25,3 +25,22 @@
 		box-sizing: border-box;
 	}
 }
+
+@mixin label {
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	cursor: pointer;
+	font-size: 1em;
+	font-weight: normal;
+	outline: none;
+	text-transform: none;
+	letter-spacing: normal;
+	min-height: auto;
+	height: auto;
+	width: auto;
+	margin: 0;
+	padding: 0;
+
+	// When including, must set the display and line-height property.
+}
