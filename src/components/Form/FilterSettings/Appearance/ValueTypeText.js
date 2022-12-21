@@ -23,9 +23,6 @@ const ValueTypeText = ({ index }) => {
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		tooltipPositionField,
@@ -150,12 +147,6 @@ const ValueTypeText = ({ index }) => {
 			{queryTypeField('query_type')}
 
 			{allItemsLabelField('all_items_label')}
-
-			{useChosenField('use_chosen')}
-
-			{allItemsLabelFieldForUseChosen('all_items_label')}
-
-			{noResultsMessageField('chosen_no_results_message')}
 
 			{hierarchyField()}
 

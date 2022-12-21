@@ -9566,8 +9566,7 @@ const Advanced = _ref => {
     enable_reduce_height,
     soft_limit,
     max_height,
-    show_in_active_filters,
-    prepend_title_in_active_filters
+    show_in_active_filters
   } = filter;
 
   const showTitleField = () => {
@@ -9747,17 +9746,6 @@ const Advanced = _ref => {
     });
   };
 
-  const prependTitleInActiveFiltersField = () => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      id: 'prepend_title_in_active_filters',
-      index: index,
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Prepend title in Active Filters', 'wc-ajax-product-filter'),
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the filter title before the selected options for this filter in active filters.', 'wc-ajax-product-filter'),
-      isChecked: prepend_title_in_active_filters,
-      onChange: handleCheckboxChange
-    });
-  };
-
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, showTitleField(), enableAccordionField(), accordionDefaultSateField(), helpTextField(), enableSearchField(), reduceHeightField(), filterMaxHeightField(), visibleOptionsField(), showInActiveFiltersField());
 };
 
@@ -9821,9 +9809,6 @@ const ValueTypeDate = _ref => {
     enableMultipleFilterField,
     queryTypeField,
     allItemsLabelField,
-    useChosenField,
-    allItemsLabelFieldForUseChosen,
-    noResultsMessageField,
     showCountField,
     enableTooltipField,
     tooltipPositionField,
@@ -9921,7 +9906,7 @@ const ValueTypeDate = _ref => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), dateFormatField(), dateInputsInlineField(), useDropdownMonthField(), useDropdownYearField(), enableMultipleFilterField('time_period_enable_multiple_filter'), queryTypeField('time_period_query_type'), allItemsLabelField('time_period_select_all_items_label'), useChosenField('time_period_use_chosen'), allItemsLabelFieldForUseChosen('time_period_select_all_items_label'), noResultsMessageField('time_period_chosen_no_results_message'), showCountField('time_period_show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), dateFormatField(), dateInputsInlineField(), useDropdownMonthField(), useDropdownYearField(), enableMultipleFilterField('time_period_enable_multiple_filter'), queryTypeField('time_period_query_type'), allItemsLabelField('time_period_select_all_items_label'), showCountField('time_period_show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ValueTypeDate);
@@ -9983,9 +9968,6 @@ const ValueTypeNumber = _ref => {
     enableMultipleFilterField,
     queryTypeField,
     allItemsLabelField,
-    useChosenField,
-    allItemsLabelFieldForUseChosen,
-    noResultsMessageField,
     showCountField,
     enableTooltipField,
     showCountInTooltipField,
@@ -10070,7 +10052,7 @@ const ValueTypeNumber = _ref => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), alignmentField(), enableMultipleFilterField('number_range_enable_multiple_filter'), queryTypeField('number_range_query_type'), allItemsLabelField('number_range_select_all_items_label'), useChosenField('number_range_use_chosen'), allItemsLabelFieldForUseChosen('number_range_select_all_items_label'), noResultsMessageField('number_range_chosen_no_results_message'), showCountField('number_range_show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), displayValuesField(), alignmentField(), enableMultipleFilterField('number_range_enable_multiple_filter'), queryTypeField('number_range_query_type'), allItemsLabelField('number_range_select_all_items_label'), showCountField('number_range_show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ValueTypeNumber);
@@ -10126,9 +10108,6 @@ const ValueTypeText = _ref => {
     enableMultipleFilterField,
     queryTypeField,
     allItemsLabelField,
-    useChosenField,
-    allItemsLabelFieldForUseChosen,
-    noResultsMessageField,
     showCountField,
     enableTooltipField,
     tooltipPositionField,
@@ -10212,7 +10191,7 @@ const ValueTypeText = _ref => {
     }
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), useChosenField('use_chosen'), allItemsLabelFieldForUseChosen('all_items_label'), noResultsMessageField('chosen_no_results_message'), hierarchyField(), hierarchyAccordionField(), showCountField('show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, displayTypeField(), enableMultipleFilterField('enable_multiple_filter'), queryTypeField('query_type'), allItemsLabelField('all_items_label'), hierarchyField(), hierarchyAccordionField(), showCountField('show_count'), enableTooltipField(), tooltipPositionField(), showCountInTooltipField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ValueTypeText);
@@ -10427,11 +10406,11 @@ const useFields = (type, index) => {
     let showField = false;
 
     if ('text' === type) {
-      showField = 'radio' === display_type || 'select' === display_type;
+      showField = ['radio', 'select', 'multi-select'].includes(display_type);
     } else if ('number' === type) {
-      showField = 'range_radio' === number_display_type || 'range_select' === number_display_type;
+      showField = ['range_radio', 'range_select', 'range_multiselect'].includes(number_display_type);
     } else if ('date' === type) {
-      showField = 'time_period_radio' === date_display_type || 'time_period_select' === date_display_type;
+      showField = ['time_period_radio', 'time_period_select', 'time_period_multiselect'].includes(date_display_type);
     }
 
     if (showField) {
@@ -10439,76 +10418,7 @@ const useFields = (type, index) => {
         id: id,
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label.', 'wc-ajax-product-filter'),
-        value: filter[id],
-        onChange: handleTextFieldChange
-      });
-    }
-  };
-
-  const useChosenField = id => {
-    let showField = false;
-
-    if ('text' === type) {
-      showField = 'select' === display_type || 'multi-select' === display_type;
-    } else if ('number' === type) {
-      showField = 'range_select' === number_display_type || 'range_multiselect' === number_display_type;
-    } else if ('date' === type) {
-      showField = 'time_period_select' === date_display_type || 'time_period_multiselect' === date_display_type;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        id: id,
-        index: index,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable ComboBox', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Turns the native select element into a custom select box with improved design and behavior.', 'wc-ajax-product-filter'),
-        isChecked: filter[id],
-        onChange: handleCheckboxChange
-      });
-    }
-  };
-
-  const allItemsLabelFieldForUseChosen = id => {
-    let showField = false;
-
-    if ('text' === type) {
-      showField = 'multi-select' === display_type && '1' === use_chosen;
-    } else if ('number' === type) {
-      showField = 'range_multiselect' === number_display_type && '1' === number_range_use_chosen;
-    } else if ('date' === type) {
-      showField = 'time_period_multiselect' === date_display_type && '1' === time_period_use_chosen;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: id,
-        index: index,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Items Label', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to show the default label.', 'wc-ajax-product-filter'),
-        value: filter[id],
-        onChange: handleTextFieldChange
-      });
-    }
-  };
-
-  const noResultsMessageField = id => {
-    let showField = false;
-
-    if ('text' === type) {
-      showField = ('select' === display_type || 'multi-select' === display_type) && '1' === use_chosen;
-    } else if ('number' === type) {
-      showField = ('range_select' === number_display_type || 'range_multiselect' === number_display_type) && '1' === number_range_use_chosen;
-    } else if ('date' === type) {
-      showField = ('time_period_select' === date_display_type || 'time_period_multiselect' === date_display_type) && '1' === time_period_use_chosen;
-    }
-
-    if (showField) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: id,
-        index: index,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No Matches Message', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This message is usually displayed when no options match the search term. Leave blank to show the default message.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default option label. Leave blank to use the default label.', 'wc-ajax-product-filter'),
         value: filter[id],
         onChange: handleTextFieldChange
       });
@@ -10519,6 +10429,7 @@ const useFields = (type, index) => {
     let enabled = false;
 
     if ('text' === type) {
+      // TODO: Remove this condition.
       const excludedFilterTypes = ['sort-by', 'per-page'];
 
       if (excludedFilterTypes.includes(filterType)) {
@@ -10645,9 +10556,6 @@ const useFields = (type, index) => {
     enableMultipleFilterField,
     queryTypeField,
     allItemsLabelField,
-    useChosenField,
-    allItemsLabelFieldForUseChosen,
-    noResultsMessageField,
     showCountField,
     enableTooltipField,
     tooltipPositionField,
@@ -15131,8 +15039,6 @@ function filterDefaultData() {
     display_type: 'checkbox',
     query_type: 'or',
     all_items_label: '',
-    use_chosen: '1',
-    chosen_no_results_message: '',
     enable_multiple_filter: '1',
     hierarchical: '',
     enable_hierarchy_accordion: '',
@@ -15154,13 +15060,10 @@ function filterDefaultData() {
     number_display_type: 'range_slider',
     number_range_slider_display_values_as: 'input_field',
     alignment: 'default',
-    number_range_enable_multiple_filter: '',
+    number_range_enable_multiple_filter: '1',
     number_range_query_type: 'or',
     number_range_select_all_items_label: '',
-    number_range_use_chosen: '',
-    number_range_chosen_no_results_message: '',
-    number_range_show_count: '',
-    number_range_hide_empty: '',
+    number_range_show_count: '1',
     number_get_options: 'automatically',
     manual_options: [],
     number_manual_options: [],
@@ -15191,14 +15094,11 @@ function filterDefaultData() {
     // Post Meta - value type Date
     date_display_type: 'input_date',
     date_format: 'dd-mm-yy',
-    time_period_enable_multiple_filter: '',
+    time_period_enable_multiple_filter: '1',
     time_period_query_type: 'or',
     time_period_select_all_items_label: '',
-    time_period_use_chosen: '',
-    time_period_chosen_no_results_message: '',
     show_date_inputs_inline: '',
-    time_period_show_count: '',
-    time_period_hide_empty: '',
+    time_period_show_count: '1',
     date_picker_month_dropdown: '',
     date_picker_year_dropdown: '',
     date_from_prefix: '',
@@ -15221,7 +15121,6 @@ function filterDefaultData() {
     soft_limit: '5',
     max_height: '200',
     show_in_active_filters: '1',
-    prepend_title_in_active_filters: '',
     // Error
     type_error: '',
     meta_key_error: '',

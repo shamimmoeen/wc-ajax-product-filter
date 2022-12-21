@@ -25,9 +25,6 @@ const ValueTypeDate = ({ index }) => {
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		tooltipPositionField,
@@ -184,14 +181,6 @@ const ValueTypeDate = ({ index }) => {
 			{queryTypeField('time_period_query_type')}
 
 			{allItemsLabelField('time_period_select_all_items_label')}
-
-			{useChosenField('time_period_use_chosen')}
-
-			{allItemsLabelFieldForUseChosen(
-				'time_period_select_all_items_label'
-			)}
-
-			{noResultsMessageField('time_period_chosen_no_results_message')}
 
 			{showCountField('time_period_show_count')}
 
