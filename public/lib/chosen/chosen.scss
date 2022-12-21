@@ -48,7 +48,7 @@ $chosen-chevrons: var(--wcapf-chevrons-icon);
 $chosen-search: var(--wcapf-search-icon);
 
 /* @group Show Hierarchy */
-.wcapf-chosen-select.chosen-container {
+.wcapf-chosen-container.chosen-container {
 	.chosen-results {
 		li {
 			@for $i from 2 through 5 {
@@ -64,7 +64,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Base */
-.wcapf-chosen-select.chosen-container {
+.wcapf-chosen-container.chosen-container {
 	position: relative;
 	display: inline-block;
 	vertical-align: middle;
@@ -154,14 +154,11 @@ $chosen-search: var(--wcapf-search-icon);
 		outline: none;
 		min-height: auto;
 		min-width: unset;
+		transition: none;
 
 		&:hover,
 		&:active {
 			color: rgba(var(--wcapf-primary-accent-color-rgb), 1);
-		}
-
-		&::before {
-			content: '✕';
 		}
 	}
 }
@@ -169,7 +166,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Single Chosen */
-.wcapf-chosen-select.chosen-container-single {
+.wcapf-chosen-container.chosen-container-single {
 	.chosen-single {
 		position: relative;
 		display: block;
@@ -284,7 +281,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Results */
-.wcapf-chosen-select.chosen-container .chosen-results {
+.wcapf-chosen-container.chosen-container .chosen-results {
 	color: var(--wcapf-chosen-text-color);
 	position: relative;
 	overflow-x: hidden;
@@ -355,7 +352,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Multi Chosen */
-.wcapf-chosen-select.chosen-container-multi {
+.wcapf-chosen-container.chosen-container-multi {
 	.chosen-choices {
 		position: relative;
 		overflow: hidden;
@@ -467,7 +464,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Active  */
-.wcapf-chosen-select.chosen-container-active {
+.wcapf-chosen-container.chosen-container-active {
 
 	&.chosen-with-drop {
 		.chosen-single,
@@ -488,7 +485,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Disabled Support */
-.wcapf-chosen-select.chosen-disabled {
+.wcapf-chosen-container.chosen-disabled {
 	opacity: 0.5;
 	cursor: default;
 
@@ -527,7 +524,7 @@ $chosen-search: var(--wcapf-search-icon);
 /* @end */
 
 /* @group Right to Left */
-.wcapf-chosen-select.chosen-rtl {
+.wcapf-chosen-container.chosen-rtl {
 	text-align: right;
 
 	.chosen-single {
