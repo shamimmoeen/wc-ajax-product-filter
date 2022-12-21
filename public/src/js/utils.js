@@ -8,7 +8,7 @@
  *
  * @returns {string}
  */
-function number_format( number, decimals, dec_point, thousands_sep ) {
+function numberFormat( number, decimals, dec_point, thousands_sep ) {
 	// Strip all characters but numerical ones.
 	number = ( number + '' ).replace( /[^\d+\-Ee.]/g, '' );
 
@@ -37,4 +37,18 @@ function number_format( number, decimals, dec_point, thousands_sep ) {
 	}
 
 	return s.join( dec );
+}
+
+function cleanUrl( url ) {
+	return url.replace( /%2C/g, ',' );
+}
+
+function getOrderByUrl( url ) {
+	const paged = parseInt( url.replace( /.+\/page\/(\d+)+/, '$1' ) );
+
+	if ( paged ) {
+		url = url.replace( /page\/(\d+)\//, '' );
+	}
+
+	return cleanUrl( url );
 }

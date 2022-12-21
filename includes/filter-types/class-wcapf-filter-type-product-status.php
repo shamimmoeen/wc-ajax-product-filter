@@ -22,8 +22,10 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 		$manual_options = $this->field->manual_options;
 
 		$_items = $this->prepare_manual_options( $manual_options );
+		$items  = $this->get_filtered_product_counts( $_items );
+		$items  = $this->filter_by_hide_empty( $items );
 
-		return $this->get_filtered_product_counts( $_items );
+		return apply_filters( 'wcapf_product_status_items', $items, $this->field );
 	}
 
 	protected function get_filtered_product_counts( $items ) {

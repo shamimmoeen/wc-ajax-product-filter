@@ -39,7 +39,7 @@ final class WCAPF_Form {
 			return;
 		}
 
-		echo '<div class="wcapf-filter-form">';
+		echo '<div class="wcapf-filter-form" data-id="' . esc_attr( $this->form_id() ) . '">';
 
 		// TODO: Show active filters.
 
@@ -66,7 +66,7 @@ final class WCAPF_Form {
 			echo '</div>';
 		}
 
-		echo '</div><!-- end form -->';
+		echo '</div><!-- .wcapf-filter-form -->';
 
 		$this->set_done();
 	}
@@ -77,6 +77,10 @@ final class WCAPF_Form {
 		}
 
 		return true;
+	}
+
+	private function form_id() {
+		return isset( $this->form['form_id'] ) ? $this->form['form_id'] : '';
 	}
 
 	private function get_fields() {
@@ -125,8 +129,9 @@ final class WCAPF_Form {
 		$filter_classes = implode( ' ', $classes );
 		$show_title     = $field_instance->get_sub_field_value( 'show_title' );
 		$filter_title   = $field_instance->get_sub_field_value( 'title' );
+		$filter_id      = $field_instance->filter_id;
 
-		echo '<div class="' . esc_attr( $filter_classes ) . '">';
+		echo '<div class="' . esc_attr( $filter_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
 		if ( $show_title ) {
 			echo '<h4 class="wcapf-filter-title">' . esc_html( $filter_title ) . '</h4>';

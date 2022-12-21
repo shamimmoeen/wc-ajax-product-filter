@@ -322,6 +322,10 @@ class WCAPF_Walker {
 		$display_type = $this->display_type;
 		$show_count   = $this->show_count;
 
+		if ( ! $items ) {
+			return '<div>' . esc_html__( 'N/A', 'wc-ajax-product-filter' ) . '</div>';
+		}
+
 		if ( 'radio' === $display_type || 'select' === $display_type ) {
 			$all_items = array(
 				0 => array(
@@ -550,7 +554,7 @@ class WCAPF_Walker {
 		$html .= '</label>';
 
 		if ( $has_children ) {
-			$html .= $this->get_hierarchy_accordion_html( $item, $unique_id );
+			$html .= $this->get_hierarchy_accordion_html( $item );
 		}
 
 		$html .= '</div>';
@@ -582,12 +586,11 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * @param array  $item      The item data.
-	 * @param string $unique_id The unique identifier.
+	 * @param array $item The item data.
 	 *
 	 * @return string
 	 */
-	private function get_hierarchy_accordion_html( $item, $unique_id ) {
+	private function get_hierarchy_accordion_html( $item ) {
 		$html = '';
 
 		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
@@ -604,7 +607,6 @@ class WCAPF_Walker {
 			$html .= ' class="' . $classes . '"';
 			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
 			$html .= ' aria-label="' . esc_attr( $aria_label ) . '"';
-			$html .= ' data-id="' . $unique_id . '"';
 			$html .= '></span>';
 		}
 
@@ -652,12 +654,11 @@ class WCAPF_Walker {
 		$input_attrs    = '';
 
 		if ( 'multiselect' === $display_type ) {
-			$input_name     .= '[]';
 			$input_multiple = ' multiple="multiple"';
 		}
 
 		if ( WCAPF_Helper::use_combobox() ) {
-			$input_classes = 'wcapf-chosen-select';
+			$input_classes = 'wcapf-chosen';
 		} else {
 			$input_classes = 'wcapf-select';
 

@@ -11,7 +11,9 @@ const wcapf_params = wcapf_params || {
 	'is_rtl': '',
 	'filter_input_delay': '',
 	'chosen_no_results_text': '',
-	'chosen_lib_search_threshold': '',
+	'chosen_options_none_text': '',
+	'search_box_in_default_orderby': '',
+	'chosen_lib_search_threshold': '', // todo
 	'preserve_hierarchy_accordion_state': '',
 	'enable_animation_for_hierarchy_accordion': '',
 	'hierarchy_accordion_animation_speed': '',
@@ -38,6 +40,8 @@ const wcapf_params = wcapf_params || {
 };
 
 jQuery( document ).ready( function( $ ) {
+
+	return;
 
 	const $body = $( 'body' );
 

@@ -44,6 +44,8 @@ class WCAPF_Hooks {
 	 */
 	private function init_hooks() {
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
+		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
+		add_action( 'paginate_links', array( $this, 'modify_paginated_links' ) );
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
@@ -68,9 +70,36 @@ class WCAPF_Hooks {
 		return $classes;
 	}
 
+	/**
+	 * Suppress canonical redirect.
+	 *
+	 * TODO: We should conditionally do this.
+	 *
+	 * @param bool $redirect
+	 *
+	 * @return false
+	 */
+	public function suppress_canonical_redirect( $redirect ) {
+		return false;
+	}
+
+	/**
+	 * @param string $link
+	 *
+	 * @source https://weusewp.com/tutorial/pagination-remove-page-1/
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function modify_paginated_links( $link ) {
+		if ( is_paged() ) {
+			$link = str_replace( 'page/1/', '', $link );
+		}
+
+		return str_replace( '%2C', ',', $link );
+	}
+
 	public function content_top() {
-
-
 		global $wp_query, $wcapf_filter_keys, $wp;
 
 		// echo '<pre>';
