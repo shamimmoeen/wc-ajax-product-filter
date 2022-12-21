@@ -263,7 +263,7 @@
 			input[type="number"] {
 				text-align: right;
 				padding-left: var(--wcapf-range-filter-unit-size);
-				padding-right: calc(var(--wcapf-range-filter-input-padding) * 1.2);
+				padding-right: calc(var(--wcapf-range-filter-input-vr-padding) * 1.2);
 			}
 
 			.wcapf-range-unit {
@@ -276,7 +276,7 @@
 			input[type="number"] {
 				text-align: left;
 				padding-right: var(--wcapf-range-filter-unit-size);
-				padding-left: calc(var(--wcapf-range-filter-input-padding) * 1.2);
+				padding-left: calc(var(--wcapf-range-filter-input-vr-padding) * 1.2);
 			}
 
 			.wcapf-range-unit {
