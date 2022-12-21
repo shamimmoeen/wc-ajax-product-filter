@@ -262,10 +262,6 @@ class WCAPF_Field_Instance {
 					$all_items_label = __( 'All Tags', 'wc-ajax-product-filter' );
 					break;
 
-				case 'rating':
-					$all_items_label = __( 'All Ratings', 'wc-ajax-product-filter' );
-					break;
-
 				default:
 					$all_items_label = apply_filters( 'wcapf_default_all_items_label', '', $type );
 					break;
