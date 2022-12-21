@@ -34,7 +34,6 @@ const Advanced = ({ index }) => {
 		soft_limit,
 		max_height,
 		show_in_active_filters,
-		prepend_title_in_active_filters,
 	} = filter;
 
 	const showTitleField = () => {
@@ -294,25 +293,6 @@ const Advanced = ({ index }) => {
 		);
 	};
 
-	const prependTitleInActiveFiltersField = () => {
-		return (
-			<Checkbox
-				id={'prepend_title_in_active_filters'}
-				index={index}
-				label={__(
-					'Prepend title in Active Filters',
-					'wc-ajax-product-filter'
-				)}
-				description={__(
-					'Determines if we show the filter title before the selected options for this filter in active filters.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={prepend_title_in_active_filters}
-				onChange={handleCheckboxChange}
-			/>
-		);
-	};
-
 	return (
 		<>
 			{showTitleField()}
@@ -332,8 +312,6 @@ const Advanced = ({ index }) => {
 			{visibleOptionsField()}
 
 			{showInActiveFiltersField()}
-
-			{/* {prependTitleInActiveFiltersField()} */}
 		</>
 	);
 };

@@ -23,9 +23,6 @@ const ValueTypeNumber = ({ index }) => {
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		showCountInTooltipField,
@@ -153,14 +150,6 @@ const ValueTypeNumber = ({ index }) => {
 			{queryTypeField('number_range_query_type')}
 
 			{allItemsLabelField('number_range_select_all_items_label')}
-
-			{useChosenField('number_range_use_chosen')}
-
-			{allItemsLabelFieldForUseChosen(
-				'number_range_select_all_items_label'
-			)}
-
-			{noResultsMessageField('number_range_chosen_no_results_message')}
 
 			{showCountField('number_range_show_count')}
 
