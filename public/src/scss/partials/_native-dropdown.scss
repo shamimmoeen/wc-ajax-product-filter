@@ -2,6 +2,9 @@
 @import "../mixins";
 
 .wcapf-dropdown-wrapper .wcapf-select-improved {
+	--wcapf-select-improved-hr-padding: .625em;
+	--wcapf-select-improved-vr-padding: .625em;
+
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
@@ -11,7 +14,7 @@
 	cursor: pointer;
 	text-overflow: '';
 	text-indent: 0.01px;
-	padding: .625em;
+	padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
 	height: auto;
 	min-height: auto;
 	max-width: unset;
@@ -26,12 +29,12 @@
 		background-size: 0.9375em;
 
 		@include ltr {
-			background-position: right 0.3125em top 52%;
+			background-position: right 0.3125em top 50%;
 			padding-right: 1.625em;
 		}
 
 		@include rtl {
-			background-position: left 0.3125em top 52%;
+			background-position: left 0.3125em top 50%;
 			padding-left: 1.625em;
 		}
 	}
@@ -41,7 +44,7 @@
 	}
 
 	option {
-		padding: .625em;
+		padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
 	}
 
 	&:focus {

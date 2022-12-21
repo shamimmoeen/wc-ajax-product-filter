@@ -51,13 +51,6 @@ class WCAPF_Walker {
 	public $use_chosen;
 
 	/**
-	 * Chosen no results message.
-	 *
-	 * @var string
-	 */
-	public $no_results_message;
-
-	/**
 	 * Enable multiple filter.
 	 *
 	 * @var string
@@ -657,7 +650,9 @@ class WCAPF_Walker {
 			$input_multiple = ' multiple="multiple"';
 		}
 
-		if ( WCAPF_Helper::use_combobox() ) {
+		$use_combobox = WCAPF_Helper::use_combobox();
+
+		if ( $use_combobox ) {
 			$input_classes = 'wcapf-chosen';
 		} else {
 			$input_classes = 'wcapf-select';
@@ -675,13 +670,10 @@ class WCAPF_Walker {
 
 		if ( 'multiselect' === $display_type ) {
 			$input_attrs .= 'data-placeholder="' . esc_attr( $all_items_label ) . '"';
-		}
 
-		// todo: should be removed
-		$no_results_message = $this->no_results_message;
-
-		if ( $no_results_message ) {
-			$input_attrs .= ' data-no-results-message="' . esc_attr( $no_results_message ) . '"';
+			if ( $use_combobox && $this->hierarchical ) {
+				$input_classes .= ' has-hierarchy';
+			}
 		}
 
 		$filter_url       = $this->url_builder->get_dropdown_url();
@@ -773,7 +765,7 @@ class WCAPF_Walker {
 	 */
 	private function dropdown_item_indent( $item ) {
 		$indent  = '';
-		$_indent = apply_filters( 'wcapf_dropdown_item_indent_content', '&nbsp;&nbsp;&nbsp;' );
+		$_indent = apply_filters( 'wcapf_dropdown_item_indent_content', '&nbsp;&nbsp;&nbsp;&nbsp;' );
 		$depth   = $item['depth'];
 
 		while ( $depth > 1 ) {

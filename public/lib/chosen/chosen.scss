@@ -47,20 +47,6 @@
 $chosen-chevrons: var(--wcapf-chevrons-icon);
 $chosen-search: var(--wcapf-search-icon);
 
-/* @group Show Hierarchy */
-.wcapf-chosen-container.chosen-container {
-	.chosen-results {
-		li {
-			@for $i from 2 through 5 {
-				&.depth-#{$i} {
-					$j: $i - 1;
-					padding-left: calc(calc(var(--wcapf-chosen-dropdown-item-hr-padding) + .875em) * #{$j});
-				}
-			}
-		}
-	}
-}
-
 /* @end */
 
 /* @group Base */
@@ -552,6 +538,12 @@ $chosen-search: var(--wcapf-search-icon);
 	.chosen-single .search-choice-close {
 		right: auto;
 		left: 1.625em; // 26px
+	}
+
+	&.chosen-container-multi {
+		.chosen-choices {
+			padding: 0 0 var(--wcapf-chosen-choice-item-space) var(--wcapf-chosen-choice-item-space);
+		}
 	}
 
 	.chosen-choices li {

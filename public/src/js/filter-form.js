@@ -10,6 +10,7 @@
 const wcapf_params = wcapf_params || {
 	'is_rtl': '',
 	'filter_input_delay': '',
+	'chosen_display_selected_options': '',
 	'chosen_no_results_text': '',
 	'chosen_options_none_text': '',
 	'search_box_in_default_orderby': '',

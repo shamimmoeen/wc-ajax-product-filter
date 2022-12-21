@@ -22,7 +22,6 @@
 			const options = {
 				inherit_select_classes: true,
 				inherit_option_classes: true,
-				display_selected_options: false,
 				no_results_text: wcapf_params.chosen_no_results_text,
 				options_none_text: wcapf_params.chosen_options_none_text,
 			};
@@ -32,7 +31,16 @@
 			}
 
 			$body.find( '.wcapf-chosen' ).each( function() {
-				$( this ).chosenWCAPF( options );
+				const $this = $( this );
+
+				// If hierarchy enabled then we show the selected options.
+				if ( $this.hasClass( 'has-hierarchy' ) ) {
+					options[ 'display_selected_options' ] = true;
+				} else {
+					options[ 'display_selected_options' ] = wcapf_params.chosen_display_selected_options;
+				}
+
+				$this.chosenWCAPF( options );
 			} );
 
 			// Attach chosen for default orderby.

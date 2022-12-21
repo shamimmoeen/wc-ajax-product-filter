@@ -194,6 +194,7 @@ class WCAPF_Frontend_Scripts {
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => 800, // In milliseconds.
+			'chosen_display_selected_options'          => false,
 			'chosen_no_results_text'                   => __( 'No results for:', 'wc-ajax-product-filter' ),
 			'chosen_options_none_text'                 => __( 'No options to choose', 'wc-ajax-product-filter' ),
 			'chosen_lib_search_threshold'              => 10,
