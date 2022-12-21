@@ -89,7 +89,7 @@ const CSSJavaScript = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			{/* {'1' === use_chosen && (
+			{'1' === use_chosen && (
 				<Checkbox
 					id={'attach_chosen_on_sorting'}
 					label={__(
@@ -103,7 +103,7 @@ const CSSJavaScript = () => {
 					isChecked={attach_chosen_on_sorting}
 					onChange={handleCheckboxChange}
 				/>
-			)} */}
+			)}
 
 			{'1' !== use_chosen && (
 				<Checkbox
