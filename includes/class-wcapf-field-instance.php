@@ -19,7 +19,6 @@ class WCAPF_Field_Instance {
 	public $query_type;
 	public $all_items_label;
 	public $use_chosen;
-	public $chosen_no_results_message;
 	public $enable_multiple_filter;
 	public $show_count;
 	public $hide_empty;
@@ -71,38 +70,32 @@ class WCAPF_Field_Instance {
 		$value_type = $this->field_default_value_type();
 
 		if ( 'number' === $value_type ) {
-			$display_type              = $this->get_sub_field_value( 'number_display_type' );
-			$query_type                = $this->get_sub_field_value( 'number_range_query_type' );
-			$all_items_label           = $this->get_sub_field_value( 'number_range_select_all_items_label' );
-			$use_chosen                = $this->get_sub_field_value( 'number_range_use_chosen' );
-			$chosen_no_results_message = $this->get_sub_field_value( 'number_range_chosen_no_results_message' );
-			$enable_multiple_filter    = $this->get_sub_field_value( 'number_range_enable_multiple_filter' );
-			$show_count                = $this->get_sub_field_value( 'number_range_show_count' );
-			$hide_empty                = $this->get_sub_field_value( 'number_range_hide_empty' );
-			$get_options               = $this->get_sub_field_value( 'number_get_options' );
-			$manual_options            = $this->get_sub_field_value( 'number_manual_options' );
+			$display_type           = $this->get_sub_field_value( 'number_display_type' );
+			$query_type             = $this->get_sub_field_value( 'number_range_query_type' );
+			$all_items_label        = $this->get_sub_field_value( 'number_range_select_all_items_label' );
+			$enable_multiple_filter = $this->get_sub_field_value( 'number_range_enable_multiple_filter' );
+			$show_count             = $this->get_sub_field_value( 'number_range_show_count' );
+			$hide_empty             = $this->get_sub_field_value( 'number_range_hide_empty' );
+			$get_options            = $this->get_sub_field_value( 'number_get_options' );
+			$manual_options         = $this->get_sub_field_value( 'number_manual_options' );
 		} elseif ( 'date' === $value_type ) {
-			$display_type              = $this->get_sub_field_value( 'date_display_type' );
-			$query_type                = $this->get_sub_field_value( 'time_period_query_type' );
-			$all_items_label           = $this->get_sub_field_value( 'time_period_select_all_items_label' );
-			$use_chosen                = $this->get_sub_field_value( 'time_period_use_chosen' );
-			$chosen_no_results_message = $this->get_sub_field_value( 'time_period_chosen_no_results_message' );
-			$enable_multiple_filter    = $this->get_sub_field_value( 'time_period_enable_multiple_filter' );
-			$show_count                = $this->get_sub_field_value( 'time_period_show_count' );
-			$hide_empty                = $this->get_sub_field_value( 'time_period_hide_empty' );
-			$get_options               = 'manual_entry';
-			$manual_options            = $this->get_sub_field_value( 'time_period_options' );
+			$display_type           = $this->get_sub_field_value( 'date_display_type' );
+			$query_type             = $this->get_sub_field_value( 'time_period_query_type' );
+			$all_items_label        = $this->get_sub_field_value( 'time_period_select_all_items_label' );
+			$enable_multiple_filter = $this->get_sub_field_value( 'time_period_enable_multiple_filter' );
+			$show_count             = $this->get_sub_field_value( 'time_period_show_count' );
+			$hide_empty             = $this->get_sub_field_value( 'time_period_hide_empty' );
+			$get_options            = 'manual_entry';
+			$manual_options         = $this->get_sub_field_value( 'time_period_options' );
 		} else {
-			$display_type              = $this->get_sub_field_value( 'display_type' );
-			$query_type                = $this->get_sub_field_value( 'query_type' );
-			$all_items_label           = $this->get_sub_field_value( 'all_items_label' );
-			$use_chosen                = $this->get_sub_field_value( 'use_chosen' );
-			$chosen_no_results_message = $this->get_sub_field_value( 'chosen_no_results_message' );
-			$enable_multiple_filter    = $this->get_sub_field_value( 'enable_multiple_filter' );
-			$show_count                = $this->get_sub_field_value( 'show_count' );
-			$hide_empty                = $this->get_sub_field_value( 'hide_empty' );
-			$get_options               = $this->get_sub_field_value( 'get_options' );
-			$manual_options            = $this->get_sub_field_value( 'manual_options' );
+			$display_type           = $this->get_sub_field_value( 'display_type' );
+			$query_type             = $this->get_sub_field_value( 'query_type' );
+			$all_items_label        = $this->get_sub_field_value( 'all_items_label' );
+			$enable_multiple_filter = $this->get_sub_field_value( 'enable_multiple_filter' );
+			$show_count             = $this->get_sub_field_value( 'show_count' );
+			$hide_empty             = $this->get_sub_field_value( 'hide_empty' );
+			$get_options            = $this->get_sub_field_value( 'get_options' );
+			$manual_options         = $this->get_sub_field_value( 'manual_options' );
 		}
 
 		if ( 'product-status' === $field_type ) {
@@ -125,12 +118,11 @@ class WCAPF_Field_Instance {
 		$_display_type    = $this->parse_display_type( $display_type );
 		$_all_items_label = $this->parse_all_items_label( $all_items_label );
 
-		$this->display_type              = $_display_type;
-		$this->all_items_label           = $_all_items_label;
-		$this->use_chosen                = $use_chosen;
-		$this->chosen_no_results_message = $chosen_no_results_message;
-		$this->show_count                = $show_count;
-		$this->hide_empty                = $hide_empty;
+		$this->display_type    = $_display_type;
+		$this->all_items_label = $_all_items_label;
+		$this->use_chosen      = WCAPF_Helper::use_combobox();
+		$this->show_count      = $show_count;
+		$this->hide_empty      = $hide_empty;
 
 		switch ( $_display_type ) {
 			case 'multiselect':
@@ -260,15 +252,18 @@ class WCAPF_Field_Instance {
 	private function parse_all_items_label( $all_items_label ) {
 		$type = $this->get_sub_field_value( 'type' );
 
-		// TODO: Prepare all items label.
 		if ( ! $all_items_label ) {
 			switch ( $type ) {
 				case 'category':
-					$all_items_label = __( 'All categories', 'wc-ajax-product-filter' );
+					$all_items_label = __( 'All Categories', 'wc-ajax-product-filter' );
 					break;
 
 				case 'tag':
-					$all_items_label = __( 'All tags', 'wc-ajax-product-filter' );
+					$all_items_label = __( 'All Tags', 'wc-ajax-product-filter' );
+					break;
+
+				case 'rating':
+					$all_items_label = __( 'All Ratings', 'wc-ajax-product-filter' );
 					break;
 
 				default:
@@ -277,7 +272,7 @@ class WCAPF_Field_Instance {
 			}
 		}
 
-		return $all_items_label ?: __( 'All items', 'wc-ajax-product-filter' );
+		return $all_items_label ?: __( 'All Items', 'wc-ajax-product-filter' );
 	}
 
 	/**
