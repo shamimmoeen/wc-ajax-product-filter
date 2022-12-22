@@ -8,10 +8,6 @@
 	margin: 0 0 var(--wcapf-filter-base-bottom-margin);
 	line-height: var(--wcapf-filter-line-height);
 
-	//border-bottom: 1px solid #eee;
-	//margin-bottom: 1.5em;
-	//padding-bottom: 1.5em;
-
 	.wcapf-filter-title {
 		margin: 0;
 		padding: 0;
@@ -32,57 +28,16 @@
 				svg {
 					transform: rotate(180deg);
 				}
-
-				span {
-					border-width: var(--wcapf-accordion-icon-width) 0 0 var(--wcapf-accordion-icon-width);
-				}
 			}
 		}
 
 		.wcapf-filter-accordion-icon {
-			//position: relative;
 			display: inline-flex;
-			//margin: 0 5px;
-			//width: 20px;
-			//height: 20px;
-			//user-select: none;
-
-			--wcapf-accordion-icon-size: 10px;
-			--wcapf-accordion-icon-width: 2px;
-			//--wcapf-accordion-icon-color: #666;
-			--wcapf-accordion-icon-color: currentColor;
-
-			//--wcapf-accordion-svg-icon-size: 20px;
-			--wcapf-accordion-svg-icon-size: .9em;
 
 			svg {
-				width: var(--wcapf-accordion-svg-icon-size);
-				height: var(--wcapf-accordion-svg-icon-size);
+				width: var(--wcapf-filter-accordion-icon-size);
+				height: var(--wcapf-filter-accordion-icon-size);
 			}
-
-			span {
-				width: var(--wcapf-accordion-icon-size);
-				height: var(--wcapf-accordion-icon-size);
-				border-style: solid;
-				border-color: var(--wcapf-accordion-icon-color);
-				border-width: 0 var(--wcapf-accordion-icon-width) var(--wcapf-accordion-icon-width) 0;
-				display: inline-block;
-				transform: rotate(45deg);
-			}
-
-			//&::before {
-			//	content: '';
-			//	width: 16px;
-			//	height: 16px;
-			//	border-style: solid;
-			//	border-color: #777;
-			//	border-width: 2px 2px 0 0;
-			//	display: inline-block;
-			//	transform: rotate(45deg);
-			//	top: 0;
-			//	left: 0;
-			//	position: absolute;
-			//}
 		}
 	}
 }
