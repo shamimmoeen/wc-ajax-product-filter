@@ -16,7 +16,7 @@
 	}
 
 	// For chosen single select.
-	.wcapf-chosen-select.chosen-container-active {
+	.wcapf-chosen-container.chosen-container-active {
 		&:not(.chosen-with-drop) .chosen-choices,
 		&:not(.chosen-with-drop) .chosen-single {
 			border-color: var(--wcapf-chosen-active-color);

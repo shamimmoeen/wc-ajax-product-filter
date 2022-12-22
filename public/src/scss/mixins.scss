@@ -44,3 +44,42 @@
 
 	// When including, must set the display and line-height property.
 }
+
+@mixin button {
+	background: none;
+	box-shadow: none;
+	border: none;
+	color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	margin: 0;
+	padding: 0;
+	transition: none;
+	line-height: inherit;
+	height: auto;
+	min-height: unset;
+	min-width: unset;
+	text-align: inherit;
+	text-decoration: none;
+	text-transform: none;
+	cursor: pointer;
+	letter-spacing: normal;
+	outline: none;
+
+	// When including, must set the width, border-radius.
+
+	&:hover,
+	&:focus {
+		background: none;
+		border: none;
+		box-shadow: none;
+		color: inherit;
+		outline: none;
+		transition: none;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wcapf-primary-color);
+		outline-offset: 2px;
+	}
+}

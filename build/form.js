@@ -9740,7 +9740,7 @@ const Advanced = _ref => {
       id: 'show_in_active_filters',
       index: index,
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show in Active Filters', 'wc-ajax-product-filter'),
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the selected options for this filter in active filters.', 'wc-ajax-product-filter'),
+      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the selected options in active filters.', 'wc-ajax-product-filter'),
       isChecked: show_in_active_filters,
       onChange: handleCheckboxChange
     });

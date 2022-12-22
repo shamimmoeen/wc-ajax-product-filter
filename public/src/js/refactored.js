@@ -7,56 +7,40 @@
 
 	const instanceIds = [];
 
-	$( '.wcapf-filter-form' ).each( function() {
+	$( '.wcapf-filter' ).each( function() {
 		instanceIds.push( $( this ).data( 'id' ) );
 	} );
+
+	let focusedElm;
 
 	window.WCAPF = window.WCAPF || {};
 
 	window.WCAPF = {
-		initCombobox: function() {
-			if ( ! jQuery().chosenWCAPF ) {
-				return;
-			}
+		handleFilterAccordion: function() {
+			const toggleAccordion = ( $el ) => {
+				// Check to see if the accordion is opened
+				const pressed = $el.attr( 'aria-expanded' ) === 'true';
 
-			const options = {
-				inherit_select_classes: true,
-				inherit_option_classes: true,
-				no_results_text: wcapf_params.chosen_no_results_text,
-				options_none_text: wcapf_params.chosen_options_none_text,
+				// Change aria-expanded to the opposite state
+				$el.attr( 'aria-expanded', ! pressed );
+
+				const $filterInner = $el.closest( '.wcapf-filter' ).children( '.wcapf-filter-inner' );
+
+				if ( wcapf_params.enable_animation_for_filter_accordion ) {
+					$filterInner.slideToggle(
+						wcapf_params.filter_accordion_animation_speed,
+						wcapf_params.filter_accordion_animation_easing
+					);
+				} else {
+					$filterInner.toggle();
+				}
 			};
 
-			if ( wcapf_params.is_rtl ) {
-				options[ 'rtl' ] = true;
-			}
-
-			$body.find( '.wcapf-chosen' ).each( function() {
-				const $this = $( this );
-
-				// If hierarchy enabled then we show the selected options.
-				if ( $this.hasClass( 'has-hierarchy' ) ) {
-					options[ 'display_selected_options' ] = true;
-				} else {
-					options[ 'display_selected_options' ] = wcapf_params.chosen_display_selected_options;
-				}
-
-				$this.chosenWCAPF( options );
+			$body.on( 'click', '.wcapf-filter-accordion-trigger', function() {
+				toggleAccordion( $( this ) );
 			} );
-
-			// Attach chosen for default orderby.
-			if ( wcapf_params.attach_chosen_on_sorting ) {
-				let disableSearch = true;
-
-				if ( wcapf_params.search_box_in_default_orderby ) {
-					disableSearch = false;
-				}
-
-				options[ 'disable_search' ] = disableSearch;
-
-				$body.find( '.woocommerce-ordering select.orderby' ).chosenWCAPF( options );
-			}
 		},
-		initHierarchyToggle: function() {
+		handleHierarchyToggle: function() {
 			const toggleAccordion = ( $el ) => {
 				// Check to see if the button is pressed
 				const pressed = $el.attr( 'aria-pressed' ) === 'true';
@@ -66,7 +50,6 @@
 
 				const $child = $el.closest( 'li' ).children( 'ul' );
 
-				// TODO: Default should be no animation.
 				if ( wcapf_params.enable_animation_for_hierarchy_accordion ) {
 					$child.slideToggle(
 						wcapf_params.hierarchy_accordion_animation_speed,
@@ -77,31 +60,31 @@
 				}
 			};
 
-			const $toggleBtn = $body.find( '.wcapf-hierarchy-accordion-toggle' );
-
-			$toggleBtn.on( 'click', function() {
-				toggleAccordion( $( this ) );
-			} );
-
-			$toggleBtn.on( 'keydown', function( e ) {
-				if ( e.key === ' ' || e.key === 'Enter' || e.key === 'Spacebar' ) {
-					// Prevent the default action to stop scrolling when space is pressed
-					e.preventDefault();
-
+			$body
+				.on( 'click', '.wcapf-hierarchy-accordion-toggle', function() {
 					toggleAccordion( $( this ) );
-				}
-			} );
+				} )
+				.on( 'keydown', '.wcapf-hierarchy-accordion-toggle', function( e ) {
+					if ( e.key === ' ' || e.key === 'Enter' || e.key === 'Spacebar' ) {
+						// Prevent the default action to stop scrolling when space is pressed
+						e.preventDefault();
+
+						toggleAccordion( $( this ) );
+					}
+				} );
 		},
 		updateProductsCountResult: function( $response ) {
-			const selector = '.woocommerce-result-count';
+			const $container = $( wcapf_params.shop_loop_container );
+			const selector   = '.woocommerce-result-count';
+			const newCount   = $response.find( selector ).html();
 
-			if ( $( wcapf_params.shop_loop_container ).find( selector ).length ) {
-				return;
-			}
+			$body.find( selector ).each( function() {
+				const $el = $( this );
 
-			const newProductCount = $response.find( selector ).html();
-
-			$body.find( selector ).html( newProductCount );
+				if ( ! $container.has( $el ).length ) {
+					$el.html( newCount );
+				}
+			} );
 		},
 		showLoadingAnimation: function() {
 			if ( ! wcapf_params.loading_animation ) {
@@ -172,8 +155,11 @@
 				);
 			}
 		},
-		// Things are done before fetching the products like showing a loading indicator.
+		// Things are done before fetching the products like showing the loading indicator.
 		beforeFetchingProducts: function() {
+			// Track the current element focus.
+			focusedElm = document.activeElement;
+
 			WCAPF.showLoadingAnimation();
 
 			if ( 'immediately' === wcapf_params.scroll_window_when ) {
@@ -182,6 +168,7 @@
 
 			$body.trigger( 'wcapf_before_fetching_products' );
 		},
+		// Things are done before updating the products like hiding the loading indicator.
 		beforeUpdatingProducts: function( $response ) {
 			WCAPF.resetLoadingAnimation();
 
@@ -189,6 +176,16 @@
 		},
 		afterUpdatingProducts: function( $response ) {
 			WCAPF.updateProductsCountResult( $response );
+
+			// Restore the focus.
+			// Maybe restoring the focus in mobile device isn't good.
+			if ( wcapf_params.restore_focus_after_filtering && ! wcapf_params.is_mobile ) {
+				if ( document.body !== focusedElm ) {
+					if ( focusedElm.id ) {
+						$( `#${ focusedElm.id }` ).focus();
+					}
+				}
+			}
 
 			// Reinitialize wcapf.
 			WCAPF.init();
@@ -210,6 +207,8 @@
 				success: function( response ) {
 					const $response = $( response );
 
+					WCAPF.beforeUpdatingProducts( $response );
+
 					/**
 					 * Update document title.
 					 *
@@ -217,14 +216,56 @@
 					 */
 					document.title = $response.filter( 'title' ).text();
 
+					// Update the instances.
 					for ( const id of instanceIds ) {
-						const instanceId = '[data-id="' + id + '"]';
-						const $instance  = $( instanceId );
+						const instanceId     = '[data-id="' + id + '"]';
+						const $instance      = $( instanceId );
+						const $inner         = $instance.find( '.wcapf-filter-inner' );
+						const _instance      = $response.find( instanceId );
+						let _instanceClasses = $( _instance ).attr( 'class' );
 
-						$instance.html( $response.find( instanceId ).html() );
+						// Preserve hierarchy accordion state.
+						if ( $instance.hasClass( 'has-hierarchy-accordion' ) ) {
+							$instance.find( '.wcapf-hierarchy-accordion-toggle' ).each( function() {
+								const $el = $( this );
+								const id  = $el.data( 'id' );
+
+								const toggleSelector = `.wcapf-hierarchy-accordion-toggle[data-id="${ id }"]`;
+
+								// Check to see if the accordion is opened
+								const pressed = $el.attr( 'aria-pressed' ) === 'true';
+
+								if ( pressed ) {
+									_instance.find( toggleSelector ).attr( 'aria-pressed', 'true' );
+									_instance.find( toggleSelector ).closest( 'li' ).children( 'ul' ).show();
+								} else {
+									_instance.find( toggleSelector ).attr( 'aria-pressed', 'false' );
+									_instance.find( toggleSelector ).closest( 'li' ).children( 'ul' ).hide();
+								}
+							} );
+						}
+
+						const _html = _instance.find( '.wcapf-filter-inner' ).html();
+
+						// Show soft limit items.
+						// const softLimitSelector = 'show-hidden-items';
+						//
+						// if ( $instance.hasClass( softLimitSelector ) ) {
+						// 	if ( ! _instance.hasClass( softLimitSelector ) ) {
+						// 		_instanceClasses += ' ' + softLimitSelector;
+						// 	}
+						// } else {
+						// 	_instanceClasses = _instanceClasses.replace( softLimitSelector, '' );
+						// }
+
+						// Update the instance classes.
+						$instance.attr( 'class', _instanceClasses.trim() );
+
+						// Finally update the instance.
+						$inner.html( _html );
+
+						$instance.trigger( 'wcapf-filter-updated', [ _instance ] );
 					}
-
-					WCAPF.beforeUpdatingProducts( $response );
 
 					// Replace old shop loop with new one.
 					const $shopLoopContainer = $response.find( wcapf_params.shop_loop_container );
@@ -270,165 +311,10 @@
 
 			WCAPF.filterProducts();
 		},
-		initRangeSlider: function() {
-			if ( 'undefined' === typeof noUiSlider ) {
-				return;
-			}
-
-			$body.find( '.wcapf-range-slider' ).each( function() {
-				const $item   = $( this );
-				const $slider = $item.find( '.wcapf-noui-slider' );
-
-				const sliderId          = $slider.attr( 'id' );
-				const displayValuesAs   = $item.attr( 'data-display-values-as' );
-				const formatNumbers     = $item.attr( 'data-format-numbers' );
-				const rangeMinValue     = parseFloat( $item.attr( 'data-range-min-value' ) );
-				const rangeMaxValue     = parseFloat( $item.attr( 'data-range-max-value' ) );
-				const step              = parseFloat( $item.attr( 'data-step' ) );
-				const decimalPlaces     = $item.attr( 'data-decimal-places' );
-				const thousandSeparator = $item.attr( 'data-thousand-separator' );
-				const decimalSeparator  = $item.attr( 'data-decimal-separator' );
-				const minValue          = parseFloat( $item.attr( 'data-min-value' ) );
-				const maxValue          = parseFloat( $item.attr( 'data-max-value' ) );
-				const $minValue         = $item.find( '.min-value' );
-				const $maxValue         = $item.find( '.max-value' );
-
-				const slider = document.getElementById( sliderId );
-
-				noUiSlider.create( slider, {
-					start: [ minValue, maxValue ],
-					step,
-					connect: true,
-					cssPrefix: 'wcapf-noui-',
-					range: {
-						'min': rangeMinValue,
-						'max': rangeMaxValue,
-					}
-				} );
-
-				slider.noUiSlider.on( 'update', function( values ) {
-					let minValue;
-					let maxValue;
-
-					if ( formatNumbers ) {
-						minValue = numberFormat( values[ 0 ], decimalPlaces, decimalSeparator, thousandSeparator );
-						maxValue = numberFormat( values[ 1 ], decimalPlaces, decimalSeparator, thousandSeparator );
-					} else {
-						minValue = parseFloat( values[ 0 ] );
-						maxValue = parseFloat( values[ 1 ] );
-					}
-
-					if ( 'plain_text' === displayValuesAs ) {
-						$minValue.html( minValue );
-						$maxValue.html( maxValue );
-					} else {
-						$minValue.val( minValue );
-						$maxValue.val( maxValue );
-					}
-
-					$body.trigger( 'wcapf-nouislider-update', [ $item, values ] );
-				} );
-
-				function filterProductsAccordingToSlider( values ) {
-					const _minValue = parseFloat( values[ 0 ] );
-					const _maxValue = parseFloat( values[ 1 ] );
-
-					// If value is not changed then don't proceed.
-					if ( _minValue === minValue && _maxValue === maxValue ) {
-						return;
-					}
-
-					if ( _minValue === rangeMinValue && _maxValue === rangeMaxValue ) {
-						// Remove range filter.
-						WCAPF.requestFilter( $item.data( 'clear-filter-url' ) );
-					} else {
-						// Add range filter.
-						const url = $item.data( 'url' ).replace( '%1s', _minValue ).replace( '%2s', _maxValue );
-						WCAPF.requestFilter( url );
-					}
-				}
-
-				slider.noUiSlider.on( 'change', function( values ) {
-					filterProductsAccordingToSlider( values );
-				} );
-
-				$minValue.on( 'input', function( event ) {
-					event.preventDefault();
-
-					const $input = $( this );
-
-					// Clear any previously set timer before setting a fresh one
-					clearTimeout( $input.data( 'timer' ) );
-
-					$input.data( 'timer', setTimeout( function() {
-						$input.removeData( 'timer' );
-
-						const minValue = $input.val();
-
-						slider.noUiSlider.set( [ minValue, null ] );
-
-						filterProductsAccordingToSlider( slider.noUiSlider.get() );
-					}, delay ) );
-				} );
-
-				$maxValue.on( 'input', function( event ) {
-					event.preventDefault();
-
-					const $input = $( this );
-
-					// Clear any previously set timer before setting a fresh one
-					clearTimeout( $input.data( 'timer' ) );
-
-					$input.data( 'timer', setTimeout( function() {
-						$input.removeData( 'timer' );
-
-						const maxValue = $input.val();
-
-						slider.noUiSlider.set( [ null, maxValue ] );
-
-						filterProductsAccordingToSlider( slider.noUiSlider.get() );
-					}, delay ) );
-				} );
-			} );
-		},
-		initDefaultOrderBy: function() {
-			if ( ! wcapf_params.sorting_control ) {
-				$body.find( '.woocommerce-ordering' ).each( function() {
-					const $orderingForm = $( this );
-
-					$orderingForm.on( 'change', 'select.orderby', function() {
-						$orderingForm.submit();
-					} );
-				} );
-
-				return;
-			}
-
-			$body.find( '.woocommerce-ordering' ).each( function() {
-				const $orderingForm = $( this );
-
-				$orderingForm.on( 'submit', function( e ) {
-					e.preventDefault();
-				} );
-
-				$orderingForm.on( 'change', 'select.orderby', function( e ) {
-					e.preventDefault();
-
-					const order = $( this ).val();
-
-					const url = new URL( window.location );
-					url.searchParams.set( 'orderby', order );
-
-					WCAPF.requestFilter( getOrderByUrl( url.href ) );
-				} );
-			} );
-		},
 		handleNumberInputFilters: function() {
 			const rangeNumberSelectors = '.wcapf-range-number .min-value, .wcapf-range-number .max-value';
 
-			$body.on( 'input', rangeNumberSelectors, function( event ) {
-				event.preventDefault();
-
+			$body.on( 'input', rangeNumberSelectors, function() {
 				const $item = $( this );
 
 				const $rangeNumber      = $item.closest( '.wcapf-range-number' );
@@ -521,20 +407,28 @@
 			} );
 		},
 		handleListFilters: function() {
-			const inputs = '.wcapf-list-wrapper [type="checkbox"],.wcapf-list-wrapper [type="radio"]';
+			const nativeInputs = '.list-type-native [type="checkbox"],' +
+				'.list-type-native [type="radio"],' +
+				'.list-type-custom-checkbox [type="checkbox"]';
 
-			$body.on( 'change', inputs, function( event ) {
-				event.preventDefault();
+			$body.on( 'change', nativeInputs, function() {
+				WCAPF.requestFilter( $( this ).data( 'url' ) );
+			} );
 
-				const $item = $( this );
+			const customRadioSelector = '.list-type-custom-radio';
 
-				WCAPF.requestFilter( $item.data( 'url' ) );
+			$body.on( 'change', customRadioSelector + ' [type="checkbox"]', function() {
+				// https://stackoverflow.com/a/5839924
+				$( this )
+					.closest( customRadioSelector )
+					.find( '[type="checkbox"]' ).not( this )
+					.prop( 'checked', false );
+
+				WCAPF.requestFilter( $( this ).data( 'url' ) );
 			} );
 		},
 		handleDropdownFilters: function() {
-			$body.on( 'change', '.wcapf-dropdown-wrapper select', function( event ) {
-				event.preventDefault();
-
+			$body.on( 'change', '.wcapf-dropdown-wrapper select', function() {
 				const $select        = $( this );
 				const values         = $select.val();
 				const filterURL      = $select.data( 'url' );
@@ -566,10 +460,199 @@
 				}
 			}
 		},
+		handleDefaultOrderby: function() {
+			if ( ! wcapf_params.sorting_control ) {
+				// Submit the orderby form when value is changed.
+				$body.on( 'change', '.woocommerce-ordering select.orderby', function() {
+					$( this ).closest( 'form' ).trigger( 'submit' );
+				} );
+
+				return;
+			}
+
+			// Prevent the auto submission of the orderby form.
+			$body.on( 'submit', '.woocommerce-ordering', function() {
+				return false;
+			} );
+
+			// Handle the filter request via ajax when the orderby value is changed.
+			$body.on( 'change', '.woocommerce-ordering select.orderby', function() {
+				const order = $( this ).val();
+
+				const url = new URL( window.location );
+				url.searchParams.set( 'orderby', order );
+
+				WCAPF.requestFilter( getOrderByUrl( url.href ) );
+
+				return false;
+			} );
+		},
+		handleResetAllFilters: function() {
+			$body.on( 'click', '.wcapf-reset-filters-btn', function() {
+				console.log( 'reset all filters' );
+			} );
+		},
+		initCombobox: function() {
+			if ( ! jQuery().chosenWCAPF ) {
+				return;
+			}
+
+			const options = {
+				inherit_select_classes: true,
+				inherit_option_classes: true,
+				no_results_text: wcapf_params.chosen_no_results_text,
+				options_none_text: wcapf_params.chosen_options_none_text,
+			};
+
+			if ( wcapf_params.is_rtl ) {
+				options[ 'rtl' ] = true;
+			}
+
+			$body.find( '.wcapf-chosen' ).each( function() {
+				const $this = $( this );
+
+				// If hierarchy enabled then we show the selected options.
+				if ( $this.hasClass( 'has-hierarchy' ) ) {
+					options[ 'display_selected_options' ] = true;
+				} else {
+					options[ 'display_selected_options' ] = wcapf_params.chosen_display_selected_options;
+				}
+
+				$this.chosenWCAPF( options );
+			} );
+
+			// Attach chosen for default orderby.
+			if ( wcapf_params.attach_chosen_on_sorting ) {
+				let disableSearch = true;
+
+				if ( wcapf_params.search_box_in_default_orderby ) {
+					disableSearch = false;
+				}
+
+				options[ 'disable_search' ] = disableSearch;
+
+				$body.find( '.woocommerce-ordering select.orderby' ).chosenWCAPF( options );
+			}
+		},
+		initRangeSlider: function() {
+			if ( 'undefined' === typeof noUiSlider ) {
+				return;
+			}
+
+			$body.find( '.wcapf-range-slider' ).each( function() {
+				const $item   = $( this );
+				const $slider = $item.find( '.wcapf-noui-slider' );
+
+				const sliderId          = $slider.attr( 'id' );
+				const displayValuesAs   = $item.attr( 'data-display-values-as' );
+				const formatNumbers     = $item.attr( 'data-format-numbers' );
+				const rangeMinValue     = parseFloat( $item.attr( 'data-range-min-value' ) );
+				const rangeMaxValue     = parseFloat( $item.attr( 'data-range-max-value' ) );
+				const step              = parseFloat( $item.attr( 'data-step' ) );
+				const decimalPlaces     = $item.attr( 'data-decimal-places' );
+				const thousandSeparator = $item.attr( 'data-thousand-separator' );
+				const decimalSeparator  = $item.attr( 'data-decimal-separator' );
+				const minValue          = parseFloat( $item.attr( 'data-min-value' ) );
+				const maxValue          = parseFloat( $item.attr( 'data-max-value' ) );
+				const $minValue         = $item.find( '.min-value' );
+				const $maxValue         = $item.find( '.max-value' );
+
+				const slider = document.getElementById( sliderId );
+
+				noUiSlider.create( slider, {
+					start: [ minValue, maxValue ],
+					step,
+					connect: true,
+					cssPrefix: 'wcapf-noui-',
+					range: {
+						'min': rangeMinValue,
+						'max': rangeMaxValue,
+					}
+				} );
+
+				slider.noUiSlider.on( 'update', function( values ) {
+					let minValue;
+					let maxValue;
+
+					if ( formatNumbers ) {
+						minValue = numberFormat( values[ 0 ], decimalPlaces, decimalSeparator, thousandSeparator );
+						maxValue = numberFormat( values[ 1 ], decimalPlaces, decimalSeparator, thousandSeparator );
+					} else {
+						minValue = parseFloat( values[ 0 ] );
+						maxValue = parseFloat( values[ 1 ] );
+					}
+
+					if ( 'plain_text' === displayValuesAs ) {
+						$minValue.html( minValue );
+						$maxValue.html( maxValue );
+					} else {
+						$minValue.val( minValue );
+						$maxValue.val( maxValue );
+					}
+
+					$body.trigger( 'wcapf-nouislider-update', [ $item, values ] );
+				} );
+
+				function filterProductsAccordingToSlider( values ) {
+					const _minValue = parseFloat( values[ 0 ] );
+					const _maxValue = parseFloat( values[ 1 ] );
+
+					// If value is not changed then don't proceed.
+					if ( _minValue === minValue && _maxValue === maxValue ) {
+						return;
+					}
+
+					if ( _minValue === rangeMinValue && _maxValue === rangeMaxValue ) {
+						// Remove range filter.
+						WCAPF.requestFilter( $item.data( 'clear-filter-url' ) );
+					} else {
+						// Add range filter.
+						const url = $item.data( 'url' ).replace( '%1s', _minValue ).replace( '%2s', _maxValue );
+						WCAPF.requestFilter( url );
+					}
+				}
+
+				slider.noUiSlider.on( 'change', function( values ) {
+					filterProductsAccordingToSlider( values );
+				} );
+
+				$minValue.on( 'input', function() {
+					const $input = $( this );
+
+					// Clear any previously set timer before setting a fresh one
+					clearTimeout( $input.data( 'timer' ) );
+
+					$input.data( 'timer', setTimeout( function() {
+						$input.removeData( 'timer' );
+
+						const minValue = $input.val();
+
+						slider.noUiSlider.set( [ minValue, null ] );
+
+						filterProductsAccordingToSlider( slider.noUiSlider.get() );
+					}, delay ) );
+				} );
+
+				$maxValue.on( 'input', function() {
+					const $input = $( this );
+
+					// Clear any previously set timer before setting a fresh one
+					clearTimeout( $input.data( 'timer' ) );
+
+					$input.data( 'timer', setTimeout( function() {
+						$input.removeData( 'timer' );
+
+						const maxValue = $input.val();
+
+						slider.noUiSlider.set( [ null, maxValue ] );
+
+						filterProductsAccordingToSlider( slider.noUiSlider.get() );
+					}, delay ) );
+				} );
+			} );
+		},
 		init: function() {
 			WCAPF.initCombobox();
-			WCAPF.initDefaultOrderBy();
-			WCAPF.initHierarchyToggle();
 			WCAPF.initRangeSlider();
 		}
 	};
@@ -579,9 +662,16 @@
 ( function( $, WCAPF ) {
 
 	WCAPF.init();
+
+	WCAPF.handleFilterAccordion();
+	WCAPF.handleHierarchyToggle();
+
 	WCAPF.handleListFilters();
 	WCAPF.handleDropdownFilters();
 	WCAPF.handleNumberInputFilters();
 	WCAPF.handlePagination();
+	WCAPF.handleDefaultOrderby();
+
+	WCAPF.handleResetAllFilters();
 
 }( jQuery, window.WCAPF ) );

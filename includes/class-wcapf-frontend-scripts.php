@@ -166,6 +166,11 @@ class WCAPF_Frontend_Scripts {
 	private static function get_js_params( $for_preview ) {
 		$settings = WCAPF_Helper::get_settings();
 
+		// Prevent attaching combobox on default orderby if combobox is disabled globally.
+		if ( isset( $settings['use_chosen'] ) && ! $settings['use_chosen'] ) {
+			$settings['attach_chosen_on_sorting'] = '';
+		}
+
 		$disable_inputs = true;
 
 		if ( isset( $settings['loading_animation'] ) && $settings['loading_animation'] ) {
@@ -198,10 +203,15 @@ class WCAPF_Frontend_Scripts {
 			'chosen_no_results_text'                   => __( 'No results for:', 'wc-ajax-product-filter' ),
 			'chosen_options_none_text'                 => __( 'No options to choose', 'wc-ajax-product-filter' ),
 			'chosen_lib_search_threshold'              => 10,
+			'preserve_filter_accordion_state'          => true,
+			'enable_animation_for_filter_accordion'    => false,
+			'filter_accordion_animation_speed'         => 400,
+			'filter_accordion_animation_easing'        => 'swing',
 			'preserve_hierarchy_accordion_state'       => true,
-			'enable_animation_for_hierarchy_accordion' => true,
+			'enable_animation_for_hierarchy_accordion' => false,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
+			'restore_focus_after_filtering'            => true,
 			'loading_overlay_options'                  => $loading_overlay_options,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',

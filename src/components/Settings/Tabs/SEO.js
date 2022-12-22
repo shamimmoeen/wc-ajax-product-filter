@@ -3,10 +3,19 @@ import Checkbox from '../../Field/Checkbox';
 import Select from '../../Field/Select';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
 import { foundProVersion } from '../../utils';
+import { useSettings } from '../SettingsContext';
+import useSettingsData from '../useSettingsData';
 
 const WCAPF_PRO = foundProVersion();
 
 const SEO = () => {
+	const { state, dispatch } = useSettings();
+	const { handleCheckboxChange } = useSettingsData(state, dispatch);
+
+	const {
+		settings: { use_term_slug, use_author_username, update_document_title },
+	} = state;
+
 	return (
 		<>
 			<ProFeaturesNotice
@@ -14,6 +23,39 @@ const SEO = () => {
 					'Upgrade to PRO to unlock all SEO features.',
 					'wc-ajax-product-filter'
 				)}
+			/>
+
+			<Checkbox
+				id={'use_term_slug'}
+				label={__('Use term slug', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines if we show the selected options in active filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={use_term_slug}
+				onChange={handleCheckboxChange}
+			/>
+
+			<Checkbox
+				id={'use_author_username'}
+				label={__('Use author username', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines if we show the selected options in active filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={use_author_username}
+				onChange={handleCheckboxChange}
+			/>
+
+			<Checkbox
+				id={'update_document_title'}
+				label={__('Sync Document Title', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines if we show the selected options in active filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={update_document_title}
+				onChange={handleCheckboxChange}
 			/>
 
 			<Select

@@ -9,6 +9,7 @@
  */
 
 /**
+ * @var string $filter_id
  * @var string $filter_key
  * @var string $display_type
  * @var string $display_values_as
@@ -32,8 +33,6 @@
  * @var string $filter_url
  * @var string $clear_filter_url
  */
-
-$input_name = $filter_key . '[]';
 
 // We don't show value postfix and prefix at the same time.
 $value_unit    = '';
@@ -59,7 +58,6 @@ $_attrs = array();
 
 $_attrs[] = 'data-range-min-value="' . $range_min_value . '"';
 $_attrs[] = 'data-range-max-value="' . $range_max_value . '"';
-$_attrs[] = 'data-filter-key="' . $filter_key . '"';
 $_attrs[] = 'data-min-value="' . $min_value . '"';
 $_attrs[] = 'data-max-value="' . $max_value . '"';
 $_attrs[] = 'data-step="' . $step . '"';
@@ -133,7 +131,7 @@ if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
 				<input
 					type="text"
 					class="min-value"
-					name="<?php echo esc_attr( $input_name ); ?>"
+					id="<?php echo esc_attr( $filter_key ); ?>-<?php echo esc_attr( $filter_id ); ?>-min"
 					value="<?php echo esc_attr( $min_value ); ?>"
 					autocomplete="off"
 				>
@@ -163,7 +161,7 @@ if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
 				<input
 					type="text"
 					class="max-value"
-					name="<?php echo esc_attr( $input_name ); ?>"
+					id="<?php echo esc_attr( $filter_key ); ?>-<?php echo esc_attr( $filter_id ); ?>-max"
 					value="<?php echo esc_attr( $max_value ); ?>"
 					autocomplete="off"
 				>
