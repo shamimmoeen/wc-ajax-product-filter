@@ -821,4 +821,15 @@ class WCAPF_Helper {
 		return array( $r, $g, $b );
 	}
 
+	/**
+	 * Determines if we keep the filter accordion as opened when the filter is active.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function keep_accordion_opened_when_filter_active() {
+		return apply_filters( 'wcapf_keep_accordion_opened_when_filter_active', true );
+	}
+
 }

@@ -131,14 +131,43 @@ final class WCAPF_Form {
 		$filter_title   = $field_instance->get_sub_field_value( 'title' );
 		$filter_id      = $field_instance->filter_id;
 
+		$enable_accordion = $field_instance->get_sub_field_value( 'enable_accordion' );
+		$accordion_state  = $field_instance->get_sub_field_value( 'accordion_default_state' );
+
+		if (
+			WCAPF_Product_Filter_Utils::is_filter_active( $field_instance )
+			&& WCAPF_Helper::keep_accordion_opened_when_filter_active()
+		) {
+			$accordion_state = 'expanded';
+		}
+
+		$is_expanded         = 'expanded' === $accordion_state ? 'true' : 'false';
+		$accordion_header_id = 'wcapf-filter-accordion-header-' . $filter_id;
+		$accordion_panel_id  = 'wcapf-filter-accordion-panel-' . $filter_id;
+
 		echo '<div class="' . esc_attr( $filter_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
 		if ( $show_title ) {
-			echo '<h4 class="wcapf-filter-title">' . esc_html( $filter_title ) . '</h4>';
+			$header = '<h4 class="wcapf-filter-title">';
+
+			if ( $enable_accordion ) {
+				$header .= '<button type="button" id="' . esc_attr( $accordion_header_id ) . '" aria-controls="' . esc_attr( $accordion_panel_id ) . '" class="wcapf-filter-accordion-trigger" aria-expanded="' . $is_expanded . '">';
+				$header .= esc_html( $filter_title );
+				$header .= '<span class="wcapf-filter-accordion-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none"><path d="M4 8L12 16L20 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+				// $header .= '<span class="wcapf-filter-accordion-icon" aria-hidden="true"><span></span></span>';
+				$header .= '</button>';
+			} else {
+				$header .= esc_html( $filter_title );
+			}
+
+			$header .= '</h4>';
+
+			echo $header;
 		}
 
-		// TODO: Apply the accordion style here.
-		echo '<div class="wcapf-filter-inner">';
+		$panel_style = 'false' === $is_expanded ? ' style="display: none;"' : '';
+
+		echo '<div class="wcapf-filter-inner" id="' . esc_attr( $accordion_panel_id ) . '" aria-labelledby="' . esc_attr( $accordion_header_id ) . '"' . $panel_style . '>';
 	}
 
 	/**
@@ -155,13 +184,17 @@ final class WCAPF_Form {
 
 		if ( 'taxonomy' === $type ) {
 			$classes[] = 'wcapf-filter-taxonomy-' . $field_instance->taxonomy;
+
+			if ( $field_instance->enable_hierarchy_accordion ) {
+				$classes[] = 'has-hierarchy-accordion';
+			}
 		} elseif ( 'post-meta' === $type ) {
 			$classes[] = 'wcapf-filter-meta-' . $field_instance->meta_key;
 		} else {
 			$classes[] = 'wcapf-filter-' . $type;
 		}
 
-		// TODO: Add accordion classes.
+		// TODO: Add class when soft limit is enabled.
 
 		return $classes;
 	}
@@ -240,6 +273,7 @@ final class WCAPF_Form {
 		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
 		$data = array(
+			'filter_id'             => $filter_id,
 			'filter_key'            => $filter_key,
 			'display_type'          => $display_type,
 			'display_values_as'     => $display_values_as,

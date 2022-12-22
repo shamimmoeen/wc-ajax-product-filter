@@ -121,13 +121,6 @@ class WCAPF_Walker {
 	public $field_data;
 
 	/**
-	 * The form id.
-	 *
-	 * @var string
-	 */
-	public $form_id;
-
-	/**
 	 * The walker items.
 	 *
 	 * @var array
@@ -356,6 +349,9 @@ class WCAPF_Walker {
 					$wrapper_classes[] = 'has-hierarchy-accordion';
 				}
 			} else {
+				$input_type = $this->enable_multiple_filter ? 'checkbox' : 'radio';
+
+				$wrapper_classes[] = 'list-type-custom-' . $input_type;
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				if ( $show_count ) {
@@ -489,18 +485,13 @@ class WCAPF_Walker {
 
 		$item_id    = $item['id'];
 		$item_value = rawurlencode( $item['id'] );
-		$_form_id   = $this->form_id ? $this->form_id . '-' : '';
-		$unique_id  = $filter_key . '-' . $this->filter_id . '-' . $_form_id . $item_id;
+		$unique_id  = $filter_key . '-' . $this->filter_id . '-' . $item_id;
 		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
 
 		if ( 'checkbox' === $display_type || 'radio' === $display_type ) {
 			$input_type = $display_type;
 		} else {
-			if ( ! $this->enable_multiple_filter ) {
-				$input_type = 'radio';
-			} else {
-				$input_type = 'checkbox';
-			}
+			$input_type = 'checkbox';
 		}
 
 		$input_markup .= '<input type="' . esc_attr( $input_type ) . '"';
@@ -547,7 +538,7 @@ class WCAPF_Walker {
 		$html .= '</label>';
 
 		if ( $has_children ) {
-			$html .= $this->get_hierarchy_accordion_html( $item );
+			$html .= $this->get_hierarchy_accordion_html( $item, $unique_id );
 		}
 
 		$html .= '</div>';
@@ -579,11 +570,12 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * @param array $item The item data.
+	 * @param array  $item      The item data.
+	 * @param string $unique_id The unique identifier.
 	 *
 	 * @return string
 	 */
-	private function get_hierarchy_accordion_html( $item ) {
+	private function get_hierarchy_accordion_html( $item, $unique_id ) {
 		$html = '';
 
 		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
@@ -600,7 +592,11 @@ class WCAPF_Walker {
 			$html .= ' class="' . $classes . '"';
 			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
 			$html .= ' aria-label="' . esc_attr( $aria_label ) . '"';
-			$html .= '></span>';
+			$html .= ' data-id="' . esc_attr( $unique_id ) . '"';
+			$html .= '>';
+			// $html .= '<svg class="wcapf-plus" aria-hidden="true" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"></path></svg>';
+			// $html .= '<svg class="wcapf-minus" aria-hidden="true" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z" fill="currentColor"></path></svg>';
+			$html .= '</span>';
 		}
 
 		return $html;

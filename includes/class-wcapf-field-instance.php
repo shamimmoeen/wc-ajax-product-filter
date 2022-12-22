@@ -38,7 +38,7 @@ class WCAPF_Field_Instance {
 	public $use_store_name;
 	public $number_data_type;
 	public $form_id;
-	public $use_custom_title;
+	public $use_custom_title; // TODO: Remove this.
 
 	/**
 	 * The raw field instance.
@@ -75,7 +75,6 @@ class WCAPF_Field_Instance {
 			$all_items_label        = $this->get_sub_field_value( 'number_range_select_all_items_label' );
 			$enable_multiple_filter = $this->get_sub_field_value( 'number_range_enable_multiple_filter' );
 			$show_count             = $this->get_sub_field_value( 'number_range_show_count' );
-			$hide_empty             = $this->get_sub_field_value( 'number_range_hide_empty' );
 			$get_options            = $this->get_sub_field_value( 'number_get_options' );
 			$manual_options         = $this->get_sub_field_value( 'number_manual_options' );
 		} elseif ( 'date' === $value_type ) {
@@ -84,7 +83,6 @@ class WCAPF_Field_Instance {
 			$all_items_label        = $this->get_sub_field_value( 'time_period_select_all_items_label' );
 			$enable_multiple_filter = $this->get_sub_field_value( 'time_period_enable_multiple_filter' );
 			$show_count             = $this->get_sub_field_value( 'time_period_show_count' );
-			$hide_empty             = $this->get_sub_field_value( 'time_period_hide_empty' );
 			$get_options            = 'manual_entry';
 			$manual_options         = $this->get_sub_field_value( 'time_period_options' );
 		} else {
@@ -93,7 +91,6 @@ class WCAPF_Field_Instance {
 			$all_items_label        = $this->get_sub_field_value( 'all_items_label' );
 			$enable_multiple_filter = $this->get_sub_field_value( 'enable_multiple_filter' );
 			$show_count             = $this->get_sub_field_value( 'show_count' );
-			$hide_empty             = $this->get_sub_field_value( 'hide_empty' );
 			$get_options            = $this->get_sub_field_value( 'get_options' );
 			$manual_options         = $this->get_sub_field_value( 'manual_options' );
 		}
@@ -122,7 +119,7 @@ class WCAPF_Field_Instance {
 		$this->all_items_label = $_all_items_label;
 		$this->use_chosen      = WCAPF_Helper::use_combobox();
 		$this->show_count      = $show_count;
-		$this->hide_empty      = $hide_empty;
+		$this->hide_empty      = '0'; // TODO: Get from plugin settings.
 
 		switch ( $_display_type ) {
 			case 'multiselect':
@@ -325,6 +322,12 @@ class WCAPF_Field_Instance {
 	 */
 	private function is_hierarchy_accordion_enabled() {
 		if ( ! $this->taxonomy_is_hierarchical() ) {
+			return false;
+		}
+
+		$non_hierarchy_accordion_display_types = array( 'select', 'multiselect' );
+
+		if ( in_array( $this->display_type, $non_hierarchy_accordion_display_types ) ) {
 			return false;
 		}
 

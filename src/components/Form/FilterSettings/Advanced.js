@@ -284,7 +284,7 @@ const Advanced = ({ index }) => {
 				index={index}
 				label={__('Show in Active Filters', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines if we show the selected options for this filter in active filters.',
+					'Determines if we show the selected options in active filters.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={show_in_active_filters}
