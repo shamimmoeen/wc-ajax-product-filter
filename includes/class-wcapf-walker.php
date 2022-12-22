@@ -588,15 +588,14 @@ class WCAPF_Walker {
 
 			$aria_label = sprintf( __( 'Expand/Collapse %s', 'wc-ajax-product-filter' ), $item['name'] );
 
+			$toggle_content = apply_filters( 'wcapf_hierarchy_accordion_toggle_content', '' );
+
 			$html .= '<span';
 			$html .= ' class="' . $classes . '"';
 			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
 			$html .= ' aria-label="' . esc_attr( $aria_label ) . '"';
 			$html .= ' data-id="' . esc_attr( $unique_id ) . '"';
-			$html .= '>';
-			// $html .= '<svg class="wcapf-plus" aria-hidden="true" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"></path></svg>';
-			// $html .= '<svg class="wcapf-minus" aria-hidden="true" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z" fill="currentColor"></path></svg>';
-			$html .= '</span>';
+			$html .= '>' . $toggle_content . '</span>';
 		}
 
 		return $html;
