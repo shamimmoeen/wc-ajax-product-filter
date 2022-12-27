@@ -43,6 +43,7 @@ class WCAPF_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
+		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
 		add_action( 'paginate_links', array( $this, 'modify_paginated_links' ) );
@@ -50,7 +51,34 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
-		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
+	}
+
+	public function content_top() {
+		global $wp_query, $wcapf_filter_keys, $wp;
+
+		// echo '<pre>';
+		// print_r( $wp_query );
+		// echo '</pre>';
+
+		// echo '<pre>';
+		// print_r( $wcapf_filter_keys );
+		// echo '</pre>';
+
+		// $url_builder = new WCAPF_URL_Builder( 'product-cat', true );
+
+		// echo $url_builder->get_filter_url( '16', true );
+		// echo '<br/>';
+		// echo '<br/>';
+
+		echo '<input type="checkbox" id="show_query" /><label for="show_query">Show Query</label>';
+
+		echo '<div class="query">';
+		echo '<pre>';
+		print_r( $wp_query->request );
+		echo '</pre>';
+		echo '</div>';
+
+		echo '<style>.query {display: none} #show_query:checked ~ .query {display: block;}</style>';
 	}
 
 	/**
@@ -97,34 +125,6 @@ class WCAPF_Hooks {
 		}
 
 		return str_replace( '%2C', ',', $link );
-	}
-
-	public function content_top() {
-		global $wp_query, $wcapf_filter_keys, $wp;
-
-		// echo '<pre>';
-		// print_r( $wp_query );
-		// echo '</pre>';
-
-		// echo '<pre>';
-		// print_r( $wcapf_filter_keys );
-		// echo '</pre>';
-
-		// $url_builder = new WCAPF_URL_Builder( 'product-cat', true );
-
-		// echo $url_builder->get_filter_url( '16', true );
-		// echo '<br/>';
-		// echo '<br/>';
-
-		echo '<input type="checkbox" id="show_query" /><label for="show_query">Show Query</label>';
-
-		echo '<div class="query">';
-		echo '<pre>';
-		print_r( $wp_query->request );
-		echo '</pre>';
-		echo '</div>';
-
-		echo '<style>.query {display: none} #show_query:checked ~ .query {display: block;}</style>';
 	}
 
 	/**

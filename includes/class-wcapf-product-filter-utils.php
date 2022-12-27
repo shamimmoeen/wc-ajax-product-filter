@@ -508,14 +508,13 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * Checks if filter is active.
 	 *
-	 * @since 4.0.0
+	 * @param string $filter_key The filter key.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance
+	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */
-	public static function is_filter_active( $field_instance ) {
-		$filter_key    = $field_instance->filter_key;
+	public static function is_filter_active( $filter_key ) {
 		$filter_active = false;
 
 		// Fields with filter key.
