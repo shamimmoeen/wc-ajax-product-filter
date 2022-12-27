@@ -16,11 +16,12 @@
 		line-height: var(--wcapf-filter-title-line-height);
 
 		.wcapf-filter-accordion-trigger {
-			border-radius: 0.125em; // For showing rounded outline when focused.
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
 			align-items: center;
+			border-radius: 0.125em; // For showing rounded outline when focused.
+			display: flex;
+			font-family: inherit;
+			justify-content: space-between;
+			width: 100%;
 
 			@include button;
 

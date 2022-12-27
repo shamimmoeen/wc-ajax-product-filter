@@ -8358,7 +8358,7 @@ const DropdownColorPicker = _ref => {
       color: value,
       onChange: color => onChange(color),
       defaultValue: "#fff",
-      disableAlpha: disableAlpha
+      enableAlpha: !disableAlpha
     })
   });
 };

@@ -240,7 +240,7 @@ const Advanced = ({ index }) => {
 		if ('max_height' === enable_reduce_height && isApplicable()) {
 			return (
 				<Number
-					id={max_height}
+					id={'max_height'}
 					index={index}
 					label={__('Filter max height', 'wc-ajax-product-filter	')}
 					description={__(
@@ -259,7 +259,7 @@ const Advanced = ({ index }) => {
 		if ('soft_limit' === enable_reduce_height && isApplicable()) {
 			return (
 				<Number
-					id={soft_limit}
+					id={'soft_limit'}
 					index={index}
 					label={__(
 						'Number of visible options',

@@ -280,7 +280,7 @@
 							}
 						}
 
-						// Show hidden options for soft limit.
+						// Preserve soft limit state.
 						if ( wcapf_params.preserve_soft_limit_state ) {
 							if ( $instance.hasClass( 'has-soft-limit' ) ) {
 								const $listWrapper = $instance.find( '.wcapf-list-wrapper' );
