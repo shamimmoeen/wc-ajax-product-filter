@@ -275,7 +275,6 @@ $chosen-search: var(--wcapf-search-icon);
 	margin: var(--wcapf-chosen-dropdown-inner-space) var(--wcapf-chosen-dropdown-inner-space) var(--wcapf-chosen-dropdown-inner-space) 0;
 	padding: 0 0 0 var(--wcapf-chosen-dropdown-inner-space);
 	max-height: calc(var(--wcapf-chosen-dropdown-item-height) * 6);
-	-webkit-overflow-scrolling: touch;
 
 	li {
 		display: none;

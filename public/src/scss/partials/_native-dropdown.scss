@@ -12,9 +12,10 @@
 	box-shadow: none;
 	font-size: 1em;
 	cursor: pointer;
-	text-overflow: '';
-	text-indent: 0.01px;
+	text-overflow: unset;
+	text-indent: unset;
 	padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
+	line-height: normal;
 	height: auto;
 	min-height: auto;
 	max-width: unset;
