@@ -8489,7 +8489,7 @@ const DropdownColorPicker = _ref => {
       color: value,
       onChange: color => onChange(color),
       defaultValue: "#fff",
-      disableAlpha: disableAlpha
+      enableAlpha: !disableAlpha
     })
   });
 };
@@ -9710,7 +9710,7 @@ const Advanced = _ref => {
   const filterMaxHeightField = () => {
     if ('max_height' === enable_reduce_height && isApplicable()) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: max_height,
+        id: 'max_height',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter max height', 'wc-ajax-product-filter	'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set the filter container max height in px.', 'wc-ajax-product-filter	'),
@@ -9724,7 +9724,7 @@ const Advanced = _ref => {
   const visibleOptionsField = () => {
     if ('soft_limit' === enable_reduce_height && isApplicable()) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: soft_limit,
+        id: 'soft_limit',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number of visible options', 'wc-ajax-product-filter	'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show a <b>Show More/Show Less</b> toggle after this many options.', 'wc-ajax-product-filter	'),

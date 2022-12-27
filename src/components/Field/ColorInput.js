@@ -24,7 +24,7 @@ const DropdownColorPicker = ({ value, onChange, disableAlpha }) => {
 					color={value}
 					onChange={(color) => onChange(color)}
 					defaultValue='#fff'
-					disableAlpha={disableAlpha}
+					enableAlpha={!disableAlpha}
 				/>
 			)}
 		/>
