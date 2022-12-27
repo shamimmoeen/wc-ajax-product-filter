@@ -13309,7 +13309,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Filter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Filter */ "./src/components/Form/FormFilters/Filter.js");
 /* harmony import */ var _NoFiltersFound__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./NoFiltersFound */ "./src/components/Form/FormFilters/NoFiltersFound.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils */ "./src/components/Form/utils.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../utils */ "./src/components/utils.js");
+/* harmony import */ var array_move__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! array-move */ "./node_modules/array-move/index.js");
 
 
 
@@ -13359,8 +13359,11 @@ const FormFilters = () => {
       newIndex,
       oldIndex
     } = _ref;
-    // It changes the state also, don't need to dispatch the event.
-    (0,_utils__WEBPACK_IMPORTED_MODULE_10__.arrayMove)(accordionStates, newIndex, oldIndex);
+    const newStates = (0,array_move__WEBPACK_IMPORTED_MODULE_10__.arrayMoveImmutable)(accordionStates, oldIndex, newIndex);
+    dispatch({
+      type: 'SET_ACCORDION_STATES',
+      payload: newStates
+    });
   };
 
   const addFilter = () => {
@@ -13402,7 +13405,7 @@ const FormFilters = () => {
     direction: 'vertical',
     handle: ".__drag_handler",
     onSort: setDirty,
-    onChange: sortAccordionStates,
+    onEnd: sortAccordionStates,
     className: "__form_filters"
   }, formFilters.map((filter, index) => {
     if (filter.isNew) {
@@ -14317,14 +14320,15 @@ const Form = () => {
         payload: filterKeys
       }); // The accordion states of form filters.
 
-      const accordionStates = [];
+      const accordionStates = []; // TODO: Remove commented codes.
 
       for (let index = 0; index < formFilters.length; index++) {
         if (index === 0) {
           accordionStates[index] = true;
         } else {
           accordionStates[index] = false;
-        }
+        } // accordionStates[index] = false;
+
       }
 
       dispatch({
@@ -15951,7 +15955,6 @@ function removeSettingsSavedNotices() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "arrayMove": function() { return /* binding */ arrayMove; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
 /* harmony export */   "getFormsPageLink": function() { return /* binding */ getFormsPageLink; },
@@ -16038,11 +16041,6 @@ function slugify(value) {
 }
 function wcfmFound() {
   return wcapf_admin_params.wcfm_marketplace_found;
-}
-function arrayMove(arr, fromIndex, toIndex) {
-  var element = arr[fromIndex];
-  arr.splice(fromIndex, 1);
-  arr.splice(toIndex, 0, element);
 }
 function mergeSelectOptions(freeOptions, proOptions) {
   let withPro = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -30701,6 +30699,38 @@ function _unsupportedIterableToArray(o, minLen) {
   if (n === "Map" || n === "Set") return Array.from(o);
   if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return (0,_arrayLikeToArray_js__WEBPACK_IMPORTED_MODULE_0__["default"])(o, minLen);
 }
+
+/***/ }),
+
+/***/ "./node_modules/array-move/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/array-move/index.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "arrayMoveImmutable": function() { return /* binding */ arrayMoveImmutable; },
+/* harmony export */   "arrayMoveMutable": function() { return /* binding */ arrayMoveMutable; }
+/* harmony export */ });
+function arrayMoveMutable(array, fromIndex, toIndex) {
+	const startIndex = fromIndex < 0 ? array.length + fromIndex : fromIndex;
+
+	if (startIndex >= 0 && startIndex < array.length) {
+		const endIndex = toIndex < 0 ? array.length + toIndex : toIndex;
+
+		const [item] = array.splice(fromIndex, 1);
+		array.splice(endIndex, 0, item);
+	}
+}
+
+function arrayMoveImmutable(array, fromIndex, toIndex) {
+	array = [...array];
+	arrayMoveMutable(array, fromIndex, toIndex);
+	return array;
+}
+
 
 /***/ }),
 

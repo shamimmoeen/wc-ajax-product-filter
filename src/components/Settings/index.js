@@ -19,6 +19,7 @@ import CSSJavaScript from './Tabs/CSSJavaScript';
 import Integration from './Tabs/Integration';
 import SEO from './Tabs/SEO';
 import CustomTabPanel from '../CustomTabPanel';
+import LoaderScrollTo from './Tabs/LoaderScrollTo';
 
 const Settings = () => {
 	const { state, dispatch } = useSettings();
@@ -119,6 +120,13 @@ const Settings = () => {
 										),
 									},
 									{
+										name: 'loader-scrollTo',
+										title: __(
+											'Loader & Scroll To',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
 										name: 'filter-keys',
 										title: __(
 											'Filter Keys',
@@ -129,6 +137,13 @@ const Settings = () => {
 										name: 'seo',
 										title: __(
 											'SEO',
+											'wc-ajax-product-filter'
+										),
+									},
+									{
+										name: 'others',
+										title: __(
+											'Others',
 											'wc-ajax-product-filter'
 										),
 									},
@@ -148,6 +163,8 @@ const Settings = () => {
 										return <Integration />;
 									} else if ('css-javascript' === name) {
 										return <CSSJavaScript />;
+									} else if ('loader-scrollTo' === name) {
+										return <LoaderScrollTo />;
 									} else if ('filter-keys' === name) {
 										return <FilterKeys />;
 									} else if ('seo' === name) {
