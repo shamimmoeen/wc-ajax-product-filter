@@ -1,0 +1,38 @@
+.wcapf-filter {
+	.wcapf-list-wrapper:not(.show-hidden-options) li.wcapf-filter-option.wcapf-filter-option-hidden {
+		display: none;
+	}
+
+	.wcapf-soft-limit-wrapper {
+		margin-top: var(--wcapf-soft-limit-wrapper-margin-top);
+	}
+
+	.wcapf-soft-limit-trigger {
+		border-radius: 0.125em; // For showing rounded outline when focused.
+		color: var(--wcapf-primary-color);
+		cursor: pointer;
+		display: inline-block;
+		user-select: none;
+
+		&[aria-pressed="true"] {
+			.wcapf-show-more {
+				display: none;
+			}
+		}
+
+		&[aria-pressed="false"] {
+			.wcapf-show-less {
+				display: none;
+			}
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--wcapf-primary-color);
+			outline-offset: 2px;
+		}
+	}
+}

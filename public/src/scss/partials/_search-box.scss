@@ -1,0 +1,11 @@
+@import "../mixins";
+
+.wcapf-filter {
+	.wcapf-search-box {
+		margin-bottom: var(--wcapf-search-box-margin-bottom);
+
+		input[type="text"] {
+			@include input_text;
+		}
+	}
+}

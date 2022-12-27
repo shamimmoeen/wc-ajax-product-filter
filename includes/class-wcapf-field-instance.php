@@ -39,6 +39,12 @@ class WCAPF_Field_Instance {
 	public $number_data_type;
 	public $form_id;
 	public $use_custom_title; // TODO: Remove this.
+	public $enable_search_field;
+	public $enable_reduce_height;
+	public $max_height;
+	public $soft_limit;
+	public $enable_soft_limit;
+	public $enable_max_height;
 
 	/**
 	 * The raw field instance.
@@ -171,6 +177,13 @@ class WCAPF_Field_Instance {
 		$this->custom_appearance_options = $this->get_appearance_data();
 
 		$this->form_id = $this->get_sub_field_value( 'form_id' );
+
+		$this->enable_search_field  = $this->is_search_field_enabled();
+		$this->enable_reduce_height = $this->is_reduce_height_enabled();
+		$this->max_height           = $this->filter_options_max_height();
+		$this->soft_limit           = $this->no_of_visible_options();
+		$this->enable_soft_limit    = $this->is_soft_limit_enabled();
+		$this->enable_max_height    = $this->is_max_height_enabled();
 	}
 
 	/**
@@ -408,6 +421,85 @@ class WCAPF_Field_Instance {
 		$options = $this->get_sub_field_value( 'custom_appearance_options' );
 
 		return apply_filters( 'wcapf_field_instance_appearance_options', $options, $this );
+	}
+
+	/**
+	 * Determines if search field is enabled.
+	 *
+	 * TODO: Prevent enabling if display type is not appropriate.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function is_search_field_enabled() {
+		// Don't enable the search field if hierarchical display type is enabled.
+		if ( $this->taxonomy_is_hierarchical() ) {
+			return false;
+		}
+
+		return $this->get_sub_field_value( 'enable_search_field' );
+	}
+
+	/**
+	 * Determines if reduce height enabled.
+	 *
+	 * TODO: Prevent enabling if display type is not appropriate.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function is_reduce_height_enabled() {
+		return $this->get_sub_field_value( 'enable_reduce_height' );
+	}
+
+	/**
+	 * Filter options max height to appear the scrollbar.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return float
+	 */
+	private function filter_options_max_height() {
+		return floatval( $this->get_sub_field_value( 'max_height' ) );
+	}
+
+	/**
+	 * No of visible options for soft limit.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return int
+	 */
+	private function no_of_visible_options() {
+		return absint( $this->get_sub_field_value( 'soft_limit' ) );
+	}
+
+	/**
+	 * Determines if soft limit is enabled.
+	 *
+	 * TODO: Prevent enabling if display type is not appropriate.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_soft_limit_enabled() {
+		return 'soft_limit' === $this->enable_reduce_height && 1 <= $this->soft_limit;
+	}
+
+	/**
+	 * Determines if max height is enabled.
+	 *
+	 * TODO: Prevent enabling if display type is not appropriate.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_max_height_enabled() {
+		return 'max_height' === $this->enable_reduce_height && 1 <= $this->max_height;
 	}
 
 }

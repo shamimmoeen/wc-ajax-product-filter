@@ -109,9 +109,64 @@ class WCAPF_Walker {
 	/**
 	 * Custom appearance options.
 	 *
+	 * TODO: Maybe we remove this.
+	 *
 	 * @var array
 	 */
 	public $custom_appearance_options;
+
+	/**
+	 * Determines if filter option tooltip is enabled.
+	 *
+	 * @var string
+	 */
+	public $enable_tooltip;
+
+	/**
+	 * Determines if we show the product count in filter option tooltip.
+	 *
+	 * @var string
+	 */
+	public $show_count_in_tooltip;
+
+	/**
+	 * Determines the tooltip position.
+	 *
+	 * @var string
+	 */
+	public $tooltip_position;
+
+	/**
+	 * Determines if we show a search box to narrow down the filter options.
+	 *
+	 * @var string
+	 */
+	public $enable_search_field;
+
+	/**
+	 * Should we try to reduce the filter height by setting a max height or enabling soft limit?
+	 *
+	 * @var string
+	 */
+	public $enable_reduce_height;
+
+	public $enable_soft_limit;
+
+	public $enable_max_height;
+
+	/**
+	 * Determines the no of visible items for soft limit.
+	 *
+	 * @var string
+	 */
+	public $soft_limit;
+
+	/**
+	 * Determines the filter max height.
+	 *
+	 * @var string
+	 */
+	public $max_height;
 
 	/**
 	 * The property for the extra field data.
@@ -126,6 +181,13 @@ class WCAPF_Walker {
 	 * @var array
 	 */
 	private $items;
+
+	/**
+	 * Determines the soft limit status.
+	 *
+	 * @var string
+	 */
+	private $soft_limit_status;
 
 	/**
 	 * The active filters.
@@ -186,28 +248,36 @@ class WCAPF_Walker {
 	private function set_properties( $field ) {
 		$default_properties = array(
 			'display_type'               => '',
-			'hierarchical'               => false,
-			'enable_hierarchy_accordion' => false,
+			'hierarchical'               => '',
+			'enable_hierarchy_accordion' => '',
 			'all_items_label'            => '',
-			'use_chosen'                 => false,
+			'use_chosen'                 => '',
 			'no_results_message'         => '',
-			'enable_multiple_filter'     => false,
+			'enable_multiple_filter'     => '',
 			'query_type'                 => '',
-			'show_count'                 => false,
+			'show_count'                 => '',
 			'filter_key'                 => '',
 			'filter_type'                => '',
 			'type'                       => '',
 			'filter_id'                  => '',
 			'get_options'                => '',
 			'custom_appearance_options'  => array(),
-			'form_id'                    => '',
+			'enable_tooltip'             => '',
+			'show_count_in_tooltip'      => '',
+			'tooltip_position'           => '',
+			'enable_search_field'        => '',
+			'enable_reduce_height'       => '',
+			'enable_soft_limit'          => '',
+			'enable_max_height'          => '',
+			'soft_limit'                 => '',
+			'max_height'                 => '',
 		);
 
 		foreach ( $default_properties as $key => $value ) {
-			$property_value = $value;
-
 			if ( isset( $field->$key ) ) {
 				$property_value = $field->$key;
+			} else {
+				$property_value = $field->get_sub_field_value( $key );
 			}
 
 			$this->$key = $property_value;
@@ -327,6 +397,10 @@ class WCAPF_Walker {
 
 		$items = apply_filters( 'wcapf_menu_items', $items, $this );
 
+		if ( $this->enable_soft_limit ) {
+			$this->soft_limit_status = $this->get_soft_limit_status( $items );
+		}
+
 		$dropdown_types    = array( 'select', 'multiselect' );
 		$native_list_types = array( 'checkbox', 'radio' );
 		$wrapper_classes   = array();
@@ -369,7 +443,11 @@ class WCAPF_Walker {
 		} elseif ( in_array( $display_type, $dropdown_types ) ) {
 			$html = $this->build_dropdown_menu( $items );
 		} else {
-			$html = $this->build_labeled_nav( $items );
+			$html = $this->build_non_hierarchical_menu( $items );
+		}
+
+		if ( 'visible' === $this->soft_limit_status ) {
+			$wrapper_classes[] = 'show-hidden-options';
 		}
 
 		$wrapper_classes = implode( ' ', $wrapper_classes );
@@ -379,6 +457,31 @@ class WCAPF_Walker {
 		$menu .= '</div>';
 
 		return apply_filters( 'wcapf_walker_menu', $menu, $items, $this );
+	}
+
+	private function get_soft_limit_status( $items ) {
+		$status              = 'hidden';
+		$no_of_visible_items = $this->soft_limit;
+		$active_items        = $this->active_items;
+
+		if ( ! $active_items ) {
+			return $status;
+		}
+
+		$index = 0;
+
+		foreach ( $items as $item ) {
+			$index ++;
+
+			if ( in_array( $item['id'], $active_items ) ) {
+				if ( $index > $no_of_visible_items ) {
+					$status = 'visible';
+					break;
+				}
+			}
+		}
+
+		return $status;
 	}
 
 	/**
@@ -579,7 +682,6 @@ class WCAPF_Walker {
 		$html = '';
 
 		if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
-			$classes   = 'wcapf-hierarchy-accordion-toggle';
 			$is_active = 'false';
 
 			if ( $this->item_active_as_ancestor( $item ) ) {
@@ -591,7 +693,7 @@ class WCAPF_Walker {
 			$toggle_content = apply_filters( 'wcapf_hierarchy_accordion_toggle_content', '' );
 
 			$html .= '<span';
-			$html .= ' class="' . $classes . '"';
+			$html .= ' class="wcapf-hierarchy-accordion-toggle"';
 			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
 			$html .= ' aria-label="' . esc_attr( $aria_label ) . '"';
 			$html .= ' data-id="' . esc_attr( $unique_id ) . '"';
@@ -614,18 +716,100 @@ class WCAPF_Walker {
 			return $html;
 		}
 
-		$html .= '<ul class="wcapf-filter-options">';
+		$visible_items = $this->soft_limit;
+
+		// Show the search field before the filter options.
+		$html .= $this->get_search_field();
+
+		$wrapper_classes = 'wcapf-filter-options';
+		$wrapper_styles  = '';
+
+		if ( $this->enable_max_height ) {
+			$wrapper_classes .= ' wcapf-enable-scrollbar';
+			$wrapper_styles  = ' style="max-height: ' . $this->max_height . 'px;"';
+		}
+
+		$html .= '<ul class="' . $wrapper_classes . '"' . $wrapper_styles . '>';
 
 		foreach ( $items as $item ) {
 			$index ++;
-			$attrs = apply_filters( 'wcapf_non_hierarchical_menu_item_attrs', '', $index, $this, $item );
 
-			$html .= '<li class="wcapf-filter-option"' . $attrs . '>';
+			$item_classes = 'wcapf-filter-option';
+
+			if ( $this->enable_soft_limit && $index > $visible_items ) {
+				$item_classes .= ' wcapf-filter-option-hidden';
+			}
+
+			$html .= '<li class="' . $item_classes . '">';
 			$html .= $this->menu_item( $item );
 			$html .= '</li>';
 		}
 
 		$html .= '</ul>';
+
+		if ( count( $items ) > $visible_items ) {
+			$html .= $this->get_soft_limit_toggle();
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Gets the search field html markup.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function get_search_field() {
+		$html = '';
+
+		if ( $this->enable_search_field ) {
+			$search_field_placeholder = apply_filters(
+				'wcapf_search_field_placeholder',
+				__( 'Search', 'wc-ajax-product-filter' ),
+				$this->field_data
+			);
+
+			$html .= '<div class="wcapf-search-box">';
+			$html .= '<input type="text" placeholder="' . esc_attr( $search_field_placeholder ) . '">';
+			$html .= '</div>';
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Gets the html markup of soft limit toggle.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function get_soft_limit_toggle() {
+		$html = '';
+
+		if ( $this->enable_soft_limit ) {
+			$is_active = 'false';
+
+			if ( 'visible' === $this->soft_limit_status ) {
+				$is_active = 'true';
+			}
+
+			$show_all  = esc_html__( '+ Show more', 'wc-ajax-product-filter' );
+			$show_less = esc_html__( '− Show less', 'wc-ajax-product-filter' );
+
+			$html .= '<div class="wcapf-soft-limit-wrapper">';
+			$html .= '<span';
+			$html .= ' class="wcapf-soft-limit-trigger"';
+			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
+			$html .= ' aria-label="' . esc_attr__( 'Show/hide all options', 'wc-ajax-product-filter' ) . '"';
+			$html .= '>';
+			$html .= '<span aria-hidden="true" class="wcapf-show-more">' . $show_all . '</span>';
+			$html .= '<span aria-hidden="true" class="wcapf-show-less">' . $show_less . '</span>';
+			$html .= '</span>';
+			$html .= '</div>';
+		}
 
 		return $html;
 	}

@@ -1,5 +1,6 @@
 .wcapf-use-focus {
-	// For range inputs.
+	// For search box and range inputs.
+	.wcapf-search-box,
 	.wcapf-range-wrapper {
 		input[type="text"] {
 			&:focus {

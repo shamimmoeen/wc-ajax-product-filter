@@ -130,12 +130,13 @@ final class WCAPF_Form {
 		$show_title     = $field_instance->get_sub_field_value( 'show_title' );
 		$filter_title   = $field_instance->get_sub_field_value( 'title' );
 		$filter_id      = $field_instance->filter_id;
+		$filter_key     = $field_instance->filter_key;
 
 		$enable_accordion = $field_instance->get_sub_field_value( 'enable_accordion' );
 		$accordion_state  = $field_instance->get_sub_field_value( 'accordion_default_state' );
 
 		if (
-			WCAPF_Product_Filter_Utils::is_filter_active( $field_instance )
+			WCAPF_Product_Filter_Utils::is_filter_active( $filter_key )
 			&& WCAPF_Helper::keep_accordion_opened_when_filter_active()
 		) {
 			$accordion_state = 'expanded';
@@ -154,7 +155,6 @@ final class WCAPF_Form {
 				$header .= '<button type="button" id="' . esc_attr( $accordion_header_id ) . '" aria-controls="' . esc_attr( $accordion_panel_id ) . '" class="wcapf-filter-accordion-trigger" aria-expanded="' . $is_expanded . '">';
 				$header .= esc_html( $filter_title );
 				$header .= '<span class="wcapf-filter-accordion-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none"><path d="M4 8L12 16L20 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
-				// $header .= '<span class="wcapf-filter-accordion-icon" aria-hidden="true"><span></span></span>';
 				$header .= '</button>';
 			} else {
 				$header .= esc_html( $filter_title );
@@ -194,7 +194,9 @@ final class WCAPF_Form {
 			$classes[] = 'wcapf-filter-' . $type;
 		}
 
-		// TODO: Add class when soft limit is enabled.
+		if ( $field_instance->enable_soft_limit ) {
+			$classes[] = 'has-soft-limit';
+		}
 
 		return $classes;
 	}

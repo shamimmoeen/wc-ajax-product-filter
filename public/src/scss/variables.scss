@@ -34,16 +34,16 @@ body {
 	--wcapf-filter-title-line-height: 1.6;
 	--wcapf-filter-accordion-icon-size: .9em;
 
+	// Input type text
+	--wcapf-input-text-bg-color: #fff;
+	--wcapf-input-text-font-size: 1em;
+	--wcapf-input-text-hr-padding: 0.625em;
+	--wcapf-input-text-vr-padding: 0.625em;
+	--wcapf-input-text-border-color: #ced4da;
+	--wcapf-input-text-border-radius: 0.25em;
+
 	// Range Filter Input Field
-	--wcapf-range-filter-input-bg-color: #fff;
-	--wcapf-range-filter-input-font-size: 1em;
-	--wcapf-range-filter-input-hr-padding: 0.625em;
-	--wcapf-range-filter-input-vr-padding: 0.625em;
 	--wcapf-range-filter-unit-size: 2em;
-	--wcapf-range-filter-input-max-width: 110px;
-	--wcapf-range-filter-input-border-size: 1px;
-	--wcapf-range-filter-input-border-color: #ced4da;
-	--wcapf-range-filter-input-border-radius: 0.25em;
 
 	// List
 	--wcapf-layered-nav-list-child-left-padding: 1.618em;
@@ -65,4 +65,10 @@ body {
 	--wcapf-labeled-nav-line-height: 1;
 	--wcapf-labeled-nav-hr-padding: 0.875em;
 	--wcapf-labeled-nav-vr-padding: 0.625em;
+
+	// Search Box
+	--wcapf-search-box-margin-bottom: 1em;
+
+	// Soft Limit
+	--wcapf-soft-limit-wrapper-margin-top: 1em;
 }

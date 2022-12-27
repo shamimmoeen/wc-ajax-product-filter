@@ -832,4 +832,15 @@ class WCAPF_Helper {
 		return apply_filters( 'wcapf_keep_accordion_opened_when_filter_active', true );
 	}
 
+	/**
+	 * Determines if we show the soft limit options when the filter is active.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function show_soft_limit_options_when_filter_active() {
+		return apply_filters( 'wcapf_show_soft_limit_options_when_filter_active', true );
+	}
+
 }

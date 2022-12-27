@@ -73,6 +73,39 @@
 					}
 				} );
 		},
+		handleSoftLimit: function() {
+			const toggleFilterOptions = ( $el ) => {
+				// Check to see if the button is pressed
+				const pressed = $el.attr( 'aria-pressed' ) === 'true';
+
+				// Change aria-pressed to the opposite state
+				$el.attr( 'aria-pressed', ! pressed );
+
+				const $listWrapper = $el.closest( '.wcapf-list-wrapper' );
+
+				if ( pressed ) {
+					$listWrapper.removeClass( 'show-hidden-options' );
+				} else {
+					$listWrapper.addClass( 'show-hidden-options' );
+				}
+			};
+
+			$body
+				.on( 'click', '.wcapf-soft-limit-trigger', function() {
+					toggleFilterOptions( $( this ) );
+				} )
+				.on( 'keydown', '.wcapf-soft-limit-trigger', function( e ) {
+					if ( e.key === ' ' || e.key === 'Enter' || e.key === 'Spacebar' ) {
+						// Prevent the default action to stop scrolling when space is pressed
+						e.preventDefault();
+
+						toggleFilterOptions( $( this ) );
+					}
+				} );
+		},
+		handleSearchFilterOptions: function() {
+
+		},
 		updateProductsCountResult: function( $response ) {
 			const $container = $( wcapf_params.shop_loop_container );
 			const selector   = '.woocommerce-result-count';
@@ -225,41 +258,47 @@
 						let _instanceClasses = $( _instance ).attr( 'class' );
 
 						// Preserve hierarchy accordion state.
-						if ( $instance.hasClass( 'has-hierarchy-accordion' ) ) {
-							$instance.find( '.wcapf-hierarchy-accordion-toggle' ).each( function() {
-								const $el = $( this );
-								const id  = $el.data( 'id' );
+						if ( wcapf_params.preserve_hierarchy_accordion_state ) {
+							if ( $instance.hasClass( 'has-hierarchy-accordion' ) ) {
+								$instance.find( '.wcapf-hierarchy-accordion-toggle' ).each( function() {
+									const $el = $( this );
+									const id  = $el.data( 'id' );
 
-								const toggleSelector = `.wcapf-hierarchy-accordion-toggle[data-id="${ id }"]`;
+									const toggleSelector = `.wcapf-hierarchy-accordion-toggle[data-id="${ id }"]`;
 
-								// Check to see if the accordion is opened
-								const pressed = $el.attr( 'aria-pressed' ) === 'true';
+									// Check to see if the accordion is opened
+									const pressed = $el.attr( 'aria-pressed' ) === 'true';
 
-								if ( pressed ) {
-									_instance.find( toggleSelector ).attr( 'aria-pressed', 'true' );
-									_instance.find( toggleSelector ).closest( 'li' ).children( 'ul' ).show();
-								} else {
-									_instance.find( toggleSelector ).attr( 'aria-pressed', 'false' );
-									_instance.find( toggleSelector ).closest( 'li' ).children( 'ul' ).hide();
-								}
-							} );
+									if ( pressed ) {
+										_instance.find( toggleSelector ).attr( 'aria-pressed', 'true' );
+										_instance.find( toggleSelector ).closest( 'li' ).children( 'ul' ).show();
+									} else {
+										_instance.find( toggleSelector ).attr( 'aria-pressed', 'false' );
+										_instance.find( toggleSelector ).closest( 'li' ).children( 'ul' ).hide();
+									}
+								} );
+							}
 						}
 
-						const _html = _instance.find( '.wcapf-filter-inner' ).html();
+						// Show hidden options for soft limit.
+						if ( wcapf_params.preserve_soft_limit_state ) {
+							if ( $instance.hasClass( 'has-soft-limit' ) ) {
+								const $listWrapper = $instance.find( '.wcapf-list-wrapper' );
 
-						// Show soft limit items.
-						// const softLimitSelector = 'show-hidden-items';
-						//
-						// if ( $instance.hasClass( softLimitSelector ) ) {
-						// 	if ( ! _instance.hasClass( softLimitSelector ) ) {
-						// 		_instanceClasses += ' ' + softLimitSelector;
-						// 	}
-						// } else {
-						// 	_instanceClasses = _instanceClasses.replace( softLimitSelector, '' );
-						// }
+								if ( $listWrapper.hasClass( 'show-hidden-options' ) ) {
+									_instance.find( '.wcapf-list-wrapper' ).addClass( 'show-hidden-options' );
+									_instance.find( '.wcapf-soft-limit-trigger' ).attr( 'aria-pressed', 'true' );
+								} else {
+									_instance.find( '.wcapf-list-wrapper' ).removeClass( 'show-hidden-options' );
+									_instance.find( '.wcapf-soft-limit-trigger' ).attr( 'aria-pressed', 'false' );
+								}
+							}
+						}
 
 						// Update the instance classes.
 						$instance.attr( 'class', _instanceClasses.trim() );
+
+						const _html = _instance.find( '.wcapf-filter-inner' ).html();
 
 						// Finally update the instance.
 						$inner.html( _html );
@@ -665,6 +704,8 @@
 
 	WCAPF.handleFilterAccordion();
 	WCAPF.handleHierarchyToggle();
+	WCAPF.handleSoftLimit();
+	WCAPF.handleSearchFilterOptions();
 
 	WCAPF.handleListFilters();
 	WCAPF.handleDropdownFilters();

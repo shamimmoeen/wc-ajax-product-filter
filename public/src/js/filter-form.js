@@ -15,11 +15,11 @@ const wcapf_params = wcapf_params || {
 	'chosen_options_none_text': '',
 	'search_box_in_default_orderby': '',
 	'chosen_lib_search_threshold': '', // todo
-	'preserve_filter_accordion_state': '',
+	'preserve_hierarchy_accordion_state': '',
+	'preserve_soft_limit_state': '',
 	'enable_animation_for_filter_accordion': '',
 	'filter_accordion_animation_speed': '',
 	'filter_accordion_animation_easing': '',
-	'preserve_hierarchy_accordion_state': '',
 	'enable_animation_for_hierarchy_accordion': '',
 	'hierarchy_accordion_animation_speed': '',
 	'hierarchy_accordion_animation_easing': '',
