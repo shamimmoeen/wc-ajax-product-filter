@@ -75,12 +75,6 @@ export function wcfmFound() {
 	return wcapf_admin_params.wcfm_marketplace_found;
 }
 
-export function arrayMove(arr, fromIndex, toIndex) {
-	var element = arr[fromIndex];
-	arr.splice(fromIndex, 1);
-	arr.splice(toIndex, 0, element);
-}
-
 export function mergeSelectOptions(freeOptions, proOptions, withPro = false) {
 	let options;
 

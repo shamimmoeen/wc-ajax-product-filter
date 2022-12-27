@@ -9619,17 +9619,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _SettingsContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../SettingsContext */ "./src/components/Settings/SettingsContext.js");
-/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Field/Text */ "./src/components/Field/Text.js");
-/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
-/* harmony import */ var _useSettingsData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../useSettingsData */ "./src/components/Settings/useSettingsData.js");
-/* harmony import */ var _Field_Number__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Field/Number */ "./src/components/Field/Number.js");
-/* harmony import */ var _Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Field/ImagePicker */ "./src/components/Field/ImagePicker.js");
-/* harmony import */ var _ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ScrollWindowTo */ "./src/components/Settings/Tabs/ScrollWindowTo.js");
-/* harmony import */ var _Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Field/ColorInput */ "./src/components/Field/ColorInput.js");
-
-
-
-
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _useSettingsData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../useSettingsData */ "./src/components/Settings/useSettingsData.js");
+/* harmony import */ var _Field_ColorInput__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Field/ColorInput */ "./src/components/Field/ColorInput.js");
 
 
 
@@ -9647,22 +9639,14 @@ const CSSJavaScript = () => {
     handleTextFieldChange,
     handleImageChange,
     handleImageRemove
-  } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_5__["default"])(state, dispatch);
+  } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_4__["default"])(state, dispatch);
   const {
     settings: {
       primary_color,
       stylish_checkbox_radio,
       use_chosen,
       attach_chosen_on_sorting,
-      improve_native_select,
-      loading_animation,
-      loading_image,
-      loading_image_src,
-      loading_overlay,
-      loading_overlay_color,
-      scroll_to_top_offset,
-      scroll_window,
-      scroll_window_custom_element
+      improve_native_select
     }
   } = state;
 
@@ -9670,90 +9654,36 @@ const CSSJavaScript = () => {
     handleTextFieldChange(value, 'primary_color');
   };
 
-  const handleLoaderImageChange = media => {
-    handleImageChange(media, 'loading_image');
-  };
-
-  const handleLoaderImageClear = () => {
-    handleImageRemove('loading_image');
-  };
-
-  const handleOverlayColorChange = value => {
-    handleTextFieldChange(value, 'loading_overlay_color');
-  };
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_5__["default"], {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Primary Color', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a primary color according to your theme.', 'wc-ajax-product-filter'),
     value: primary_color,
     onChange: handlePrimaryColorChange,
     renderAsFormField: true
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'stylish_checkbox_radio',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Stylish checkbox & radio buttons', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want stylish checkbox and radio buttons instead of native design.', 'wc-ajax-product-filter'),
     isChecked: stylish_checkbox_radio,
     onChange: handleCheckboxChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'use_chosen',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable ComboBox', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Turns the native select element into a custom select box with improved design and behavior.', 'wc-ajax-product-filter'),
     isChecked: use_chosen,
     onChange: handleCheckboxChange
-  }), '1' === use_chosen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), '1' === use_chosen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'attach_chosen_on_sorting',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('ComboBox for sorting dropdown', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Attach combobox for the default sorting dropdown instead of the native select element.', 'wc-ajax-product-filter'),
     isChecked: attach_chosen_on_sorting,
     onChange: handleCheckboxChange
-  }), '1' !== use_chosen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), '1' !== use_chosen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'improve_native_select',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Improve native select element', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Uncheck this if your theme already implements the design for the native select element.', 'wc-ajax-product-filter'),
     isChecked: improve_native_select,
     onChange: handleCheckboxChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    id: 'loading_animation',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Animation', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an animation while the results are fetching.', 'wc-ajax-product-filter'),
-    isChecked: loading_animation,
-    onChange: handleCheckboxChange
-  }), '1' === loading_animation && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom loading image', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default loading image.', 'wc-ajax-product-filter'),
-    imageId: loading_image,
-    imageUrl: loading_image_src,
-    onChange: handleLoaderImageChange,
-    onClear: handleLoaderImageClear,
-    isPro: true
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    id: 'loading_overlay',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Overlay', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an overlay while the results are fetching.', 'wc-ajax-product-filter'),
-    isChecked: loading_overlay,
-    onChange: handleCheckboxChange
-  }), '1' === loading_overlay && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__["default"], {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Overlay Color', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a loading overlay color according to your theme.', 'wc-ajax-product-filter'),
-    value: loading_overlay_color,
-    onChange: handleOverlayColorChange,
-    isPro: true,
-    disableAlpha: false,
-    renderAsFormField: true
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__["default"], null), 'custom' === scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    id: 'scroll_window_custom_element',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom element identifier', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Give a valid id/class of the HTML element you want to scroll to.', 'wc-ajax-product-filter'),
-    value: scroll_window_custom_element,
-    onChange: handleTextFieldChange,
-    placeholder: '#id or .class'
-  }), 'none' !== scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    id: 'scroll_to_top_offset',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Scroll to top offset', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('If you have a sticky header or page title that you want to include in the viewport then give the height of those in px.', 'wc-ajax-product-filter'),
-    value: scroll_to_top_offset,
-    onChange: handleTextFieldChange,
-    type: 'number'
   }));
 };
 
@@ -10081,6 +10011,122 @@ const Integration = () => {
 
 /***/ }),
 
+/***/ "./src/components/Settings/Tabs/LoaderScrollTo.js":
+/*!********************************************************!*\
+  !*** ./src/components/Settings/Tabs/LoaderScrollTo.js ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _SettingsContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../SettingsContext */ "./src/components/Settings/SettingsContext.js");
+/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Field/Checkbox */ "./src/components/Field/Checkbox.js");
+/* harmony import */ var _useSettingsData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../useSettingsData */ "./src/components/Settings/useSettingsData.js");
+/* harmony import */ var _Field_Number__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Field/Number */ "./src/components/Field/Number.js");
+/* harmony import */ var _Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Field/ImagePicker */ "./src/components/Field/ImagePicker.js");
+/* harmony import */ var _ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ScrollWindowTo */ "./src/components/Settings/Tabs/ScrollWindowTo.js");
+/* harmony import */ var _Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Field/ColorInput */ "./src/components/Field/ColorInput.js");
+
+
+
+
+
+
+
+
+
+
+
+const LoaderScrollTo = () => {
+  const {
+    state,
+    dispatch
+  } = (0,_SettingsContext__WEBPACK_IMPORTED_MODULE_2__.useSettings)();
+  const {
+    handleCheckboxChange,
+    handleTextFieldChange,
+    handleImageChange,
+    handleImageRemove
+  } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_5__["default"])(state, dispatch);
+  const {
+    settings: {
+      loading_animation,
+      loading_image,
+      loading_image_src,
+      loading_overlay,
+      loading_overlay_color,
+      scroll_to_top_offset,
+      scroll_window,
+      scroll_window_custom_element
+    }
+  } = state;
+
+  const handleLoaderImageChange = media => {
+    handleImageChange(media, 'loading_image');
+  };
+
+  const handleLoaderImageClear = () => {
+    handleImageRemove('loading_image');
+  };
+
+  const handleOverlayColorChange = value => {
+    handleTextFieldChange(value, 'loading_overlay_color');
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    id: 'loading_animation',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Animation', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an animation while the results are fetching.', 'wc-ajax-product-filter'),
+    isChecked: loading_animation,
+    onChange: handleCheckboxChange
+  }), '1' === loading_animation && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom loading image', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default loading image.', 'wc-ajax-product-filter'),
+    imageId: loading_image,
+    imageUrl: loading_image_src,
+    onChange: handleLoaderImageChange,
+    onClear: handleLoaderImageClear,
+    isPro: true
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    id: 'loading_overlay',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Overlay', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an overlay while the results are fetching.', 'wc-ajax-product-filter'),
+    isChecked: loading_overlay,
+    onChange: handleCheckboxChange
+  }), '1' === loading_overlay && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Overlay Color', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a loading overlay color according to your theme.', 'wc-ajax-product-filter'),
+    value: loading_overlay_color,
+    onChange: handleOverlayColorChange,
+    isPro: true,
+    disableAlpha: false,
+    renderAsFormField: true
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__["default"], null), 'custom' === scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'scroll_window_custom_element',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom element identifier', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Give a valid id/class of the HTML element you want to scroll to.', 'wc-ajax-product-filter'),
+    value: scroll_window_custom_element,
+    onChange: handleTextFieldChange,
+    placeholder: '#id or .class'
+  }), 'none' !== scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    id: 'scroll_to_top_offset',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Scroll to top offset', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('If you have a sticky header or page title that you want to include in the viewport then give the height of those in px.', 'wc-ajax-product-filter'),
+    value: scroll_to_top_offset,
+    onChange: handleTextFieldChange,
+    type: 'number'
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (LoaderScrollTo);
+
+/***/ }),
+
 /***/ "./src/components/Settings/Tabs/Miscellaneous.js":
 /*!*******************************************************!*\
   !*** ./src/components/Settings/Tabs/Miscellaneous.js ***!
@@ -10352,6 +10398,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Tabs_Integration__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Tabs/Integration */ "./src/components/Settings/Tabs/Integration.js");
 /* harmony import */ var _Tabs_SEO__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./Tabs/SEO */ "./src/components/Settings/Tabs/SEO.js");
 /* harmony import */ var _CustomTabPanel__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../CustomTabPanel */ "./src/components/CustomTabPanel.js");
+/* harmony import */ var _Tabs_LoaderScrollTo__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./Tabs/LoaderScrollTo */ "./src/components/Settings/Tabs/LoaderScrollTo.js");
+
 
 
 
@@ -10456,11 +10504,17 @@ const Settings = () => {
       name: 'css-javascript',
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('CSS & JavaScript', 'wc-ajax-product-filter')
     }, {
+      name: 'loader-scrollTo',
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loader & Scroll To', 'wc-ajax-product-filter')
+    }, {
       name: 'filter-keys',
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Keys', 'wc-ajax-product-filter')
     }, {
       name: 'seo',
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SEO', 'wc-ajax-product-filter')
+    }, {
+      name: 'others',
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Others', 'wc-ajax-product-filter')
     }, {
       name: 'miscellaneous',
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Miscellaneous', 'wc-ajax-product-filter')
@@ -10476,6 +10530,8 @@ const Settings = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_Integration__WEBPACK_IMPORTED_MODULE_14__["default"], null);
     } else if ('css-javascript' === name) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_CSSJavaScript__WEBPACK_IMPORTED_MODULE_13__["default"], null);
+    } else if ('loader-scrollTo' === name) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_LoaderScrollTo__WEBPACK_IMPORTED_MODULE_17__["default"], null);
     } else if ('filter-keys' === name) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_FilterKeys__WEBPACK_IMPORTED_MODULE_11__["default"], null);
     } else if ('seo' === name) {
@@ -10974,7 +11030,6 @@ function removeSettingsSavedNotices() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "arrayMove": function() { return /* binding */ arrayMove; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
 /* harmony export */   "getFormsPageLink": function() { return /* binding */ getFormsPageLink; },
@@ -11061,11 +11116,6 @@ function slugify(value) {
 }
 function wcfmFound() {
   return wcapf_admin_params.wcfm_marketplace_found;
-}
-function arrayMove(arr, fromIndex, toIndex) {
-  var element = arr[fromIndex];
-  arr.splice(fromIndex, 1);
-  arr.splice(toIndex, 0, element);
 }
 function mergeSelectOptions(freeOptions, proOptions) {
   let withPro = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;

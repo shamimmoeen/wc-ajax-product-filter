@@ -586,7 +586,6 @@ const TopBar = _ref => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "arrayMove": function() { return /* binding */ arrayMove; },
 /* harmony export */   "foundProVersion": function() { return /* binding */ foundProVersion; },
 /* harmony export */   "getEditFormLink": function() { return /* binding */ getEditFormLink; },
 /* harmony export */   "getFormsPageLink": function() { return /* binding */ getFormsPageLink; },
@@ -673,11 +672,6 @@ function slugify(value) {
 }
 function wcfmFound() {
   return wcapf_admin_params.wcfm_marketplace_found;
-}
-function arrayMove(arr, fromIndex, toIndex) {
-  var element = arr[fromIndex];
-  arr.splice(fromIndex, 1);
-  arr.splice(toIndex, 0, element);
 }
 function mergeSelectOptions(freeOptions, proOptions) {
   let withPro = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;

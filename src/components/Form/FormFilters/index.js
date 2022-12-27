@@ -9,7 +9,7 @@ import useFormData from '../useFormData';
 import Filter from './Filter';
 import NoFiltersFound from './NoFiltersFound';
 import { newFilterData } from '../utils';
-import { arrayMove } from '../../utils';
+import { arrayMoveImmutable } from 'array-move';
 
 const FormFilters = () => {
 	const { state, dispatch } = useForm();
@@ -35,8 +35,16 @@ const FormFilters = () => {
 	};
 
 	const sortAccordionStates = ({ newIndex, oldIndex }) => {
-		// It changes the state also, don't need to dispatch the event.
-		arrayMove(accordionStates, newIndex, oldIndex);
+		const newStates = arrayMoveImmutable(
+			accordionStates,
+			oldIndex,
+			newIndex
+		);
+
+		dispatch({
+			type: 'SET_ACCORDION_STATES',
+			payload: newStates,
+		});
 	};
 
 	const addFilter = () => {
@@ -93,7 +101,7 @@ const FormFilters = () => {
 						direction={'vertical'}
 						handle='.__drag_handler'
 						onSort={setDirty}
-						onChange={sortAccordionStates}
+						onEnd={sortAccordionStates}
 						className='__form_filters'
 					>
 						{formFilters.map((filter, index) => {

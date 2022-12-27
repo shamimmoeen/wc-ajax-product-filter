@@ -45,12 +45,14 @@ const Form = () => {
 				// The accordion states of form filters.
 				const accordionStates = [];
 
+				// TODO: Remove commented codes.
 				for (let index = 0; index < formFilters.length; index++) {
 					if (index === 0) {
 						accordionStates[index] = true;
 					} else {
 						accordionStates[index] = false;
 					}
+					// accordionStates[index] = false;
 				}
 
 				dispatch({
