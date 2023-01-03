@@ -8,17 +8,6 @@
 		outline: none;
 	}
 
-	.wcapf-noui-slider:not([disabled]) {
-		.wcapf-noui-handle {
-			cursor: grab;
-			outline: none;
-
-			&.wcapf-noui-active {
-				cursor: grabbing;
-			}
-		}
-	}
-
 	@mixin focus-style-1 {
 		&:not([disabled]) .wcapf-noui-handle {
 			&:focus-visible {

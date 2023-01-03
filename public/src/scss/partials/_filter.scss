@@ -67,10 +67,12 @@
 }
 
 .wcapf-filter .wcapf-list-wrapper.list-type-native {
+	> ul.wcapf-filter-options {
+		margin-bottom: calc(var(--wcapf-layered-nav-list-vertical-spacing) * -1);
+	}
+
 	ul.wcapf-filter-options li.wcapf-filter-option {
-		&:not(:last-child) {
-			margin-bottom: var(--wcapf-layered-nav-list-vertical-spacing);
-		}
+		margin-bottom: var(--wcapf-layered-nav-list-vertical-spacing);
 
 		ul.wcapf-filter-options {
 			li:first-child {
@@ -99,7 +101,6 @@
 
 				align-items: center;
 				display: flex;
-				line-height: inherit;
 			}
 
 			input[type="checkbox"],
@@ -136,7 +137,9 @@
 }
 
 .wcapf-filter .wcapf-list-wrapper.display-type-label {
-	margin-bottom: calc(var(--wcapf-labeled-nav-margin) * -1);
+	ul.wcapf-filter-options {
+		margin-bottom: calc(var(--wcapf-labeled-nav-margin) * -1);
+	}
 
 	li.wcapf-filter-option {
 		display: inline-flex;
@@ -157,7 +160,6 @@
 				@include label;
 
 				display: flex;
-				line-height: var(--wcapf-labeled-nav-line-height);
 			}
 
 			.wcapf-filter-item-label {
@@ -383,4 +385,9 @@ a.wcapf-reset-filters-btn {
 		display: inline-block;
 		margin-top: var(--wcapf-clear-all-btn-top-margin);
 	}
+}
+
+// Show wait cursor while the results are fetching.
+.wcapf-use-wait-cursor .loadingoverlay {
+	cursor: wait;
 }

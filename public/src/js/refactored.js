@@ -133,8 +133,22 @@
 
 			$.LoadingOverlay( 'hide' );
 		},
-		scrollTo: function() {
+		scrollTo: function( triggeredBy ) {
 			if ( 'none' === wcapf_params.scroll_window ) {
+				return;
+			}
+
+			const allowed    = [];
+			const scrollWhen = wcapf_params.scroll_window_when;
+
+			if ( 'all' === scrollWhen ) {
+				allowed.push( 'filter' );
+				allowed.push( 'paginate' );
+			} else {
+				allowed.push( scrollWhen );
+			}
+
+			if ( ! allowed.includes( triggeredBy ) ) {
 				return;
 			}
 
@@ -181,37 +195,41 @@
 					offset = 0;
 				}
 
-				$( 'html, body' ).stop().animate(
-					{ scrollTop: offset },
-					wcapf_params.scroll_to_top_speed,
-					wcapf_params.scroll_to_top_easing
-				);
+				if ( wcapf_params.disable_scroll_animation ) {
+					window.scrollTo( { top: offset } );
+				} else {
+					$( 'html, body' ).stop().animate(
+						{ scrollTop: offset },
+						wcapf_params.scroll_to_top_speed,
+						wcapf_params.scroll_to_top_easing
+					);
+				}
 			}
 		},
 		// Things are done before fetching the products like showing the loading indicator.
-		beforeFetchingProducts: function() {
+		beforeFetchingProducts: function( triggeredBy ) {
 			// Track the current element focus.
 			focusedElm = document.activeElement;
 
 			WCAPF.showLoadingAnimation();
 
-			if ( 'immediately' === wcapf_params.scroll_window_when ) {
-				WCAPF.scrollTo();
+			// Scroll into view on paginate.
+			if ( 'paginate' === triggeredBy && wcapf_params.immediate_scroll_on_paginate ) {
+				WCAPF.scrollTo( triggeredBy );
 			}
 
-			$body.trigger( 'wcapf_before_fetching_products' );
+			$body.trigger( 'wcapf_before_fetching_products', [ triggeredBy ] );
 		},
 		// Things are done before updating the products like hiding the loading indicator.
-		beforeUpdatingProducts: function( $response ) {
+		beforeUpdatingProducts: function( $response, triggeredBy ) {
 			WCAPF.resetLoadingAnimation();
 
-			$body.trigger( 'wcapf_before_updating_products', [ $response ] );
+			$body.trigger( 'wcapf_before_updating_products', [ $response, triggeredBy ] );
 		},
-		afterUpdatingProducts: function( $response ) {
+		afterUpdatingProducts: function( $response, triggeredBy ) {
 			WCAPF.updateProductsCountResult( $response );
 
-			// Restore the focus.
-			// Maybe restoring the focus in mobile device isn't good.
+			// Restore the focus (Maybe restoring the focus in mobile device isn't good).
 			if ( wcapf_params.restore_focus_after_filtering && ! wcapf_params.is_mobile ) {
 				if ( document.body !== focusedElm ) {
 					if ( focusedElm.id ) {
@@ -223,24 +241,29 @@
 			// Reinitialize wcapf.
 			WCAPF.init();
 
-			if ( 'after' === wcapf_params.scroll_window_when ) {
-				WCAPF.scrollTo();
+			// Scroll into view.
+			if ( 'paginate' === triggeredBy && wcapf_params.immediate_scroll_on_paginate ) {
+				// Do nothing because it already happened.
+			} else {
+				WCAPF.scrollTo( triggeredBy );
 			}
 
-			// Trigger the document ready event.
+			// Trigger events.
 			$( document ).trigger( 'ready' );
+			$( window ).trigger( 'scroll' );
+			$( window ).trigger( 'resize' );
 
-			$body.trigger( 'wcapf_after_updating_products', [ $response ] );
+			$body.trigger( 'wcapf_after_updating_products', [ $response, triggeredBy ] );
 		},
-		filterProducts: function() {
-			WCAPF.beforeFetchingProducts();
+		filterProducts: function( triggeredBy = 'filter' ) {
+			WCAPF.beforeFetchingProducts( triggeredBy );
 
 			$.ajax( {
 				url: window.location.href,
 				success: function( response ) {
 					const $response = $( response );
 
-					WCAPF.beforeUpdatingProducts( $response );
+					WCAPF.beforeUpdatingProducts( $response, triggeredBy );
 
 					/**
 					 * Update document title.
@@ -328,11 +351,11 @@
 						}
 					}
 
-					WCAPF.afterUpdatingProducts( $response );
+					WCAPF.afterUpdatingProducts( $response, triggeredBy );
 				}
 			} );
 		},
-		requestFilter: function( url ) {
+		requestFilter: function( url, triggeredBy = 'filter' ) {
 			if ( ! url ) {
 				return;
 			}
@@ -348,7 +371,7 @@
 
 			history.pushState( {}, '', url );
 
-			WCAPF.filterProducts();
+			WCAPF.filterProducts( triggeredBy );
 		},
 		handleNumberInputFilters: function() {
 			const rangeNumberSelectors = '.wcapf-range-number .min-value, .wcapf-range-number .max-value';
@@ -494,7 +517,7 @@
 
 						const href = $( this ).attr( 'href' );
 
-						WCAPF.requestFilter( href );
+						WCAPF.requestFilter( href, 'paginate' );
 					} );
 				}
 			}

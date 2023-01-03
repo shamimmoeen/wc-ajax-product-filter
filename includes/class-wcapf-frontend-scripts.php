@@ -180,21 +180,7 @@ class WCAPF_Frontend_Scripts {
 		$disable_inputs   = apply_filters( 'wcapf_disable_inputs_while_fetching_results', $disable_inputs );
 		$history_popstate = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
 
-		$loading_overlay_options = array();
-
-		if ( isset( $settings['loading_image'] ) && $settings['loading_image'] ) {
-			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
-
-			if ( $image ) {
-				$image_src = $image[0];
-
-				$loading_overlay_options = array(
-					'image'          => $image_src,
-					'imageAnimation' => '',
-					'imageClass'     => 'wcapf-loading-overlay-img',
-				);
-			}
-		}
+		$loading_overlay_options = self::get_loading_options( $settings );
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
@@ -215,6 +201,7 @@ class WCAPF_Frontend_Scripts {
 			'loading_overlay_options'                  => $loading_overlay_options,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
+			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
 			'disable_inputs_while_fetching_results'    => $disable_inputs,
 			'apply_filters_on_browser_history_change'  => $history_popstate,
@@ -224,6 +211,49 @@ class WCAPF_Frontend_Scripts {
 		$params = array_merge( $params, $settings );
 
 		return apply_filters( 'wcapf_js_params', $params );
+	}
+
+	/**
+	 * @param array $settings
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_loading_options( $settings ) {
+		$loading_overlay_options = array();
+
+		if ( isset( $settings['loading_animation'] ) ) {
+			$loading_animation  = $settings['loading_animation'];
+			$loading_image_size = isset( $settings['loading_image_size'] )
+				? absint( $settings['loading_image_size'] )
+				: 0;
+
+			if ( 'none' === $loading_animation ) {
+				$image_src = '';
+			} else {
+				$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_animation . '.svg';
+				$image_src  = WCAPF_PLUGIN_URL . '/public/loaders/' . $loading_animation . '.svg';
+
+				// Default image.
+				if ( ! file_exists( $image_file ) ) {
+					$image_src = WCAPF_PLUGIN_URL . '/public/loaders/Spinner.svg';
+				}
+			}
+
+			$image_size = $loading_image_size ? $loading_image_size . 'px' : '120px';
+
+			$loading_overlay_options = array(
+				'image'           => $image_src,
+				'size'            => $image_size,
+				'imageAutoResize' => false,
+				'imageAnimation'  => '',
+				'imageColor'      => '',
+				'imageClass'      => 'wcapf-loading-overlay-img-wrapper',
+			);
+		}
+
+		return $loading_overlay_options;
 	}
 
 }

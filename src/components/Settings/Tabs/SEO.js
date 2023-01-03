@@ -13,7 +13,7 @@ const SEO = () => {
 	const { handleCheckboxChange } = useSettingsData(state, dispatch);
 
 	const {
-		settings: { use_term_slug, use_author_username, update_document_title },
+		settings: { use_term_slug, use_author_username, update_title_tag },
 	} = state;
 
 	return (
@@ -29,7 +29,7 @@ const SEO = () => {
 				id={'use_term_slug'}
 				label={__('Use term slug', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines if we show the selected options in active filters.',
+					'Whether to use term slug instead of id as the option value.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={use_term_slug}
@@ -40,7 +40,7 @@ const SEO = () => {
 				id={'use_author_username'}
 				label={__('Use author username', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines if we show the selected options in active filters.',
+					'Whether to use author username instead of id as the option value.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={use_author_username}
@@ -48,17 +48,17 @@ const SEO = () => {
 			/>
 
 			<Checkbox
-				id={'update_document_title'}
-				label={__('Sync Document Title', 'wc-ajax-product-filter')}
+				id={'update_title_tag'}
+				label={__('Update title tag', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines if we show the selected options in active filters.',
+					'Determines if we update the title tag.',
 					'wc-ajax-product-filter'
 				)}
-				isChecked={update_document_title}
+				isChecked={update_title_tag}
 				onChange={handleCheckboxChange}
 			/>
 
-			<Select
+			{/* <Select
 				id={'scroll_window_for'}
 				label={__('Add "robots" Meta Tag', 'wc-ajax-product-filter')}
 				description={__(
@@ -74,7 +74,7 @@ const SEO = () => {
 				// 	handleSelectChange(selected, 'scroll_window_for')
 				// }
 				renderAsFormField
-			/>
+			/> */}
 
 			{WCAPF_PRO && (
 				<>

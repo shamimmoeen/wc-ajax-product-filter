@@ -3,5 +3,5 @@
 }
 
 i[class^="wcapf-icon-star-"], i[class*=" wcapf-icon-star-"] {
-	color: rgb(240, 201, 48);
+	color: var(--wcapf-star-icon-color);
 }

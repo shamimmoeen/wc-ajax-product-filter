@@ -13613,11 +13613,11 @@ const FormSettings = () => {
     options: [{
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Immediate', 'wc-ajax-product-filter'),
       value: 'immediate'
-    }, // {
-    // 	label: __('Submit button', 'wc-ajax-product-filter'),
-    // 	value: 'submit',
-    // },
-    {
+    }, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Submit button', 'wc-ajax-product-filter'),
+      value: 'submit',
+      isPro: true
+    }, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Apply button', 'wc-ajax-product-filter'),
       value: 'apply',
       isPro: true
@@ -13636,9 +13636,7 @@ const FormSettings = () => {
     className: "__inner"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__label"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Auto Sync'), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "__pro_tag"
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Auto Sync'))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__input_wrapper"

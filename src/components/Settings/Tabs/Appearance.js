@@ -4,14 +4,12 @@ import Checkbox from '../../Field/Checkbox';
 import useSettingsData from '../useSettingsData';
 import ColorInput from '../../Field/ColorInput';
 
-const CSSJavaScript = () => {
+const Appearance = () => {
 	const { state, dispatch } = useSettings();
-	const {
-		handleCheckboxChange,
-		handleTextFieldChange,
-		handleImageChange,
-		handleImageRemove,
-	} = useSettingsData(state, dispatch);
+	const { handleCheckboxChange, handleTextFieldChange } = useSettingsData(
+		state,
+		dispatch
+	);
 
 	const {
 		settings: {
@@ -100,4 +98,4 @@ const CSSJavaScript = () => {
 	);
 };
 
-export default CSSJavaScript;
+export default Appearance;

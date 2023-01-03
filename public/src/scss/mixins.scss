@@ -33,7 +33,7 @@
 	box-shadow: none;
 	font-size: var(--wcapf-input-text-font-size);
 	height: auto;
-	line-height: 1;
+	line-height: inherit;
 	margin: 0;
 	max-width: unset;
 	min-height: auto;
@@ -63,8 +63,9 @@
 	width: auto;
 	margin: 0;
 	padding: 0;
+	line-height: inherit;
 
-	// When including, must set the display and line-height property.
+	// When including, must set the display.
 }
 
 @mixin button {

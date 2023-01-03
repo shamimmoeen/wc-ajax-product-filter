@@ -288,13 +288,17 @@ class WCAPF_API_Utils {
 	public static function get_settings() {
 		$settings = WCAPF_Helper::get_settings();
 
+		// TODO: We should move these to pro.
 		// Send the loading image src.
 		if ( ! empty( $settings['loading_image'] ) ) {
 			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
-			$src   = $image[0];
 
-			if ( $src ) {
-				$settings['loading_image_src'] = $src;
+			if ( $image ) {
+				$src = $image[0];
+
+				if ( $src ) {
+					$settings['loading_image_src'] = $src;
+				}
 			}
 		}
 

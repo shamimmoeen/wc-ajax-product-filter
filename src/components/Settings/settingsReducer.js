@@ -3,7 +3,7 @@ const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 
 export const initialState = {
 	isDirty: false,
-	currentTab: 'general',
+	currentTab: 'loader-scrollTo',
 	settings: initialSettings,
 	globalFilterKeys,
 	seoSettings: {},
