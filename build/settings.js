@@ -9606,10 +9606,10 @@ const useSettings = () => {
 
 /***/ }),
 
-/***/ "./src/components/Settings/Tabs/CSSJavaScript.js":
-/*!*******************************************************!*\
-  !*** ./src/components/Settings/Tabs/CSSJavaScript.js ***!
-  \*******************************************************/
+/***/ "./src/components/Settings/Tabs/Appearance.js":
+/*!****************************************************!*\
+  !*** ./src/components/Settings/Tabs/Appearance.js ***!
+  \****************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9629,16 +9629,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const CSSJavaScript = () => {
+const Appearance = () => {
   const {
     state,
     dispatch
   } = (0,_SettingsContext__WEBPACK_IMPORTED_MODULE_2__.useSettings)();
   const {
     handleCheckboxChange,
-    handleTextFieldChange,
-    handleImageChange,
-    handleImageRemove
+    handleTextFieldChange
   } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_4__["default"])(state, dispatch);
   const {
     settings: {
@@ -9687,7 +9685,7 @@ const CSSJavaScript = () => {
   }));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (CSSJavaScript);
+/* harmony default export */ __webpack_exports__["default"] = (Appearance);
 
 /***/ }),
 
@@ -9962,7 +9960,6 @@ const Integration = () => {
   } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_5__["default"])(state, dispatch);
   const {
     settings: {
-      disable_ajax,
       enable_pagination_via_ajax,
       sorting_control,
       show_sorting_data_in_active_filters,
@@ -9976,7 +9973,7 @@ const Integration = () => {
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to show the active filters on top of the products, only works on product archive pages.', 'wc-ajax-product-filter'),
     isChecked: active_filters_on_top,
     onChange: handleCheckboxChange
-  }), '1' !== disable_ajax && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'enable_pagination_via_ajax',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pagination via AJAX', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to enable ajax to paginate the products.', 'wc-ajax-product-filter'),
@@ -9988,7 +9985,7 @@ const Integration = () => {
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to enable ajax for the default product sorting dropdown.', 'wc-ajax-product-filter'),
     isChecked: sorting_control,
     onChange: handleCheckboxChange
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'show_sorting_data_in_active_filters',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sorting data in Active Filters', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to show the sort by data comes from the default product sorting dropdown in active filters.', 'wc-ajax-product-filter'),
@@ -10031,6 +10028,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Field/ImagePicker */ "./src/components/Field/ImagePicker.js");
 /* harmony import */ var _ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ScrollWindowTo */ "./src/components/Settings/Tabs/ScrollWindowTo.js");
 /* harmony import */ var _Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Field/ColorInput */ "./src/components/Field/ColorInput.js");
+/* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Field/Select */ "./src/components/Field/Select.js");
 
 
 
@@ -10041,6 +10039,43 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+const animationOptions = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'wc-ajax-product-filter'),
+  value: 'none'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom', 'wc-ajax-product-filter'),
+  value: 'custom',
+  isPro: true
+}, {
+  label: 'Icons',
+  value: 'icons',
+  options: [{
+    label: 'Dual Ring',
+    value: 'Dual-Ring'
+  }, {
+    label: 'Eclipse',
+    value: 'Eclipse'
+  }, {
+    label: 'Gear',
+    value: 'Gear'
+  }, {
+    label: 'Reload',
+    value: 'Reload'
+  }, {
+    label: 'Ripple',
+    value: 'Ripple'
+  }, {
+    label: 'Rolling',
+    value: 'Rolling'
+  }, {
+    label: 'Spin',
+    value: 'Spin'
+  }, {
+    label: 'Spinner',
+    value: 'Spinner'
+  }]
+}];
 
 const LoaderScrollTo = () => {
   const {
@@ -10048,6 +10083,7 @@ const LoaderScrollTo = () => {
     dispatch
   } = (0,_SettingsContext__WEBPACK_IMPORTED_MODULE_2__.useSettings)();
   const {
+    handleSelectChange,
     handleCheckboxChange,
     handleTextFieldChange,
     handleImageChange,
@@ -10058,11 +10094,13 @@ const LoaderScrollTo = () => {
       loading_animation,
       loading_image,
       loading_image_src,
-      loading_overlay,
+      loading_image_size,
       loading_overlay_color,
+      wait_cursor,
       scroll_to_top_offset,
       scroll_window,
-      scroll_window_custom_element
+      scroll_window_custom_element,
+      disable_scroll_animation
     }
   } = state;
 
@@ -10078,34 +10116,51 @@ const LoaderScrollTo = () => {
     handleTextFieldChange(value, 'loading_overlay_color');
   };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  let loadingAnimation;
+
+  if ('none' === loading_animation || 'custom' === loading_animation) {
+    loadingAnimation = animationOptions.find(option => option.value === loading_animation);
+  } else {
+    const icons = animationOptions.find(option => option.value === 'icons');
+    loadingAnimation = icons.options.find(option => option.value === loading_animation);
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_10__["default"], {
     id: 'loading_animation',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Animation', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an animation while the results are fetching.', 'wc-ajax-product-filter'),
-    isChecked: loading_animation,
-    onChange: handleCheckboxChange
-  }), '1' === loading_animation && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    value: loadingAnimation,
+    options: animationOptions,
+    onChange: selected => handleSelectChange(selected, 'loading_animation'),
+    renderAsFormField: true
+  }), 'custom' === loading_animation && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ImagePicker__WEBPACK_IMPORTED_MODULE_7__["default"], {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom loading image', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Change the default loading image.', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Upload the loading image. <b>Note:</b> If the SVG image does not animate, try to upload by disabling sanitization.', 'wc-ajax-product-filter'),
     imageId: loading_image,
     imageUrl: loading_image_src,
     onChange: handleLoaderImageChange,
-    onClear: handleLoaderImageClear,
-    isPro: true
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    id: 'loading_overlay',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Overlay', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an overlay while the results are fetching.', 'wc-ajax-product-filter'),
-    isChecked: loading_overlay,
-    onChange: handleCheckboxChange
-  }), '1' === loading_overlay && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    onClear: handleLoaderImageClear
+  }), 'none' !== loading_animation && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    id: 'loading_image_size',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading image size', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Adjust the loading image size in px. Default is 120.', 'wc-ajax-product-filter'),
+    value: loading_image_size,
+    onChange: handleTextFieldChange,
+    type: 'number'
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__["default"], {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Overlay Color', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a loading overlay color according to your theme.', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Adjust the loading overlay color. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.', 'wc-ajax-product-filter'),
     value: loading_overlay_color,
     onChange: handleOverlayColorChange,
     isPro: true,
     disableAlpha: false,
     renderAsFormField: true
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    id: 'wait_cursor',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Wait Cursor', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show a wait cursor while the results are fetching.', 'wc-ajax-product-filter'),
+    isChecked: wait_cursor,
+    onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__["default"], null), 'custom' === scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'scroll_window_custom_element',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom element identifier', 'wc-ajax-product-filter'),
@@ -10113,14 +10168,20 @@ const LoaderScrollTo = () => {
     value: scroll_window_custom_element,
     onChange: handleTextFieldChange,
     placeholder: '#id or .class'
-  }), 'none' !== scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }), 'none' !== scroll_window && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_6__["default"], {
     id: 'scroll_to_top_offset',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Scroll to top offset', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('If you have a sticky header or page title that you want to include in the viewport then give the height of those in px.', 'wc-ajax-product-filter'),
     value: scroll_to_top_offset,
     onChange: handleTextFieldChange,
     type: 'number'
-  }));
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    id: 'disable_scroll_animation',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Disable scroll window animation', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Check this to disable the scroll window animation.', 'wc-ajax-product-filter'),
+    isChecked: disable_scroll_animation,
+    onChange: handleCheckboxChange
+  })));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (LoaderScrollTo);
@@ -10158,14 +10219,21 @@ const Miscellaneous = () => {
   } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_4__["default"])(state, dispatch);
   const {
     settings: {
+      debug_mode,
       send_anonymous_data,
       remove_data
     }
   } = state;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'debug_mode',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Debug Mode', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This will help you to configure the plugin correctly.', 'wc-ajax-product-filter'),
+    isChecked: debug_mode,
+    onChange: handleCheckboxChange
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'send_anonymous_data',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Send anonymous data', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you agree to send anonymous data to us to make the plugin better.', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you agree to send anonymous data to the developer to make the plugin better.', 'wc-ajax-product-filter'),
     isChecked: send_anonymous_data,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
@@ -10221,7 +10289,7 @@ const SEO = () => {
     settings: {
       use_term_slug,
       use_author_username,
-      update_document_title
+      update_title_tag
     }
   } = state;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -10229,37 +10297,21 @@ const SEO = () => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'use_term_slug',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use term slug', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the selected options in active filters.', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use term slug instead of id as the option value.', 'wc-ajax-product-filter'),
     isChecked: use_term_slug,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'use_author_username',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use author username', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the selected options in active filters.', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use author username instead of id as the option value.', 'wc-ajax-product-filter'),
     isChecked: use_author_username,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    id: 'update_document_title',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sync Document Title', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the selected options in active filters.', 'wc-ajax-product-filter'),
-    isChecked: update_document_title,
+    id: 'update_title_tag',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update title tag', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we update the title tag.', 'wc-ajax-product-filter'),
+    isChecked: update_title_tag,
     onChange: handleCheckboxChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    id: 'scroll_window_for',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add "robots" Meta Tag', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Add "robots" meta tag in head tag of HTML page if filters have been activated.', 'wc-ajax-product-filter') // value={scrollWindowFor}
-    ,
-    options: [{
-      label: 'Disabled',
-      value: 'disabled'
-    }, {
-      label: 'Disabled',
-      value: 'disabled'
-    }] // onChange={(selected) =>
-    // 	handleSelectChange(selected, 'scroll_window_for')
-    // }
-    ,
-    renderAsFormField: true
   }), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Indexing Filters', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Check filters, pages of which should be available for indexing by search engines. Besides this you will also need to create SEO Rules to make filter pages available for indexing."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Indexing Depth', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "By default all filtering results pages are closed from indexing. These settings determines maximum number of filters (only filters, not archive page) will be indexed by Search Engines.")));
 };
 
@@ -10288,31 +10340,34 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const scrollWindowOptions = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'wc-ajax-product-filter'),
+  value: 'none'
+}, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Results container', 'wc-ajax-product-filter'),
   value: 'results'
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Custom element', 'wc-ajax-product-filter'),
   value: 'custom'
-}, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('None', 'wc-ajax-product-filter'),
-  value: 'none'
 }];
 const scrollWindowForOptions = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop and mobile', 'wc-ajax-product-filter'),
+  value: 'both'
+}, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop only', 'wc-ajax-product-filter'),
   value: 'desktop'
 }, {
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Mobile only', 'wc-ajax-product-filter'),
   value: 'mobile'
-}, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Desktop and mobile', 'wc-ajax-product-filter'),
-  value: 'both'
 }];
 const scrollWindowWhenOptions = [{
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Immediately', 'wc-ajax-product-filter'),
-  value: 'immediately'
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All', 'wc-ajax-product-filter'),
+  value: 'all'
 }, {
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('After updating the results', 'wc-ajax-product-filter'),
-  value: 'after'
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter', 'wc-ajax-product-filter'),
+  value: 'filter'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Paginate', 'wc-ajax-product-filter'),
+  value: 'paginate'
 }];
 
 const ScrollWindowTo = () => {
@@ -10394,7 +10449,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Tabs_General__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Tabs/General */ "./src/components/Settings/Tabs/General.js");
 /* harmony import */ var _Tabs_FilterKeys__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Tabs/FilterKeys */ "./src/components/Settings/Tabs/FilterKeys.js");
 /* harmony import */ var _Tabs_Miscellaneous__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Tabs/Miscellaneous */ "./src/components/Settings/Tabs/Miscellaneous.js");
-/* harmony import */ var _Tabs_CSSJavaScript__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Tabs/CSSJavaScript */ "./src/components/Settings/Tabs/CSSJavaScript.js");
+/* harmony import */ var _Tabs_Appearance__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Tabs/Appearance */ "./src/components/Settings/Tabs/Appearance.js");
 /* harmony import */ var _Tabs_Integration__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Tabs/Integration */ "./src/components/Settings/Tabs/Integration.js");
 /* harmony import */ var _Tabs_SEO__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./Tabs/SEO */ "./src/components/Settings/Tabs/SEO.js");
 /* harmony import */ var _CustomTabPanel__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../CustomTabPanel */ "./src/components/CustomTabPanel.js");
@@ -10418,6 +10473,28 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const tabs = [{
+  name: 'general',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('General', 'wc-ajax-product-filter')
+}, {
+  name: 'integration',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Integration', 'wc-ajax-product-filter')
+}, {
+  name: 'appearance',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Appearance', 'wc-ajax-product-filter')
+}, {
+  name: 'loader-scrollTo',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loader & Scroll To', 'wc-ajax-product-filter')
+}, {
+  name: 'filter-keys',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Keys', 'wc-ajax-product-filter')
+}, {
+  name: 'seo',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SEO', 'wc-ajax-product-filter')
+}, {
+  name: 'miscellaneous',
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Miscellaneous', 'wc-ajax-product-filter')
+}];
 
 const Settings = () => {
   const {
@@ -10494,31 +10571,7 @@ const Settings = () => {
     dispatch: dispatch,
     className: "__tab_panel __settings_tab",
     activeClass: "active-tab",
-    tabs: [{
-      name: 'general',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('General', 'wc-ajax-product-filter')
-    }, {
-      name: 'integration',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Integration', 'wc-ajax-product-filter')
-    }, {
-      name: 'css-javascript',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('CSS & JavaScript', 'wc-ajax-product-filter')
-    }, {
-      name: 'loader-scrollTo',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loader & Scroll To', 'wc-ajax-product-filter')
-    }, {
-      name: 'filter-keys',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Keys', 'wc-ajax-product-filter')
-    }, {
-      name: 'seo',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('SEO', 'wc-ajax-product-filter')
-    }, {
-      name: 'others',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Others', 'wc-ajax-product-filter')
-    }, {
-      name: 'miscellaneous',
-      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Miscellaneous', 'wc-ajax-product-filter')
-    }]
+    tabs: tabs
   }, _ref => {
     let {
       name
@@ -10528,8 +10581,8 @@ const Settings = () => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_General__WEBPACK_IMPORTED_MODULE_10__["default"], null);
     } else if ('integration' === name) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_Integration__WEBPACK_IMPORTED_MODULE_14__["default"], null);
-    } else if ('css-javascript' === name) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_CSSJavaScript__WEBPACK_IMPORTED_MODULE_13__["default"], null);
+    } else if ('appearance' === name) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_Appearance__WEBPACK_IMPORTED_MODULE_13__["default"], null);
     } else if ('loader-scrollTo' === name) {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Tabs_LoaderScrollTo__WEBPACK_IMPORTED_MODULE_17__["default"], null);
     } else if ('filter-keys' === name) {
@@ -10561,7 +10614,7 @@ const initialSettings = wcapf_admin_params.settings;
 const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 const initialState = {
   isDirty: false,
-  currentTab: 'general',
+  currentTab: 'loader-scrollTo',
   settings: initialSettings,
   globalFilterKeys,
   seoSettings: {}

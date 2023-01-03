@@ -3,7 +3,7 @@
 
 .wcapf-dropdown-wrapper .wcapf-select-improved {
 	--wcapf-select-improved-hr-padding: .625em;
-	--wcapf-select-improved-vr-padding: .625em;
+	--wcapf-select-improved-vr-padding: .375em;
 
 	-webkit-appearance: none;
 	-moz-appearance: none;
@@ -15,9 +15,9 @@
 	text-overflow: unset;
 	text-indent: unset;
 	padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
-	line-height: normal;
-	height: auto;
-	min-height: auto;
+	line-height: inherit;
+	height: unset;
+	min-height: unset;
 	max-width: unset;
 	background-color: #fff;
 	background-image: none;

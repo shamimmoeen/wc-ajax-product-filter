@@ -5,6 +5,10 @@ import useSettingsData from '../useSettingsData';
 
 const scrollWindowOptions = [
 	{
+		label: __('None', 'wc-ajax-product-filter'),
+		value: 'none',
+	},
+	{
 		label: __('Results container', 'wc-ajax-product-filter'),
 		value: 'results',
 	},
@@ -12,13 +16,13 @@ const scrollWindowOptions = [
 		label: __('Custom element', 'wc-ajax-product-filter'),
 		value: 'custom',
 	},
-	{
-		label: __('None', 'wc-ajax-product-filter'),
-		value: 'none',
-	},
 ];
 
 const scrollWindowForOptions = [
+	{
+		label: __('Desktop and mobile', 'wc-ajax-product-filter'),
+		value: 'both',
+	},
 	{
 		label: __('Desktop only', 'wc-ajax-product-filter'),
 		value: 'desktop',
@@ -27,20 +31,20 @@ const scrollWindowForOptions = [
 		label: __('Mobile only', 'wc-ajax-product-filter'),
 		value: 'mobile',
 	},
-	{
-		label: __('Desktop and mobile', 'wc-ajax-product-filter'),
-		value: 'both',
-	},
 ];
 
 const scrollWindowWhenOptions = [
 	{
-		label: __('Immediately', 'wc-ajax-product-filter'),
-		value: 'immediately',
+		label: __('All', 'wc-ajax-product-filter'),
+		value: 'all',
 	},
 	{
-		label: __('After updating the results', 'wc-ajax-product-filter'),
-		value: 'after',
+		label: __('Filter', 'wc-ajax-product-filter'),
+		value: 'filter',
+	},
+	{
+		label: __('Paginate', 'wc-ajax-product-filter'),
+		value: 'paginate',
 	},
 ];
 

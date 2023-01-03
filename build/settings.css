@@ -936,6 +936,9 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
 .__settings_tab .__single_select.filter_relationships {
   min-width: 70px;
 }
+.__settings_tab .__single_select.loading_animation {
+  min-width: 170px;
+}
 .__settings_tab .__scroll_window_to .__input_wrapper .__single_select {
   margin-bottom: 8px;
 }
@@ -946,7 +949,7 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   min-width: 170px;
 }
 .__settings_tab .__scroll_window_to .__input_wrapper .__single_select.scroll_window_when {
-  min-width: 200px;
+  min-width: 100px;
 }
 .__settings_tab .__scroll_window_to .__input_wrapper::after, .__settings_tab .__scroll_window_to .__input_wrapper::before {
   content: "";

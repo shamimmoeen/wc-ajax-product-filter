@@ -34,6 +34,10 @@
         &.filter_relationships {
             min-width: 70px;
         }
+
+        &.loading_animation {
+            min-width: 170px;
+        }
     }
 
     .__scroll_window_to {
@@ -50,7 +54,7 @@
                 }
 
                 &.scroll_window_when {
-                    min-width: 200px;
+                    min-width: 100px;
                 }
             }
 

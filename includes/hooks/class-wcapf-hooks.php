@@ -91,8 +91,14 @@ class WCAPF_Hooks {
 	 * @return array
 	 */
 	public function add_body_classes( $classes ) {
+		// TODO: Maybe we can get the settings from global variables.
+
 		if ( WCAPF_Helper::use_focus_style() ) {
 			$classes[] = 'wcapf-use-focus';
+		}
+
+		if ( WCAPF_Helper::use_wait_cursor() ) {
+			$classes[] = 'wcapf-use-wait-cursor';
 		}
 
 		return $classes;

@@ -85,10 +85,11 @@ const FormSettings = () => {
 						label: __('Immediate', 'wc-ajax-product-filter'),
 						value: 'immediate',
 					},
-					// {
-					// 	label: __('Submit button', 'wc-ajax-product-filter'),
-					// 	value: 'submit',
-					// },
+					{
+						label: __('Submit button', 'wc-ajax-product-filter'),
+						value: 'submit',
+						isPro: true,
+					},
 					{
 						label: __('Apply button', 'wc-ajax-product-filter'),
 						value: 'apply',
@@ -118,10 +119,7 @@ const FormSettings = () => {
 					<div className='__form_control __horizontal_multi_checkbox'>
 						<div className='__inner'>
 							<div className='__label'>
-								<label>
-									{__('Auto Sync')}
-									<span className='__pro_tag'></span>
-								</label>
+								<label>{__('Auto Sync')}</label>
 							</div>
 							<div className='__wrapper'>
 								<div className='__input_wrapper'>

@@ -15,11 +15,42 @@ import {
 import General from './Tabs/General';
 import FilterKeys from './Tabs/FilterKeys';
 import Miscellaneous from './Tabs/Miscellaneous';
-import CSSJavaScript from './Tabs/CSSJavaScript';
+import Appearance from './Tabs/Appearance';
 import Integration from './Tabs/Integration';
 import SEO from './Tabs/SEO';
 import CustomTabPanel from '../CustomTabPanel';
 import LoaderScrollTo from './Tabs/LoaderScrollTo';
+
+const tabs = [
+	{
+		name: 'general',
+		title: __('General', 'wc-ajax-product-filter'),
+	},
+	{
+		name: 'integration',
+		title: __('Integration', 'wc-ajax-product-filter'),
+	},
+	{
+		name: 'appearance',
+		title: __('Appearance', 'wc-ajax-product-filter'),
+	},
+	{
+		name: 'loader-scrollTo',
+		title: __('Loader & Scroll To', 'wc-ajax-product-filter'),
+	},
+	{
+		name: 'filter-keys',
+		title: __('Filter Keys', 'wc-ajax-product-filter'),
+	},
+	{
+		name: 'seo',
+		title: __('SEO', 'wc-ajax-product-filter'),
+	},
+	{
+		name: 'miscellaneous',
+		title: __('Miscellaneous', 'wc-ajax-product-filter'),
+	},
+];
 
 const Settings = () => {
 	const { state, dispatch } = useSettings();
@@ -97,72 +128,15 @@ const Settings = () => {
 								dispatch={dispatch}
 								className='__tab_panel __settings_tab'
 								activeClass='active-tab'
-								tabs={[
-									{
-										name: 'general',
-										title: __(
-											'General',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'integration',
-										title: __(
-											'Integration',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'css-javascript',
-										title: __(
-											'CSS & JavaScript',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'loader-scrollTo',
-										title: __(
-											'Loader & Scroll To',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'filter-keys',
-										title: __(
-											'Filter Keys',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'seo',
-										title: __(
-											'SEO',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'others',
-										title: __(
-											'Others',
-											'wc-ajax-product-filter'
-										),
-									},
-									{
-										name: 'miscellaneous',
-										title: __(
-											'Miscellaneous',
-											'wc-ajax-product-filter'
-										),
-									},
-								]}
+								tabs={tabs}
 							>
 								{({ name }) => {
 									if ('general' === name) {
 										return <General />;
 									} else if ('integration' === name) {
 										return <Integration />;
-									} else if ('css-javascript' === name) {
-										return <CSSJavaScript />;
+									} else if ('appearance' === name) {
+										return <Appearance />;
 									} else if ('loader-scrollTo' === name) {
 										return <LoaderScrollTo />;
 									} else if ('filter-keys' === name) {

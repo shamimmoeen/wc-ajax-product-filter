@@ -27,6 +27,7 @@ const wcapf_params = wcapf_params || {
 	'loading_overlay_options': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
+	'immediate_scroll_on_paginate': '',
 	'is_mobile': '',
 	'disable_inputs_while_fetching_results': '',
 	'apply_filters_on_browser_history_change': '',
@@ -42,6 +43,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_window_when': '',
 	'scroll_window_custom_element': '',
 	'scroll_to_top_offset': '',
+	'disable_scroll_animation': '',
 	'for_preview': '',
 };
 

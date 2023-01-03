@@ -788,6 +788,19 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Determines if we show the wait cursor when the results are fetching.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function use_wait_cursor() {
+		$settings = self::get_settings();
+
+		return isset( $settings['wait_cursor'] ) ? $settings['wait_cursor'] : '';
+	}
+
+	/**
 	 * Gets the primary color.
 	 *
 	 * @since 4.0.0
