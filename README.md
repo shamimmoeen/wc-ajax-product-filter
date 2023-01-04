@@ -2,7 +2,7 @@
 **Contributors:** shamimmoeen  
 **Tags:** product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter  
 **Requires at least:** 4.0  
-**Tested up to:** 6.0.2  
+**Tested up to:** 6.1.1  
 **Stable tag:** 3.3.2  
 **Requires PHP:** 5.5  
 **License:** GPLv3  
