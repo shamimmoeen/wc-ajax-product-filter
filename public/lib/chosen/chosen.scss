@@ -3,14 +3,15 @@
 	--wcapf-chosen-text-color: inherit;
 	--wcapf-chosen-input-placeholder-color: var(--wcapf-chosen-text-color);
 	--wcapf-chosen-active-color: var(--wcapf-primary-color, #5897fb);
-	--wcapf-chosen-active-text-color: var(--wcapf-primary-accent-color, #fff);
+	--wcapf-chosen-active-text-color: var(--wcapf-primary-text-color, #fff);
 	--wcapf-chosen-hover-color: var(--wcapf-primary-color, #3875d7);
-	--wcapf-chosen-border-color: var(--wcapf-dropdown-border-color); // #ccd0dc // #d8d8da // #ced4da
+	--wcapf-chosen-border-color: var(--wcapf-dropdown-border-color, #ced4da); // #ccd0dc // #d8d8da // #ced4da
 	--wcapf-chosen-group-color: #999;
 	--wcapf-chosen-background-color: #fff;
 	--wcapf-chosen-selected-color: #e7e8ea; // #e9ecef // #f2f2f2
 	--wcapf-chosen-selected-text-color: var(--wcapf-chosen-text-color);
 	--wcapf-chosen-no-results-text-color: #777;
+	--wcapf-search-choice-close-color: rgba(var(--wcapf-primary-text-color-rgb, 255, 255, 255), .7);
 
 	--wcapf-chosen-height: 2.5em;
 	--wcapf-chosen-border-size: 1px;
@@ -132,7 +133,7 @@ $chosen-search: var(--wcapf-search-icon);
 		background: transparent;
 		box-shadow: none;
 		justify-content: center;
-		color: rgba(var(--wcapf-primary-accent-color-rgb), .7);
+		color: var(--wcapf-search-choice-close-color);
 		font-size: .8125em;
 		align-items: center;
 		font-weight: normal;
@@ -144,7 +145,7 @@ $chosen-search: var(--wcapf-search-icon);
 
 		&:hover,
 		&:active {
-			color: rgba(var(--wcapf-primary-accent-color-rgb), 1);
+			color: var(--wcapf-chosen-active-text-color);
 		}
 	}
 }
@@ -304,7 +305,7 @@ $chosen-search: var(--wcapf-search-icon);
 
 		&.highlighted {
 			background-color: var(--wcapf-chosen-hover-color);
-			color: rgba(var(--wcapf-primary-accent-color-rgb), 1);
+			color: var(--wcapf-chosen-active-text-color);
 		}
 
 		&.no-results {

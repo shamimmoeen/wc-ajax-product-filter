@@ -90,11 +90,11 @@ class WCAPF_Frontend_Scripts {
 
 		// Add css variables.
 		list( $r, $g, $b ) = WCAPF_Helper::get_primary_color();
-		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_primary_accent_color();
+		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_primary_text_color();
 
 		$variables = ":root {
 			--wcapf-primary-color-rgb: $r, $g, $b;
-			--wcapf-primary-accent-color-rgb: $r2, $g2, $b2;
+			--wcapf-primary-text-color-rgb: $r2, $g2, $b2;
 		}";
 
 		wp_add_inline_style( 'wc-ajax-product-filter-public-styles', $variables );
@@ -171,17 +171,6 @@ class WCAPF_Frontend_Scripts {
 			$settings['attach_chosen_on_sorting'] = '';
 		}
 
-		$disable_inputs = true;
-
-		if ( isset( $settings['loading_animation'] ) && $settings['loading_animation'] ) {
-			$disable_inputs = false;
-		}
-
-		$disable_inputs   = apply_filters( 'wcapf_disable_inputs_while_fetching_results', $disable_inputs );
-		$history_popstate = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
-
-		$loading_overlay_options = self::get_loading_options( $settings );
-
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => 800, // In milliseconds.
@@ -198,13 +187,11 @@ class WCAPF_Frontend_Scripts {
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
 			'restore_focus_after_filtering'            => true,
-			'loading_overlay_options'                  => $loading_overlay_options,
+			'loading_overlay_options'                  => self::get_loading_options( $settings ),
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
-			'disable_inputs_while_fetching_results'    => $disable_inputs,
-			'apply_filters_on_browser_history_change'  => $history_popstate,
 			'for_preview'                              => $for_preview,
 		);
 
@@ -249,8 +236,12 @@ class WCAPF_Frontend_Scripts {
 				'imageAutoResize' => false,
 				'imageAnimation'  => '',
 				'imageColor'      => '',
-				'imageClass'      => 'wcapf-loading-overlay-img-wrapper',
+				'imageClass'      => 'wcapf-loading-icon-wrapper',
 			);
+
+			if ( apply_filters( 'wcapf_use_colored_loading_animation', true ) ) {
+				$loading_overlay_options['imageClass'] = 'wcapf-colored-loading-icon-wrapper';
+			}
 		}
 
 		return $loading_overlay_options;

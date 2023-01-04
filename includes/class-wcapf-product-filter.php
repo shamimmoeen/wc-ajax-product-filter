@@ -911,5 +911,9 @@ function wcapf_set_product_query( $q ) {
 
 add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
 
-// Prevent redirect to product page while filtering on the search page and getting a single result.
+/**
+ * Prevent redirect to product page while filtering on the search page and getting a single result.
+ *
+ * @since 3.3.2
+ */
 add_filter( 'woocommerce_redirect_single_search_result', '__return_false' );

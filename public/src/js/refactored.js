@@ -369,7 +369,7 @@
 
 			// window.location.href = url;
 
-			history.pushState( {}, '', url );
+			history.pushState( { wcapf: true }, '', url );
 
 			WCAPF.filterProducts( triggeredBy );
 		},
@@ -718,6 +718,18 @@
 			WCAPF.initRangeSlider();
 		}
 	};
+
+	// Handle the popstate event(browser's back/forward)
+	window.addEventListener( 'popstate', function( e ) {
+		if ( null !== e.state && e.state.hasOwnProperty( 'wcapf' ) ) {
+			WCAPF.filterProducts( 'popstate' );
+		}
+	} );
+
+	// @source https://stackoverflow.com/a/33004917
+	if ( 'scrollRestoration' in history ) {
+		history.scrollRestoration = 'manual';
+	}
 
 }( jQuery, window ) );
 
