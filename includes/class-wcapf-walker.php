@@ -524,6 +524,7 @@ class WCAPF_Walker {
 
 			$html .= '<li' . $attrs . '>';
 			$html .= $this->menu_item( $item, $depth );
+			$html .= '</li>';
 		}
 
 		$html .= '</ul>';

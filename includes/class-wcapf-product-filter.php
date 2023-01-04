@@ -293,7 +293,9 @@ class WCAPF_Product_Filter {
 		$join = '';
 
 		if ( 'or' === $query_type ) {
-			$join .= "LEFT JOIN $wpdb->term_relationships AS $filter_key ON $wpdb->posts.ID = $filter_key.object_id";
+			$join_alias = $utils::get_table_join_alias( $filter_key );
+
+			$join .= "LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
 		} else {
 			foreach ( $term_ids as $index => $value ) {
 				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
@@ -315,8 +317,10 @@ class WCAPF_Product_Filter {
 			}
 
 			if ( $term_ids ) {
+				$join_alias = $utils::get_table_join_alias( $filter_key );
+
 				$ids   = $utils::get_ids_sql( $term_ids );
-				$where = "$filter_key.term_taxonomy_id IN $ids";
+				$where = "$join_alias.term_taxonomy_id IN $ids";
 			} else {
 				$where = '1=0';
 			}
@@ -682,3 +686,10 @@ function wcapf_set_product_query( $q ) {
 }
 
 add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
+
+/**
+ * Prevent redirect to product page while filtering on the search page and getting a single result.
+ *
+ * @since 3.3.2
+ */
+add_filter( 'woocommerce_redirect_single_search_result', '__return_false' );
