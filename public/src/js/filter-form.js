@@ -29,8 +29,6 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top_easing': '',
 	'immediate_scroll_on_paginate': '',
 	'is_mobile': '',
-	'disable_inputs_while_fetching_results': '',
-	'apply_filters_on_browser_history_change': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'enable_pagination_via_ajax': '',

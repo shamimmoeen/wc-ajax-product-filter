@@ -186,7 +186,7 @@
 				&:checked ~ .wcapf-filter-item-label {
 					background-color: var(--wcapf-primary-color);
 					border-color: var(--wcapf-primary-color);
-					color: var(--wcapf-primary-accent-color);
+					color: var(--wcapf-primary-text-color);
 				}
 			}
 		}
@@ -385,9 +385,4 @@ a.wcapf-reset-filters-btn {
 		display: inline-block;
 		margin-top: var(--wcapf-clear-all-btn-top-margin);
 	}
-}
-
-// Show wait cursor while the results are fetching.
-.wcapf-use-wait-cursor .loadingoverlay {
-	cursor: wait;
 }

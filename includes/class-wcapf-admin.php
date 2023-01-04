@@ -65,7 +65,7 @@ class WCAPF_Admin {
 			);
 
 			$upgrade_page_action_link = sprintf(
-				'<a href="%1$s" style="color: limegreen; font-weight: bold;" target="_blank" aria-label="%2$s">%2$s</a>',
+				'<a href="%1$s" style="color: #00a32a; font-weight: bold;" target="_blank" aria-label="%2$s">%2$s</a>',
 				$plugin_page_link,
 				__( 'Upgrade to PRO', 'wc-ajax-product-filter' )
 			);

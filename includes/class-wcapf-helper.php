@@ -818,16 +818,16 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Gets the primary color.
+	 * Gets the primary text color.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	public static function get_primary_accent_color() {
+	public static function get_primary_text_color() {
 		$settings = self::get_settings();
 
-		$hex = isset( $settings['primary_accent_color'] ) ? $settings['primary_accent_color'] : '#ffffff';
+		$hex = isset( $settings['primary_text_color'] ) ? $settings['primary_text_color'] : '#ffffff';
 
 		list( $r, $g, $b ) = sscanf( $hex, "#%02x%02x%02x" );
 

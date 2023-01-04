@@ -1,0 +1,60 @@
+// Show wait cursor while the results are fetching.
+.wcapf-use-wait-cursor .loadingoverlay {
+	cursor: wait;
+}
+
+.wcapf-colored-loading-icon-wrapper {
+	.Dual-Ring {
+		circle {
+			stroke: var(--wcapf-primary-color);
+		}
+	}
+
+	.Eclipse {
+		path {
+			fill: var(--wcapf-primary-color);
+		}
+	}
+
+	.Gear {
+		path {
+			fill: var(--wcapf-primary-color);
+		}
+	}
+
+	.Reload {
+		path {
+			&:nth-of-type(1) {
+				stroke: var(--wcapf-primary-color);
+			}
+
+			&:nth-of-type(2) {
+				fill: var(--wcapf-primary-color);
+			}
+		}
+	}
+
+	.Ripple {
+		circle {
+			stroke: var(--wcapf-primary-color);
+		}
+	}
+
+	.Rolling {
+		circle {
+			stroke: var(--wcapf-primary-color);
+		}
+	}
+
+	.Spin {
+		circle {
+			fill: var(--wcapf-primary-color);
+		}
+	}
+
+	.Spinner {
+		rect {
+			fill: var(--wcapf-primary-color);
+		}
+	}
+}
