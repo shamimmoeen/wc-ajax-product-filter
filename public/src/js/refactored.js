@@ -112,7 +112,36 @@
 				} );
 		},
 		handleSearchFilterOptions: function() {
+			$body.on( 'input', '.wcapf-search-box input[type="text"]', function( e ) {
+				const $that   = $( this );
+				const $inner  = $that.closest( '.wcapf-filter-inner' );
+				const $filter = $inner.closest( '.wcapf-filter' );
 
+				const keyword = $that.val();
+
+				if ( ! keyword.length ) {
+					$filter.removeClass( 'search-active' );
+
+					$.each( $inner.find( '.wcapf-filter-options > li' ), function() {
+						$( this ).removeClass( 'keyword-matched' );
+					} );
+
+					return;
+				}
+
+				$filter.addClass( 'search-active' );
+
+				$.each( $inner.find( '.wcapf-filter-options > li' ), function() {
+					const $filterItem = $( this );
+					const label       = $filterItem.find( '.wcapf-filter-item-label' ).data( 'label' );
+
+					if ( label.toLowerCase().includes( keyword.toLowerCase() ) ) {
+						$filterItem.addClass( 'keyword-matched' );
+					} else {
+						$filterItem.removeClass( 'keyword-matched' );
+					}
+				} );
+			} );
 		},
 		updateProductsCountResult: function( $response ) {
 			const $container = $( wcapf_params.shop_loop_container );

@@ -8,4 +8,16 @@
 			@include input_text;
 		}
 	}
+
+	&.search-active {
+		.wcapf-list-wrapper {
+			.wcapf-filter-options {
+				.wcapf-filter-option {
+					&:not(.keyword-matched) {
+						display: none;
+					}
+				}
+			}
+		}
+	}
 }
