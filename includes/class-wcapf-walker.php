@@ -615,7 +615,13 @@ class WCAPF_Walker {
 
 		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
 
-		$inner = '<span class="wcapf-filter-item-label">';
+		$inner = '<span class="wcapf-filter-item-label"';
+
+		if ( $this->enable_search_field ) {
+			$inner .= ' data-label="' . esc_attr( $name ) . '"';
+		}
+
+		$inner .= '>';
 		$inner .= wp_kses_post( $name );
 
 		$count = $item['count'];
