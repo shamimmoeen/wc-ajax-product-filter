@@ -7,40 +7,6 @@
 .wcapf-filter {
 	margin: 0 0 var(--wcapf-filter-base-bottom-margin);
 	line-height: var(--wcapf-filter-line-height);
-
-	.wcapf-filter-title {
-		margin: 0;
-		padding: 0;
-		font-size: var(--wcapf-filter-title-font-size);
-		font-weight: var(--wcapf-filter-title-font-weight);
-		line-height: var(--wcapf-filter-title-line-height);
-
-		.wcapf-filter-accordion-trigger {
-			align-items: center;
-			border-radius: 0.125em; // For showing rounded outline when focused.
-			display: flex;
-			font-family: inherit;
-			justify-content: space-between;
-			width: 100%;
-
-			@include button;
-
-			&[aria-expanded="true"] {
-				svg {
-					transform: rotate(180deg);
-				}
-			}
-		}
-
-		.wcapf-filter-accordion-icon {
-			display: inline-flex;
-
-			svg {
-				width: var(--wcapf-filter-accordion-icon-size);
-				height: var(--wcapf-filter-accordion-icon-size);
-			}
-		}
-	}
 }
 
 .wcapf-filter-title ~ .wcapf-filter-inner > div {

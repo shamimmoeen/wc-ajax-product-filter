@@ -1,0 +1,49 @@
+@import "../mixins";
+
+// Clear filter button
+.wcapf-filter {
+	.wcapf-filter-title {
+		.wcapf-filter-clear-btn {
+			border-radius: 0.125em; // For showing rounded outline when focused.
+			display: inline-flex;
+			font-size: 0.8em;
+			font-weight: normal;
+			padding: 0 0.4em;
+			cursor: pointer;
+			color: var(--wcapf-primary-color);
+			align-self: stretch;
+			align-items: center;
+			user-select: none;
+			text-transform: lowercase;
+
+			&::before {
+				content: '‹';
+
+				@include ltr {
+					margin-right: 0.1875em;
+				}
+
+				@include rtl {
+					margin-left: 0.1875em;
+				}
+			}
+
+			&:focus {
+				outline: none;
+			}
+
+			&:focus-visible {
+				outline: 2px solid var(--wcapf-primary-color);
+				outline-offset: 2px;
+			}
+		}
+	}
+
+	&:not(.filter-active) {
+		.wcapf-filter-title {
+			.wcapf-filter-clear-btn {
+				display: none;
+			}
+		}
+	}
+}

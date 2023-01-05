@@ -842,11 +842,13 @@ class WCAPF_Helper {
 	 * @return bool
 	 */
 	public static function keep_accordion_opened_when_filter_active() {
-		return apply_filters( 'wcapf_keep_accordion_opened_when_filter_active', true );
+		return apply_filters( 'wcapf_keep_accordion_opened_when_filter_active', false );
 	}
 
 	/**
 	 * Determines if we show the soft limit options when the filter is active.
+	 *
+	 * TODO: This one is required.
 	 *
 	 * @since 4.0.0
 	 *
@@ -854,6 +856,13 @@ class WCAPF_Helper {
 	 */
 	public static function show_soft_limit_options_when_filter_active() {
 		return apply_filters( 'wcapf_show_soft_limit_options_when_filter_active', true );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function use_tippyjs_for_tooltip() {
+		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', true );
 	}
 
 }

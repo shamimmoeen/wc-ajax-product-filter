@@ -126,19 +126,19 @@ final class WCAPF_Form {
 			$field_instance
 		);
 
-		$filter_classes = implode( ' ', $classes );
-		$show_title     = $field_instance->get_sub_field_value( 'show_title' );
-		$filter_title   = $field_instance->get_sub_field_value( 'title' );
-		$filter_id      = $field_instance->filter_id;
-		$filter_key     = $field_instance->filter_key;
+		$filter_id  = $field_instance->filter_id;
+		$filter_key = $field_instance->filter_key;
+
+		$filter_active = WCAPF_Product_Filter_Utils::is_filter_active( $filter_key );
+
+		if ( $filter_active ) {
+			$classes[] = 'filter-active';
+		}
 
 		$enable_accordion = $field_instance->get_sub_field_value( 'enable_accordion' );
 		$accordion_state  = $field_instance->get_sub_field_value( 'accordion_default_state' );
 
-		if (
-			WCAPF_Product_Filter_Utils::is_filter_active( $filter_key )
-			&& WCAPF_Helper::keep_accordion_opened_when_filter_active()
-		) {
+		if ( $filter_active && WCAPF_Helper::keep_accordion_opened_when_filter_active() ) {
 			$accordion_state = 'expanded';
 		}
 
@@ -146,28 +146,33 @@ final class WCAPF_Form {
 		$accordion_header_id = 'wcapf-filter-accordion-header-' . $filter_id;
 		$accordion_panel_id  = 'wcapf-filter-accordion-panel-' . $filter_id;
 
+		$filter_classes = implode( ' ', $classes );
+
 		echo '<div class="' . esc_attr( $filter_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
 
-		if ( $show_title ) {
-			$header = '<h4 class="wcapf-filter-title">';
+		echo WCAPF_Template_Loader::get_instance()->load(
+			'filter-title',
+			array(
+				'field_instance'      => $field_instance,
+				'enable_accordion'    => $enable_accordion,
+				'is_expanded'         => $is_expanded,
+				'accordion_header_id' => $accordion_header_id,
+				'accordion_panel_id'  => $accordion_panel_id,
+			),
+			false
+		);
 
-			if ( $enable_accordion ) {
-				$header .= '<button type="button" id="' . esc_attr( $accordion_header_id ) . '" aria-controls="' . esc_attr( $accordion_panel_id ) . '" class="wcapf-filter-accordion-trigger" aria-expanded="' . $is_expanded . '">';
-				$header .= esc_html( $filter_title );
-				$header .= '<span class="wcapf-filter-accordion-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none"><path d="M4 8L12 16L20 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
-				$header .= '</button>';
-			} else {
-				$header .= esc_html( $filter_title );
-			}
+		$filter_inner_wrapper = '<div class="wcapf-filter-inner"';
 
-			$header .= '</h4>';
-
-			echo $header;
+		if ( $enable_accordion ) {
+			$filter_inner_wrapper .= ' id="' . esc_attr( $accordion_panel_id ) . '"';
+			$filter_inner_wrapper .= ' aria-labelledby="' . esc_attr( $accordion_header_id ) . '"';
+			$filter_inner_wrapper .= 'false' === $is_expanded ? ' style="display: none;"' : '';
 		}
 
-		$panel_style = 'false' === $is_expanded ? ' style="display: none;"' : '';
+		$filter_inner_wrapper .= '>';
 
-		echo '<div class="wcapf-filter-inner" id="' . esc_attr( $accordion_panel_id ) . '" aria-labelledby="' . esc_attr( $accordion_header_id ) . '"' . $panel_style . '>';
+		echo $filter_inner_wrapper;
 	}
 
 	/**
