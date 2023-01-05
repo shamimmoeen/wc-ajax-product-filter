@@ -36,8 +36,16 @@
 				}
 			};
 
-			$body.on( 'click', '.wcapf-filter-accordion-trigger', function() {
+			$body.on( 'click', '.wcapf-filter-accordion-trigger', function( e ) {
+				e.stopPropagation();
+
 				toggleAccordion( $( this ) );
+			} );
+
+			$body.on( 'click', '.wcapf-filter-title.has-accordion', function() {
+				const $trigger = $( this ).find( '.wcapf-filter-accordion-trigger' );
+
+				toggleAccordion( $trigger );
 			} );
 		},
 		handleHierarchyToggle: function() {
@@ -318,6 +326,11 @@
 							}
 						}
 
+						// Update clear filter button url.
+						const clearBtnSelector = '.wcapf-filter-clear-btn';
+						const clearFilterUrl   = _instance.find( clearBtnSelector ).attr( 'data-clear-filter-url' );
+						$instance.find( clearBtnSelector ).attr( 'data-clear-filter-url', clearFilterUrl );
+
 						// Update the instance classes.
 						$instance.attr( 'class', _instanceClasses.trim() );
 
@@ -549,9 +562,48 @@
 				return false;
 			} );
 		},
-		handleResetAllFilters: function() {
+		handleResetFilters: function() {
 			$body.on( 'click', '.wcapf-reset-filters-btn', function() {
 				console.log( 'reset all filters' );
+			} );
+		},
+		// TODO: Move to pro
+		handleClearFilter: function() {
+			$body
+				.on( 'click', '.wcapf-filter-clear-btn', function( e ) {
+					e.stopPropagation();
+
+					WCAPF.requestFilter( $( this ).attr( 'data-clear-filter-url' ) );
+				} )
+				.on( 'keydown', '.wcapf-filter-clear-btn', function( e ) {
+					if ( e.key === ' ' || e.key === 'Enter' || e.key === 'Spacebar' ) {
+						// Prevent the default action to stop scrolling when space is pressed
+						e.preventDefault();
+						e.stopPropagation();
+
+						WCAPF.requestFilter( $( this ).attr( 'data-clear-filter-url' ) );
+					}
+				} );
+		},
+		handleFilterTooltip: function() {
+			if ( 'function' !== typeof tippy ) {
+				return;
+			}
+
+			if ( ! wcapf_params.use_tippyjs ) {
+				return;
+			}
+
+			tippy( '.wcapf-filter-tooltip', {
+				placement: 'top',
+				content( reference ) {
+					const title = reference.getAttribute( 'data-content' );
+
+					reference.removeAttribute( 'title' );
+
+					return title;
+				},
+				allowHTML: true,
 			} );
 		},
 		initCombobox: function() {
@@ -748,6 +800,9 @@
 	WCAPF.handlePagination();
 	WCAPF.handleDefaultOrderby();
 
-	WCAPF.handleResetAllFilters();
+	WCAPF.handleResetFilters();
+	WCAPF.handleClearFilter();
+
+	WCAPF.handleFilterTooltip();
 
 }( jQuery, window.WCAPF ) );

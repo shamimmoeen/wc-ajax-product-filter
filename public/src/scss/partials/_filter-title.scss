@@ -1,0 +1,43 @@
+@import "../mixins";
+
+.wcapf-filter {
+	.wcapf-filter-title {
+		margin: 0;
+		padding: 0;
+		font-size: var(--wcapf-filter-title-font-size);
+		font-weight: var(--wcapf-filter-title-font-weight);
+		line-height: var(--wcapf-filter-title-line-height);
+		display: flex;
+		align-items: center;
+
+		&.has-accordion {
+			justify-content: space-between;
+			cursor: pointer;
+			user-select: none;
+		}
+
+		.wcapf-filter-title-inner {
+			display: inline-flex;
+			align-items: center;
+			gap: var(--wcapf-filter-title-inner-gap);
+		}
+
+		.wcapf-filter-accordion-trigger {
+			@include button;
+
+			display: inline-flex;
+			border-radius: 0.125em; // For showing rounded outline when focused.
+
+			svg {
+				width: var(--wcapf-filter-accordion-icon-size);
+				height: var(--wcapf-filter-accordion-icon-size);
+			}
+
+			&[aria-expanded="true"] {
+				svg {
+					transform: rotate(180deg);
+				}
+			}
+		}
+	}
+}

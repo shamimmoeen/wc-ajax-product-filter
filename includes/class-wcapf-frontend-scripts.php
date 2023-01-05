@@ -127,10 +127,30 @@ class WCAPF_Frontend_Scripts {
 			true
 		);
 
+		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
+			wp_enqueue_script(
+				'wcapf-popper',
+				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/popper.min.js',
+				array(),
+				false,
+				true
+			);
+
+			wp_enqueue_script(
+				'wcapf-tippy',
+				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/tippy-bundle.umd.min.js',
+				array(),
+				false,
+				true
+			);
+		}
+
 		$deps = array( 'jquery' );
 
 		/**
 		 * Required for the scrollTo, slideToggle animations.
+		 *
+		 * TODO: Maybe use a filter or decision comes from the admin via plugin settings.
 		 *
 		 * @source https://stackoverflow.com/a/27598883
 		 */
@@ -192,6 +212,7 @@ class WCAPF_Frontend_Scripts {
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
+			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
 			'for_preview'                              => $for_preview,
 		);
 

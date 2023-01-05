@@ -1,0 +1,15 @@
+@import "../mixins";
+
+.wcapf-filter-tooltip {
+	--wcapf-filter-tooltip-color: #666;
+	--wcapf-filter-tooltip-size: .9em;
+
+	cursor: help;
+	display: inline-flex;
+
+	svg {
+		fill: var(--wcapf-filter-tooltip-color);
+		width: var(--wcapf-filter-tooltip-size);
+		height: var(--wcapf-filter-tooltip-size);
+	}
+}

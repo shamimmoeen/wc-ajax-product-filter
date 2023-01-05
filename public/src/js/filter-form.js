@@ -29,6 +29,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top_easing': '',
 	'immediate_scroll_on_paginate': '',
 	'is_mobile': '',
+	'use_tippyjs': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'enable_pagination_via_ajax': '',
