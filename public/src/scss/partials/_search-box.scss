@@ -7,6 +7,65 @@
 		input[type="text"] {
 			@include input_text;
 		}
+
+		&.with-icon {
+			position: relative;
+
+			.wcapf-search-icon {
+				position: absolute;
+				top: 50%;
+				margin-top: calc(1em / -2);
+				width: 1em;
+				height: 1em;
+				color: #777;
+				display: inline-flex;
+
+				svg {
+					width: 1em;
+					height: 1em;
+				}
+			}
+
+			@mixin icon-left {
+				.wcapf-search-icon {
+					left: 0.9em;
+				}
+
+				input[type="text"] {
+					padding-left: 2.4em;
+				}
+			}
+
+			@mixin icon-right {
+				.wcapf-search-icon {
+					right: 0.9em;
+				}
+
+				input[type="text"] {
+					padding-right: 2.4em;
+				}
+			}
+
+			&.icon-left {
+				@include ltr {
+					@include icon-left;
+				}
+
+				@include rtl {
+					@include icon-right;
+				}
+			}
+
+			&.icon-right {
+				@include ltr {
+					@include icon-right;
+				}
+
+				@include rtl {
+					@include icon-left;
+				}
+			}
+		}
 	}
 
 	&.search-active {

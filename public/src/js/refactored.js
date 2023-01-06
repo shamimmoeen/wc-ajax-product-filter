@@ -112,23 +112,44 @@
 				} );
 		},
 		handleSearchFilterOptions: function() {
-			$body.on( 'input', '.wcapf-search-box input[type="text"]', function( e ) {
+			$body.on( 'input', '.wcapf-search-box input[type="text"]', function() {
 				const $that   = $( this );
 				const $inner  = $that.closest( '.wcapf-filter-inner' );
 				const $filter = $inner.closest( '.wcapf-filter' );
 
+				const softLimitEnabled = $filter.hasClass( 'has-soft-limit' );
+				const softLimitToggle  = $filter.find( '.wcapf-soft-limit-wrapper' );
+				const visibleOptions   = parseInt( $filter.attr( 'data-visible-options' ) );
+
 				const keyword = $that.val();
 
 				if ( ! keyword.length ) {
+					let index = 0;
 					$filter.removeClass( 'search-active' );
 
 					$.each( $inner.find( '.wcapf-filter-options > li' ), function() {
-						$( this ).removeClass( 'keyword-matched' );
+						index++;
+
+						const $filterItem = $( this );
+						$filterItem.removeClass( 'keyword-matched' );
+
+						if ( softLimitEnabled ) {
+							if ( index > visibleOptions ) {
+								$filterItem.addClass( 'wcapf-filter-option-hidden' );
+							} else {
+								$filterItem.removeClass( 'wcapf-filter-option-hidden' );
+							}
+						}
 					} );
+
+					if ( softLimitEnabled ) {
+						softLimitToggle.removeAttr( 'style' );
+					}
 
 					return;
 				}
 
+				let index = 0;
 				$filter.addClass( 'search-active' );
 
 				$.each( $inner.find( '.wcapf-filter-options > li' ), function() {
@@ -137,10 +158,26 @@
 
 					if ( label.toLowerCase().includes( keyword.toLowerCase() ) ) {
 						$filterItem.addClass( 'keyword-matched' );
+
+						if ( softLimitEnabled ) {
+							index++;
+
+							if ( index > visibleOptions ) {
+								$filterItem.addClass( 'wcapf-filter-option-hidden' );
+							} else {
+								$filterItem.removeClass( 'wcapf-filter-option-hidden' );
+							}
+						}
 					} else {
 						$filterItem.removeClass( 'keyword-matched' );
 					}
 				} );
+
+				if ( softLimitEnabled ) {
+					if ( index <= visibleOptions ) {
+						softLimitToggle.hide();
+					}
+				}
 			} );
 		},
 		updateProductsCountResult: function( $response ) {

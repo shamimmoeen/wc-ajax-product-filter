@@ -148,7 +148,17 @@ final class WCAPF_Form {
 
 		$filter_classes = implode( ' ', $classes );
 
-		echo '<div class="' . esc_attr( $filter_classes ) . '" data-id="' . esc_attr( $filter_id ) . '">';
+		$filter_start_wrapper = '<div';
+		$filter_start_wrapper .= ' class="' . esc_attr( $filter_classes ) . '"';
+		$filter_start_wrapper .= ' data-id="' . esc_attr( $filter_id ) . '"';
+
+		if ( $field_instance->enable_soft_limit ) {
+			$filter_start_wrapper .= ' data-visible-options="' . $field_instance->soft_limit . '"';
+		}
+
+		$filter_start_wrapper .= '>';
+
+		echo $filter_start_wrapper;
 
 		echo WCAPF_Template_Loader::get_instance()->load(
 			'filter-title',

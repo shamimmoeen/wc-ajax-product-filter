@@ -768,21 +768,20 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	public function get_search_field() {
-		$html = '';
-
-		if ( $this->enable_search_field ) {
-			$search_field_placeholder = apply_filters(
-				'wcapf_search_field_placeholder',
-				__( 'Search', 'wc-ajax-product-filter' ),
-				$this->field_data
-			);
-
-			$html .= '<div class="wcapf-search-box">';
-			$html .= '<input type="text" placeholder="' . esc_attr( $search_field_placeholder ) . '">';
-			$html .= '</div>';
+		if ( ! $this->enable_search_field ) {
+			return '';
 		}
 
-		return $html;
+		$placeholder = __( 'Search', 'wc-ajax-product-filter' );
+
+		return WCAPF_Template_Loader::get_instance()->load(
+			'search-box',
+			array(
+				'placeholder'   => $placeholder,
+				'icon_position' => 'right',
+			),
+			false
+		);
 	}
 
 	/**

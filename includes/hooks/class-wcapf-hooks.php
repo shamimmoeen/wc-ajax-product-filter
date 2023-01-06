@@ -53,6 +53,12 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
 	}
 
+	/**
+	 *
+	 * TODO: Remove from production build.
+	 *
+	 * @return void
+	 */
 	public function content_top() {
 		global $wp_query, $wcapf_filter_keys, $wp;
 
