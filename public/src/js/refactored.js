@@ -13,6 +13,8 @@
 
 	let focusedElm;
 
+	window.tippyInstances = [];
+
 	window.WCAPF = window.WCAPF || {};
 
 	window.WCAPF = {
@@ -294,9 +296,21 @@
 
 			$body.trigger( 'wcapf_before_fetching_products', [ triggeredBy ] );
 		},
+		destroyTippyInstances: function() {
+			if ( wcapf_params.use_tippyjs ) {
+				// @source https://github.com/atomiks/tippyjs/issues/473
+				tippyInstances.forEach( instance => {
+					instance.destroy();
+				} );
+				tippyInstances.length = 0; // clear it
+			}
+		},
 		// Things are done before updating the products like hiding the loading indicator.
 		beforeUpdatingProducts: function( $response, triggeredBy ) {
 			WCAPF.resetLoadingAnimation();
+
+			// Maybe good for performance.
+			WCAPF.destroyTippyInstances();
 
 			$body.trigger( 'wcapf_before_updating_products', [ $response, triggeredBy ] );
 		},
@@ -663,11 +677,7 @@
 			tippy( '.wcapf-filter-tooltip', {
 				placement: 'top',
 				content( reference ) {
-					const title = reference.getAttribute( 'data-content' );
-
-					reference.removeAttribute( 'title' );
-
-					return title;
+					return reference.getAttribute( 'data-content' );
 				},
 				allowHTML: true,
 			} );
@@ -831,9 +841,34 @@
 				} );
 			} );
 		},
+		initFilterOptionTooltip: function() {
+			if ( 'function' !== typeof tippy ) {
+				return;
+			}
+
+			if ( ! wcapf_params.use_tippyjs ) {
+				return;
+			}
+
+			const tooltipPositions = [ 'top', 'right', 'bottom', 'left' ];
+
+			tooltipPositions.forEach( function( tooltipPosition ) {
+				const identifier = 'data-wcapf-tooltip-' + tooltipPosition;
+
+				const instances = tippy( '[' + identifier + ']', {
+					placement: tooltipPosition,
+					content( reference ) {
+						return reference.getAttribute( identifier );
+					}
+				} );
+
+				window.tippyInstances = tippyInstances.concat( instances );
+			} );
+		},
 		init: function() {
 			WCAPF.initCombobox();
 			WCAPF.initRangeSlider();
+			WCAPF.initFilterOptionTooltip();
 		}
 	};
 

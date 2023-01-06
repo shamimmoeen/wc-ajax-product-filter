@@ -613,6 +613,7 @@ class WCAPF_Walker {
 
 		$input_markup .= $checked . '>';
 
+		// TODO: Maybe not the right place to implement the hook.
 		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
 
 		$inner = '<span class="wcapf-filter-item-label"';
@@ -640,8 +641,23 @@ class WCAPF_Walker {
 
 		$inner .= '</span>';
 
+		$tooltip_data = '';
+
+		if ( $this->enable_tooltip ) {
+			$tooltip_content = $item['name'];
+
+			if ( $this->show_count_in_tooltip ) {
+				$count_before = apply_filters( 'wcapf_tooltip_count_before', ' (' );
+				$count_after  = apply_filters( 'wcapf_tooltip_count_after', ')' );
+
+				$tooltip_content .= $count_before . $item['count'] . $count_after;
+			}
+
+			$tooltip_data = ' data-wcapf-tooltip-' . $this->tooltip_position . '="' . esc_attr( $tooltip_content ) . '"';
+		}
+
 		$html .= '<div class="wcapf-filter-item">';
-		$html .= '<label for="' . esc_attr( $unique_id ) . '">';
+		$html .= '<label for="' . esc_attr( $unique_id ) . '"' . $tooltip_data . '>';
 		$html .= $input_markup;
 		$html .= $inner;
 		$html .= '</label>';
