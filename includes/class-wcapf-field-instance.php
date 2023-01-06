@@ -238,6 +238,7 @@ class WCAPF_Field_Instance {
 
 		$available_display_types = apply_filters( 'wcapf_field_display_types', $available_display_types );
 
+		// Default display type.
 		if ( 'price' === $this->get_field_type() ) {
 			$_display_type = 'range_slider';
 		} else {
@@ -426,15 +427,12 @@ class WCAPF_Field_Instance {
 	/**
 	 * Determines if search field is enabled.
 	 *
-	 * TODO: Prevent enabling if display type is not appropriate.
-	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
 	private function is_search_field_enabled() {
-		// Don't enable the search field if hierarchical display type is enabled.
-		if ( $this->taxonomy_is_hierarchical() ) {
+		if ( ! $this->is_search_options_possible() ) {
 			return false;
 		}
 
@@ -442,15 +440,71 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * Determines if reduce height enabled.
+	 * Determines if search options is possible according to the display type.
 	 *
-	 * TODO: Prevent enabling if display type is not appropriate.
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_search_options_possible() {
+		return $this->is_reduce_height_possible( 'search' );
+	}
+
+	/**
+	 * Determines if reduce height is possible according to the display type.
+	 *
+	 * @param string $field
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_reduce_height_possible( $field = 'reduce-height' ) {
+		if ( $this->taxonomy_is_hierarchical() ) {
+			return false;
+		}
+
+		if ( 'reduce-height' === $field ) {
+			$not_allowed_display_types = array(
+				'select',
+				'multiselect',
+				'range_slider',
+				'range_number',
+				'range_select',
+				'range_multiselect',
+				'input_date',
+				'input_date_range',
+				'time_period_select',
+				'time_period_multiselect',
+			);
+		} else {
+			$not_allowed_display_types = array(
+				'range_slider',
+				'range_number',
+				'input_date',
+				'input_date_range',
+			);
+		}
+
+		if ( in_array( $this->display_type, $not_allowed_display_types ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if reduce height enabled.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
 	private function is_reduce_height_enabled() {
+		if ( ! $this->is_reduce_height_possible() ) {
+			return false;
+		}
+
 		return $this->get_sub_field_value( 'enable_reduce_height' );
 	}
 
@@ -479,8 +533,6 @@ class WCAPF_Field_Instance {
 	/**
 	 * Determines if soft limit is enabled.
 	 *
-	 * TODO: Prevent enabling if display type is not appropriate.
-	 *
 	 * @since 4.0.0
 	 *
 	 * @return bool
@@ -491,8 +543,6 @@ class WCAPF_Field_Instance {
 
 	/**
 	 * Determines if max height is enabled.
-	 *
-	 * TODO: Prevent enabling if display type is not appropriate.
 	 *
 	 * @since 4.0.0
 	 *
