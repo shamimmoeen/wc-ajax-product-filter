@@ -538,12 +538,12 @@ function textProDisplayTypes(taxHierarchical = false) {
 		},
 	];
 
-	if (taxHierarchical) {
-		textProDisplayTypes.push({
-			label: __('Hierarchy Select', 'wc-ajax-product-filter'),
-			value: 'hierarchy-select',
-		});
-	}
+	// if (taxHierarchical) {
+	// 	textProDisplayTypes.push({
+	// 		label: __('Hierarchy Select', 'wc-ajax-product-filter'),
+	// 		value: 'hierarchy-select',
+	// 	});
+	// }
 
 	return textProDisplayTypes;
 }

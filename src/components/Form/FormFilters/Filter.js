@@ -234,7 +234,7 @@ const Filter = ({ index }) => {
 					<TabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='appearance'
+						initialTabName='advanced'
 						tabs={[
 							{
 								name: 'general',

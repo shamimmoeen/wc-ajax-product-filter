@@ -165,7 +165,7 @@ const General = ({ index }) => {
 				tooltip={typeDisabledInfo}
 			/>
 
-			{'taxonomy' === type && (
+			{/* {'taxonomy' === type && (
 				<Radio
 					id={'value_type'}
 					index={index}
@@ -189,7 +189,7 @@ const General = ({ index }) => {
 					value={value_type}
 					isDisabled={id}
 				/>
-			)}
+			)} */}
 
 			{'post-meta' === type && (
 				<>
