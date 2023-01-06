@@ -10729,22 +10729,6 @@ const General = _ref => {
     isDisabled: id,
     renderAsFormField: true,
     tooltip: typeDisabledInfo
-  }), 'taxonomy' === type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    id: 'value_type',
-    index: index,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Value Type', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines the value type of taxonomy terms.', 'wc-ajax-product-filter'),
-    options: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Text', 'wc-ajax-product-filter'),
-      value: 'text'
-    }, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Number', 'wc-ajax-product-filter'),
-      value: 'number',
-      isPro: true
-    }],
-    onChange: handleRadioChange,
-    value: value_type,
-    isDisabled: id
   }), 'post-meta' === type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, meta_key_error && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Notice, {
     status: "error",
     isDismissible: false
@@ -13160,7 +13144,7 @@ const Filter = _ref => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TabPanel, {
     className: "__tab_panel",
     activeClass: "active-tab",
-    initialTabName: "appearance",
+    initialTabName: "advanced",
     tabs: [{
       name: 'general',
       title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('General', 'wc-ajax-product-filter')
@@ -15287,14 +15271,12 @@ function textProDisplayTypes() {
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Image', 'wc-ajax-product-filter'),
     value: 'image'
-  }];
-
-  if (taxHierarchical) {
-    textProDisplayTypes.push({
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Hierarchy Select', 'wc-ajax-product-filter'),
-      value: 'hierarchy-select'
-    });
-  }
+  }]; // if (taxHierarchical) {
+  // 	textProDisplayTypes.push({
+  // 		label: __('Hierarchy Select', 'wc-ajax-product-filter'),
+  // 		value: 'hierarchy-select',
+  // 	});
+  // }
 
   return textProDisplayTypes;
 }
