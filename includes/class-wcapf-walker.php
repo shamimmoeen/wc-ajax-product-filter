@@ -656,7 +656,13 @@ class WCAPF_Walker {
 			$tooltip_data = ' data-wcapf-tooltip-' . $this->tooltip_position . '="' . esc_attr( $tooltip_content ) . '"';
 		}
 
-		$html .= '<div class="wcapf-filter-item">';
+		$item_classes = 'wcapf-filter-item';
+
+		if ( 0 == $item['count'] ) {
+			$item_classes .= ' empty-item';
+		}
+
+		$html .= '<div class="' . esc_attr( $item_classes ) . '">';
 		$html .= '<label for="' . esc_attr( $unique_id ) . '"' . $tooltip_data . '>';
 		$html .= $input_markup;
 		$html .= $inner;

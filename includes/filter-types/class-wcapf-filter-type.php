@@ -32,7 +32,7 @@ abstract class WCAPF_Filter_Type {
 	/**
 	 * Hide empty
 	 *
-	 * @var bool
+	 * @var string
 	 */
 	protected $hide_empty;
 
@@ -123,7 +123,7 @@ abstract class WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function filter_by_hide_empty( $items ) {
-		if ( $this->hide_empty ) {
+		if ( 'remove' === $this->hide_empty ) {
 			$items_with_count = array();
 
 			foreach ( $items as $item ) {

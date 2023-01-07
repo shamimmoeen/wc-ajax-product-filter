@@ -133,15 +133,11 @@ class WCAPF_Product_Filter {
 			$remaining_filters[ $_filter_key ] = $filters_data[ $_filter_key ];
 		}
 
-		// echo '<pre>';
-		// print_r( $chosen );
-		// echo '</pre>';
-
 		return apply_filters( 'wcapf_chosen_filters', $chosen, $remaining_filters, $query );
 	}
 
 	/**
-	 * TODO: Modified.
+	 * Gets the active filter's data.
 	 *
 	 * @param array $query The key, values array from the $_GET variable.
 	 *
@@ -181,6 +177,13 @@ class WCAPF_Product_Filter {
 		return apply_filters( 'wcapf_filters_data', $filters_data );
 	}
 
+	/**
+	 * Gets the assigned form.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
 	private function get_relevant_form() {
 		$form_data = array();
 
@@ -232,11 +235,18 @@ class WCAPF_Product_Filter {
 			$update_count = '1';
 		}
 
+		$remove_empty_options = apply_filters( 'wcapf_remove_empty_options', array( 'show', 'remove' ) );
+		$remove_empty         = isset( $wcapf_settings['remove_empty'] ) ? $wcapf_settings['remove_empty'] : 'show';
+
+		if ( ! in_array( $remove_empty, $remove_empty_options ) ) {
+			$remove_empty = 'show';
+		}
+
 		foreach ( $filters as $filter ) {
 			$settings = json_decode( $filter->post_content, true );
 
-			$settings['hide_empty']   = '1';
 			$settings['update_count'] = $update_count;
+			$settings['hide_empty']   = $remove_empty;
 			$settings['form_id']      = $form_id;
 
 			$form_filters[] = array(
