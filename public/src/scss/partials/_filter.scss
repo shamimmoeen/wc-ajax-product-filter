@@ -83,6 +83,18 @@
 					margin-left: var(--wcapf-checkbox-radio-space);
 				}
 			}
+
+			&.empty-item {
+				label {
+					cursor: var(--wcapf-empty-item-cursor);
+					opacity: var(--wcapf-empty-item-opacity);
+
+					input[type="checkbox"],
+					input[type="radio"] {
+						cursor: var(--wcapf-empty-item-cursor);
+					}
+				}
+			}
 		}
 	}
 
@@ -154,6 +166,11 @@
 					border-color: var(--wcapf-primary-color);
 					color: var(--wcapf-primary-text-color);
 				}
+			}
+
+			&.empty-item {
+				cursor: var(--wcapf-empty-item-cursor);
+				opacity: var(--wcapf-empty-item-opacity);
 			}
 		}
 	}

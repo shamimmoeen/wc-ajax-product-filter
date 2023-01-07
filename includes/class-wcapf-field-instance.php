@@ -125,7 +125,7 @@ class WCAPF_Field_Instance {
 		$this->all_items_label = $_all_items_label;
 		$this->use_chosen      = WCAPF_Helper::use_combobox();
 		$this->show_count      = $show_count;
-		$this->hide_empty      = '0'; // TODO: Get from plugin settings.
+		$this->hide_empty      = $this->get_sub_field_value( 'hide_empty' );
 
 		switch ( $_display_type ) {
 			case 'multiselect':
