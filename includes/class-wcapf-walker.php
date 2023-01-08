@@ -882,6 +882,10 @@ class WCAPF_Walker {
 			}
 		}
 
+		if ( $use_combobox && $this->show_count ) {
+			$input_classes .= ' with-count';
+		}
+
 		$filter_url       = $this->url_builder->get_dropdown_url();
 		$clear_filter_url = $this->url_builder->get_clear_filter_url();
 
@@ -913,8 +917,9 @@ class WCAPF_Walker {
 	private function dropdown_item( $item ) {
 		$item_active = $this->item_active( $item );
 
-		$option = '';
-		$attrs  = '';
+		$option  = '';
+		$attrs   = '';
+		$classes = array();
 
 		if ( $item_active ) {
 			$attrs .= ' selected="selected"';
@@ -925,7 +930,22 @@ class WCAPF_Walker {
 		$attrs .= ' value="' . esc_attr( $item_value ) . '"';
 
 		if ( $this->hierarchical && $this->use_chosen ) {
-			$attrs .= ' class="depth-' . esc_attr( $item['depth'] ) . '"';
+			$classes[] = 'depth-' . esc_attr( $item['depth'] ) . '"';
+		}
+
+		if ( 0 == $item['count'] ) {
+			$classes[] = 'empty-item';
+		}
+
+		if ( $classes ) {
+			$attrs .= ' class="' . implode( ' ', $classes ) . '"';
+		}
+
+		$count = $item['count'];
+
+		if ( $this->use_chosen && $this->show_count ) {
+			$attrs .= ' data-count="' . $count . '"';
+			$attrs .= ' data-count-markup="' . $this->dropdown_item_count( $count ) . '"';
 		}
 
 		$option .= '<option' . $attrs . '>';
@@ -938,13 +958,8 @@ class WCAPF_Walker {
 
 		$option .= apply_filters( 'wcapf_dropdown_item_name', $inner, $item, $this );
 
-		$count = $item['count'];
-
-		if ( $this->show_count && '-1' !== $count ) {
-			$count_before = apply_filters( 'wcapf_dropdown_item_count_before', ' (' );
-			$count_after  = apply_filters( 'wcapf_dropdown_item_count_after', ')' );
-
-			$option .= $count_before . $item['count'] . $count_after;
+		if ( ! $this->use_chosen && $this->show_count && '-1' !== $count ) {
+			$option .= $this->dropdown_item_count( $count );
 		}
 
 		$option .= '</option>';
@@ -960,6 +975,26 @@ class WCAPF_Walker {
 		}
 
 		return $inner;
+	}
+
+	/**
+	 * The count markup for dropdown.
+	 *
+	 * @param $count
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function dropdown_item_count( $count ) {
+		if ( '-1' === $count ) {
+			return '';
+		}
+
+		$count_before = apply_filters( 'wcapf_dropdown_item_count_before', ' (' );
+		$count_after  = apply_filters( 'wcapf_dropdown_item_count_after', ')' );
+
+		return $count_before . $count . $count_after;
 	}
 
 	/**
