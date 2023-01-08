@@ -169,8 +169,10 @@
 			}
 
 			&.empty-item {
-				cursor: var(--wcapf-empty-item-cursor);
-				opacity: var(--wcapf-empty-item-opacity);
+				label {
+					cursor: var(--wcapf-empty-item-cursor);
+					opacity: var(--wcapf-empty-item-opacity);
+				}
 			}
 		}
 	}
@@ -187,35 +189,6 @@
 
 			&::after {
 				content: ')';
-			}
-		}
-	}
-}
-
-.wcapf-dropdown-wrapper {
-	select {
-		width: 100%;
-	}
-
-	.wcapf-chosen-container {
-		width: 100% !important; // Important is required to make the 'chosen' element full-width.
-
-		// Hierarchy design.
-		.chosen-results {
-			li {
-				@for $i from 2 through 5 {
-					&.depth-#{$i} {
-						$j: $i - 1;
-
-						@include ltr {
-							padding-left: calc(calc(var(--wcapf-chosen-dropdown-item-hr-padding) + .875em) * #{$j});
-						}
-
-						@include rtl {
-							padding-right: calc(calc(var(--wcapf-chosen-dropdown-item-hr-padding) + .875em) * #{$j});
-						}
-					}
-				}
 			}
 		}
 	}

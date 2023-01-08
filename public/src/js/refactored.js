@@ -687,11 +687,26 @@
 				return;
 			}
 
+			const templateResult = ( text, data ) => {
+				return [
+					'<span>' + text + '</span>',
+					'<span class="wcapf-count">' + data[ 'countMarkup' ] + '</span>',
+				].join( '' );
+			};
+
+			const templateSelection = ( text, data ) => {
+				return [
+					'<span class="wcapf-count-' + data.count + '">' + text + '</span>',
+					'<span class="wcapf-count wcapf-count-' + data.count + '">' + data[ 'countMarkup' ] + '</span>',
+				].join( '' );
+			};
+
 			const options = {
 				inherit_select_classes: true,
 				inherit_option_classes: true,
 				no_results_text: wcapf_params.chosen_no_results_text,
 				options_none_text: wcapf_params.chosen_options_none_text,
+				search_contains: true, // Match from anywhere in string.
 			};
 
 			if ( wcapf_params.is_rtl ) {
@@ -706,6 +721,12 @@
 					options[ 'display_selected_options' ] = true;
 				} else {
 					options[ 'display_selected_options' ] = wcapf_params.chosen_display_selected_options;
+				}
+
+				// Enable templating when showing count.
+				if ( $this.hasClass( 'with-count' ) ) {
+					options[ 'templateResult' ]    = templateResult;
+					options[ 'templateSelection' ] = templateSelection;
 				}
 
 				$this.chosenWCAPF( options );

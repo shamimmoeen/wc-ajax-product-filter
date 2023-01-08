@@ -44,8 +44,14 @@
 		display: none;
 	}
 
+	// Seems to work for multiple select.
 	option {
 		padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
+
+		&.empty-item {
+			cursor: var(--wcapf-empty-item-cursor);
+			opacity: var(--wcapf-empty-item-opacity);
+		}
 	}
 
 	&:focus {
