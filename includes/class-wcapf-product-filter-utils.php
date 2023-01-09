@@ -438,11 +438,16 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * Gets the users for the post author filter.
+	 *
+	 * @param array  $args   The get users arguments.
+	 * @param string $column Determines the name column.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	public static function get_users( $args = array(), $use_store_name = '' ) {
+	public static function get_users( $args = array(), $column = 'display_name' ) {
 		$defaults = array( 'fields' => array( 'ID', 'display_name' ) );
 		$args     = wp_parse_args( $args, $defaults );
 		$users    = get_users( $args );
@@ -450,19 +455,24 @@ class WCAPF_Product_Filter_Utils {
 		$_items = array();
 
 		foreach ( $users as $user ) {
+			/**
+			 * @var WP_User $user
+			 */
 			$user_id = $user->ID;
 			$name    = $user->display_name;
 			$count   = 0;
 
-			// TODO: Extract to pro.
-			if ( $use_store_name ) {
-				$meta_key   = self::store_name_meta_key();
-				$store_name = get_user_meta( $user_id, $meta_key, true );
+			$name = apply_filters( 'wcapf_post_author_filter_name', $name, $column, $user );
 
-				if ( $store_name ) {
-					$name = $store_name;
-				}
-			}
+			// TODO: Extract to pro.
+			// if ( $value_column ) {
+			// 	$meta_key   = self::store_name_meta_key();
+			// 	$store_name = get_user_meta( $user_id, $meta_key, true );
+			//
+			// 	if ( $store_name ) {
+			// 		$name = $store_name;
+			// 	}
+			// }
 
 			$_items[ $user_id ] = array(
 				'id'    => $user_id,

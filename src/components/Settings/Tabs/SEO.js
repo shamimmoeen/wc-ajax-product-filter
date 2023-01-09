@@ -37,17 +37,6 @@ const SEO = () => {
 			/>
 
 			<Checkbox
-				id={'use_author_username'}
-				label={__('Use author username', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to use author username instead of id as the option value.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={use_author_username}
-				onChange={handleCheckboxChange}
-			/>
-
-			<Checkbox
 				id={'update_title_tag'}
 				label={__('Update title tag', 'wc-ajax-product-filter')}
 				description={__(
@@ -76,7 +65,7 @@ const SEO = () => {
 				renderAsFormField
 			/> */}
 
-			{WCAPF_PRO && (
+			{/* {WCAPF_PRO && (
 				<>
 					<h4>{__('Indexing Filters', 'wc-ajax-product-filter')}</h4>
 
@@ -96,7 +85,7 @@ const SEO = () => {
 						by Search Engines.
 					</p>
 				</>
-			)}
+			)} */}
 		</>
 	);
 };
