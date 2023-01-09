@@ -15,6 +15,7 @@ const Integration = () => {
 
 	const {
 		settings: {
+			disable_ajax,
 			enable_pagination_via_ajax,
 			sorting_control,
 			show_sorting_data_in_active_filters,
@@ -39,27 +40,37 @@ const Integration = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			<Checkbox
-				id={'enable_pagination_via_ajax'}
-				label={__('Pagination via AJAX', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to enable ajax to paginate the products.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={enable_pagination_via_ajax}
-				onChange={handleCheckboxChange}
-			/>
+			{'1' !== disable_ajax && (
+				<>
+					<Checkbox
+						id={'enable_pagination_via_ajax'}
+						label={__(
+							'Pagination via AJAX',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Whether to enable ajax to paginate the products.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={enable_pagination_via_ajax}
+						onChange={handleCheckboxChange}
+					/>
 
-			<Checkbox
-				id={'sorting_control'}
-				label={__('Product sorting via AJAX', 'wc-ajax-product-filter')}
-				description={__(
-					'Whether to enable ajax for the default product sorting dropdown.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={sorting_control}
-				onChange={handleCheckboxChange}
-			/>
+					<Checkbox
+						id={'sorting_control'}
+						label={__(
+							'Product sorting via AJAX',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Whether to enable ajax for the default product sorting dropdown.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={sorting_control}
+						onChange={handleCheckboxChange}
+					/>
+				</>
+			)}
 
 			<Checkbox
 				id={'show_sorting_data_in_active_filters'}

@@ -8,7 +8,12 @@ const Miscellaneous = () => {
 	const { handleCheckboxChange } = useSettingsData(state, dispatch);
 
 	const {
-		settings: { debug_mode, send_anonymous_data, remove_data },
+		settings: {
+			debug_mode,
+			disable_wcapf,
+			send_anonymous_data,
+			remove_data,
+		},
 	} = state;
 
 	return (
@@ -21,6 +26,17 @@ const Miscellaneous = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={debug_mode}
+				onChange={handleCheckboxChange}
+			/>
+
+			<Checkbox
+				id={'disable_wcapf'}
+				label={__('Disable WCAPF', 'wc-ajax-product-filter')}
+				description={__(
+					'Enable this to disable WCAPF temporarily for testing purposes.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={disable_wcapf}
 				onChange={handleCheckboxChange}
 			/>
 

@@ -217,8 +217,6 @@ final class WCAPF_Form {
 	}
 
 	/**
-	 * TODO: Update the min, max bound according to the applied filters.
-	 *
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 * @param array                $range_min_max  The filter range min, max value.
 	 *
@@ -248,6 +246,17 @@ final class WCAPF_Form {
 
 		if ( $auto_detect ) {
 			$range_max_value = isset( $range_min_max['max'] ) ? $range_min_max['max'] : '';
+		}
+
+		$hide_range_input = apply_filters(
+			'wcapf_hide_range_input_when_min_max_values_are_equal',
+			true
+		);
+
+		if ( $range_min_value === $range_max_value && $auto_detect && $hide_range_input ) {
+			echo '<div>' . esc_html__( 'N/A', 'wc-ajax-product-filter' ) . '</div>';
+
+			return;
 		}
 
 		$filter_key  = $field_instance->filter_key;

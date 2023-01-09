@@ -939,6 +939,14 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
 .__settings_tab .__single_select.loading_animation {
   min-width: 170px;
 }
+.__settings_tab .ajax-disabled-info.components-notice {
+  margin: 0 0 2em;
+  background-color: rgba(0, 124, 186, 0.1);
+}
+.__settings_tab .ajax-disabled-info.components-notice .components-notice__content {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
 .__settings_tab .__scroll_window_to .__input_wrapper .__single_select {
   margin-bottom: 8px;
 }

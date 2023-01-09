@@ -9960,6 +9960,7 @@ const Integration = () => {
   } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_5__["default"])(state, dispatch);
   const {
     settings: {
+      disable_ajax,
       enable_pagination_via_ajax,
       sorting_control,
       show_sorting_data_in_active_filters,
@@ -9973,7 +9974,7 @@ const Integration = () => {
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to show the active filters on top of the products, only works on product archive pages.', 'wc-ajax-product-filter'),
     isChecked: active_filters_on_top,
     onChange: handleCheckboxChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }), '1' !== disable_ajax && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'enable_pagination_via_ajax',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pagination via AJAX', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to enable ajax to paginate the products.', 'wc-ajax-product-filter'),
@@ -9985,7 +9986,7 @@ const Integration = () => {
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to enable ajax for the default product sorting dropdown.', 'wc-ajax-product-filter'),
     isChecked: sorting_control,
     onChange: handleCheckboxChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'show_sorting_data_in_active_filters',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Sorting data in Active Filters', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to show the sort by data comes from the default product sorting dropdown in active filters.', 'wc-ajax-product-filter'),
@@ -10029,6 +10030,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ScrollWindowTo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ScrollWindowTo */ "./src/components/Settings/Tabs/ScrollWindowTo.js");
 /* harmony import */ var _Field_ColorInput__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Field/ColorInput */ "./src/components/Field/ColorInput.js");
 /* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Field/Select */ "./src/components/Field/Select.js");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_11__);
+
 
 
 
@@ -10091,6 +10095,7 @@ const LoaderScrollTo = () => {
   } = (0,_useSettingsData__WEBPACK_IMPORTED_MODULE_5__["default"])(state, dispatch);
   const {
     settings: {
+      disable_ajax,
       loading_animation,
       loading_image,
       loading_image_src,
@@ -10125,7 +10130,11 @@ const LoaderScrollTo = () => {
     loadingAnimation = icons.options.find(option => option.value === loading_animation);
   }
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, '1' === disable_ajax && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_11__.Notice, {
+    status: "info",
+    className: "ajax-disabled-info",
+    isDismissible: false
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('These settings are applicable when filtering via ajax.', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_10__["default"], {
     id: 'loading_animation',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Loading Animation', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show an animation while the results are fetching.', 'wc-ajax-product-filter'),
@@ -10220,6 +10229,7 @@ const Miscellaneous = () => {
   const {
     settings: {
       debug_mode,
+      disable_wcapf,
       send_anonymous_data,
       remove_data
     }
@@ -10229,6 +10239,12 @@ const Miscellaneous = () => {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Debug Mode', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This will help you to configure the plugin correctly.', 'wc-ajax-product-filter'),
     isChecked: debug_mode,
+    onChange: handleCheckboxChange
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'disable_wcapf',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Disable WCAPF', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this to disable WCAPF temporarily for testing purposes.', 'wc-ajax-product-filter'),
+    isChecked: disable_wcapf,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
     id: 'send_anonymous_data',

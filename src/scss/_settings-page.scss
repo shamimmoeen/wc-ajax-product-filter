@@ -40,6 +40,16 @@
         }
     }
 
+    .ajax-disabled-info.components-notice {
+        margin: 0 0 2em;
+        background-color: rgba(0, 124, 186, .1);
+
+        .components-notice__content {
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
+    }
+
     .__scroll_window_to {
         .__input_wrapper {
             .__single_select {

@@ -84,7 +84,7 @@ const ValueTypeNumber = ({ index }) => {
 							'wc-ajax-product-filter'
 						)}
 						description={__(
-							'Whether to detect the min and max value from the database.',
+							'Whether to detect the min and max values from the database.',
 							'wc-ajax-product-filter'
 						)}
 						isChecked={auto_detect_min_max}
