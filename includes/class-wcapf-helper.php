@@ -801,6 +801,19 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Determines if we use term slug instead of id.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function use_term_slug() {
+		$settings = self::get_settings();
+
+		return isset( $settings['use_term_slug'] ) ? $settings['use_term_slug'] : '';
+	}
+
+	/**
 	 * Gets the primary color.
 	 *
 	 * @since 4.0.0

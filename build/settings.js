@@ -10317,18 +10317,12 @@ const SEO = () => {
     isChecked: use_term_slug,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    id: 'use_author_username',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use author username', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to use author username instead of id as the option value.', 'wc-ajax-product-filter'),
-    isChecked: use_author_username,
-    onChange: handleCheckboxChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
     id: 'update_title_tag',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Update title tag', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we update the title tag.', 'wc-ajax-product-filter'),
     isChecked: update_title_tag,
     onChange: handleCheckboxChange
-  }), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Indexing Filters', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Check filters, pages of which should be available for indexing by search engines. Besides this you will also need to create SEO Rules to make filter pages available for indexing."), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Indexing Depth', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "By default all filtering results pages are closed from indexing. These settings determines maximum number of filters (only filters, not archive page) will be indexed by Search Engines.")));
+  }));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (SEO);

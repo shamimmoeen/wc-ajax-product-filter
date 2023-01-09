@@ -50,9 +50,10 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 				$args['role__in'] = $field->get_sub_field_value( 'include_user_roles' );
 			}
 
-			$args = apply_filters( 'wcapf_get_post_author_args', $args );
+			$args   = apply_filters( 'wcapf_get_post_author_args', $args );
+			$column = apply_filters( 'wcapf_post_author_filter_name_column', 'display_name' );
 
-			$_items = WCAPF_Product_Filter_Utils::get_users( $args );
+			$_items = WCAPF_Product_Filter_Utils::get_users( $args, $column );
 		}
 
 		$items = $this->get_filtered_product_counts( $_items );
