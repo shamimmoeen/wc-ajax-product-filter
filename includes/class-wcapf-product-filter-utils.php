@@ -113,6 +113,18 @@ class WCAPF_Product_Filter_Utils {
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
+		$update_range = false;
+
+		if ( 'and' === WCAPF_Helper::get_field_relations() ) {
+			$update_range = true;
+		}
+
+		$update_range = apply_filters( 'wcapf_update_range_min_max', $update_range, $field_instance );
+
+		if ( $update_range ) {
+			$join .= self::get_join_clause();
+		}
+
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
@@ -122,6 +134,10 @@ class WCAPF_Product_Filter_Utils {
 		$where .= $search_query ? ' AND ' . $search_query : '';
 
 		$where .= $hide_stock_out ? " AND price_table.stock_status = 'instock'" : '';
+
+		if ( $update_range ) {
+			$where .= self::get_where_clauses_by_other_filters( 'price' );
+		}
 
 		$query['where'] = $where;
 
@@ -189,36 +205,12 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * @return string
 	 */
-	public static function get_where_clause( $query_type, $filter_key ) {
-		$main_query_type = WCAPF_Helper::get_field_relations();
-
-		// Maybe include post__in, post__not_in and other vars from the main products query.
-		$where = '';
-
-		if ( 'and' === $main_query_type ) {
-			if ( 'and' === $query_type ) {
-				$where = self::get_full_where_clause();
-			} elseif ( 'or' === $query_type ) {
-				$where = self::get_where_clauses_by_other_filters( $filter_key );
-			}
-		} elseif ( 'or' === $main_query_type ) {
-			if ( 'and' === $query_type ) {
-				$where = self::get_self_where_clause( $filter_key );
-			} elseif ( 'or' === $query_type ) {
-				$where = ' AND 1=1';
-			}
-		}
-
-		return apply_filters( 'wcapf_filter_where_clause', $where, $query_type, $filter_key );
-	}
-
-	/**
-	 * @return string
-	 */
-	public static function get_full_where_clause() {
+	public static function get_join_clause() {
 		$filter = new WCAPF_Product_Filter();
 
-		return $filter->get_full_where_clause();
+		$join = ' ' . $filter->get_full_join_clause();
+
+		return apply_filters( 'wcapf_filter_join_clause', $join );
 	}
 
 	/**
@@ -277,6 +269,41 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * @return string
 	 */
+	public static function get_where_clause( $query_type, $filter_key ) {
+		$main_query_type = WCAPF_Helper::get_field_relations();
+
+		// Maybe include post__in, post__not_in and other vars from the main products query.
+		$where = '';
+
+		if ( 'and' === $main_query_type ) {
+			if ( 'and' === $query_type ) {
+				$where = self::get_full_where_clause();
+			} elseif ( 'or' === $query_type ) {
+				$where = self::get_where_clauses_by_other_filters( $filter_key );
+			}
+		} elseif ( 'or' === $main_query_type ) {
+			if ( 'and' === $query_type ) {
+				$where = self::get_self_where_clause( $filter_key );
+			} elseif ( 'or' === $query_type ) {
+				$where = ' AND 1=1';
+			}
+		}
+
+		return apply_filters( 'wcapf_filter_where_clause', $where, $query_type, $filter_key );
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_full_where_clause() {
+		$filter = new WCAPF_Product_Filter();
+
+		return $filter->get_full_where_clause();
+	}
+
+	/**
+	 * @return string
+	 */
 	public static function get_self_where_clause( $filter_key ) {
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
@@ -298,17 +325,6 @@ class WCAPF_Product_Filter_Utils {
 		$query_type = WCAPF_Helper::get_field_relations();
 
 		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
-	}
-
-	/**
-	 * @return string
-	 */
-	public static function get_join_clause() {
-		$filter = new WCAPF_Product_Filter();
-
-		$join = ' ' . $filter->get_full_join_clause();
-
-		return apply_filters( 'wcapf_filter_join_clause', $join );
 	}
 
 	/**

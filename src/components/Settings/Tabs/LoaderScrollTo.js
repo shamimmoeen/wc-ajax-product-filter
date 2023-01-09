@@ -8,6 +8,7 @@ import ImagePicker from '../../Field/ImagePicker';
 import ScrollWindowTo from './ScrollWindowTo';
 import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
+import { Notice } from '@wordpress/components';
 
 const animationOptions = [
 	{ label: __('None', 'wc-ajax-product-filter'), value: 'none' },
@@ -44,6 +45,7 @@ const LoaderScrollTo = () => {
 
 	const {
 		settings: {
+			disable_ajax,
 			loading_animation,
 			loading_image,
 			loading_image_src,
@@ -87,6 +89,19 @@ const LoaderScrollTo = () => {
 
 	return (
 		<>
+			{'1' === disable_ajax && (
+				<Notice
+					status='info'
+					className='ajax-disabled-info'
+					isDismissible={false}
+				>
+					{__(
+						'These settings are applicable when filtering via ajax.',
+						'wc-ajax-product-filter'
+					)}
+				</Notice>
+			)}
+
 			<Select
 				id={'loading_animation'}
 				label={__('Loading Animation', 'wc-ajax-product-filter')}

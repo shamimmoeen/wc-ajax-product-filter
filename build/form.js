@@ -12411,7 +12411,7 @@ const ValueTypeNumber = _ref => {
         id: 'auto_detect_min_max',
         index: index,
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Auto detect Min and Max', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to detect the min and max value from the database.', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to detect the min and max values from the database.', 'wc-ajax-product-filter'),
         isChecked: auto_detect_min_max,
         onChange: handleCheckboxChange
       }), '1' !== auto_detect_min_max && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Number__WEBPACK_IMPORTED_MODULE_3__["default"], {
