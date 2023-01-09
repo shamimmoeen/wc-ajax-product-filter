@@ -358,7 +358,9 @@
 					 *
 					 * @source https://stackoverflow.com/a/7599562
 					 */
-					document.title = $response.filter( 'title' ).text();
+					if ( wcapf_params.update_title_tag ) {
+						document.title = $response.filter( 'title' ).text();
+					}
 
 					// Update the instances.
 					for ( const id of instanceIds ) {
