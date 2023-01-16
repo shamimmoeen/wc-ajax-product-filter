@@ -16,8 +16,10 @@ import { foundProVersion } from '../../../utils';
 const ValueTypeText = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleHierarchyChange, handleCheckboxChange, handleSelectChange } =
-		useFormFilterData(state, dispatch);
+	const { handleCheckboxChange, handleSelectChange } = useFormFilterData(
+		state,
+		dispatch
+	);
 
 	const {
 		enableMultipleFilterField,
@@ -106,7 +108,7 @@ const ValueTypeText = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={hierarchical}
-					onChange={handleHierarchyChange}
+					onChange={handleCheckboxChange}
 				/>
 			);
 		}

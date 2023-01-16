@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import useFields from './useFields';
-import { authorLimitByOptions, authorOrderByOptions } from '../../utils';
+import { authorLimitByOptions } from '../../utils';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import SelectMulti from '../../../Field/SelectMulti';
 import Checkbox from '../../../Field/Checkbox';
@@ -35,32 +35,12 @@ const PostAuthorOptions = ({ index }) => {
 
 	const {
 		get_options,
-		post_author_order_by,
 		limit_options,
-		limit_values_by_id,
-		exclude_values_id,
+		include_authors,
+		exclude_authors,
 		include_user_roles,
 		use_store_name,
 	} = filter;
-
-	const _orderByField = () => {
-		let _options = authorOrderByOptions();
-		let options;
-
-		if ('automatically' === get_options) {
-			options = _options.filter((option) => 'entry' !== option.value);
-		} else {
-			options = _options;
-		}
-
-		return orderByField('post_author_order_by', options, true);
-	};
-
-	const _orderDirectionField = () => {
-		if ('default' !== post_author_order_by) {
-			return orderDirectionField('post_author_order_dir');
-		}
-	};
 
 	const limitOptionsField = () => {
 		if ('automatically' === get_options) {
@@ -87,7 +67,7 @@ const PostAuthorOptions = ({ index }) => {
 		if ('automatically' === get_options && 'include' === limit_options) {
 			return (
 				<SelectMulti
-					id={'limit_values_by_id'}
+					id={'include_authors'}
 					index={index}
 					label={__('Authors to include', 'wc-ajax-product-filter')}
 					description={__(
@@ -95,7 +75,7 @@ const PostAuthorOptions = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isMultiple={true}
-					value={limit_values_by_id}
+					value={include_authors}
 					onChange={handleSelectTermChange}
 					type={'author'}
 				/>
@@ -107,7 +87,7 @@ const PostAuthorOptions = ({ index }) => {
 		if ('automatically' === get_options && 'exclude' === limit_options) {
 			return (
 				<SelectMulti
-					id={'exclude_values_id'}
+					id={'exclude_authors'}
 					index={index}
 					label={__('Authors to exclude', 'wc-ajax-product-filter')}
 					description={__(
@@ -115,7 +95,7 @@ const PostAuthorOptions = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isMultiple={true}
-					value={exclude_values_id}
+					value={exclude_authors}
 					onChange={handleSelectTermChange}
 					type={'author'}
 				/>
@@ -184,9 +164,9 @@ const PostAuthorOptions = ({ index }) => {
 		<>
 			{getOptionsField('get_options')}
 
-			{_orderByField()}
+			{orderByField('post_author_order_by')}
 
-			{_orderDirectionField()}
+			{orderDirectionField('post_author_order_dir')}
 
 			{limitOptionsField()}
 

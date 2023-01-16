@@ -14,7 +14,14 @@ import {
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
 import { foundProVersion } from '../../utils';
-import { getFilterKeyError, filterDefaultData } from '../utils';
+import {
+	getFilterKeyError,
+	filterDefaultData,
+	termsProOrderByOptions,
+	taxonomyProLimitByOptions,
+	authorProOrderByOptions,
+	metaValuesProOrderByOptions,
+} from '../utils';
 
 const genericErrorMessage = __(
 	'Please fix the errors below.',
@@ -173,18 +180,87 @@ const FormTitle = () => {
 		const sanitizedFilters = [];
 
 		filters.forEach((filter) => {
-			const defaultData = pick(filterDefaultData(), [
+			const proData = [
 				'get_options',
-				'order_terms_by',
-				'order_terms_dir',
-				'number_get_options',
 				'manual_options',
+				'parent_term',
+				'direct_child_only',
+				'number_range_enable_multiple_filter',
+				'number_range_query_type',
+				'number_range_select_all_items_label',
+				'number_range_show_count',
+				'number_get_options',
 				'number_manual_options',
+				'value_type',
+				'value_decimal',
+				'value_decimal_places',
+				'date_input_format',
+				'time_period_enable_multiple_filter',
+				'time_period_query_type',
+				'time_period_select_all_items_label',
+				'time_period_show_count',
 				'time_period_options',
-				'options_order_by',
-				'options_order_dir',
 				'options_order_type',
-			]);
+				'use_store_name',
+				'search_field_placeholder',
+				'visibility_rules',
+			];
+
+			const proTextDisplayTypes = ['color', 'image', 'hierarchy-select'];
+
+			const proNumberDisplayTypes = [
+				'range_checkbox',
+				'range_radio',
+				'range_select',
+				'range_multiselect',
+				'range_label',
+			];
+
+			const proDateDisplayTypes = [
+				'time_period_checkbox',
+				'time_period_radio',
+				'time_period_select',
+				'time_period_multiselect',
+				'time_period_label',
+			];
+
+			if (proTextDisplayTypes.includes(filter['display_type'])) {
+				proData.push('display_type');
+			}
+
+			if (proNumberDisplayTypes.includes(filter['number_display_type'])) {
+				proData.push('number_display_type');
+			}
+
+			if (proDateDisplayTypes.includes(filter['date_display_type'])) {
+				proData.push('date_display_type');
+			}
+
+			if (termsProOrderByOptions().includes(filter['order_terms_by'])) {
+				proData.push('order_terms_by');
+			}
+
+			if (taxonomyProLimitByOptions().includes(filter['limit_options'])) {
+				proData.push('limit_options');
+			}
+
+			if (
+				metaValuesProOrderByOptions().includes(
+					filter['options_order_by']
+				)
+			) {
+				proData.push('options_order_by');
+			}
+
+			if (
+				authorProOrderByOptions().includes(
+					filter['post_author_order_by']
+				)
+			) {
+				proData.push('post_author_order_by');
+			}
+
+			const defaultData = pick(filterDefaultData(), proData);
 
 			const sanitized = { ...filter, ...defaultData };
 

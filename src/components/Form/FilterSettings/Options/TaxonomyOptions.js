@@ -5,7 +5,7 @@ import ManualOptionsModal from './ManualOptionsModal';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import useFields from './useFields';
-import { taxonomyLimitByOptions, termsOrderByOptions } from '../../utils';
+import { taxonomyLimitByOptions } from '../../utils';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import SelectMulti from '../../../Field/SelectMulti';
 import Select from '../../../Field/Select';
@@ -20,7 +20,8 @@ const TaxonomyOptions = ({ index }) => {
 		handleSelectTermChange,
 	} = useFormFilterData(state, dispatch);
 
-	const { getOptionsField, orderDirectionField } = useFields(index);
+	const { getOptionsField, orderByField, orderDirectionField } =
+		useFields(index);
 
 	const [open, setOpen] = useState(false);
 	const openModal = () => setOpen(true);
@@ -32,64 +33,22 @@ const TaxonomyOptions = ({ index }) => {
 
 	const {
 		taxHierarchical,
-		hierarchical,
 		taxonomy,
 		get_options,
-		order_terms_by,
 		limit_options,
+		include_terms,
+		include_child,
+		exclude_terms,
+		exclude_child,
 		parent_term,
-		limit_values_by_id,
-		limit_values_include_children,
-		exclude_values_id,
-		exclude_values_include_children,
+		direct_child_only,
 	} = filter;
-
-	const _orderByField = () => {
-		const isHierarchyEnabled = taxHierarchical && '1' === hierarchical;
-
-		let orderByOptions = termsOrderByOptions();
-		let options;
-
-		if (isHierarchyEnabled || 'automatically' === get_options) {
-			options = orderByOptions.filter(
-				(option) => 'entry' !== option.value
-			);
-		} else {
-			options = orderByOptions;
-		}
-
-		const value = options.find((option) => option.value === order_terms_by);
-
-		return (
-			<Select
-				id={'order_terms_by'}
-				index={index}
-				label={__('Order By', 'wc-ajax-product-filter')}
-				description={__(
-					'Field to order options by.',
-					'wc-ajax-product-filter'
-				)}
-				options={options}
-				value={value}
-				renderAsFormField
-				onChange={handleSelectChange}
-				isPro={true}
-			/>
-		);
-	};
-
-	const _orderDirectionField = () => {
-		if ('default' !== order_terms_by) {
-			return orderDirectionField('order_terms_dir');
-		}
-	};
 
 	const limitOptionsField = () => {
 		if ('automatically' === get_options) {
-			const limitByOptions = taxonomyLimitByOptions();
-
 			if (taxHierarchical) {
-				const value = limitByOptions.find(
+				const options = taxonomyLimitByOptions(taxHierarchical, true);
+				const value = options.find(
 					(option) => option.value === limit_options
 				);
 
@@ -102,18 +61,14 @@ const TaxonomyOptions = ({ index }) => {
 							'Limit the filter options.',
 							'wc-ajax-product-filter'
 						)}
-						options={limitByOptions}
+						options={options}
 						value={value}
 						onChange={handleSelectChange}
 						renderAsFormField
 					/>
 				);
 			} else {
-				const notAllowed = ['parent_only', 'child'];
-
-				const options = limitByOptions.filter(
-					(option) => !notAllowed.includes(option.value)
-				);
+				const options = taxonomyLimitByOptions();
 
 				return (
 					<ToggleGroup
@@ -137,7 +92,7 @@ const TaxonomyOptions = ({ index }) => {
 		if ('automatically' === get_options && 'include' === limit_options) {
 			return (
 				<SelectMulti
-					id={'limit_values_by_id'}
+					id={'include_terms'}
 					index={index}
 					label={__('Terms to include', 'wc-ajax-product-filter')}
 					description={__(
@@ -146,11 +101,11 @@ const TaxonomyOptions = ({ index }) => {
 					)}
 					taxonomy={taxonomy}
 					isMultiple={true}
-					value={limit_values_by_id}
+					value={include_terms}
 					onChange={handleSelectTermChange}
 					showIncludeChildren={taxHierarchical}
-					checkboxId={'limit_values_include_children'}
-					checkIsChecked={limit_values_include_children}
+					checkboxId={'include_child'}
+					checkIsChecked={include_child}
 					onCheckChange={handleCheckboxChange}
 				/>
 			);
@@ -161,7 +116,7 @@ const TaxonomyOptions = ({ index }) => {
 		if ('automatically' === get_options && 'exclude' === limit_options) {
 			return (
 				<SelectMulti
-					id={'exclude_values_id'}
+					id={'exclude_terms'}
 					index={index}
 					label={__('Terms to exclude', 'wc-ajax-product-filter')}
 					description={__(
@@ -170,11 +125,11 @@ const TaxonomyOptions = ({ index }) => {
 					)}
 					taxonomy={taxonomy}
 					isMultiple={true}
-					value={exclude_values_id}
+					value={exclude_terms}
 					onChange={handleSelectTermChange}
 					showIncludeChildren={taxHierarchical}
-					checkboxId={'exclude_values_include_children'}
-					checkIsChecked={exclude_values_include_children}
+					checkboxId={'exclude_child'}
+					checkIsChecked={exclude_child}
 					onCheckChange={handleCheckboxChange}
 				/>
 			);
@@ -200,6 +155,10 @@ const TaxonomyOptions = ({ index }) => {
 					onlyParent={true}
 					value={parent_term}
 					onChange={handleSelectTermChange}
+					showIncludeChildren={taxHierarchical}
+					checkboxId={'direct_child_only'}
+					checkIsChecked={direct_child_only}
+					onCheckChange={handleCheckboxChange}
 				/>
 			);
 		}
@@ -225,9 +184,9 @@ const TaxonomyOptions = ({ index }) => {
 		<>
 			{getOptionsField('get_options')}
 
-			{_orderByField()}
+			{orderByField('order_terms_by')}
 
-			{_orderDirectionField()}
+			{orderDirectionField('order_terms_dir')}
 
 			{limitOptionsField()}
 

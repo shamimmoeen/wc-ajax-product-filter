@@ -1,10 +1,6 @@
 import { pick } from 'lodash';
 import useFormData from './useFormData';
-import {
-	filterDefaultData,
-	filterTypeDependentFields,
-	manualEntryOrderTypes,
-} from './utils';
+import { filterDefaultData, filterTypeDependentFields } from './utils';
 
 const useFormFilterData = (state, dispatch) => {
 	const { setDirty } = useFormData(state, dispatch);
@@ -141,20 +137,6 @@ const useFormFilterData = (state, dispatch) => {
 		updateFilterMany(index, [key], value, many);
 	};
 
-	const handleHierarchyChange = (_value, key, index) => {
-		const filterData = formFilters[index];
-		const value = _value ? '1' : '';
-
-		if ('entry' === filterData['order_terms_by']) {
-			updateFilterMany(index, key, value, {
-				[key]: value,
-				order_terms_by: 'default',
-			});
-		} else {
-			updateFilter(index, key, value);
-		}
-	};
-
 	const handleGetOptionsChange = (e, key, index) => {
 		const value = e.target.value;
 		const filterData = formFilters[index];
@@ -167,27 +149,14 @@ const useFormFilterData = (state, dispatch) => {
 
 		const { type, value_type } = filterData;
 
-		if ('taxonomy' === type && 'entry' === filterData['order_terms_by']) {
-			updateFilterMany(index, key, value, {
-				[key]: value,
-				order_terms_by: 'default',
-			});
-		} else if (
+		if (
 			'post-meta' === type &&
 			'text' === value_type &&
-			manualEntryOrderTypes().includes(filterData['options_order_by'])
+			'include' === filterData['options_order_by']
 		) {
 			updateFilterMany(index, key, value, {
 				[key]: value,
-				options_order_by: 'none',
-			});
-		} else if (
-			'post-author' === type &&
-			'entry' === filterData['post_author_order_by']
-		) {
-			updateFilterMany(index, key, value, {
-				[key]: value,
-				post_author_order_by: 'default',
+				options_order_by: 'default',
 			});
 		} else {
 			updateFilter(index, key, value);
@@ -242,7 +211,6 @@ const useFormFilterData = (state, dispatch) => {
 		handleFilterTypeChange,
 		handleFilterKeyChange,
 		handleMetaKeyChange,
-		handleHierarchyChange,
 		handleGetOptionsChange,
 		handleCheckboxChange,
 		handleRadioChange,

@@ -160,6 +160,27 @@ const SelectMulti = ({
 		}
 	};
 
+	const includeChild = () => {
+		let label;
+
+		if ('direct_child_only' === checkboxId) {
+			label = __('Direct child only', 'wc-ajax-product-filter');
+		} else {
+			label = __('Include children', 'wc-ajax-product-filter');
+		}
+
+		return (
+			<CheckboxControl
+				label={label}
+				className='__include_child_terms'
+				checked={checkIsChecked}
+				onChange={(checked) =>
+					onCheckChange(checked, checkboxId, index)
+				}
+			/>
+		);
+	};
+
 	return (
 		<div className='__form_control react_select'>
 			<div className='__inner'>
@@ -170,19 +191,7 @@ const SelectMulti = ({
 					<div className='__input_wrapper'>
 						{renderSelect()}
 
-						{showIncludeChildren && (
-							<CheckboxControl
-								label={__(
-									'Include children',
-									'wc-ajax-product-filter'
-								)}
-								className='__include_child_terms'
-								checked={checkIsChecked}
-								onChange={(checked) =>
-									onCheckChange(checked, checkboxId, index)
-								}
-							/>
-						)}
+						{showIncludeChildren && includeChild()}
 					</div>
 				</div>
 			</div>

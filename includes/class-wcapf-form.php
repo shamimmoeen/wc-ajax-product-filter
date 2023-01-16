@@ -48,6 +48,11 @@ final class WCAPF_Form {
 				$field_instance = new WCAPF_Field_Instance( $field['settings'] );
 				$field_type     = $field_instance->type;
 
+				// TODO: Maybe check for valid field types.
+				if ( ! $field_type ) {
+					continue;
+				}
+
 				if ( 'price' === $field_type ) {
 					$this->render_price_filter( $field_instance );
 				} else {

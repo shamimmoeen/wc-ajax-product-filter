@@ -215,15 +215,16 @@ export function filterDefaultData() {
 		show_count_in_tooltip: '',
 		tooltip_position: 'top',
 		get_options: 'automatically',
+		manual_options: [],
 		order_terms_by: 'default',
 		order_terms_dir: 'asc',
 		limit_options: 'off',
+		include_terms: [],
+		include_child: '',
+		exclude_terms: [],
+		exclude_child: '',
 		parent_term: '',
-		only_parent: '',
-		limit_values_by_id: '',
-		limit_values_include_children: '',
-		exclude_values_id: '',
-		exclude_values_include_children: '',
+		direct_child_only: '',
 		// Price Filter
 		number_display_type: 'range_slider',
 		number_range_slider_display_values_as: 'input_field',
@@ -233,9 +234,7 @@ export function filterDefaultData() {
 		number_range_select_all_items_label: '',
 		number_range_show_count: '1',
 		number_get_options: 'automatically',
-		manual_options: [],
 		number_manual_options: [],
-		time_period_options: [],
 		auto_detect_min_max: '1',
 		min_value: '0',
 		max_value: '100',
@@ -256,7 +255,7 @@ export function filterDefaultData() {
 		value_decimal: '',
 		value_decimal_places: '2',
 		date_input_format: 'timestamp',
-		options_order_by: 'none',
+		options_order_by: 'default',
 		options_order_dir: 'asc',
 		options_order_type: 'alphabetical',
 		// Post Meta - value type Date
@@ -275,20 +274,26 @@ export function filterDefaultData() {
 		date_to_prefix: '',
 		date_to_postfix: '',
 		date_to_placeholder: '',
+		time_period_options: [],
 		// Post Author
 		post_author_order_by: 'default',
 		post_author_order_dir: 'asc',
+		include_authors: [],
+		exclude_authors: [],
 		include_user_roles: [],
+		use_store_name: '',
 		// Advanced Settings
 		show_title: '1',
 		enable_accordion: '',
 		accordion_default_state: 'expanded',
 		help_text: '',
 		enable_search_field: '',
+		search_field_placeholder: '',
 		enable_reduce_height: 'no',
 		soft_limit: '5',
 		max_height: '200',
 		show_in_active_filters: '1',
+		visibility_rules: [],
 		// Error
 		type_error: '',
 		meta_key_error: '',
@@ -309,12 +314,12 @@ export function filterTypeDependentFields() {
 		'order_terms_by',
 		'order_terms_dir',
 		'limit_options',
+		'include_terms',
+		'include_child',
+		'exclude_terms',
+		'exclude_child',
 		'parent_term',
-		'only_parent',
-		'limit_values_by_id',
-		'limit_values_include_children',
-		'exclude_values_id',
-		'exclude_values_include_children',
+		'direct_child_only',
 		// Manual Options
 		'number_get_options',
 		'manual_options',
@@ -344,8 +349,12 @@ export function methodsOfGettingOptions() {
 	];
 }
 
-export function taxonomyLimitByOptions() {
-	return [
+export function taxonomyProLimitByOptions() {
+	return ['child', 'parent_only'];
+}
+
+export function taxonomyLimitByOptions(hierarchical = false, withPro = false) {
+	const nonHierarchicalOptions = [
 		{
 			label: __('Off', 'wc-ajax-product-filter'),
 			value: 'off',
@@ -358,6 +367,9 @@ export function taxonomyLimitByOptions() {
 			label: __('Exclude', 'wc-ajax-product-filter'),
 			value: 'exclude',
 		},
+	];
+
+	const hierarchicalProOptions = [
 		{
 			label: __('Child of', 'wc-ajax-product-filter'),
 			value: 'child',
@@ -367,17 +379,27 @@ export function taxonomyLimitByOptions() {
 			value: 'parent_only',
 		},
 	];
+
+	if (hierarchical) {
+		return mergeSelectOptions(
+			nonHierarchicalOptions,
+			hierarchicalProOptions,
+			withPro
+		);
+	}
+
+	return nonHierarchicalOptions;
 }
 
-export function termsOrderByOptions() {
-	return [
+export function termsProOrderByOptions() {
+	return ['slug', 'count', 'include'];
+}
+
+export function termsOrderByOptions(isManualEntry) {
+	const freeOptions = [
 		{
 			label: __('Default', 'wc-ajax-product-filter'),
 			value: 'default',
-		},
-		{
-			label: __('Term Order', 'wc-ajax-product-filter'),
-			value: 'term_order',
 		},
 		{
 			label: __('ID', 'wc-ajax-product-filter'),
@@ -387,6 +409,17 @@ export function termsOrderByOptions() {
 			label: __('Name', 'wc-ajax-product-filter'),
 			value: 'name',
 		},
+	];
+
+	let includeLabel;
+
+	if (isManualEntry) {
+		includeLabel = __('Entry', 'wc-ajax-product-filter');
+	} else {
+		includeLabel = __('Include', 'wc-ajax-product-filter');
+	}
+
+	const proOptions = [
 		{
 			label: __('Slug', 'wc-ajax-product-filter'),
 			value: 'slug',
@@ -396,39 +429,49 @@ export function termsOrderByOptions() {
 			value: 'count',
 		},
 		{
-			label: __('Entry', 'wc-ajax-product-filter'),
-			value: 'entry',
+			label: includeLabel,
+			value: 'include',
 		},
 	];
+
+	return mergeSelectOptions(freeOptions, proOptions, true);
 }
 
-export function metaValuesOrderByOptions() {
-	return [
+export function metaValuesProOrderByOptions() {
+	return ['value', 'label', 'count', 'include'];
+}
+
+export function metaValuesOrderByOptions(isManualEntry) {
+	const freeOptions = [
 		{
 			label: __('Default', 'wc-ajax-product-filter'),
-			value: 'none',
+			value: 'default',
 		},
+	];
+
+	const proOptions = [
 		{
 			label: __('Value', 'wc-ajax-product-filter'),
 			value: 'value',
-		},
-		{
-			label: __('Count', 'wc-ajax-product-filter'),
-			value: 'count',
 		},
 		{
 			label: __('Label', 'wc-ajax-product-filter'),
 			value: 'label',
 		},
 		{
-			label: __('Entry', 'wc-ajax-product-filter'),
-			value: 'entry',
+			label: __('Count', 'wc-ajax-product-filter'),
+			value: 'count',
 		},
 	];
-}
 
-export function manualEntryOrderTypes() {
-	return ['label', 'entry'];
+	if (isManualEntry) {
+		proOptions.push({
+			label: __('Entry', 'wc-ajax-product-filter'),
+			value: 'include',
+		});
+	}
+
+	return mergeSelectOptions(freeOptions, proOptions, true);
 }
 
 export function orderDirectionOptions() {
@@ -457,8 +500,12 @@ export function orderTypeOptions() {
 	];
 }
 
-export function authorOrderByOptions() {
-	return [
+export function authorProOrderByOptions() {
+	return ['count', 'include'];
+}
+
+export function authorOrderByOptions(isManualEntry) {
+	const freeOptions = [
 		{
 			label: __('Default', 'wc-ajax-product-filter'),
 			value: 'default',
@@ -471,15 +518,28 @@ export function authorOrderByOptions() {
 			label: __('Name', 'wc-ajax-product-filter'),
 			value: 'name',
 		},
+	];
+
+	let includeLabel;
+
+	if (isManualEntry) {
+		includeLabel = __('Entry', 'wc-ajax-product-filter');
+	} else {
+		includeLabel = __('Include', 'wc-ajax-product-filter');
+	}
+
+	const proOptions = [
 		{
 			label: __('Count', 'wc-ajax-product-filter'),
 			value: 'count',
 		},
 		{
-			label: __('Entry', 'wc-ajax-product-filter'),
-			value: 'entry',
+			label: includeLabel,
+			value: 'include',
 		},
 	];
+
+	return mergeSelectOptions(freeOptions, proOptions, true);
 }
 
 export function authorLimitByOptions() {

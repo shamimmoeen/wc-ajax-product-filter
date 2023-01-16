@@ -64,14 +64,19 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		}
 
 		foreach ( $_terms as $_term ) {
+			/**
+			 * @var WP_Term $_term
+			 */
 			$term_id   = $_term->term_id;
 			$count     = $_term->count;
 			$parent_id = $_term->parent;
 			$name      = $_term->name;
+			$slug      = $_term->slug;
 
 			$_term = array(
 				'id'        => $term_id,
 				'name'      => $name,
+				'slug'      => $slug,
 				'count'     => $count,
 				'parent_id' => $parent_id,
 			);
