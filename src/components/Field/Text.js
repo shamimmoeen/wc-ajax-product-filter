@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from '@wordpress/element';
 import TippyTooltip from '../TippyTooltip';
-import { getInputId } from '../utils';
+import { getInputId, proTag } from '../utils';
 
 const InputField = ({
 	inputId,
@@ -56,6 +56,7 @@ const Text = ({
 	isDisabled = false,
 	tooltip,
 	customClass,
+	isPro,
 	...rest
 }) => {
 	const inputId = getInputId(id, index);
@@ -86,6 +87,7 @@ const Text = ({
 									}
 								/>
 							)}
+							{proTag(isPro)}
 						</label>
 					</div>
 					<div className='__wrapper'>

@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
 import Radio from '../../Field/Radio';
+import Text from '../../Field/Text';
 import Textarea from '../../Field/Textarea';
 import { useForm } from '../FormContext';
 import useFormFilterData from '../useFormFilterData';
@@ -30,10 +31,12 @@ const Advanced = ({ index }) => {
 		accordion_default_state,
 		help_text,
 		enable_search_field,
+		search_field_placeholder,
 		enable_reduce_height,
 		soft_limit,
 		max_height,
 		show_in_active_filters,
+		visibility_rules,
 	} = filter;
 
 	const showTitleField = () => {
@@ -76,10 +79,7 @@ const Advanced = ({ index }) => {
 				<Radio
 					id={'accordion_default_state'}
 					index={index}
-					label={__(
-						'Accordion default state',
-						'wc-ajax-product-filter'
-					)}
+					label={__('Accordion state', 'wc-ajax-product-filter')}
 					description={__(
 						'Determines how the accordion should appear initially.',
 						'wc-ajax-product-filter'
@@ -167,6 +167,9 @@ const Advanced = ({ index }) => {
 			];
 		} else {
 			notAllowedDisplayTypes = [
+				'multi-select',
+				'range_multiselect',
+				'time_period_multiselect',
 				'range_slider',
 				'range_number',
 				'input_date',
@@ -196,6 +199,25 @@ const Advanced = ({ index }) => {
 					)}
 					isChecked={enable_search_field}
 					onChange={handleCheckboxChange}
+				/>
+			);
+		}
+	};
+
+	const placeholderField = () => {
+		if (isApplicable('search') && '1' === enable_search_field) {
+			return (
+				<Text
+					id={'search_field_placeholder'}
+					index={index}
+					label={__('Placeholder', 'wc-ajax-product-filter')}
+					description={__(
+						'Change the default placeholder for the search input field.',
+						'wc-ajax-product-filter'
+					)}
+					value={search_field_placeholder}
+					onChange={handleTextFieldChange}
+					isPro
 				/>
 			);
 		}
@@ -293,6 +315,23 @@ const Advanced = ({ index }) => {
 		);
 	};
 
+	const visibilityRulesField = () => {
+		return (
+			<Checkbox
+				id={'visibility_rules'}
+				index={index}
+				label={__('Visibility Rules', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines if we show the selected options in active filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={visibility_rules}
+				onChange={handleCheckboxChange}
+				isPro
+			/>
+		);
+	};
+
 	return (
 		<>
 			{showTitleField()}
@@ -305,6 +344,8 @@ const Advanced = ({ index }) => {
 
 			{enableSearchField()}
 
+			{placeholderField()}
+
 			{reduceHeightField()}
 
 			{filterMaxHeightField()}
@@ -312,6 +353,8 @@ const Advanced = ({ index }) => {
 			{visibleOptionsField()}
 
 			{showInActiveFiltersField()}
+
+			{visibilityRulesField()}
 		</>
 	);
 };

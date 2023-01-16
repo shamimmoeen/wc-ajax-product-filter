@@ -141,14 +141,17 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-author.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-meta.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-price.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-product-status.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-rating.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
 
 		// Loads the hooks.
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-api.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-price-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-rating-filter.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-taxonomy-filter.php';
 
 		// Loads the shortcodes.
 		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-shortcode.php';

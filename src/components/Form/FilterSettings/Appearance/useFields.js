@@ -24,16 +24,13 @@ const useFields = (type, index) => {
 		type: filterType,
 		display_type,
 		enable_multiple_filter,
-		use_chosen,
 		enable_tooltip,
 		tooltip_position,
 		show_count_in_tooltip,
 		number_display_type,
 		number_range_enable_multiple_filter,
-		number_range_use_chosen,
 		date_display_type,
 		time_period_enable_multiple_filter,
-		time_period_use_chosen,
 		value_type,
 	} = filter;
 

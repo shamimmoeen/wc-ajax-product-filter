@@ -38,14 +38,14 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 
 		if ( 'automatically' === $this->field->get_options ) {
 			$field = $this->field;
-			$args  = array();
+			$args  = array( 'number' => 999 ); // We are limiting the maximum number of users considering larger sites.
 
 			$limit_options = $field->get_sub_field_value( 'limit_options' );
 
 			if ( 'include' === $limit_options ) {
-				$args['include'] = $field->get_sub_field_value( 'limit_values_by_id' );
+				$args['include'] = $field->get_sub_field_value( 'include_authors' );
 			} elseif ( 'exclude' === $limit_options ) {
-				$args['exclude'] = $field->get_sub_field_value( 'exclude_values_id' );
+				$args['exclude'] = $field->get_sub_field_value( 'exclude_authors' );
 			} elseif ( 'user_roles' === $limit_options ) {
 				$args['role__in'] = $field->get_sub_field_value( 'include_user_roles' );
 			}

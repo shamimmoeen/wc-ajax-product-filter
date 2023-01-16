@@ -904,7 +904,8 @@
 
 	// @source https://stackoverflow.com/a/33004917
 	if ( 'scrollRestoration' in history ) {
-		history.scrollRestoration = 'manual';
+		// TODO: Maybe use conditionally.
+		// history.scrollRestoration = 'manual';
 	}
 
 }( jQuery, window ) );

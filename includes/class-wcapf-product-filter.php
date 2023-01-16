@@ -224,7 +224,7 @@ class WCAPF_Product_Filter {
 		$form_data['base_url']   = $base_url;
 		$form_data['form_id']    = $form_id;
 		$form_data['form_title'] = $form->post_title;
-		$form_data['settings']   = json_decode( $form->post_content, true );
+		$form_data['settings']   = maybe_unserialize( $form->post_content );
 
 		$form_filters = array();
 
@@ -243,7 +243,7 @@ class WCAPF_Product_Filter {
 		}
 
 		foreach ( $filters as $filter ) {
-			$settings = json_decode( $filter->post_content, true );
+			$settings = maybe_unserialize( $filter->post_content );
 
 			$settings['update_count'] = $update_count;
 			$settings['hide_empty']   = $remove_empty;
@@ -477,7 +477,7 @@ class WCAPF_Product_Filter {
 	 */
 	private function get_chosen_term_ids( $filter_values, $field_instance ) {
 		/**
-		 * The hook to change the values for the rating filter.
+		 * The hook to change the values for the rating filter and get the values from term slugs.
 		 */
 		return apply_filters( 'wcapf_taxonomy_filter_values', $filter_values, $field_instance );
 	}
@@ -878,10 +878,6 @@ function wcapf_posts_clauses( $args, $wp_query ) {
 
 	$args['join']  .= $filter->get_full_join_clause();
 	$args['where'] .= $filter->get_full_where_clause();
-
-	// echo '<pre>';
-	// print_r( $args );
-	// echo '</pre>';
 
 	/**
 	 * The filter to apply the sort-by filter.

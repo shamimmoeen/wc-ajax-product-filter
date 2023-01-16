@@ -36,6 +36,7 @@ class WCAPF_Field_Instance {
 	public $meta_key;
 	public $post_property;
 	public $use_store_name;
+	public $use_term_slug;
 	public $number_data_type;
 	public $form_id;
 	public $use_custom_title; // TODO: Remove this.
@@ -173,6 +174,7 @@ class WCAPF_Field_Instance {
 		$this->post_property = $this->get_post_property();
 
 		$this->use_store_name = $this->is_store_name_enabled();
+		$this->use_term_slug  = WCAPF_Helper::use_term_slug();
 
 		$this->custom_appearance_options = $this->get_appearance_data();
 

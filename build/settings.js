@@ -8961,6 +8961,23 @@ const SelectMulti = _ref => {
     }
   };
 
+  const includeChild = () => {
+    let label;
+
+    if ('direct_child_only' === checkboxId) {
+      label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Direct child only', 'wc-ajax-product-filter');
+    } else {
+      label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Include children', 'wc-ajax-product-filter');
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+      label: label,
+      className: "__include_child_terms",
+      checked: checkIsChecked,
+      onChange: checked => onCheckChange(checked, checkboxId, index)
+    });
+  };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_control react_select"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8973,12 +8990,7 @@ const SelectMulti = _ref => {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__input_wrapper"
-  }, renderSelect(), showIncludeChildren && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Include children', 'wc-ajax-product-filter'),
-    className: "__include_child_terms",
-    checked: checkIsChecked,
-    onChange: checked => onCheckChange(checked, checkboxId, index)
-  })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }, renderSelect(), showIncludeChildren && includeChild()))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description",
     dangerouslySetInnerHTML: {
       __html: description
@@ -9061,6 +9073,7 @@ const Text = _ref2 => {
     isDisabled = false,
     tooltip,
     customClass,
+    isPro,
     ...rest
   } = _ref2;
   const inputId = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getInputId)(id, index);
@@ -9076,7 +9089,7 @@ const Text = _ref2 => {
       htmlFor: inputId
     }, label, 'field_key' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
       content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "For example, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "?/color=blue&size=large", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "where color & size are the filter keys.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "In the PRO version, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "/color-blue/size-large")
-    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
+    }), (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(isPro))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "__wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "__input_wrapper"

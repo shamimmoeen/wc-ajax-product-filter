@@ -117,14 +117,13 @@ class WCAPF_API {
 				continue;
 			}
 
-			$filter = json_decode( $post->post_content, true );
-
-			$filter = $this->parse_filter_settings( $filter, false );
+			$filter = maybe_unserialize( $post->post_content );
+			$filter = $this->parse_filter_data( $filter );
 
 			$form_filters[] = $filter;
 		}
 
-		$form_settings = json_decode( $form->post_content );
+		$form_settings = maybe_unserialize( $form->post_content );
 
 		wp_send_json_success( array(
 			'post_id'       => $post_id,
@@ -135,8 +134,14 @@ class WCAPF_API {
 		) );
 	}
 
-	private function parse_filter_settings( $filter, $for_db = true ) {
-		// Preserve spaces in values separator.
+	/**
+	 * Parse the filter data for react ui.
+	 *
+	 * @param array $filter The filter data.
+	 *
+	 * @return array
+	 */
+	private function parse_filter_data( $filter ) {
 		$value_may_have_spaces = array(
 			'value_prefix',
 			'value_postfix',
@@ -148,11 +153,90 @@ class WCAPF_API {
 		foreach ( $value_may_have_spaces as $key ) {
 			$value = isset( $filter[ $key ] ) ? $filter[ $key ] : '';
 
-			if ( $for_db ) {
-				$filter[ $key ] = str_replace( ' ', '&nbsp;', $value );
-			} else {
-				$filter[ $key ] = str_replace( '&nbsp;', ' ', $value );
+			$filter[ $key ] = str_replace( '&nbsp;', ' ', $value );
+		}
+
+		// Prepare the term data.
+		$parent_term   = isset( $filter['parent_term'] ) ? $filter['parent_term'] : '';
+		$include_terms = isset( $filter['include_terms'] ) ? $filter['include_terms'] : array();
+		$exclude_terms = isset( $filter['exclude_terms'] ) ? $filter['exclude_terms'] : array();
+
+		if ( $parent_term ) {
+			$term = get_term( $parent_term );
+
+			$filter['parent_term'] = array(
+				'value' => $term->term_id,
+				'label' => $term->name,
+			);
+		}
+
+		$array = array(
+			'include_terms' => $include_terms,
+			'exclude_terms' => $exclude_terms,
+		);
+
+		foreach ( $array as $key => $values ) {
+			if ( $values ) {
+				$parsed = array();
+
+				foreach ( $values as $id ) {
+					$term = get_term( $id );
+
+					if ( $term && ! is_wp_error( $term ) ) {
+						$parsed[] = array(
+							'value' => $term->term_id,
+							'label' => $term->name,
+						);
+					}
+				}
+
+				$filter[ $key ] = $parsed;
 			}
+		}
+
+		// Prepare the user data.
+		$include_authors = isset( $filter['include_authors'] ) ? $filter['include_authors'] : array();
+		$exclude_authors = isset( $filter['exclude_authors'] ) ? $filter['exclude_authors'] : array();
+
+		$array = array(
+			'include_authors' => $include_authors,
+			'exclude_authors' => $exclude_authors,
+		);
+
+		foreach ( $array as $key => $values ) {
+			if ( $values ) {
+				$parsed = array();
+
+				foreach ( $values as $id ) {
+					$user = get_userdata( $id );
+
+					if ( $user && ! is_wp_error( $user ) ) {
+						$parsed[] = array(
+							'value' => $user->ID,
+							'label' => $user->display_name,
+						);
+					}
+				}
+
+				$filter[ $key ] = $parsed;
+			}
+		}
+
+		// Prepare user roles.
+		$include_user_roles = isset( $filter['include_user_roles'] ) ? $filter['include_user_roles'] : array();
+
+		if ( $include_user_roles ) {
+			$roles  = WCAPF_Product_Filter_Utils::get_user_roles();
+			$parsed = array();
+
+			foreach ( $include_user_roles as $role ) {
+				$parsed[] = array(
+					'value' => $role,
+					'label' => $roles[ $role ],
+				);
+			}
+
+			$filter['include_user_roles'] = $parsed;
 		}
 
 		return $filter;
@@ -179,10 +263,13 @@ class WCAPF_API {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
 		}
 
+		// Sanitize form data.
+		$form_settings = array_map( 'sanitize_text_field', (array) $form_settings );
+
 		$post_arr = array(
 			'ID'           => $form_id,
 			'post_title'   => $form_title,
-			'post_content' => wp_json_encode( $form_settings, JSON_UNESCAPED_UNICODE ),
+			'post_content' => maybe_serialize( $form_settings ),
 		);
 
 		$new_form_id = wp_update_post( $post_arr, true );
@@ -335,17 +422,17 @@ class WCAPF_API {
 				$filter['field_key'] = $post_name;
 
 				/**
-				 * The hooks for altering/sanitizing the filter data.
-				 *
-				 * TODO: Parse the manual options.
+				 * The hooks for altering the filter data.
 				 */
-				$filter = apply_filters( 'wcapf_filter_data', $filter );
-
-				$filter = $this->parse_filter_settings( $filter );
+				$sanitized = apply_filters(
+					'wcapf_sanitize_filter_data',
+					$this->sanitize_filter_data( $filter ),
+					$filter
+				);
 
 				$post_arr = array(
 					'ID'           => $new_filter_id,
-					'post_content' => wp_json_encode( $filter, JSON_UNESCAPED_UNICODE ),
+					'post_content' => maybe_serialize( $sanitized ),
 					'post_name'    => $post_name,
 					'menu_order'   => $filter_order,
 				);
@@ -357,7 +444,7 @@ class WCAPF_API {
 				$new_filter_id = wp_update_post( $post_arr, true );
 
 				if ( ! is_wp_error( $new_filter_id ) ) {
-					$filters[] = $filter;
+					$filters[] = $sanitized;
 				}
 			}
 		}
@@ -369,7 +456,7 @@ class WCAPF_API {
 		$filters_for_ui = array();
 
 		foreach ( $filters as $filter ) {
-			$filters_for_ui[] = $this->parse_filter_settings( $filter, false );
+			$filters_for_ui[] = $this->parse_filter_data( $filter );
 		}
 
 		$response = array(
@@ -379,6 +466,84 @@ class WCAPF_API {
 		);
 
 		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Sanitize the filter data before saving into the database.
+	 *
+	 * @param array $filter The filter data.
+	 *
+	 * @return array
+	 */
+	private function sanitize_filter_data( $filter ) {
+		$float_fields  = array( 'min_value', 'max_value', 'step' );
+		$absint_fields = array( 'decimal_places', 'soft_limit', 'max_height' );
+
+		$limit_fields = array(
+			'include_terms',
+			'exclude_terms',
+			'include_authors',
+			'exclude_authors',
+			'include_user_roles',
+		);
+
+		$single_array_fields = array( 'parent_term' );
+
+		$value_may_have_spaces = array(
+			'value_prefix',
+			'value_postfix',
+			'values_separator',
+			'text_before_min_value',
+			'text_before_max_value',
+		);
+
+		$markup_fields = array( 'help_text' );
+
+		$sanitized_filter = array();
+
+		foreach ( $filter as $key => $value ) {
+			if ( in_array( $key, $float_fields ) ) {
+				$value = floatval( $value );
+
+				if ( 'min_value' === $key && ! $value ) {
+					$value = 0;
+				}
+
+				if ( 'max_value' === $key && ! $value ) {
+					$value = 100;
+				}
+
+				if ( 'step' === $key && ! $value ) {
+					$value = 1;
+				}
+			} elseif ( in_array( $key, $absint_fields ) ) {
+				$value = absint( $value );
+			} elseif ( in_array( $key, $limit_fields ) ) {
+				// Pick the ids only.
+				$value = wp_list_pluck( $value, 'value' );
+				$value = array_map( 'sanitize_text_field', $value );
+			} elseif ( in_array( $key, $single_array_fields ) ) {
+				$value = isset( $value['value'] ) ? $value['value'] : '';
+			} elseif ( in_array( $key, $value_may_have_spaces ) ) {
+				$with_markup = array( 'values_separator', 'text_before_min_value', 'text_before_max_value' );
+
+				if ( in_array( $key, $with_markup ) ) {
+					$value = wp_kses_data( $value );
+				} else {
+					$value = sanitize_text_field( $value );
+				}
+
+				$value = str_replace( ' ', '&nbsp;', $value );
+			} elseif ( in_array( $key, $markup_fields ) ) {
+				$value = wp_kses_data( $value );
+			} else {
+				$value = sanitize_text_field( $value );
+			}
+
+			$sanitized_filter[ $key ] = $value;
+		}
+
+		return $sanitized_filter;
 	}
 
 	public function get_form_preview() {
@@ -476,8 +641,8 @@ class WCAPF_API {
 		if ( $terms && ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term_id => $term_name ) {
 				$response[] = array(
-					'value' => $term_id,
 					'label' => $term_name,
+					'value' => absint( $term_id ),
 				);
 			}
 		}
@@ -511,7 +676,7 @@ class WCAPF_API {
 			foreach ( $users as $user ) {
 				$response[] = array(
 					'label' => $user->display_name,
-					'value' => $user->ID,
+					'value' => absint( $user->ID ),
 				);
 			}
 		}

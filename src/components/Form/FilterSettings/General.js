@@ -298,7 +298,7 @@ const General = ({ index }) => {
 				<Radio
 					id={'date_input_format'}
 					index={index}
-					label={__('Date Input Format', 'wc-ajax-product-filter')}
+					label={__('Date Format', 'wc-ajax-product-filter')}
 					description={__(
 						'Determines the format of the date saved in the database.',
 						'wc-ajax-product-filter'

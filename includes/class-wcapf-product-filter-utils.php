@@ -555,4 +555,39 @@ class WCAPF_Product_Filter_Utils {
 		return $filter_active;
 	}
 
+	/**
+	 * Adjust the parent term id for hierarchy terms.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance
+	 * @param array                $terms
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function adjust_parent_id_for_hierarchy_terms( $field_instance, $terms ) {
+		$modified = array();
+		$taxonomy = $field_instance->taxonomy;
+
+		foreach ( $terms as $_id => $_data ) {
+			if ( ! array_key_exists( $_data['parent_id'], $terms ) ) {
+				$ancestors = get_ancestors( $_id, $taxonomy );
+				$parent_id = 0;
+
+				foreach ( $ancestors as $ancestor ) {
+					if ( array_key_exists( $ancestor, $terms ) ) {
+						$parent_id = $ancestor;
+						break;
+					}
+				}
+
+				$_data['parent_id'] = $parent_id;
+			}
+
+			$modified[ $_id ] = $_data;
+		}
+
+		return $modified;
+	}
+
 }
