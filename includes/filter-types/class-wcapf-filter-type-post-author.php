@@ -29,34 +29,37 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Prepare the meta values for the post meta.
+	 * Prepare the post author filter items.
 	 *
 	 * @return array
 	 */
 	protected function prepare_items() {
-		$_items = array();
+		$args = array(
+			'fields' => array( 'ID', 'display_name' ),
+			'number' => 999, // We are limiting the maximum number of users considering larger sites.
+		);
 
-		if ( 'automatically' === $this->field->get_options ) {
-			$field = $this->field;
-			$args  = array( 'number' => 999 ); // We are limiting the maximum number of users considering larger sites.
+		$args   = apply_filters( 'wcapf_get_post_author_args', $args, $this->field );
+		$_users = get_users( $args );
+		$users  = array();
 
-			$limit_options = $field->get_sub_field_value( 'limit_options' );
+		foreach ( $_users as $user ) {
+			/**
+			 * @var WP_User $user
+			 */
+			$user_id = $user->ID;
+			$name    = $user->display_name;
 
-			if ( 'include' === $limit_options ) {
-				$args['include'] = $field->get_sub_field_value( 'include_authors' );
-			} elseif ( 'exclude' === $limit_options ) {
-				$args['exclude'] = $field->get_sub_field_value( 'exclude_authors' );
-			} elseif ( 'user_roles' === $limit_options ) {
-				$args['role__in'] = $field->get_sub_field_value( 'include_user_roles' );
-			}
+			$author = array(
+				'id'    => $user_id,
+				'name'  => $name,
+				'count' => 0,
+			);
 
-			$args   = apply_filters( 'wcapf_get_post_author_args', $args );
-			$column = apply_filters( 'wcapf_post_author_filter_name_column', 'display_name' );
-
-			$_items = WCAPF_Product_Filter_Utils::get_users( $args, $column );
+			$users[ $user_id ] = $author;
 		}
 
-		$items = $this->get_filtered_product_counts( $_items );
+		$items = $this->get_filtered_product_counts( $users );
 		$items = $this->filter_by_hide_empty( $items );
 
 		return apply_filters( 'wcapf_post_author_items', $items, $this->field );
