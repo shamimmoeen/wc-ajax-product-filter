@@ -11,7 +11,27 @@ import Select from '../../Field/Select';
 import { Notice } from '@wordpress/components';
 
 const animationOptions = [
-	{ label: __('None', 'wc-ajax-product-filter'), value: 'none' },
+	{
+		label: __('Overlay only', 'wc-ajax-product-filter'),
+		value: 'overlay',
+	},
+	{
+		label: __('Overlay + Loading Icon', 'wc-ajax-product-filter'),
+		value: 'overlay-with-icon',
+	},
+	{
+		label: __('Overlay + Loading Text', 'wc-ajax-product-filter'),
+		value: 'overlay-with-text',
+		isPro: true,
+	},
+	{
+		label: __('None', 'wc-ajax-product-filter'),
+		value: 'none',
+		isPro: true,
+	},
+];
+
+const loadingIcons = [
 	{
 		label: __('Custom', 'wc-ajax-product-filter'),
 		value: 'custom',
@@ -33,6 +53,21 @@ const animationOptions = [
 	},
 ];
 
+const scrollOnOptions = [
+	{
+		label: __('All', 'wc-ajax-product-filter'),
+		value: 'all',
+	},
+	{
+		label: __('Filter', 'wc-ajax-product-filter'),
+		value: 'filter',
+	},
+	{
+		label: __('Paginate', 'wc-ajax-product-filter'),
+		value: 'paginate',
+	},
+];
+
 const LoaderScrollTo = () => {
 	const { state, dispatch } = useSettings();
 	const {
@@ -47,14 +82,20 @@ const LoaderScrollTo = () => {
 		settings: {
 			disable_ajax,
 			loading_animation,
+			loading_icon,
 			loading_image,
 			loading_image_src,
 			loading_image_size,
+			loading_text,
+			loading_text_size,
+			loading_text_color,
 			loading_overlay_color,
+			disable_filter_selection,
 			wait_cursor,
 			scroll_to_top_offset,
 			scroll_window,
 			scroll_window_custom_element,
+			scroll_on,
 			disable_scroll_animation,
 		},
 	} = state;
@@ -67,23 +108,29 @@ const LoaderScrollTo = () => {
 		handleImageRemove('loading_image');
 	};
 
+	const handleLoadingTextColorChange = (value) => {
+		handleTextFieldChange(value, 'loading_text_color');
+	};
+
 	const handleOverlayColorChange = (value) => {
 		handleTextFieldChange(value, 'loading_overlay_color');
 	};
 
-	let loadingAnimation;
+	const loadingAnimation = animationOptions.find(
+		(option) => loading_animation === option.value
+	);
 
-	if ('none' === loading_animation || 'custom' === loading_animation) {
-		loadingAnimation = animationOptions.find(
-			(option) => option.value === loading_animation
+	let loadingIcon;
+
+	if ('custom' === loading_icon) {
+		loadingIcon = loadingIcons.find(
+			(option) => option.value === loading_icon
 		);
 	} else {
-		const icons = animationOptions.find(
-			(option) => option.value === 'icons'
-		);
+		const icons = loadingIcons.find((option) => option.value === 'icons');
 
-		loadingAnimation = icons.options.find(
-			(option) => option.value === loading_animation
+		loadingIcon = icons.options.find(
+			(option) => option.value === loading_icon
 		);
 	}
 
@@ -117,26 +164,47 @@ const LoaderScrollTo = () => {
 				renderAsFormField
 			/>
 
-			{'custom' === loading_animation && (
-				<ImagePicker
-					label={__('Custom loading image', 'wc-ajax-product-filter')}
+			{'overlay-with-icon' === loading_animation && (
+				<Select
+					id={'loading_icon'}
+					label={__('Loading Icon', 'wc-ajax-product-filter')}
 					description={__(
-						'Upload the loading image. <b>Note:</b> If the SVG image does not animate, try to upload by disabling sanitization.',
+						'Select the loading icon from available icons.',
 						'wc-ajax-product-filter'
 					)}
-					imageId={loading_image}
-					imageUrl={loading_image_src}
-					onChange={handleLoaderImageChange}
-					onClear={handleLoaderImageClear}
+					value={loadingIcon}
+					options={loadingIcons}
+					onChange={(selected) =>
+						handleSelectChange(selected, 'loading_icon')
+					}
+					renderAsFormField
 				/>
 			)}
 
-			{'none' !== loading_animation && (
+			{'overlay-with-icon' === loading_animation &&
+				'custom' === loading_icon && (
+					<ImagePicker
+						label={__(
+							'Custom loading icon',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Upload the loading icon. <b>Note:</b> If the SVG icon does not animate, try to upload by disabling sanitization.',
+							'wc-ajax-product-filter'
+						)}
+						imageId={loading_image}
+						imageUrl={loading_image_src}
+						onChange={handleLoaderImageChange}
+						onClear={handleLoaderImageClear}
+					/>
+				)}
+
+			{'overlay-with-icon' === loading_animation && (
 				<Number
 					id={'loading_image_size'}
-					label={__('Loading image size', 'wc-ajax-product-filter')}
+					label={__('Icon Size', 'wc-ajax-product-filter')}
 					description={__(
-						'Adjust the loading image size in px. Default is 120.',
+						'Adjust the loading icon size in px. Default is 120.',
 						'wc-ajax-product-filter'
 					)}
 					value={loading_image_size}
@@ -145,24 +213,80 @@ const LoaderScrollTo = () => {
 				/>
 			)}
 
-			<ColorInput
-				label={__('Loading Overlay Color', 'wc-ajax-product-filter')}
-				description={__(
-					'Adjust the loading overlay color. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.',
-					'wc-ajax-product-filter'
-				)}
-				value={loading_overlay_color}
-				onChange={handleOverlayColorChange}
-				isPro
-				disableAlpha={false}
-				renderAsFormField
-			/>
+			{'overlay-with-text' === loading_animation && (
+				<>
+					<Text
+						id={'loading_text'}
+						label={__('Loading Text', 'wc-ajax-product-filter')}
+						description={__(
+							'Displays a text element in the loading overlay. If empty default will be used.',
+							'wc-ajax-product-filter'
+						)}
+						value={loading_text}
+						onChange={handleTextFieldChange}
+					/>
+
+					<Number
+						id={'loading_text_size'}
+						label={__('Text Size', 'wc-ajax-product-filter')}
+						description={__(
+							'Adjust the loading text size in px. Default is 60.',
+							'wc-ajax-product-filter'
+						)}
+						value={loading_text_size}
+						onChange={handleTextFieldChange}
+						type={'number'}
+					/>
+
+					<ColorInput
+						label={__('Text Color', 'wc-ajax-product-filter')}
+						description={__(
+							'Adjust the loading text color. Default is #666666.',
+							'wc-ajax-product-filter'
+						)}
+						value={loading_text_color}
+						onChange={handleLoadingTextColorChange}
+						renderAsFormField
+					/>
+				</>
+			)}
+
+			{'none' !== loading_animation && (
+				<ColorInput
+					label={__('Overlay Color', 'wc-ajax-product-filter')}
+					description={__(
+						'Adjust the loading overlay color. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.',
+						'wc-ajax-product-filter'
+					)}
+					value={loading_overlay_color}
+					onChange={handleOverlayColorChange}
+					isPro
+					disableAlpha={false}
+					renderAsFormField
+				/>
+			)}
+
+			{'none' === loading_animation && (
+				<Checkbox
+					id={'disable_filter_selection'}
+					label={__(
+						'Disable filter selection',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Enable this to disable filter selection while the results are fetching.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={disable_filter_selection}
+					onChange={handleCheckboxChange}
+				/>
+			)}
 
 			<Checkbox
 				id={'wait_cursor'}
 				label={__('Wait Cursor', 'wc-ajax-product-filter')}
 				description={__(
-					'Whether to show a wait cursor while the results are fetching.',
+					'Enable this to show a wait cursor while the results are fetching.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={wait_cursor}
@@ -205,10 +329,26 @@ const LoaderScrollTo = () => {
 						type={'number'}
 					/>
 
+					<Select
+						id={'scroll_on'}
+						label={__('Scroll on', 'wc-ajax-product-filter')}
+						description={__(
+							'Select the loading icon from available icons.',
+							'wc-ajax-product-filter'
+						)}
+						value={loadingIcon}
+						options={scrollOnOptions}
+						onChange={(selected) =>
+							handleSelectChange(selected, 'scroll_on')
+						}
+						renderAsFormField
+						isPro
+					/>
+
 					<Checkbox
 						id={'disable_scroll_animation'}
 						label={__(
-							'Disable scroll window animation',
+							'Disable scroll animation',
 							'wc-ajax-product-filter'
 						)}
 						description={__(
@@ -217,6 +357,7 @@ const LoaderScrollTo = () => {
 						)}
 						isChecked={disable_scroll_animation}
 						onChange={handleCheckboxChange}
+						isPro
 					/>
 				</>
 			)}

@@ -937,7 +937,13 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   min-width: 70px;
 }
 .__settings_tab .__single_select.loading_animation {
-  min-width: 170px;
+  min-width: 220px;
+}
+.__settings_tab .__single_select.loading_icon {
+  min-width: 150px;
+}
+.__settings_tab .__single_select.scroll_on {
+  min-width: 100px;
 }
 .__settings_tab .ajax-disabled-info.components-notice {
   margin: 0 0 2em;
@@ -957,7 +963,7 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   min-width: 170px;
 }
 .__settings_tab .__scroll_window_to .__input_wrapper .__single_select.scroll_window_when {
-  min-width: 100px;
+  min-width: 200px;
 }
 .__settings_tab .__scroll_window_to .__input_wrapper::after, .__settings_tab .__scroll_window_to .__input_wrapper::before {
   content: "";
