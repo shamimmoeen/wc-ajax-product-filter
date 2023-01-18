@@ -149,6 +149,7 @@ class WCAPF {
 		// Loads the hooks.
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-api.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-hooks.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-post-author-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-price-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-rating-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-taxonomy-filter.php';

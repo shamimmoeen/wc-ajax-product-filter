@@ -11,7 +11,7 @@
 /**
  * WCAPF_Taxonomy_Filter class.
  *
- * @since 3.0.0
+ * @since 4.0.0
  */
 class WCAPF_Taxonomy_Filter {
 
@@ -62,6 +62,10 @@ class WCAPF_Taxonomy_Filter {
 	 */
 	public function limit_taxonomy_terms( $args, $field_instance ) {
 		if ( 'rating' === $field_instance->type ) {
+			return $args;
+		}
+
+		if ( 'manual_entry' === $field_instance->get_options ) {
 			return $args;
 		}
 
@@ -140,6 +144,10 @@ class WCAPF_Taxonomy_Filter {
 	 */
 	public function adjust_parent_term_id( $terms, $field_instance ) {
 		if ( 'rating' === $field_instance->type ) {
+			return $terms;
+		}
+
+		if ( 'manual_entry' === $field_instance->get_options ) {
 			return $terms;
 		}
 
