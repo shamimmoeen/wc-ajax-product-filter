@@ -36,7 +36,15 @@
         }
 
         &.loading_animation {
-            min-width: 170px;
+            min-width: 220px;
+        }
+
+        &.loading_icon {
+            min-width: 150px;
+        }
+
+        &.scroll_on {
+            min-width: 100px;
         }
     }
 
@@ -64,7 +72,7 @@
                 }
 
                 &.scroll_window_when {
-                    min-width: 100px;
+                    min-width: 200px;
                 }
             }
 

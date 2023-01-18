@@ -5,16 +5,16 @@ import useSettingsData from '../useSettingsData';
 
 const scrollWindowOptions = [
 	{
-		label: __('None', 'wc-ajax-product-filter'),
-		value: 'none',
-	},
-	{
 		label: __('Results container', 'wc-ajax-product-filter'),
 		value: 'results',
 	},
 	{
 		label: __('Custom element', 'wc-ajax-product-filter'),
 		value: 'custom',
+	},
+	{
+		label: __('None', 'wc-ajax-product-filter'),
+		value: 'none',
 	},
 ];
 
@@ -35,16 +35,12 @@ const scrollWindowForOptions = [
 
 const scrollWindowWhenOptions = [
 	{
-		label: __('All', 'wc-ajax-product-filter'),
-		value: 'all',
+		label: __('After updating the results', 'wc-ajax-product-filter'),
+		value: 'after',
 	},
 	{
-		label: __('Filter', 'wc-ajax-product-filter'),
-		value: 'filter',
-	},
-	{
-		label: __('Paginate', 'wc-ajax-product-filter'),
-		value: 'paginate',
+		label: __('Immediately', 'wc-ajax-product-filter'),
+		value: 'immediately',
 	},
 ];
 

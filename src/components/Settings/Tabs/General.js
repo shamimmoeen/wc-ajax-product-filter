@@ -26,7 +26,7 @@ const removeEmptyOptions = [
 		value: 'remove',
 	},
 	{
-		label: __('Show as disabled', 'wc-ajax-product-filter'),
+		label: __('Show but disable selection', 'wc-ajax-product-filter'),
 		value: 'disable',
 		isPro: true,
 	},
