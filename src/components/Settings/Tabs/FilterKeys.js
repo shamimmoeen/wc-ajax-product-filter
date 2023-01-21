@@ -53,7 +53,7 @@ const FilterKeys = () => {
 		<>
 			<ProFeaturesNotice
 				message={__(
-					'Changing the order of filters keys is a PRO feature.',
+					'Changing the order of filter keys is a PRO feature.',
 					'wc-ajax-product-filter'
 				)}
 			/>

@@ -9,6 +9,11 @@ import ScrollWindowTo from './ScrollWindowTo';
 import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
 import { Notice } from '@wordpress/components';
+import ProFeaturesNotice from '../../ProFeaturesNotice';
+import { foundProVersion } from '../../utils';
+
+// const foundPro = true;
+const foundPro = foundProVersion();
 
 const animationOptions = [
 	{
@@ -19,39 +24,58 @@ const animationOptions = [
 		label: __('Overlay + Loading Icon', 'wc-ajax-product-filter'),
 		value: 'overlay-with-icon',
 	},
-	{
+];
+
+if (foundPro) {
+	animationOptions.push({
 		label: __('Overlay + Loading Text', 'wc-ajax-product-filter'),
 		value: 'overlay-with-text',
 		isPro: true,
-	},
-	{
+	});
+
+	animationOptions.push({
 		label: __('None', 'wc-ajax-product-filter'),
 		value: 'none',
 		isPro: true,
-	},
-];
+	});
+}
 
-const loadingIcons = [
-	{
-		label: __('Custom', 'wc-ajax-product-filter'),
-		value: 'custom',
-		isPro: true,
-	},
-	{
-		label: 'Icons',
-		value: 'icons',
-		options: [
-			{ label: 'Dual Ring', value: 'Dual-Ring' },
-			{ label: 'Eclipse', value: 'Eclipse' },
-			{ label: 'Gear', value: 'Gear' },
-			{ label: 'Reload', value: 'Reload' },
-			{ label: 'Ripple', value: 'Ripple' },
-			{ label: 'Rolling', value: 'Rolling' },
-			{ label: 'Spin', value: 'Spin' },
-			{ label: 'Spinner', value: 'Spinner' },
-		],
-	},
-];
+let loadingIcons;
+
+if (foundPro) {
+	loadingIcons = [
+		{
+			label: __('Custom', 'wc-ajax-product-filter'),
+			value: 'custom',
+			isPro: true,
+		},
+		{
+			label: 'Icons',
+			value: 'icons',
+			options: [
+				{ label: 'Dual Ring', value: 'Dual-Ring' },
+				{ label: 'Eclipse', value: 'Eclipse' },
+				{ label: 'Gear', value: 'Gear' },
+				{ label: 'Reload', value: 'Reload' },
+				{ label: 'Ripple', value: 'Ripple' },
+				{ label: 'Rolling', value: 'Rolling' },
+				{ label: 'Spin', value: 'Spin' },
+				{ label: 'Spinner', value: 'Spinner' },
+			],
+		},
+	];
+} else {
+	loadingIcons = [
+		{ label: 'Dual Ring', value: 'Dual-Ring' },
+		{ label: 'Eclipse', value: 'Eclipse' },
+		{ label: 'Gear', value: 'Gear' },
+		{ label: 'Reload', value: 'Reload' },
+		{ label: 'Ripple', value: 'Ripple' },
+		{ label: 'Rolling', value: 'Rolling' },
+		{ label: 'Spin', value: 'Spin' },
+		{ label: 'Spinner', value: 'Spinner' },
+	];
+}
 
 const scrollOnOptions = [
 	{
@@ -122,20 +146,39 @@ const LoaderScrollTo = () => {
 
 	let loadingIcon;
 
-	if ('custom' === loading_icon) {
+	if (!foundPro) {
 		loadingIcon = loadingIcons.find(
 			(option) => option.value === loading_icon
 		);
 	} else {
-		const icons = loadingIcons.find((option) => option.value === 'icons');
+		if ('custom' === loading_icon) {
+			loadingIcon = loadingIcons.find(
+				(option) => option.value === loading_icon
+			);
+		} else {
+			const icons = loadingIcons.find(
+				(option) => option.value === 'icons'
+			);
 
-		loadingIcon = icons.options.find(
-			(option) => option.value === loading_icon
-		);
+			loadingIcon = icons.options.find(
+				(option) => option.value === loading_icon
+			);
+		}
 	}
+
+	const scrollOn = scrollOnOptions.find(
+		(option) => scroll_on === option.value
+	);
 
 	return (
 		<>
+			<ProFeaturesNotice
+				message={__(
+					'There are settings available only in the PRO version.',
+					'wc-ajax-product-filter'
+				)}
+			/>
+
 			{'1' === disable_ajax && (
 				<Notice
 					status='info'
@@ -181,7 +224,8 @@ const LoaderScrollTo = () => {
 				/>
 			)}
 
-			{'overlay-with-icon' === loading_animation &&
+			{foundPro &&
+				'overlay-with-icon' === loading_animation &&
 				'custom' === loading_icon && (
 					<ImagePicker
 						label={__(
@@ -213,7 +257,7 @@ const LoaderScrollTo = () => {
 				/>
 			)}
 
-			{'overlay-with-text' === loading_animation && (
+			{foundPro && 'overlay-with-text' === loading_animation && (
 				<>
 					<Text
 						id={'loading_text'}
@@ -251,7 +295,7 @@ const LoaderScrollTo = () => {
 				</>
 			)}
 
-			{'none' !== loading_animation && (
+			{foundPro && 'none' !== loading_animation && (
 				<ColorInput
 					label={__('Overlay Color', 'wc-ajax-product-filter')}
 					description={__(
@@ -266,7 +310,20 @@ const LoaderScrollTo = () => {
 				/>
 			)}
 
-			{'none' === loading_animation && (
+			{'none' !== loading_animation && (
+				<Checkbox
+					id={'wait_cursor'}
+					label={__('Wait Cursor', 'wc-ajax-product-filter')}
+					description={__(
+						'Enable this to show a wait cursor while the results are fetching.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={wait_cursor}
+					onChange={handleCheckboxChange}
+				/>
+			)}
+
+			{foundPro && 'none' === loading_animation && (
 				<Checkbox
 					id={'disable_filter_selection'}
 					label={__(
@@ -281,17 +338,6 @@ const LoaderScrollTo = () => {
 					onChange={handleCheckboxChange}
 				/>
 			)}
-
-			<Checkbox
-				id={'wait_cursor'}
-				label={__('Wait Cursor', 'wc-ajax-product-filter')}
-				description={__(
-					'Enable this to show a wait cursor while the results are fetching.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={wait_cursor}
-				onChange={handleCheckboxChange}
-			/>
 
 			<ScrollWindowTo />
 
@@ -314,6 +360,24 @@ const LoaderScrollTo = () => {
 
 			{'none' !== scroll_window && (
 				<>
+					{foundPro && (
+						<Select
+							id={'scroll_on'}
+							label={__('Scroll on', 'wc-ajax-product-filter')}
+							description={__(
+								'Determines when to scroll on.',
+								'wc-ajax-product-filter'
+							)}
+							value={scrollOn}
+							options={scrollOnOptions}
+							onChange={(selected) =>
+								handleSelectChange(selected, 'scroll_on')
+							}
+							renderAsFormField
+							isPro
+						/>
+					)}
+
 					<Number
 						id={'scroll_to_top_offset'}
 						label={__(
@@ -321,7 +385,7 @@ const LoaderScrollTo = () => {
 							'wc-ajax-product-filter'
 						)}
 						description={__(
-							'If you have a sticky header or page title that you want to include in the viewport then give the height of those in px.',
+							'If you have a sticky header or some space that you want to include in the viewport then give the height of those in px.',
 							'wc-ajax-product-filter'
 						)}
 						value={scroll_to_top_offset}
@@ -329,36 +393,22 @@ const LoaderScrollTo = () => {
 						type={'number'}
 					/>
 
-					<Select
-						id={'scroll_on'}
-						label={__('Scroll on', 'wc-ajax-product-filter')}
-						description={__(
-							'Select the loading icon from available icons.',
-							'wc-ajax-product-filter'
-						)}
-						value={loadingIcon}
-						options={scrollOnOptions}
-						onChange={(selected) =>
-							handleSelectChange(selected, 'scroll_on')
-						}
-						renderAsFormField
-						isPro
-					/>
-
-					<Checkbox
-						id={'disable_scroll_animation'}
-						label={__(
-							'Disable scroll animation',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Check this to disable the scroll window animation.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={disable_scroll_animation}
-						onChange={handleCheckboxChange}
-						isPro
-					/>
+					{foundPro && (
+						<Checkbox
+							id={'disable_scroll_animation'}
+							label={__(
+								'Disable scroll animation',
+								'wc-ajax-product-filter'
+							)}
+							description={__(
+								'Check this to disable the scroll window animation.',
+								'wc-ajax-product-filter'
+							)}
+							isChecked={disable_scroll_animation}
+							onChange={handleCheckboxChange}
+							isPro
+						/>
+					)}
 				</>
 			)}
 		</>

@@ -3,6 +3,7 @@ import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
 import SelectMulti from '../../Field/SelectMulti';
 import useSettingsData from '../useSettingsData';
+import ProFeaturesNotice from '../../ProFeaturesNotice';
 
 const userRoles = wcapf_admin_params.user_roles;
 
@@ -26,6 +27,13 @@ const Integration = () => {
 
 	return (
 		<>
+			<ProFeaturesNotice
+				message={__(
+					'Upgrade to PRO to show the filters horizontally on top of the products.',
+					'wc-ajax-product-filter'
+				)}
+			/>
+
 			<Checkbox
 				id={'active_filters_on_top'}
 				label={__(

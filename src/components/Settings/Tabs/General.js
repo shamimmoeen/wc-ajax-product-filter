@@ -26,7 +26,7 @@ const removeEmptyOptions = [
 		value: 'remove',
 	},
 	{
-		label: __('Show but disable selection', 'wc-ajax-product-filter'),
+		label: __('Show and disable selection', 'wc-ajax-product-filter'),
 		value: 'disable',
 		isPro: true,
 	},
@@ -94,9 +94,9 @@ const General = () => {
 
 			<Checkbox
 				id={'remove_empty_filters'}
-				label={__('Remove empty filters', 'wc-ajax-product-filter')}
+				label={__('Hide empty filters', 'wc-ajax-product-filter')}
 				description={__(
-					"Whether to remove the filters that don't have any options.",
+					"Whether to hide the filters that don't have any options(or min & max value is equal for number range filters).",
 					'wc-ajax-product-filter'
 				)}
 				isChecked={remove_empty_filters}
