@@ -18,6 +18,7 @@ const Appearance = () => {
 			use_chosen,
 			attach_chosen_on_sorting,
 			improve_native_select,
+			improve_scrollbar,
 		},
 	} = state;
 
@@ -94,6 +95,17 @@ const Appearance = () => {
 					onChange={handleCheckboxChange}
 				/>
 			)}
+
+			<Checkbox
+				id={'improve_scrollbar'}
+				label={__('Improve scrollbar', 'wc-ajax-product-filter')}
+				description={__(
+					'Enable this to improve the scrollbar that appears when max height is applied to a filter.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={improve_scrollbar}
+				onChange={handleCheckboxChange}
+			/>
 		</>
 	);
 };

@@ -937,7 +937,7 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
   min-width: 70px;
 }
 .__settings_tab .__single_select.loading_animation {
-  min-width: 220px;
+  min-width: 180px;
 }
 .__settings_tab .__single_select.loading_icon {
   min-width: 150px;
