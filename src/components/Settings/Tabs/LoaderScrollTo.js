@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { useSettings } from '../SettingsContext';
+import useSettingsData from '../useSettingsData';
 import Text from '../../Field/Text';
 import Checkbox from '../../Field/Checkbox';
-import useSettingsData from '../useSettingsData';
 import Number from '../../Field/Number';
 import ImagePicker from '../../Field/ImagePicker';
 import ScrollWindowTo from './ScrollWindowTo';
@@ -12,8 +12,7 @@ import { Notice } from '@wordpress/components';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
 import { foundProVersion } from '../../utils';
 
-// const foundPro = true;
-const foundPro = foundProVersion();
+const WCAPF_PRO = foundProVersion();
 
 const animationOptions = [
 	{
@@ -26,7 +25,7 @@ const animationOptions = [
 	},
 ];
 
-if (foundPro) {
+if (WCAPF_PRO) {
 	animationOptions.push({
 		label: __('Overlay + Loading Text', 'wc-ajax-product-filter'),
 		value: 'overlay-with-text',
@@ -42,7 +41,7 @@ if (foundPro) {
 
 let loadingIcons;
 
-if (foundPro) {
+if (WCAPF_PRO) {
 	loadingIcons = [
 		{
 			label: __('Custom', 'wc-ajax-product-filter'),
@@ -146,7 +145,7 @@ const LoaderScrollTo = () => {
 
 	let loadingIcon;
 
-	if (!foundPro) {
+	if (!WCAPF_PRO) {
 		loadingIcon = loadingIcons.find(
 			(option) => option.value === loading_icon
 		);
@@ -201,9 +200,7 @@ const LoaderScrollTo = () => {
 				)}
 				value={loadingAnimation}
 				options={animationOptions}
-				onChange={(selected) =>
-					handleSelectChange(selected, 'loading_animation')
-				}
+				onChange={handleSelectChange}
 				renderAsFormField
 			/>
 
@@ -217,14 +214,12 @@ const LoaderScrollTo = () => {
 					)}
 					value={loadingIcon}
 					options={loadingIcons}
-					onChange={(selected) =>
-						handleSelectChange(selected, 'loading_icon')
-					}
+					onChange={handleSelectChange}
 					renderAsFormField
 				/>
 			)}
 
-			{foundPro &&
+			{WCAPF_PRO &&
 				'overlay-with-icon' === loading_animation &&
 				'custom' === loading_icon && (
 					<ImagePicker
@@ -248,7 +243,7 @@ const LoaderScrollTo = () => {
 					id={'loading_image_size'}
 					label={__('Icon Size', 'wc-ajax-product-filter')}
 					description={__(
-						'Adjust the loading icon size in px. Default is 120.',
+						'Adjust the loading icon size in px. Default is 60.',
 						'wc-ajax-product-filter'
 					)}
 					value={loading_image_size}
@@ -257,7 +252,7 @@ const LoaderScrollTo = () => {
 				/>
 			)}
 
-			{foundPro && 'overlay-with-text' === loading_animation && (
+			{WCAPF_PRO && 'overlay-with-text' === loading_animation && (
 				<>
 					<Text
 						id={'loading_text'}
@@ -295,7 +290,7 @@ const LoaderScrollTo = () => {
 				</>
 			)}
 
-			{foundPro && 'none' !== loading_animation && (
+			{WCAPF_PRO && 'none' !== loading_animation && (
 				<ColorInput
 					label={__('Overlay Color', 'wc-ajax-product-filter')}
 					description={__(
@@ -323,7 +318,7 @@ const LoaderScrollTo = () => {
 				/>
 			)}
 
-			{foundPro && 'none' === loading_animation && (
+			{WCAPF_PRO && 'none' === loading_animation && (
 				<Checkbox
 					id={'disable_filter_selection'}
 					label={__(
@@ -360,7 +355,7 @@ const LoaderScrollTo = () => {
 
 			{'none' !== scroll_window && (
 				<>
-					{foundPro && (
+					{WCAPF_PRO && (
 						<Select
 							id={'scroll_on'}
 							label={__('Scroll on', 'wc-ajax-product-filter')}
@@ -370,9 +365,7 @@ const LoaderScrollTo = () => {
 							)}
 							value={scrollOn}
 							options={scrollOnOptions}
-							onChange={(selected) =>
-								handleSelectChange(selected, 'scroll_on')
-							}
+							onChange={handleSelectChange}
 							renderAsFormField
 							isPro
 						/>
@@ -393,11 +386,11 @@ const LoaderScrollTo = () => {
 						type={'number'}
 					/>
 
-					{foundPro && (
+					{WCAPF_PRO && (
 						<Checkbox
 							id={'disable_scroll_animation'}
 							label={__(
-								'Disable scroll animation',
+								'Disable scroll window animation',
 								'wc-ajax-product-filter'
 							)}
 							description={__(

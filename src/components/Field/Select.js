@@ -20,6 +20,7 @@ const SimpleReactSelect = ({
 	classes,
 	isSearchable,
 	portalTarget,
+	maxMenuHeight,
 	isDisabled,
 }) => {
 	return (
@@ -44,6 +45,7 @@ const SimpleReactSelect = ({
 			className={classes}
 			isDisabled={isDisabled}
 			menuPortalTarget={portalTarget}
+			maxMenuHeight={maxMenuHeight}
 			classNamePrefix='__react_select'
 			theme={(theme) => ({
 				...theme,
@@ -68,6 +70,7 @@ const Select = ({
 	isSearchable = false,
 	renderAsFormField = false,
 	portalTarget = false,
+	maxMenuHeight,
 	isPro = false,
 	isDisabled = false,
 	tooltip,
@@ -101,6 +104,7 @@ const Select = ({
 								isSearchable={isSearchable}
 								isDisabled={isDisabled}
 								portalTarget={portalTarget}
+								maxMenuHeight={maxMenuHeight}
 								onChange={(selectedItem) =>
 									onChange(selectedItem, id, index)
 								}
@@ -126,6 +130,7 @@ const Select = ({
 				classes={customClasses}
 				isDisabled={isDisabled}
 				portalTarget={portalTarget}
+				maxMenuHeight={maxMenuHeight}
 				onChange={(selectedItem) => onChange(selectedItem)}
 				isSearchable={isSearchable}
 			/>

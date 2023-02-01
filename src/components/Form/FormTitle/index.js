@@ -22,6 +22,9 @@ import {
 	authorProOrderByOptions,
 	metaValuesProOrderByOptions,
 } from '../utils';
+import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
+
+const WCAPF_PRO = foundProVersion();
 
 const genericErrorMessage = __(
 	'Please fix the errors below.',
@@ -173,7 +176,7 @@ const FormTitle = () => {
 			filters.push(filter);
 		});
 
-		if (foundProVersion()) {
+		if (WCAPF_PRO) {
 			return filters;
 		}
 
@@ -270,6 +273,33 @@ const FormTitle = () => {
 		return sanitizedFilters;
 	};
 
+	const sanitizedFormSettings = () => {
+		if (WCAPF_PRO) {
+			return formSettings;
+		}
+
+		const proSettings = [
+			'form_locations',
+			'products_loop_container',
+			'priority',
+			'form_layout',
+			'filter_mode',
+			'show_clear_btn',
+		];
+
+		const proVisibilityOptionKeys = proVisibilityOptions.map(
+			(option) => option.value
+		);
+
+		if (proVisibilityOptionKeys.includes(formSettings['form_visibility'])) {
+			proSettings.push('form_visibility');
+		}
+
+		const defaultSettings = pick(defaultFormSettings(), proSettings);
+
+		return { ...formSettings, ...defaultSettings };
+	};
+
 	const handleSaveForm = () => {
 		removeItemSavedNotices();
 
@@ -279,7 +309,8 @@ const FormTitle = () => {
 			return;
 		}
 
-		const sanitized = sanitizedFormFilters(validatedFormFilters);
+		const sanitizedFilters = sanitizedFormFilters(validatedFormFilters);
+		const sanitizedSettings = sanitizedFormSettings();
 
 		setLoading(true);
 
@@ -288,8 +319,8 @@ const FormTitle = () => {
 		formData.append('action', 'wcapf_save_form');
 		formData.append('form_title', title);
 		formData.append('form_id', formId);
-		formData.append('form_filters', JSON.stringify(sanitized));
-		formData.append('form_settings', JSON.stringify(formSettings));
+		formData.append('form_filters', JSON.stringify(sanitizedFilters));
+		formData.append('form_settings', JSON.stringify(sanitizedSettings));
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)

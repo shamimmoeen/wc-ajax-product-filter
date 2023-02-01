@@ -17,9 +17,9 @@ import FilterKeys from './Tabs/FilterKeys';
 import Miscellaneous from './Tabs/Miscellaneous';
 import Appearance from './Tabs/Appearance';
 import Integration from './Tabs/Integration';
-import SEO from './Tabs/SEO';
 import CustomTabPanel from '../CustomTabPanel';
 import LoaderScrollTo from './Tabs/LoaderScrollTo';
+import Others from './Tabs/Others';
 
 const tabs = [
 	{
@@ -43,8 +43,8 @@ const tabs = [
 		title: __('Filter Keys', 'wc-ajax-product-filter'),
 	},
 	{
-		name: 'seo',
-		title: __('SEO', 'wc-ajax-product-filter'),
+		name: 'others',
+		title: __('Others', 'wc-ajax-product-filter'),
 	},
 	{
 		name: 'miscellaneous',
@@ -141,8 +141,8 @@ const Settings = () => {
 										return <LoaderScrollTo />;
 									} else if ('filter-keys' === name) {
 										return <FilterKeys />;
-									} else if ('seo' === name) {
-										return <SEO />;
+									} else if ('others' === name) {
+										return <Others />;
 									} else if ('miscellaneous' === name) {
 										return <Miscellaneous />;
 									}

@@ -293,13 +293,20 @@ class WCAPF_Admin {
 			} else {
 				$settings = $helper::get_settings();
 
+				$params['form_places']    = $utils::get_form_places();
 				$params['filter_types']   = $utils::get_filter_types();
 				$params['meta_keys']      = $helper::get_available_meta_keys();
 				$params['date_formats']   = $utils::display_date_formats();
 				$params['status_options'] = $utils::product_status_options();
 				$params['time_periods']   = $utils::time_period_options();
 				$params['user_roles']     = $user_roles;
-				$params['author_roles']   = $settings['author_roles'];
+
+				$params['author_roles']          = isset( $settings['author_roles'] )
+					? $settings['author_roles'] : array();
+				$params['multiple_visible_on']   = isset( $settings['multiple_visible_on'] )
+					? $settings['multiple_visible_on'] : '';
+				$params['multiple_sub_location'] = isset( $settings['multiple_sub_location'] ) ?
+					$settings['multiple_sub_location'] : '';
 
 				$post_id = $_GET['id'];
 

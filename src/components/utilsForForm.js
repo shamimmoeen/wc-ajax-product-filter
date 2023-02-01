@@ -1,16 +1,72 @@
 import { __ } from '@wordpress/i18n';
 import { mergeSelectOptions } from './utils';
 
+const defaultLocation = {
+	location: 'product_archive_pages',
+	sub_location: '',
+};
+
 export function defaultFormSettings() {
 	return {
+		form_locations: [defaultLocation],
+		products_loop_container: '',
+		priority: 0,
+		form_layout: 'vertical',
 		filter_mode: 'immediate',
 		form_visibility: 'always_display',
-		show_form_title: '',
+		show_clear_btn: '',
 		show_active_filters: '',
 		show_reset_button: '',
-		place_for: '', // Mask it
 	};
 }
+
+export function formLayoutOptions() {
+	return [
+		{
+			label: __('Vertical', 'wc-ajax-product-filter'),
+			value: 'vertical',
+		},
+		{
+			label: __('Horizontal', 'wc-ajax-product-filter'),
+			value: 'horizontal',
+			isPro: true,
+		},
+	];
+}
+
+export function filterModeOptions() {
+	return [
+		{
+			label: __('Immediate', 'wc-ajax-product-filter'),
+			value: 'immediate',
+		},
+		{
+			label: __('Submit', 'wc-ajax-product-filter'),
+			value: 'submit',
+			isPro: true,
+		},
+		{
+			label: __('Apply', 'wc-ajax-product-filter'),
+			value: 'apply',
+			isPro: true,
+		},
+	];
+}
+
+export const proVisibilityOptions = [
+	{
+		label: __('Slide-out panel on desktop', 'wc-ajax-product-filter'),
+		value: 'slide_out_panel_on_desktop',
+	},
+	{
+		label: __('Slide-out panel on mobile', 'wc-ajax-product-filter'),
+		value: 'slide_out_panel_on_mobile',
+	},
+	{
+		label: __('Slide-out panel on both', 'wc-ajax-product-filter'),
+		value: 'slide_out_panel_on_both',
+	},
+];
 
 export function formVisibilityOptions() {
 	const freeOptions = [
@@ -32,20 +88,5 @@ export function formVisibilityOptions() {
 		},
 	];
 
-	const proOptions = [
-		{
-			label: __('Slide-out panel on desktop', 'wc-ajax-product-filter'),
-			value: 'slide_out_panel_on_desktop',
-		},
-		{
-			label: __('Slide-out panel on mobile', 'wc-ajax-product-filter'),
-			value: 'slide_out_panel_on_mobile',
-		},
-		{
-			label: __('Slide-out panel on both', 'wc-ajax-product-filter'),
-			value: 'slide_out_panel_on_both',
-		},
-	];
-
-	return mergeSelectOptions(freeOptions, proOptions, true);
+	return mergeSelectOptions(freeOptions, proVisibilityOptions, true);
 }

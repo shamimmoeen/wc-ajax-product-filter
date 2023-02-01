@@ -7,7 +7,7 @@ import MediaScreenRules from './MediaScreenRules';
 import { isEmpty } from 'lodash';
 import { placeholderRule } from './utils';
 
-const VisibilityRules = () => {
+const VisibilityRules = ({ rules, handleVisibilityRules }) => {
 	const { state, dispatch } = useFilter();
 	const { setDirty } = useFilterData(state, dispatch);
 
@@ -161,38 +161,39 @@ const VisibilityRules = () => {
 				onChange={handleMediaScreenChange}
 			/>
 
-			{'active-filters' !== filterType && 'reset-button' !== filterType && (
-				<>
-					<Checkbox
-						id={'enable_rules'}
-						label={__(
-							'Enable visibility rules',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Create a set of rules to determine when the filter will be displayed.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={enable_rules}
-						onChange={handleEnableRules}
-					/>
-
-					{enable_rules && (
-						<Rules
+			{'active-filters' !== filterType &&
+				'reset-button' !== filterType && (
+					<>
+						<Checkbox
+							id={'enable_rules'}
 							label={__(
-								'Show the filter if',
+								'Enable visibility rules',
 								'wc-ajax-product-filter'
 							)}
-							rules={rules}
-							handleChange={handleRuleChange}
-							handleRemove={handleRemoveRule}
-							handleAddingAndClause={handleAddingAndClause}
-							handleAddingOrClause={handleAddingOrClause}
-							handleRemoveAllRules={handleRemoveAllRules}
+							description={__(
+								'Create a set of rules to determine when the filter will be displayed.',
+								'wc-ajax-product-filter'
+							)}
+							isChecked={enable_rules}
+							onChange={handleEnableRules}
 						/>
-					)}
-				</>
-			)}
+
+						{enable_rules && (
+							<Rules
+								label={__(
+									'Show the filter if',
+									'wc-ajax-product-filter'
+								)}
+								rules={rules}
+								handleChange={handleRuleChange}
+								handleRemove={handleRemoveRule}
+								handleAddingAndClause={handleAddingAndClause}
+								handleAddingOrClause={handleAddingOrClause}
+								handleRemoveAllRules={handleRemoveAllRules}
+							/>
+						)}
+					</>
+				)}
 		</>
 	);
 };

@@ -1,30 +1,95 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
 import useSettingsData from '../useSettingsData';
 import ColorInput from '../../Field/ColorInput';
+import Select from '../../Field/Select';
+import Radio from '../../Field/Radio';
+import { foundProVersion } from '../../utils';
+import Text from '../../Field/Text';
+
+const WCAPF_PRO = foundProVersion();
+
+const enablePrimaryTextColor = wcapf_admin_params.enable_primary_text_color;
+
+const numberRangeSliderPresets = [];
+
+for (let index = 1; index <= 11; index++) {
+	numberRangeSliderPresets.push({
+		label: sprintf(__('Preset %d', 'wc-ajax-product-filter'), index),
+		value: 'preset-' + index,
+	});
+}
+
+const labelSizes = [
+	{
+		label: __('Fluid', 'wc-ajax-product-filter'),
+		value: 'fluid',
+	},
+	{
+		label: __('Fixed', 'wc-ajax-product-filter'),
+		value: 'fixed',
+	},
+];
+
+const labelPresets = [
+	{
+		label: __('Primary', 'wc-ajax-product-filter'),
+		value: 'primary',
+	},
+	{
+		label: __('Grey', 'wc-ajax-product-filter'),
+		value: 'grey',
+	},
+];
+
+const slideOutPanelPositionOptions = [
+	{
+		label: __('Left', 'wc-ajax-product-filter'),
+		value: 'left',
+	},
+	{
+		label: __('Right', 'wc-ajax-product-filter'),
+		value: 'right',
+	},
+];
 
 const Appearance = () => {
 	const { state, dispatch } = useSettings();
-	const { handleCheckboxChange, handleTextFieldChange } = useSettingsData(
-		state,
-		dispatch
-	);
+	const {
+		handleCheckboxChange,
+		handleTextFieldChange,
+		handleRadioChange,
+		handleSelectChange,
+	} = useSettingsData(state, dispatch);
 
 	const {
 		settings: {
 			primary_color,
+			primary_text_color,
 			stylish_checkbox_radio,
 			use_chosen,
 			attach_chosen_on_sorting,
 			improve_native_select,
 			improve_scrollbar,
+			number_range_slider_preset,
+			label_size,
+			active_label_style,
+			star_icon_color,
+			remove_focus_style,
+			primary_btn_class,
+			secondary_btn_class,
+			slide_out_panel_position,
 		},
 	} = state;
 
-	const handlePrimaryColorChange = (value) => {
-		handleTextFieldChange(value, 'primary_color');
+	const handleColorChange = (value, key) => {
+		handleTextFieldChange(value, key);
 	};
+
+	const numberRangeSliderPreset = numberRangeSliderPresets.find(
+		(option) => number_range_slider_preset === option.value
+	);
 
 	return (
 		<>
@@ -35,9 +100,24 @@ const Appearance = () => {
 					'wc-ajax-product-filter'
 				)}
 				value={primary_color}
-				onChange={handlePrimaryColorChange}
+				onChange={(value) => handleColorChange(value, 'primary_color')}
 				renderAsFormField
 			/>
+
+			{enablePrimaryTextColor && (
+				<ColorInput
+					label={__('Primary Text Color', 'wc-ajax-product-filter')}
+					description={__(
+						'This color will be used over the primary color for the font color.',
+						'wc-ajax-product-filter'
+					)}
+					value={primary_text_color}
+					onChange={(value) =>
+						handleColorChange(value, 'primary_text_color')
+					}
+					renderAsFormField
+				/>
+			)}
 
 			<Checkbox
 				id={'stylish_checkbox_radio'}
@@ -72,7 +152,7 @@ const Appearance = () => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Attach combobox for the default sorting dropdown instead of the native select element.',
+						'Attach ComboBox for the default sorting dropdown instead of the native select element.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={attach_chosen_on_sorting}
@@ -106,6 +186,114 @@ const Appearance = () => {
 				isChecked={improve_scrollbar}
 				onChange={handleCheckboxChange}
 			/>
+
+			<Select
+				id={'number_range_slider_preset'}
+				label={__(
+					'Number range slider preset',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Choose the number range slider preset from available presets.',
+					'wc-ajax-product-filter'
+				)}
+				value={numberRangeSliderPreset}
+				onChange={handleSelectChange}
+				options={numberRangeSliderPresets}
+				maxMenuHeight={150}
+				renderAsFormField
+			/>
+
+			<Radio
+				id={'label_size'}
+				label={__('Label size', 'wc-ajax-product-filter')}
+				description={__(
+					'This changes the size of elements when displaying the filter options as Label and the active filter items.',
+					'wc-ajax-product-filter'
+				)}
+				value={label_size}
+				onChange={handleRadioChange}
+				options={labelSizes}
+				renderAsFormField
+			/>
+
+			<Radio
+				id={'active_label_style'}
+				label={__('Active label style', 'wc-ajax-product-filter')}
+				description={__(
+					'This changes the active state style of labels and multiselect(ComboBox enabled) items.',
+					'wc-ajax-product-filter'
+				)}
+				value={active_label_style}
+				onChange={handleRadioChange}
+				options={labelPresets}
+				renderAsFormField
+			/>
+
+			<ColorInput
+				label={__('Star Icon Color', 'wc-ajax-product-filter')}
+				description={__(
+					'Set the star icon color for the rating filter. Default is #fda256.',
+					'wc-ajax-product-filter'
+				)}
+				value={star_icon_color}
+				onChange={(value) =>
+					handleColorChange(value, 'star_icon_color')
+				}
+				renderAsFormField
+			/>
+
+			<Checkbox
+				id={'remove_focus_style'}
+				label={__('Remove focus style', 'wc-ajax-product-filter')}
+				description={__(
+					'Enable this to remove the focus style from input(text) and dropdown elements.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={remove_focus_style}
+				onChange={handleCheckboxChange}
+			/>
+
+			<Text
+				id={'primary_btn_class'}
+				label={__('Primary button class', 'wc-ajax-product-filter')}
+				description={__(
+					'Give the css class for the primary style buttons according to your theme.',
+					'wc-ajax-product-filter'
+				)}
+				placeholder={'btn-primary'}
+				value={primary_btn_class}
+				onChange={handleTextFieldChange}
+			/>
+
+			<Text
+				id={'secondary_btn_class'}
+				label={__('Secondary button class', 'wc-ajax-product-filter')}
+				description={__(
+					'Give the css class for the secondary style buttons according to your theme.',
+					'wc-ajax-product-filter'
+				)}
+				placeholder={'btn-secondary'}
+				value={secondary_btn_class}
+				onChange={handleTextFieldChange}
+			/>
+
+			{WCAPF_PRO && (
+				<Radio
+					id={'slide_out_panel_position'}
+					label={__(
+						'Slide-out panel position',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Choose the slide-out panel position.',
+						'wc-ajax-product-filter'
+					)}
+					options={slideOutPanelPositionOptions}
+					value={slide_out_panel_position}
+					onChange={handleRadioChange}
+				/>
+			)}
 		</>
 	);
 };

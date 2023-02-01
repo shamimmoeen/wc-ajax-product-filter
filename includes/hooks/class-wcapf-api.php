@@ -48,6 +48,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_post_authors_for_modal', array( $this, 'get_post_authors_for_modal' ) );
 		add_action( 'wp_ajax_wcapf_get_terms_for_dropdown', array( $this, 'get_terms_for_dropdown' ) );
 		add_action( 'wp_ajax_wcapf_get_authors_for_dropdown', array( $this, 'get_authors_for_dropdown' ) );
+		add_action( 'wp_ajax_wcapf_get_pages_for_dropdown', array( $this, 'get_pages_for_dropdown' ) );
 
 		// For form.
 		add_action( 'wp_ajax_wcapf_get_available_filters', array( $this, 'get_available_filters' ) );
@@ -73,7 +74,7 @@ class WCAPF_API {
 			'post_title'   => $form_title,
 			'post_type'    => 'wcapf-form',
 			'post_status'  => 'publish',
-			'post_content' => wp_json_encode( $form_settings ),
+			'post_content' => maybe_serialize( $form_settings ),
 		);
 
 		$new_form_id = wp_insert_post( $post_arr, true );
@@ -264,7 +265,8 @@ class WCAPF_API {
 		}
 
 		// Sanitize form data.
-		$form_settings = array_map( 'sanitize_text_field', (array) $form_settings );
+		// $form_settings = array_map( 'sanitize_text_field', (array) $form_settings );
+		// TODO: Sanitize form settings.
 
 		$post_arr = array(
 			'ID'           => $form_id,
@@ -677,6 +679,40 @@ class WCAPF_API {
 				$response[] = array(
 					'label' => $user->display_name,
 					'value' => absint( $user->ID ),
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Gets the pages via ajax.
+	 *
+	 * @return void
+	 */
+	public function get_pages_for_dropdown() {
+		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+
+		$per_page = 20;
+		$offset   = ( $page - 1 ) * $per_page;
+
+		$args = array(
+			'post_type'      => 'page',
+			's'              => $keyword,
+			'posts_per_page' => $per_page,
+			'offset'         => $offset,
+		);
+
+		$pages    = get_posts( $args );
+		$response = array();
+
+		if ( $pages ) {
+			foreach ( $pages as $page ) {
+				$response[] = array(
+					'label' => $page->post_title,
+					'value' => absint( $page->ID ),
 				);
 			}
 		}

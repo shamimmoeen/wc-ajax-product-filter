@@ -1,39 +1,24 @@
 import { __ } from '@wordpress/i18n';
 import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
-import SelectMulti from '../../Field/SelectMulti';
 import useSettingsData from '../useSettingsData';
-import ProFeaturesNotice from '../../ProFeaturesNotice';
-
-const userRoles = wcapf_admin_params.user_roles;
 
 const Integration = () => {
 	const { state, dispatch } = useSettings();
-	const { handleCheckboxChange, handleAuthorRolesChange } = useSettingsData(
-		state,
-		dispatch
-	);
+	const { handleCheckboxChange } = useSettingsData(state, dispatch);
 
 	const {
 		settings: {
-			disable_ajax,
+			active_filters_on_top,
 			enable_pagination_via_ajax,
 			sorting_control,
 			show_sorting_data_in_active_filters,
-			author_roles,
-			active_filters_on_top,
+			use_term_slug,
 		},
 	} = state;
 
 	return (
 		<>
-			<ProFeaturesNotice
-				message={__(
-					'Upgrade to PRO to show the filters horizontally on top of the products.',
-					'wc-ajax-product-filter'
-				)}
-			/>
-
 			<Checkbox
 				id={'active_filters_on_top'}
 				label={__(
@@ -48,37 +33,27 @@ const Integration = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			{'1' !== disable_ajax && (
-				<>
-					<Checkbox
-						id={'enable_pagination_via_ajax'}
-						label={__(
-							'Pagination via AJAX',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Whether to enable ajax to paginate the products.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={enable_pagination_via_ajax}
-						onChange={handleCheckboxChange}
-					/>
+			<Checkbox
+				id={'enable_pagination_via_ajax'}
+				label={__('Pagination via AJAX', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to enable ajax to paginate the products. Only applicable when filtering via ajax.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={enable_pagination_via_ajax}
+				onChange={handleCheckboxChange}
+			/>
 
-					<Checkbox
-						id={'sorting_control'}
-						label={__(
-							'Product sorting via AJAX',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Whether to enable ajax for the default product sorting dropdown.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={sorting_control}
-						onChange={handleCheckboxChange}
-					/>
-				</>
-			)}
+			<Checkbox
+				id={'sorting_control'}
+				label={__('Product sorting via AJAX', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to enable ajax for the default product sorting dropdown. Only applicable when filtering via ajax.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={sorting_control}
+				onChange={handleCheckboxChange}
+			/>
 
 			<Checkbox
 				id={'show_sorting_data_in_active_filters'}
@@ -94,19 +69,15 @@ const Integration = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			<SelectMulti
-				id={'author_roles'}
-				label={__('Author Roles', 'wc-ajax-product-filter')}
+			<Checkbox
+				id={'use_term_slug'}
+				label={__('Use term slug', 'wc-ajax-product-filter')}
 				description={__(
-					'Users having any of these roles will be available(on Available Options modal) for post author filter.',
+					'Whether to use term slug instead of id as the option value.',
 					'wc-ajax-product-filter'
 				)}
-				isMultiple={true}
-				value={author_roles}
-				onChange={handleAuthorRolesChange}
-				type={'author'}
-				isUserRoles={true}
-				options={userRoles}
+				isChecked={use_term_slug}
+				onChange={handleCheckboxChange}
 			/>
 		</>
 	);

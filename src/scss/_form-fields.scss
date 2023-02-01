@@ -50,6 +50,10 @@
 
 	.components-text-control__input {
 		max-width: 220px;
+
+		&:disabled {
+			background-color: #f0f0f0;
+		}
 	}
 
 	.components-text-control__input,
@@ -214,8 +218,13 @@
 				}
 			}
 
-			.place_for {
+			.filter_on {
 				min-width: 220px;
+			}
+
+			.form_layout,
+			.filter_mode {
+				min-width: 150px;
 			}
 
 			.form_visibility {
@@ -260,11 +269,6 @@
 .__form_fields_separator {
 	border-bottom: 1px solid rgba(0, 0, 0, .05);
 	margin: 2em 0;
-}
-
-
-.filter_on {
-	min-width: 220px;
 }
 
 /**
@@ -389,6 +393,76 @@
 
 .__react_select__menu-portal {
 	@include react-select-single;
+}
+
+.__filter_on {
+	.__input_wrapper {
+		.__locations {
+			.__column {
+				&:not(:last-child) {
+					margin-bottom: 8px;
+				}
+			}
+
+			&:not(.support-many) {
+				.__custom_react_select {
+					&.location {
+						max-width: 220px;
+					}
+
+					&.sub_location {
+						max-width: 300px;
+					}
+				}
+			}
+
+			&.support-many {
+				margin-bottom: 10px;
+
+				.__location {
+					position: relative;
+					max-width: calc(350px - 18px);
+					padding: 8px;
+					border: 1px solid #ddd;
+					margin-bottom: 10px;
+					border-radius: 2px;
+				}
+
+				.__remove_wrapper {
+					position: absolute;
+					top: 8px;
+
+					@include ltr {
+						right: -40px;
+
+					}
+
+					@include rtl {
+						left: -40px;
+					}
+				}
+
+				@media (max-width: 599px) {
+					.__location {
+						max-width: calc(100% - calc(40px + 18px));
+					}
+				}
+
+				.__remove_location,
+				.__add_location {
+					min-width: 30px;
+					height: 30px;
+					padding: 0;
+				}
+
+				.__remove_location {
+					&:not(:hover) {
+						opacity: .7;
+					}
+				}
+			}
+		}
+	}
 }
 
 /**
