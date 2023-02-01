@@ -36,7 +36,7 @@ const Advanced = ({ index }) => {
 		soft_limit,
 		max_height,
 		show_in_active_filters,
-		visibility_rules,
+		// visibility_rules,
 	} = filter;
 
 	const showTitleField = () => {
@@ -315,22 +315,22 @@ const Advanced = ({ index }) => {
 		);
 	};
 
-	const visibilityRulesField = () => {
-		return (
-			<Checkbox
-				id={'visibility_rules'}
-				index={index}
-				label={__('Visibility Rules', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines if we show the selected options in active filters.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={visibility_rules}
-				onChange={handleCheckboxChange}
-				isPro
-			/>
-		);
-	};
+	// const visibilityRulesField = () => {
+	// 	return (
+	// 		<Checkbox
+	// 			id={'visibility_rules'}
+	// 			index={index}
+	// 			label={__('Visibility Rules', 'wc-ajax-product-filter')}
+	// 			description={__(
+	// 				'Determines if we show the selected options in active filters.',
+	// 				'wc-ajax-product-filter'
+	// 			)}
+	// 			isChecked={visibility_rules}
+	// 			onChange={handleCheckboxChange}
+	// 			isPro
+	// 		/>
+	// 	);
+	// };
 
 	return (
 		<>
@@ -354,7 +354,7 @@ const Advanced = ({ index }) => {
 
 			{showInActiveFiltersField()}
 
-			{visibilityRulesField()}
+			{/* {visibilityRulesField()} */}
 		</>
 	);
 };
