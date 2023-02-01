@@ -34,8 +34,8 @@ const Others = () => {
 			sort_by_form,
 			more_selectors,
 			author_roles,
-			multiple_visible_on,
-			multiple_sub_location,
+			multiple_form_locations,
+			multiple_form_sub_locations,
 		},
 	} = state;
 
@@ -211,21 +211,21 @@ const Others = () => {
 					</h4>
 
 					<Checkbox
-						id={'multiple_visible_on'}
+						id={'multiple_form_locations'}
 						label={__(
-							'Multiple visible on conditions',
+							'Multiple locations',
 							'wc-ajax-product-filter'
 						)}
 						description={__(
-							'Enable this if you want to show a form on multiple pages.',
+							'Enable this if you want to reuse a form in multiple locations.',
 							'wc-ajax-product-filter'
 						)}
-						isChecked={multiple_visible_on}
+						isChecked={multiple_form_locations}
 						onChange={handleCheckboxChange}
 					/>
 
 					<Checkbox
-						id={'multiple_sub_location'}
+						id={'multiple_form_sub_locations'}
 						label={__(
 							'Multiple terms/pages',
 							'wc-ajax-product-filter'
@@ -234,7 +234,7 @@ const Others = () => {
 							'Enable this if you want to set multiple terms/pages in the sub-location dropdown.',
 							'wc-ajax-product-filter'
 						)}
-						isChecked={multiple_sub_location}
+						isChecked={multiple_form_sub_locations}
 						onChange={handleCheckboxChange}
 					/>
 				</>

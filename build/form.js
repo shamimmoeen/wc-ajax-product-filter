@@ -9133,7 +9133,7 @@ const Text = _ref2 => {
     }, label, 'field_key' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
       content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "For example, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "?/color=blue&size=large", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "where color & size are the filter keys.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "In the PRO version, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "/color-blue/size-large")
     }), 'products_loop_container' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "This will only work when showing the form on non-product archive pages.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "When showing more than one form on a page use the same identifier for all forms.")
+      content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "This will only work when showing the form on non-product archive pages.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "If a page contains multiple forms, the products loop container of the first form will work.")
     }), (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(isPro))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "__wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
@@ -9550,10 +9550,10 @@ const FormatGroupLabel = data => {
 
 /***/ }),
 
-/***/ "./src/components/Form/FilterOn.js":
-/*!*****************************************!*\
-  !*** ./src/components/Form/FilterOn.js ***!
-  \*****************************************/
+/***/ "./src/components/Form/AvailableOn.js":
+/*!********************************************!*\
+  !*** ./src/components/Form/AvailableOn.js ***!
+  \********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9589,8 +9589,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const WCAPF_PRO = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.foundProVersion)();
 const locations = wcapf_admin_params.form_places;
-const multipleSubLocations = wcapf_admin_params.multiple_sub_location;
-const multipleFormLocations = wcapf_admin_params.multiple_visible_on;
+const multipleSubLocations = wcapf_admin_params.multiple_form_sub_locations;
+const multipleFormLocations = wcapf_admin_params.multiple_form_locations;
 
 const Location = _ref => {
   let {
@@ -9694,7 +9694,7 @@ const Location = _ref => {
   }))));
 };
 
-const FilterOn = () => {
+const AvailableOn = () => {
   const {
     state,
     dispatch
@@ -9731,15 +9731,15 @@ const FilterOn = () => {
 
   const showRemove = multipleFormLocations && form_locations.length > 1;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__form_control __filter_on"
+    className: "__form_control __available_on"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__inner"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__label"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     htmlFor: "scroll_window"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Visible on', 'wc-ajax-product-filter'), (0,_utils__WEBPACK_IMPORTED_MODULE_8__.proTag)(true), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    content: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('If you want to show a form on multiple pages enable multiple visible on conditions from "Settings > Others" tab.', 'wc-ajax-product-filter')
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Available on', 'wc-ajax-product-filter'), (0,_utils__WEBPACK_IMPORTED_MODULE_8__.proTag)(true), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    content: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('If you want to reuse a form in multiple locations enable it from "Settings > Others" tab.', 'wc-ajax-product-filter')
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -9773,7 +9773,7 @@ const FilterOn = () => {
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines where you want to show the form to filter the products.', 'wc-ajax-product-filter')));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (FilterOn);
+/* harmony default export */ __webpack_exports__["default"] = (AvailableOn);
 
 /***/ }),
 
@@ -13784,13 +13784,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Field/Checkbox */ "./src/components/Field/Checkbox.js");
 /* harmony import */ var _Field_Number__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Field/Number */ "./src/components/Field/Number.js");
-/* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Field/Select */ "./src/components/Field/Select.js");
-/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Field/Text */ "./src/components/Field/Text.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
-/* harmony import */ var _utilsForForm__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utilsForForm */ "./src/components/utilsForForm.js");
-/* harmony import */ var _FilterOn__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./FilterOn */ "./src/components/Form/FilterOn.js");
-/* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
-/* harmony import */ var _useFormSettings__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./useFormSettings */ "./src/components/Form/useFormSettings.js");
+/* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Field/Radio */ "./src/components/Field/Radio.js");
+/* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Field/Select */ "./src/components/Field/Select.js");
+/* harmony import */ var _Field_Text__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Field/Text */ "./src/components/Field/Text.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils */ "./src/components/utils.js");
+/* harmony import */ var _utilsForForm__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utilsForForm */ "./src/components/utilsForForm.js");
+/* harmony import */ var _AvailableOn__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./AvailableOn */ "./src/components/Form/AvailableOn.js");
+/* harmony import */ var _FormContext__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./FormContext */ "./src/components/Form/FormContext.js");
+/* harmony import */ var _useFormSettings__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./useFormSettings */ "./src/components/Form/useFormSettings.js");
 
 
 
@@ -13802,18 +13803,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const WCAPF_PRO = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.foundProVersion)();
+
+const WCAPF_PRO = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.foundProVersion)();
+const showUpcomingFeatures = false;
 
 const FormSettings = () => {
   const {
     state,
     dispatch
-  } = (0,_FormContext__WEBPACK_IMPORTED_MODULE_9__.useForm)();
+  } = (0,_FormContext__WEBPACK_IMPORTED_MODULE_10__.useForm)();
   const {
     handleTextFieldChange,
+    handleRadioChange,
     handleCheckboxChange,
     handleSelectChange
-  } = (0,_useFormSettings__WEBPACK_IMPORTED_MODULE_10__["default"])(state, dispatch);
+  } = (0,_useFormSettings__WEBPACK_IMPORTED_MODULE_11__["default"])(state, dispatch);
   const {
     formSettings: {
       form_locations,
@@ -13842,13 +13846,11 @@ const FormSettings = () => {
     }
   }
 
-  const formLayouts = (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_7__.formLayoutOptions)();
-  const formLayout = formLayouts.find(option => option.value === form_layout);
-  const filterModes = (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_7__.filterModeOptions)();
+  const filterModes = (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_8__.filterModeOptions)();
   const filterMode = filterModes.find(option => option.value === filter_mode);
-  const visibilityOptions = (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_7__.formVisibilityOptions)();
+  const visibilityOptions = (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_8__.formVisibilityOptions)();
   const formVisibility = visibilityOptions.find(option => option.value === form_visibility);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_FilterOn__WEBPACK_IMPORTED_MODULE_8__["default"], null), WCAPF_PRO && showProductsLoopContainer && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AvailableOn__WEBPACK_IMPORTED_MODULE_9__["default"], null), WCAPF_PRO && showProductsLoopContainer && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_6__["default"], {
     id: 'products_loop_container',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Products loop container', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Give a valid id/class of the HTML element that contains the products loop.', 'wc-ajax-product-filter'),
@@ -13862,15 +13864,14 @@ const FormSettings = () => {
     value: priority ? priority : 0,
     onChange: handleTextFieldChange,
     min: 0
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }), showUpcomingFeatures && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
     id: 'form_layout',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Layout', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how you want to arrange the form filters.', 'wc-ajax-product-filter'),
-    options: formLayouts,
-    value: formLayout,
-    onChange: handleSelectChange,
-    renderAsFormField: true
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    options: (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_8__.formLayoutOptions)(),
+    value: form_layout,
+    onChange: handleRadioChange
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: 'filter_mode',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Filter Mode', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the filtering will work.', 'wc-ajax-product-filter'),
@@ -13878,7 +13879,7 @@ const FormSettings = () => {
     value: filterMode,
     onChange: handleSelectChange,
     renderAsFormField: true
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Select__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: 'form_visibility',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Visibility', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines how the form will be displayed on different devices.', 'wc-ajax-product-filter'),

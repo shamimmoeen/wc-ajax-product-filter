@@ -22,7 +22,7 @@ const filterOnTooltip = __(
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
-	__('Visible on', 'wc-ajax-product-filter'),
+	__('Available on', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
 
@@ -49,7 +49,7 @@ const Table = ({
 					return (
 						<th className={id} key={`posts-table-${item}`}>
 							{item}
-							{'__Visible_on' === id && (
+							{'__Available_on' === id && (
 								<TippyTooltip content={filterOnTooltip} />
 							)}
 						</th>

@@ -9121,7 +9121,7 @@ const Text = _ref2 => {
     }, label, 'field_key' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
       content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "For example, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "?/color=blue&size=large", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "where color & size are the filter keys.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "In the PRO version, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "/color-blue/size-large")
     }), 'products_loop_container' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "This will only work when showing the form on non-product archive pages.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "When showing more than one form on a page use the same identifier for all forms.")
+      content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "This will only work when showing the form on non-product archive pages.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "If a page contains multiple forms, the products loop container of the first form will work.")
     }), (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(isPro))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "__wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
@@ -10617,8 +10617,8 @@ const Others = () => {
       sort_by_form,
       more_selectors,
       author_roles,
-      multiple_visible_on,
-      multiple_sub_location
+      multiple_form_locations,
+      multiple_form_sub_locations
     }
   } = state;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -10718,16 +10718,16 @@ const Others = () => {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", {
     className: "__section_heading"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Form Settings', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    id: 'multiple_visible_on',
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple visible on conditions', 'wc-ajax-product-filter'),
-    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to show a form on multiple pages.', 'wc-ajax-product-filter'),
-    isChecked: multiple_visible_on,
+    id: 'multiple_form_locations',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple locations', 'wc-ajax-product-filter'),
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to reuse a form in multiple locations.', 'wc-ajax-product-filter'),
+    isChecked: multiple_form_locations,
     onChange: handleCheckboxChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    id: 'multiple_sub_location',
+    id: 'multiple_form_sub_locations',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Multiple terms/pages', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to set multiple terms/pages in the sub-location dropdown.', 'wc-ajax-product-filter'),
-    isChecked: multiple_sub_location,
+    isChecked: multiple_form_sub_locations,
     onChange: handleCheckboxChange
   })));
 };
@@ -11033,9 +11033,7 @@ const initialSettings = (0,lodash__WEBPACK_IMPORTED_MODULE_0__.merge)((0,_utils_
 const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 const initialState = {
   isDirty: false,
-  // currentTab: 'loader-scrollTo',
-  currentTab: 'appearance',
-  // currentTab: 'others',
+  currentTab: 'filter-keys',
   settings: initialSettings,
   globalFilterKeys,
   seoSettings: {}
@@ -11265,8 +11263,8 @@ function defaultSettings() {
     sort_by_form: '.woocommerce-ordering',
     more_selectors: '',
     author_roles: [],
-    multiple_visible_on: '',
-    multiple_sub_location: '',
+    multiple_form_locations: '',
+    multiple_form_sub_locations: '',
     // Miscellaneous
     debug_mode: '1',
     disable_wcapf: '',

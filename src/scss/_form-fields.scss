@@ -395,7 +395,7 @@
 	@include react-select-single;
 }
 
-.__filter_on {
+.__available_on {
 	.__input_wrapper {
 		.__locations {
 			.__column {
@@ -447,19 +447,19 @@
 						max-width: calc(100% - calc(40px + 18px));
 					}
 				}
+			}
+		}
 
-				.__remove_location,
-				.__add_location {
-					min-width: 30px;
-					height: 30px;
-					padding: 0;
-				}
+		.__remove_location,
+		.__add_location {
+			min-width: 30px;
+			height: 30px;
+			padding: 0;
+		}
 
-				.__remove_location {
-					&:not(:hover) {
-						opacity: .7;
-					}
-				}
+		.__remove_location {
+			&:not(:hover) {
+				opacity: .7;
 			}
 		}
 	}
