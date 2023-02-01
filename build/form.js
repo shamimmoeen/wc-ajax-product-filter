@@ -9842,8 +9842,8 @@ const Advanced = _ref => {
     enable_reduce_height,
     soft_limit,
     max_height,
-    show_in_active_filters,
-    visibility_rules
+    show_in_active_filters // visibility_rules,
+
   } = filter;
 
   const showTitleField = () => {
@@ -10035,21 +10035,25 @@ const Advanced = _ref => {
       isChecked: show_in_active_filters,
       onChange: handleCheckboxChange
     });
-  };
+  }; // const visibilityRulesField = () => {
+  // 	return (
+  // 		<Checkbox
+  // 			id={'visibility_rules'}
+  // 			index={index}
+  // 			label={__('Visibility Rules', 'wc-ajax-product-filter')}
+  // 			description={__(
+  // 				'Determines if we show the selected options in active filters.',
+  // 				'wc-ajax-product-filter'
+  // 			)}
+  // 			isChecked={visibility_rules}
+  // 			onChange={handleCheckboxChange}
+  // 			isPro
+  // 		/>
+  // 	);
+  // };
 
-  const visibilityRulesField = () => {
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      id: 'visibility_rules',
-      index: index,
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Visibility Rules', 'wc-ajax-product-filter'),
-      description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Determines if we show the selected options in active filters.', 'wc-ajax-product-filter'),
-      isChecked: visibility_rules,
-      onChange: handleCheckboxChange,
-      isPro: true
-    });
-  };
 
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, showTitleField(), enableAccordionField(), accordionDefaultSateField(), helpTextField(), enableSearchField(), placeholderField(), reduceHeightField(), filterMaxHeightField(), visibleOptionsField(), showInActiveFiltersField(), visibilityRulesField());
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, showTitleField(), enableAccordionField(), accordionDefaultSateField(), helpTextField(), enableSearchField(), placeholderField(), reduceHeightField(), filterMaxHeightField(), visibleOptionsField(), showInActiveFiltersField());
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Advanced);
