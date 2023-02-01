@@ -6482,7 +6482,7 @@ const WCAPF_PRO = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.foundProVersion)();
 
 const filterOnTooltip = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Determines where you want to show the form to filter the products.', 'wc-ajax-product-filter');
 
-const headers = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Visible on', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'wc-ajax-product-filter')];
+const headers = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Available on', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'wc-ajax-product-filter')];
 
 const Table = _ref => {
   let {
@@ -6506,7 +6506,7 @@ const Table = _ref => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
         className: id,
         key: `posts-table-${item}`
-      }, item, '__Visible_on' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      }, item, '__Available_on' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_8__["default"], {
         content: filterOnTooltip
       }));
     }));

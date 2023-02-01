@@ -95,9 +95,9 @@ const Text = ({
 											form on non-product archive pages.
 											<br />
 											<br />
-											When showing more than one form on a
-											page use the same identifier for all
-											forms.
+											If a page contains multiple forms,
+											the products loop container of the
+											first form will work.
 										</>
 									}
 								/>

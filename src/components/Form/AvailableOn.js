@@ -15,8 +15,8 @@ const WCAPF_PRO = foundProVersion();
 
 const locations = wcapf_admin_params.form_places;
 
-const multipleSubLocations = wcapf_admin_params.multiple_sub_location;
-const multipleFormLocations = wcapf_admin_params.multiple_visible_on;
+const multipleSubLocations = wcapf_admin_params.multiple_form_sub_locations;
+const multipleFormLocations = wcapf_admin_params.multiple_form_locations;
 
 const Location = ({
 	location: locationData,
@@ -143,7 +143,7 @@ const Location = ({
 	);
 };
 
-const FilterOn = () => {
+const AvailableOn = () => {
 	const { state, dispatch } = useForm();
 	const { handleFormLocations } = useFormSettings(state, dispatch);
 
@@ -180,16 +180,16 @@ const FilterOn = () => {
 	const showRemove = multipleFormLocations && form_locations.length > 1;
 
 	return (
-		<div className='__form_control __filter_on'>
+		<div className='__form_control __available_on'>
 			<div className='__inner'>
 				<div className='__label'>
 					<label htmlFor='scroll_window'>
-						{__('Visible on', 'wc-ajax-product-filter')}
+						{__('Available on', 'wc-ajax-product-filter')}
 						{proTag(true)}
 						{WCAPF_PRO && (
 							<TippyTooltip
 								content={__(
-									'If you want to show a form on multiple pages enable multiple visible on conditions from "Settings > Others" tab.',
+									'If you want to reuse a form in multiple locations enable it from "Settings > Others" tab.',
 									'wc-ajax-product-filter'
 								)}
 							/>
@@ -266,4 +266,4 @@ const FilterOn = () => {
 	);
 };
 
-export default FilterOn;
+export default AvailableOn;

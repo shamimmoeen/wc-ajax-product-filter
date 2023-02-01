@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Number from '../Field/Number';
+import Radio from '../Field/Radio';
 import Select from '../Field/Select';
 import Text from '../Field/Text';
 import { foundProVersion } from '../utils';
@@ -9,16 +10,22 @@ import {
 	formLayoutOptions,
 	formVisibilityOptions,
 } from '../utilsForForm';
-import FilterOn from './FilterOn';
+import AvailableOn from './AvailableOn';
 import { useForm } from './FormContext';
 import useFormSettings from './useFormSettings';
 
 const WCAPF_PRO = foundProVersion();
 
+const showUpcomingFeatures = false;
+
 const FormSettings = () => {
 	const { state, dispatch } = useForm();
-	const { handleTextFieldChange, handleCheckboxChange, handleSelectChange } =
-		useFormSettings(state, dispatch);
+	const {
+		handleTextFieldChange,
+		handleRadioChange,
+		handleCheckboxChange,
+		handleSelectChange,
+	} = useFormSettings(state, dispatch);
 
 	const {
 		formSettings: {
@@ -48,11 +55,6 @@ const FormSettings = () => {
 		}
 	}
 
-	const formLayouts = formLayoutOptions();
-	const formLayout = formLayouts.find(
-		(option) => option.value === form_layout
-	);
-
 	const filterModes = filterModeOptions();
 	const filterMode = filterModes.find(
 		(option) => option.value === filter_mode
@@ -65,7 +67,7 @@ const FormSettings = () => {
 
 	return (
 		<>
-			<FilterOn />
+			<AvailableOn />
 
 			{WCAPF_PRO && showProductsLoopContainer && (
 				<Text
@@ -98,31 +100,34 @@ const FormSettings = () => {
 				/>
 			)}
 
-			<Select
-				id={'form_layout'}
-				label={__('Layout', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines how you want to arrange the form filters.',
-					'wc-ajax-product-filter'
-				)}
-				options={formLayouts}
-				value={formLayout}
-				onChange={handleSelectChange}
-				renderAsFormField
-			/>
+			{showUpcomingFeatures && (
+				<>
+					<Radio
+						id={'form_layout'}
+						label={__('Layout', 'wc-ajax-product-filter')}
+						description={__(
+							'Determines how you want to arrange the form filters.',
+							'wc-ajax-product-filter'
+						)}
+						options={formLayoutOptions()}
+						value={form_layout}
+						onChange={handleRadioChange}
+					/>
 
-			<Select
-				id={'filter_mode'}
-				label={__('Filter Mode', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines how the filtering will work.',
-					'wc-ajax-product-filter'
-				)}
-				options={filterModes}
-				value={filterMode}
-				onChange={handleSelectChange}
-				renderAsFormField
-			/>
+					<Select
+						id={'filter_mode'}
+						label={__('Filter Mode', 'wc-ajax-product-filter')}
+						description={__(
+							'Determines how the filtering will work.',
+							'wc-ajax-product-filter'
+						)}
+						options={filterModes}
+						value={filterMode}
+						onChange={handleSelectChange}
+						renderAsFormField
+					/>
+				</>
+			)}
 
 			<Select
 				id={'form_visibility'}

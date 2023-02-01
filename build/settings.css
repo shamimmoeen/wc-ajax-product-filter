@@ -836,19 +836,19 @@ body.rtl .__react_select__menu-portal .__react_select__group:not(.__pro_group) .
   display: none;
 }
 
-.__filter_on .__input_wrapper .__locations .__column:not(:last-child) {
+.__available_on .__input_wrapper .__locations .__column:not(:last-child) {
   margin-bottom: 8px;
 }
-.__filter_on .__input_wrapper .__locations:not(.support-many) .__custom_react_select.location {
+.__available_on .__input_wrapper .__locations:not(.support-many) .__custom_react_select.location {
   max-width: 220px;
 }
-.__filter_on .__input_wrapper .__locations:not(.support-many) .__custom_react_select.sub_location {
+.__available_on .__input_wrapper .__locations:not(.support-many) .__custom_react_select.sub_location {
   max-width: 300px;
 }
-.__filter_on .__input_wrapper .__locations.support-many {
+.__available_on .__input_wrapper .__locations.support-many {
   margin-bottom: 10px;
 }
-.__filter_on .__input_wrapper .__locations.support-many .__location {
+.__available_on .__input_wrapper .__locations.support-many .__location {
   position: relative;
   max-width: 332px;
   padding: 8px;
@@ -856,30 +856,30 @@ body.rtl .__react_select__menu-portal .__react_select__group:not(.__pro_group) .
   margin-bottom: 10px;
   border-radius: 2px;
 }
-.__filter_on .__input_wrapper .__locations.support-many .__remove_wrapper {
+.__available_on .__input_wrapper .__locations.support-many .__remove_wrapper {
   position: absolute;
   top: 8px;
 }
-body:not(.rtl) .__filter_on .__input_wrapper .__locations.support-many .__remove_wrapper {
+body:not(.rtl) .__available_on .__input_wrapper .__locations.support-many .__remove_wrapper {
   right: -40px;
 }
 
-body.rtl .__filter_on .__input_wrapper .__locations.support-many .__remove_wrapper {
+body.rtl .__available_on .__input_wrapper .__locations.support-many .__remove_wrapper {
   left: -40px;
 }
 
 @media (max-width: 599px) {
-  .__filter_on .__input_wrapper .__locations.support-many .__location {
+  .__available_on .__input_wrapper .__locations.support-many .__location {
     max-width: calc(100% - 58px);
   }
 }
-.__filter_on .__input_wrapper .__locations.support-many .__remove_location,
-.__filter_on .__input_wrapper .__locations.support-many .__add_location {
+.__available_on .__input_wrapper .__remove_location,
+.__available_on .__input_wrapper .__add_location {
   min-width: 30px;
   height: 30px;
   padding: 0;
 }
-.__filter_on .__input_wrapper .__locations.support-many .__remove_location:not(:hover) {
+.__available_on .__input_wrapper .__remove_location:not(:hover) {
   opacity: 0.7;
 }
 

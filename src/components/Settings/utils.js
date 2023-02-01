@@ -61,8 +61,8 @@ export function defaultSettings() {
 		sort_by_form: '.woocommerce-ordering',
 		more_selectors: '',
 		author_roles: [],
-		multiple_visible_on: '',
-		multiple_sub_location: '',
+		multiple_form_locations: '',
+		multiple_form_sub_locations: '',
 		// Miscellaneous
 		debug_mode: '1',
 		disable_wcapf: '',
