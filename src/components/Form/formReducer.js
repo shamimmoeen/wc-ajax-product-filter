@@ -7,7 +7,7 @@ export const initialState = {
 	title,
 	formId,
 	filterKeys: [],
-	currentTab: 'filters',
+	currentTab: 'settings',
 	accordionStates: [],
 	formFilters: [],
 	formSettings: {},

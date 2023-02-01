@@ -23,6 +23,11 @@ const SelectMulti = ({
 	checkboxId,
 	checkIsChecked,
 	onCheckChange,
+	renderAsFormField = true,
+	inputKey,
+	inputPlaceholder,
+	inputNoOptionsMessage,
+	maxMenuHeight,
 }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
 		let ajaxParams;
@@ -30,6 +35,12 @@ const SelectMulti = ({
 		if ('author' === type) {
 			ajaxParams = {
 				action: 'wcapf_get_authors_for_dropdown',
+				keyword,
+				page,
+			};
+		} else if ('page' === type) {
+			ajaxParams = {
+				action: 'wcapf_get_pages_for_dropdown',
 				keyword,
 				page,
 			};
@@ -97,6 +108,14 @@ const SelectMulti = ({
 		noOptionsMessage = __('No terms found', 'wc-ajax-product-filter');
 	}
 
+	if (inputPlaceholder) {
+		placeholder = inputPlaceholder;
+	}
+
+	if (inputNoOptionsMessage) {
+		noOptionsMessage = inputNoOptionsMessage;
+	}
+
 	const loadingMessage = __('Loading...', 'wc-ajax-product-filter');
 
 	const inputId = getInputId(id, index);
@@ -113,6 +132,7 @@ const SelectMulti = ({
 					loadingMessage={() => loadingMessage}
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
+					maxMenuHeight={maxMenuHeight}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id, index)}
 					isClearable
@@ -131,6 +151,7 @@ const SelectMulti = ({
 		} else {
 			return (
 				<AsyncPaginate
+					key={inputKey}
 					inputId={inputId}
 					value={value}
 					loadOptions={loadOptions}
@@ -142,6 +163,7 @@ const SelectMulti = ({
 					loadingMessage={() => loadingMessage}
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
+					maxMenuHeight={maxMenuHeight}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id, index)}
 					isClearable
@@ -181,28 +203,32 @@ const SelectMulti = ({
 		);
 	};
 
-	return (
-		<div className='__form_control react_select'>
-			<div className='__inner'>
-				<div className='__label'>
-					<label htmlFor={inputId}>{label}</label>
-				</div>
-				<div className='__wrapper'>
-					<div className='__input_wrapper'>
-						{renderSelect()}
+	if (renderAsFormField) {
+		return (
+			<div className='__form_control react_select'>
+				<div className='__inner'>
+					<div className='__label'>
+						<label htmlFor={inputId}>{label}</label>
+					</div>
+					<div className='__wrapper'>
+						<div className='__input_wrapper'>
+							{renderSelect()}
 
-						{showIncludeChildren && includeChild()}
+							{showIncludeChildren && includeChild()}
+						</div>
 					</div>
 				</div>
+				{description && (
+					<p
+						className='description'
+						dangerouslySetInnerHTML={{ __html: description }}
+					/>
+				)}
 			</div>
-			{description && (
-				<p
-					className='description'
-					dangerouslySetInnerHTML={{ __html: description }}
-				/>
-			)}
-		</div>
-	);
+		);
+	}
+
+	return renderSelect();
 };
 
 export default SelectMulti;

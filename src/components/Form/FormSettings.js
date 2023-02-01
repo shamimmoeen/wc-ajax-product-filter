@@ -1,11 +1,15 @@
-import { CheckboxControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
-import Radio from '../Field/Radio';
+import Number from '../Field/Number';
 import Select from '../Field/Select';
 import Text from '../Field/Text';
 import { foundProVersion } from '../utils';
-import { formVisibilityOptions } from '../utilsForForm';
+import {
+	filterModeOptions,
+	formLayoutOptions,
+	formVisibilityOptions,
+} from '../utilsForForm';
+import FilterOn from './FilterOn';
 import { useForm } from './FormContext';
 import useFormSettings from './useFormSettings';
 
@@ -13,40 +17,46 @@ const WCAPF_PRO = foundProVersion();
 
 const FormSettings = () => {
 	const { state, dispatch } = useForm();
-	const {
-		handleCheckboxChange,
-		handleRadioChange,
-		handleSelectChange,
-		handleTextFieldChange,
-	} = useFormSettings(state, dispatch);
+	const { handleTextFieldChange, handleCheckboxChange, handleSelectChange } =
+		useFormSettings(state, dispatch);
 
 	const {
 		formSettings: {
+			form_locations,
+			products_loop_container,
+			priority,
+			form_layout,
 			filter_mode,
-			submit_button_label,
 			form_visibility,
-			opening_button_label,
+			show_clear_btn,
 			show_active_filters,
 			show_reset_button,
-			reset_button_label,
 		},
 	} = state;
 
-	const filterOnOptions = [
-		{
-			label: __('Product archive pages', 'wc-ajax-product-filter'),
-			value: 'product_archive_pages',
-		},
-	];
+	let showProductsLoopContainer;
 
-	const filterOn = filterOnOptions[0];
+	if (form_locations) {
+		for (const locationData of form_locations) {
+			const { location } = locationData;
 
-	const filterOnTooltip = __(
-		'Upgrade to PRO to select taxonomies and pages.',
-		'wc-ajax-product-filter'
+			if ('page' === location) {
+				showProductsLoopContainer = true;
+
+				break;
+			}
+		}
+	}
+
+	const formLayouts = formLayoutOptions();
+	const formLayout = formLayouts.find(
+		(option) => option.value === form_layout
 	);
 
-	const availableOnId = WCAPF_PRO ? 'filter_on' : 'place_for';
+	const filterModes = filterModeOptions();
+	const filterMode = filterModes.find(
+		(option) => option.value === filter_mode
+	);
 
 	const visibilityOptions = formVisibilityOptions();
 	const formVisibility = visibilityOptions.find(
@@ -55,102 +65,64 @@ const FormSettings = () => {
 
 	return (
 		<>
+			<FilterOn />
+
+			{WCAPF_PRO && showProductsLoopContainer && (
+				<Text
+					id={'products_loop_container'}
+					label={__(
+						'Products loop container',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Give a valid id/class of the HTML element that contains the products loop.',
+						'wc-ajax-product-filter'
+					)}
+					placeholder={'#id or .class'}
+					value={products_loop_container}
+					onChange={handleTextFieldChange}
+				/>
+			)}
+
+			{WCAPF_PRO && (
+				<Number
+					id={'priority'}
+					label={__('Priority', 'wc-ajax-product-filter')}
+					description={__(
+						'Form with higher priority will be shown first when multiple forms are found in a page.',
+						'wc-ajax-product-filter'
+					)}
+					value={priority ? priority : 0}
+					onChange={handleTextFieldChange}
+					min={0}
+				/>
+			)}
+
 			<Select
-				id={availableOnId}
-				label={__('Filter on', 'wc-ajax-product-filter')}
+				id={'form_layout'}
+				label={__('Layout', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines where you want to show the form to filter the products.',
+					'Determines how you want to arrange the form filters.',
 					'wc-ajax-product-filter'
 				)}
+				options={formLayouts}
+				value={formLayout}
 				onChange={handleSelectChange}
-				options={filterOnOptions}
-				value={filterOn}
-				tooltip={!WCAPF_PRO ? filterOnTooltip : ''}
 				renderAsFormField
-				isPro
-				isDisabled={!WCAPF_PRO}
 			/>
 
-			{/* <div className='__form_fields_separator' /> */}
-
-			<Radio
+			<Select
 				id={'filter_mode'}
 				label={__('Filter Mode', 'wc-ajax-product-filter')}
 				description={__(
-					'Immediate: filtering starts when any change occurs, Submit button: filtering starts after clicking on a button.',
+					'Determines how the filtering will work.',
 					'wc-ajax-product-filter'
 				)}
-				options={[
-					{
-						label: __('Immediate', 'wc-ajax-product-filter'),
-						value: 'immediate',
-					},
-					{
-						label: __('Submit button', 'wc-ajax-product-filter'),
-						value: 'submit',
-						isPro: true,
-					},
-					{
-						label: __('Apply button', 'wc-ajax-product-filter'),
-						value: 'apply',
-						isPro: true,
-					},
-				]}
-				onChange={handleRadioChange}
-				value={filter_mode}
+				options={filterModes}
+				value={filterMode}
+				onChange={handleSelectChange}
+				renderAsFormField
 			/>
-
-			{'apply' === filter_mode && (
-				<>
-					<Text
-						id={'submit_button_label'}
-						label={__(
-							'Submit button label',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Leave it empty to show the default label.',
-							'wc-ajax-product-filter'
-						)}
-						value={submit_button_label}
-						onChange={handleTextFieldChange}
-					/>
-
-					<div className='__form_control __horizontal_multi_checkbox'>
-						<div className='__inner'>
-							<div className='__label'>
-								<label>{__('Auto Sync')}</label>
-							</div>
-							<div className='__wrapper'>
-								<div className='__input_wrapper'>
-									<CheckboxControl
-										label={__(
-											'Filters',
-											'wc-ajax-product-filter'
-										)}
-										// checked={rules.includes('mobile')}
-										// onChange={() => onChange('mobile')}
-									/>
-
-									<CheckboxControl
-										label={__(
-											'Products',
-											'wc-ajax-product-filter'
-										)}
-										// checked={rules.includes('tablet')}
-										// onChange={() => onChange('tablet')}
-									/>
-								</div>
-							</div>
-						</div>
-						<p className='description'>
-							{'Determines what to update in submit button mode.'}
-						</p>
-					</div>
-				</>
-			)}
-
-			{/* <div className='__form_fields_separator' /> */}
 
 			<Select
 				id={'form_visibility'}
@@ -165,20 +137,17 @@ const FormSettings = () => {
 				renderAsFormField
 			/>
 
-			{'always_display' !== form_visibility && (
-				<Text
-					id={'opening_button_label'}
-					label={__('Opening button label', 'wc-ajax-product-filter')}
-					description={__(
-						'Leave it empty to show the default label.',
-						'wc-ajax-product-filter'
-					)}
-					value={opening_button_label}
-					onChange={handleTextFieldChange}
-				/>
-			)}
-
-			{/* <div className='__form_fields_separator' /> */}
+			<Checkbox
+				id={'show_clear_btn'}
+				label={__('Enable clear filter', 'wc-ajax-product-filter')}
+				isChecked={show_clear_btn}
+				onChange={handleCheckboxChange}
+				description={__(
+					'Whether to show a button in each filter to clear the active options.',
+					'wc-ajax-product-filter'
+				)}
+				isPro
+			/>
 
 			<Checkbox
 				id={'show_active_filters'}
@@ -186,7 +155,7 @@ const FormSettings = () => {
 				isChecked={show_active_filters}
 				onChange={handleCheckboxChange}
 				description={__(
-					'Whether to show the active filters on top of the form.',
+					'Enable this to show the active filters on top of the form.',
 					'wc-ajax-product-filter'
 				)}
 			/>
@@ -197,23 +166,10 @@ const FormSettings = () => {
 				isChecked={show_reset_button}
 				onChange={handleCheckboxChange}
 				description={__(
-					'Whether to show a reset button at the bottom of the form.',
+					'Enable this to show a reset button at the bottom of the form.',
 					'wc-ajax-product-filter'
 				)}
 			/>
-
-			{'1' === show_reset_button && (
-				<Text
-					id={'reset_button_label'}
-					label={__('Reset button label', 'wc-ajax-product-filter')}
-					description={__(
-						'Leave it empty to show the default label.',
-						'wc-ajax-product-filter'
-					)}
-					value={reset_button_label}
-					onChange={handleTextFieldChange}
-				/>
-			)}
 		</>
 	);
 };

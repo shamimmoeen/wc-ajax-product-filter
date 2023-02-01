@@ -1,6 +1,12 @@
 @import './variables';
 @import './mixins';
 
+// #wcapf-settings-admin-ui {
+//     .__content {
+//         padding-bottom: 8em;
+//     }
+// }
+
 .__settings_wrapper {
     @include list-table;
 
@@ -33,6 +39,10 @@
     .__single_select {
         &.filter_relationships {
             min-width: 70px;
+        }
+
+        &.number_range_slider_preset {
+            min-width: 120px;
         }
 
         &.loading_animation {
@@ -109,7 +119,7 @@
         }
     }
 
-    .__global_filter_keys_heading {
+    .__section_heading {
         margin: .5em 0 1.5em;
 
         ~.__description {

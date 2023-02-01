@@ -1,9 +1,14 @@
-const initialSettings = wcapf_admin_params.settings;
+import { merge } from 'lodash';
+import { defaultSettings } from './utils';
+
+const initialSettings = merge(defaultSettings(), wcapf_admin_params.settings);
 const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 
 export const initialState = {
 	isDirty: false,
-	currentTab: 'loader-scrollTo',
+	// currentTab: 'loader-scrollTo',
+	currentTab: 'appearance',
+	// currentTab: 'others',
 	settings: initialSettings,
 	globalFilterKeys,
 	seoSettings: {},

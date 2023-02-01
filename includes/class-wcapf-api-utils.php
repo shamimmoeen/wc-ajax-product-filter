@@ -171,9 +171,11 @@ class WCAPF_API_Utils {
 	/**
 	 * Gets the available taxonomies after sorting them.
 	 *
+	 * @param bool $only_with_archive Whether to return the taxonomies with archive enabled or not.
+	 *
 	 * @return array
 	 */
-	public static function get_available_taxonomies() {
+	public static function get_available_taxonomies( $only_with_archive = false ) {
 		$tax_data   = get_object_taxonomies( 'product', 'objects' );
 		$taxonomies = array();
 
@@ -196,6 +198,10 @@ class WCAPF_API_Utils {
 		$found_pro = WCAPF_Helper::found_pro_version();
 
 		foreach ( $final_array as $name ) {
+			if ( $only_with_archive && ( ! is_taxonomy_viewable( $name ) || 'product_shipping_class' === $name ) ) {
+				continue;
+			}
+
 			if ( in_array( $name, $main_taxonomies ) || in_array( $name, $optional_taxonomies ) ) {
 				$default_filter_key = str_replace( '_', '-', $name );
 			} elseif ( in_array( $name, $attributes ) ) {
@@ -218,6 +224,24 @@ class WCAPF_API_Utils {
 		}
 
 		return $taxonomies;
+	}
+
+	public static function get_form_places() {
+		return array(
+			array(
+				'label' => __( 'Product archive pages', 'wc-ajax-product-filter' ),
+				'value' => 'product_archive_pages',
+			),
+			array(
+				'label'   => __( 'Taxonomy', 'wc-ajax-product-filter' ),
+				'value'   => 'taxonomy',
+				'options' => self::get_available_taxonomies( true ),
+			),
+			array(
+				'label' => __( 'Page', 'wc-ajax-product-filter' ),
+				'value' => 'page',
+			),
+		);
 	}
 
 	public static function display_date_formats() {

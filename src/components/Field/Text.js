@@ -87,6 +87,21 @@ const Text = ({
 									}
 								/>
 							)}
+							{'products_loop_container' === id && (
+								<TippyTooltip
+									content={
+										<>
+											This will only work when showing the
+											form on non-product archive pages.
+											<br />
+											<br />
+											When showing more than one form on a
+											page use the same identifier for all
+											forms.
+										</>
+									}
+								/>
+							)}
 							{proTag(isPro)}
 						</label>
 					</div>

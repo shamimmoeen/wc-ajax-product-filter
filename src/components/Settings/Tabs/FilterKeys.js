@@ -6,6 +6,9 @@ import { ReactSortable } from 'react-sortablejs';
 import useSettingsData from '../useSettingsData';
 import { useSettings } from '../SettingsContext';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
+import { foundProVersion } from '../../utils';
+
+const WCAPF_PRO = foundProVersion();
 
 const FilterKeys = () => {
 	const { state, dispatch } = useSettings();
@@ -14,6 +17,10 @@ const FilterKeys = () => {
 	const { globalFilterKeys } = state;
 
 	const setFilterKeys = (_filterKeys, sortable, store) => {
+		if (!WCAPF_PRO) {
+			return;
+		}
+
 		if (!sortable) {
 			return;
 		}
@@ -29,6 +36,10 @@ const FilterKeys = () => {
 	};
 
 	const handleSort = () => {
+		if (!WCAPF_PRO) {
+			return;
+		}
+
 		setDirty();
 	};
 
@@ -58,7 +69,7 @@ const FilterKeys = () => {
 				)}
 			/>
 
-			<h4 className='__global_filter_keys_heading'>
+			<h4 className='__section_heading'>
 				{__('Global filter keys and order', 'wc-ajax-product-filter')}
 			</h4>
 

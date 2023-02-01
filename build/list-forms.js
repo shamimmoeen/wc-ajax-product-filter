@@ -6482,7 +6482,7 @@ const WCAPF_PRO = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.foundProVersion)();
 
 const filterOnTooltip = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Determines where you want to show the form to filter the products.', 'wc-ajax-product-filter');
 
-const headers = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter on', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'wc-ajax-product-filter')];
+const headers = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Title', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Visible on', 'wc-ajax-product-filter'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'wc-ajax-product-filter')];
 
 const Table = _ref => {
   let {
@@ -6506,7 +6506,7 @@ const Table = _ref => {
       return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
         className: id,
         key: `posts-table-${item}`
-      }, item, '__Filter_on' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      }, item, '__Visible_on' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_8__["default"], {
         content: filterOnTooltip
       }));
     }));
@@ -7794,24 +7794,67 @@ function mergeSelectOptions(freeOptions, proOptions) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "defaultFormSettings": function() { return /* binding */ defaultFormSettings; },
-/* harmony export */   "formVisibilityOptions": function() { return /* binding */ formVisibilityOptions; }
+/* harmony export */   "filterModeOptions": function() { return /* binding */ filterModeOptions; },
+/* harmony export */   "formLayoutOptions": function() { return /* binding */ formLayoutOptions; },
+/* harmony export */   "formVisibilityOptions": function() { return /* binding */ formVisibilityOptions; },
+/* harmony export */   "proVisibilityOptions": function() { return /* binding */ proVisibilityOptions; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/components/utils.js");
 
 
+const defaultLocation = {
+  location: 'product_archive_pages',
+  sub_location: ''
+};
 function defaultFormSettings() {
   return {
+    form_locations: [defaultLocation],
+    products_loop_container: '',
+    priority: 0,
+    form_layout: 'vertical',
     filter_mode: 'immediate',
     form_visibility: 'always_display',
-    show_form_title: '',
+    show_clear_btn: '',
     show_active_filters: '',
-    show_reset_button: '',
-    place_for: '' // Mask it
-
+    show_reset_button: ''
   };
 }
+function formLayoutOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Vertical', 'wc-ajax-product-filter'),
+    value: 'vertical'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Horizontal', 'wc-ajax-product-filter'),
+    value: 'horizontal',
+    isPro: true
+  }];
+}
+function filterModeOptions() {
+  return [{
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Immediate', 'wc-ajax-product-filter'),
+    value: 'immediate'
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Submit', 'wc-ajax-product-filter'),
+    value: 'submit',
+    isPro: true
+  }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Apply', 'wc-ajax-product-filter'),
+    value: 'apply',
+    isPro: true
+  }];
+}
+const proVisibilityOptions = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide-out panel on desktop', 'wc-ajax-product-filter'),
+  value: 'slide_out_panel_on_desktop'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide-out panel on mobile', 'wc-ajax-product-filter'),
+  value: 'slide_out_panel_on_mobile'
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide-out panel on both', 'wc-ajax-product-filter'),
+  value: 'slide_out_panel_on_both'
+}];
 function formVisibilityOptions() {
   const freeOptions = [{
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Always display', 'wc-ajax-product-filter'),
@@ -7826,17 +7869,7 @@ function formVisibilityOptions() {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Click button on both', 'wc-ajax-product-filter'),
     value: 'click_button_on_both'
   }];
-  const proOptions = [{
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide-out panel on desktop', 'wc-ajax-product-filter'),
-    value: 'slide_out_panel_on_desktop'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide-out panel on mobile', 'wc-ajax-product-filter'),
-    value: 'slide_out_panel_on_mobile'
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Slide-out panel on both', 'wc-ajax-product-filter'),
-    value: 'slide_out_panel_on_both'
-  }];
-  return (0,_utils__WEBPACK_IMPORTED_MODULE_1__.mergeSelectOptions)(freeOptions, proOptions, true);
+  return (0,_utils__WEBPACK_IMPORTED_MODULE_1__.mergeSelectOptions)(freeOptions, proVisibilityOptions, true);
 }
 
 /***/ }),
