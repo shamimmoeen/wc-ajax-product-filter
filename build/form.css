@@ -551,7 +551,7 @@ body.rtl .__title_wrapper .__save_button .__icon {
   border-color: #ddd;
 }
 .__custom_react_select .__react_select__control--is-disabled {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #f0f0f0;
 }
 .__custom_react_select .__react_select__control--is-disabled .__react_select__indicators {
   display: none;

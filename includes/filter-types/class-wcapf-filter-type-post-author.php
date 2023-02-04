@@ -36,7 +36,7 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 	protected function prepare_items() {
 		$args = array(
 			'fields' => array( 'ID', 'display_name' ),
-			'number' => 999, // We are limiting the maximum number of users considering larger sites.
+			'number' => 99, // We are limiting the maximum number of users considering larger sites.
 		);
 
 		$args   = apply_filters( 'wcapf_get_post_author_args', $args, $this->field );

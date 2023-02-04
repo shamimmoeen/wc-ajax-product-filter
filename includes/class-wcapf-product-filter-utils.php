@@ -377,20 +377,52 @@ class WCAPF_Product_Filter_Utils {
 		$value_prefix       = $field_instance->get_sub_field_value( 'value_prefix' );
 		$value_postfix      = $field_instance->get_sub_field_value( 'value_postfix' );
 		$values_separator   = $field_instance->get_sub_field_value( 'values_separator' );
+		$format_numbers     = $field_instance->get_sub_field_value( 'format_numbers' );
 		$decimal_places     = $field_instance->get_sub_field_value( 'decimal_places' );
 		$thousand_separator = $field_instance->get_sub_field_value( 'thousand_separator' );
 		$decimal_separator  = $field_instance->get_sub_field_value( 'decimal_separator' );
 
+		$space = '&nbsp;';
+
+		if ( ! self::starts_with( $values_separator, $space ) ) {
+			$values_separator = $space . $values_separator;
+		}
+
+		if ( ! self::ends_with( $values_separator, $space ) ) {
+			$values_separator = $values_separator . $space;
+		}
+
+		if ( $format_numbers ) {
+			$range_min = number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator );
+			$range_max = number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator );
+		}
+
 		$label = sprintf(
 			'%1$s%2$s%3$s%4$s%1$s%5$s%3$s',
 			$value_prefix,
-			number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator ),
+			$range_min,
 			$value_postfix,
 			$values_separator,
-			number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator )
+			$range_max
 		);
 
 		return apply_filters( 'wcapf_label_for_number_range', $label, $field_instance );
+	}
+
+	public static function starts_with( $haystack, $needle ) {
+		$length = strlen( $needle );
+
+		return substr( $haystack, 0, $length ) === $needle;
+	}
+
+	public static function ends_with( $haystack, $needle ) {
+		$length = strlen( $needle );
+
+		if ( ! $length ) {
+			return true;
+		}
+
+		return substr( $haystack, - $length ) === $needle;
 	}
 
 	/**

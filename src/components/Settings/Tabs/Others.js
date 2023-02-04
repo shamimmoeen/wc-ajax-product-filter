@@ -21,21 +21,19 @@ const Others = () => {
 
 	const {
 		settings: {
-			submit_btn_label,
-			apply_btn_label,
+			search_field_placeholder,
+			show_more_btn_label,
+			show_less_btn_label,
 			opening_btn_label,
 			slide_out_panel_label,
-			active_filters_label,
-			reset_button_label,
 			clear_button_label,
 			clear_all_button_label,
 			pagination_container,
 			results_count_container,
-			sort_by_form,
+			sort_by_form_container,
 			more_selectors,
 			author_roles,
 			multiple_form_locations,
-			multiple_form_sub_locations,
 		},
 	} = state;
 
@@ -49,27 +47,34 @@ const Others = () => {
 			/>
 
 			<h4 className='__section_heading'>
-				{__('Labels', 'wc-ajax-product-filter')}
+				{__('Phrases', 'wc-ajax-product-filter')}
 			</h4>
 
 			<p className='__description'>
 				{__(
-					'Here you can change the labels shown on the front end. Leave empty to use the default.',
+					'Here you can change the phrases shown on the front-end. Leave empty to use the default.',
 					'wc-ajax-product-filter'
 				)}
 			</p>
 
 			<Text
-				id={'submit_btn_label'}
-				label={__('Submit button label', 'wc-ajax-product-filter')}
-				value={submit_btn_label}
+				id={'search_field_placeholder'}
+				label={__('Search field placeholder', 'wc-ajax-product-filter')}
+				value={search_field_placeholder}
 				onChange={handleTextFieldChange}
 			/>
 
 			<Text
-				id={'apply_btn_label'}
-				label={__('Apply button label', 'wc-ajax-product-filter')}
-				value={apply_btn_label}
+				id={'show_more_btn_label'}
+				label={__('Show more button label', 'wc-ajax-product-filter')}
+				value={show_more_btn_label}
+				onChange={handleTextFieldChange}
+			/>
+
+			<Text
+				id={'show_less_btn_label'}
+				label={__('Show less button label', 'wc-ajax-product-filter')}
+				value={show_less_btn_label}
 				onChange={handleTextFieldChange}
 			/>
 
@@ -92,30 +97,18 @@ const Others = () => {
 				/>
 			)}
 
-			<Text
-				id={'active_filters_label'}
-				label={__('Active filters label', 'wc-ajax-product-filter')}
-				value={active_filters_label}
-				onChange={handleTextFieldChange}
-			/>
-
-			<Text
-				id={'reset_button_label'}
-				label={__('Reset button label', 'wc-ajax-product-filter')}
-				value={reset_button_label}
-				onChange={handleTextFieldChange}
-			/>
-
-			<Text
-				id={'clear_button_label'}
-				label={__('Clear button label', 'wc-ajax-product-filter')}
-				value={clear_button_label}
-				onChange={handleTextFieldChange}
-			/>
+			{WCAPF_PRO && (
+				<Text
+					id={'clear_button_label'}
+					label={__('Clear button label', 'wc-ajax-product-filter')}
+					value={clear_button_label}
+					onChange={handleTextFieldChange}
+				/>
+			)}
 
 			<Text
 				id={'clear_all_button_label'}
-				label={__('Clear all button label', 'wc-ajax-product-filter')}
+				label={__('Clear All button label', 'wc-ajax-product-filter')}
 				value={clear_all_button_label}
 				onChange={handleTextFieldChange}
 			/>
@@ -156,13 +149,13 @@ const Others = () => {
 			/>
 
 			<Text
-				id={'sort_by_form'}
+				id={'sort_by_form_container'}
 				label={__('Sort by form', 'wc-ajax-product-filter')}
 				description={__(
 					"The css class of the sort by form element. In most cases, you don't need to change this.",
 					'wc-ajax-product-filter'
 				)}
-				value={sort_by_form}
+				value={sort_by_form_container}
 				onChange={handleTextFieldChange}
 			/>
 
@@ -199,7 +192,7 @@ const Others = () => {
 				type={'author'}
 				isUserRoles={true}
 				options={userRoles}
-				maxMenuHeight={100}
+				maxMenuHeight={WCAPF_PRO ? 200 : 100}
 			/>
 
 			{WCAPF_PRO && (
@@ -221,20 +214,6 @@ const Others = () => {
 							'wc-ajax-product-filter'
 						)}
 						isChecked={multiple_form_locations}
-						onChange={handleCheckboxChange}
-					/>
-
-					<Checkbox
-						id={'multiple_form_sub_locations'}
-						label={__(
-							'Multiple terms/pages',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Enable this if you want to set multiple terms/pages in the sub-location dropdown.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={multiple_form_sub_locations}
 						onChange={handleCheckboxChange}
 					/>
 				</>

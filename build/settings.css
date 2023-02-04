@@ -743,7 +743,7 @@ body.rtl .__sidebar .components-button {
   border-color: #ddd;
 }
 .__custom_react_select .__react_select__control--is-disabled {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #f0f0f0;
 }
 .__custom_react_select .__react_select__control--is-disabled .__react_select__indicators {
   display: none;
@@ -998,6 +998,9 @@ body.rtl .__custom_react_select .__react_select__dropdown-indicator {
 .__settings_tab .__single_select.filter_relationships {
   min-width: 70px;
 }
+.__settings_tab .__single_select.sort_by_form {
+  min-width: 220px;
+}
 .__settings_tab .__single_select.number_range_slider_preset {
   min-width: 120px;
 }
@@ -1052,11 +1055,21 @@ body.rtl .__settings_tab .__scroll_window_to .__input_wrapper .__single_select:n
 .__settings_tab .__scroll_window_to .description {
   margin-top: 0;
 }
+.__settings_tab .components-notice {
+  margin: 0 0 1.5em;
+  border-color: #d93e3e;
+  color: #d93e3e;
+  background-color: #ffe6e6;
+}
 .__settings_tab .__section_heading {
   margin: 0.5em 0 1.5em;
 }
 .__settings_tab .__section_heading ~ .__description {
   margin-bottom: 2em;
+}
+.__settings_tab .__global_filter_keys .components-notice {
+  border: none;
+  padding: 2px 10px;
 }
 .__settings_tab .__global_filter_keys .__filter_key {
   align-items: center;
@@ -1064,12 +1077,26 @@ body.rtl .__settings_tab .__scroll_window_to .__input_wrapper .__single_select:n
   margin: 0 0 1.5em;
   gap: 15px;
 }
+.__settings_tab .__global_filter_keys .__filter_key .__index {
+  width: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+.__settings_tab .__global_filter_keys .__filter_key .components-text-control__input.__has_error:not(:focus) {
+  border-color: #d93e3e;
+}
 .__settings_tab .__global_filter_keys .__filter_key .__label {
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media (min-width: 600px) {
+  .__settings_tab .__global_filter_keys .__filter_key {
+    max-width: 520px;
+  }
   .__settings_tab .__global_filter_keys .__filter_key .__label {
-    min-width: 200px;
+    flex: 1;
   }
 }
 .__settings_tab .__global_filter_keys .__drag_handle_wrapper {

@@ -52,7 +52,7 @@
 		max-width: 220px;
 
 		&:disabled {
-			background-color: #f0f0f0;
+			background-color: $inputDisabledBGColor;
 		}
 	}
 
@@ -349,7 +349,7 @@
 	}
 
 	.__react_select__control--is-disabled {
-		background-color: rgba(255, 255, 255, 0.5);
+		background-color: $inputDisabledBGColor;
 
 		.__react_select__indicators {
 			display: none;

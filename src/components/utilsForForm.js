@@ -10,13 +10,13 @@ export function defaultFormSettings() {
 	return {
 		form_locations: [defaultLocation],
 		products_loop_container: '',
-		priority: 0,
+		priority: '0',
 		form_layout: 'vertical',
+		columns_per_row: '4',
+		show_form_on_top_of_products: '1',
 		filter_mode: 'immediate',
 		form_visibility: 'always_display',
 		show_clear_btn: '',
-		show_active_filters: '',
-		show_reset_button: '',
 	};
 }
 
@@ -41,13 +41,12 @@ export function filterModeOptions() {
 			value: 'immediate',
 		},
 		{
-			label: __('Submit', 'wc-ajax-product-filter'),
-			value: 'submit',
-			isPro: true,
-		},
-		{
 			label: __('Apply', 'wc-ajax-product-filter'),
 			value: 'apply',
+		},
+		{
+			label: __('Submit', 'wc-ajax-product-filter'),
+			value: 'submit',
 			isPro: true,
 		},
 	];

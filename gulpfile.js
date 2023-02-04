@@ -135,22 +135,16 @@ function browser() {
 }
 
 function watchBuild() {
-	watch( './admin/src/scss/**/*.scss', backendCss );
 	watch( './public/src/scss/**/*.scss', frontendCss );
-	watch( './admin/src/js/**/*.js', backendJs );
 	watch( './public/src/js/**/*.js', frontendJs );
 }
 
 const build = series(
-	backendCss,
 	frontendCss,
-	backendJs,
 	frontendJs,
 );
 
-module.exports.backendCss = backendCss;
 module.exports.frontendCss = frontendCss;
-module.exports.backendJs = backendJs;
 module.exports.frontendJs = frontendJs;
 module.exports.watchBuild = watchBuild;
 module.exports.build = build;

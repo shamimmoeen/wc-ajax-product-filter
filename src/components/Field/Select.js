@@ -69,6 +69,7 @@ const Select = ({
 	onChange,
 	isSearchable = false,
 	renderAsFormField = false,
+	inputKey,
 	portalTarget = false,
 	maxMenuHeight,
 	isPro = false,
@@ -97,6 +98,7 @@ const Select = ({
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
 							<SimpleReactSelect
+								key={inputKey}
 								inputId={inputId}
 								options={options}
 								value={value}
@@ -124,6 +126,7 @@ const Select = ({
 	} else {
 		html = (
 			<SimpleReactSelect
+				key={inputKey}
 				inputId={inputId}
 				options={options}
 				value={value}

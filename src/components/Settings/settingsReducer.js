@@ -9,7 +9,9 @@ export const initialState = {
 	currentTab: 'filter-keys',
 	settings: initialSettings,
 	globalFilterKeys,
-	seoSettings: {},
+	filterKeysChanged: false,
+	seoSettings: {}, // TODO: Maybe redundant.
+	saveError: '',
 };
 
 const settingsReducer = (state, action) => {
@@ -26,8 +28,14 @@ const settingsReducer = (state, action) => {
 		case 'UPDATE_GLOBAL_FILTER_KEYS':
 			return { ...state, globalFilterKeys: action.payload };
 
+		case 'SET_FILTER_KEYS_CHANGED':
+			return { ...state, filterKeysChanged: action.payload };
+
 		case 'UPDATE_SEO_SETTINGS':
 			return { ...state, seoSettings: action.payload };
+
+		case 'SET_ERROR':
+			return { ...state, saveError: action.payload };
 
 		default:
 			return state;

@@ -3,6 +3,10 @@
 	--wcapf-checkbox-radio-space: 10px;
 
 	--wcapf-stylish-checkbox-radio-size: 18px;
+	--wcapf-stylish-checkbox-radio-bg-color: #fff;
+	--wcapf-stylish-checkbox-radio-disabled-bg-color: #eee;
+	--wcapf-stylish-checkbox-radio-primary-color: var(--wcapf-primary-color);
+	--wcapf-stylish-checkbox-radio-primary-text-color: var(--wcapf-primary-text-color);
 	--wcapf-stylish-checkbox-radio-border-color: var(--wcapf-dropdown-border-color);
 	--wcapf-stylish-checkbox-radio-border-size: 1px;
 	--wcapf-stylish-checkbox-radio-border-radius: 2px;
@@ -18,7 +22,7 @@
 		height: var(--wcapf-stylish-checkbox-radio-size);
 		border: var(--wcapf-stylish-checkbox-radio-border-size) solid var(--wcapf-stylish-checkbox-radio-border-color);
 		border-radius: var(--wcapf-stylish-checkbox-radio-border-radius);
-		background-color: #fff;
+		background-color: var(--wcapf-stylish-checkbox-radio-bg-color);
 		position: relative;
 		outline: none;
 		display: inline-flex;
@@ -45,12 +49,12 @@
 	}
 
 	input:where([type="checkbox"], [type="radio"]):disabled {
-		background: #eee;
+		background: var(--wcapf-stylish-checkbox-radio-disabled-bg-color);
 	}
 
 	input[type="checkbox"]:checked {
-		background-color: var(--wcapf-primary-color);
-		border-color: var(--wcapf-primary-color);
+		background-color: var(--wcapf-stylish-checkbox-radio-primary-color);
+		border-color: var(--wcapf-stylish-checkbox-radio-primary-color);
 
 		&::before {
 			content: '';
@@ -60,21 +64,21 @@
 			width: var(--wcapf-stylish-checkbox-checked-width);
 			height: var(--wcapf-stylish-checkbox-checked-height);
 			border-style: solid;
-			border-color: #fff;
+			border-color: var(--wcapf-stylish-checkbox-radio-primary-text-color);
 			border-width: 0 2px 2px 0;
 			position: absolute;
 		}
 	}
 
 	input[type="radio"]:checked {
-		background-color: var(--wcapf-primary-color);
-		border-color: var(--wcapf-primary-color);
+		background-color: var(--wcapf-stylish-checkbox-radio-primary-color);
+		border-color: var(--wcapf-stylish-checkbox-radio-primary-color);
 
 		&::before {
 			content: '';
 			width: var(--wcapf-stylish-radio-checked-size);
 			height: var(--wcapf-stylish-radio-checked-size);
-			background-color: #fff;
+			background-color: var(--wcapf-stylish-checkbox-radio-primary-text-color);
 			border-radius: 10px;
 			left: 50%;
 			top: 50%;

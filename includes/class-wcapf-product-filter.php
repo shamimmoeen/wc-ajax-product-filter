@@ -200,9 +200,10 @@ class WCAPF_Product_Filter {
 			return $form_data;
 		}
 
-		$form     = $forms[0];
-		$form_id  = $form->ID;
-		$base_url = '';
+		$form          = $forms[0];
+		$form_id       = $form->ID;
+		$form_settings = maybe_unserialize( $form->post_content );
+		$base_url      = '';
 
 		if ( is_shop() ) {
 			$base_url = get_permalink( wc_get_page_id( 'shop' ) );
@@ -224,7 +225,7 @@ class WCAPF_Product_Filter {
 		$form_data['base_url']   = $base_url;
 		$form_data['form_id']    = $form_id;
 		$form_data['form_title'] = $form->post_title;
-		$form_data['settings']   = maybe_unserialize( $form->post_content );
+		$form_data['settings']   = $form_settings;
 
 		$form_filters = array();
 
@@ -242,12 +243,15 @@ class WCAPF_Product_Filter {
 			$remove_empty = 'show';
 		}
 
+		$show_clear_btn = isset( $form_settings['show_clear_btn'] ) && $form_settings['show_clear_btn'];
+
 		foreach ( $filters as $filter ) {
 			$settings = maybe_unserialize( $filter->post_content );
 
-			$settings['update_count'] = $update_count;
-			$settings['hide_empty']   = $remove_empty;
-			$settings['form_id']      = $form_id;
+			$settings['update_count']   = $update_count;
+			$settings['hide_empty']     = $remove_empty;
+			$settings['form_id']        = $form_id;
+			$settings['show_clear_btn'] = $show_clear_btn;
 
 			$form_filters[] = array(
 				'id'       => $filter->ID,
@@ -611,7 +615,12 @@ class WCAPF_Product_Filter {
 				$condition = "$wpdb->posts.ID IN $on_sale_products";
 			}
 
-			$condition = apply_filters( 'wcapf_filter_condition_for_product_status', $condition, $value, $field_instance );
+			$condition = apply_filters(
+				'wcapf_filter_condition_for_product_status',
+				$condition,
+				$value,
+				$field_instance
+			);
 
 			if ( $condition ) {
 				$wheres[] = $condition;

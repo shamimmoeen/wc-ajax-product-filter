@@ -12,17 +12,13 @@ body {
 	--wcapf-primary-color: rgba(var(--wcapf-primary-color-rgb), 1);
 	--wcapf-primary-text-color: rgba(var(--wcapf-primary-text-color-rgb), 1);
 
-	--wcapf-active-filters-group-bottom-margin: 1em;
-	--wcapf-active-filters-nav-hr-padding: 7px;
-	--wcapf-active-filters-nav-vr-padding: 1px;
-	--wcapf-clear-all-btn-top-margin: .6em;
+	--wcapf-filter-checked-outline-color: #333; // TODO: Maybe redundant.
 	--wcapf-filter-base-bottom-margin: 2em; // 3em
-	--wcapf-filter-checked-outline-color: #333;
 	--wcapf-filter-line-height: inherit;
 	--wcapf-filter-count-opacity: .6;
 	--wcapf-filter-outline-color: #e9e9e9; // #ddd // #d8d8da // #ccd0dc // #ced4da // #e9e9e9
 	--wcapf-nouislider-input-field-margin-bottom: 1.5em;
-	--wcapf-nouislider-plain-text-margin-bottom: 1em;
+	--wcapf-nouislider-plain-text-margin-bottom: 1.2em;
 	--wcapf-range-slider-bottom-padding: 1em;
 	--wcapf-results-container-loading-bg-color: #fff;
 	--wcapf-results-loading-body-bg-color: rgba(255, 255, 255, .7);
@@ -66,6 +62,21 @@ body {
 	--wcapf-labeled-nav-hr-padding: 0.875em;
 	--wcapf-labeled-nav-vr-padding: 0.375em;
 
+	// Active filters
+	--wcapf-active-filters-before-products-bottom-margin: 1.5em;
+	--wcapf-active-filters-before-products-clear-button-gap: 1em;
+	--wcapf-clear-all-btn-top-margin: .8em;
+	--wcapf-active-filter-item-bg-color: var(--wcapf-labeled-nav-bg-color);
+	--wcapf-active-filter-item-border-size: var(--wcapf-labeled-nav-border-size);
+	--wcapf-active-filter-item-border-color: var(--wcapf-labeled-nav-border-color);
+	--wcapf-active-filter-item-margin: var(--wcapf-labeled-nav-margin);
+	--wcapf-active-filter-item-border-radius: var(--wcapf-labeled-nav-border-radius);
+	--wcapf-active-filter-item-hr-padding: var(--wcapf-labeled-nav-hr-padding);
+	--wcapf-active-filter-item-vr-padding: var(--wcapf-labeled-nav-vr-padding);
+	--wcapf-active-filter-item-cross-icon-gap: 2;
+	--wcapf-active-filter-item-cross-icon-hr-position: .7;
+	--wcapf-active-filter-item-cross-icon-opacity: .6;
+
 	// Search Box
 	--wcapf-search-box-margin-bottom: 1em;
 
@@ -78,4 +89,17 @@ body {
 	// Empty filter item
 	--wcapf-empty-item-cursor: default;
 	--wcapf-empty-item-opacity: .6;
+
+	// Buttons
+	--wcapf-btn-secondary-bg-color: #fff;
+	--wcapf-btn-secondary-text-color: var(--wcapf-primary-color);
+	--wcapf-btn-primary-text-color: var(--wcapf-primary-text-color);
+	--wcapf-btn-primary-bg-color: var(--wcapf-primary-color);
+	--wcapf-btn-border-color: var(--wcapf-primary-color);
+	--wcapf-btn-border-size: 1px;
+	--wcapf-btn-border-radius: 0.125em;
+	--wcapf-btn-hr-padding: 1.375em;
+	--wcapf-btn-vr-padding: .5em;
+	--wcapf-btn-disabled-opacity: .6em;
+	--wcapf-btn-disabled-cursor: default;
 }

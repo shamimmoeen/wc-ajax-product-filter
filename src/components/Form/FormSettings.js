@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Number from '../Field/Number';
-import Radio from '../Field/Radio';
 import Select from '../Field/Select';
 import Text from '../Field/Text';
 import { foundProVersion } from '../utils';
@@ -16,16 +15,10 @@ import useFormSettings from './useFormSettings';
 
 const WCAPF_PRO = foundProVersion();
 
-const showUpcomingFeatures = false;
-
 const FormSettings = () => {
 	const { state, dispatch } = useForm();
-	const {
-		handleTextFieldChange,
-		handleRadioChange,
-		handleCheckboxChange,
-		handleSelectChange,
-	} = useFormSettings(state, dispatch);
+	const { handleTextFieldChange, handleCheckboxChange, handleSelectChange } =
+		useFormSettings(state, dispatch);
 
 	const {
 		formSettings: {
@@ -33,11 +26,11 @@ const FormSettings = () => {
 			products_loop_container,
 			priority,
 			form_layout,
+			columns_per_row,
+			show_form_on_top_of_products,
 			filter_mode,
 			form_visibility,
 			show_clear_btn,
-			show_active_filters,
-			show_reset_button,
 		},
 	} = state;
 
@@ -55,14 +48,19 @@ const FormSettings = () => {
 		}
 	}
 
+	const formLayouts = formLayoutOptions();
+	const formLayout = formLayouts.find(
+		(option) => form_layout === option.value
+	);
+
 	const filterModes = filterModeOptions();
 	const filterMode = filterModes.find(
-		(option) => option.value === filter_mode
+		(option) => filter_mode === option.value
 	);
 
 	const visibilityOptions = formVisibilityOptions();
 	const formVisibility = visibilityOptions.find(
-		(option) => option.value === form_visibility
+		(option) => form_visibility === option.value
 	);
 
 	return (
@@ -100,34 +98,61 @@ const FormSettings = () => {
 				/>
 			)}
 
-			{showUpcomingFeatures && (
+			<Select
+				id={'form_layout'}
+				label={__('Form Layout', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines how you want to arrange the form filters.',
+					'wc-ajax-product-filter'
+				)}
+				options={formLayouts}
+				value={formLayout}
+				onChange={handleSelectChange}
+				renderAsFormField
+			/>
+
+			{'horizontal' === form_layout && (
 				<>
-					<Radio
-						id={'form_layout'}
-						label={__('Layout', 'wc-ajax-product-filter')}
+					<Number
+						id={'columns_per_row'}
+						label={__('Columns per row', 'wc-ajax-product-filter')}
 						description={__(
-							'Determines how you want to arrange the form filters.',
+							'How many columns do you want to show in a row?',
 							'wc-ajax-product-filter'
 						)}
-						options={formLayoutOptions()}
-						value={form_layout}
-						onChange={handleRadioChange}
+						value={columns_per_row}
+						onChange={handleTextFieldChange}
+						min={1}
 					/>
 
-					<Select
-						id={'filter_mode'}
-						label={__('Filter Mode', 'wc-ajax-product-filter')}
-						description={__(
-							'Determines how the filtering will work.',
+					<Checkbox
+						id={'show_form_on_top_of_products'}
+						label={__(
+							'Show form on top of products',
 							'wc-ajax-product-filter'
 						)}
-						options={filterModes}
-						value={filterMode}
-						onChange={handleSelectChange}
-						renderAsFormField
+						description={__(
+							'Enable this to show the form on top of the products loop, only works on product archive pages.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={show_form_on_top_of_products}
+						onChange={handleCheckboxChange}
 					/>
 				</>
 			)}
+
+			<Select
+				id={'filter_mode'}
+				label={__('Filter Mode', 'wc-ajax-product-filter')}
+				description={__(
+					'Determines how the filtering will work.',
+					'wc-ajax-product-filter'
+				)}
+				options={filterModes}
+				value={filterMode}
+				onChange={handleSelectChange}
+				renderAsFormField
+			/>
 
 			<Select
 				id={'form_visibility'}
@@ -152,28 +177,6 @@ const FormSettings = () => {
 					'wc-ajax-product-filter'
 				)}
 				isPro
-			/>
-
-			<Checkbox
-				id={'show_active_filters'}
-				label={__('Show active filters', 'wc-ajax-product-filter')}
-				isChecked={show_active_filters}
-				onChange={handleCheckboxChange}
-				description={__(
-					'Enable this to show the active filters on top of the form.',
-					'wc-ajax-product-filter'
-				)}
-			/>
-
-			<Checkbox
-				id={'show_reset_button'}
-				label={__('Show reset button', 'wc-ajax-product-filter')}
-				isChecked={show_reset_button}
-				onChange={handleCheckboxChange}
-				description={__(
-					'Enable this to show a reset button at the bottom of the form.',
-					'wc-ajax-product-filter'
-				)}
 			/>
 		</>
 	);

@@ -200,6 +200,20 @@ const Filter = ({ index }) => {
 
 	const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
 
+	const maxCharacters = 15;
+
+	let _metaKey =
+		meta_key.length > maxCharacters
+			? meta_key.substr(0, maxCharacters) + '...'
+			: meta_key;
+
+	let _filterKey = globalFilterKey ? globalFilterKey : filterKey;
+
+	_filterKey =
+		_filterKey.length > maxCharacters
+			? _filterKey.substr(0, maxCharacters) + '...'
+			: _filterKey;
+
 	return (
 		<div className='__item'>
 			<div className={topClass} onClick={toggleExpand}>
@@ -216,12 +230,10 @@ const Filter = ({ index }) => {
 							</span>
 						)}
 						{'post-meta' === type && (
-							<span className='__meta_key'>{meta_key}</span>
+							<span className='__meta_key'>{_metaKey}</span>
 						)}
 					</div>
-					<div className='__key'>
-						{globalFilterKey ? globalFilterKey : filterKey}
-					</div>
+					<div className='__key'>{_filterKey}</div>
 					<div className='__display'>{displayType.label}</div>
 				</div>
 
@@ -234,7 +246,7 @@ const Filter = ({ index }) => {
 					<TabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='advanced'
+						initialTabName='general'
 						tabs={[
 							{
 								name: 'general',

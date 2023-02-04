@@ -14,5 +14,5 @@
 ?>
 
 <div class="wcapf-reset-filters">
-	<?php echo WCAPF_Helper::get_reset_filters_button_markup( $button_label ); ?>
+	<?php echo WCAPF_Helper::get_reset_button_markup( $button_label ); ?>
 </div>

@@ -125,14 +125,17 @@ class WCAPF_API {
 		}
 
 		$form_settings = maybe_unserialize( $form->post_content );
+		$form_settings = $this->parse_form_settings( $form_settings );
 
-		wp_send_json_success( array(
-			'post_id'       => $post_id,
-			'post_title'    => get_the_title( $post_id ),
-			'filter_keys'   => WCAPF_API_Utils::get_filter_keys(),
-			'form_filters'  => $form_filters,
-			'form_settings' => $form_settings,
-		) );
+		wp_send_json_success(
+			array(
+				'post_id'       => $post_id,
+				'post_title'    => get_the_title( $post_id ),
+				'filter_keys'   => WCAPF_API_Utils::get_filter_keys(),
+				'form_filters'  => $form_filters,
+				'form_settings' => $form_settings,
+			)
+		);
 	}
 
 	/**
@@ -244,6 +247,17 @@ class WCAPF_API {
 	}
 
 	/**
+	 * Parse the form settings for react ui.
+	 *
+	 * @param array $sanitized The sanitized form settings.
+	 *
+	 * @return array
+	 */
+	private function parse_form_settings( $sanitized ) {
+		return apply_filters( 'wcapf_parse_form_settings', $sanitized );
+	}
+
+	/**
 	 * Saves the form via ajax.
 	 *
 	 * @return void
@@ -264,14 +278,19 @@ class WCAPF_API {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
 		}
 
-		// Sanitize form data.
-		// $form_settings = array_map( 'sanitize_text_field', (array) $form_settings );
-		// TODO: Sanitize form settings.
+		/**
+		 * The hooks for altering the form settings.
+		 */
+		$sanitized_form_settings = apply_filters(
+			'wcapf_sanitize_form_settings',
+			$this->sanitize_form_settings( $form_settings ),
+			$form_settings
+		);
 
 		$post_arr = array(
 			'ID'           => $form_id,
 			'post_title'   => $form_title,
-			'post_content' => maybe_serialize( $form_settings ),
+			'post_content' => maybe_serialize( $sanitized_form_settings ),
 		);
 
 		$new_form_id = wp_update_post( $post_arr, true );
@@ -279,8 +298,6 @@ class WCAPF_API {
 		if ( is_wp_error( $new_form_id ) ) {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
-
-		$found_pro = WCAPF_Helper::found_pro_version();
 
 		$possible_types = WCAPF_API_Utils::get_filter_types();
 		$valid_types    = wp_list_pluck( $possible_types, 'value' );
@@ -307,52 +324,15 @@ class WCAPF_API {
 					continue;
 				}
 
-				if ( 'taxonomy' === $type ) {
-					$taxonomy_index    = array_search( 'taxonomy', array_column( $possible_types, 'value' ) );
-					$taxonomy_options  = $possible_types[ $taxonomy_index ];
-					$taxonomy_types    = $taxonomy_options['options'];
-					$filter_type_index = array_search( $taxonomy, array_column( $taxonomy_types, 'value' ) );
-					$filter_type_data  = $taxonomy_types[ $filter_type_index ];
-				} else {
-					$filter_type_index = array_search( $type, array_column( $possible_types, 'value' ) );
-					$filter_type_data  = $possible_types[ $filter_type_index ];
-				}
-
-				$global_filter_key = WCAPF_API_Utils::get_global_filter_key( $filter );
-
-				// Try to grab the global filter key when possible.
-				if ( $global_filter_key ) {
-					$post_name = $global_filter_key;
-				}
-
-				// Set default filter key.
-				if ( ! $post_name ) {
-					if ( 'post-meta' === $type ) {
-						$post_name = $meta_key;
-					} else {
-						$post_name = $filter_type_data['key'];
-					}
-				}
-
-				$error_data = array();
-
-				if ( ! $found_pro ) {
-					if ( post_type_exists( $post_name ) ) {
-						$error_data = array(
-							'key'       => 'field_key_error_',
-							'message'   => __( 'In the FREE version of the plugin direct post type name can\'t be used as a filter key, it\'ll create conflict. Please make it unique by adding an underscore.', 'wc-ajax-product-filter' ),
-							'order'     => $filter_order,
-							'field_key' => $post_name,
-						);
-					} elseif ( ! WCAPF_Helper::found_pro_version() && taxonomy_exists( $post_name ) ) {
-						$error_data = array(
-							'key'       => 'field_key_error_',
-							'message'   => __( 'In the FREE version of the plugin direct taxonomy name can\'t be used as a filter key, it\'ll create conflict. Please make it unique by adding an underscore.', 'wc-ajax-product-filter' ),
-							'order'     => $filter_order,
-							'field_key' => $post_name,
-						);
-					}
-				}
+				list( $post_name, $error_data, $filter_type_data ) = $this->retrieve_filter_key(
+					$type,
+					$possible_types,
+					$taxonomy,
+					$filter,
+					$post_name,
+					$meta_key,
+					$filter_order
+				);
 
 				if ( $error_data ) {
 					$errors[] = $error_data;
@@ -461,6 +441,8 @@ class WCAPF_API {
 			$filters_for_ui[] = $this->parse_filter_data( $filter );
 		}
 
+		$form_settings = $this->parse_form_settings( $sanitized_form_settings );
+
 		$response = array(
 			'filter_keys'   => WCAPF_API_Utils::get_filter_keys(),
 			'form_filters'  => $filters_for_ui,
@@ -473,13 +455,131 @@ class WCAPF_API {
 	/**
 	 * Sanitize the filter data before saving into the database.
 	 *
+	 * @param array $form The form data.
+	 *
+	 * @return array
+	 */
+	private function sanitize_form_settings( $form ) {
+		$sanitized = array();
+
+		foreach ( $form as $key => $value ) {
+			$value = sanitize_text_field( $value );
+
+			$sanitized[ $key ] = $value;
+		}
+
+		return $sanitized;
+	}
+
+	/**
+	 * Tries to retrieve the filter key for the filter.
+	 *
+	 * @param string $type
+	 * @param array  $possible_types
+	 * @param string $taxonomy
+	 * @param array  $filter_data
+	 * @param string $post_name
+	 * @param string $meta_key
+	 * @param int    $filter_order
+	 *
+	 * @return array
+	 */
+	private function retrieve_filter_key(
+		$type,
+		$possible_types,
+		$taxonomy,
+		$filter_data,
+		$post_name,
+		$meta_key,
+		$filter_order
+	) {
+		if ( 'taxonomy' === $type ) {
+			$taxonomy_index    = array_search( 'taxonomy', array_column( $possible_types, 'value' ) );
+			$taxonomy_options  = $possible_types[ $taxonomy_index ];
+			$taxonomy_types    = $taxonomy_options['options'];
+			$filter_type_index = array_search( $taxonomy, array_column( $taxonomy_types, 'value' ) );
+			$filter_type_data  = $taxonomy_types[ $filter_type_index ];
+		} else {
+			$filter_type_index = array_search( $type, array_column( $possible_types, 'value' ) );
+			$filter_type_data  = $possible_types[ $filter_type_index ];
+		}
+
+		$global_filter_key = WCAPF_API_Utils::get_global_filter_key( $filter_data );
+
+		// Try to grab the global filter key when possible.
+		if ( ! $post_name && $global_filter_key ) {
+			$post_name = $global_filter_key;
+		}
+
+		// Set default filter key.
+		if ( ! $post_name ) {
+			if ( 'post-meta' === $type ) {
+				$post_name = $meta_key;
+			} else {
+				$post_name = $filter_type_data['key'];
+			}
+		}
+
+		$error_data = array();
+
+		if ( ! WCAPF_Helper::found_pro_version() ) {
+			if ( post_type_exists( $post_name ) ) {
+				$error_data = array(
+					'key'       => 'field_key_error_',
+					'message'   => $this->generate_filter_key_error_message( 'post-type' ),
+					'order'     => $filter_order,
+					'field_key' => $post_name,
+				);
+			} elseif ( taxonomy_exists( $post_name ) ) {
+				$error_data = array(
+					'key'       => 'field_key_error_',
+					'message'   => $this->generate_filter_key_error_message( 'taxonomy' ),
+					'order'     => $filter_order,
+					'field_key' => $post_name,
+				);
+			}
+		}
+
+		return array( $post_name, $error_data, $filter_type_data );
+	}
+
+	/**
+	 * Generates the filter key error message.
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	private function generate_filter_key_error_message( $type ) {
+		$post_type_err = __(
+			"In the FREE version direct post type name can't be used as a filter key, it'll create conflict.",
+			'wc-ajax-product-filter'
+		);
+
+		$tax_type_err = __(
+			"In the FREE version direct taxonomy name can't be used as a filter key, it'll create conflict.",
+			'wc-ajax-product-filter'
+		);
+
+		$common_err = __( 'Please make it unique by adding an underscore.', 'wc-ajax-product-filter' );
+
+		return sprintf(
+			'%s %s',
+			'taxonomy' === $type ? $tax_type_err : $post_type_err,
+			$common_err
+		);
+	}
+
+	/**
+	 * Sanitize the filter data before saving into the database.
+	 *
 	 * @param array $filter The filter data.
 	 *
 	 * @return array
 	 */
 	private function sanitize_filter_data( $filter ) {
 		$float_fields  = array( 'min_value', 'max_value', 'step' );
-		$absint_fields = array( 'decimal_places', 'soft_limit', 'max_height' );
+		$absint_fields = array( 'id', 'decimal_places', 'soft_limit', 'max_height' );
 
 		$limit_fields = array(
 			'include_terms',
@@ -802,7 +902,7 @@ class WCAPF_API {
 	 */
 	public function get_available_filters() {
 		$filter_ids = WCAPF_API_Utils::get_filter_ids( 'publish' );
-		$columns    = WCAPF_API_Utils::get_filter_overridden_columns();
+		$columns    = WCAPF_API_Utils::get_filter_overridden_columns(); // TODO: Check this.
 		$filters    = array();
 
 		foreach ( $filter_ids as $filter_id ) {
@@ -893,34 +993,155 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function save_settings() {
-		$_settings = isset( $_POST['settings'] ) ? $_POST['settings'] : array();
+		$_settings          = isset( $_POST['settings'] ) ? $_POST['settings'] : array();
+		$_filter_keys       = isset( $_POST['filter_keys'] ) ? $_POST['filter_keys'] : array();
+		$update_filter_keys = isset( $_POST['update_filter_keys'] ) ? $_POST['update_filter_keys'] : '';
 
 		$settings = stripslashes( $_settings );
 		$settings = json_decode( $settings, true );
 
-		$settings = $this->sanitize_settings_data( $settings );
+		/**
+		 * The hooks for altering the form settings.
+		 */
+		$sanitized_settings = apply_filters(
+			'wcapf_sanitize_settings',
+			$this->sanitize_settings_data( $settings ),
+			$settings
+		);
 
-		update_option( WCAPF_Helper::settings_option_key(), $settings );
+		update_option( WCAPF_Helper::settings_option_key(), $sanitized_settings );
 
-		wp_send_json_success( __( 'Settings saved successfully', 'wc-ajax-product-filter' ) );
-	}
-
-	private function sanitize_settings_data( $settings ) {
-		if ( isset( $settings['loading_image_src'] ) ) {
-			unset( $settings['loading_image_src'] );
+		if ( ! $update_filter_keys ) {
+			wp_send_json_success(
+				array(
+					'settings'           => WCAPF_API_Utils::get_settings(),
+					'global_filter_keys' => WCAPF_API_Utils::get_filter_keys( true ),
+				)
+			);
 		}
 
-		if ( $settings['author_roles'] ) {
-			$without_labels = array();
+		$filter_keys = stripslashes( $_filter_keys );
+		$filter_keys = json_decode( $filter_keys, true );
 
-			foreach ( $settings['author_roles'] as $role ) {
-				$without_labels[] = $role['value'];
+		$possible_types  = WCAPF_API_Utils::get_filter_types();
+		$new_filter_keys = array();
+		$errors          = array();
+
+		foreach ( $filter_keys as $order => $filter ) {
+			$post_name = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
+			$type      = isset( $filter['type'] ) ? $filter['type'] : '';
+			$taxonomy  = isset( $filter['taxonomy'] ) ? $filter['taxonomy'] : '';
+			$meta_key  = isset( $filter['meta_key'] ) ? $filter['meta_key'] : '';
+
+			list( $post_name, $error_data ) = $this->retrieve_filter_key(
+				$type,
+				$possible_types,
+				$taxonomy,
+				$filter,
+				$post_name,
+				$meta_key,
+				$order
+			);
+
+			if ( $error_data ) {
+				$errors[] = $error_data;
+
+				continue;
 			}
 
-			$settings['author_roles'] = $without_labels;
+			// Don't proceed if error found from previous filters.
+			if ( $errors ) {
+				continue;
+			}
+
+			$filter['field_key'] = $post_name;
+
+			$new_filter_keys[] = $filter;
 		}
 
-		return $settings;
+		if ( $errors ) {
+			wp_send_json_error( array( 'errors' => $errors ) );
+		}
+
+		$update_filter_key_errors = array();
+
+		foreach ( $new_filter_keys as $filter ) {
+			$post_name = $filter['field_key'];
+
+			// Fetch the filters with old filter keys.
+			$filters = get_posts(
+				array(
+					'post_type' => 'wcapf-filter',
+					'name'      => $filter['_field_key'],
+				)
+			);
+
+			// Update the filter keys for each filter found.
+			foreach ( $filters as $filter_data ) {
+				$filter_settings = maybe_unserialize( $filter_data->post_content );
+
+				// Update the field key.
+				$filter_settings['field_key'] = $post_name;
+
+				$post_arr = array(
+					'ID'           => $filter_data->ID,
+					'post_name'    => $post_name,
+					'post_content' => maybe_serialize( $filter_settings ),
+				);
+
+				add_filter( 'pre_wp_unique_post_slug', function () use ( $post_name ) {
+					return $post_name;
+				} );
+
+				$updated_filter_id = wp_update_post( $post_arr, true );
+
+				if ( is_wp_error( $updated_filter_id ) ) {
+					$update_filter_key_errors[] = $updated_filter_id->get_error_message();
+				}
+			}
+		}
+
+		if ( $update_filter_key_errors ) {
+			// Send the first error only.
+			wp_send_json_error( $update_filter_key_errors[0] );
+		}
+
+		/**
+		 * Hook to run functions after filter keys are updated.
+		 */
+		do_action( 'wcapf_after_update_filter_keys', $new_filter_keys );
+
+		wp_send_json_success(
+			array(
+				'settings'           => WCAPF_API_Utils::get_settings(),
+				'global_filter_keys' => WCAPF_API_Utils::get_filter_keys( true ),
+			)
+		);
+	}
+
+	/**
+	 * Sanitizes the settings data coming from react ui.
+	 *
+	 * @param array $settings The plugin settings array.
+	 *
+	 * @return array
+	 */
+	private function sanitize_settings_data( $settings ) {
+		$sanitized = array();
+
+		foreach ( $settings as $key => $value ) {
+			if ( 'author_roles' === $key ) {
+				$value = wp_list_pluck( $settings['author_roles'], 'value' );
+			} elseif ( 'sort_by_form' === $key ) {
+				$value = absint( $value );
+			} else {
+				$value = sanitize_text_field( $value );
+			}
+
+			$sanitized[ $key ] = $value;
+		}
+
+		return $sanitized;
 	}
 
 	private function get_filter_data_from_post_request() {

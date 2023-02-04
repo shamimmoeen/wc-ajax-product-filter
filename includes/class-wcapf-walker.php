@@ -292,12 +292,11 @@ class WCAPF_Walker {
 	 * @return array
 	 */
 	private function set_items( $field_instance ) {
-		$type  = $this->type;
+		$type  = $this->filter_type;
 		$items = array();
 
 		switch ( $type ) {
 			case 'taxonomy':
-			case 'rating':
 				$field = new WCAPF_Filter_Type_Taxonomy( $field_instance );
 				$items = $field->get_items();
 
@@ -322,6 +321,13 @@ class WCAPF_Walker {
 				break;
 		}
 
+		// TODO: Remove from production.
+		// if ( 'pa_color' === $field_instance->taxonomy ) {
+		// 	echo '<pre>';
+		// 	print_r( $items );
+		// 	echo '</pre>';
+		// }
+
 		return $items;
 	}
 
@@ -331,21 +337,17 @@ class WCAPF_Walker {
 	 * @return array
 	 */
 	private function active_filters() {
-		$filter_key = $this->filter_key;
-		$field_type = $this->type;
+		$filter_key  = $this->filter_key;
+		$filter_type = $this->filter_type;
 
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
-		if ( 'rating' === $field_type ) {
-			$field_type = 'taxonomy';
-		}
-
 		// We have grouped the filters based on filter types.
-		$filters = isset( $chosen_filters[ $field_type ] ) ? $chosen_filters[ $field_type ] : array();
+		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
 
 		$filter_data = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 
-		return apply_filters( 'wcapf_walker_filter_data', $filter_data, $field_type );
+		return apply_filters( 'wcapf_walker_filter_data', $filter_data, $filter_type );
 	}
 
 	/**
