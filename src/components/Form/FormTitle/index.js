@@ -283,6 +283,8 @@ const FormTitle = () => {
 			'products_loop_container',
 			'priority',
 			'form_layout',
+			'columns_per_row',
+			'show_form_on_top_of_products',
 			'filter_mode',
 			'show_clear_btn',
 		];

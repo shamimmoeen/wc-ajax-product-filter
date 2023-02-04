@@ -7812,13 +7812,13 @@ function defaultFormSettings() {
   return {
     form_locations: [defaultLocation],
     products_loop_container: '',
-    priority: 0,
+    priority: '0',
     form_layout: 'vertical',
+    columns_per_row: '4',
+    show_form_on_top_of_products: '1',
     filter_mode: 'immediate',
     form_visibility: 'always_display',
-    show_clear_btn: '',
-    show_active_filters: '',
-    show_reset_button: ''
+    show_clear_btn: ''
   };
 }
 function formLayoutOptions() {
@@ -7836,12 +7836,11 @@ function filterModeOptions() {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Immediate', 'wc-ajax-product-filter'),
     value: 'immediate'
   }, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Apply', 'wc-ajax-product-filter'),
+    value: 'apply'
+  }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Submit', 'wc-ajax-product-filter'),
     value: 'submit',
-    isPro: true
-  }, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Apply', 'wc-ajax-product-filter'),
-    value: 'apply',
     isPro: true
   }];
 }

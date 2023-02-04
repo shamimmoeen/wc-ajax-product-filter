@@ -57,7 +57,7 @@ class WCAPF_Filter_Widget extends WP_Widget {
 	public function form( $instance ) {
 		?>
 		<p>
-			<?php printf( __( 'No settings are required! The form will be displayed according to the <b>Filter on</b> settings.', 'wc-ajax-product-filter' ) ); ?>
+			<?php printf( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> settings.', 'wc-ajax-product-filter' ) ); ?>
 		</p>
 		<?php
 	}

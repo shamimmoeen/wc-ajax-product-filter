@@ -15,11 +15,11 @@
  */
 class WCAPF_API_Utils {
 
-	public static function get_global_filter_key( $filter ) {
+	public static function get_global_filter_key( $filter_data ) {
 		$filter_keys     = self::get_filter_keys();
-		$filter_type     = isset( $filter['type'] ) ? $filter['type'] : '';
-		$filter_taxonomy = isset( $filter['taxonomy'] ) ? $filter['taxonomy'] : '';
-		$filter_meta_key = isset( $filter['meta_key'] ) ? $filter['meta_key'] : '';
+		$filter_type     = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
+		$filter_taxonomy = isset( $filter_data['taxonomy'] ) ? $filter_data['taxonomy'] : '';
+		$filter_meta_key = isset( $filter_data['meta_key'] ) ? $filter_data['meta_key'] : '';
 		$filter_key      = '';
 
 		foreach ( $filter_keys as $data ) {
@@ -114,7 +114,8 @@ class WCAPF_API_Utils {
 					$data['label'] = $label;
 				}
 
-				$data['type'] = $post_excerpt;
+				$data['secondary_type'] = $post_excerpt;
+				$data['_field_key']     = $filter_key; // Keep a backup for updating purposes.
 
 				if ( ! in_array( $post_excerpt, $global_filter_keys ) ) {
 					$filter_keys[] = $data;
@@ -126,7 +127,7 @@ class WCAPF_API_Utils {
 			}
 		}
 
-		return $filter_keys;
+		return apply_filters( 'wcapf_filter_keys', $filter_keys, $global );
 	}
 
 	/**
@@ -312,20 +313,6 @@ class WCAPF_API_Utils {
 	public static function get_settings() {
 		$settings = WCAPF_Helper::get_settings();
 
-		// TODO: We should move these to pro.
-		// Send the loading image src.
-		if ( ! empty( $settings['loading_image'] ) ) {
-			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
-
-			if ( $image ) {
-				$src = $image[0];
-
-				if ( $src ) {
-					$settings['loading_image_src'] = $src;
-				}
-			}
-		}
-
 		// Send the author roles with labels.
 		if ( $settings['author_roles'] ) {
 			$array       = WCAPF_Product_Filter_Utils::get_user_roles();
@@ -341,7 +328,7 @@ class WCAPF_API_Utils {
 			$settings['author_roles'] = $with_labels;
 		}
 
-		return $settings;
+		return apply_filters( 'wcapf_parse_settings', $settings );
 	}
 
 	/**
@@ -1129,6 +1116,18 @@ class WCAPF_API_Utils {
 			'fields'      => 'ids',
 		);
 
+		// TODO: Uncomment from production version.
+		// if ( ! WCAPF_Helper::found_pro_version() ) {
+		// 	$args = wp_parse_args(
+		// 		array(
+		// 			'nopaging'       => false,
+		// 			'posts_per_page' => 1,
+		// 			'order'          => 'ASC',
+		// 		),
+		// 		$args
+		// 	);
+		// }
+
 		$posts = get_posts( $args );
 		$forms = array();
 
@@ -1178,6 +1177,32 @@ class WCAPF_API_Utils {
 		update_post_meta( $new_post_id, '_form_data', $new_form_data );
 
 		return $new_post_id;
+	}
+
+	/**
+	 * Gets the forms for the sort by form options dropdown.
+	 *
+	 * @return array
+	 */
+	public static function get_sort_by_form_options() {
+		$args = array(
+			'post_type'   => 'wcapf-form',
+			'nopaging'    => true,
+			'post_status' => 'publish',
+			'fields'      => 'ids',
+		);
+
+		$forms   = get_posts( $args );
+		$options = array();
+
+		foreach ( $forms as $form_id ) {
+			$options[] = array(
+				'label' => get_the_title( $form_id ),
+				'value' => $form_id,
+			);
+		}
+
+		return $options;
 	}
 
 }

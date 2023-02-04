@@ -8,7 +8,13 @@
 	const instanceIds = [];
 
 	$( '.wcapf-filter' ).each( function() {
-		instanceIds.push( $( this ).data( 'id' ) );
+		const id = $( this ).data( 'id' );
+
+		if ( ! id ) {
+			return;
+		}
+
+		instanceIds.push( id );
 	} );
 
 	let focusedElm;
@@ -358,7 +364,7 @@
 					 *
 					 * @source https://stackoverflow.com/a/7599562
 					 */
-					if ( wcapf_params.update_title_tag ) {
+					if ( wcapf_params.update_document_title ) {
 						document.title = $response.filter( 'title' ).text();
 					}
 
@@ -409,7 +415,7 @@
 						}
 
 						// Update clear filter button url.
-						const clearBtnSelector = '.wcapf-filter-clear-btn';
+						const clearBtnSelector = '.wcapf-filter-title .wcapf-filter-clear-btn';
 						const clearFilterUrl   = _instance.find( clearBtnSelector ).attr( 'data-clear-filter-url' );
 						$instance.find( clearBtnSelector ).attr( 'data-clear-filter-url', clearFilterUrl );
 
@@ -423,6 +429,14 @@
 
 						$instance.trigger( 'wcapf-filter-updated', [ _instance ] );
 					}
+
+					// Update the active filters and reset filters.
+					$body.find( '.wcapf-active-filters, .wcapf-reset-filters' ).each( function() {
+						const $that      = $( this );
+						const instanceId = '[data-id="' + $that.data( 'id' ) + '"]';
+
+						$that.html( $response.find( instanceId ).html() );
+					} );
 
 					// Replace old shop loop with new one.
 					const $shopLoopContainer = $response.find( wcapf_params.shop_loop_container );
@@ -651,21 +665,11 @@
 		},
 		// TODO: Move to pro
 		handleClearFilter: function() {
-			$body
-				.on( 'click', '.wcapf-filter-clear-btn', function( e ) {
-					e.stopPropagation();
+			$body.on( 'click', '.wcapf-filter-clear-btn', function( e ) {
+				e.stopPropagation();
 
-					WCAPF.requestFilter( $( this ).attr( 'data-clear-filter-url' ) );
-				} )
-				.on( 'keydown', '.wcapf-filter-clear-btn', function( e ) {
-					if ( e.key === ' ' || e.key === 'Enter' || e.key === 'Spacebar' ) {
-						// Prevent the default action to stop scrolling when space is pressed
-						e.preventDefault();
-						e.stopPropagation();
-
-						WCAPF.requestFilter( $( this ).attr( 'data-clear-filter-url' ) );
-					}
-				} );
+				WCAPF.requestFilter( $( this ).attr( 'data-clear-filter-url' ) );
+			} );
 		},
 		handleFilterTooltip: function() {
 			if ( 'function' !== typeof tippy ) {

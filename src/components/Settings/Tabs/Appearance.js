@@ -7,6 +7,7 @@ import Select from '../../Field/Select';
 import Radio from '../../Field/Radio';
 import { foundProVersion } from '../../utils';
 import Text from '../../Field/Text';
+import ProFeaturesNotice from '../../ProFeaturesNotice';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -93,6 +94,13 @@ const Appearance = () => {
 
 	return (
 		<>
+			<ProFeaturesNotice
+				message={__(
+					'There are settings available only in the PRO version.',
+					'wc-ajax-product-filter'
+				)}
+			/>
+
 			<ColorInput
 				label={__('Primary Color', 'wc-ajax-product-filter')}
 				description={__(
@@ -194,13 +202,13 @@ const Appearance = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Choose the number range slider preset from available presets.',
+					'Select the number range slider preset from available presets.',
 					'wc-ajax-product-filter'
 				)}
 				value={numberRangeSliderPreset}
 				onChange={handleSelectChange}
 				options={numberRangeSliderPresets}
-				maxMenuHeight={150}
+				maxMenuHeight={180}
 				renderAsFormField
 			/>
 

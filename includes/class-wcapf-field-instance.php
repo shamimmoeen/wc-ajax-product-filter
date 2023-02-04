@@ -288,26 +288,25 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function get_filter_type() {
-		$field_type = $this->get_field_type();
+		$field_type  = $this->get_field_type();
+		$filter_type = $field_type;
 
-		if ( in_array( $field_type, WCAPF_Helper::taxonomy_field_types() ) ) {
-			$filter_type = 'taxonomy';
-		} else {
-			$filter_type = $field_type;
-		}
-
-		return apply_filters( 'wcapf_field_filter_type', $filter_type, $field_type, $this->instance );
+		return apply_filters(
+			'wcapf_field_filter_type',
+			$filter_type,
+			$field_type,
+			$this->get_options,
+			$this->instance
+		);
 	}
 
 	/**
 	 * @return string
 	 */
 	private function get_taxonomy() {
-		if ( 'rating' === $this->get_field_type() ) {
-			return 'product_visibility';
-		}
+		$taxonomy = $this->get_sub_field_value( 'taxonomy' );
 
-		return $this->get_sub_field_value( 'taxonomy' );
+		return apply_filters( 'wcapf_field_taxonomy', $taxonomy, $this->get_field_type() );
 	}
 
 	/**

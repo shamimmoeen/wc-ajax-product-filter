@@ -43,7 +43,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_window_custom_element': '',
 	'scroll_to_top_offset': '',
 	'disable_scroll_animation': '',
-	'update_title_tag': '',
+	'update_document_title': '',
 	'for_preview': '',
 };
 

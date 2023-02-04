@@ -262,6 +262,12 @@ class WCAPF_Admin {
 			wp_enqueue_media();
 
 			$this->load_scripts( 'settings' );
+
+			// Loads the js script that converts our filter key into slug.
+			wp_enqueue_script(
+				'wcapf-sanitize-title',
+				WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js'
+			);
 		}
 	}
 
@@ -301,12 +307,10 @@ class WCAPF_Admin {
 				$params['time_periods']   = $utils::time_period_options();
 				$params['user_roles']     = $user_roles;
 
-				$params['author_roles']          = isset( $settings['author_roles'] )
+				$params['author_roles']            = isset( $settings['author_roles'] )
 					? $settings['author_roles'] : array();
-				$params['multiple_visible_on']   = isset( $settings['multiple_visible_on'] )
-					? $settings['multiple_visible_on'] : '';
-				$params['multiple_sub_location'] = isset( $settings['multiple_sub_location'] ) ?
-					$settings['multiple_sub_location'] : '';
+				$params['multiple_form_locations'] = isset( $settings['multiple_form_locations'] )
+					? $settings['multiple_form_locations'] : '';
 
 				$post_id = $_GET['id'];
 
@@ -321,7 +325,8 @@ class WCAPF_Admin {
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = $utils::get_settings();
 
-			$params['global_filter_keys'] = $utils::get_filter_keys( true );
+			$params['sort_by_form_options'] = $utils::get_sort_by_form_options();
+			$params['global_filter_keys']   = $utils::get_filter_keys( true );
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

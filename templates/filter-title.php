@@ -8,17 +8,16 @@
  * @author     wptools.io
  */
 
-/**
- * @var WCAPF_Field_Instance $field_instance
- * @var string               $enable_accordion
- * @var string               $is_expanded
- * @var string               $accordion_header_id
- * @var string               $accordion_panel_id
- */
-
-$show_title   = $field_instance->get_sub_field_value( 'show_title' );
-$filter_title = $field_instance->get_sub_field_value( 'title' );
-$help_text    = $field_instance->get_sub_field_value( 'help_text' );
+$filter_key          = isset( $filter_key ) ? $filter_key : '';
+$show_title          = isset( $show_title ) ? $show_title : '';
+$filter_title        = isset( $filter_title ) ? $filter_title : '';
+$help_text           = isset( $help_text ) ? $help_text : '';
+$enable_accordion    = isset( $enable_accordion ) ? $enable_accordion : '';
+$is_expanded         = isset( $is_expanded ) ? $is_expanded : '';
+$accordion_header_id = isset( $accordion_header_id ) ? $accordion_header_id : '';
+$accordion_panel_id  = isset( $accordion_panel_id ) ? $accordion_panel_id : '';
+$show_clear_btn      = isset( $show_clear_btn ) ? $show_clear_btn : '';
+$title_for           = isset( $title_for ) ? $title_for : '';
 
 if ( ! $show_title ) {
 	return;
@@ -44,25 +43,7 @@ if ( $enable_accordion ) {
 			</span>
 		<?php endif; ?>
 
-		<?php
-		// TODO: Move to pro
-		$clear_filter_btn_label = apply_filters(
-			'wcapf_clear_filter_button_label',
-			__( 'Clear', 'wc-ajax-product-filter' )
-		);
-
-		$url_builder      = new WCAPF_URL_Builder( $field_instance->filter_key );
-		$clear_filter_url = $url_builder->get_clear_filter_url();
-		?>
-
-		<span
-			class="wcapf-filter-clear-btn"
-			role="button"
-			tabindex="0"
-			data-clear-filter-url="<?php echo esc_url( $clear_filter_url ); ?>"
-		>
-			<?php echo esc_html( $clear_filter_btn_label ); ?>
-		</span>
+		<?php do_action( 'wcapf_after_filter_title', $show_clear_btn, $title_for, $filter_key ); ?>
 	</span>
 
 	<?php if ( $enable_accordion ) : ?>

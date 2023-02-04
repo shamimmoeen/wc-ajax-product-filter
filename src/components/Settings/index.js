@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
+import { merge, pick, find } from 'lodash';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
 import Notifications from '../Notifications';
@@ -20,6 +21,20 @@ import Integration from './Tabs/Integration';
 import CustomTabPanel from '../CustomTabPanel';
 import LoaderScrollTo from './Tabs/LoaderScrollTo';
 import Others from './Tabs/Others';
+import { foundProVersion } from '../utils';
+import { defaultSettings } from './utils';
+
+const WCAPF_PRO = foundProVersion();
+
+const genericErrorMessage = __(
+	'Please fix the errors below.',
+	'wc-ajax-product-filter'
+);
+
+const filterKeyInUseMessage = __(
+	'Filter key is in use by another filter type.',
+	'wc-ajax-product-filter'
+);
 
 const tabs = [
 	{
@@ -55,7 +70,13 @@ const tabs = [
 const Settings = () => {
 	const { state, dispatch } = useSettings();
 
-	const { isDirty, settings, globalFilterKeys } = state;
+	const {
+		isDirty,
+		currentTab,
+		settings,
+		globalFilterKeys,
+		filterKeysChanged,
+	} = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
 
@@ -67,14 +88,81 @@ const Settings = () => {
 		removeSettingsSavedNotices();
 	}, [isDirty]);
 
+	const sanitizedSettings = () => {
+		/**
+		 * Use Lo-Dash merge without modifying underlying object.
+		 *
+		 * @source https://stackoverflow.com/a/28044419
+		 */
+		const _settings = merge({}, settings, { loading_image_src: '' });
+
+		if (WCAPF_PRO) {
+			return _settings;
+		}
+
+		const proSettings = [
+			'remove_empty_filters',
+			'replace_sorting_options',
+			'sort_by_form',
+		];
+
+		if ('disable' === settings['remove_empty']) {
+			proSettings.push('remove_empty');
+		}
+
+		if ('custom' === settings['loading_icon']) {
+			proSettings.push('loading_icon');
+		}
+
+		const defaults = pick(defaultSettings(), proSettings);
+
+		return { ..._settings, ...defaults };
+	};
+
+	const validateFilterKeys = () => {
+		dispatch({ type: 'SET_ERROR', payload: '' });
+
+		const validatedFilterKeys = [];
+		let isValid = true;
+
+		globalFilterKeys.forEach((filterKeyData, index) => {
+			const otherKeys = globalFilterKeys.filter(
+				(_data, _index) => index !== _index
+			);
+
+			const { field_key: filterKey } = filterKeyData;
+
+			if (filterKey && find(otherKeys, { field_key: filterKey })) {
+				filterKeyData['field_key_error'] = filterKeyInUseMessage;
+				isValid = false;
+			}
+
+			validatedFilterKeys.push(filterKeyData);
+		});
+
+		if (!isValid) {
+			dispatch({ type: 'SET_ERROR', payload: genericErrorMessage });
+		}
+
+		return isValid;
+	};
+
 	const handleSaveSettings = () => {
+		const filterKeysAreValid = validateFilterKeys();
+		const updateFilterKeys = filterKeysChanged ? '1' : '';
+
+		if (!filterKeysAreValid) {
+			return;
+		}
+
 		setSaveBtnBusy(true);
 
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_save_settings');
-		formData.append('settings', JSON.stringify(settings));
+		formData.append('settings', JSON.stringify(sanitizedSettings()));
 		formData.append('filter_keys', JSON.stringify(globalFilterKeys));
+		formData.append('update_filter_keys', updateFilterKeys);
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)
@@ -86,9 +174,67 @@ const Settings = () => {
 				} = res;
 
 				if (success) {
+					dispatch({
+						type: 'UPDATE_SETTINGS',
+						payload: data.settings,
+					});
+
+					dispatch({
+						type: 'UPDATE_GLOBAL_FILTER_KEYS',
+						payload: data.global_filter_keys,
+					});
+
 					dispatch({ type: 'SET_DIRTY', payload: false });
 
-					settingsSavedSuccessNotice(data);
+					dispatch({
+						type: 'SET_FILTER_KEYS_CHANGED',
+						payload: false,
+					});
+
+					settingsSavedSuccessNotice(
+						__(
+							'Settings saved successfully',
+							'wc-ajax-product-filter'
+						)
+					);
+				} else if (data.errors) {
+					dispatch({
+						type: 'SET_ERROR',
+						payload: genericErrorMessage,
+					});
+
+					const errorsData = data['errors'];
+
+					console.log(errorsData); // TODO: Remove.
+
+					const filterKeys = globalFilterKeys.map(
+						(filterKey, index) => {
+							const error = find(errorsData, { order: index });
+
+							if (error) {
+								const { key, message } = error;
+
+								return {
+									...filterKey,
+									[key]: message,
+								};
+							}
+
+							return filterKey;
+						}
+					);
+
+					dispatch({
+						type: 'UPDATE_GLOBAL_FILTER_KEYS',
+						payload: filterKeys,
+					});
+
+					if ('filter-keys' !== currentTab) {
+						dispatch({
+							type: 'SET_CURRENT_TAB',
+							payload: 'filter-keys',
+						});
+					}
 				} else {
 					settingsSavedErrorNotice(data);
 				}

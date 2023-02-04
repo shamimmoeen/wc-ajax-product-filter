@@ -15,7 +15,6 @@ const WCAPF_PRO = foundProVersion();
 
 const locations = wcapf_admin_params.form_places;
 
-const multipleSubLocations = wcapf_admin_params.multiple_form_sub_locations;
 const multipleFormLocations = wcapf_admin_params.multiple_form_locations;
 
 const Location = ({
@@ -97,6 +96,7 @@ const Location = ({
 					<Select
 						id={'location'}
 						index={index}
+						inputKey={_location}
 						options={locations}
 						value={location}
 						onChange={(selected) => handleLocationChange(selected)}
@@ -108,7 +108,6 @@ const Location = ({
 						<SelectMulti
 							id={'sub_location'}
 							index={index}
-							isMultiple={multipleSubLocations}
 							inputKey={_location}
 							taxonomy={_location}
 							type={type}
@@ -151,14 +150,24 @@ const AvailableOn = () => {
 		formSettings: { form_locations },
 	} = state;
 
-	const handleAddLocation = () => {
-		const formLocations = [...form_locations, {}];
+	let formLocations = [];
 
-		handleFormLocations(formLocations);
+	if (formLocations) {
+		if (!multipleFormLocations) {
+			formLocations = form_locations.slice(0, 1);
+		} else {
+			formLocations = [...form_locations];
+		}
+	}
+
+	const handleAddLocation = () => {
+		const _formLocations = [...formLocations, {}];
+
+		handleFormLocations(_formLocations);
 	};
 
 	const handleFormLocation = (index, formLocation) => {
-		const formLocations = form_locations.map((location, _index) => {
+		const _formLocations = formLocations.map((location, _index) => {
 			if (_index === index) {
 				return formLocation;
 			}
@@ -166,18 +175,18 @@ const AvailableOn = () => {
 			return location;
 		});
 
-		handleFormLocations(formLocations);
+		handleFormLocations(_formLocations);
 	};
 
 	const handleRemoveLocation = (location) => {
-		const formLocations = form_locations.filter(
+		const _formLocations = formLocations.filter(
 			(_location) => location !== _location
 		);
 
-		handleFormLocations(formLocations);
+		handleFormLocations(_formLocations);
 	};
 
-	const showRemove = multipleFormLocations && form_locations.length > 1;
+	const showRemove = multipleFormLocations && formLocations.length > 1;
 
 	return (
 		<div className='__form_control __available_on'>
@@ -206,7 +215,7 @@ const AvailableOn = () => {
 										'support-many': multipleFormLocations,
 									})}
 								>
-									{form_locations.map((location, index) => (
+									{formLocations.map((location, index) => (
 										<Location
 											location={location}
 											key={index}

@@ -43,7 +43,7 @@ class WCAPF_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		// add_action( 'storefront_content_top', array( $this, 'content_top' ) );
+		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
 		add_action( 'paginate_links', array( $this, 'modify_paginated_links' ) );
@@ -51,6 +51,8 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
+		add_action( 'woocommerce_before_shop_loop', array( $this, 'active_filters_before_shop_loop' ), - 10 );
+		add_action( 'woocommerce_before_template_part', array( $this, 'active_filters_before_no_products' ), - 10 );
 	}
 
 	/**
@@ -61,6 +63,8 @@ class WCAPF_Hooks {
 	 */
 	public function content_top() {
 		global $wp_query, $wcapf_filter_keys, $wp;
+
+		return;
 
 		// echo '<pre>';
 		// print_r( $wp_query );
@@ -172,6 +176,43 @@ class WCAPF_Hooks {
 	public function insert_after_no_products( $template_name ) {
 		if ( 'loop/no-products-found.php' === $template_name ) {
 			echo '</div>';
+		}
+	}
+
+	/**
+	 * Renders the active filters before shop loop.
+	 *
+	 * @since 4.0.0
+	 */
+	public function active_filters_before_shop_loop() {
+		$this->render_active_filters();
+	}
+
+	/**
+	 * Renders the active filters before shop loop.
+	 *
+	 * @since 4.0.0
+	 */
+	private function render_active_filters() {
+		if ( WCAPF_Helper::show_active_filters_on_top_of_products() ) {
+			WCAPF_Template_Loader::get_instance()->load(
+				'active-filters',
+				array(
+					'location'            => 'before-products',
+					'clear_all_btn_label' => __( 'Clear All', 'wc-ajax-product-filter' ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Renders the active filters before no products found template.
+	 *
+	 * @since 4.0.0
+	 */
+	public function active_filters_before_no_products( $template_name ) {
+		if ( 'loop/no-products-found.php' === $template_name ) {
+			$this->render_active_filters();
 		}
 	}
 

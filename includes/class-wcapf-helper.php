@@ -336,6 +336,8 @@ class WCAPF_Helper {
 	/**
 	 * The taxonomy field types.
 	 *
+	 * TODO: Maybe redundant.
+	 *
 	 * @return array
 	 */
 	public static function taxonomy_field_types() {
@@ -545,91 +547,70 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @param array  $filter_data      Active filters data.
-	 * @param string $filter_key       The filter key.
-	 * @param string $layout           The layout, simple or extended.
-	 * @param string $use_custom_title Determines if we show custom title instead of filter title.
-	 * @param string $extra_class      Markup extra class.
+	 * @param array  $filter_data Active filter data.
+	 * @param string $extra_class Markup extra class.
 	 *
 	 * @return string
 	 */
-	public static function get_active_filters_markup(
-		$filter_data,
-		$filter_key,
-		$layout,
-		$use_custom_title,
-		$extra_class = ''
-	) {
+	public static function get_active_filter_markup( $filter_data, $extra_class = '' ) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
-		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : '';
-		$filter_id      = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : '';
-		$custom_title   = isset( $filter_data['custom_title'] ) ? $filter_data['custom_title'] : '';
+		$filter_key     = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
+
+		$classes = 'wcapf-filter-clear-btn wcapf-active-filter-item';
+		$classes .= $extra_class ? ' ' . $extra_class : '';
 
 		$html = '';
 
-		$classes = 'item';
-
-		if ( $extra_class ) {
-			$classes .= ' ' . $extra_class;
-		}
-
 		foreach ( $active_filters as $value => $label ) {
-			$attrs = 'class="' . $classes . '"';
-			$attrs .= ' tabindex="0"';
-			$attrs .= ' data-filter-key="' . esc_attr( $filter_key ) . '"';
-			$attrs .= ' data-value="' . esc_attr( rawurlencode( $value ) ) . '"';
+			$url_builder      = new WCAPF_URL_Builder( $filter_key, true );
+			$clear_filter_url = $url_builder->get_filter_url( $value, true );
 
-			$label = apply_filters(
-				'wcapf_active_filter_label',
-				$label,
-				$layout,
-				$filter_type,
-				$filter_id,
-				$use_custom_title,
-				$custom_title,
-				$filter_key
-			);
+			$attrs = 'class="' . esc_attr( $classes ) . '"';
+			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
-			$html .= '<div ' . $attrs . '>' . wp_kses_post( $label ) . '</div>';
+			$label = apply_filters( 'wcapf_active_filter_label', $label, $filter_data );
+
+			$html .= '<button ' . $attrs . '>';
+			$html .= wp_kses_post( $label );
+			$html .= '<span class="wcapf-cross-sign">&#215;</span>';
+			$html .= '</button>';
 		}
 
 		return $html;
 	}
 
 	/**
-	 * @param string $button_label The label for button.
+	 * @param string $button_label   The label for button.
+	 * @param string $override_class Whether to use custom style using a class.
+	 * @param string $style          Button style, primary or secondary.
 	 *
 	 * @return string
 	 */
-	public static function get_reset_filters_button_markup( $button_label, $tag = 'button' ) {
+	public static function get_reset_button_markup( $button_label, $override_class = '', $style = 'secondary' ) {
 		$active_filters = self::get_active_filters_data();
 		$filter_keys    = array_keys( $active_filters );
 
-		if ( ! $button_label ) {
-			$button_label = __( 'Reset', 'wc-ajax-product-filter' );
-		}
-
-		if ( $filter_keys ) {
-			$keys = implode( ',', $filter_keys );
+		if ( $override_class ) {
+			$classes = 'wcapf-filter-clear-btn ' . $override_class;
 		} else {
-			$keys = '';
+			if ( 'primary' === $style ) {
+				$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-primary';
+			} else {
+				$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-secondary';
+			}
 		}
 
-		$attrs = 'data-keys="' . esc_attr( $keys ) . '"';
+		$reset_url = '';
+
+		$attrs = 'data-clear-filter-url="' . esc_url( $reset_url ) . '"';
 
 		if ( ! $filter_keys ) {
-			$attrs .= 'disabled="disabled"';
+			// $attrs .= 'disabled="disabled"';
 		}
 
-		if ( 'a' === $tag ) {
-			$html = '<a role="button" tabindex="0" class="wcapf-reset-filters-btn" ' . $attrs . '>';
-			$html .= $button_label;
-			$html .= '</a>';
-		} else {
-			$html = '<button type="button" class="button wcapf-reset-filters-btn" ' . $attrs . '>';
-			$html .= $button_label;
-			$html .= '</button>';
-		}
+		$html = '<button class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
+		$html .= $button_label;
+		$html .= '</button>';
 
 		return $html;
 	}
@@ -651,20 +632,12 @@ class WCAPF_Helper {
 					continue;
 				}
 
-				if ( $sort_by_value ) {
-					foreach ( $_active_filters as $value => $label ) {
-						$active_filters[] = array(
-							'filter_key'     => $filter_key,
-							'filter_type'    => $filter_type,
-							'filter_id'      => $filter_id,
-							'active_filters' => array( $value => $label ),
-						);
-					}
-				} else {
-					$active_filters[ $filter_key ] = array(
+				foreach ( $_active_filters as $value => $label ) {
+					$active_filters[] = array(
+						'filter_key'     => $filter_key,
 						'filter_type'    => $filter_type,
 						'filter_id'      => $filter_id,
-						'active_filters' => $_active_filters,
+						'active_filters' => array( $value => $label ),
 					);
 				}
 			}
@@ -758,7 +731,7 @@ class WCAPF_Helper {
 	public static function use_stylish_checkbox_radio() {
 		$settings = self::get_settings();
 
-		return isset( $settings['stylish_checkbox_radio'] ) ? $settings['stylish_checkbox_radio'] : '';
+		return isset( $settings['stylish_checkbox_radio'] ) && $settings['stylish_checkbox_radio'];
 	}
 
 	/**
@@ -771,7 +744,7 @@ class WCAPF_Helper {
 	public static function use_combobox() {
 		$settings = self::get_settings();
 
-		return isset( $settings['use_chosen'] ) ? $settings['use_chosen'] : '';
+		return isset( $settings['use_chosen'] ) && $settings['use_chosen'];
 	}
 
 	/**
@@ -784,7 +757,7 @@ class WCAPF_Helper {
 	public static function improve_native_select() {
 		$settings = self::get_settings();
 
-		return isset( $settings['improve_native_select'] ) ? $settings['improve_native_select'] : '';
+		return isset( $settings['improve_native_select'] ) && $settings['improve_native_select'];
 	}
 
 	/**
@@ -797,7 +770,7 @@ class WCAPF_Helper {
 	public static function use_wait_cursor() {
 		$settings = self::get_settings();
 
-		return isset( $settings['wait_cursor'] ) ? $settings['wait_cursor'] : '';
+		return isset( $settings['wait_cursor'] ) && $settings['wait_cursor'];
 	}
 
 	/**
@@ -810,7 +783,7 @@ class WCAPF_Helper {
 	public static function use_term_slug() {
 		$settings = self::get_settings();
 
-		return isset( $settings['use_term_slug'] ) ? $settings['use_term_slug'] : '';
+		return isset( $settings['use_term_slug'] ) && $settings['use_term_slug'];
 	}
 
 	/**
@@ -876,6 +849,19 @@ class WCAPF_Helper {
 	 */
 	public static function use_tippyjs_for_tooltip() {
 		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', true );
+	}
+
+	/**
+	 * Determines if we show the active filters on top of products.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function show_active_filters_on_top_of_products() {
+		$settings = self::get_settings();
+
+		return isset( $settings['active_filters_on_top'] ) && $settings['active_filters_on_top'];
 	}
 
 }

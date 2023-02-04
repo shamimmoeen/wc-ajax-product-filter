@@ -1,9 +1,13 @@
 const useSettingsData = (state, dispatch) => {
-	const { isDirty, settings } = state;
+	const { isDirty, saveError, settings } = state;
 
 	const setDirty = () => {
 		if (!isDirty) {
 			dispatch({ type: 'SET_DIRTY', payload: true });
+		}
+
+		if (saveError) {
+			dispatch({ type: 'SET_ERROR', payload: '' });
 		}
 	};
 

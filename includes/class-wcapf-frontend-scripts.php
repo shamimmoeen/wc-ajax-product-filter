@@ -212,11 +212,16 @@ class WCAPF_Frontend_Scripts {
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
+			'update_document_title'                    => true,
 			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
 			'for_preview'                              => $for_preview,
 		);
 
 		$params = array_merge( $params, $settings );
+
+		// TODO: Selectively set the params from settings.
+		$params['shop_loop_container'] = '.wcapf-before-products';
+		$params['not_found_container'] = '.wcapf-before-products';
 
 		return apply_filters( 'wcapf_js_params', $params );
 	}

@@ -142,6 +142,17 @@ export function getFilterKeyError(
 		return;
 	}
 
+	// const hello = {
+	// 	id: filter.id,
+	// 	field_key: filter.field_key,
+	// 	type: filter.type,
+	// 	taxonomy: filter.taxonomy,
+	// 	meta_key: filter.meta_key,
+	// };
+
+	// console.log(hello);
+	// console.log(filterKeys);
+
 	let filterKeyError;
 	const field_key = filter['field_key'];
 
@@ -181,12 +192,19 @@ export function getFilterKeyError(
 		otherFilters.push(formFilter);
 	}
 
+	const errorMessage = __(
+		'Filter key is in use by another filter type.',
+		'wc-ajax-product-filter'
+	);
+
 	if (find(otherFilters, { field_key })) {
-		console.log(find(otherFilters, { field_key }));
-		filterKeyError = __(
-			'Filter key is in use by another filter type.',
-			'wc-ajax-product-filter'
-		);
+		console.log('found in this form', find(otherFilters, { field_key })); // TODO: Remove.
+
+		filterKeyError = errorMessage;
+	} else if (find(filterKeys, { field_key })) {
+		console.log('found in other forms', find(filterKeys, { field_key })); // TODO: Remove.
+
+		filterKeyError = errorMessage;
 	}
 
 	return filterKeyError;

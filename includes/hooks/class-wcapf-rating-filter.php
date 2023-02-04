@@ -43,8 +43,8 @@ class WCAPF_Rating_Filter {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		// add_filter( 'wcapf_taxonomy_field_types', array( $this, 'set_rating_as_taxonomy_field' ) );
-		add_filter( 'wcapf_field_taxonomy', array( $this, 'set_rating_taxonomy_name' ), 10, 2 );
+		add_filter( 'wcapf_field_filter_type', array( $this, 'set_rating_filter_type' ), 10, 3 );
+		add_filter( 'wcapf_field_taxonomy', array( $this, 'set_taxonomy_for_rating_filter' ), 10, 2 );
 
 		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms_query_args' ), 10, 2 );
 		add_filter( 'wcapf_taxonomy_terms', array( $this, 'set_rating_terms_data' ), 10, 2 );
@@ -58,18 +58,22 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
-	 * @param array $types The field types.
+	 * @param string $filter_type The filter type.
+	 * @param string $field_type  The field type.
+	 * @param string $get_options The field get_options method.
 	 *
-	 * @return array
+	 * @return string
 	 */
-	public function set_rating_as_taxonomy_field( $types ) {
-		if ( WCAPF_Helper::found_pro_version() ) {
-			return $types;
+	public function set_rating_filter_type( $filter_type, $field_type, $get_options ) {
+		if ( 'rating' !== $field_type ) {
+			return $filter_type;
 		}
 
-		$types[] = 'rating';
+		if ( 'automatically' !== $get_options ) {
+			return $filter_type;
+		}
 
-		return $types;
+		return 'taxonomy';
 	}
 
 	/**
@@ -78,11 +82,7 @@ class WCAPF_Rating_Filter {
 	 *
 	 * @return string
 	 */
-	public function set_rating_taxonomy_name( $taxonomy, $field_type ) {
-		if ( WCAPF_Helper::found_pro_version() ) {
-			return $taxonomy;
-		}
-
+	public function set_taxonomy_for_rating_filter( $taxonomy, $field_type ) {
 		if ( 'rating' === $field_type ) {
 			$taxonomy = 'product_visibility';
 		}
@@ -144,7 +144,11 @@ class WCAPF_Rating_Filter {
 			if ( 'select' === $display_type || 'multiselect' === $display_type ) {
 				$filter_data[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
 			} else {
-				$filter_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
+				// $filter_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
+				$filter_data[ $rating ] = sprintf(
+					_n( '%d star', '%d stars', $rating, 'wc-ajax-product-filter' ),
+					$rating
+				);
 			}
 		}
 
