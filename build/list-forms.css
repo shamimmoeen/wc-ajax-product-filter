@@ -347,6 +347,9 @@ body.rtl .__list_table_wrapper .__edit_btn {
 .__add_new_modal .__title_step .components-text-control__input:not(:focus) {
   border-color: #ddd;
 }
+.__add_new_modal .__title_step .components-text-control__input:disabled {
+  background-color: #f0f0f0;
+}
 .__add_new_modal .__next_btn {
   min-width: 64px;
   justify-content: center;
