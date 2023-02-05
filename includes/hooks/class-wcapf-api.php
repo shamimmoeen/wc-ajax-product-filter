@@ -56,7 +56,6 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_add_form', array( $this, 'add_form' ) );
 		add_action( 'wp_ajax_wcapf_save_form', array( $this, 'save_form' ) );
 		add_action( 'wp_ajax_wcapf_get_form_preview', array( $this, 'get_form_preview' ) );
-		add_action( 'wp_ajax_wcapf_duplicate_form', array( $this, 'duplicate_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
 
@@ -869,30 +868,6 @@ class WCAPF_API {
 		}
 
 		wp_send_json_success( $response );
-	}
-
-	/**
-	 * Duplicates the form via ajax.
-	 *
-	 * @return void
-	 */
-	public function duplicate_form() {
-		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
-
-		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
-			$new_post_id = WCAPF_API_Utils::duplicate_form( $post_id );
-
-			if ( is_wp_error( $new_post_id ) ) {
-				wp_send_json_error( $new_post_id->get_error_message() );
-			} else {
-				wp_send_json_success( array(
-					'message'  => __( 'Form duplicated successfully', 'wc-ajax-product-filter' ),
-					'new_post' => WCAPF_API_Utils::get_form_data( $new_post_id ),
-				) );
-			}
-		} else {
-			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
-		}
 	}
 
 	/**

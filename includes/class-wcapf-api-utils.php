@@ -1153,33 +1153,6 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Duplicate form.
-	 *
-	 * @param int $post_id The post id to be duplicated.
-	 *
-	 * @return int|WP_Error
-	 */
-	public static function duplicate_form( $post_id ) {
-		$post_arr = array(
-			'post_title'  => get_the_title( $post_id ) . ' ' . __( '(Copy)', 'wc-ajax-product-filter' ),
-			'post_type'   => 'wcapf-form',
-			'post_status' => 'publish',
-		);
-
-		$new_post_id = wp_insert_post( $post_arr, true );
-
-		if ( is_wp_error( $new_post_id ) ) {
-			return $new_post_id;
-		}
-
-		$new_form_data = get_post_meta( $post_id, '_form_data', true );
-
-		update_post_meta( $new_post_id, '_form_data', $new_form_data );
-
-		return $new_post_id;
-	}
-
-	/**
 	 * Gets the forms for the sort by form options dropdown.
 	 *
 	 * @return array
