@@ -28,6 +28,10 @@ const Others = () => {
 			slide_out_panel_label,
 			clear_button_label,
 			clear_all_button_label,
+			reset_button_label,
+			submit_btn_label,
+			apply_btn_label,
+			results_count_markup,
 			pagination_container,
 			results_count_container,
 			sort_by_form_container,
@@ -112,6 +116,40 @@ const Others = () => {
 				value={clear_all_button_label}
 				onChange={handleTextFieldChange}
 			/>
+
+			<Text
+				id={'reset_button_label'}
+				label={__('Reset button label', 'wc-ajax-product-filter')}
+				value={reset_button_label}
+				onChange={handleTextFieldChange}
+			/>
+
+			{WCAPF_PRO && (
+				<Text
+					id={'submit_btn_label'}
+					label={__('Submit button label', 'wc-ajax-product-filter')}
+					value={submit_btn_label}
+					onChange={handleTextFieldChange}
+				/>
+			)}
+
+			{WCAPF_PRO && (
+				<Text
+					id={'apply_btn_label'}
+					label={__('Apply button label', 'wc-ajax-product-filter')}
+					value={apply_btn_label}
+					onChange={handleTextFieldChange}
+				/>
+			)}
+
+			{WCAPF_PRO && (
+				<Text
+					id={'results_count_markup'}
+					label={__('Results count markup', 'wc-ajax-product-filter')}
+					value={results_count_markup}
+					onChange={handleTextFieldChange}
+				/>
+			)}
 
 			<div className='__form_fields_separator' />
 

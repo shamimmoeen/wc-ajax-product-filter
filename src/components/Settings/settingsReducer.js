@@ -6,7 +6,7 @@ const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 
 export const initialState = {
 	isDirty: false,
-	currentTab: 'filter-keys',
+	currentTab: 'general',
 	settings: initialSettings,
 	globalFilterKeys,
 	filterKeysChanged: false,

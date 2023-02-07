@@ -10,8 +10,8 @@ export function newFilterData(index, formFilters) {
 	const _taxonomyTypes = find(types, { value: 'taxonomy' });
 	const taxonomyTypes = _taxonomyTypes.options;
 
-	for (let index = 0; index < taxonomyTypes.length; index++) {
-		const taxonomyType = taxonomyTypes[index];
+	for (let i = 0; i < taxonomyTypes.length; i++) {
+		const taxonomyType = taxonomyTypes[i];
 		const { type, value: taxonomy, taxHierarchical } = taxonomyType;
 
 		const found = find(formFilters, { type, taxonomy });
@@ -28,10 +28,17 @@ export function newFilterData(index, formFilters) {
 	}
 
 	if (isEmpty(data)) {
-		for (let index = 0; index < types.length; index++) {
-			const otherType = types[index];
+		const notAllowedTypes = [
+			'taxonomy',
+			'sort-by',
+			'per-page',
+			'component',
+		];
 
-			if ('taxonomy' !== otherType.value) {
+		for (let i = 0; i < types.length; i++) {
+			const otherType = types[i];
+
+			if (!notAllowedTypes.includes(otherType.value)) {
 				const { value: type } = otherType;
 
 				const found = find(formFilters, { type });
@@ -55,6 +62,132 @@ export function newFilterData(index, formFilters) {
 	});
 }
 
+/**
+ * Gets the filter type data for the current filter.
+ */
+export function getFilterType(filter) {
+	const { type, taxonomy, component } = filter;
+	const types = wcapf_admin_params.filter_types;
+
+	let filterType;
+
+	if ('taxonomy' === type) {
+		const taxonomies = find(types, { value: type });
+
+		filterType = find(taxonomies.options, { value: taxonomy });
+	} else if ('component' === type) {
+		const components = find(types, { value: type });
+
+		filterType = find(components.options, { value: component });
+	} else {
+		filterType = find(types, { value: type });
+	}
+
+	return filterType;
+}
+
+export function getFilterTitle(filter, filterType) {
+	const { title, type, meta_key } = filter;
+
+	let filterTitle = title;
+
+	if (!filterTitle) {
+		filterTitle = filterType.label;
+
+		if ('post-meta' === type && meta_key) {
+			filterTitle += `[${meta_key}]`;
+		}
+	}
+
+	return filterTitle;
+}
+
+export function getFilterKey(filter, filterType) {
+	const { field_key, type, meta_key } = filter;
+
+	let filterKey = field_key;
+
+	if (!filterKey) {
+		if ('post-meta' === type) {
+			if (meta_key) {
+				filterKey = meta_key;
+			}
+		} else if ('component' !== type) {
+			filterKey = filterType.key;
+		}
+	}
+
+	return filterKey;
+}
+
+export function getDisplayType(filter) {
+	const {
+		type,
+		value_type,
+		display_type,
+		number_display_type,
+		date_display_type,
+	} = filter;
+
+	let displayTypes;
+	let _displayType;
+
+	if ('number' === value_type || 'price' === type) {
+		displayTypes = numberDisplayTypes();
+		_displayType = number_display_type;
+	} else if ('date' === value_type) {
+		displayTypes = dateDisplayTypes();
+		_displayType = date_display_type;
+	} else {
+		displayTypes = allTextDisplayTypes();
+		_displayType = display_type;
+	}
+
+	const displayType = displayTypes.find(
+		(option) => option.value === _displayType
+	);
+
+	return displayType;
+}
+
+export function getFilterTabs(filter) {
+	const availableTabs = [
+		{
+			name: 'general',
+			title: __('General', 'wc-ajax-product-filter'),
+		},
+		{
+			name: 'appearance',
+			title: __('Appearance', 'wc-ajax-product-filter'),
+		},
+		{
+			name: 'options',
+			title: __('Options', 'wc-ajax-product-filter'),
+		},
+		{
+			name: 'advanced',
+			title: __('Advanced', 'wc-ajax-product-filter'),
+		},
+	];
+
+	const { type, component } = filter;
+
+	if ('component' === type) {
+		if ('active-filters' === component) {
+			const allowed = ['general', 'advanced'];
+
+			return availableTabs.filter(({ name }) => allowed.includes(name));
+		} else {
+			return availableTabs.filter(({ name }) => 'general' === name);
+		}
+	}
+
+	return availableTabs;
+}
+
+/**
+ * Gets the filter types by disabling the used filter types in the form.
+ */
 export function getFilterTypes(otherFilters) {
 	const _filterTypes = wcapf_admin_params.filter_types;
 
@@ -142,17 +275,6 @@ export function getFilterKeyError(
 		return;
 	}
 
-	// const hello = {
-	// 	id: filter.id,
-	// 	field_key: filter.field_key,
-	// 	type: filter.type,
-	// 	taxonomy: filter.taxonomy,
-	// 	meta_key: filter.meta_key,
-	// };
-
-	// console.log(hello);
-	// console.log(filterKeys);
-
 	let filterKeyError;
 	const field_key = filter['field_key'];
 
@@ -218,6 +340,7 @@ export function filterDefaultData() {
 		taxonomy: '',
 		taxHierarchical: '',
 		meta_key: '',
+		component: '',
 		isACF: '',
 		value_type: 'text',
 		field_key: '',
@@ -326,6 +449,7 @@ export function filterTypeDependentFields() {
 		'taxonomy',
 		'taxHierarchical',
 		'meta_key',
+		'component',
 		'isACF',
 		// Taxonomy
 		'get_options',
@@ -351,6 +475,31 @@ export function filterTypeDependentFields() {
 		'options_order_dir',
 		'options_order_type',
 	];
+}
+
+export function filterTypeWithKeys() {
+	return [
+		'taxonomy',
+		'price',
+		'rating',
+		'product-status',
+		'post-author',
+		'post-meta',
+		'sort-by',
+		'per-page',
+	];
+}
+
+export function proFilterTypes() {
+	return ['sort-by', 'per-page'];
+}
+
+export function proFilterComponents() {
+	return ['results-count', 'apply-mode', 'submit-mode'];
+}
+
+export function componentsWithTypeOnly() {
+	return ['reset-button', 'results-count', 'apply-mode', 'submit-mode'];
 }
 
 export function methodsOfGettingOptions() {

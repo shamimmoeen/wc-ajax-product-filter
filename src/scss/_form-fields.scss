@@ -206,15 +206,15 @@
 			}
 
 			.type {
-				.__react_select__group {
+				.__react_select__group:not(.__pro_group):not(.__form_components) {
 					padding-bottom: 8px;
-				}
 
-				.__react_select__group-heading {
-					font-size: 100%;
-					font-weight: normal;
-					margin-bottom: 8px;
-					text-transform: none;
+					.__react_select__group-heading {
+						font-size: 100%;
+						font-weight: normal;
+						margin-bottom: 8px;
+						text-transform: none;
+					}
 				}
 			}
 
@@ -311,7 +311,7 @@
 		}
 	}
 
-	.__react_select__group:not(.__pro_group) {
+	.__react_select__group:not(.__pro_group):not(.__form_components) {
 		.__react_select__option {
 			@include ltr {
 				padding-left: 16px;
@@ -327,6 +327,40 @@
 		.__react_select__option {
 			.__pro_tag {
 				display: none;
+			}
+		}
+	}
+
+	.__react_select__group.__form_components {
+		padding-top: 0;
+		padding-bottom: 0;
+
+		.__react_select__group-heading {
+			padding-left: 0;
+			padding-right: 0;
+			text-align: center;
+		}
+
+		.__form_components_divider {
+			display: block;
+			position: relative;
+			margin: 8px 0 0;
+
+			&::before {
+				background-color: #ddd;
+				content: '';
+				height: 1px;
+				left: 0;
+				position: absolute;
+				top: 50%;
+				width: 100%;
+			}
+
+			.__form_components_heading {
+				background-color: #fff;
+				display: inline-block;
+				padding: 0 8px;
+				position: relative;
 			}
 		}
 	}

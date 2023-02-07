@@ -7837,7 +7837,8 @@ function filterModeOptions() {
     value: 'immediate'
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Apply', 'wc-ajax-product-filter'),
-    value: 'apply'
+    value: 'apply',
+    isPro: true
   }, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Submit', 'wc-ajax-product-filter'),
     value: 'submit',
