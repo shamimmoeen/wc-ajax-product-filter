@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
-import { merge, pick, find } from 'lodash';
+import { omit, pick, find } from 'lodash';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
 import Notifications from '../Notifications';
@@ -89,25 +89,20 @@ const Settings = () => {
 	}, [isDirty]);
 
 	const sanitizedSettings = () => {
-		/**
-		 * Use Lo-Dash merge without modifying underlying object.
-		 *
-		 * @source https://stackoverflow.com/a/28044419
-		 */
-		const _settings = merge({}, settings, { loading_image_src: '' });
-
 		if (WCAPF_PRO) {
-			return _settings;
+			return omit(settings, ['loading_image_src']);
 		}
 
-		const proSettings = [
-			'remove_empty_filters',
-			'replace_sorting_options',
-			'sort_by_form',
-		];
+		const proSettings = [];
 
 		if ('disable' === settings['remove_empty']) {
 			proSettings.push('remove_empty');
+		}
+
+		const proLoadingAnimations = ['overlay-with-text', 'none'];
+
+		if (proLoadingAnimations.includes(settings['loading_animation'])) {
+			proSettings.push('loading_animation');
 		}
 
 		if ('custom' === settings['loading_icon']) {
@@ -115,8 +110,26 @@ const Settings = () => {
 		}
 
 		const defaults = pick(defaultSettings(), proSettings);
+		const merged = { ...settings, ...defaults };
 
-		return { ..._settings, ...defaults };
+		return omit(merged, [
+			'remove_empty_filters',
+			'replace_sorting_options',
+			'sort_by_form',
+			'slide_out_panel_position',
+			'loading_image',
+			'loading_image_src',
+			'loading_text',
+			'loading_text_size',
+			'loading_text_color',
+			'loading_overlay_color',
+			'disable_filter_selection',
+			'scroll_on',
+			'disable_scroll_animation',
+			'more_selectors',
+			'multiple_form_locations',
+			'filter_keys_order',
+		]);
 	};
 
 	const validateFilterKeys = () => {

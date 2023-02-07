@@ -9125,6 +9125,8 @@ const Text = _ref2 => {
       content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "For example, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "?/color=blue&size=large", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "where color & size are the filter keys.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "In the PRO version, the URL will be", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "/color-blue/size-large")
     }), 'products_loop_container' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
       content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "This will only work when showing the form on non-product archive pages.", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "If a page contains multiple forms, the products loop container of the first form will work.")
+    }), 'results_count_markup' === id && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_TippyTooltip__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      content: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, "Example: Found %d product|Found %d products", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("br", null), "Here two markups are separated by the pipe(|) character. The first markup is for the singular result and the second one is for the plural result. %d will be replaced with product count.")
     }), (0,_utils__WEBPACK_IMPORTED_MODULE_3__.proTag)(isPro))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "__wrapper"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
@@ -9400,6 +9402,10 @@ const Group = props => {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__.c.Group, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
       className: "__pro_group"
     }));
+  } else if (props.data.components) {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__.c.Group, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
+      className: "__form_components"
+    }));
   }
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(react_select__WEBPACK_IMPORTED_MODULE_6__.c.Group, props);
@@ -9418,6 +9424,12 @@ const FormatGroupLabel = data => {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
       className: "__pro_heading"
     }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pro', 'wc-ajax-product-filter')));
+  } else if (data.components) {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
+      className: "__form_components_divider"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", {
+      className: "__form_components_heading"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Components', 'wc-ajax-product-filter')));
   }
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("span", null, data.label);
@@ -10719,6 +10731,10 @@ const Others = () => {
       slide_out_panel_label,
       clear_button_label,
       clear_all_button_label,
+      reset_button_label,
+      submit_btn_label,
+      apply_btn_label,
+      results_count_markup,
       pagination_container,
       results_count_container,
       sort_by_form_container,
@@ -10767,6 +10783,26 @@ const Others = () => {
     id: 'clear_all_button_label',
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Clear All button label', 'wc-ajax-product-filter'),
     value: clear_all_button_label,
+    onChange: handleTextFieldChange
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'reset_button_label',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reset button label', 'wc-ajax-product-filter'),
+    value: reset_button_label,
+    onChange: handleTextFieldChange
+  }), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'submit_btn_label',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Submit button label', 'wc-ajax-product-filter'),
+    value: submit_btn_label,
+    onChange: handleTextFieldChange
+  }), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'apply_btn_label',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Apply button label', 'wc-ajax-product-filter'),
+    value: apply_btn_label,
+    onChange: handleTextFieldChange
+  }), WCAPF_PRO && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: 'results_count_markup',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Results count markup', 'wc-ajax-product-filter'),
+    value: results_count_markup,
     onChange: handleTextFieldChange
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__form_fields_separator"
@@ -11040,23 +11076,20 @@ const Settings = () => {
   }, [isDirty]);
 
   const sanitizedSettings = () => {
-    /**
-     * Use Lo-Dash merge without modifying underlying object.
-     *
-     * @source https://stackoverflow.com/a/28044419
-     */
-    const _settings = (0,lodash__WEBPACK_IMPORTED_MODULE_3__.merge)({}, settings, {
-      loading_image_src: ''
-    });
-
     if (WCAPF_PRO) {
-      return _settings;
+      return (0,lodash__WEBPACK_IMPORTED_MODULE_3__.omit)(settings, ['loading_image_src']);
     }
 
-    const proSettings = ['remove_empty_filters', 'replace_sorting_options', 'sort_by_form'];
+    const proSettings = [];
 
     if ('disable' === settings['remove_empty']) {
       proSettings.push('remove_empty');
+    }
+
+    const proLoadingAnimations = ['overlay-with-text', 'none'];
+
+    if (proLoadingAnimations.includes(settings['loading_animation'])) {
+      proSettings.push('loading_animation');
     }
 
     if ('custom' === settings['loading_icon']) {
@@ -11064,9 +11097,10 @@ const Settings = () => {
     }
 
     const defaults = (0,lodash__WEBPACK_IMPORTED_MODULE_3__.pick)((0,_utils__WEBPACK_IMPORTED_MODULE_20__.defaultSettings)(), proSettings);
-    return { ..._settings,
+    const merged = { ...settings,
       ...defaults
     };
+    return (0,lodash__WEBPACK_IMPORTED_MODULE_3__.omit)(merged, ['remove_empty_filters', 'replace_sorting_options', 'sort_by_form', 'slide_out_panel_position', 'loading_image', 'loading_image_src', 'loading_text', 'loading_text_size', 'loading_text_color', 'loading_overlay_color', 'disable_filter_selection', 'scroll_on', 'disable_scroll_animation', 'more_selectors', 'multiple_form_locations', 'filter_keys_order']);
   };
 
   const validateFilterKeys = () => {
@@ -11262,7 +11296,7 @@ const initialSettings = (0,lodash__WEBPACK_IMPORTED_MODULE_0__.merge)((0,_utils_
 const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 const initialState = {
   isDirty: false,
-  currentTab: 'filter-keys',
+  currentTab: 'general',
   settings: initialSettings,
   globalFilterKeys,
   filterKeysChanged: false,
@@ -11509,6 +11543,10 @@ function defaultSettings() {
     slide_out_panel_label: '',
     clear_button_label: '',
     clear_all_button_label: '',
+    reset_button_label: '',
+    submit_btn_label: '',
+    apply_btn_label: '',
+    results_count_markup: '',
     pagination_container: '.woocommerce-pagination',
     results_count_container: '.woocommerce-result-count',
     sort_by_form_container: '.woocommerce-ordering',

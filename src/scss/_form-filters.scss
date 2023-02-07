@@ -119,22 +119,36 @@
 			justify-content: space-between;
 			flex: 1;
 			gap: 16px;
+			min-width: 0;
 
 			@include header-column-sizes;
 
 			.__title,
+			.__type,
+			.__key,
 			.__display {
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			.__filter_type {
-				@include horizontal-space(4px);
+				min-width: 0;
 			}
 
 			.__meta_key {
-				@include info;
+				color: rgba(0, 0, 0, 0.3);
+			}
+
+			.__type {
+				.__wrapper {
+					display: flex;
+					gap: 4px;
+
+					.__meta_key {
+						flex: 1;
+					}
+				}
+			}
+
+			.__truncated {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 		}
 

@@ -100,6 +100,13 @@ const useFormFilterData = (state, dispatch) => {
 			});
 
 			return;
+		} else if ('component' === type) {
+			updateFilterType(index, type, value, {
+				[key]: type,
+				component: value,
+			});
+
+			return;
 		}
 
 		updateFilterType(index, key, value, {

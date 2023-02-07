@@ -43,6 +43,7 @@ export function filterModeOptions() {
 		{
 			label: __('Apply', 'wc-ajax-product-filter'),
 			value: 'apply',
+			isPro: true,
 		},
 		{
 			label: __('Submit', 'wc-ajax-product-filter'),

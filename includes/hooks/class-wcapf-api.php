@@ -312,6 +312,7 @@ class WCAPF_API {
 				$type         = isset( $filter['type'] ) ? sanitize_text_field( $filter['type'] ) : '';
 				$taxonomy     = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
 				$meta_key     = isset( $filter['meta_key'] ) ? sanitize_text_field( $filter['meta_key'] ) : '';
+				$component    = isset( $filter['component'] ) ? sanitize_text_field( $filter['component'] ) : '';
 
 				if ( ! in_array( $type, $valid_types ) ) {
 					continue;
@@ -320,6 +321,8 @@ class WCAPF_API {
 				if ( 'taxonomy' === $type && ! $taxonomy ) {
 					continue;
 				} elseif ( 'post-meta' === $type && ! $meta_key ) {
+					continue;
+				} elseif ( 'component' === $type && ! $component ) {
 					continue;
 				}
 
@@ -360,6 +363,8 @@ class WCAPF_API {
 					}
 
 					$filter_type = $type . '>' . $meta_key;
+				} elseif ( 'component' === $type ) {
+					$filter_type = $type . '>' . $component;
 				} else {
 					$filter_type = $type;
 				}
@@ -369,9 +374,11 @@ class WCAPF_API {
 					continue;
 				}
 
-				$filter_types[] = $filter_type;
+				if ( 'component' !== $type ) {
+					$filter_types[] = $filter_type;
+				}
 
-				if ( ! $filter_title ) {
+				if ( 'component' !== $type && ! $filter_title ) {
 					if ( 'post-meta' === $type ) {
 						$filter_title = $filter_type_data['label'] . '[' . $meta_key . ']';
 					} else {
@@ -396,6 +403,10 @@ class WCAPF_API {
 
 				if ( is_wp_error( $new_filter_id ) ) {
 					continue;
+				}
+
+				if ( 'component' === $type ) {
+					$post_name = '';
 				}
 
 				$filter['id']        = $new_filter_id;
@@ -492,6 +503,14 @@ class WCAPF_API {
 		$meta_key,
 		$filter_order
 	) {
+		if ( 'component' === $type ) {
+			return array(
+				$post_name,
+				array(), // Empty error data.
+				array(), // Empty filter type data.
+			);
+		}
+
 		if ( 'taxonomy' === $type ) {
 			$taxonomy_index    = array_search( 'taxonomy', array_column( $possible_types, 'value' ) );
 			$taxonomy_options  = $possible_types[ $taxonomy_index ];

@@ -457,10 +457,10 @@ body.rtl .__title_wrapper .__save_button .__icon {
 .__form_control.react_select_simple .__input_wrapper .meta_key {
   min-width: 220px;
 }
-.__form_control.react_select_simple .__input_wrapper .type .__react_select__group {
+.__form_control.react_select_simple .__input_wrapper .type .__react_select__group:not(.__pro_group):not(.__form_components) {
   padding-bottom: 8px;
 }
-.__form_control.react_select_simple .__input_wrapper .type .__react_select__group-heading {
+.__form_control.react_select_simple .__input_wrapper .type .__react_select__group:not(.__pro_group):not(.__form_components) .__react_select__group-heading {
   font-size: 100%;
   font-weight: normal;
   margin-bottom: 8px;
@@ -600,16 +600,45 @@ body.rtl .__custom_react_select .__name {
 .__custom_react_select.__single_select .__react_select__option.__react_select__option--is-disabled .__option_label {
   color: hsl(0deg, 0%, 80%);
 }
-body:not(.rtl) .__custom_react_select.__single_select .__react_select__group:not(.__pro_group) .__react_select__option {
+body:not(.rtl) .__custom_react_select.__single_select .__react_select__group:not(.__pro_group):not(.__form_components) .__react_select__option {
   padding-left: 16px;
 }
 
-body.rtl .__custom_react_select.__single_select .__react_select__group:not(.__pro_group) .__react_select__option {
+body.rtl .__custom_react_select.__single_select .__react_select__group:not(.__pro_group):not(.__form_components) .__react_select__option {
   padding-right: 16px;
 }
 
 .__custom_react_select.__single_select .__pro_group .__react_select__option .__pro_tag {
   display: none;
+}
+.__custom_react_select.__single_select .__react_select__group.__form_components {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.__custom_react_select.__single_select .__react_select__group.__form_components .__react_select__group-heading {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
+.__custom_react_select.__single_select .__react_select__group.__form_components .__form_components_divider {
+  display: block;
+  position: relative;
+  margin: 8px 0 0;
+}
+.__custom_react_select.__single_select .__react_select__group.__form_components .__form_components_divider::before {
+  background-color: #ddd;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+}
+.__custom_react_select.__single_select .__react_select__group.__form_components .__form_components_divider .__form_components_heading {
+  background-color: #fff;
+  display: inline-block;
+  padding: 0 8px;
+  position: relative;
 }
 
 .__react_select__menu-portal .__react_select__control:not(.__react_select__control--is-focused):hover {
@@ -632,16 +661,45 @@ body.rtl .__custom_react_select.__single_select .__react_select__group:not(.__pr
 .__react_select__menu-portal .__react_select__option.__react_select__option--is-disabled .__option_label {
   color: hsl(0deg, 0%, 80%);
 }
-body:not(.rtl) .__react_select__menu-portal .__react_select__group:not(.__pro_group) .__react_select__option {
+body:not(.rtl) .__react_select__menu-portal .__react_select__group:not(.__pro_group):not(.__form_components) .__react_select__option {
   padding-left: 16px;
 }
 
-body.rtl .__react_select__menu-portal .__react_select__group:not(.__pro_group) .__react_select__option {
+body.rtl .__react_select__menu-portal .__react_select__group:not(.__pro_group):not(.__form_components) .__react_select__option {
   padding-right: 16px;
 }
 
 .__react_select__menu-portal .__pro_group .__react_select__option .__pro_tag {
   display: none;
+}
+.__react_select__menu-portal .__react_select__group.__form_components {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.__react_select__menu-portal .__react_select__group.__form_components .__react_select__group-heading {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
+.__react_select__menu-portal .__react_select__group.__form_components .__form_components_divider {
+  display: block;
+  position: relative;
+  margin: 8px 0 0;
+}
+.__react_select__menu-portal .__react_select__group.__form_components .__form_components_divider::before {
+  background-color: #ddd;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+}
+.__react_select__menu-portal .__react_select__group.__form_components .__form_components_divider .__form_components_heading {
+  background-color: #fff;
+  display: inline-block;
+  padding: 0 8px;
+  position: relative;
 }
 
 .__available_on .__input_wrapper .__locations .__column:not(:last-child) {
@@ -1290,6 +1348,7 @@ body.rtl .__filters_drop_zone .__add_filter_btn {
   justify-content: space-between;
   flex: 1;
   gap: 16px;
+  min-width: 0;
 }
 .__form_filters .__top ._filter_header .__title {
   flex: 1.2;
@@ -1315,21 +1374,25 @@ body.rtl .__filters_drop_zone .__add_filter_btn {
   }
 }
 .__form_filters .__top ._filter_header .__title,
+.__form_filters .__top ._filter_header .__type,
+.__form_filters .__top ._filter_header .__key,
 .__form_filters .__top ._filter_header .__display {
+  min-width: 0;
+}
+.__form_filters .__top ._filter_header .__meta_key {
+  color: rgba(0, 0, 0, 0.3);
+}
+.__form_filters .__top ._filter_header .__type .__wrapper {
+  display: flex;
+  gap: 4px;
+}
+.__form_filters .__top ._filter_header .__type .__wrapper .__meta_key {
+  flex: 1;
+}
+.__form_filters .__top ._filter_header .__truncated {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-body:not(.rtl) .__form_filters .__top ._filter_header .__filter_type {
-  margin-right: 4px;
-}
-body.rtl .__form_filters .__top ._filter_header .__filter_type {
-  margin-left: 4px;
-}
-
-.__form_filters .__top ._filter_header .__meta_key {
-  color: rgba(0, 0, 0, 0.3);
-  display: inline-flex;
 }
 .__form_filters .__top .__accordion_toggle_button {
   display: inline-flex;

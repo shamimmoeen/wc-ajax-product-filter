@@ -8,6 +8,10 @@ import FormTabPanel from './FormTabPanel';
 import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
 import { defaultFormSettings } from '../utilsForForm';
+import { proFilterComponents, proFilterTypes } from './utils';
+import { foundProVersion } from '../utils';
+
+const WCAPF_PRO = foundProVersion();
 
 const Form = () => {
 	const { dispatch } = useForm();
@@ -34,8 +38,26 @@ const Form = () => {
 				} = response;
 
 				const filterKeys = formData['filter_keys'];
-				const formFilters = formData['form_filters'];
+				const formFilters = [];
+				const _formFilters = formData['form_filters'];
 				const formSettings = formData['form_settings'];
+
+				const proTypes = proFilterTypes();
+				const proComponents = proFilterComponents();
+
+				for (let index = 0; index < _formFilters.length; index++) {
+					const formFilter = _formFilters[index];
+
+					const isPro =
+						proTypes.includes(formFilter['type']) ||
+						proComponents.includes(formFilter['component']);
+
+					if (!WCAPF_PRO && isPro) {
+						break;
+					}
+
+					formFilters.push(formFilter);
+				}
 
 				dispatch({
 					type: 'SET_FILTER_KEYS',

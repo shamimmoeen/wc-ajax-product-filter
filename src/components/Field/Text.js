@@ -68,6 +68,7 @@ const Text = ({
 					<div className='__label'>
 						<label htmlFor={inputId}>
 							{label}
+
 							{'field_key' === id && (
 								<TippyTooltip
 									content={
@@ -87,6 +88,7 @@ const Text = ({
 									}
 								/>
 							)}
+
 							{'products_loop_container' === id && (
 								<TippyTooltip
 									content={
@@ -102,6 +104,26 @@ const Text = ({
 									}
 								/>
 							)}
+
+							{'results_count_markup' === id && (
+								<TippyTooltip
+									content={
+										<>
+											Example: Found %d product|Found %d
+											products
+											<br />
+											<br />
+											Here two markups are separated by
+											the pipe(|) character. The first
+											markup is for the singular result
+											and the second one is for the plural
+											result. %d will be replaced with
+											product count.
+										</>
+									}
+								/>
+							)}
+
 							{proTag(isPro)}
 						</label>
 					</div>

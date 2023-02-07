@@ -82,6 +82,10 @@ class WCAPF_API_Utils {
 			$filter_type  = $type;
 			$property     = isset( $filter_data[1] ) ? $filter_data[1] : '';
 
+			if ( 'component' === $type ) {
+				continue;
+			}
+
 			$data = array(
 				'id'        => $filter_id,
 				'type'      => $filter_type,
@@ -165,6 +169,52 @@ class WCAPF_API_Utils {
 			array(
 				'label' => __( 'Post Meta', 'wc-ajax-product-filter' ),
 				'value' => 'post-meta',
+			),
+			array(
+				'label' => __( 'Sort By', 'wc-ajax-product-filter' ),
+				'value' => 'sort-by',
+				'key'   => 'sort-by',
+				'isPro' => true,
+			),
+			array(
+				'label' => __( 'Per Page', 'wc-ajax-product-filter' ),
+				'value' => 'per-page',
+				'key'   => 'per-page',
+				'isPro' => true,
+			),
+			array(
+				'components' => true,
+				'value'      => 'component',
+				'options'    => array(
+					array(
+						'label' => __( 'Active Filters', 'wc-ajax-product-filter' ),
+						'value' => 'active-filters',
+						'type'  => 'component',
+					),
+					array(
+						'label' => __( 'Reset Button', 'wc-ajax-product-filter' ),
+						'value' => 'reset-button',
+						'type'  => 'component',
+					),
+					array(
+						'label' => __( 'Results Count', 'wc-ajax-product-filter' ),
+						'value' => 'results-count',
+						'type'  => 'component',
+						'isPro' => true,
+					),
+					array(
+						'label' => __( 'Apply Mode', 'wc-ajax-product-filter' ),
+						'value' => 'apply-mode',
+						'type'  => 'component',
+						'isPro' => true,
+					),
+					array(
+						'label' => __( 'Submit Mode', 'wc-ajax-product-filter' ),
+						'value' => 'submit-mode',
+						'type'  => 'component',
+						'isPro' => true,
+					),
+				),
 			),
 		);
 	}

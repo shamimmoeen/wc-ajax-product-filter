@@ -6,8 +6,18 @@ import Select from '../../Field/Select';
 import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
 import { Notice } from '@wordpress/components';
-import { getGlobalFilterKey, getFilterTypes, getMetaKeys } from '../utils';
+import {
+	getGlobalFilterKey,
+	getFilterTypes,
+	getMetaKeys,
+	getFilterType,
+	getFilterTitle,
+	getFilterKey,
+	componentsWithTypeOnly,
+} from '../utils';
 import Radio from '../../Field/Radio';
+
+const withOutTitleComponents = componentsWithTypeOnly();
 
 const General = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -30,9 +40,9 @@ const General = ({ index }) => {
 		title,
 		type_error,
 		type,
-		taxonomy,
 		meta_key_error,
 		meta_key,
+		component,
 		value_type,
 		is_acf,
 		value_decimal,
@@ -58,10 +68,8 @@ const General = ({ index }) => {
 		);
 	}
 
-	let filterTitle = title;
 	let filterTypes;
 	let metaKeys;
-	let filterKey = field_key;
 	let globalFilterKey;
 
 	if (id) {
@@ -85,38 +93,9 @@ const General = ({ index }) => {
 		}
 	}
 
-	let filterType;
-
-	if ('taxonomy' === type) {
-		const taxonomyOption = filterTypes.find(
-			(option) => option.value === type
-		);
-		const taxonomies = taxonomyOption.options;
-
-		filterType = taxonomies.find((option) => option.value === taxonomy);
-	} else {
-		filterType = filterTypes.find((option) => option.value === type);
-	}
-
-	// Default filter title.
-	if (!filterTitle) {
-		filterTitle = filterType.label;
-
-		if ('post-meta' === type && meta_key) {
-			filterTitle += `[${meta_key}]`;
-		}
-	}
-
-	// Default filter key.
-	if (!filterKey) {
-		if ('post-meta' === type) {
-			if (meta_key) {
-				filterKey = meta_key;
-			}
-		} else {
-			filterKey = filterType.key;
-		}
-	}
+	const filterType = getFilterType(filter);
+	const filterTitle = getFilterTitle(filter, filterType);
+	const filterKey = getFilterKey(filter, filterType);
 
 	const metaKey = metaKeys.find((option) => option.value === meta_key);
 
@@ -128,20 +107,26 @@ const General = ({ index }) => {
 		fieldKeyError = field_key_error_;
 	}
 
+	const showTitleField = !(
+		'component' === type && withOutTitleComponents.includes(component)
+	);
+
 	return (
 		<>
-			<Text
-				id={'title'}
-				index={index}
-				label={__('Filter Title', 'wc-ajax-product-filter')}
-				description={__(
-					'Give a title to the filter which will appear before the filter options.',
-					'wc-ajax-product-filter'
-				)}
-				value={title}
-				placeholder={filterTitle}
-				onChange={handleTextFieldChange}
-			/>
+			{showTitleField && (
+				<Text
+					id={'title'}
+					index={index}
+					label={__('Filter Title', 'wc-ajax-product-filter')}
+					description={__(
+						'Give a title to the filter which will appear before the filter options.',
+						'wc-ajax-product-filter'
+					)}
+					value={title}
+					placeholder={filterTitle}
+					onChange={handleTextFieldChange}
+				/>
+			)}
 
 			{type_error && (
 				<Notice status='error' isDismissible={false}>
@@ -318,26 +303,60 @@ const General = ({ index }) => {
 				/>
 			)}
 
-			{fieldKeyError && (
-				<Notice status='error' isDismissible={false}>
-					{fieldKeyError}
-				</Notice>
+			{'component' !== type && (
+				<>
+					{fieldKeyError && (
+						<Notice status='error' isDismissible={false}>
+							{fieldKeyError}
+						</Notice>
+					)}
+
+					<Text
+						id={'field_key'}
+						index={index}
+						label={__('Filter Key', 'wc-ajax-product-filter')}
+						description={__(
+							'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
+							'wc-ajax-product-filter'
+						)}
+						value={globalFilterKey ? globalFilterKey : field_key}
+						placeholder={filterKey}
+						onChange={handleFilterKeyChange}
+						isDisabled={id || globalFilterKey}
+						tooltip={filterKeyDisabledInfo}
+					/>
+				</>
 			)}
 
-			<Text
-				id={'field_key'}
-				index={index}
-				label={__('Filter Key', 'wc-ajax-product-filter')}
-				description={__(
-					'The unique key that will be used in the URL. Only a-z, 0-9, "_" and "-" symbols are supported.',
-					'wc-ajax-product-filter'
-				)}
-				value={globalFilterKey ? globalFilterKey : field_key}
-				placeholder={filterKey}
-				onChange={handleFilterKeyChange}
-				isDisabled={id || globalFilterKey}
-				tooltip={filterKeyDisabledInfo}
-			/>
+			{'active-filters' === component && (
+				<div className='__form_control'>
+					<p>
+						<b>Note:</b> A shortcode{' '}
+						<code>[wcapf_active_filters]</code> is available to show
+						the active filters outside the form.
+					</p>
+				</div>
+			)}
+
+			{'reset-button' === component && (
+				<div className='__form_control'>
+					<p>
+						<b>Note:</b> A shortcode{' '}
+						<code>[wcapf_reset_button]</code> is available to show
+						the reset button outside the form.
+					</p>
+				</div>
+			)}
+
+			{'results-count' === component && (
+				<div className='__form_control'>
+					<p>
+						<b>Note:</b> A shortcode{' '}
+						<code>[wcapf_results_count]</code> is available to show
+						the results count outside the form.
+					</p>
+				</div>
+			)}
 		</>
 	);
 };

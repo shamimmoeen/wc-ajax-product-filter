@@ -21,6 +21,8 @@ import {
 	taxonomyProLimitByOptions,
 	authorProOrderByOptions,
 	metaValuesProOrderByOptions,
+	proFilterTypes,
+	proFilterComponents,
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
 
@@ -87,7 +89,20 @@ const FormTitle = () => {
 		const invalidFormFilters = [];
 		let isValid = true;
 
-		formFilters.forEach((formFilter, index) => {
+		const proTypes = proFilterTypes();
+		const proComponents = proFilterComponents();
+
+		for (let index = 0; index < formFilters.length; index++) {
+			const formFilter = formFilters[index];
+
+			const isPro =
+				proTypes.includes(formFilter['type']) ||
+				proComponents.includes(formFilter['component']);
+
+			if (!WCAPF_PRO && isPro) {
+				break;
+			}
+
 			const _formFilter = omit(formFilter, [
 				'type_error',
 				'meta_key_error',
@@ -137,7 +152,7 @@ const FormTitle = () => {
 			}
 
 			validatedFormFilters.push(_formFilter);
-		});
+		}
 
 		const newStates = accordionStates.map((isExpanded, index) => {
 			if (invalidFormFilters.includes(index)) {

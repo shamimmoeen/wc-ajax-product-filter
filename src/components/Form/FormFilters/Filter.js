@@ -6,10 +6,13 @@ import { useForm } from '../FormContext';
 import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
 import {
-	allTextDisplayTypes,
-	dateDisplayTypes,
+	componentsWithTypeOnly,
+	getDisplayType,
+	getFilterKey,
+	getFilterTabs,
+	getFilterTitle,
+	getFilterType,
 	getGlobalFilterKey,
-	numberDisplayTypes,
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
@@ -20,7 +23,7 @@ import {
 	removeFilterDeletedNotices,
 } from '../../notices';
 
-const filterTypes = wcapf_admin_params.filter_types;
+const onlyWithType = componentsWithTypeOnly();
 
 const Filter = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -33,18 +36,7 @@ const Filter = ({ index }) => {
 
 	const filter = formFilters[index];
 
-	const {
-		id,
-		title,
-		type,
-		taxonomy,
-		meta_key,
-		value_type,
-		field_key,
-		display_type,
-		number_display_type,
-		date_display_type,
-	} = filter;
+	const { id, type, meta_key, component } = filter;
 
 	const isExpanded = accordionStates[index];
 
@@ -145,74 +137,20 @@ const Filter = ({ index }) => {
 	const toggleIcon = isExpanded ? chevronUp : chevronDown;
 	const topClass = isExpanded ? '__top open' : '__top';
 
-	let filterTitle = title;
-	let filterType;
-	let filterKey = field_key;
-
-	if ('taxonomy' === type) {
-		const taxonomyOption = filterTypes.find(
-			(option) => option.value === type
-		);
-		const taxonomies = taxonomyOption.options;
-
-		filterType = taxonomies.find((option) => option.value === taxonomy);
-	} else {
-		filterType = filterTypes.find((option) => option.value === type);
-	}
-
-	// Default filter title.
-	if (!filterTitle) {
-		filterTitle = filterType.label;
-
-		if ('post-meta' === type && meta_key) {
-			filterTitle += `[${meta_key}]`;
-		}
-	}
-
-	// Default filter key.
-	if (!filterKey) {
-		if ('post-meta' === type) {
-			if (meta_key) {
-				filterKey = meta_key;
-			}
-		} else {
-			filterKey = filterType.key;
-		}
-	}
-
-	let displayTypes;
-	let _displayType;
-
-	if ('number' === value_type || 'price' === type) {
-		displayTypes = numberDisplayTypes();
-		_displayType = number_display_type;
-	} else if ('date' === value_type) {
-		displayTypes = dateDisplayTypes();
-		_displayType = date_display_type;
-	} else {
-		displayTypes = allTextDisplayTypes();
-		_displayType = display_type;
-	}
-
-	const displayType = displayTypes.find(
-		(option) => option.value === _displayType
-	);
+	const filterType = getFilterType(filter);
+	const filterTitle = getFilterTitle(filter, filterType);
 
 	const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+	const filterKey = globalFilterKey
+		? globalFilterKey
+		: getFilterKey(filter, filterType);
 
-	const maxCharacters = 15;
+	const displayType = getDisplayType(filter);
 
-	let _metaKey =
-		meta_key.length > maxCharacters
-			? meta_key.substr(0, maxCharacters) + '...'
-			: meta_key;
+	const onlyType = 'component' === type && onlyWithType.includes(component);
+	const activeFilters = 'active-filters' === component;
 
-	let _filterKey = globalFilterKey ? globalFilterKey : filterKey;
-
-	_filterKey =
-		_filterKey.length > maxCharacters
-			? _filterKey.substr(0, maxCharacters) + '...'
-			: _filterKey;
+	const filterTabs = getFilterTabs(filter);
 
 	return (
 		<div className='__item'>
@@ -222,19 +160,43 @@ const Filter = ({ index }) => {
 				</div>
 
 				<div className='_filter_header'>
-					<div className='__title'>{filterTitle}</div>
-					<div className='__type'>
-						{filterType && (
-							<span className='__filter_type'>
-								{filterType.label}
-							</span>
-						)}
-						{'post-meta' === type && (
-							<span className='__meta_key'>{_metaKey}</span>
-						)}
+					<div className='__title'>
+						<div className='__truncated'>
+							{onlyType ? <span>&#8212;</span> : filterTitle}
+						</div>
 					</div>
-					<div className='__key'>{_filterKey}</div>
-					<div className='__display'>{displayType.label}</div>
+					<div className='__type'>
+						<div className='__wrapper'>
+							{filterType && (
+								<div className='__filter_type'>
+									{filterType.label}
+								</div>
+							)}
+							{'post-meta' === type && (
+								<div className='__truncated __meta_key'>
+									{meta_key}
+								</div>
+							)}
+						</div>
+					</div>
+					<div className='__key'>
+						<div className='__truncated'>
+							{onlyType || activeFilters ? (
+								<span>&#8212;</span>
+							) : (
+								filterKey
+							)}
+						</div>
+					</div>
+					<div className='__display'>
+						<div className='__truncated'>
+							{onlyType || activeFilters ? (
+								<span>&#8212;</span>
+							) : (
+								displayType.label
+							)}
+						</div>
+					</div>
 				</div>
 
 				<div className='__accordion_toggle_button'>
@@ -247,27 +209,7 @@ const Filter = ({ index }) => {
 						className='__tab_panel'
 						activeClass='active-tab'
 						initialTabName='general'
-						tabs={[
-							{
-								name: 'general',
-								title: __('General', 'wc-ajax-product-filter'),
-							},
-							{
-								name: 'appearance',
-								title: __(
-									'Appearance',
-									'wc-ajax-product-filter'
-								),
-							},
-							{
-								name: 'options',
-								title: __('Options', 'wc-ajax-product-filter'),
-							},
-							{
-								name: 'advanced',
-								title: __('Advanced', 'wc-ajax-product-filter'),
-							},
-						]}
+						tabs={filterTabs}
 					>
 						{({ name }) => {
 							if ('general' === name) {

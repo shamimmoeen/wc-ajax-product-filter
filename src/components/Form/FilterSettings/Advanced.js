@@ -20,6 +20,7 @@ const Advanced = ({ index }) => {
 
 	const {
 		type,
+		component,
 		taxHierarchical,
 		display_type,
 		number_display_type,
@@ -38,6 +39,8 @@ const Advanced = ({ index }) => {
 		show_in_active_filters,
 		// visibility_rules,
 	} = filter;
+
+	const activeFilters = 'active-filters' === component;
 
 	const showTitleField = () => {
 		return (
@@ -112,6 +115,10 @@ const Advanced = ({ index }) => {
 	};
 
 	const isApplicable = (field = 'reduce-height') => {
+		if (activeFilters) {
+			return false;
+		}
+
 		if (
 			'taxonomy' === type &&
 			taxHierarchical &&
@@ -300,19 +307,24 @@ const Advanced = ({ index }) => {
 	};
 
 	const showInActiveFiltersField = () => {
-		return (
-			<Checkbox
-				id={'show_in_active_filters'}
-				index={index}
-				label={__('Show in Active Filters', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines if we show the selected options in active filters.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={show_in_active_filters}
-				onChange={handleCheckboxChange}
-			/>
-		);
+		if (!activeFilters) {
+			return (
+				<Checkbox
+					id={'show_in_active_filters'}
+					index={index}
+					label={__(
+						'Show in Active Filters',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Determines if we show the selected options in active filters.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={show_in_active_filters}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
 	};
 
 	// const visibilityRulesField = () => {
