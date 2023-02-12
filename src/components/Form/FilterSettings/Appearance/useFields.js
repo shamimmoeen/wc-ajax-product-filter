@@ -5,6 +5,7 @@ import Text from '../../../Field/Text';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
+import { tooltipCanBeEnabled } from '../../utils';
 
 const useFields = (type, index) => {
 	const { state, dispatch } = useForm();
@@ -31,7 +32,6 @@ const useFields = (type, index) => {
 		number_range_enable_multiple_filter,
 		date_display_type,
 		time_period_enable_multiple_filter,
-		value_type,
 	} = filter;
 
 	const enableMultipleFilterField = (id) => {
@@ -177,7 +177,6 @@ const useFields = (type, index) => {
 		let enabled = false;
 
 		if ('text' === type) {
-			// TODO: Remove this condition.
 			const excludedFilterTypes = ['sort-by', 'per-page'];
 
 			if (excludedFilterTypes.includes(filterType)) {
@@ -232,54 +231,10 @@ const useFields = (type, index) => {
 		}
 	};
 
-	const tooltipCanBeEnabled = () => {
-		let enabled = false;
-
-		const _displayTypes = ['select', 'multi-select', 'hierarchy-select'];
-
-		const _numberDisplayTypes = [
-			'range_slider',
-			'range_number',
-			'range_select',
-			'range_multiselect',
-		];
-
-		const _dateDisplayTypes = [
-			'input_date',
-			'input_date_range',
-			'time_period_select',
-			'time_period_multiselect',
-		];
-
-		if ('price' === filterType) {
-			if (!_numberDisplayTypes.includes(number_display_type)) {
-				enabled = true;
-			}
-		} else if ('post-meta' === filterType) {
-			if ('text' === value_type) {
-				if (!_displayTypes.includes(display_type)) {
-					enabled = true;
-				}
-			} else if ('number' === value_type) {
-				if (!_numberDisplayTypes.includes(number_display_type)) {
-					enabled = true;
-				}
-			} else if ('date' === value_type) {
-				if (!_dateDisplayTypes.includes(date_display_type)) {
-					enabled = true;
-				}
-			}
-		} else {
-			if (!_displayTypes.includes(display_type)) {
-				enabled = true;
-			}
-		}
-
-		return enabled;
-	};
+	const tooltipEnabled = tooltipCanBeEnabled(filter);
 
 	const enableTooltipField = () => {
-		if (tooltipCanBeEnabled()) {
+		if (tooltipEnabled) {
 			return (
 				<Checkbox
 					id={'enable_tooltip'}
@@ -297,7 +252,7 @@ const useFields = (type, index) => {
 	};
 
 	const tooltipPositionField = () => {
-		if (tooltipCanBeEnabled() && '1' === enable_tooltip) {
+		if (tooltipEnabled && '1' === enable_tooltip) {
 			return (
 				<ToggleGroup
 					id={'tooltip_position'}
@@ -333,7 +288,7 @@ const useFields = (type, index) => {
 	};
 
 	const showCountInTooltipField = () => {
-		if (tooltipCanBeEnabled() && '1' === enable_tooltip) {
+		if (tooltipEnabled && '1' === enable_tooltip) {
 			return (
 				<Checkbox
 					id={'show_count_in_tooltip'}

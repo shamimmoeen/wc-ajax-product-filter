@@ -299,13 +299,15 @@ class WCAPF_Admin {
 			} else {
 				$settings = $helper::get_settings();
 
-				$params['form_places']    = $utils::get_form_places();
-				$params['filter_types']   = $utils::get_filter_types();
-				$params['meta_keys']      = $helper::get_available_meta_keys();
-				$params['date_formats']   = $utils::display_date_formats();
-				$params['status_options'] = $utils::product_status_options();
-				$params['time_periods']   = $utils::time_period_options();
-				$params['user_roles']     = $user_roles;
+				$params['form_places']     = $utils::get_form_places();
+				$params['filter_types']    = $utils::get_filter_types();
+				$params['meta_keys']       = $helper::get_available_meta_keys();
+				$params['date_formats']    = $utils::display_date_formats();
+				$params['status_options']  = $utils::product_status_options();
+				$params['time_periods']    = $utils::time_period_options();
+				$params['sort_by_options'] = $utils::sort_by_options();
+				$params['meta_types']      = $utils::meta_type_options();
+				$params['user_roles']      = $user_roles;
 
 				$params['author_roles']            = isset( $settings['author_roles'] )
 					? $settings['author_roles'] : array();

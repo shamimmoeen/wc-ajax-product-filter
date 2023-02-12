@@ -242,7 +242,7 @@ class WCAPF_API {
 			$filter['include_user_roles'] = $parsed;
 		}
 
-		return $filter;
+		return apply_filters( 'wcapf_parse_filter_data', $filter );
 	}
 
 	/**
@@ -413,14 +413,7 @@ class WCAPF_API {
 				$filter['title']     = $filter_title;
 				$filter['field_key'] = $post_name;
 
-				/**
-				 * The hooks for altering the filter data.
-				 */
-				$sanitized = apply_filters(
-					'wcapf_sanitize_filter_data',
-					$this->sanitize_filter_data( $filter ),
-					$filter
-				);
+				$sanitized = $this->sanitize_filter_data( $filter );
 
 				$post_arr = array(
 					'ID'           => $new_filter_id,
@@ -620,6 +613,7 @@ class WCAPF_API {
 		$markup_fields = array( 'help_text' );
 
 		$sanitized_filter = array();
+		$filter_type      = isset( $filter['type'] ) ? $filter['type'] : '';
 
 		foreach ( $filter as $key => $value ) {
 			if ( in_array( $key, $float_fields ) ) {
@@ -656,6 +650,8 @@ class WCAPF_API {
 				$value = str_replace( ' ', '&nbsp;', $value );
 			} elseif ( in_array( $key, $markup_fields ) ) {
 				$value = wp_kses_data( $value );
+			} elseif ( 'product_status_options' === $key ) {
+				$value = WCAPF_API_Utils::sanitize_manual_options( $value, $filter_type );
 			} else {
 				$value = sanitize_text_field( $value );
 			}
@@ -663,7 +659,7 @@ class WCAPF_API {
 			$sanitized_filter[ $key ] = $value;
 		}
 
-		return $sanitized_filter;
+		return apply_filters( 'wcapf_sanitize_filter_data', $sanitized_filter, $filter );
 	}
 
 	public function get_form_preview() {

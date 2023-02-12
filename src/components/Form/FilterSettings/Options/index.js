@@ -7,6 +7,11 @@ import ValueTypeDate from './ValueTypeDate';
 import PostAuthorOptions from './PostAuthorOptions';
 import { useForm } from '../../FormContext';
 
+/**
+ * To place the popover outside the table element.
+ */
+import { Popover, SlotFillProvider } from '@wordpress/components';
+
 const Options = ({ index }) => {
 	const { state } = useForm();
 
@@ -29,7 +34,11 @@ const Options = ({ index }) => {
 			fields = <ValueTypeNumber index={index} />;
 		} else if ('rating' === filterType) {
 			fields = <RatingOptions index={index} />;
-		} else if ('product-status' === filterType) {
+		} else if (
+			'product-status' === filterType ||
+			'sort-by' === filterType ||
+			'per-page' === filterType
+		) {
 			fields = <ManualOptions index={index} />;
 		} else if ('post-meta' === filterType) {
 			if ('text' === value_type) {
@@ -46,7 +55,13 @@ const Options = ({ index }) => {
 		return fields;
 	};
 
-	return <>{renderFields()}</>;
+	return (
+		<SlotFillProvider>
+			{renderFields()}
+
+			<Popover.Slot name='popover-slot-for-options-table' />
+		</SlotFillProvider>
+	);
 };
 
 export default Options;

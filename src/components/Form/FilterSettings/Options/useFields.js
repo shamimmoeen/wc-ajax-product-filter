@@ -34,7 +34,7 @@ const useFields = (index) => {
 
 		if ('taxonomy' === filterType || 'post-meta' === filterType) {
 			description = __(
-				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatches, you need to manually enter the options.'
+				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatch, you need to manually enter the options.'
 			);
 		} else {
 			description = __(

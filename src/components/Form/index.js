@@ -8,7 +8,11 @@ import FormTabPanel from './FormTabPanel';
 import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
 import { defaultFormSettings } from '../utilsForForm';
-import { proFilterComponents, proFilterTypes } from './utils';
+import {
+	filterDefaultData,
+	proFilterComponents,
+	proFilterTypes,
+} from './utils';
 import { foundProVersion } from '../utils';
 
 const WCAPF_PRO = foundProVersion();
@@ -46,15 +50,20 @@ const Form = () => {
 				const proComponents = proFilterComponents();
 
 				for (let index = 0; index < _formFilters.length; index++) {
-					const formFilter = _formFilters[index];
+					const _formFilter = _formFilters[index];
 
 					const isPro =
-						proTypes.includes(formFilter['type']) ||
-						proComponents.includes(formFilter['component']);
+						proTypes.includes(_formFilter['type']) ||
+						proComponents.includes(_formFilter['component']);
 
 					if (!WCAPF_PRO && isPro) {
 						break;
 					}
+
+					const formFilter = {
+						...filterDefaultData(),
+						..._formFilter,
+					};
 
 					formFilters.push(formFilter);
 				}

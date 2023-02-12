@@ -245,13 +245,13 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 
 				const data = {
 					value: option.value,
-					label: option.label,
-					tooltip: option.label,
+					label: '',
+					tooltip: '',
 					color: '',
-					secondaryColorEnabled: '',
-					secondaryColor: '',
-					imageId: '',
-					imageUrl: '',
+					secondary_color_enabled: '',
+					secondary_color: '',
+					image_id: '',
+					image_url: '',
 				};
 
 				if ('taxonomy' === type) {

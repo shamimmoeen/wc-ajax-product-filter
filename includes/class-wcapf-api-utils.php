@@ -327,6 +327,9 @@ class WCAPF_API_Utils {
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public static function time_period_options() {
 		$_time_period_options = WCAPF_Helper::get_time_period_options();
 		$time_period_options  = array();
@@ -341,6 +344,42 @@ class WCAPF_API_Utils {
 		return $time_period_options;
 	}
 
+	/**
+	 * @return array
+	 */
+	public static function sort_by_options() {
+		$_sort_by_options = WCAPF_Helper::get_sort_by_options();
+		$sort_by_options  = array();
+
+		foreach ( $_sort_by_options as $sort_by_key => $sort_by_label ) {
+			$sort_by_options[] = array(
+				'label' => $sort_by_label,
+				'value' => $sort_by_key,
+			);
+		}
+
+		return $sort_by_options;
+	}
+
+	/**
+	 * Gets the meta types.
+	 *
+	 * @return array
+	 */
+	public static function meta_type_options() {
+		$_meta_type_options = WCAPF_Helper::get_meta_type_options();
+		$meta_type_options  = array();
+
+		foreach ( $_meta_type_options as $meta_type_key => $meta_type_label ) {
+			$meta_type_options[] = array(
+				'label' => $meta_type_label,
+				'value' => $meta_type_key,
+			);
+		}
+
+		return $meta_type_options;
+	}
+
 	public static function user_role_options() {
 		$_user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
 		$user_roles  = array();
@@ -353,6 +392,50 @@ class WCAPF_API_Utils {
 		}
 
 		return $user_roles;
+	}
+
+	/**
+	 * Sanitize the manual options coming from the react ui.
+	 *
+	 * @param array  $options The array to sanitize.
+	 * @param string $type    The filter type.
+	 *
+	 * @return array
+	 */
+	public static function sanitize_manual_options( $options, $type ) {
+		if ( ! is_array( $options ) ) {
+			return array();
+		}
+
+		$array   = array();
+		$allowed = apply_filters(
+			'wcapf_manual_option_allowed_keys',
+			array(
+				'value'   => 'sanitize_text_field',
+				'label'   => 'sanitize_text_field',
+				'tooltip' => 'wp_kses_data',
+			),
+			$type
+		);
+
+		foreach ( $options as $_option ) {
+			$option = array();
+
+			foreach ( $_option as $_key => $_value ) {
+				if ( ! array_key_exists( $_key, $allowed ) ) {
+					continue;
+				}
+
+				$callback = $allowed[ $_key ];
+				$value    = function_exists( $callback ) ? call_user_func( $callback, $_value ) : '';
+
+				$option[ $_key ] = $value;
+			}
+
+			$array[] = $option;
+		}
+
+		return $array;
 	}
 
 	/**

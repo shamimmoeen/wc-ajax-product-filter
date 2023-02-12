@@ -170,17 +170,17 @@ class WCAPF_Helper {
 		$options = array();
 
 		$ranges = array(
-			'today'        => __( 'Today', 'wc-ajax-product-filter-pro' ),
-			'yesterday'    => __( 'Yesterday', 'wc-ajax-product-filter-pro' ),
-			'this-week'    => __( 'This week', 'wc-ajax-product-filter-pro' ),
-			'last-week'    => __( 'Last week', 'wc-ajax-product-filter-pro' ),
-			'this-month'   => __( 'This month', 'wc-ajax-product-filter-pro' ),
-			'last-month'   => __( 'Last month', 'wc-ajax-product-filter-pro' ),
-			'last-14-days' => __( 'Last 14 days', 'wc-ajax-product-filter-pro' ),
-			'last-30-days' => __( 'Last 30 days', 'wc-ajax-product-filter-pro' ),
-			'last-90-days' => __( 'Last 90 days', 'wc-ajax-product-filter-pro' ),
-			'this-year'    => __( 'This year', 'wc-ajax-product-filter-pro' ),
-			'last-year'    => __( 'Last year', 'wc-ajax-product-filter-pro' ),
+			'today'        => __( 'Today', 'wc-ajax-product-filter' ),
+			'yesterday'    => __( 'Yesterday', 'wc-ajax-product-filter' ),
+			'this-week'    => __( 'This week', 'wc-ajax-product-filter' ),
+			'last-week'    => __( 'Last week', 'wc-ajax-product-filter' ),
+			'this-month'   => __( 'This month', 'wc-ajax-product-filter' ),
+			'last-month'   => __( 'Last month', 'wc-ajax-product-filter' ),
+			'last-14-days' => __( 'Last 14 days', 'wc-ajax-product-filter' ),
+			'last-30-days' => __( 'Last 30 days', 'wc-ajax-product-filter' ),
+			'last-90-days' => __( 'Last 90 days', 'wc-ajax-product-filter' ),
+			'this-year'    => __( 'This year', 'wc-ajax-product-filter' ),
+			'last-year'    => __( 'Last year', 'wc-ajax-product-filter' ),
 		);
 
 		$range_separator = WCAPF_Helper::range_values_separator();
@@ -310,6 +310,52 @@ class WCAPF_Helper {
 	 */
 	public static function range_values_separator() {
 		return '~';
+	}
+
+	/**
+	 * Gets the sort by options.
+	 *
+	 * @return array
+	 */
+	public static function get_sort_by_options() {
+		return apply_filters(
+			'wcapf_sort_by_options',
+			array(
+				'ID'             => __( 'Post ID', 'wc-ajax-product-filter' ),
+				'author'         => __( 'Author', 'wc-ajax-product-filter' ),
+				'title'          => __( 'Title', 'wc-ajax-product-filter' ),
+				'name'           => __( 'Name (Post Slug)', 'wc-ajax-product-filter' ),
+				'date'           => __( 'Date', 'wc-ajax-product-filter' ),
+				'modified'       => __( 'Modified', 'wc-ajax-product-filter' ),
+				'parent'         => __( 'Parent ID', 'wc-ajax-product-filter' ),
+				'rand'           => __( 'Random Order', 'wc-ajax-product-filter' ),
+				'review_count'   => __( 'Review Count', 'wc-ajax-product-filter' ),
+				'menu_order'     => __( 'Menu Order', 'wc-ajax-product-filter' ),
+				'total_sales'    => __( 'Total Sales', 'wc-ajax-product-filter' ),
+				'average_rating' => __( 'Average Rating', 'wc-ajax-product-filter' ),
+				'min_price'      => __( 'Min Price', 'wc-ajax-product-filter' ),
+				'max_price'      => __( 'Max Price', 'wc-ajax-product-filter' ),
+				'meta_value'     => __( 'Meta Value', 'wc-ajax-product-filter' ),
+			)
+		);
+	}
+
+	/**
+	 * Gets the meta type options.
+	 *
+	 * @return array
+	 */
+	public static function get_meta_type_options() {
+		return apply_filters(
+			'wcapf_meta_type_options',
+			array(
+				'alphabetic' => __( 'Alphabetic', 'wc-ajax-product-filter' ),
+				'numeric'    => __( 'Numeric', 'wc-ajax-product-filter' ),
+				'date'       => __( 'Date', 'wc-ajax-product-filter' ),
+				'datetime'   => __( 'DateTime', 'wc-ajax-product-filter' ),
+				'decimal'    => __( 'Decimal', 'wc-ajax-product-filter' ),
+			)
+		);
 	}
 
 	/**
