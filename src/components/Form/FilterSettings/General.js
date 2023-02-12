@@ -331,9 +331,8 @@ const General = ({ index }) => {
 			{'active-filters' === component && (
 				<div className='__form_control'>
 					<p>
-						<b>Note:</b> A shortcode{' '}
-						<code>[wcapf_active_filters]</code> is available to show
-						the active filters outside the form.
+						A shortcode <code>[wcapf_active_filters]</code> is
+						available to show the active filters outside the form.
 					</p>
 				</div>
 			)}
@@ -341,9 +340,8 @@ const General = ({ index }) => {
 			{'reset-button' === component && (
 				<div className='__form_control'>
 					<p>
-						<b>Note:</b> A shortcode{' '}
-						<code>[wcapf_reset_button]</code> is available to show
-						the reset button outside the form.
+						A shortcode <code>[wcapf_reset_button]</code> is
+						available to show the reset button outside the form.
 					</p>
 				</div>
 			)}
@@ -351,9 +349,8 @@ const General = ({ index }) => {
 			{'results-count' === component && (
 				<div className='__form_control'>
 					<p>
-						<b>Note:</b> A shortcode{' '}
-						<code>[wcapf_results_count]</code> is available to show
-						the results count outside the form.
+						A shortcode <code>[wcapf_results_count]</code> is
+						available to show the results count outside the form.
 					</p>
 				</div>
 			)}

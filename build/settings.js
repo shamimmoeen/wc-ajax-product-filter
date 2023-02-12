@@ -8330,12 +8330,14 @@ const DropdownColorPicker = _ref => {
   let {
     value,
     onChange,
-    disableAlpha
+    disableAlpha,
+    slotName
   } = _ref;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Dropdown, {
     position: "bottom right",
     popoverProps: {
-      noArrow: false
+      noArrow: false,
+      __unstableSlotName: slotName
     },
     renderToggle: _ref2 => {
       let {
@@ -8371,7 +8373,8 @@ const ColorInput = _ref3 => {
     description,
     isPro,
     disableAlpha = true,
-    renderAsFormField = false
+    renderAsFormField = false,
+    slotName
   } = _ref3;
 
   if (renderAsFormField) {
@@ -8388,7 +8391,8 @@ const ColorInput = _ref3 => {
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(DropdownColorPicker, {
       value: value,
       onChange: onChange,
-      disableAlpha: disableAlpha
+      disableAlpha: disableAlpha,
+      slotName: slotName
     })))), description && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "description",
       dangerouslySetInnerHTML: {
@@ -8398,7 +8402,8 @@ const ColorInput = _ref3 => {
   } else {
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(DropdownColorPicker, {
       value: value,
-      onChange: onChange
+      onChange: onChange,
+      slotName: slotName
     });
   }
 };

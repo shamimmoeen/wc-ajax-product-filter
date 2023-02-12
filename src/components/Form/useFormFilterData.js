@@ -71,7 +71,13 @@ const useFormFilterData = (state, dispatch) => {
 
 		const _formFilters = formFilters.map((filter, _index) => {
 			if (_index === index) {
-				return { ...filter, ...defaultData, ...many };
+				const filterData = { ...filter, ...defaultData, ...many };
+
+				if (['sort-by', 'per-page'].includes(primaryColumnValue)) {
+					filterData['display_type'] = 'radio';
+				}
+
+				return filterData;
 			}
 
 			return filter;
@@ -104,6 +110,8 @@ const useFormFilterData = (state, dispatch) => {
 			updateFilterType(index, type, value, {
 				[key]: type,
 				component: value,
+				type_error: '',
+				field_key_error_: '',
 			});
 
 			return;

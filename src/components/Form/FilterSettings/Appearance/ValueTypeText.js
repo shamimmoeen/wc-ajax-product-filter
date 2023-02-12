@@ -6,6 +6,7 @@ import useFields from './useFields';
 import {
 	hierarchicalDisplayTypes,
 	postMetaDisplayTypes,
+	sortByDisplayTypes,
 	taxonomyDisplayTypes,
 	textDisplayTypes,
 } from '../../utils';
@@ -51,6 +52,8 @@ const ValueTypeText = ({ index }) => {
 			options = taxonomyDisplayTypes(true, taxHierarchical);
 		} else if ('post-meta' === type && 'text' === value_type) {
 			options = postMetaDisplayTypes(true);
+		} else if ('sort-by' === type || 'per-page' === type) {
+			options = sortByDisplayTypes();
 		} else {
 			options = textDisplayTypes();
 		}

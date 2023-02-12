@@ -423,6 +423,10 @@ export function filterDefaultData() {
 		exclude_authors: [],
 		include_user_roles: [],
 		use_store_name: '',
+		// Sort By
+		sort_by_options: [],
+		// Per Page
+		per_page_options: [],
 		// Advanced Settings
 		show_title: '1',
 		enable_accordion: '',
@@ -451,6 +455,7 @@ export function filterTypeDependentFields() {
 		'meta_key',
 		'component',
 		'isACF',
+		'display_type',
 		// Taxonomy
 		'get_options',
 		'order_terms_by',
@@ -467,6 +472,8 @@ export function filterTypeDependentFields() {
 		'manual_options',
 		'number_manual_options',
 		'time_period_options',
+		'sort_by_options',
+		'per_page_options',
 		// Post Meta
 		'value_type',
 		'value_decimal',
@@ -474,19 +481,6 @@ export function filterTypeDependentFields() {
 		'options_order_by',
 		'options_order_dir',
 		'options_order_type',
-	];
-}
-
-export function filterTypeWithKeys() {
-	return [
-		'taxonomy',
-		'price',
-		'rating',
-		'product-status',
-		'post-author',
-		'post-meta',
-		'sort-by',
-		'per-page',
 	];
 }
 
@@ -799,6 +793,19 @@ export function allTextDisplayTypes() {
 	return mergeSelectOptions(textFreeDisplayTypes, textProDisplayTypes(true));
 }
 
+export function sortByDisplayTypes() {
+	return [
+		{
+			label: __('Radio', 'wc-ajax-product-filter'),
+			value: 'radio',
+		},
+		{
+			label: __('Select', 'wc-ajax-product-filter'),
+			value: 'select',
+		},
+	];
+}
+
 export function numberDisplayTypes(withPro = false) {
 	const freeOptions = [
 		{
@@ -911,6 +918,12 @@ export function getTableData(filterType, filterData) {
 			type = 'time-period-options';
 			optionsKey = 'time_period_options';
 		}
+	} else if ('sort-by' === filterType) {
+		type = 'sort-by-options';
+		optionsKey = 'sort_by_options';
+	} else if ('per-page' === filterType) {
+		type = 'per-page-options';
+		optionsKey = 'per_page_options';
 	} else if ('post-author' === filterType) {
 		type = 'post-author-options';
 		optionsKey = 'manual_options';
@@ -924,4 +937,76 @@ export function getTableData(filterType, filterData) {
 
 export function hierarchicalDisplayTypes() {
 	return ['checkbox', 'radio', 'select', 'multi-select'];
+}
+
+export function tooltipCanBeEnabled(filter) {
+	const {
+		type,
+		value_type,
+		display_type,
+		number_display_type,
+		date_display_type,
+	} = filter;
+
+	let enabled = false;
+
+	const _displayTypes = ['select', 'multi-select', 'hierarchy-select'];
+
+	const _numberDisplayTypes = [
+		'range_slider',
+		'range_number',
+		'range_select',
+		'range_multiselect',
+	];
+
+	const _dateDisplayTypes = [
+		'input_date',
+		'input_date_range',
+		'time_period_select',
+		'time_period_multiselect',
+	];
+
+	if ('price' === type) {
+		if (!_numberDisplayTypes.includes(number_display_type)) {
+			enabled = true;
+		}
+	} else if ('post-meta' === type) {
+		if ('text' === value_type) {
+			if (!_displayTypes.includes(display_type)) {
+				enabled = true;
+			}
+		} else if ('number' === value_type) {
+			if (!_numberDisplayTypes.includes(number_display_type)) {
+				enabled = true;
+			}
+		} else if ('date' === value_type) {
+			if (!_dateDisplayTypes.includes(date_display_type)) {
+				enabled = true;
+			}
+		}
+	} else {
+		if (!_displayTypes.includes(display_type)) {
+			enabled = true;
+		}
+	}
+
+	return enabled;
+}
+
+export function swatchCanBeEnabled(filter) {
+	const { type, value_type, display_type } = filter;
+
+	if ('taxonomy' === type) {
+		if ('color' === display_type || 'image' === display_type) {
+			return true;
+		}
+	} else if ('post-meta' === type) {
+		if ('text' === value_type) {
+			if ('color' === display_type || 'image' === display_type) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
