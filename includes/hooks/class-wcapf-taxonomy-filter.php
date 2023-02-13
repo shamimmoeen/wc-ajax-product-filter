@@ -294,7 +294,14 @@ class WCAPF_Taxonomy_Filter {
 			return array();
 		}
 
-		return wp_list_pluck( $terms, 'name', 'slug' );
+		$array  = wp_list_pluck( $terms, 'name', 'slug' );
+		$sorted = array();
+
+		foreach ( $array as $key => $value ) {
+			$sorted[ rawurldecode( $key ) ] = $value;
+		}
+
+		return $sorted;
 	}
 
 }
