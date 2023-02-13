@@ -144,14 +144,17 @@ class WCAPF_Walker {
 	public $enable_search_field;
 
 	/**
-	 * Should we try to reduce the filter height by setting a max height or enabling soft limit?
+	 * Determines if we activate the soft limit.
 	 *
 	 * @var string
 	 */
-	public $enable_reduce_height;
-
 	public $enable_soft_limit;
 
+	/**
+	 * Determines if we activate the max height.
+	 *
+	 * @var string
+	 */
 	public $enable_max_height;
 
 	/**
@@ -266,7 +269,6 @@ class WCAPF_Walker {
 			'show_count_in_tooltip'      => '',
 			'tooltip_position'           => '',
 			'enable_search_field'        => '',
-			'enable_reduce_height'       => '',
 			'enable_soft_limit'          => '',
 			'enable_max_height'          => '',
 			'soft_limit'                 => '',
@@ -320,13 +322,6 @@ class WCAPF_Walker {
 
 				break;
 		}
-
-		// TODO: Remove from production.
-		// if ( 'pa_color' === $field_instance->taxonomy ) {
-		// 	echo '<pre>';
-		// 	print_r( $items );
-		// 	echo '</pre>';
-		// }
 
 		return $items;
 	}
@@ -589,9 +584,8 @@ class WCAPF_Walker {
 		}
 
 		$item_id    = $item['id'];
-		$item_value = rawurlencode( $item['id'] );
 		$unique_id  = $filter_key . '-' . $this->filter_id . '-' . $item_id;
-		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
+		$filter_url = $this->url_builder->get_filter_url( $item_id, $item_active );
 
 		if ( 'checkbox' === $display_type || 'radio' === $display_type ) {
 			$input_type = $display_type;
@@ -602,7 +596,7 @@ class WCAPF_Walker {
 		$input_markup .= '<input type="' . esc_attr( $input_type ) . '"';
 		$input_markup .= ' id="' . esc_attr( $unique_id ) . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
-		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
+		$input_markup .= ' value="' . esc_attr( $item_id ) . '"';
 		$input_markup .= ' data-url="' . esc_url( $filter_url ) . '"';
 		$input_markup .= ' aria-invalid="false"';
 
@@ -927,9 +921,7 @@ class WCAPF_Walker {
 			$attrs .= ' selected="selected"';
 		}
 
-		$item_value = rawurlencode( $item['id'] );
-
-		$attrs .= ' value="' . esc_attr( $item_value ) . '"';
+		$attrs .= ' value="' . esc_attr( $item['id'] ) . '"';
 
 		if ( $this->hierarchical && $this->use_chosen ) {
 			$classes[] = 'depth-' . esc_attr( $item['depth'] ) . '"';

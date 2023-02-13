@@ -71,7 +71,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			$count     = $_term->count;
 			$parent_id = $_term->parent;
 			$name      = $_term->name;
-			$slug      = $_term->slug;
+			$slug      = rawurldecode( $_term->slug );
 
 			$_term = array(
 				'id'        => $term_id,
