@@ -52,6 +52,11 @@
 			cursor: var(--wcapf-empty-item-cursor);
 			opacity: var(--wcapf-empty-item-opacity);
 		}
+
+		&.current-tax-item,
+		&.active-as-ancestor {
+			cursor: var(--wcapf-current-tax-item-cursor);
+		}
 	}
 
 	&:focus {

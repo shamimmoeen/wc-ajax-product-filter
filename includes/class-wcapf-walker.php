@@ -23,11 +23,25 @@ class WCAPF_Walker {
 	public $display_type;
 
 	/**
+	 * Taxonomy.
+	 *
+	 * @var string
+	 */
+	public $taxonomy;
+
+	/**
 	 * Is Hierarchical.
 	 *
 	 * @var string
 	 */
 	public $hierarchical;
+
+	/**
+	 * Determines if we use term slug instead of id in the url.
+	 *
+	 * @var string
+	 */
+	public $use_term_slug;
 
 	/**
 	 * Enable Hierarchy Accordion.
@@ -214,13 +228,11 @@ class WCAPF_Walker {
 	private $active_ancestors;
 
 	/**
-	 * The term id for current taxonomy archive page.
+	 * The current queried object data.
 	 *
-	 * TODO: Show the term as checked for the current term page.
-	 *
-	 * @var int
+	 * @var array
 	 */
-	private $current_tax;
+	private $queried_object;
 
 	/**
 	 * @var WCAPF_URL_Builder
@@ -239,7 +251,7 @@ class WCAPF_Walker {
 		$this->active_filters   = $this->active_filters();
 		$this->active_items     = $this->active_items();
 		$this->active_ancestors = $this->active_ancestors();
-		$this->current_tax      = get_queried_object_id();
+		$this->queried_object   = $this->set_queried_object();
 		$this->url_builder      = new WCAPF_URL_Builder( $this->filter_key, $this->enable_multiple_filter );
 	}
 
@@ -251,7 +263,9 @@ class WCAPF_Walker {
 	private function set_properties( $field ) {
 		$default_properties = array(
 			'display_type'               => '',
+			'taxonomy'                   => '',
 			'hierarchical'               => '',
+			'use_term_slug'              => '',
 			'enable_hierarchy_accordion' => '',
 			'all_items_label'            => '',
 			'use_chosen'                 => '',
@@ -365,6 +379,31 @@ class WCAPF_Walker {
 		$active_filters = $this->active_filters;
 
 		return isset( $active_filters['active_ancestors'] ) ? $active_filters['active_ancestors'] : array();
+	}
+
+	/**
+	 * The queried object that will be used to disable the current term and parent terms.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array|null
+	 */
+	private function set_queried_object() {
+		if ( is_tax() ) {
+			$object = get_queried_object();
+
+			if ( 'taxonomy' === $this->filter_type && $this->taxonomy === $object->taxonomy ) {
+				$term_id   = $object->term_id;
+				$ancestors = get_ancestors( $term_id, $this->taxonomy );
+
+				return array(
+					'term_id'   => $term_id,
+					'ancestors' => $ancestors,
+				);
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -555,11 +594,45 @@ class WCAPF_Walker {
 	 * @return bool
 	 */
 	private function item_active_as_ancestor( $item ) {
-		if ( in_array( $item['id'], $this->active_ancestors ) ) {
+		$item_value = $this->item_value( $item );
+
+		if ( in_array( $item_value, $this->active_ancestors ) ) {
+			return true;
+		}
+
+		if ( $this->queried_object && in_array( $item['id'], $this->queried_object['ancestors'] ) ) {
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Gets the item value, either id or slug.
+	 *
+	 * @param array $item The item data.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function item_value( $item ) {
+		$item_id   = $item['id'];
+		$item_slug = isset( $item['slug'] ) ? $item['slug'] : '';
+
+		if ( 'taxonomy' !== $this->type ) {
+			return $item_id;
+		}
+
+		if ( ! $this->use_term_slug ) {
+			return $item_id;
+		}
+
+		if ( ! $item_slug ) {
+			return $item_id;
+		}
+
+		return $item_slug;
 	}
 
 	/**
@@ -572,20 +645,29 @@ class WCAPF_Walker {
 	 */
 	private function menu_item( $item, $has_children = false ) {
 		$html         = '';
-		$checked      = '';
+		$attrs        = '';
 		$input_markup = '';
 		$display_type = $this->display_type;
 		$filter_key   = $this->filter_key;
+		$item_id      = $item['id'];
+		$item_value   = $this->item_value( $item );
 		$item_active  = $this->item_active( $item );
 		$input_name   = $filter_key;
 
-		if ( $item_active ) {
-			$checked .= ' checked="checked"';
+		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
+
+		if ( $item_active || $item_active_as_current_query ) {
+			$attrs .= ' checked="checked"';
 		}
 
-		$item_id    = $item['id'];
-		$unique_id  = $filter_key . '-' . $this->filter_id . '-' . $item_id;
-		$filter_url = $this->url_builder->get_filter_url( $item_id, $item_active );
+		$item_active_as_ancestors = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
+
+		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
+			$attrs .= ' disabled="disabled"';
+		}
+
+		$unique_id  = $filter_key . '-' . $item_id . '-' . $this->filter_id;
+		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
 
 		if ( 'checkbox' === $display_type || 'radio' === $display_type ) {
 			$input_type = $display_type;
@@ -596,7 +678,7 @@ class WCAPF_Walker {
 		$input_markup .= '<input type="' . esc_attr( $input_type ) . '"';
 		$input_markup .= ' id="' . esc_attr( $unique_id ) . '"';
 		$input_markup .= ' name="' . esc_attr( $input_name ) . '"';
-		$input_markup .= ' value="' . esc_attr( $item_id ) . '"';
+		$input_markup .= ' value="' . esc_attr( $item_value ) . '"';
 		$input_markup .= ' data-url="' . esc_url( $filter_url ) . '"';
 		$input_markup .= ' aria-invalid="false"';
 
@@ -607,7 +689,7 @@ class WCAPF_Walker {
 		 */
 		$input_markup .= ' autocomplete="off"';
 
-		$input_markup .= $checked . '>';
+		$input_markup .= $attrs . '>';
 
 		// TODO: Maybe not the right place to implement the hook.
 		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
@@ -658,6 +740,14 @@ class WCAPF_Walker {
 			$item_classes .= ' empty-item';
 		}
 
+		if ( $item_active_as_current_query ) {
+			$item_classes .= ' current-tax-item';
+		}
+
+		if ( $item_active_as_ancestors ) {
+			$item_classes .= ' active-as-ancestor';
+		}
+
 		$html .= '<div class="' . esc_attr( $item_classes ) . '">';
 		$html .= '<label for="' . esc_attr( $unique_id ) . '"' . $tooltip_data . '>';
 		$html .= $input_markup;
@@ -682,9 +772,10 @@ class WCAPF_Walker {
 	 */
 	private function item_active( $item ) {
 		$active_items = $this->active_items;
+		$item_value   = $this->item_value( $item );
 
 		if ( $active_items ) {
-			if ( in_array( strval( $item['id'] ), $active_items, true ) ) {
+			if ( in_array( $item_value, $active_items ) ) {
 				return true;
 			}
 		} else {
@@ -911,24 +1002,42 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	private function dropdown_item( $item ) {
+		$item_id     = $item['id'];
+		$item_value  = $this->item_value( $item );
 		$item_active = $this->item_active( $item );
 
 		$option  = '';
 		$attrs   = '';
 		$classes = array();
 
-		if ( $item_active ) {
+		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
+
+		if ( $item_active || $item_active_as_current_query ) {
 			$attrs .= ' selected="selected"';
 		}
 
-		$attrs .= ' value="' . esc_attr( $item['id'] ) . '"';
+		$item_active_as_ancestors = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
 
-		if ( $this->hierarchical && $this->use_chosen ) {
-			$classes[] = 'depth-' . esc_attr( $item['depth'] ) . '"';
+		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
+			$attrs .= ' disabled="disabled"';
+		}
+
+		$attrs .= ' value="' . esc_attr( $item_value ) . '"';
+
+		if ( $this->hierarchical ) {
+			$classes[] = 'depth-' . $item['depth'];
 		}
 
 		if ( 0 == $item['count'] ) {
 			$classes[] = 'empty-item';
+		}
+
+		if ( $item_active_as_current_query ) {
+			$classes[] = 'current-tax-item';
+		}
+
+		if ( $item_active_as_ancestors ) {
+			$classes[] = 'active-as-ancestor';
 		}
 
 		if ( $classes ) {

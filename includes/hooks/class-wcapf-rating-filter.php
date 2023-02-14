@@ -135,24 +135,23 @@ class WCAPF_Rating_Filter {
 			return $filter_data;
 		}
 
-		$display_type = $field_instance->display_type;
-		$filter_data  = array();
+		$use_star_icons = apply_filters( 'wcapf_use_star_icons_in_rating_filters_data', false );
+		$rating_data    = array();
 
 		foreach ( $ratings as $rating ) {
 			$rating = absint( $rating );
 
-			if ( 'select' === $display_type || 'multiselect' === $display_type ) {
-				$filter_data[ $rating ] = WCAPF_Helper::get_rating_entities( $rating );
+			if ( $use_star_icons ) {
+				$rating_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
 			} else {
-				// $filter_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
-				$filter_data[ $rating ] = sprintf(
+				$rating_data[ $rating ] = sprintf(
 					_n( '%d star', '%d stars', $rating, 'wc-ajax-product-filter' ),
 					$rating
 				);
 			}
 		}
 
-		return $filter_data;
+		return $rating_data;
 	}
 
 	/**
@@ -208,31 +207,6 @@ class WCAPF_Rating_Filter {
 	 *
 	 * @return string
 	 */
-	public function set_rating_dropdown_item_name( $inner, $item, $walker ) {
-		if ( 'rating' !== $walker->type ) {
-			return $inner;
-		}
-
-		if ( 'automatically' !== $walker->get_options ) {
-			return $inner;
-		}
-
-		$rating = absint( $item['id'] );
-
-		if ( ! $rating ) {
-			return $inner;
-		}
-
-		return WCAPF_Helper::get_rating_entities( $rating );
-	}
-
-	/**
-	 * @param string       $inner  Tree/Menu item inner content.
-	 * @param array        $item   The item array.
-	 * @param WCAPF_Walker $walker The walker.
-	 *
-	 * @return string
-	 */
 	public function set_rating_item_name( $inner, $item, $walker ) {
 		if ( 'rating' !== $walker->type ) {
 			return $inner;
@@ -249,6 +223,31 @@ class WCAPF_Rating_Filter {
 		}
 
 		return WCAPF_Helper::get_rating_svg_icons( $rating );
+	}
+
+	/**
+	 * @param string       $inner  Tree/Menu item inner content.
+	 * @param array        $item   The item array.
+	 * @param WCAPF_Walker $walker The walker.
+	 *
+	 * @return string
+	 */
+	public function set_rating_dropdown_item_name( $inner, $item, $walker ) {
+		if ( 'rating' !== $walker->type ) {
+			return $inner;
+		}
+
+		if ( 'automatically' !== $walker->get_options ) {
+			return $inner;
+		}
+
+		$rating = absint( $item['id'] );
+
+		if ( ! $rating ) {
+			return $inner;
+		}
+
+		return WCAPF_Helper::get_rating_entities( $rating );
 	}
 
 }

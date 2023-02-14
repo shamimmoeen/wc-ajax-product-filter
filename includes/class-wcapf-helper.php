@@ -867,6 +867,19 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Gets the star icon color.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function get_star_icon_color() {
+		$settings = self::get_settings();
+
+		return isset( $settings['star_icon_color'] ) ? $settings['star_icon_color'] : 'rgb(240, 201, 48)';
+	}
+
+	/**
 	 * Determines if we keep the filter accordion as opened when the filter is active.
 	 *
 	 * @since 4.0.0
