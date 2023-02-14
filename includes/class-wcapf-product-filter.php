@@ -230,28 +230,27 @@ class WCAPF_Product_Filter {
 		$form_filters = array();
 
 		$wcapf_settings = WCAPF_Helper::get_settings();
-		$update_count   = '';
+		$update_count   = ! empty( $wcapf_settings['update_count'] );
 
-		if ( isset( $wcapf_settings['update_count'] ) && $wcapf_settings['update_count'] ) {
-			$update_count = '1';
-		}
+		$empty_options = apply_filters( 'wcapf_remove_empty_options', array( 'show', 'remove' ) );
+		$remove_empty  = isset( $wcapf_settings['remove_empty'] ) ? $wcapf_settings['remove_empty'] : '';
 
-		$remove_empty_options = apply_filters( 'wcapf_remove_empty_options', array( 'show', 'remove' ) );
-		$remove_empty         = isset( $wcapf_settings['remove_empty'] ) ? $wcapf_settings['remove_empty'] : 'show';
-
-		if ( ! in_array( $remove_empty, $remove_empty_options ) ) {
+		if ( ! in_array( $remove_empty, $empty_options ) ) {
 			$remove_empty = 'show';
 		}
 
-		$show_clear_btn = isset( $form_settings['show_clear_btn'] ) && $form_settings['show_clear_btn'];
+		// TODO: Move to pro.
+		$show_clear_btn   = ! empty( $form_settings['show_clear_btn'] );
+		$child_terms_only = ! empty( $wcapf_settings['child_terms_only'] );
 
 		foreach ( $filters as $filter ) {
 			$settings = maybe_unserialize( $filter->post_content );
 
-			$settings['update_count']   = $update_count;
-			$settings['hide_empty']     = $remove_empty;
-			$settings['form_id']        = $form_id;
-			$settings['show_clear_btn'] = $show_clear_btn;
+			$settings['update_count']     = $update_count;
+			$settings['hide_empty']       = $remove_empty;
+			$settings['form_id']          = $form_id;
+			$settings['show_clear_btn']   = $show_clear_btn;
+			$settings['child_terms_only'] = $child_terms_only;
 
 			$form_filters[] = array(
 				'id'       => $filter->ID,
@@ -830,11 +829,7 @@ class WCAPF_Product_Filter {
 	private function set_default_sorting_data( $chosen ) {
 		$settings = WCAPF_Helper::get_settings();
 
-		$enable_in_active_filters = isset( $settings['show_sorting_data_in_active_filters'] )
-			? $settings['show_sorting_data_in_active_filters']
-			: '';
-
-		if ( ! $enable_in_active_filters ) {
+		if ( empty( $settings['sorting_data_in_active_filters'] ) ) {
 			return $chosen;
 		}
 

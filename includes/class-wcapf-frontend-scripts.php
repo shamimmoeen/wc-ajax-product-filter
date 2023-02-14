@@ -91,10 +91,12 @@ class WCAPF_Frontend_Scripts {
 		// Add css variables.
 		list( $r, $g, $b ) = WCAPF_Helper::get_primary_color();
 		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_primary_text_color();
+		$star_icon_color = WCAPF_Helper::get_star_icon_color();
 
 		$variables = ":root {
 			--wcapf-primary-color-rgb: $r, $g, $b;
 			--wcapf-primary-text-color-rgb: $r2, $g2, $b2;
+			--wcapf-star-icon-color: $star_icon_color;
 		}";
 
 		wp_add_inline_style( 'wc-ajax-product-filter-public-styles', $variables );

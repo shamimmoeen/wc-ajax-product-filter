@@ -420,8 +420,8 @@ $chosen-search: var(--wcapf-search-icon);
 
 		// TODO: Check the disabled state.
 		&.search-choice-disabled {
-			padding-right: 5px;
-			border: 1px solid #ccc;
+			padding-right: .375em;
+			border: var(--wcapf-chosen-search-choice-border-size) solid #ccc;
 			background-color: #e4e4e4;
 			color: #666;
 		}
@@ -561,6 +561,10 @@ $chosen-search: var(--wcapf-search-icon);
 				right: auto;
 				left: 0.1875em; // 3px
 			}
+		}
+
+		&.search-choice-disabled {
+			padding-left: .375em;
 		}
 	}
 

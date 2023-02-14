@@ -95,6 +95,18 @@
 					}
 				}
 			}
+
+			&.current-tax-item,
+			&.active-as-ancestor {
+				label {
+					cursor: var(--wcapf-current-tax-item-cursor);
+
+					input[type="checkbox"],
+					input[type="radio"] {
+						cursor: var(--wcapf-current-tax-item-cursor);
+					}
+				}
+			}
 		}
 	}
 
@@ -172,6 +184,13 @@
 				label {
 					cursor: var(--wcapf-empty-item-cursor);
 					opacity: var(--wcapf-empty-item-opacity);
+				}
+			}
+
+			&.current-tax-item,
+			&.active-as-ancestor {
+				label {
+					cursor: var(--wcapf-current-tax-item-cursor);
 				}
 			}
 		}
