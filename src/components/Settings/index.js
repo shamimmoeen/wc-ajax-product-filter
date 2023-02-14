@@ -115,6 +115,7 @@ const Settings = () => {
 		return omit(merged, [
 			'remove_empty_filters',
 			'replace_sorting_options',
+			'child_terms_only',
 			'sort_by_form',
 			'slide_out_panel_position',
 			'loading_image',
