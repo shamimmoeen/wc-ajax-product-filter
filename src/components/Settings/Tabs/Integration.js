@@ -34,6 +34,7 @@ const Integration = () => {
 			replace_sorting_options,
 			sort_by_form,
 			use_term_slug,
+			child_terms_only,
 		},
 	} = state;
 
@@ -132,6 +133,18 @@ const Integration = () => {
 				)}
 				isChecked={use_term_slug}
 				onChange={handleCheckboxChange}
+			/>
+
+			<Checkbox
+				id={'child_terms_only'}
+				label={__('Child terms only', 'wc-ajax-product-filter')}
+				description={__(
+					'Whether to show only the child terms when viewing a term archive page.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={child_terms_only}
+				onChange={handleCheckboxChange}
+				isPro
 			/>
 		</>
 	);
