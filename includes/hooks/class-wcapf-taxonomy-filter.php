@@ -43,11 +43,10 @@ class WCAPF_Taxonomy_Filter {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_filter( 'wcapf_get_terms_args', array( $this, 'limit_taxonomy_terms' ), 10, 2 );
-		add_filter( 'wcapf_get_terms_args', array( $this, 'sort_taxonomy_terms' ), 15, 2 );
+		add_filter( 'wcapf_get_terms_args', array( $this, 'limit_taxonomy_terms' ), 15, 2 );
+		add_filter( 'wcapf_get_terms_args', array( $this, 'sort_taxonomy_terms' ), 20, 2 );
 
-		add_filter( 'wcapf_taxonomy_terms', array( $this, 'adjust_parent_term_id' ), 10, 2 );
-		add_filter( 'wcapf_taxonomy_terms', array( $this, 'replace_term_id_with_slug' ), 20, 2 );
+		add_filter( 'wcapf_taxonomy_terms', array( $this, 'adjust_parent_term_id' ), 15, 2 );
 
 		add_filter( 'wcapf_taxonomy_filter_values', array( $this, 'term_ids_from_term_slugs' ), 10, 2 );
 		add_filter( 'wcapf_ancestors_of_active_terms', array( $this, 'set_ancestors_of_active_terms' ), 10, 2 );
@@ -172,32 +171,6 @@ class WCAPF_Taxonomy_Filter {
 		}
 
 		return $terms;
-	}
-
-	/**
-	 * @param array                $terms          The taxonomy terms.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	public function replace_term_id_with_slug( $terms, $field_instance ) {
-		if ( ! $field_instance->use_term_slug ) {
-			return $terms;
-		}
-
-		if ( 'rating' === $field_instance->type ) {
-			return $terms;
-		}
-
-		$new_terms = array();
-
-		foreach ( $terms as $term_id => $term ) {
-			$term['id'] = $term['slug'];
-
-			$new_terms[ $term_id ] = $term;
-		}
-
-		return $new_terms;
 	}
 
 	/**
