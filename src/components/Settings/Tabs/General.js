@@ -96,7 +96,7 @@ const General = () => {
 				id={'remove_empty_filters'}
 				label={__('Hide empty filters', 'wc-ajax-product-filter')}
 				description={__(
-					"Whether to hide the filters that don't have any options(or min & max value is equal for number range filters).",
+					"Whether to hide the filters that don't have any options.",
 					'wc-ajax-product-filter'
 				)}
 				isChecked={remove_empty_filters}
