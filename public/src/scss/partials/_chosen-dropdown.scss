@@ -34,6 +34,12 @@
 					opacity: var(--wcapf-empty-item-opacity);
 				}
 
+				li.current-tax-item,
+				li.active-as-ancestor {
+					opacity: 1;
+					color: var(--wcapf-primary-color);
+				}
+
 				li {
 					.wcapf-count {
 						opacity: var(--wcapf-filter-count-opacity);

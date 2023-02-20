@@ -107,6 +107,13 @@ class WCAPF_Walker {
 	public $type;
 
 	/**
+	 * Hide empty.
+	 *
+	 * @var string
+	 */
+	public $hide_empty;
+
+	/**
 	 * Filter id.
 	 *
 	 * @var string
@@ -276,6 +283,7 @@ class WCAPF_Walker {
 			'filter_key'                 => '',
 			'filter_type'                => '',
 			'type'                       => '',
+			'hide_empty'                 => '',
 			'filter_id'                  => '',
 			'get_options'                => '',
 			'custom_appearance_options'  => array(),
@@ -448,6 +456,7 @@ class WCAPF_Walker {
 
 			if ( in_array( $display_type, $native_list_types ) ) {
 				$wrapper_classes[] = 'list-type-native';
+				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				// Stylish checkbox and radio.
 				if ( WCAPF_Helper::use_stylish_checkbox_radio() ) {
@@ -663,6 +672,10 @@ class WCAPF_Walker {
 		$item_active_as_ancestors = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
 
 		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
+			$attrs .= ' disabled="disabled"';
+
+			$input_name .= '-disabled';
+		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] ) {
 			$attrs .= ' disabled="disabled"';
 		}
 
@@ -1010,15 +1023,16 @@ class WCAPF_Walker {
 		$attrs   = '';
 		$classes = array();
 
-		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
-
-		if ( $item_active || $item_active_as_current_query ) {
+		if ( $item_active ) {
 			$attrs .= ' selected="selected"';
 		}
 
-		$item_active_as_ancestors = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
+		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
+		$item_active_as_ancestors     = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
 
 		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
+			$attrs .= ' disabled="disabled"';
+		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] ) {
 			$attrs .= ' disabled="disabled"';
 		}
 

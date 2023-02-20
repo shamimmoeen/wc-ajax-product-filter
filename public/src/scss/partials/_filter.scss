@@ -193,6 +193,23 @@
 					cursor: var(--wcapf-current-tax-item-cursor);
 				}
 			}
+
+			&.current-tax-item {
+				input[type="checkbox"],
+				input[type="radio"] {
+					&:checked ~ .wcapf-filter-item-label {
+						background-color: var(--wcapf-disabled-label-bg-color);
+						border-color: var(--wcapf-labeled-nav-border-color);
+						color: inherit;
+					}
+				}
+			}
+
+			&.active-as-ancestor {
+				.wcapf-filter-item-label {
+					background-color: var(--wcapf-disabled-label-bg-color);
+				}
+			}
 		}
 	}
 }
