@@ -4,7 +4,8 @@
 
 	--wcapf-stylish-checkbox-radio-size: 18px;
 	--wcapf-stylish-checkbox-radio-bg-color: #fff;
-	--wcapf-stylish-checkbox-radio-disabled-bg-color: #eee;
+	--wcapf-stylish-checkbox-radio-disabled-bg-color: #f4f4f0;
+	--wcapf-stylish-checkbox-radio-disabled-text-color: #ccc;
 	--wcapf-stylish-checkbox-radio-primary-color: var(--wcapf-primary-color);
 	--wcapf-stylish-checkbox-radio-primary-text-color: var(--wcapf-primary-text-color);
 	--wcapf-stylish-checkbox-radio-border-color: var(--wcapf-dropdown-border-color);
@@ -48,8 +49,11 @@
 		border-radius: 50%;
 	}
 
-	input:where([type="checkbox"], [type="radio"]):disabled {
-		background: var(--wcapf-stylish-checkbox-radio-disabled-bg-color);
+	input[type="checkbox"],
+	input[type="radio"] {
+		&:disabled {
+			background: var(--wcapf-stylish-checkbox-radio-disabled-bg-color);
+		}
 	}
 
 	input[type="checkbox"]:checked {
@@ -84,6 +88,29 @@
 			top: 50%;
 			position: absolute;
 			transform: translate(-50%, -50%);
+		}
+	}
+
+	@mixin active-taxonomy {
+		background-color: var(--wcapf-stylish-checkbox-radio-disabled-bg-color); // #d1d1d1; // #eee
+		border-color: var(--wcapf-stylish-checkbox-radio-border-color);
+	}
+
+	.current-tax-item {
+		input[type="checkbox"]:checked {
+			@include active-taxonomy;
+
+			&::before {
+				border-color: var(--wcapf-stylish-checkbox-radio-disabled-text-color); // #ededed; // #ccc
+			}
+		}
+
+		input[type="radio"]:checked {
+			@include active-taxonomy;
+
+			&::before {
+				background-color: var(--wcapf-stylish-checkbox-radio-disabled-text-color);
+			}
 		}
 	}
 }

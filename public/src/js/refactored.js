@@ -592,7 +592,8 @@
 				// https://stackoverflow.com/a/5839924
 				$( this )
 					.closest( customRadioSelector )
-					.find( '[type="checkbox"]' ).not( this )
+					.find( '.wcapf-filter-item:not(.current-tax-item):not(.active-as-ancestor) [type="checkbox"]' )
+					.not( this )
 					.prop( 'checked', false );
 
 				WCAPF.requestFilter( $( this ).data( 'url' ) );
@@ -713,6 +714,7 @@
 				no_results_text: wcapf_params.chosen_no_results_text,
 				options_none_text: wcapf_params.chosen_options_none_text,
 				search_contains: true, // Match from anywhere in string.
+				search_in_values: true, // Search in values also.
 			};
 
 			if ( wcapf_params.is_rtl ) {
