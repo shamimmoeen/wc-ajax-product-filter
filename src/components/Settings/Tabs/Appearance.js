@@ -241,7 +241,7 @@ const Appearance = () => {
 			<ColorInput
 				label={__('Star Icon Color', 'wc-ajax-product-filter')}
 				description={__(
-					'Set the star icon color for the rating filter. Default is #fda256.',
+					'Set the star icon color for the rating filter(not applicable for display type: select, multiselect). Default is #fda256.',
 					'wc-ajax-product-filter'
 				)}
 				value={star_icon_color}
