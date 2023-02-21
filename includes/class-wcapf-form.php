@@ -45,22 +45,6 @@ class WCAPF_Form {
 
 		do_action( 'wcapf_before_form_filters', $this->form_id() );
 
-		if ( $this->get_property( 'show_active_filters' ) ) {
-			$show_clear_btn       = $this->get_property( 'show_clear_btn' );
-			$active_filters_label = __( 'Active Filters', 'wc-ajax-product-filters' );
-			$clear_btn_label      = __( 'Clear All', 'wc-ajax-product-filters' );
-
-			WCAPF_Template_Loader::get_instance()->load(
-				'active-filters',
-				array(
-					'location'            => 'inside-form',
-					'title'               => $active_filters_label,
-					'show_clear_btn'      => $show_clear_btn,
-					'clear_all_btn_label' => $clear_btn_label,
-				)
-			);
-		}
-
 		if ( $this->get_fields() ) {
 			foreach ( $this->get_fields() as $field ) {
 				$field_instance = new WCAPF_Field_Instance( $field['settings'] );
@@ -70,7 +54,32 @@ class WCAPF_Form {
 					continue;
 				}
 
-				if ( 'price' === $field_type ) {
+				if ( 'component' === $field_type ) {
+					$component = $field_instance->get_sub_field_value( 'component' );
+
+					if ( 'active-filters' === $component ) {
+						$show_clear_btn       = $this->get_property( 'show_clear_btn' );
+						$active_filters_label = __( 'Active Filters', 'wc-ajax-product-filters' );
+						$clear_btn_label      = __( 'Clear All', 'wc-ajax-product-filters' );
+
+						WCAPF_Template_Loader::get_instance()->load(
+							'active-filters',
+							array(
+								'location'            => 'inside-form',
+								'title'               => $active_filters_label,
+								'show_clear_btn'      => $show_clear_btn,
+								'clear_all_btn_label' => $clear_btn_label,
+							)
+						);
+					} elseif ( 'reset-button' === $component ) {
+						$reset_btn_label = __( 'Reset', 'wc-ajax-product-filters' );
+
+						WCAPF_Template_Loader::get_instance()->load(
+							'reset-button',
+							array( 'btn_label' => $reset_btn_label )
+						);
+					}
+				} elseif ( 'price' === $field_type ) {
 					$this->render_price_filter( $field_instance );
 				} else {
 					$walker = new WCAPF_Walker( $field_instance );
@@ -80,15 +89,6 @@ class WCAPF_Form {
 					$this->after_filter();
 				}
 			}
-		}
-
-		if ( $this->get_property( 'show_reset_button' ) ) {
-			$reset_btn_label = __( 'Reset', 'wc-ajax-product-filters' );
-
-			WCAPF_Template_Loader::get_instance()->load(
-				'reset-button',
-				array( 'btn_label' => $reset_btn_label )
-			);
 		}
 
 		do_action( 'wcapf_after_form_filters', $this->form_id() );
@@ -110,12 +110,12 @@ class WCAPF_Form {
 		return isset( $this->form['form_id'] ) ? $this->form['form_id'] : '';
 	}
 
-	private function get_property( $property ) {
-		return isset( $this->form['settings'][ $property ] ) ? $this->form['settings'][ $property ] : '';
-	}
-
 	private function get_fields() {
 		return isset( $this->form['filters'] ) ? $this->form['filters'] : array();
+	}
+
+	private function get_property( $property ) {
+		return isset( $this->form['settings'][ $property ] ) ? $this->form['settings'][ $property ] : '';
 	}
 
 	/**
