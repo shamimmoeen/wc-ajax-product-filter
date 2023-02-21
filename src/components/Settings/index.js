@@ -124,7 +124,6 @@ const Settings = () => {
 			'loading_text_size',
 			'loading_text_color',
 			'loading_overlay_color',
-			'disable_filter_selection',
 			'scroll_on',
 			'disable_scroll_animation',
 			'more_selectors',

@@ -24,12 +24,12 @@ for (let index = 1; index <= 11; index++) {
 
 const labelSizes = [
 	{
-		label: __('Fluid', 'wc-ajax-product-filter'),
-		value: 'fluid',
-	},
-	{
 		label: __('Fixed', 'wc-ajax-product-filter'),
 		value: 'fixed',
+	},
+	{
+		label: __('Fluid', 'wc-ajax-product-filter'),
+		value: 'fluid',
 	},
 ];
 

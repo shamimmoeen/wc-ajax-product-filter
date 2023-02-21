@@ -113,7 +113,6 @@ const LoaderScrollTo = () => {
 			loading_text_size,
 			loading_text_color,
 			loading_overlay_color,
-			disable_filter_selection,
 			wait_cursor,
 			scroll_to_top_offset,
 			scroll_window,
@@ -314,22 +313,6 @@ const LoaderScrollTo = () => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={wait_cursor}
-					onChange={handleCheckboxChange}
-				/>
-			)}
-
-			{WCAPF_PRO && 'none' === loading_animation && (
-				<Checkbox
-					id={'disable_filter_selection'}
-					label={__(
-						'Disable filter selection',
-						'wc-ajax-product-filter'
-					)}
-					description={__(
-						'Enable this to disable filter selection while the results are fetching.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={disable_filter_selection}
 					onChange={handleCheckboxChange}
 				/>
 			)}
