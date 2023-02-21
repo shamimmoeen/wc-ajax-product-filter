@@ -72,13 +72,6 @@ class WCAPF_Walker {
 	public $enable_multiple_filter;
 
 	/**
-	 * Query type.
-	 *
-	 * @var string
-	 */
-	public $query_type;
-
-	/**
 	 * Show count.
 	 *
 	 * @var string
@@ -278,7 +271,6 @@ class WCAPF_Walker {
 			'use_chosen'                 => '',
 			'no_results_message'         => '',
 			'enable_multiple_filter'     => '',
-			'query_type'                 => '',
 			'show_count'                 => '',
 			'filter_key'                 => '',
 			'filter_type'                => '',
@@ -398,11 +390,12 @@ class WCAPF_Walker {
 	 */
 	private function set_queried_object() {
 		if ( is_tax() ) {
-			$object = get_queried_object();
+			$object   = get_queried_object();
+			$taxonomy = $this->taxonomy;
 
-			if ( 'taxonomy' === $this->filter_type && $this->taxonomy === $object->taxonomy ) {
+			if ( 'taxonomy' === $this->filter_type && $taxonomy === $object->taxonomy ) {
 				$term_id   = $object->term_id;
-				$ancestors = get_ancestors( $term_id, $this->taxonomy );
+				$ancestors = get_ancestors( $term_id, $taxonomy );
 
 				return array(
 					'term_id'   => $term_id,
