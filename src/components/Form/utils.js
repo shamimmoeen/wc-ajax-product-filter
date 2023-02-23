@@ -170,16 +170,10 @@ export function getFilterTabs(filter) {
 		},
 	];
 
-	const { type, component } = filter;
+	const { type } = filter;
 
 	if ('component' === type) {
-		if ('active-filters' === component) {
-			const allowed = ['general', 'advanced'];
-
-			return availableTabs.filter(({ name }) => allowed.includes(name));
-		} else {
-			return availableTabs.filter(({ name }) => 'general' === name);
-		}
+		return availableTabs.filter(({ name }) => 'general' === name);
 	}
 
 	return availableTabs;
@@ -439,6 +433,10 @@ export function filterDefaultData() {
 		max_height: '200',
 		show_in_active_filters: '1',
 		visibility_rules: [],
+		// Active filters
+		empty_filter_message: '',
+		// Reset Button
+		show_if_empty: '',
 		// Error
 		type_error: '',
 		meta_key_error: '',
