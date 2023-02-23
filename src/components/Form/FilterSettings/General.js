@@ -51,6 +51,9 @@ const General = ({ index }) => {
 		field_key,
 		field_key_error,
 		field_key_error_,
+		show_title,
+		empty_filter_message,
+		show_if_empty,
 	} = filter;
 
 	let typeDisabledInfo;
@@ -329,21 +332,65 @@ const General = ({ index }) => {
 			)}
 
 			{'active-filters' === component && (
-				<div className='__form_control'>
-					<p>
-						A shortcode <code>[wcapf_active_filters]</code> is
-						available to show the active filters outside the form.
-					</p>
-				</div>
+				<>
+					<Checkbox
+						id={'show_title'}
+						index={index}
+						label={__('Show title', 'wc-ajax-product-filter')}
+						description={__(
+							'Enable this to show the title before the active filters.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={show_title}
+						onChange={handleCheckboxChange}
+					/>
+
+					<Text
+						id={'empty_filter_message'}
+						index={index}
+						label={__(
+							'No filter applied message',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Show a message when no filter is applied. Leave it empty to not show any message.',
+							'wc-ajax-product-filter'
+						)}
+						value={empty_filter_message}
+						onChange={handleTextFieldChange}
+					/>
+
+					<div className='__form_control'>
+						<p>
+							A shortcode <code>[wcapf_active_filters]</code> is
+							available to show the active filters outside the
+							form.
+						</p>
+					</div>
+				</>
 			)}
 
 			{'reset-button' === component && (
-				<div className='__form_control'>
-					<p>
-						A shortcode <code>[wcapf_reset_button]</code> is
-						available to show the reset button outside the form.
-					</p>
-				</div>
+				<>
+					<Checkbox
+						id={'show_if_empty'}
+						index={index}
+						label={__('Always show', 'wc-ajax-product-filter')}
+						description={__(
+							'Enable this to show the reset button as disabled when no filter is applied.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={show_if_empty}
+						onChange={handleCheckboxChange}
+					/>
+
+					<div className='__form_control'>
+						<p>
+							A shortcode <code>[wcapf_reset_button]</code> is
+							available to show the reset button outside the form.
+						</p>
+					</div>
+				</>
 			)}
 
 			{'results-count' === component && (
