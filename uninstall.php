@@ -28,5 +28,5 @@ global $wpdb;
 delete_option( $option_key );
 
 // Delete posts + data.
-$wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type = 'wcapf-filter';" );
+$wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type IN ('wcapf-form', 'wcapf-filter');" );
 $wpdb->query( "DELETE meta FROM $wpdb->postmeta meta LEFT JOIN $wpdb->posts posts ON posts.ID = meta.post_id WHERE posts.ID IS NULL;" );

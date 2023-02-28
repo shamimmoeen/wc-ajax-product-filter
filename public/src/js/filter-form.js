@@ -14,7 +14,6 @@ const wcapf_params = wcapf_params || {
 	'chosen_no_results_text': '',
 	'chosen_options_none_text': '',
 	'search_box_in_default_orderby': '',
-	'chosen_lib_search_threshold': '', // todo
 	'preserve_hierarchy_accordion_state': '',
 	'preserve_soft_limit_state': '',
 	'enable_animation_for_filter_accordion': '',
@@ -29,7 +28,11 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top_easing': '',
 	'immediate_scroll_on_paginate': '',
 	'is_mobile': '',
+	'reload_on_back': '',
+	'filter_found': '',
+	'update_document_title': '',
 	'use_tippyjs': '',
+	'for_preview': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'enable_pagination_via_ajax': '',
@@ -43,8 +46,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_window_custom_element': '',
 	'scroll_to_top_offset': '',
 	'disable_scroll_animation': '',
-	'update_document_title': '',
-	'for_preview': '',
+	'more_selectors': '',
 };
 
 jQuery( document ).ready( function( $ ) {

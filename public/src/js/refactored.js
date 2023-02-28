@@ -127,6 +127,7 @@
 
 				const softLimitEnabled = $filter.hasClass( 'has-soft-limit' );
 				const softLimitToggle  = $filter.find( '.wcapf-soft-limit-wrapper' );
+				const noResults        = $filter.find( '.wcapf-no-results-text' );
 				const visibleOptions   = parseInt( $filter.attr( 'data-visible-options' ) );
 
 				const keyword = $that.val();
@@ -154,6 +155,9 @@
 						softLimitToggle.removeAttr( 'style' );
 					}
 
+					noResults.children( 'span' ).text( '' );
+					noResults.hide();
+
 					return;
 				}
 
@@ -165,11 +169,11 @@
 					const label       = $filterItem.find( '.wcapf-filter-item-label' ).data( 'label' );
 
 					if ( label.toLowerCase().includes( keyword.toLowerCase() ) ) {
+						index++;
+
 						$filterItem.addClass( 'keyword-matched' );
 
 						if ( softLimitEnabled ) {
-							index++;
-
 							if ( index > visibleOptions ) {
 								$filterItem.addClass( 'wcapf-filter-option-hidden' );
 							} else {
@@ -184,7 +188,17 @@
 				if ( softLimitEnabled ) {
 					if ( index <= visibleOptions ) {
 						softLimitToggle.hide();
+					} else {
+						softLimitToggle.show();
 					}
+				}
+
+				if ( 0 === index ) {
+					noResults.children( 'span' ).text( keyword );
+					noResults.show();
+				} else {
+					noResults.children( 'span' ).text( '' );
+					noResults.hide();
 				}
 			} );
 		},
@@ -619,7 +633,16 @@
 		handlePagination: function() {
 			if ( wcapf_params.enable_pagination_via_ajax && wcapf_params.pagination_container ) {
 				const $container = $( wcapf_params.shop_loop_container );
-				const selector   = wcapf_params.pagination_container + ' a';
+				const _selectors = wcapf_params.pagination_container.split( ',' );
+				const selectors  = [];
+
+				_selectors.forEach( selector => {
+					if ( selector ) {
+						selectors.push( selector + ' a' );
+					}
+				} );
+
+				const selector = selectors.join( ',' );
 
 				if ( $container.length ) {
 					$container.on( 'click', selector, function( e ) {
@@ -659,12 +682,6 @@
 				return false;
 			} );
 		},
-		handleResetFilters: function() {
-			$body.on( 'click', '.wcapf-reset-filters-btn', function() {
-				console.log( 'reset all filters' );
-			} );
-		},
-		// TODO: Move to pro
 		handleClearFilter: function() {
 			$body.on( 'click', '.wcapf-filter-clear-btn', function( e ) {
 				e.stopPropagation();
@@ -735,6 +752,11 @@
 				if ( $this.hasClass( 'with-count' ) ) {
 					options[ 'templateResult' ]    = templateResult;
 					options[ 'templateSelection' ] = templateSelection;
+				}
+
+				// Disable search box.
+				if ( ! $this.data( 'enable-search' ) ) {
+					options[ 'disable_search' ] = true;
 				}
 
 				$this.chosenWCAPF( options );
@@ -898,19 +920,27 @@
 			WCAPF.initCombobox();
 			WCAPF.initRangeSlider();
 			WCAPF.initFilterOptionTooltip();
+		},
+		initPopState: function() {
+			if ( wcapf_params.reload_on_back && wcapf_params.filter_found ) {
+				history.replaceState( { wcapf: true }, '', window.location );
+
+				// Handle the popstate event(browser's back/forward)
+				window.addEventListener( 'popstate', function( e ) {
+					if ( null !== e.state && e.state.hasOwnProperty( 'wcapf' ) ) {
+						WCAPF.filterProducts( 'popstate' );
+					}
+				} );
+			}
 		}
 	};
 
-	// Handle the popstate event(browser's back/forward)
-	window.addEventListener( 'popstate', function( e ) {
-		if ( null !== e.state && e.state.hasOwnProperty( 'wcapf' ) ) {
-			WCAPF.filterProducts( 'popstate' );
-		}
-	} );
-
-	// @source https://stackoverflow.com/a/33004917
+	/**
+	 * Enable it if necessary.
+	 *
+	 * @source https://stackoverflow.com/a/33004917
+	 */
 	if ( 'scrollRestoration' in history ) {
-		// TODO: Maybe use conditionally.
 		// history.scrollRestoration = 'manual';
 	}
 
@@ -919,6 +949,7 @@
 ( function( $, WCAPF ) {
 
 	WCAPF.init();
+	WCAPF.initPopState();
 
 	WCAPF.handleFilterAccordion();
 	WCAPF.handleHierarchyToggle();
@@ -931,7 +962,6 @@
 	WCAPF.handlePagination();
 	WCAPF.handleDefaultOrderby();
 
-	WCAPF.handleResetFilters();
 	WCAPF.handleClearFilter();
 
 	WCAPF.handleFilterTooltip();

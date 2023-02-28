@@ -184,6 +184,10 @@ class WCAPF_Product_Filter_Utils {
 			$primary_column = 'ID';
 		}
 
+		$meta_query_sql = array( 'join' => '', 'where' => '' );
+		$tax_query_sql  = array( 'join' => '', 'where' => '' );
+		$search_query   = '';
+
 		if ( is_shop() || is_product_taxonomy() ) {
 			$tax_query    = WC_Query::get_main_tax_query();
 			$meta_query   = WC_Query::get_main_meta_query();
@@ -194,9 +198,21 @@ class WCAPF_Product_Filter_Utils {
 			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
 			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
 		} else {
-			$meta_query_sql = array( 'join' => '', 'where' => '' );
-			$tax_query_sql  = array( 'join' => '', 'where' => '' );
-			$search_query   = '';
+			global $wcapf_query;
+
+			if ( $wcapf_query ) {
+				$tax_query  = isset( $wcapf_query->tax_query, $wcapf_query->tax_query->queries )
+					? $wcapf_query->tax_query->queries
+					: array();
+				$meta_query = isset( $wcapf_query->query_vars['meta_query'] )
+					? $wcapf_query->query_vars['meta_query']
+					: array();
+
+				$meta_query     = new WP_Meta_Query( $meta_query );
+				$tax_query      = new WP_Tax_Query( $tax_query );
+				$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
+				$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
+			}
 		}
 
 		return array( $meta_query_sql, $tax_query_sql, $search_query );
@@ -564,30 +580,6 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * Checks if filter is active.
-	 *
-	 * @param string $filter_key The filter key.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function is_filter_active( $filter_key ) {
-		$filter_active = false;
-
-		// Fields with filter key.
-		if ( $filter_key ) {
-			$active_filters_data = WCAPF_Helper::get_active_filters_data();
-
-			if ( array_key_exists( $filter_key, $active_filters_data ) ) {
-				$filter_active = true;
-			}
-		}
-
-		return $filter_active;
-	}
-
-	/**
 	 * Adjust the parent term id for hierarchy terms.
 	 *
 	 * @param WCAPF_Field_Instance $field_instance
@@ -620,6 +612,59 @@ class WCAPF_Product_Filter_Utils {
 		}
 
 		return $modified;
+	}
+
+	/**
+	 * Prepare the form filters and return them to be used on the frontend.
+	 *
+	 * @param WP_Post $form The form.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_form_filters( $form ) {
+		$form_data     = array();
+		$form_id       = $form->ID;
+		$form_settings = maybe_unserialize( $form->post_content );
+
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+				'post_parent' => $form_id,
+				'nopaging'    => true,
+				'orderby'     => 'menu_order',
+				'order'       => 'ASC',
+			)
+		);
+
+		$form_data['form_id']    = $form_id;
+		$form_data['form_title'] = $form->post_title;
+		$form_data['settings']   = $form_settings;
+
+		$form_filters = array();
+		$filter_data  = apply_filters( 'wcapf_form_filter_data', array(), $form_data );
+
+		foreach ( $filters as $filter ) {
+			$settings = maybe_unserialize( $filter->post_content );
+
+			$settings['form_id'] = $form_id;
+
+			$settings = wp_parse_args( $filter_data, $settings );
+
+			$form_filters[] = array(
+				'id'       => $filter->ID,
+				'title'    => $filter->post_title,
+				'key'      => $filter->post_name,
+				'type'     => $filter->post_excerpt,
+				'settings' => $settings,
+			);
+		}
+
+		$form_data['filters'] = $form_filters;
+
+		return $form_data;
 	}
 
 }

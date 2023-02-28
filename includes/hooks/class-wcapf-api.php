@@ -290,6 +290,7 @@ class WCAPF_API {
 			'ID'           => $form_id,
 			'post_title'   => $form_title,
 			'post_content' => maybe_serialize( $sanitized_form_settings ),
+			'menu_order'   => isset( $form_settings['priority'] ) ? $form_settings['priority'] : 0,
 		);
 
 		$new_form_id = wp_update_post( $post_arr, true );
@@ -384,6 +385,10 @@ class WCAPF_API {
 					} else {
 						$filter_title = $filter_type_data['label'];
 					}
+				}
+
+				if ( 'component' === $type && 'active-filters' === $component && ! $filter_title ) {
+					$filter_title = __( 'Active Filters', 'wc-ajax-product-filter' );
 				}
 
 				$post_arr = array( 'post_title' => $filter_title );

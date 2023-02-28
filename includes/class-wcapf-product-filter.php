@@ -144,19 +144,33 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function filters_data( $query ) {
-		global $wcapf_form, $wcapf_filter_keys;
+		$assigned = $this->get_relevant_form();
 
-		$filter_keys = WCAPF_API_Utils::get_filter_keys( true );
-		$filter_keys = wp_list_pluck( $filter_keys, 'field_key' );
-
-		$wcapf_filter_keys = $filter_keys;
-
-		$form = $this->get_relevant_form();
-
-		if ( ! $form ) {
+		if ( ! $assigned ) {
 			return array();
 		}
 
+		$settings = WCAPF_Helper::get_settings();
+
+		if ( ! empty( $settings['disable_wcapf'] ) ) {
+			return array();
+		}
+
+		$global_keys = WCAPF_API_Utils::get_filter_keys( true );
+		$global_keys = wp_list_pluck( $global_keys, 'field_key' );
+
+		$settings['filter_keys'] = $global_keys;
+
+		if ( is_shop() ) {
+			$settings['base_url'] = get_permalink( wc_get_page_id( 'shop' ) );
+		} else {
+			$settings['base_url'] = get_term_link( get_queried_object_id() );
+		}
+
+		global $wcapf, $wcapf_form;
+
+		$wcapf      = $settings;
+		$form       = WCAPF_Product_Filter_Utils::get_form_filters( $assigned );
 		$wcapf_form = $form;
 
 		$filters_data = array();
@@ -182,7 +196,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return array
+	 * @return array|int|WP_Post
 	 */
 	private function get_relevant_form() {
 		$form_data = array();
@@ -200,70 +214,7 @@ class WCAPF_Product_Filter {
 			return $form_data;
 		}
 
-		$form          = $forms[0];
-		$form_id       = $form->ID;
-		$form_settings = maybe_unserialize( $form->post_content );
-		$base_url      = '';
-
-		if ( is_shop() ) {
-			$base_url = get_permalink( wc_get_page_id( 'shop' ) );
-		} elseif ( is_product_taxonomy() ) {
-			$base_url = get_term_link( get_queried_object_id() );
-		}
-
-		$filters = get_posts(
-			array(
-				'post_type'   => 'wcapf-filter',
-				'post_status' => 'publish',
-				'post_parent' => $form_id,
-				'nopaging'    => true,
-				'orderby'     => 'menu_order',
-				'order'       => 'ASC',
-			)
-		);
-
-		$form_data['base_url']   = $base_url;
-		$form_data['form_id']    = $form_id;
-		$form_data['form_title'] = $form->post_title;
-		$form_data['settings']   = $form_settings;
-
-		$form_filters = array();
-
-		$wcapf_settings = WCAPF_Helper::get_settings();
-		$update_count   = ! empty( $wcapf_settings['update_count'] );
-
-		$empty_options = apply_filters( 'wcapf_remove_empty_options', array( 'show', 'remove' ) );
-		$remove_empty  = isset( $wcapf_settings['remove_empty'] ) ? $wcapf_settings['remove_empty'] : '';
-
-		if ( ! in_array( $remove_empty, $empty_options ) ) {
-			$remove_empty = 'show';
-		}
-
-		// TODO: Move to pro.
-		$show_clear_btn   = ! empty( $form_settings['show_clear_btn'] );
-		$child_terms_only = ! empty( $wcapf_settings['child_terms_only'] );
-
-		foreach ( $filters as $filter ) {
-			$settings = maybe_unserialize( $filter->post_content );
-
-			$settings['update_count']     = $update_count;
-			$settings['hide_empty']       = $remove_empty;
-			$settings['form_id']          = $form_id;
-			$settings['show_clear_btn']   = $show_clear_btn;
-			$settings['child_terms_only'] = $child_terms_only;
-
-			$form_filters[] = array(
-				'id'       => $filter->ID,
-				'title'    => $filter->post_title,
-				'key'      => $filter->post_name,
-				'type'     => $filter->post_excerpt,
-				'settings' => $settings,
-			);
-		}
-
-		$form_data['filters'] = $form_filters;
-
-		return $form_data;
+		return $forms[0];
 	}
 
 	/**
@@ -872,6 +823,8 @@ class WCAPF_Product_Filter {
 /**
  * @param array    $args     The query clauses.
  * @param WP_Query $wp_query Query instance.
+ *
+ * @return array The modified query clauses.
  */
 function wcapf_posts_clauses( $args, $wp_query ) {
 	if ( ! $wp_query->is_main_query() ) {

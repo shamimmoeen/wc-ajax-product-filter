@@ -11,10 +11,11 @@
 /**
  * @var string $location             Determines where we are showing the active filters. Available options are:
  *                                   inside-form, before-products.
+ * @var string $show_title           Determines if we show the title.
  * @var string $title                The title.
  * @var string $show_clear_btn       Whether to show the clear filter button in heading or not.
  * @var string $clear_all_btn_label  The clear all button label.
- * @var string $empty_filter_message No filter applied message.
+ * @var string $empty_message        No filter applied message.
  */
 
 $location = isset( $location ) ? $location : 'inside-form';
@@ -22,12 +23,12 @@ $title    = isset( $title ) ? $title : '';
 
 $helper = new WCAPF_Helper;
 
-$all_filters = $helper::get_active_filters_data( true );
+$all_filters = $helper::get_active_filters_data();
 $total       = count( $all_filters );
 
-$clear_all_btn_label  = isset( $clear_all_btn_label ) ? $clear_all_btn_label : '';
-$show_clear_btn       = isset( $show_clear_btn ) ? $show_clear_btn : '';
-$empty_filter_message = isset( $empty_filter_message ) ? $empty_filter_message : '';
+$clear_all_btn_label = isset( $clear_all_btn_label ) ? $clear_all_btn_label : '';
+$show_clear_btn      = isset( $show_clear_btn ) && $show_clear_btn;
+$empty_message       = isset( $empty_message ) ? $empty_message : '';
 
 $unique_id = wp_unique_id( 'af-' );
 $classes   = array( 'wcapf-active-filters', 'wcapf-active-filters-' . $unique_id );
@@ -37,19 +38,33 @@ $reset_btn_class = 'wcapf-reset-filters-btn';
 
 $continue = true;
 
-if ( ! $all_filters && ! $empty_filter_message ) {
+if ( ! $all_filters && ! $empty_message ) {
 	$continue = false;
+}
+
+if ( ! $title ) {
+	$show_title = false;
+}
+
+if ( ! $show_title ) {
+	$show_clear_btn = false;
+}
+
+$inner_classes = array( 'wcapf-filter' );
+
+if ( $show_clear_btn && $all_filters ) {
+	$inner_classes[] = 'filter-active';
 }
 ?>
 
 <div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" data-id="<?php echo esc_attr( $unique_id ); ?>">
 	<?php if ( $continue ): ?>
-		<div class="wcapf-filter">
+		<div class="<?php echo esc_attr( implode( ' ', $inner_classes ) ); ?>">
 			<?php
 			WCAPF_Template_Loader::get_instance()->load(
 				'filter-title',
 				array(
-					'show_title'     => (bool) $title,
+					'show_title'     => $show_title,
 					'filter_title'   => $title,
 					'title_for'      => 'active-filters',
 					'show_clear_btn' => $show_clear_btn,
@@ -85,8 +100,8 @@ if ( ! $all_filters && ! $empty_filter_message ) {
 						</div>
 					<?php endif; ?>
 
-					<?php if ( ! $all_filters && $empty_filter_message ) : ?>
-						<div class="empty-filter-message"><?php echo esc_html( $empty_filter_message ); ?></div>
+					<?php if ( ! $all_filters && $empty_message ) : ?>
+						<div class="empty-filter-message"><?php echo esc_html( $empty_message ); ?></div>
 					<?php endif; ?>
 
 					<?php

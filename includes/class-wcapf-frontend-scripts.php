@@ -49,13 +49,23 @@ class WCAPF_Frontend_Scripts {
 	/**
 	 * Loads the frontend scripts.
 	 *
-	 * TODO: Conditionally load the scripts.
-	 *
 	 * @param bool $for_preview Determines if the scripts should be loaded for preview purposes.
 	 *
 	 * @return void
 	 */
 	public static function load_frontend_scripts( $for_preview = false ) {
+		global $wcapf;
+
+		if ( ! $for_preview && ! empty( $wcapf['disable_wcapf'] ) ) {
+			return;
+		}
+
+		$load_scripts = apply_filters( 'wcapf_load_scripts_conditionally', false );
+
+		if ( true === $load_scripts && ! $for_preview && ! $wcapf ) {
+			return;
+		}
+
 		wp_enqueue_style(
 			'wcapf-icons',
 			WCAPF_PLUGIN_URL . 'public/icons/icons.css',
@@ -89,9 +99,12 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		// Add css variables.
-		list( $r, $g, $b ) = WCAPF_Helper::get_primary_color();
-		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_primary_text_color();
-		$star_icon_color = WCAPF_Helper::get_star_icon_color();
+		$primary_color      = isset( $wcapf['primary_color'] ) ? $wcapf['primary_color'] : '#345DBB';
+		$primary_text_color = isset( $wcapf['primary_text_color'] ) ? $wcapf['primary_text_color'] : '#ffffff';
+		$star_icon_color    = isset( $wcapf['star_icon_color'] ) ? $wcapf['star_icon_color'] : 'rgb(240, 201, 48)';
+
+		list( $r, $g, $b ) = WCAPF_Helper::get_rgb_from_hex( $primary_color );
+		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
 
 		$variables = ":root {
 			--wcapf-primary-color-rgb: $r, $g, $b;
@@ -186,20 +199,50 @@ class WCAPF_Frontend_Scripts {
 	 * @return array
 	 */
 	private static function get_js_params( $for_preview ) {
-		$settings = WCAPF_Helper::get_settings();
+		global $wcapf, $wcapf_form;
+
+		$js_data = array(
+			'enable_pagination_via_ajax',
+			'pagination_container',
+			'sorting_control',
+			'attach_chosen_on_sorting',
+			'loading_animation',
+			'scroll_window',
+			'scroll_window_for',
+			'scroll_window_when',
+			'scroll_window_custom_element',
+			'scroll_to_top_offset',
+			'disable_scroll_animation',
+		);
+
+		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
+
+		$settings = array(
+			'shop_loop_container' => $shop_loop_identifier,
+			'not_found_container' => $shop_loop_identifier,
+		);
+
+		foreach ( $js_data as $key ) {
+			$settings[ $key ] = isset( $wcapf[ $key ] ) ? $wcapf[ $key ] : '';
+		}
 
 		// Prevent attaching combobox on default orderby if combobox is disabled globally.
-		if ( isset( $settings['use_chosen'] ) && ! $settings['use_chosen'] ) {
+		if ( empty( $settings['use_chosen'] ) ) {
 			$settings['attach_chosen_on_sorting'] = '';
 		}
+
+		$chosen_no_results_text   = WCAPF_Helper::no_results_text();
+		$chosen_options_none_text = ! empty( $wcapf['chosen_no_options_text'] )
+			? $wcapf['chosen_no_options_text']
+			: __( 'No options to choose', 'wc-ajax-product-filter' );
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => 800, // In milliseconds.
 			'chosen_display_selected_options'          => false,
-			'chosen_no_results_text'                   => __( 'No results for:', 'wc-ajax-product-filter' ),
-			'chosen_options_none_text'                 => __( 'No options to choose', 'wc-ajax-product-filter' ),
-			'chosen_lib_search_threshold'              => 10,
+			'chosen_no_results_text'                   => $chosen_no_results_text,
+			'chosen_options_none_text'                 => $chosen_options_none_text,
+			'search_box_in_default_orderby'            => true,
 			'preserve_hierarchy_accordion_state'       => true,
 			'preserve_soft_limit_state'                => true,
 			'enable_animation_for_filter_accordion'    => false,
@@ -214,16 +257,14 @@ class WCAPF_Frontend_Scripts {
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
+			'reload_on_back'                           => true,
+			'filter_found'                             => (bool) $wcapf_form,
 			'update_document_title'                    => true,
 			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
 			'for_preview'                              => $for_preview,
 		);
 
 		$params = array_merge( $params, $settings );
-
-		// TODO: Selectively set the params from settings.
-		$params['shop_loop_container'] = '.wcapf-before-products';
-		$params['not_found_container'] = '.wcapf-before-products';
 
 		return apply_filters( 'wcapf_js_params', $params );
 	}
@@ -256,7 +297,7 @@ class WCAPF_Frontend_Scripts {
 				}
 			}
 
-			$image_size = $loading_image_size ? $loading_image_size . 'px' : '120px';
+			$image_size = $loading_image_size ? $loading_image_size . 'px' : '60px';
 
 			$loading_overlay_options = array(
 				'image'           => $image_src,

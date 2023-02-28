@@ -126,6 +126,15 @@
 	}
 }
 
+.wcapf-label-size-fixed {
+	--wcapf-labeled-nav-border-radius: 6px;
+	--wcapf-active-filter-item-border-radius: 6px;
+	--wcapf-labeled-nav-hr-padding: 10px;
+	--wcapf-active-filter-item-hr-padding: 10px;
+	--wcapf-labeled-nav-vr-padding: 3px;
+	--wcapf-active-filter-item-vr-padding: 3px;
+}
+
 .wcapf-filter .wcapf-list-wrapper.display-type-label {
 	ul.wcapf-filter-options {
 		margin-bottom: calc(var(--wcapf-labeled-nav-margin) * -1);
@@ -172,12 +181,6 @@
 					outline: 2px solid var(--wcapf-primary-color);
 					outline-offset: 2px;
 				}
-
-				&:checked ~ .wcapf-filter-item-label {
-					background-color: var(--wcapf-primary-color);
-					border-color: var(--wcapf-primary-color);
-					color: var(--wcapf-primary-text-color);
-				}
 			}
 
 			&.empty-item {
@@ -208,6 +211,38 @@
 			&.active-as-ancestor {
 				.wcapf-filter-item-label {
 					background-color: var(--wcapf-disabled-label-bg-color);
+				}
+			}
+		}
+	}
+
+	&.style-primary {
+		li.wcapf-filter-option {
+			.wcapf-filter-item {
+				&:not(.current-tax-item) {
+					input[type="checkbox"],
+					input[type="radio"] {
+						&:checked ~ .wcapf-filter-item-label {
+							background-color: var(--wcapf-primary-color);
+							border-color: var(--wcapf-primary-color);
+							color: var(--wcapf-primary-text-color);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.style-grey {
+		li.wcapf-filter-option {
+			.wcapf-filter-item {
+				&:not(.current-tax-item) {
+					input[type="checkbox"],
+					input[type="radio"] {
+						&:checked ~ .wcapf-filter-item-label {
+							background-color: var(--wcapf-active-label-grey-style-bg-color);
+						}
+					}
 				}
 			}
 		}

@@ -105,11 +105,74 @@ const Text = ({
 								/>
 							)}
 
+							{'search_field_default_placeholder' === id && (
+								<TippyTooltip
+									content={
+										<>
+											Applicable when the search box is
+											enabled in the list view. This will
+											be overridden by the placeholder
+											value of the filter itself.
+											<br />
+											<br />
+											Default is "Search"
+										</>
+									}
+								/>
+							)}
+
+							{'no_results_text' === id && (
+								<TippyTooltip
+									content={
+										<>
+											Applicable when the search box is
+											enabled in the list view and
+											combobox enabled in the dropdown
+											view.
+											<br />
+											<br />
+											Default is "No results for:", for a
+											keyword "purple" the text will be
+											"No results for: <u>purple</u>"
+										</>
+									}
+								/>
+							)}
+
+							{'chosen_no_options_text' === id && (
+								<TippyTooltip
+									content={
+										<>
+											Applicable when combobox is enabled
+											in the dropdown(multiselect) view
+											and all options have been chosen.
+											<br />
+											<br />
+											Default is "No options to choose"
+										</>
+									}
+								/>
+							)}
+
+							{'empty_filter_text' === id && (
+								<TippyTooltip
+									content={
+										<>
+											Applicable when there is no options
+											to filter by or the filter is empty.
+											<br />
+											<br />
+											Default is "N/A"
+										</>
+									}
+								/>
+							)}
+
 							{'results_count_markup' === id && (
 								<TippyTooltip
 									content={
 										<>
-											Example: Found %d product|Found %d
+											Default: Found %d product|Found %d
 											products
 											<br />
 											<br />

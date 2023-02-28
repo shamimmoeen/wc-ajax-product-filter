@@ -15,38 +15,65 @@
  */
 class WCAPF_URL_Builder {
 
+	/**
+	 * Registered filter keys.
+	 *
+	 * @var array
+	 */
 	private $filter_keys;
 
+	/**
+	 * The filter key that for building the URL.
+	 *
+	 * @var string
+	 */
 	private $filter_key;
 
 	/**
-	 * @var bool|mixed
+	 * Determines if the URL should allow multiple values for the filter key.
+	 *
+	 * @var bool
 	 */
 	private $enable_multiple;
 
+	/**
+	 * The base URL.
+	 *
+	 * @var string
+	 */
 	private $base_url;
 
-	private $query_vars;
-
-	public function __construct( $filter_key, $enable_multiple = false ) {
-		global $wcapf_filter_keys;
-
-		$this->filter_keys     = $wcapf_filter_keys;
-		$this->filter_key      = $filter_key;
-		$this->enable_multiple = $enable_multiple;
-		$this->base_url        = $this->base_url();
-		$this->query_vars      = $this->set_query();
-	}
+	/**
+	 * The keys that will be excluded from the url parameters.
+	 *
+	 * @var array
+	 */
+	private $excluded_keys;
 
 	/**
-	 * Returns the base url.
+	 * The query variables.
 	 *
-	 * @return string
+	 * @var array
 	 */
-	private function base_url() {
-		global $wcapf_form;
+	private $query_vars;
 
-		return $wcapf_form['base_url'];
+	public function __construct( $filter_key = '', $enable_multiple = false ) {
+		global $wcapf;
+
+		$this->filter_keys     = isset( $wcapf['filter_keys'] ) ? $wcapf['filter_keys'] : array();
+		$this->filter_key      = $filter_key;
+		$this->enable_multiple = $enable_multiple;
+		$this->base_url        = isset( $wcapf['base_url'] ) ? $wcapf['base_url'] : '';
+
+		$keys_to_exclude = isset( $wcapf['keys_to_exclude'] ) ? $wcapf['keys_to_exclude'] : '';
+
+		if ( $keys_to_exclude ) {
+			$this->excluded_keys = explode( ',', $keys_to_exclude );
+		} else {
+			$this->excluded_keys = array();
+		}
+
+		$this->query_vars = $this->set_query();
 	}
 
 	/**
@@ -57,8 +84,13 @@ class WCAPF_URL_Builder {
 	private function set_query() {
 		$vars = $_GET;
 
+		if ( $this->excluded_keys ) {
+			// @source https://stackoverflow.com/a/28836669
+			$vars = array_diff_key( $vars, array_flip( $this->excluded_keys ) );
+		}
+
 		// We need to preserve the order of active filter key.
-		if ( ! isset( $vars[ $this->filter_key ] ) ) {
+		if ( $this->filter_key && ! isset( $vars[ $this->filter_key ] ) ) {
 			$vars[ $this->filter_key ] = array();
 		}
 
@@ -162,12 +194,34 @@ class WCAPF_URL_Builder {
 	}
 
 	/**
+	 * URL for clearing the current filter only.
+	 *
 	 * @return string
 	 */
 	public function get_clear_filter_url() {
 		$vars = $this->query_vars;
 
 		unset( $vars[ $this->filter_key ] );
+
+		return add_query_arg( $vars, $this->base_url );
+	}
+
+	/**
+	 * Reset filters url.
+	 *
+	 * @return string
+	 */
+	public function get_reset_url() {
+		$vars = $this->query_vars;
+
+		$active_filters = WCAPF_Helper::get_active_filters_data();
+		$filter_keys    = wp_list_pluck( $active_filters, 'filter_key' );
+
+		foreach ( $filter_keys as $filter_key ) {
+			if ( array_key_exists( $filter_key, $vars ) ) {
+				unset( $vars[ $filter_key ] );
+			}
+		}
 
 		return add_query_arg( $vars, $this->base_url );
 	}
