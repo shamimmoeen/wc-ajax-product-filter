@@ -114,6 +114,30 @@ const Advanced = ({ index }) => {
 		}
 	};
 
+	const getDisplayType = () => {
+		let _display_type;
+
+		if ('taxonomy' === type) {
+			_display_type = display_type;
+		} else if ('price' === type) {
+			_display_type = number_display_type;
+		} else if ('post-author' === type) {
+			_display_type = display_type;
+		} else if ('post-meta' === type) {
+			if ('text' === value_type) {
+				_display_type = display_type;
+			} else if ('number' === value_type) {
+				_display_type = number_display_type;
+			} else if ('date' === value_type) {
+				_display_type = date_display_type;
+			}
+		} else {
+			_display_type = display_type;
+		}
+
+		return _display_type;
+	};
+
 	const isApplicable = (field = 'reduce-height') => {
 		if (activeFilters) {
 			return false;
@@ -137,25 +161,7 @@ const Advanced = ({ index }) => {
 		}
 
 		let show;
-		let _display_type;
-
-		if ('taxonomy' === type) {
-			_display_type = display_type;
-		} else if ('price' === type) {
-			_display_type = number_display_type;
-		} else if ('post-author' === type) {
-			_display_type = display_type;
-		} else if ('post-meta' === type) {
-			if ('text' === value_type) {
-				_display_type = display_type;
-			} else if ('number' === value_type) {
-				_display_type = number_display_type;
-			} else if ('date' === value_type) {
-				_display_type = date_display_type;
-			}
-		} else {
-			_display_type = display_type;
-		}
+		const _display_type = getDisplayType();
 
 		let notAllowedDisplayTypes;
 
@@ -212,7 +218,13 @@ const Advanced = ({ index }) => {
 	};
 
 	const placeholderField = () => {
-		if (isApplicable('search') && '1' === enable_search_field) {
+		const notApplicable = ['select', 'range_select', 'time_period_select'];
+
+		if (
+			isApplicable('search') &&
+			'1' === enable_search_field &&
+			!notApplicable.includes(getDisplayType())
+		) {
 			return (
 				<Text
 					id={'search_field_placeholder'}

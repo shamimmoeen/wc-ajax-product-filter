@@ -53,6 +53,7 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'active_filters_before_shop_loop' ), - 10 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'active_filters_before_no_products' ), - 10 );
+		add_filter( 'wcapf_form_filter_data', array( $this, 'set_form_filters_data' ) );
 	}
 
 	/**
@@ -101,29 +102,56 @@ class WCAPF_Hooks {
 	 * @return array
 	 */
 	public function add_body_classes( $classes ) {
-		// TODO: Maybe we can get the settings from global variables.
+		if ( ! $this->should_we_proceed() ) {
+			return $classes;
+		}
 
-		if ( WCAPF_Helper::use_focus_style() ) {
+		$improve_scrollbar  = isset( $wcapf['improve_scrollbar'] ) ? $wcapf['improve_scrollbar'] : '';
+		$remove_focus_style = isset( $wcapf['remove_focus_style'] ) && $wcapf['remove_focus_style'];
+		$use_wait_cursor    = isset( $wcapf['wait_cursor'] ) && $wcapf['wait_cursor'];
+		$label_size         = isset( $wcapf['label_size'] ) ? $wcapf['label_size'] : '';
+
+		if ( $improve_scrollbar ) {
+			$classes[] = 'wcapf-pretty-scroll';
+		}
+
+		if ( ! $remove_focus_style ) {
 			$classes[] = 'wcapf-use-focus';
 		}
 
-		if ( WCAPF_Helper::use_wait_cursor() ) {
+		if ( $use_wait_cursor ) {
 			$classes[] = 'wcapf-use-wait-cursor';
+		}
+
+		if ( 'fixed' === $label_size ) {
+			$classes[] = 'wcapf-label-size-fixed';
 		}
 
 		return $classes;
 	}
 
+	private function should_we_proceed() {
+		global $wcapf;
+
+		if ( $wcapf ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Suppress canonical redirect.
 	 *
-	 * TODO: We should conditionally do this.
-	 *
 	 * @param bool $redirect
 	 *
-	 * @return false
+	 * @return bool
 	 */
 	public function suppress_canonical_redirect( $redirect ) {
+		if ( ! $this->should_we_proceed() ) {
+			return $redirect;
+		}
+
 		return false;
 	}
 
@@ -136,6 +164,10 @@ class WCAPF_Hooks {
 	 * @return string
 	 */
 	public function modify_paginated_links( $link ) {
+		if ( ! $this->should_we_proceed() ) {
+			return $link;
+		}
+
 		if ( is_paged() ) {
 			$link = str_replace( 'page/1/', '', $link );
 		}
@@ -147,13 +179,21 @@ class WCAPF_Hooks {
 	 * HTML wrapper to insert before the shop loop.
 	 */
 	public function insert_before_shop_loop() {
-		echo '<div class="wcapf-before-products">';
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
+		echo '<div class="' . esc_attr( WCAPF_Helper::shop_loop_container_identifier() ) . '">';
 	}
 
 	/**
 	 * HTML wrapper to insert after the shop loop.
 	 */
 	public function insert_after_shop_loop() {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
 		echo '</div>';
 	}
 
@@ -163,8 +203,12 @@ class WCAPF_Hooks {
 	 * @param string $template_name The template name.
 	 */
 	public function insert_before_no_products( $template_name ) {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
 		if ( 'loop/no-products-found.php' === $template_name ) {
-			echo '<div class="wcapf-before-products">';
+			echo '<div class="' . esc_attr( WCAPF_Helper::shop_loop_container_identifier() ) . '">';
 		}
 	}
 
@@ -174,6 +218,10 @@ class WCAPF_Hooks {
 	 * @param string $template_name The template name.
 	 */
 	public function insert_after_no_products( $template_name ) {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
 		if ( 'loop/no-products-found.php' === $template_name ) {
 			echo '</div>';
 		}
@@ -185,6 +233,10 @@ class WCAPF_Hooks {
 	 * @since 4.0.0
 	 */
 	public function active_filters_before_shop_loop() {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
 		$this->render_active_filters();
 	}
 
@@ -194,12 +246,14 @@ class WCAPF_Hooks {
 	 * @since 4.0.0
 	 */
 	private function render_active_filters() {
-		if ( WCAPF_Helper::show_active_filters_on_top_of_products() ) {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['active_filters_on_top'] ) ) {
 			WCAPF_Template_Loader::get_instance()->load(
 				'active-filters',
 				array(
 					'location'            => 'before-products',
-					'clear_all_btn_label' => __( 'Clear All', 'wc-ajax-product-filter' ),
+					'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
 				)
 			);
 		}
@@ -211,9 +265,43 @@ class WCAPF_Hooks {
 	 * @since 4.0.0
 	 */
 	public function active_filters_before_no_products( $template_name ) {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
 		if ( 'loop/no-products-found.php' === $template_name ) {
 			$this->render_active_filters();
 		}
+	}
+
+	/**
+	 * Sets the filters data according to the form and wcapf settings.
+	 *
+	 * @param array $data The filter data.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array The filter data that will be merged with filter settings.
+	 */
+	public function set_form_filters_data( $data ) {
+		global $wcapf;
+
+		$empty_options = array( 'show', 'remove' );
+		$remove_empty  = isset( $wcapf['remove_empty'] ) ? $wcapf['remove_empty'] : '';
+
+		if ( ! in_array( $remove_empty, $empty_options ) ) {
+			$remove_empty = 'show';
+		}
+
+		return wp_parse_args(
+			array(
+				'hide_empty'    => $remove_empty,
+				'update_count'  => ! empty( $wcapf['update_count'] ),
+				'use_chosen'    => ! empty( $wcapf['use_chosen'] ),
+				'use_term_slug' => ! empty( $wcapf['use_term_slug'] ),
+			),
+			$data
+		);
 	}
 
 }

@@ -50,7 +50,10 @@ export function defaultSettings() {
 		scroll_to_top_offset: '',
 		disable_scroll_animation: '',
 		// Others
-		search_field_placeholder: '',
+		search_field_default_placeholder: '',
+		no_results_text: '',
+		chosen_no_options_text: '',
+		empty_filter_text: '',
 		show_more_btn_label: '',
 		show_less_btn_label: '',
 		opening_btn_label: '',
@@ -62,9 +65,8 @@ export function defaultSettings() {
 		apply_btn_label: '',
 		results_count_markup: '',
 		pagination_container: '.woocommerce-pagination',
-		results_count_container: '.woocommerce-result-count',
-		sort_by_form_container: '.woocommerce-ordering',
 		more_selectors: '',
+		keys_to_exclude: '',
 		author_roles: [],
 		multiple_form_locations: '',
 		// Miscellaneous

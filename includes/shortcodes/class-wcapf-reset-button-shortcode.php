@@ -1,19 +1,19 @@
 <?php
 /**
- * WC Ajax Product Filter shortcode.
+ * Reset button shortcode.
  *
- * @since      3.0.0
+ * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/shortcodes
  * @author     wptools.io
  */
 
 /**
- * WCAPF_Filter_Shortcode class.
+ * WCAPF_Reset_Button_Shortcode class.
  *
- * @since 3.0.0
+ * @since 4.0.0
  */
-class WCAPF_Filter_Shortcode {
+class WCAPF_Reset_Button_Shortcode {
 
 	/**
 	 * Constructor.
@@ -29,17 +29,16 @@ class WCAPF_Filter_Shortcode {
 		static $instance = null;
 
 		if ( null === $instance ) {
-			$instance = new WCAPF_Filter_Shortcode();
+			$instance = new WCAPF_Reset_Button_Shortcode();
 		}
 
 		return $instance;
 	}
 
-	public function register_shortcode() {
-		// No more wcapf_filter shortcode, renders the form [wcapf_form] instead.
-		return do_shortcode('[wcapf_form]');
+	public function shortcode_output() {
+		return 'reset button';
 	}
 
 }
 
-add_shortcode( 'wcapf_filter', array( WCAPF_Filter_Shortcode::get_instance(), 'register_shortcode' ) );
+add_shortcode( 'wcapf_active_filters', array( WCAPF_Reset_Button_Shortcode::get_instance(), 'shortcode_output' ) );

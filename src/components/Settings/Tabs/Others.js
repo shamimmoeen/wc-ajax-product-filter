@@ -21,7 +21,10 @@ const Others = () => {
 
 	const {
 		settings: {
-			search_field_placeholder,
+			search_field_default_placeholder,
+			no_results_text,
+			chosen_no_options_text,
+			empty_filter_text,
 			show_more_btn_label,
 			show_less_btn_label,
 			opening_btn_label,
@@ -33,9 +36,8 @@ const Others = () => {
 			apply_btn_label,
 			results_count_markup,
 			pagination_container,
-			results_count_container,
-			sort_by_form_container,
 			more_selectors,
+			keys_to_exclude,
 			author_roles,
 			multiple_form_locations,
 		},
@@ -62,9 +64,30 @@ const Others = () => {
 			</p>
 
 			<Text
-				id={'search_field_placeholder'}
+				id={'search_field_default_placeholder'}
 				label={__('Search field placeholder', 'wc-ajax-product-filter')}
-				value={search_field_placeholder}
+				value={search_field_default_placeholder}
+				onChange={handleTextFieldChange}
+			/>
+
+			<Text
+				id={'no_results_text'}
+				label={__('No results text', 'wc-ajax-product-filter')}
+				value={no_results_text}
+				onChange={handleTextFieldChange}
+			/>
+
+			<Text
+				id={'chosen_no_options_text'}
+				label={__('No options text', 'wc-ajax-product-filter')}
+				value={chosen_no_options_text}
+				onChange={handleTextFieldChange}
+			/>
+
+			<Text
+				id={'empty_filter_text'}
+				label={__('Empty filter text', 'wc-ajax-product-filter')}
+				value={empty_filter_text}
 				onChange={handleTextFieldChange}
 			/>
 
@@ -168,32 +191,10 @@ const Others = () => {
 				id={'pagination_container'}
 				label={__('Pagination', 'wc-ajax-product-filter')}
 				description={__(
-					"The css class of the pagination element. In most cases, you don't need to change this.",
+					'The css class of the pagination element. Supports multiple css classes separated by commas.',
 					'wc-ajax-product-filter'
 				)}
 				value={pagination_container}
-				onChange={handleTextFieldChange}
-			/>
-
-			<Text
-				id={'results_count_container'}
-				label={__('Results count', 'wc-ajax-product-filter')}
-				description={__(
-					"The css class of the results count element. In most cases, you don't need to change this.",
-					'wc-ajax-product-filter'
-				)}
-				value={results_count_container}
-				onChange={handleTextFieldChange}
-			/>
-
-			<Text
-				id={'sort_by_form_container'}
-				label={__('Sort by form', 'wc-ajax-product-filter')}
-				description={__(
-					"The css class of the sort by form element. In most cases, you don't need to change this.",
-					'wc-ajax-product-filter'
-				)}
-				value={sort_by_form_container}
 				onChange={handleTextFieldChange}
 			/>
 
@@ -209,6 +210,28 @@ const Others = () => {
 					onChange={handleTextFieldChange}
 					isPro
 				/>
+			)}
+
+			{WCAPF_PRO && (
+				<>
+					<div className='__form_fields_separator' />
+
+					<h4 className='__section_heading'>
+						{__('URL Parameters', 'wc-ajax-product-filter')}
+					</h4>
+
+					<Text
+						id={'keys_to_exclude'}
+						label={__('Keys to exclude', 'wc-ajax-product-filter')}
+						description={__(
+							'Give the keys separated by commas that you want to exclude when building the filter url.',
+							'wc-ajax-product-filter'
+						)}
+						value={keys_to_exclude}
+						onChange={handleTextFieldChange}
+						isPro
+					/>
+				</>
 			)}
 
 			<div className='__form_fields_separator' />

@@ -8,6 +8,7 @@
 
 			border-radius: 0.125em; // For showing rounded outline when focused.
 			display: inline-flex;
+			flex-shrink: 0;
 			font-size: 0.8em;
 			font-weight: normal;
 			color: var(--wcapf-primary-color);

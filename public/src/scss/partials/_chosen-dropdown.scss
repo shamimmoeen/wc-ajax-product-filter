@@ -61,6 +61,25 @@
 					}
 				}
 			}
+
+			&.style-grey {
+				.chosen-choices {
+					li.search-choice {
+						background-color: var(--wcapf-active-label-grey-style-bg-color);
+						color: inherit;
+
+						.search-choice-close {
+							&:not(:hover) {
+								color: rgba(var(--wcapf-chosen-multiselect-grey-style-close-color), var(--wcapf-filter-count-opacity));
+							}
+
+							&:hover {
+								color: rgba(var(--wcapf-chosen-multiselect-grey-style-close-color), 1);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		.chosen-single-inner {

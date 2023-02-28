@@ -39,7 +39,6 @@ class WCAPF_Field_Instance {
 	public $use_term_slug;
 	public $number_data_type;
 	public $form_id;
-	public $use_custom_title; // TODO: Remove this.
 	public $enable_search_field;
 	public $enable_reduce_height;
 	public $max_height;
@@ -124,7 +123,7 @@ class WCAPF_Field_Instance {
 
 		$this->display_type    = $_display_type;
 		$this->all_items_label = $_all_items_label;
-		$this->use_chosen      = WCAPF_Helper::use_combobox();
+		$this->use_chosen      = $this->get_sub_field_value( 'use_chosen' );
 		$this->show_count      = $show_count;
 		$this->hide_empty      = $this->get_sub_field_value( 'hide_empty' );
 
@@ -174,7 +173,7 @@ class WCAPF_Field_Instance {
 		$this->post_property = $this->get_post_property();
 
 		$this->use_store_name = $this->is_store_name_enabled();
-		$this->use_term_slug  = WCAPF_Helper::use_term_slug();
+		$this->use_term_slug  = $this->get_sub_field_value( 'use_term_slug' );
 
 		$this->custom_appearance_options = $this->get_appearance_data();
 

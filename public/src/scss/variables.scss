@@ -11,6 +11,8 @@ body {
 :root {
 	--wcapf-primary-color: rgba(var(--wcapf-primary-color-rgb), 1);
 	--wcapf-primary-text-color: rgba(var(--wcapf-primary-text-color-rgb), 1);
+	--wcapf-active-label-grey-style-bg-color: #ddd; // #f0f0f0;
+	--wcapf-chosen-multiselect-grey-style-close-color: 119, 119, 119;
 
 	--wcapf-filter-checked-outline-color: #333; // TODO: Maybe redundant.
 	--wcapf-filter-base-bottom-margin: 2em; // 3em
@@ -20,8 +22,6 @@ body {
 	--wcapf-nouislider-input-field-margin-bottom: 1.5em;
 	--wcapf-nouislider-plain-text-margin-bottom: 1.2em;
 	--wcapf-range-slider-bottom-padding: 1em;
-	--wcapf-results-container-loading-bg-color: #fff;
-	--wcapf-results-loading-body-bg-color: rgba(255, 255, 255, .7);
 
 	// Filter Title
 	--wcapf-filter-title-font-size: 1.25em;
@@ -101,6 +101,6 @@ body {
 	--wcapf-btn-border-radius: 0.125em;
 	--wcapf-btn-hr-padding: 1.375em;
 	--wcapf-btn-vr-padding: .5em;
-	--wcapf-btn-disabled-opacity: .6em;
+	--wcapf-btn-disabled-opacity: .6;
 	--wcapf-btn-disabled-cursor: default;
 }

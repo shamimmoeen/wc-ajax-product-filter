@@ -2,7 +2,7 @@
 /**
  * WC Ajax Product Filter Form shortcode.
  *
- * @since      3.1.0
+ * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/shortcodes
  * @author     wptools.io
@@ -11,7 +11,7 @@
 /**
  * WCAPF_Filter_Form_Shortcode class.
  *
- * @since 3.1.0
+ * @since 4.0.0
  */
 class WCAPF_Filter_Form_Shortcode {
 

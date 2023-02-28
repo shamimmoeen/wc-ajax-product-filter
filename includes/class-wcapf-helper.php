@@ -577,19 +577,36 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Shop loop container class.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function shop_loop_container_identifier() {
+		return apply_filters( 'wcapf_shop_loop_container_identifier', 'wcapf-before-products' );
+	}
+
+	/**
 	 * Checks if the product attribute filtering via lookup table feature is enabled.
 	 *
 	 * @return bool
 	 */
 	public static function filtering_via_lookup_table_is_active() {
-		return 'yes' === get_option( 'woocommerce_attribute_lookup_enabled' );
+		return apply_filters(
+			'wcapf_attribute_lookup_enabled',
+			'yes' === get_option( 'woocommerce_attribute_lookup_enabled' )
+		);
 	}
 
 	/**
 	 * @return bool
 	 */
 	public static function hide_stock_out_items() {
-		return 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' );
+		return apply_filters(
+			'wcapf_hide_out_of_stock_items',
+			'yes' === get_option( 'woocommerce_hide_out_of_stock_items' )
+		);
 	}
 
 	/**
@@ -646,12 +663,13 @@ class WCAPF_Helper {
 			}
 		}
 
-		$reset_url = '';
+		$url_builder = new WCAPF_URL_Builder();
+		$reset_url   = $url_builder->get_reset_url();
 
 		$attrs = 'data-clear-filter-url="' . esc_url( $reset_url ) . '"';
 
 		if ( ! $filter_keys ) {
-			// $attrs .= 'disabled="disabled"';
+			$attrs .= 'disabled="disabled"';
 		}
 
 		$html = '<button class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
@@ -667,6 +685,9 @@ class WCAPF_Helper {
 	public static function get_active_filters_data( $sort_by_value = false ) {
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 		$active_filters = array();
+
+		// TODO: Use condition here.
+		$sort_by_value = true;
 
 		foreach ( $chosen_filters as $filter_type_filters ) {
 			foreach ( $filter_type_filters as $filter_type => $filter ) {
@@ -721,6 +742,22 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Checks if filter is active.
+	 *
+	 * @param string $filter_key The filter key.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function is_filter_active( $filter_key ) {
+		$active_filters = self::get_active_filters_data();
+		$filter_keys    = wp_list_pluck( $active_filters, 'filter_key' );
+
+		return in_array( $filter_key, $filter_keys );
+	}
+
+	/**
 	 * Retrieve the array format from the filter manual options.
 	 * The input is string for v3.0.0 and array for v4.0.0.
 	 *
@@ -757,130 +794,24 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Determines if we enable the focus styles.
+	 * Gets the rgb array from hex color.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function use_focus_style() {
-		return apply_filters( 'wcapf_use_focus_style', true );
-	}
-
-	/**
-	 * Determines if we enable the focus styles.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function use_stylish_checkbox_radio() {
-		$settings = self::get_settings();
-
-		return isset( $settings['stylish_checkbox_radio'] ) && $settings['stylish_checkbox_radio'];
-	}
-
-	/**
-	 * Determines if we use combobox instead of native select element.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function use_combobox() {
-		$settings = self::get_settings();
-
-		return isset( $settings['use_chosen'] ) && $settings['use_chosen'];
-	}
-
-	/**
-	 * Determines if we try to improve the native select element.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function improve_native_select() {
-		$settings = self::get_settings();
-
-		return isset( $settings['improve_native_select'] ) && $settings['improve_native_select'];
-	}
-
-	/**
-	 * Determines if we show the wait cursor when the results are fetching.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function use_wait_cursor() {
-		$settings = self::get_settings();
-
-		return isset( $settings['wait_cursor'] ) && $settings['wait_cursor'];
-	}
-
-	/**
-	 * Determines if we use term slug instead of id.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	public static function use_term_slug() {
-		$settings = self::get_settings();
-
-		return isset( $settings['use_term_slug'] ) && $settings['use_term_slug'];
-	}
-
-	/**
-	 * Gets the primary color.
+	 * @param string $hex The hex color code.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	public static function get_primary_color() {
-		$settings = self::get_settings();
-
-		$hex = isset( $settings['primary_color'] ) ? $settings['primary_color'] : '#345DBB';
-
+	public static function get_rgb_from_hex( $hex ) {
 		list( $r, $g, $b ) = sscanf( $hex, "#%02x%02x%02x" );
 
 		return array( $r, $g, $b );
-	}
-
-	/**
-	 * Gets the primary text color.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return array
-	 */
-	public static function get_primary_text_color() {
-		$settings = self::get_settings();
-
-		$hex = isset( $settings['primary_text_color'] ) ? $settings['primary_text_color'] : '#ffffff';
-
-		list( $r, $g, $b ) = sscanf( $hex, "#%02x%02x%02x" );
-
-		return array( $r, $g, $b );
-	}
-
-	/**
-	 * Gets the star icon color.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	public static function get_star_icon_color() {
-		$settings = self::get_settings();
-
-		return isset( $settings['star_icon_color'] ) ? $settings['star_icon_color'] : 'rgb(240, 201, 48)';
 	}
 
 	/**
 	 * Determines if we keep the filter accordion as opened when the filter is active.
+	 *
+	 * TODO: Maybe move to inside the method.
 	 *
 	 * @since 4.0.0
 	 *
@@ -911,16 +842,103 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Determines if we show the active filters on top of products.
-	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool
+	 * @return string
 	 */
-	public static function show_active_filters_on_top_of_products() {
+	public static function no_results_text() {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['opening_btn_label'] ) ) {
+			return $wcapf['opening_btn_label'];
+		}
+
+		return __( 'No results for:', 'wc-ajax-product-filter' );
+	}
+
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function empty_filter_text() {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['empty_filter_text'] ) ) {
+			return $wcapf['empty_filter_text'];
+		}
+
+		return __( 'N/A', 'wc-ajax-product-filter' );
+	}
+
+	public static function opening_btn_label() {
 		$settings = self::get_settings();
 
-		return isset( $settings['active_filters_on_top'] ) && $settings['active_filters_on_top'];
+		if ( ! empty( $settings['opening_btn_label'] ) ) {
+			return $settings['opening_btn_label'];
+		}
+
+		return __( 'Filters', 'wc-ajax-product-filter' );
+	}
+
+	public static function slide_out_panel_label() {
+		$settings = self::get_settings();
+
+		if ( ! empty( $settings['slide_out_panel_label'] ) ) {
+			return $settings['slide_out_panel_label'];
+		}
+
+		return __( 'Filters', 'wc-ajax-product-filter' );
+	}
+
+	public static function clear_button_label() {
+		$settings = self::get_settings();
+
+		if ( ! empty( $settings['clear_button_label'] ) ) {
+			return $settings['clear_button_label'];
+		}
+
+		return __( 'Clear', 'wc-ajax-product-filter' );
+	}
+
+	public static function clear_all_button_label() {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['clear_all_button_label'] ) ) {
+			return $wcapf['clear_all_button_label'];
+		}
+
+		return __( 'Clear All', 'wc-ajax-product-filter' );
+	}
+
+	public static function reset_button_label() {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['reset_button_label'] ) ) {
+			return $wcapf['reset_button_label'];
+		}
+
+		return __( 'Reset', 'wc-ajax-product-filter' );
+	}
+
+	public static function submit_btn_label() {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['submit_btn_label'] ) ) {
+			return $wcapf['submit_btn_label'];
+		}
+
+		return __( 'Submit', 'wc-ajax-product-filter' );
+	}
+
+	public static function apply_btn_label() {
+		global $wcapf;
+
+		if ( ! empty( $wcapf['apply_btn_label'] ) ) {
+			return $wcapf['apply_btn_label'];
+		}
+
+		return __( 'Apply', 'wc-ajax-product-filter' );
 	}
 
 }

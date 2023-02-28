@@ -1,0 +1,11 @@
+// Onepress theme
+body.theme-onepress {
+	.wcapf-filter .wcapf-search-box input[type="text"],
+	.wcapf-range-wrapper input[type="text"]:focus {
+		border: 1px solid var(--wcapf-input-text-border-color) !important;
+	}
+
+	.wcapf-chosen-container.chosen-container-single .chosen-search input[type="text"]:focus {
+		border: var(--wcapf-chosen-search-input-border-size) solid var(--wcapf-chosen-search-input-border-color) !important;
+	}
+}

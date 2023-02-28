@@ -18,7 +18,7 @@ class WCAPF_Form {
 	/**
 	 * @var $form array
 	 */
-	private $form;
+	protected $form;
 
 	public function __construct( $form = array() ) {
 		if ( $form ) {
@@ -28,7 +28,7 @@ class WCAPF_Form {
 		}
 	}
 
-	private function retrieve_form() {
+	protected function retrieve_form() {
 		global $wcapf_form;
 
 		return $wcapf_form;
@@ -39,59 +39,46 @@ class WCAPF_Form {
 			return;
 		}
 
-		$form_classes = 'wcapf-form wcapf-form-' . $this->form_id();
+		$form_id = isset( $this->form['form_id'] ) ? $this->form['form_id'] : '';
 
-		echo '<div class="' . esc_attr( $form_classes ) . '" data-id="' . esc_attr( $this->form_id() ) . '">';
+		$form_classes = 'wcapf-form wcapf-form-' . $form_id;
 
-		do_action( 'wcapf_before_form_filters', $this->form_id() );
+		echo '<div class="' . esc_attr( $form_classes ) . '" data-id="' . esc_attr( $form_id ) . '">';
 
-		if ( $this->get_fields() ) {
-			foreach ( $this->get_fields() as $field ) {
-				$field_instance = new WCAPF_Field_Instance( $field['settings'] );
-				$field_type     = $field_instance->type;
+		do_action( 'wcapf_before_form_filters', $form_id );
 
-				if ( ! $field_type ) {
-					continue;
+		$fields = isset( $this->form['filters'] ) ? $this->form['filters'] : array();
+		$fields = apply_filters( 'wcapf_form_filters', $fields, $this->form );
+
+		foreach ( $fields as $field ) {
+			$field_data     = $field['settings'];
+			$field_instance = new WCAPF_Field_Instance( $field_data );
+			$field_type     = $field_instance->type;
+
+			if ( ! $field_type ) {
+				continue;
+			}
+
+			if ( 'component' === $field_type ) {
+				$component = $field_instance->get_sub_field_value( 'component' );
+
+				if ( 'active-filters' === $component ) {
+					$this->render_active_filters( $field_instance );
+				} elseif ( 'reset-button' === $component ) {
+					$this->render_reset_button( $field_instance );
 				}
+			} elseif ( 'price' === $field_type ) {
+				$this->render_price_filter( $field_instance );
+			} else {
+				$walker = new WCAPF_Walker( $field_instance );
 
-				if ( 'component' === $field_type ) {
-					$component = $field_instance->get_sub_field_value( 'component' );
-
-					if ( 'active-filters' === $component ) {
-						$show_clear_btn       = $this->get_property( 'show_clear_btn' );
-						$active_filters_label = __( 'Active Filters', 'wc-ajax-product-filters' );
-						$clear_btn_label      = __( 'Clear All', 'wc-ajax-product-filters' );
-
-						WCAPF_Template_Loader::get_instance()->load(
-							'active-filters',
-							array(
-								'location'            => 'inside-form',
-								'title'               => $active_filters_label,
-								'show_clear_btn'      => $show_clear_btn,
-								'clear_all_btn_label' => $clear_btn_label,
-							)
-						);
-					} elseif ( 'reset-button' === $component ) {
-						$reset_btn_label = __( 'Reset', 'wc-ajax-product-filters' );
-
-						WCAPF_Template_Loader::get_instance()->load(
-							'reset-button',
-							array( 'btn_label' => $reset_btn_label )
-						);
-					}
-				} elseif ( 'price' === $field_type ) {
-					$this->render_price_filter( $field_instance );
-				} else {
-					$walker = new WCAPF_Walker( $field_instance );
-
-					$this->before_filter( $field_instance );
-					echo $walker->build_menu(); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-					$this->after_filter();
-				}
+				$this->before_filter( $field_instance );
+				echo $walker->build_menu();
+				$this->after_filter();
 			}
 		}
 
-		do_action( 'wcapf_after_form_filters', $this->form_id() );
+		do_action( 'wcapf_after_form_filters', $form_id );
 
 		echo '</div><!-- .wcapf-filter-form -->';
 
@@ -99,6 +86,10 @@ class WCAPF_Form {
 	}
 
 	private function should_we_proceed() {
+		if ( ! $this->form ) {
+			return false;
+		}
+
 		if ( isset( $this->form['found'] ) ) {
 			return false;
 		}
@@ -106,16 +97,44 @@ class WCAPF_Form {
 		return true;
 	}
 
-	private function form_id() {
-		return isset( $this->form['form_id'] ) ? $this->form['form_id'] : '';
+	/**
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return void
+	 */
+	private function render_active_filters( $field_instance ) {
+		$title           = $field_instance->get_sub_field_value( 'title' );
+		$show_title      = $field_instance->get_sub_field_value( 'show_title' );
+		$empty_message   = $field_instance->get_sub_field_value( 'empty_filter_message' );
+		$show_clear_btn  = $field_instance->get_sub_field_value( 'show_clear_btn' );
+		$clear_btn_label = WCAPF_Helper::clear_all_button_label();
+
+		WCAPF_Template_Loader::get_instance()->load(
+			'active-filters',
+			array(
+				'location'            => 'inside-form',
+				'title'               => $title,
+				'show_title'          => $show_title,
+				'empty_message'       => $empty_message,
+				'show_clear_btn'      => $show_clear_btn,
+				'clear_all_btn_label' => $clear_btn_label,
+			)
+		);
 	}
 
-	private function get_fields() {
-		return isset( $this->form['filters'] ) ? $this->form['filters'] : array();
-	}
-
-	private function get_property( $property ) {
-		return isset( $this->form['settings'][ $property ] ) ? $this->form['settings'][ $property ] : '';
+	/**
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return void
+	 */
+	private function render_reset_button( $field_instance ) {
+		WCAPF_Template_Loader::get_instance()->load(
+			'reset-button',
+			array(
+				'btn_label'   => WCAPF_Helper::reset_button_label(),
+				'show_always' => $field_instance->get_sub_field_value( 'show_if_empty' ),
+			)
+		);
 	}
 
 	/**
@@ -155,19 +174,14 @@ class WCAPF_Form {
 		$filter_id  = $field_instance->filter_id;
 		$filter_key = $field_instance->filter_key;
 
-		// TODO: Remove from free version.
-		$filter_active = WCAPF_Product_Filter_Utils::is_filter_active( $filter_key );
-
-		if ( $filter_active ) {
-			$classes[] = 'filter-active';
-		}
-
 		$show_title       = $field_instance->get_sub_field_value( 'show_title' );
 		$filter_title     = $field_instance->get_sub_field_value( 'title' );
 		$help_text        = $field_instance->get_sub_field_value( 'help_text' );
 		$enable_accordion = $field_instance->get_sub_field_value( 'enable_accordion' );
 		$accordion_state  = $field_instance->get_sub_field_value( 'accordion_default_state' );
 		$show_clear_btn   = $field_instance->get_sub_field_value( 'show_clear_btn' );
+
+		$filter_active = WCAPF_Helper::is_filter_active( $filter_key );
 
 		if ( $filter_active && WCAPF_Helper::keep_accordion_opened_when_filter_active() ) {
 			$accordion_state = 'expanded';
@@ -177,7 +191,11 @@ class WCAPF_Form {
 		$accordion_header_id = 'wcapf-filter-accordion-header-' . $filter_id;
 		$accordion_panel_id  = 'wcapf-filter-accordion-panel-' . $filter_id;
 
-		$filter_classes = implode( ' ', $classes );
+		$filter_classes = apply_filters(
+			'wcapf_field_classes',
+			implode( ' ', $classes ),
+			$field_instance
+		);
 
 		$filter_start_wrapper = '<div';
 		$filter_start_wrapper .= ' class="' . esc_attr( $filter_classes ) . '"';
@@ -289,7 +307,7 @@ class WCAPF_Form {
 		);
 
 		if ( $range_min_value === $range_max_value && $auto_detect && $hide_range_input ) {
-			echo '<div>' . esc_html__( 'N/A', 'wc-ajax-product-filter' ) . '</div>';
+			echo '<div>' . esc_html( WCAPF_Helper::empty_filter_text() ) . '</div>';
 
 			return;
 		}
