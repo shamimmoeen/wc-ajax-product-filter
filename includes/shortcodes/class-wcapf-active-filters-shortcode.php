@@ -21,6 +21,19 @@ class WCAPF_Active_Filters_Shortcode {
 	private function __construct() {
 	}
 
+	public function shortcode_output( $attrs = array() ) {
+		$a = shortcode_atts( array(
+			'title'               => '',
+			'show_title'          => '1',
+			'empty_message'       => '',
+			'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
+		), $attrs );
+
+		$a['location'] = 'before-products';
+
+		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $a, false );
+	}
+
 	/**
 	 * Gets the instance of this class.
 	 */
@@ -33,10 +46,6 @@ class WCAPF_Active_Filters_Shortcode {
 		}
 
 		return $instance;
-	}
-
-	public function shortcode_output() {
-		return 'hello world';
 	}
 
 }

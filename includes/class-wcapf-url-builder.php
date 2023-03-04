@@ -58,14 +58,18 @@ class WCAPF_URL_Builder {
 	private $query_vars;
 
 	public function __construct( $filter_key = '', $enable_multiple = false ) {
-		global $wcapf;
+		$_filter_keys = WCAPF_Helper::wcapf_option( 'filter_keys' );
 
-		$this->filter_keys     = isset( $wcapf['filter_keys'] ) ? $wcapf['filter_keys'] : array();
+		if ( ! is_array( $_filter_keys ) ) {
+			$_filter_keys = array();
+		}
+
+		$this->filter_keys     = $_filter_keys;
 		$this->filter_key      = $filter_key;
 		$this->enable_multiple = $enable_multiple;
-		$this->base_url        = isset( $wcapf['base_url'] ) ? $wcapf['base_url'] : '';
+		$this->base_url        = WCAPF_Helper::wcapf_option( 'base_url' );
 
-		$keys_to_exclude = isset( $wcapf['keys_to_exclude'] ) ? $wcapf['keys_to_exclude'] : '';
+		$keys_to_exclude = WCAPF_Helper::wcapf_option( 'keys_to_exclude' );
 
 		if ( $keys_to_exclude ) {
 			$this->excluded_keys = explode( ',', $keys_to_exclude );

@@ -23,6 +23,20 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Gets the form edit page url.
+	 *
+	 * @param int $form_id The form id.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function form_edit_url( $form_id ) {
+		// TODO: Fix it.
+		return add_query_arg( 'id', $form_id, self::forms_page_url() );
+	}
+
+	/**
 	 * The forms page url.
 	 *
 	 * @since 4.0.0
@@ -388,46 +402,42 @@ class WCAPF_Helper {
 	 * @return string
 	 */
 	public static function get_field_relations() {
-		$settings = self::get_settings();
-
-		return isset( $settings['filter_relationships'] ) ? $settings['filter_relationships'] : 'and';
+		return self::wcapf_option( 'filter_relationships', 'and' );
 	}
 
 	/**
-	 * Gets the wcapf settings.
+	 * Gets the option.
 	 *
-	 * @return array
+	 * @param string $key
+	 * @param mixed  $default
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return mixed
 	 */
-	public static function get_settings() {
-		$option_name = self::settings_option_key();
-		$db_options  = get_option( $option_name );
-		$db_options  = $db_options ?: array();
+	public static function wcapf_option( $key, $default = '' ) {
+		global $wcapf;
 
-		/**
-		 * For v3 to v4 migration, sets the default author roles for our post-author filter.
-		 *
-		 * TODO: Should be deprecated.
-		 */
-		if ( ! isset( $db_options['author_roles'] ) ) {
-			$db_options['author_roles'] = array( 'administrator', 'shop_manager' );
+		$value = isset( $wcapf[ $key ] ) ? $wcapf[ $key ] : '';
+
+		if ( ! $value && $default ) {
+			return $default;
 		}
 
-		if ( has_filter( $option_name ) ) {
-			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
-		} else {
-			$settings = $db_options;
-		}
-
-		return $settings;
+		return $value;
 	}
 
 	/**
-	 * The option key that contains the plugin settings.
+	 * Determines if wcapf is configured for the page.
 	 *
-	 * @return string
+	 * @since 4.0.0
+	 *
+	 * @return bool
 	 */
-	public static function settings_option_key() {
-		return 'wcapf_settings';
+	public static function found_wcapf() {
+		global $wcapf;
+
+		return (bool) $wcapf;
 	}
 
 	/**
@@ -720,13 +730,10 @@ class WCAPF_Helper {
 	 * @return string
 	 */
 	public static function no_results_text() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['opening_btn_label'] ) ) {
-			return $wcapf['opening_btn_label'];
-		}
-
-		return __( 'No results for:', 'wc-ajax-product-filter' );
+		return self::wcapf_option(
+			'opening_btn_label',
+			__( 'No results for:', 'wc-ajax-product-filter' )
+		);
 	}
 
 	/**
@@ -735,13 +742,7 @@ class WCAPF_Helper {
 	 * @return string
 	 */
 	public static function empty_filter_text() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['empty_filter_text'] ) ) {
-			return $wcapf['empty_filter_text'];
-		}
-
-		return __( 'N/A', 'wc-ajax-product-filter' );
+		return self::wcapf_option( 'empty_filter_text', __( 'N/A', 'wc-ajax-product-filter' ) );
 	}
 
 	public static function opening_btn_label() {
@@ -754,6 +755,43 @@ class WCAPF_Helper {
 		return __( 'Filters', 'wc-ajax-product-filter' );
 	}
 
+	/**
+	 * Gets the wcapf settings.
+	 *
+	 * @return array
+	 */
+	public static function get_settings() {
+		$option_name = self::settings_option_key();
+		$db_options  = get_option( $option_name );
+		$db_options  = $db_options ?: array();
+
+		/**
+		 * For v3 to v4 migration, sets the default author roles for our post-author filter.
+		 *
+		 * TODO: Should be deprecated.
+		 */
+		if ( ! isset( $db_options['author_roles'] ) ) {
+			$db_options['author_roles'] = array( 'administrator', 'shop_manager' );
+		}
+
+		if ( has_filter( $option_name ) ) {
+			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
+		} else {
+			$settings = $db_options;
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * The option key that contains the plugin settings.
+	 *
+	 * @return string
+	 */
+	public static function settings_option_key() {
+		return 'wcapf_settings';
+	}
+
 	public static function slide_out_panel_label() {
 		$settings = self::get_settings();
 
@@ -764,34 +802,15 @@ class WCAPF_Helper {
 		return __( 'Filters', 'wc-ajax-product-filter' );
 	}
 
-	public static function clear_button_label() {
-		$settings = self::get_settings();
-
-		if ( ! empty( $settings['clear_button_label'] ) ) {
-			return $settings['clear_button_label'];
-		}
-
-		return __( 'Clear', 'wc-ajax-product-filter' );
-	}
-
 	public static function clear_all_button_label() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['clear_all_button_label'] ) ) {
-			return $wcapf['clear_all_button_label'];
-		}
-
-		return __( 'Clear All', 'wc-ajax-product-filter' );
+		return self::wcapf_option(
+			'clear_all_button_label',
+			__( 'Clear All', 'wc-ajax-product-filter' )
+		);
 	}
 
 	public static function reset_button_label() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['reset_button_label'] ) ) {
-			return $wcapf['reset_button_label'];
-		}
-
-		return __( 'Reset', 'wc-ajax-product-filter' );
+		return self::wcapf_option( 'reset_button_label', __( 'Reset', 'wc-ajax-product-filter' ) );
 	}
 
 	public static function submit_btn_label() {
@@ -812,6 +831,21 @@ class WCAPF_Helper {
 		}
 
 		return __( 'Apply', 'wc-ajax-product-filter' );
+	}
+
+	/**
+	 * Determines if debug mode is enabled or not.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function is_debugging() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			// return false; // TODO: Uncomment from production.
+		}
+
+		return ! empty( self::wcapf_option( 'debug_mode' ) );
 	}
 
 }

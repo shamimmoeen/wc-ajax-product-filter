@@ -24,7 +24,6 @@ class WCAPF_Field_Instance {
 	public $hide_empty;
 	public $get_options;
 	public $manual_options;
-	public $custom_appearance_options;
 	public $type;
 	public $filter_id;
 	public $filter_key;
@@ -174,8 +173,6 @@ class WCAPF_Field_Instance {
 
 		$this->use_store_name = $this->is_store_name_enabled();
 		$this->use_term_slug  = $this->get_sub_field_value( 'use_term_slug' );
-
-		$this->custom_appearance_options = $this->get_appearance_data();
 
 		$this->form_id = $this->get_sub_field_value( 'form_id' );
 
@@ -413,15 +410,6 @@ class WCAPF_Field_Instance {
 		}
 
 		return $this->get_sub_field_value( 'use_store_name' );
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function get_appearance_data() {
-		$options = $this->get_sub_field_value( 'custom_appearance_options' );
-
-		return apply_filters( 'wcapf_field_instance_appearance_options', $options, $this );
 	}
 
 	/**

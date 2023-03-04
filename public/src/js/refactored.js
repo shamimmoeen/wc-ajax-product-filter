@@ -384,11 +384,10 @@
 
 					// Update the instances.
 					for ( const id of instanceIds ) {
-						const instanceId     = '[data-id="' + id + '"]';
-						const $instance      = $( instanceId );
-						const $inner         = $instance.find( '.wcapf-filter-inner' );
-						const _instance      = $response.find( instanceId );
-						let _instanceClasses = $( _instance ).attr( 'class' );
+						const instanceId = '[data-id="' + id + '"]';
+						const $instance  = $( instanceId );
+						const $inner     = $instance.find( '.wcapf-filter-inner' );
+						const _instance  = $response.find( instanceId );
 
 						// Preserve hierarchy accordion state.
 						if ( wcapf_params.preserve_hierarchy_accordion_state ) {
@@ -427,14 +426,6 @@
 								}
 							}
 						}
-
-						// Update clear filter button url.
-						const clearBtnSelector = '.wcapf-filter-title .wcapf-filter-clear-btn';
-						const clearFilterUrl   = _instance.find( clearBtnSelector ).attr( 'data-clear-filter-url' );
-						$instance.find( clearBtnSelector ).attr( 'data-clear-filter-url', clearFilterUrl );
-
-						// Update the instance classes.
-						$instance.attr( 'class', _instanceClasses.trim() );
 
 						const _html = _instance.find( '.wcapf-filter-inner' ).html();
 
@@ -922,7 +913,7 @@
 			WCAPF.initFilterOptionTooltip();
 		},
 		initPopState: function() {
-			if ( wcapf_params.reload_on_back && wcapf_params.filter_found ) {
+			if ( wcapf_params.reload_on_back && wcapf_params.found_wcapf ) {
 				history.replaceState( { wcapf: true }, '', window.location );
 
 				// Handle the popstate event(browser's back/forward)

@@ -395,7 +395,7 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Sanitize the manual options coming from the react ui.
+	 * Sanitize the manual options coming from the React UI.
 	 *
 	 * @param array  $options The array to sanitize.
 	 * @param string $type    The filter type.

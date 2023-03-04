@@ -121,15 +121,6 @@ class WCAPF_Walker {
 	public $get_options;
 
 	/**
-	 * Custom appearance options.
-	 *
-	 * TODO: Maybe we remove this.
-	 *
-	 * @var array
-	 */
-	public $custom_appearance_options;
-
-	/**
 	 * Determines if filter option tooltip is enabled.
 	 *
 	 * @var string
@@ -193,18 +184,11 @@ class WCAPF_Walker {
 	public $max_height;
 
 	/**
-	 * The property for the extra field data.
-	 *
-	 * @var array
-	 */
-	public $field_data;
-
-	/**
 	 * The walker items.
 	 *
 	 * @var array
 	 */
-	private $items;
+	protected $items;
 
 	/**
 	 * Determines the soft limit status.
@@ -254,7 +238,6 @@ class WCAPF_Walker {
 	public function __construct( $field ) {
 		$this->set_properties( $field );
 
-		$this->items            = $this->set_items( $field );
 		$this->active_filters   = $this->active_filters();
 		$this->active_items     = $this->active_items();
 		$this->active_ancestors = $this->active_ancestors();
@@ -307,7 +290,7 @@ class WCAPF_Walker {
 			$this->$key = $property_value;
 		}
 
-		$this->field_data = apply_filters( 'wcapf_walker_field_data', array(), $field );
+		$this->items = $this->set_items( $field );
 	}
 
 	/**
@@ -315,7 +298,7 @@ class WCAPF_Walker {
 	 *
 	 * @return array
 	 */
-	private function set_items( $field_instance ) {
+	protected function set_items( $field_instance ) {
 		$type  = $this->filter_type;
 		$items = array();
 
@@ -419,8 +402,6 @@ class WCAPF_Walker {
 	 * Build the menu.
 	 */
 	public function build_menu() {
-		global $wcapf;
-
 		$items        = $this->items;
 		$display_type = $this->display_type;
 		$show_count   = $this->show_count;
@@ -462,7 +443,7 @@ class WCAPF_Walker {
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				// Stylish checkbox and radio.
-				if ( ! empty( $wcapf['stylish_checkbox_radio'] ) ) {
+				if ( ! empty( WCAPF_Helper::wcapf_option( 'stylish_checkbox_radio' ) ) ) {
 					$wrapper_classes[] = 'stylish-checkbox-radio';
 				}
 
@@ -477,9 +458,7 @@ class WCAPF_Walker {
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				if ( 'label' === $display_type ) {
-					$active_label_style = isset( $wcapf['active_label_style'] ) ? $wcapf['active_label_style'] : '';
-
-					$wrapper_classes[] = 'style-' . $active_label_style;
+					$wrapper_classes[] = 'style-' . WCAPF_Helper::wcapf_option( 'active_label_style' );
 				}
 
 				if ( $show_count ) {
@@ -713,7 +692,7 @@ class WCAPF_Walker {
 
 		$input_markup .= $attrs . '>';
 
-		// TODO: Maybe not the right place to implement the hook.
+		// TODO: Maybe not the right place to implement the hook instead use 'wcapf_menu_items' hook.
 		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
 
 		$inner = '<span class="wcapf-filter-item-label"';
@@ -744,7 +723,7 @@ class WCAPF_Walker {
 		$tooltip_data = '';
 
 		if ( $this->enable_tooltip ) {
-			$tooltip_content = $item['name'];
+			$tooltip_content = ! empty( $item['tooltip'] ) ? $item['tooltip'] : $item['name'];
 
 			if ( $this->show_count_in_tooltip ) {
 				$count_before = apply_filters( 'wcapf_tooltip_count_before', ' (' );
@@ -904,7 +883,7 @@ class WCAPF_Walker {
 	 *
 	 * @return string
 	 */
-	public function get_search_field() {
+	private function get_search_field() {
 		if ( ! $this->enable_search_field ) {
 			return '';
 		}
@@ -912,11 +891,10 @@ class WCAPF_Walker {
 		if ( $this->search_field_placeholder ) {
 			$placeholder = $this->search_field_placeholder;
 		} else {
-			global $wcapf;
-
-			$placeholder = ! empty( $wcapf['search_field_default_placeholder'] )
-				? $wcapf['search_field_default_placeholder']
-				: __( 'Search', 'wc-ajax-product-filter' );
+			$placeholder = WCAPF_Helper::wcapf_option(
+				'search_field_default_placeholder',
+				__( 'Search', 'wc-ajax-product-filter' )
+			);
 		}
 
 		return WCAPF_Template_Loader::get_instance()->load(
@@ -936,7 +914,7 @@ class WCAPF_Walker {
 	 *
 	 * @return string
 	 */
-	public function get_soft_limit_toggle() {
+	private function get_soft_limit_toggle() {
 		$html = '';
 
 		if ( $this->enable_soft_limit ) {
@@ -946,14 +924,15 @@ class WCAPF_Walker {
 				$is_active = 'true';
 			}
 
-			global $wcapf;
+			$show_more = WCAPF_Helper::wcapf_option(
+				'show_more_btn_label',
+				__( '+ Show more', 'wc-ajax-product-filter' )
+			);
 
-			$show_all  = ! empty( $wcapf['show_more_btn_label'] )
-				? $wcapf['show_more_btn_label']
-				: __( '+ Show more', 'wc-ajax-product-filter' );
-			$show_less = ! empty( $wcapf['show_less_btn_label'] )
-				? $wcapf['show_less_btn_label']
-				: __( '− Show less', 'wc-ajax-product-filter' );
+			$show_less = WCAPF_Helper::wcapf_option(
+				'show_less_btn_label',
+				__( '− Show less', 'wc-ajax-product-filter' )
+			);
 
 			$html .= '<div class="wcapf-soft-limit-wrapper">';
 			$html .= '<span';
@@ -961,7 +940,7 @@ class WCAPF_Walker {
 			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
 			$html .= ' aria-label="' . esc_attr__( 'Show/hide all options', 'wc-ajax-product-filter' ) . '"';
 			$html .= '>';
-			$html .= '<span aria-hidden="true" class="wcapf-show-more">' . esc_html( $show_all ) . '</span>';
+			$html .= '<span aria-hidden="true" class="wcapf-show-more">' . esc_html( $show_more ) . '</span>';
 			$html .= '<span aria-hidden="true" class="wcapf-show-less">' . esc_html( $show_less ) . '</span>';
 			$html .= '</span>';
 			$html .= '</div>';
@@ -976,8 +955,6 @@ class WCAPF_Walker {
 	 * @param array $items The array of items.
 	 */
 	private function build_dropdown_menu( $items ) {
-		global $wcapf;
-
 		$display_type   = $this->display_type;
 		$input_name     = $this->filter_key;
 		$input_multiple = '';
@@ -994,7 +971,7 @@ class WCAPF_Walker {
 		} else {
 			$input_classes = 'wcapf-select';
 
-			if ( ! empty( $wcapf['improve_native_select'] ) ) {
+			if ( ! empty( WCAPF_Helper::wcapf_option( 'improve_native_select' ) ) ) {
 				$input_classes .= ' wcapf-select-improved';
 
 				if ( 'multiselect' === $display_type ) {
@@ -1006,9 +983,7 @@ class WCAPF_Walker {
 		$all_items_label = $this->all_items_label;
 
 		if ( 'multiselect' === $display_type && $use_chosen ) {
-			$active_label_style = isset( $wcapf['active_label_style'] ) ? $wcapf['active_label_style'] : '';
-
-			$input_classes .= ' style-' . $active_label_style;
+			$input_classes .= ' style-' . WCAPF_Helper::wcapf_option( 'active_label_style' );
 		}
 
 		if ( 'multiselect' === $display_type ) {

@@ -149,13 +149,14 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-api.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-hooks.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-post-author-filter.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-price-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-rating-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-taxonomy-filter.php';
 
 		// Loads the shortcodes.
+		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-active-filters-shortcode.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-shortcode.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-form-shortcode.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-reset-button-shortcode.php';
 
 		// Loads the widgets.
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-filter-widget.php';

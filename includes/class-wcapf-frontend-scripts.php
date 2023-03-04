@@ -54,15 +54,13 @@ class WCAPF_Frontend_Scripts {
 	 * @return void
 	 */
 	public static function load_frontend_scripts( $for_preview = false ) {
-		global $wcapf;
-
-		if ( ! $for_preview && ! empty( $wcapf['disable_wcapf'] ) ) {
+		if ( ! $for_preview && ! empty( WCAPF_Helper::wcapf_option( 'disable_wcapf' ) ) ) {
 			return;
 		}
 
 		$load_scripts = apply_filters( 'wcapf_load_scripts_conditionally', false );
 
-		if ( true === $load_scripts && ! $for_preview && ! $wcapf ) {
+		if ( true === $load_scripts && ! $for_preview && ! WCAPF_Helper::found_wcapf() ) {
 			return;
 		}
 
@@ -99,9 +97,9 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		// Add css variables.
-		$primary_color      = isset( $wcapf['primary_color'] ) ? $wcapf['primary_color'] : '#345DBB';
-		$primary_text_color = isset( $wcapf['primary_text_color'] ) ? $wcapf['primary_text_color'] : '#ffffff';
-		$star_icon_color    = isset( $wcapf['star_icon_color'] ) ? $wcapf['star_icon_color'] : 'rgb(240, 201, 48)';
+		$primary_color      = WCAPF_Helper::wcapf_option( 'primary_color', '#345DBB' );
+		$primary_text_color = WCAPF_Helper::wcapf_option( 'primary_text_color', '#ffffff' );
+		$star_icon_color    = WCAPF_Helper::wcapf_option( 'star_icon_color', 'rgb(240, 201, 48)' );
 
 		list( $r, $g, $b ) = WCAPF_Helper::get_rgb_from_hex( $primary_color );
 		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
@@ -199,8 +197,6 @@ class WCAPF_Frontend_Scripts {
 	 * @return array
 	 */
 	private static function get_js_params( $for_preview ) {
-		global $wcapf, $wcapf_form;
-
 		$js_data = array(
 			'enable_pagination_via_ajax',
 			'pagination_container',
@@ -223,7 +219,7 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		foreach ( $js_data as $key ) {
-			$settings[ $key ] = isset( $wcapf[ $key ] ) ? $wcapf[ $key ] : '';
+			$settings[ $key ] = WCAPF_Helper::wcapf_option( $key );
 		}
 
 		// Prevent attaching combobox on default orderby if combobox is disabled globally.
@@ -232,9 +228,10 @@ class WCAPF_Frontend_Scripts {
 		}
 
 		$chosen_no_results_text   = WCAPF_Helper::no_results_text();
-		$chosen_options_none_text = ! empty( $wcapf['chosen_no_options_text'] )
-			? $wcapf['chosen_no_options_text']
-			: __( 'No options to choose', 'wc-ajax-product-filter' );
+		$chosen_options_none_text = WCAPF_Helper::wcapf_option(
+			'chosen_no_options_text',
+			__( 'No options to choose', 'wc-ajax-product-filter' )
+		);
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
@@ -258,7 +255,7 @@ class WCAPF_Frontend_Scripts {
 			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
 			'reload_on_back'                           => true,
-			'filter_found'                             => (bool) $wcapf_form,
+			'found_wcapf'                              => WCAPF_Helper::found_wcapf(),
 			'update_document_title'                    => true,
 			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
 			'for_preview'                              => $for_preview,

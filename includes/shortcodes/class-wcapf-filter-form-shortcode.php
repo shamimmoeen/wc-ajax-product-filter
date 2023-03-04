@@ -38,6 +38,9 @@ class WCAPF_Filter_Form_Shortcode {
 	public function register_shortcode() {
 		$form = new WCAPF_Form();
 
+		// TODO: Show message
+		// if no form is created and shortcode placed in product-archive pages
+
 		// if ( ! $wcapf_form ) {
 		// 	return '<p>' . __( 'No form is set for this page. Please set a form for this page.', 'wc-ajax-product-filter' ) . '</p>';
 		// }

@@ -29,7 +29,7 @@ const wcapf_params = wcapf_params || {
 	'immediate_scroll_on_paginate': '',
 	'is_mobile': '',
 	'reload_on_back': '',
-	'filter_found': '',
+	'found_wcapf': '',
 	'update_document_title': '',
 	'use_tippyjs': '',
 	'for_preview': '',
