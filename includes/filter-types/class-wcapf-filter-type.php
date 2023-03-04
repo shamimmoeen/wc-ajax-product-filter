@@ -159,19 +159,30 @@ abstract class WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function prepare_manual_options( $manual_options ) {
-		$options = array();
+		$options  = array();
+		$defaults = array();
+
+		if ( 'product-status' === $this->field->type ) {
+			$defaults = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
+		}
 
 		foreach ( $manual_options as $option ) {
-			$value = $option['value'];
-			$label = $option['label'];
-			$count = 0;
+			$value   = $option['value'];
+			$label   = $option['label'];
+			$tooltip = isset( $option['tooltip'] ) ? $option['tooltip'] : '';
+			$count   = 0;
+
+			if ( empty( $label ) && ! empty( $defaults[ $value ] ) ) {
+				$label = $defaults[ $value ];
+			}
 
 			$item = array_merge(
 				$option,
 				array(
-					'id'    => $value,
-					'name'  => $label,
-					'count' => $count,
+					'id'      => $value,
+					'name'    => $label,
+					'tooltip' => $tooltip,
+					'count'   => $count,
 				)
 			);
 

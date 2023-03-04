@@ -106,10 +106,10 @@ class WCAPF_Hooks {
 			return $classes;
 		}
 
-		$improve_scrollbar  = isset( $wcapf['improve_scrollbar'] ) ? $wcapf['improve_scrollbar'] : '';
-		$remove_focus_style = isset( $wcapf['remove_focus_style'] ) && $wcapf['remove_focus_style'];
-		$use_wait_cursor    = isset( $wcapf['wait_cursor'] ) && $wcapf['wait_cursor'];
-		$label_size         = isset( $wcapf['label_size'] ) ? $wcapf['label_size'] : '';
+		$improve_scrollbar  = WCAPF_Helper::wcapf_option( 'improve_scrollbar' );
+		$remove_focus_style = WCAPF_Helper::wcapf_option( 'remove_focus_style' );
+		$use_wait_cursor    = WCAPF_Helper::wcapf_option( 'wait_cursor' );
+		$label_size         = WCAPF_Helper::wcapf_option( 'label_size' );
 
 		if ( $improve_scrollbar ) {
 			$classes[] = 'wcapf-pretty-scroll';
@@ -131,13 +131,7 @@ class WCAPF_Hooks {
 	}
 
 	private function should_we_proceed() {
-		global $wcapf;
-
-		if ( $wcapf ) {
-			return true;
-		}
-
-		return false;
+		return WCAPF_Helper::found_wcapf();
 	}
 
 	/**
@@ -246,9 +240,7 @@ class WCAPF_Hooks {
 	 * @since 4.0.0
 	 */
 	private function render_active_filters() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['active_filters_on_top'] ) ) {
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'active_filters_on_top' ) ) ) {
 			WCAPF_Template_Loader::get_instance()->load(
 				'active-filters',
 				array(
@@ -284,10 +276,8 @@ class WCAPF_Hooks {
 	 * @return array The filter data that will be merged with filter settings.
 	 */
 	public function set_form_filters_data( $data ) {
-		global $wcapf;
-
 		$empty_options = array( 'show', 'remove' );
-		$remove_empty  = isset( $wcapf['remove_empty'] ) ? $wcapf['remove_empty'] : '';
+		$remove_empty  = WCAPF_Helper::wcapf_option( 'remove_empty' );
 
 		if ( ! in_array( $remove_empty, $empty_options ) ) {
 			$remove_empty = 'show';
@@ -296,9 +286,9 @@ class WCAPF_Hooks {
 		return wp_parse_args(
 			array(
 				'hide_empty'    => $remove_empty,
-				'update_count'  => ! empty( $wcapf['update_count'] ),
-				'use_chosen'    => ! empty( $wcapf['use_chosen'] ),
-				'use_term_slug' => ! empty( $wcapf['use_term_slug'] ),
+				'update_count'  => ! empty( WCAPF_Helper::wcapf_option( 'update_count' ) ),
+				'use_chosen'    => ! empty( WCAPF_Helper::wcapf_option( 'use_chosen' ) ),
+				'use_term_slug' => ! empty( WCAPF_Helper::wcapf_option( 'use_term_slug' ) ),
 			),
 			$data
 		);

@@ -60,22 +60,25 @@ class WCAPF_Form {
 			}
 
 			if ( 'component' === $field_type ) {
-				$component = $field_instance->get_sub_field_value( 'component' );
-
-				if ( 'active-filters' === $component ) {
-					$this->render_active_filters( $field_instance );
-				} elseif ( 'reset-button' === $component ) {
-					$this->render_reset_button( $field_instance );
-				}
+				$this->render_components( $field_instance );
 			} elseif ( 'price' === $field_type ) {
 				$this->render_price_filter( $field_instance );
 			} else {
-				$walker = new WCAPF_Walker( $field_instance );
-
-				$this->before_filter( $field_instance );
-				echo $walker->build_menu();
-				$this->after_filter();
+				$this->render_list_type_filter( $field_instance );
 			}
+		}
+
+		if ( WCAPF_Helper::is_debugging() ) {
+			if ( ! $fields ) {
+				echo '<p>' . esc_html__( 'The form is empty.', 'wc-ajax-product-filter' ) . '</p>';
+			}
+
+			/** @noinspection HtmlUnknownTarget */
+			echo sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( WCAPF_Helper::form_edit_url( $form_id ) ),
+				__( 'Edit form', 'wc-ajax-product-filter' )
+			);
 		}
 
 		do_action( 'wcapf_after_form_filters', $form_id );
@@ -95,6 +98,21 @@ class WCAPF_Form {
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return void
+	 */
+	protected function render_components( $field_instance ) {
+		$component = $field_instance->get_sub_field_value( 'component' );
+
+		if ( 'active-filters' === $component ) {
+			$this->render_active_filters( $field_instance );
+		} elseif ( 'reset-button' === $component ) {
+			$this->render_reset_button( $field_instance );
+		}
 	}
 
 	/**
@@ -142,23 +160,11 @@ class WCAPF_Form {
 	 *
 	 * @return void
 	 */
-	private function render_price_filter( $field_instance ) {
-		$display_type = $field_instance->display_type;
-
-		$walker = new WCAPF_Walker( $field_instance );
-
-		$range_input_display_types = WCAPF_Helper::range_input_display_types();
-
-		$items = apply_filters( 'wcapf_price_filter_items', array(), $field_instance );
+	protected function render_price_filter( $field_instance ) {
+		$range = WCAPF_Product_Filter_Utils::get_price_range( $field_instance );
 
 		$this->before_filter( $field_instance );
-
-		if ( in_array( $display_type, $range_input_display_types ) ) {
-			$this->render_range_input_filter( $field_instance, $items );
-		} else {
-			echo $walker->build_menu(); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-		}
-
+		$this->render_range_input_filter( $field_instance, $range );
 		$this->after_filter();
 	}
 
@@ -169,7 +175,7 @@ class WCAPF_Form {
 	 *
 	 * @return void
 	 */
-	private function before_filter( $field_instance ) {
+	protected function before_filter( $field_instance ) {
 		$classes    = $this->get_filter_classes( $field_instance );
 		$filter_id  = $field_instance->filter_id;
 		$filter_key = $field_instance->filter_key;
@@ -191,11 +197,7 @@ class WCAPF_Form {
 		$accordion_header_id = 'wcapf-filter-accordion-header-' . $filter_id;
 		$accordion_panel_id  = 'wcapf-filter-accordion-panel-' . $filter_id;
 
-		$filter_classes = apply_filters(
-			'wcapf_field_classes',
-			implode( ' ', $classes ),
-			$field_instance
-		);
+		$filter_classes = implode( ' ', $classes );
 
 		$filter_start_wrapper = '<div';
 		$filter_start_wrapper .= ' class="' . esc_attr( $filter_classes ) . '"';
@@ -266,7 +268,7 @@ class WCAPF_Form {
 			$classes[] = 'has-soft-limit';
 		}
 
-		return $classes;
+		return apply_filters( 'wcapf_filter_classes', $classes, $field_instance );
 	}
 
 	/**
@@ -295,9 +297,6 @@ class WCAPF_Form {
 
 		if ( $auto_detect ) {
 			$range_min_value = isset( $range_min_max['min'] ) ? $range_min_max['min'] : '';
-		}
-
-		if ( $auto_detect ) {
 			$range_max_value = isset( $range_min_max['max'] ) ? $range_min_max['max'] : '';
 		}
 
@@ -347,7 +346,8 @@ class WCAPF_Form {
 
 		$step = apply_filters( 'wcapf_filter_range_step', $step, $min_value, $max_value, $field_instance );
 
-		$slider_id = $filter_key . '-slider-' . $filter_id;
+		$slider_id     = $filter_key . '-slider-' . $filter_id;
+		$slider_preset = WCAPF_Helper::wcapf_option( 'number_range_slider_preset' );
 
 		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
@@ -372,6 +372,7 @@ class WCAPF_Form {
 			'thousand_separator'    => $thousand_separator,
 			'decimal_separator'     => $decimal_separator,
 			'slider_id'             => $slider_id,
+			'slider_preset'         => $slider_preset,
 			'filter_url'            => $url_builder->get_range_url(),
 			'clear_filter_url'      => $url_builder->get_clear_filter_url(),
 		);
@@ -384,12 +385,25 @@ class WCAPF_Form {
 	 *
 	 * @return void
 	 */
-	private function after_filter() {
+	protected function after_filter() {
 		echo '</div>'; // Ends .wcapf-filter-inner
 		echo '</div>'; // Ends .wcapf-filter
 	}
 
-	private function set_done() {
+	/**
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return void
+	 */
+	protected function render_list_type_filter( $field_instance ) {
+		$walker = new WCAPF_Walker( $field_instance );
+
+		$this->before_filter( $field_instance );
+		echo $walker->build_menu();
+		$this->after_filter();
+	}
+
+	protected function set_done() {
 		global $wcapf_form;
 
 		$wcapf_form['found'] = true;

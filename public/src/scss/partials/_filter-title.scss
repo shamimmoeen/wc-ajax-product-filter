@@ -41,3 +41,46 @@
 		}
 	}
 }
+
+// Clear filter button
+.wcapf-filter {
+	.wcapf-filter-title {
+		.wcapf-filter-clear-btn {
+			@include button;
+
+			border-radius: 0.125em; // For showing rounded outline when focused.
+			display: inline-flex;
+			flex-shrink: 0;
+			font-size: 0.8em;
+			font-weight: normal;
+			color: var(--wcapf-primary-color);
+			align-items: center;
+			text-transform: lowercase;
+
+			&:hover,
+			&:focus {
+				color: var(--wcapf-primary-color);
+			}
+
+			&::before {
+				content: '‹';
+
+				@include ltr {
+					margin-right: 0.1875em;
+				}
+
+				@include rtl {
+					margin-left: 0.1875em;
+				}
+			}
+		}
+	}
+
+	&:not(.filter-active) {
+		.wcapf-filter-title {
+			.wcapf-filter-clear-btn {
+				display: none;
+			}
+		}
+	}
+}
