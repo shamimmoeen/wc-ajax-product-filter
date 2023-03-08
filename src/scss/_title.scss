@@ -6,6 +6,9 @@
 	display: flex;
 	gap: 12px;
 	padding: var(--vr-padding) var(--hr-padding);
+	// Applicable when form preview is disabled
+	max-width: 1300px;
+	margin: 0 auto;
 
 	$size: 40px;
 

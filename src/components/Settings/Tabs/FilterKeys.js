@@ -93,10 +93,6 @@ const FilterKey = ({ data, index }) => {
 				<div className='__value'>
 					<Text
 						id={type}
-						label={__(
-							'Search field placeholder',
-							'wc-ajax-product-filter'
-						)}
 						value={field_key}
 						placeholder={placeholder}
 						onChange={(value) =>
@@ -104,6 +100,7 @@ const FilterKey = ({ data, index }) => {
 						}
 						renderAsFormField={false}
 						customClass={inputClasses}
+						isFilterKey
 					/>
 				</div>
 

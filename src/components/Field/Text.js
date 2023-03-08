@@ -2,7 +2,7 @@ import { useLayoutEffect, useState } from '@wordpress/element';
 import TippyTooltip from '../TippyTooltip';
 import { getInputId, proTag } from '../utils';
 
-const InputField = ({
+const InputFieldWithBlur = ({
 	inputId,
 	id,
 	index,
@@ -38,6 +38,36 @@ const InputField = ({
 			value={value}
 			onChange={handleInputChange}
 			onBlur={() => onChange(value, id, index)}
+			{...rest}
+		/>
+	);
+};
+
+const InputField = ({
+	inputId,
+	id,
+	index,
+	initialValue: value,
+	onChange,
+	type = 'text',
+	isDisabled,
+	customClass,
+	...rest
+}) => {
+	let classes = 'components-text-control__input';
+
+	if (customClass) {
+		classes += ` ${customClass}`;
+	}
+
+	return (
+		<input
+			type={type}
+			id={inputId}
+			className={classes}
+			disabled={isDisabled}
+			value={value}
+			onChange={(e) => onChange(e.target.value, id, index)}
 			{...rest}
 		/>
 	);
@@ -84,22 +114,6 @@ const Text = ({
 											In the PRO version, the URL will be
 											<br />
 											/color-blue/size-large
-										</>
-									}
-								/>
-							)}
-
-							{'products_loop_container' === id && (
-								<TippyTooltip
-									content={
-										<>
-											This will only work when showing the
-											form on non-product archive pages.
-											<br />
-											<br />
-											If a page contains multiple forms,
-											the products loop container of the
-											first form will work.
 										</>
 									}
 								/>
@@ -192,17 +206,31 @@ const Text = ({
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
-							<InputField
-								inputId={inputId}
-								id={id}
-								index={index}
-								initialValue={value}
-								onChange={onChange}
-								type={type}
-								isDisabled={isDisabled}
-								customClass={customClass}
-								{...rest}
-							/>
+							{isFilterKey ? (
+								<InputFieldWithBlur
+									inputId={inputId}
+									id={id}
+									index={index}
+									initialValue={value}
+									onChange={onChange}
+									type={type}
+									isDisabled={isDisabled}
+									customClass={customClass}
+									{...rest}
+								/>
+							) : (
+								<InputField
+									inputId={inputId}
+									id={id}
+									index={index}
+									initialValue={value}
+									onChange={onChange}
+									type={type}
+									isDisabled={isDisabled}
+									customClass={customClass}
+									{...rest}
+								/>
+							)}
 
 							{tooltip && <TippyTooltip content={tooltip} />}
 						</div>
@@ -218,17 +246,33 @@ const Text = ({
 		);
 	} else {
 		return (
-			<InputField
-				inputId={inputId}
-				id={id}
-				index={index}
-				initialValue={value}
-				onChange={onChange}
-				type={type}
-				isDisabled={isDisabled}
-				customClass={customClass}
-				{...rest}
-			/>
+			<>
+				{isFilterKey ? (
+					<InputFieldWithBlur
+						inputId={inputId}
+						id={id}
+						index={index}
+						initialValue={value}
+						onChange={onChange}
+						type={type}
+						isDisabled={isDisabled}
+						customClass={customClass}
+						{...rest}
+					/>
+				) : (
+					<InputField
+						inputId={inputId}
+						id={id}
+						index={index}
+						initialValue={value}
+						onChange={onChange}
+						type={type}
+						isDisabled={isDisabled}
+						customClass={customClass}
+						{...rest}
+					/>
+				)}
+			</>
 		);
 	}
 };

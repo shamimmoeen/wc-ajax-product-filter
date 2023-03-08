@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
-import { Animate, Button } from '@wordpress/components';
+import { Animate, Button, CheckboxControl } from '@wordpress/components';
 import { closeSmall } from '@wordpress/icons';
 import classnames from 'classnames';
 import Select from '../Field/Select';
@@ -10,6 +10,7 @@ import useFormSettings from './useFormSettings';
 import { foundProVersion, proTag } from '../utils';
 import { PlusIcon } from '../SVGIcons';
 import TippyTooltip from '../TippyTooltip';
+import ProductQuery from './ProductQuery';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -24,7 +25,12 @@ const Location = ({
 	showRemove,
 	handleRemoveLocation,
 }) => {
-	const { location: _location, sub_location } = locationData;
+	const {
+		location: _location,
+		sub_location,
+		results_method,
+		product_query,
+	} = locationData;
 
 	const firstRender = useRef(true);
 
@@ -57,6 +63,20 @@ const Location = ({
 
 	const handleSubLocationChange = (selected) => {
 		updateLocation('sub_location', selected);
+	};
+
+	const handleResultsMethodChange = (value) => {
+		if (value) {
+			updateLocation('results_method', 'wcapf-form');
+		} else {
+			updateLocation('results_method', '');
+		}
+	};
+
+	const handleQueryChange = (key, value) => {
+		const newQuery = { ...product_query, [key]: value };
+
+		updateLocation('product_query', newQuery);
 	};
 
 	const updateLocation = (key, value) => {
@@ -118,6 +138,33 @@ const Location = ({
 							renderAsFormField={false}
 						/>
 					</div>
+				)}
+
+				{'page' === _location && sub_location && (
+					<>
+						<div className='__column __results_method_checkbox'>
+							<CheckboxControl
+								label={__(
+									'Is combined with another form?',
+									'wc-ajax-product-filter'
+								)}
+								help={__(
+									'Enable this if there is another form on this page with a product query. If multiple queries are found on a page, the query with the highest priority will work only.',
+									'wc-ajax-product-filter'
+								)}
+								checked={'wcapf-form' === results_method}
+								onChange={handleResultsMethodChange}
+							/>
+						</div>
+
+						{'wcapf-form' !== results_method && (
+							<ProductQuery
+								index={index}
+								query={product_query}
+								handleQueryChange={handleQueryChange}
+							/>
+						)}
+					</>
 				)}
 			</div>
 

@@ -399,6 +399,12 @@
 		box-shadow: none;
 	}
 
+	.__react_select__placeholder {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	.__react_select__value-container--is-multi {
 		.__react_select__multi-value__label {
 			font-size: unset;
@@ -455,7 +461,7 @@
 
 				.__location {
 					position: relative;
-					max-width: calc(350px - 18px);
+					max-width: calc(100% - 70px);
 					padding: 8px;
 					border: 1px solid #ddd;
 					margin-bottom: 10px;

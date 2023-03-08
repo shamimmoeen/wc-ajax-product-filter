@@ -348,17 +348,71 @@ class WCAPF_API_Utils {
 	 * @return array
 	 */
 	public static function sort_by_options() {
-		$_sort_by_options = WCAPF_Helper::get_sort_by_options();
-		$sort_by_options  = array();
-
-		foreach ( $_sort_by_options as $sort_by_key => $sort_by_label ) {
-			$sort_by_options[] = array(
-				'label' => $sort_by_label,
-				'value' => $sort_by_key,
-			);
-		}
-
-		return $sort_by_options;
+		return apply_filters(
+			'wcapf_sort_by_options',
+			array(
+				array(
+					'label' => __( 'Post ID', 'wc-ajax-product-filter' ),
+					'value' => 'ID',
+				),
+				array(
+					'label' => __( 'Author', 'wc-ajax-product-filter' ),
+					'value' => 'author',
+				),
+				array(
+					'label' => __( 'Title', 'wc-ajax-product-filter' ),
+					'value' => 'title',
+				),
+				array(
+					'label' => __( 'Name (Post Slug)', 'wc-ajax-product-filter' ),
+					'value' => 'name',
+				),
+				array(
+					'label' => __( 'Date', 'wc-ajax-product-filter' ),
+					'value' => 'date',
+				),
+				array(
+					'label' => __( 'Modified', 'wc-ajax-product-filter' ),
+					'value' => 'modified',
+				),
+				array(
+					'label' => __( 'Parent ID', 'wc-ajax-product-filter' ),
+					'value' => 'parent',
+				),
+				array(
+					'label' => __( 'Random Order', 'wc-ajax-product-filter' ),
+					'value' => 'rand',
+				),
+				array(
+					'label' => __( 'Review Count', 'wc-ajax-product-filter' ),
+					'value' => 'review_count',
+				),
+				array(
+					'label' => __( 'Menu Order', 'wc-ajax-product-filter' ),
+					'value' => 'menu_order',
+				),
+				array(
+					'label' => __( 'Total Sales', 'wc-ajax-product-filter' ),
+					'value' => 'total_sales',
+				),
+				array(
+					'label' => __( 'Average Rating', 'wc-ajax-product-filter' ),
+					'value' => 'average_rating',
+				),
+				array(
+					'label' => __( 'Min Price', 'wc-ajax-product-filter' ),
+					'value' => 'min_price',
+				),
+				array(
+					'label' => __( 'Max Price', 'wc-ajax-product-filter' ),
+					'value' => 'max_price',
+				),
+				array(
+					'label' => __( 'Meta Value', 'wc-ajax-product-filter' ),
+					'value' => 'meta_value',
+				),
+			)
+		);
 	}
 
 	/**
@@ -367,17 +421,55 @@ class WCAPF_API_Utils {
 	 * @return array
 	 */
 	public static function meta_type_options() {
-		$_meta_type_options = WCAPF_Helper::get_meta_type_options();
-		$meta_type_options  = array();
+		return apply_filters(
+			'wcapf_meta_type_options',
+			array(
+				array(
+					'value' => 'alphabetic',
+					'label' => __( 'Alphabetic', 'wc-ajax-product-filter' ),
+					'cast'  => 'CHAR',
+				),
+				array(
+					'value' => 'numeric',
+					'label' => __( 'Numeric', 'wc-ajax-product-filter' ),
+					'cast'  => 'NUMERIC',
+				),
+				array(
+					'value' => 'date',
+					'label' => __( 'Date', 'wc-ajax-product-filter' ),
+					'cast'  => 'DATE',
+				),
+				array(
+					'value' => 'datetime',
+					'label' => __( 'DateTime', 'wc-ajax-product-filter' ),
+					'cast'  => 'DATETIME',
+				),
+				array(
+					'value' => 'decimal',
+					'label' => __( 'Decimal', 'wc-ajax-product-filter' ),
+					'cast'  => 'DECIMAL',
+				),
+			)
+		);
+	}
 
-		foreach ( $_meta_type_options as $meta_type_key => $meta_type_label ) {
-			$meta_type_options[] = array(
-				'label' => $meta_type_label,
-				'value' => $meta_type_key,
+	/**
+	 * Gets the post statuses.
+	 *
+	 * @return array
+	 */
+	public static function post_statuses() {
+		$raw   = array_reverse( get_post_statuses() );
+		$array = array();
+
+		foreach ( $raw as $post_status => $label ) {
+			$array[] = array(
+				'label' => $label,
+				'value' => $post_status,
 			);
 		}
 
-		return $meta_type_options;
+		return $array;
 	}
 
 	public static function user_role_options() {

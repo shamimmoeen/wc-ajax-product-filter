@@ -49,6 +49,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_terms_for_dropdown', array( $this, 'get_terms_for_dropdown' ) );
 		add_action( 'wp_ajax_wcapf_get_authors_for_dropdown', array( $this, 'get_authors_for_dropdown' ) );
 		add_action( 'wp_ajax_wcapf_get_pages_for_dropdown', array( $this, 'get_pages_for_dropdown' ) );
+		add_action( 'wp_ajax_wcapf_get_products_for_dropdown', array( $this, 'get_products_for_dropdown' ) );
 
 		// For form.
 		add_action( 'wp_ajax_wcapf_get_form_data', array( $this, 'get_form_data' ) );
@@ -823,14 +824,66 @@ class WCAPF_API {
 			'offset'         => $offset,
 		);
 
+		$wc_pages = array( 'shop', 'cart', 'checkout', 'myaccount', 'terms' );
+		$page_ids = array();
+
+		foreach ( $wc_pages as $page ) {
+			$wc_page_id = wc_get_page_id( $page );
+
+			if ( 0 < $wc_page_id ) {
+				$page_ids[] = $wc_page_id;
+			}
+		}
+
+		if ( $page_ids ) {
+			$args['exclude'] = $page_ids;
+		}
+
 		$pages    = get_posts( $args );
 		$response = array();
 
 		if ( $pages ) {
 			foreach ( $pages as $page ) {
+				$page_id = $page->ID;
+
 				$response[] = array(
-					'label' => $page->post_title,
-					'value' => absint( $page->ID ),
+					'label'     => $page->post_title,
+					'value'     => absint( $page_id ),
+					'permalink' => get_the_permalink( $page_id ),
+				);
+			}
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Gets the products via ajax.
+	 *
+	 * @return void
+	 */
+	public function get_products_for_dropdown() {
+		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+
+		$per_page = 20;
+		$offset   = ( $page - 1 ) * $per_page;
+
+		$args = array(
+			'post_type'      => 'product',
+			's'              => $keyword,
+			'posts_per_page' => $per_page,
+			'offset'         => $offset,
+		);
+
+		$products = get_posts( $args );
+		$response = array();
+
+		if ( $products ) {
+			foreach ( $products as $product ) {
+				$response[] = array(
+					'label' => $product->post_title,
+					'value' => absint( $product->ID ),
 				);
 			}
 		}

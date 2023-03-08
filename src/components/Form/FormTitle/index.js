@@ -100,7 +100,7 @@ const FormTitle = () => {
 				proComponents.includes(formFilter['component']);
 
 			if (!WCAPF_PRO && isPro) {
-				break;
+				continue;
 			}
 
 			const _formFilter = omit(formFilter, [
@@ -295,7 +295,6 @@ const FormTitle = () => {
 
 		const proSettings = [
 			'form_locations',
-			'products_loop_container',
 			'priority',
 			'form_layout',
 			'columns_per_row',
