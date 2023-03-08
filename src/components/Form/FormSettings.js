@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Number from '../Field/Number';
 import Select from '../Field/Select';
-import Text from '../Field/Text';
 import { foundProVersion } from '../utils';
 import {
 	filterModeOptions,
@@ -22,8 +21,6 @@ const FormSettings = () => {
 
 	const {
 		formSettings: {
-			form_locations,
-			products_loop_container,
 			priority,
 			form_layout,
 			columns_per_row,
@@ -33,20 +30,6 @@ const FormSettings = () => {
 			show_clear_btn,
 		},
 	} = state;
-
-	let showProductsLoopContainer;
-
-	if (form_locations) {
-		for (const locationData of form_locations) {
-			const { location } = locationData;
-
-			if ('page' === location) {
-				showProductsLoopContainer = true;
-
-				break;
-			}
-		}
-	}
 
 	const formLayouts = formLayoutOptions();
 	const formLayout = formLayouts.find(
@@ -66,23 +49,6 @@ const FormSettings = () => {
 	return (
 		<>
 			<AvailableOn />
-
-			{WCAPF_PRO && showProductsLoopContainer && (
-				<Text
-					id={'products_loop_container'}
-					label={__(
-						'Products loop container',
-						'wc-ajax-product-filter'
-					)}
-					description={__(
-						'Give a valid id/class of the HTML element that contains the products loop.',
-						'wc-ajax-product-filter'
-					)}
-					placeholder={'#id or .class'}
-					value={products_loop_container}
-					onChange={handleTextFieldChange}
-				/>
-			)}
 
 			{WCAPF_PRO && (
 				<Number

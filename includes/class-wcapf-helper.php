@@ -327,52 +327,6 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Gets the sort by options.
-	 *
-	 * @return array
-	 */
-	public static function get_sort_by_options() {
-		return apply_filters(
-			'wcapf_sort_by_options',
-			array(
-				'ID'             => __( 'Post ID', 'wc-ajax-product-filter' ),
-				'author'         => __( 'Author', 'wc-ajax-product-filter' ),
-				'title'          => __( 'Title', 'wc-ajax-product-filter' ),
-				'name'           => __( 'Name (Post Slug)', 'wc-ajax-product-filter' ),
-				'date'           => __( 'Date', 'wc-ajax-product-filter' ),
-				'modified'       => __( 'Modified', 'wc-ajax-product-filter' ),
-				'parent'         => __( 'Parent ID', 'wc-ajax-product-filter' ),
-				'rand'           => __( 'Random Order', 'wc-ajax-product-filter' ),
-				'review_count'   => __( 'Review Count', 'wc-ajax-product-filter' ),
-				'menu_order'     => __( 'Menu Order', 'wc-ajax-product-filter' ),
-				'total_sales'    => __( 'Total Sales', 'wc-ajax-product-filter' ),
-				'average_rating' => __( 'Average Rating', 'wc-ajax-product-filter' ),
-				'min_price'      => __( 'Min Price', 'wc-ajax-product-filter' ),
-				'max_price'      => __( 'Max Price', 'wc-ajax-product-filter' ),
-				'meta_value'     => __( 'Meta Value', 'wc-ajax-product-filter' ),
-			)
-		);
-	}
-
-	/**
-	 * Gets the meta type options.
-	 *
-	 * @return array
-	 */
-	public static function get_meta_type_options() {
-		return apply_filters(
-			'wcapf_meta_type_options',
-			array(
-				'alphabetic' => __( 'Alphabetic', 'wc-ajax-product-filter' ),
-				'numeric'    => __( 'Numeric', 'wc-ajax-product-filter' ),
-				'date'       => __( 'Date', 'wc-ajax-product-filter' ),
-				'datetime'   => __( 'DateTime', 'wc-ajax-product-filter' ),
-				'decimal'    => __( 'Decimal', 'wc-ajax-product-filter' ),
-			)
-		);
-	}
-
-	/**
 	 * @return array
 	 */
 	public static function range_input_display_types() {

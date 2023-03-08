@@ -1,3 +1,4 @@
+import { removeCopiedToClipboardNotice } from '../notices';
 import useFormData from './useFormData';
 
 const useFormSettings = (state, dispatch) => {
@@ -40,6 +41,8 @@ const useFormSettings = (state, dispatch) => {
 			type: 'SET_FORM_SETTINGS',
 			payload: { ...formSettings, [key]: value },
 		});
+
+		removeCopiedToClipboardNotice();
 
 		setDirty();
 	};

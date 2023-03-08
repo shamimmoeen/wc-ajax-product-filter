@@ -44,6 +44,12 @@ const SelectMulti = ({
 				keyword,
 				page,
 			};
+		} else if ('product' === type) {
+			ajaxParams = {
+				action: 'wcapf_get_products_for_dropdown',
+				keyword,
+				page,
+			};
 		} else {
 			ajaxParams = {
 				action: 'wcapf_get_terms_for_dropdown',

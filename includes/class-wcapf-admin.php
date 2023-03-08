@@ -307,6 +307,7 @@ class WCAPF_Admin {
 				$params['time_periods']    = $utils::time_period_options();
 				$params['sort_by_options'] = $utils::sort_by_options();
 				$params['meta_types']      = $utils::meta_type_options();
+				$params['post_statuses']   = $utils::post_statuses();
 				$params['user_roles']      = $user_roles;
 
 				$params['author_roles']            = isset( $settings['author_roles'] )

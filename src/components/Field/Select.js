@@ -14,6 +14,7 @@ import { getInputId, proTag } from '../utils';
 
 const SimpleReactSelect = ({
 	inputId,
+	placeholder,
 	options,
 	value,
 	onChange,
@@ -35,6 +36,7 @@ const SimpleReactSelect = ({
 			}}
 			formatGroupLabel={FormatGroupLabel}
 			isSearchable={isSearchable}
+			placeholder={placeholder}
 			noOptionsMessage={() =>
 				__('No option found', 'wc-ajax-product-filter')
 			}
@@ -64,6 +66,7 @@ const Select = ({
 	index = '',
 	label,
 	description,
+	placeholder,
 	options,
 	value,
 	onChange,
@@ -100,6 +103,7 @@ const Select = ({
 							<SimpleReactSelect
 								key={inputKey}
 								inputId={inputId}
+								placeholder={placeholder}
 								options={options}
 								value={value}
 								classes={customClasses}
@@ -128,6 +132,7 @@ const Select = ({
 			<SimpleReactSelect
 				key={inputKey}
 				inputId={inputId}
+				placeholder={placeholder}
 				options={options}
 				value={value}
 				classes={customClasses}

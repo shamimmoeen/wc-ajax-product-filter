@@ -327,6 +327,7 @@ const General = ({ index }) => {
 						onChange={handleFilterKeyChange}
 						isDisabled={id || globalFilterKey}
 						tooltip={filterKeyDisabledInfo}
+						isFilterKey
 					/>
 				</>
 			)}

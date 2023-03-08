@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import TopBar from '../TopBar';
 import FormTitle from './FormTitle';
 import FormTabPanel from './FormTabPanel';
-import FormPreview from './FormPreview';
+// import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
 import { defaultFormSettings } from '../utilsForForm';
 import {
@@ -57,7 +57,7 @@ const Form = () => {
 						proComponents.includes(_formFilter['component']);
 
 					if (!WCAPF_PRO && isPro) {
-						break;
+						continue;
 					}
 
 					const formFilter = {
@@ -125,7 +125,7 @@ const Form = () => {
 						</div>
 					</div>
 
-					<FormPreview />
+					{/* <FormPreview /> */}
 				</div>
 
 				<Notifications />
