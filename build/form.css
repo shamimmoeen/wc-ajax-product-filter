@@ -1999,12 +1999,6 @@ body.rtl .__product_query .__post_status .components-base-control {
 .__product_query .__meta_query .__meta_query_row .__bottom_input .__meta_value {
   max-width: 140px;
 }
-.__product_query .__meta_query .__meta_query_row .__decimal_places_input {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  align-items: center;
-}
 @media (min-width: 768px) {
   .__product_query .__exclude .__custom_react_select {
     min-width: 300px;

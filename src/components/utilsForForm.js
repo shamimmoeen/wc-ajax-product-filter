@@ -1,30 +1,18 @@
 import { __ } from '@wordpress/i18n';
 import { mergeSelectOptions } from './utils';
 
-const defaultLocation = {
-	location: 'product_archive_pages',
-	sub_location: '',
-	product_query: {
-		post_status: ['publish'],
-		sticky_posts: 'default',
-		default_order: 'default',
-		order_direction: 'desc',
-		order_meta_value: '',
-		order_meta_type: 'alphabetic',
-		columns: 3,
-		posts_per_page: 9,
-		offset: 0,
-		enable_pagination: '',
-		tax_query: [],
-		meta_query: [],
-		exclude: [],
-		no_post_message: '',
-	},
-};
+export function defaultLocation() {
+	return {
+		location: 'product_archive_pages',
+		sub_location: '',
+		results_method: '',
+		product_query: wcapf_admin_params.default_product_query,
+	};
+}
 
 export function defaultFormSettings() {
 	return {
-		form_locations: [defaultLocation],
+		form_locations: [defaultLocation()],
 		priority: '0',
 		form_layout: 'vertical',
 		columns_per_row: '4',

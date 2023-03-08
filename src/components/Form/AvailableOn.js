@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect, useRef } from '@wordpress/element';
+import { useLayoutEffect, useRef } from '@wordpress/element';
 import { Animate, Button, CheckboxControl } from '@wordpress/components';
 import { closeSmall } from '@wordpress/icons';
 import classnames from 'classnames';
@@ -11,6 +11,8 @@ import { foundProVersion, proTag } from '../utils';
 import { PlusIcon } from '../SVGIcons';
 import TippyTooltip from '../TippyTooltip';
 import ProductQuery from './ProductQuery';
+import { isEqual } from 'lodash';
+import { defaultLocation } from '../utilsForForm';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -34,7 +36,7 @@ const Location = ({
 
 	const firstRender = useRef(true);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (firstRender.current) {
 			firstRender.current = false;
 
@@ -66,11 +68,9 @@ const Location = ({
 	};
 
 	const handleResultsMethodChange = (value) => {
-		if (value) {
-			updateLocation('results_method', 'wcapf-form');
-		} else {
-			updateLocation('results_method', '');
-		}
+		const resultsMethod = value ? 'wcapf-form' : '';
+
+		updateLocation('results_method', resultsMethod);
 	};
 
 	const handleQueryChange = (key, value) => {
@@ -80,6 +80,10 @@ const Location = ({
 	};
 
 	const updateLocation = (key, value) => {
+		if (isEqual(value, locationData[key])) {
+			return;
+		}
+
 		const newLocation = { ...locationData, [key]: value };
 
 		handleFormLocation(index, newLocation);
@@ -208,7 +212,7 @@ const AvailableOn = () => {
 	}
 
 	const handleAddLocation = () => {
-		const _formLocations = [...formLocations, {}];
+		const _formLocations = [...formLocations, defaultLocation()];
 
 		handleFormLocations(_formLocations);
 	};
@@ -225,9 +229,9 @@ const AvailableOn = () => {
 		handleFormLocations(_formLocations);
 	};
 
-	const handleRemoveLocation = (location) => {
+	const handleRemoveLocation = (index) => {
 		const _formLocations = formLocations.filter(
-			(_location) => location !== _location
+			(_location, _index) => index !== _index
 		);
 
 		handleFormLocations(_formLocations);
@@ -271,8 +275,8 @@ const AvailableOn = () => {
 												handleFormLocation
 											}
 											showRemove={showRemove}
-											handleRemoveLocation={
-												handleRemoveLocation
+											handleRemoveLocation={() =>
+												handleRemoveLocation(index)
 											}
 										/>
 									))}
