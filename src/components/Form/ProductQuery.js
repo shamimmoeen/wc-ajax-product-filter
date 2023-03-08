@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button, CheckboxControl, Icon } from '@wordpress/components';
-import { useEffect, useRef } from '@wordpress/element';
+import { useLayoutEffect, useRef, useState } from '@wordpress/element';
 import { closeSmall, plus } from '@wordpress/icons';
 import Select from '../Field/Select';
 import SelectMulti from '../Field/SelectMulti';
@@ -101,8 +101,7 @@ const defaultMetaQuery = {
 	meta_key: '',
 	meta_type: 'alphabetic',
 	operator: '=',
-	value: '',
-	decimal_places: 2,
+	meta_value: '',
 };
 
 const TaxQuery = ({
@@ -118,7 +117,7 @@ const TaxQuery = ({
 
 	const firstRender = useRef(true);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (firstRender.current) {
 			firstRender.current = false;
 
@@ -214,9 +213,10 @@ const MetaQuery = ({
 	query,
 	queryIndex,
 	handleQuerySelectChange,
+	handleMetaQueryTextChange,
 	handleRemoveQuery,
 }) => {
-	const { meta_key, meta_type, operator, value, decimal_places } = query;
+	const { meta_key, meta_type, operator, meta_value } = query;
 
 	const metaKey = metaKeys.find((option) => meta_key === option.value);
 
@@ -302,32 +302,26 @@ const MetaQuery = ({
 						<Text
 							id={`meta-query-value-${postFix}`}
 							placeholder={__('Meta value')}
-							value={value}
+							value={meta_value}
+							onChange={(value) =>
+								handleMetaQueryTextChange(
+									value,
+									'meta_value',
+									queryIndex
+								)
+							}
 							renderAsFormField={false}
 						/>
 					</div>
 				)}
 			</div>
-
-			{'decimal' === meta_type && (
-				<div className='__decimal_places_input'>
-					<label htmlFor={`meta-query-decimal-places-${postFix}`}>
-						{__('Decimal Places', 'wc-ajax-product-filter')}
-					</label>
-					<Text
-						id={`meta-query-decimal-places-${postFix}`}
-						type={'number'}
-						value={decimal_places}
-						renderAsFormField={false}
-						min={0}
-					/>
-				</div>
-			)}
 		</div>
 	);
 };
 
 const ProductQuery = ({ index, query, handleQueryChange }) => {
+	const [expanded, setExpanded] = useState(false);
+
 	const {
 		post_status,
 		sticky_posts,
@@ -441,6 +435,18 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 		handleQueryChange('tax_query', queries);
 	};
 
+	const handleMetaQueryTextChange = (value, key, queryIndex) => {
+		const queries = meta_query.map((query, index) => {
+			if (queryIndex === index) {
+				return { ...query, [key]: value };
+			}
+
+			return query;
+		});
+
+		handleQueryChange('meta_query', queries);
+	};
+
 	const handleRemoveQuery = (queryIndex, queryType) => {
 		let queries;
 
@@ -489,6 +495,18 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 
 	const code = '[wcapf_product_query]';
 
+	const expandBtnLabel = expanded
+		? __('Collapse', 'wc-ajax-product-filter')
+		: __('Expand', 'wc-ajax-product-filter');
+
+	const handleExpandQuery = () => {
+		if (expanded) {
+			setExpanded(false);
+		} else {
+			setExpanded(true);
+		}
+	};
+
 	return (
 		<div className='__column'>
 			<fieldset className='__product_query'>
@@ -512,330 +530,376 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 								<Icon icon={ClipboardIcon} size={24} />
 							)}
 						</div>
+
 						<p className='description'>
 							{__(
 								'Place the shortcode on the selected page to show the product loop.',
 								'wc-ajax-product-filter'
 							)}
 						</p>
+
+						<Button variant={'link'} onClick={handleExpandQuery}>
+							{expandBtnLabel}
+						</Button>
 					</div>
 				</div>
 
-				<div className='__field_row __post_status'>
-					<div className='__field_label'>
-						<label>
-							{__('Post Status', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						{postStatuses.map(({ label, value }) => (
-							<CheckboxControl
-								key={value}
-								label={label}
-								checked={post_status.includes(value)}
-								onChange={() => handlePostStatusChange(value)}
-							/>
-						))}
-					</div>
-				</div>
+				{expanded && (
+					<>
+						<div className='__field_row __post_status'>
+							<div className='__field_label'>
+								<label>
+									{__(
+										'Post Status',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__field_input'>
+								{postStatuses.map(({ label, value }) => (
+									<CheckboxControl
+										key={value}
+										label={label}
+										checked={post_status.includes(value)}
+										onChange={() =>
+											handlePostStatusChange(value)
+										}
+									/>
+								))}
+							</div>
+						</div>
 
-				<div className='__field_row __sticky_posts'>
-					<div className='__field_label'>
-						<label htmlFor={`stickyPosts-${index}`}>
-							{__('Sticky Posts', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<Select
-							id={`stickyPosts-${index}`}
-							inputKey={`stickyPosts-${index}`}
-							options={stickyPostOptions}
-							value={stickyPosts}
-							onChange={(selected) =>
-								handleSelectChange(selected, 'sticky_posts')
-							}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __default_order'>
-					<div className='__field_label'>
-						<label htmlFor={`default_order-${index}`}>
-							{__('Default Order', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<div className='__top_input'>
-							<div className='__default_order_select'>
+						<div className='__field_row __sticky_posts'>
+							<div className='__field_label'>
+								<label htmlFor={`stickyPosts-${index}`}>
+									{__(
+										'Sticky Posts',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__field_input'>
 								<Select
-									id={`default_order-${index}`}
-									inputKey={`default_order-${index}`}
-									options={orderByOptions}
-									value={defaultOrder}
+									id={`stickyPosts-${index}`}
+									inputKey={`stickyPosts-${index}`}
+									options={stickyPostOptions}
+									value={stickyPosts}
 									onChange={(selected) =>
 										handleSelectChange(
 											selected,
-											'default_order'
+											'sticky_posts'
 										)
 									}
 								/>
 							</div>
-							{'rand' !== default_order && (
-								<div className='__order_direction_select'>
-									<Select
-										id={`order_direction-${index}`}
-										inputKey={`order_direction-${index}`}
-										options={sortDirections}
-										value={orderDirection}
-										onChange={(selected) =>
-											handleSelectChange(
-												selected,
-												'order_direction'
-											)
-										}
-									/>
-								</div>
-							)}
 						</div>
 
-						{'meta_value' === default_order && (
-							<div className='__meta_value_input'>
-								<div className='__meta_value_select'>
-									<Select
-										id={`meta_value-${index}`}
-										inputKey={`meta_value-${index}`}
-										placeholder={__(
-											'Select meta key',
-											'wc-ajax-product-filter'
-										)}
-										options={metaKeys}
-										value={orderMetaValue}
-										onChange={(selected) =>
-											handleSelectChange(
-												selected,
-												'order_meta_value'
-											)
-										}
-									/>
-								</div>
-
-								{order_meta_value && (
-									<div className='__meta_type_select'>
+						<div className='__field_row __default_order'>
+							<div className='__field_label'>
+								<label htmlFor={`default_order-${index}`}>
+									{__(
+										'Default Order',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<div className='__top_input'>
+									<div className='__default_order_select'>
 										<Select
-											id={`meta_type-${index}`}
-											inputKey={`meta_type-${index}`}
-											options={metaTypes}
-											value={orderMetaType}
+											id={`default_order-${index}`}
+											inputKey={`default_order-${index}`}
+											options={orderByOptions}
+											value={defaultOrder}
 											onChange={(selected) =>
 												handleSelectChange(
 													selected,
-													'order_meta_type'
+													'default_order'
 												)
 											}
 										/>
 									</div>
+									{'rand' !== default_order && (
+										<div className='__order_direction_select'>
+											<Select
+												id={`order_direction-${index}`}
+												inputKey={`order_direction-${index}`}
+												options={sortDirections}
+												value={orderDirection}
+												onChange={(selected) =>
+													handleSelectChange(
+														selected,
+														'order_direction'
+													)
+												}
+											/>
+										</div>
+									)}
+								</div>
+
+								{'meta_value' === default_order && (
+									<div className='__meta_value_input'>
+										<div className='__meta_value_select'>
+											<Select
+												id={`meta_value-${index}`}
+												inputKey={`meta_value-${index}`}
+												placeholder={__(
+													'Select meta key',
+													'wc-ajax-product-filter'
+												)}
+												options={metaKeys}
+												value={orderMetaValue}
+												onChange={(selected) =>
+													handleSelectChange(
+														selected,
+														'order_meta_value'
+													)
+												}
+											/>
+										</div>
+
+										{order_meta_value && (
+											<div className='__meta_type_select'>
+												<Select
+													id={`meta_type-${index}`}
+													inputKey={`meta_type-${index}`}
+													options={metaTypes}
+													value={orderMetaType}
+													onChange={(selected) =>
+														handleSelectChange(
+															selected,
+															'order_meta_type'
+														)
+													}
+												/>
+											</div>
+										)}
+									</div>
 								)}
 							</div>
-						)}
-					</div>
-				</div>
+						</div>
 
-				<div className='__field_row __columns'>
-					<div className='__field_label'>
-						<label htmlFor={`columns-${index}`}>
-							{__('Columns', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<Text
-							id={`columns-${index}`}
-							type={'number'}
-							renderAsFormField={false}
-							value={columns}
-							onChange={(value) =>
-								handleQueryTextChange(value, 'columns')
-							}
-							min={1}
-							max={6}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __posts_per_page'>
-					<div className='__field_label'>
-						<label htmlFor={`posts_per_page-${index}`}>
-							{__('Posts Per Page', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<Text
-							id={`posts_per_page-${index}`}
-							type={'number'}
-							renderAsFormField={false}
-							value={posts_per_page}
-							onChange={(value) =>
-								handleQueryTextChange(value, 'posts_per_page')
-							}
-							min={1}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __offset'>
-					<div className='__field_label'>
-						<label htmlFor={`offset-${index}`}>
-							{__('Offset', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<Text
-							id={`offset-${index}`}
-							type={'number'}
-							renderAsFormField={false}
-							value={offset}
-							onChange={(value) =>
-								handleQueryTextChange(value, 'offset')
-							}
-							min={0}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __enable_pagination'>
-					<div className='__field_label'>
-						<label htmlFor={`enable_pagination-${index}`}>
-							{__('Enable Pagination', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<CheckboxControl
-							id={`enable_pagination-${index}`}
-							checked={enable_pagination}
-							onChange={handleEnablePagination}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __tax_query'>
-					<div className='__field_label'>
-						<label>
-							{__('Tax Query', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<div className='__tax_query_rows'>
-							{tax_query.map((taxQuery, taxQueryIndex) => (
-								<TaxQuery
-									key={taxQueryIndex}
-									index={index}
-									query={taxQuery}
-									queryIndex={taxQueryIndex}
-									handleQuerySelectChange={
-										handleQuerySelectChange
+						<div className='__field_row __columns'>
+							<div className='__field_label'>
+								<label htmlFor={`columns-${index}`}>
+									{__('Columns', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<Text
+									id={`columns-${index}`}
+									type={'number'}
+									renderAsFormField={false}
+									value={columns}
+									onChange={(value) =>
+										handleQueryTextChange(value, 'columns')
 									}
-									handleTaxonomyTermsChange={
-										handleTaxonomyTermsChange
-									}
-									handleResetTaxonomyTerms={
-										handleResetTaxonomyTerms
-									}
-									handleRemoveQuery={handleRemoveQuery}
+									min={1}
+									max={6}
 								/>
-							))}
+							</div>
 						</div>
 
-						<Button
-							icon={plus}
-							variant='secondary'
-							isSmall
-							onClick={handleAddTaxQuery}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __meta_query'>
-					<div className='__field_label'>
-						<label>
-							{__('Meta Query', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<div className='__meta_query_rows'>
-							{meta_query.map((metaQuery, metaQueryIndex) => (
-								<MetaQuery
-									key={metaQueryIndex}
-									index={index}
-									query={metaQuery}
-									queryIndex={metaQueryIndex}
-									handleQuerySelectChange={
-										handleQuerySelectChange
+						<div className='__field_row __posts_per_page'>
+							<div className='__field_label'>
+								<label htmlFor={`posts_per_page-${index}`}>
+									{__(
+										'Posts Per Page',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<Text
+									id={`posts_per_page-${index}`}
+									type={'number'}
+									renderAsFormField={false}
+									value={posts_per_page}
+									onChange={(value) =>
+										handleQueryTextChange(
+											value,
+											'posts_per_page'
+										)
 									}
-									handleRemoveQuery={handleRemoveQuery}
+									min={1}
 								/>
-							))}
+							</div>
 						</div>
 
-						<Button
-							icon={plus}
-							variant='secondary'
-							isSmall
-							onClick={handleAddMetaQuery}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __exclude'>
-					<div className='__field_label'>
-						<label htmlFor={`exclude-${index}`}>
-							{__('Exclude', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<SelectMulti
-							id={`exclude-${index}`}
-							inputKey={`exclude-${index}`}
-							type={'product'}
-							inputPlaceholder={__(
-								'Start typing to find the post'
-							)}
-							inputNoOptionsMessage={__(
-								'No posts found',
-								'wc-ajax-product-filter'
-							)}
-							value={exclude}
-							isMultiple
-							onChange={handleExcludePosts}
-							renderAsFormField={false}
-						/>
-					</div>
-				</div>
-
-				<div className='__field_row __no_post_message'>
-					<div className='__field_label'>
-						<label htmlFor={`no-post-message-${index}`}>
-							{__('No Post Message', 'wc-ajax-product-filter')}
-						</label>
-					</div>
-					<div className='__field_input'>
-						<div>
-							<Text
-								id={`no-post-message-${index}`}
-								renderAsFormField={false}
-								placeholder={__(
-									'Leave empty to use default',
-									'wc-ajax-product-filter'
-								)}
-								value={no_post_message}
-								onChange={(value) =>
-									handleQueryTextChange(
-										value,
-										'no_post_message'
-									)
-								}
-							/>
+						<div className='__field_row __offset'>
+							<div className='__field_label'>
+								<label htmlFor={`offset-${index}`}>
+									{__('Offset', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<Text
+									id={`offset-${index}`}
+									type={'number'}
+									renderAsFormField={false}
+									value={offset}
+									onChange={(value) =>
+										handleQueryTextChange(value, 'offset')
+									}
+									min={0}
+								/>
+							</div>
 						</div>
-					</div>
-				</div>
+
+						<div className='__field_row __enable_pagination'>
+							<div className='__field_label'>
+								<label htmlFor={`enable_pagination-${index}`}>
+									{__(
+										'Enable Pagination',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<CheckboxControl
+									id={`enable_pagination-${index}`}
+									checked={enable_pagination}
+									onChange={handleEnablePagination}
+								/>
+							</div>
+						</div>
+
+						<div className='__field_row __tax_query'>
+							<div className='__field_label'>
+								<label>
+									{__('Tax Query', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<div className='__tax_query_rows'>
+									{tax_query.map(
+										(taxQuery, taxQueryIndex) => (
+											<TaxQuery
+												key={taxQueryIndex}
+												index={index}
+												query={taxQuery}
+												queryIndex={taxQueryIndex}
+												handleQuerySelectChange={
+													handleQuerySelectChange
+												}
+												handleTaxonomyTermsChange={
+													handleTaxonomyTermsChange
+												}
+												handleResetTaxonomyTerms={
+													handleResetTaxonomyTerms
+												}
+												handleRemoveQuery={
+													handleRemoveQuery
+												}
+											/>
+										)
+									)}
+								</div>
+
+								<Button
+									icon={plus}
+									variant='secondary'
+									isSmall
+									onClick={handleAddTaxQuery}
+								/>
+							</div>
+						</div>
+
+						<div className='__field_row __meta_query'>
+							<div className='__field_label'>
+								<label>
+									{__('Meta Query', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<div className='__meta_query_rows'>
+									{meta_query.map(
+										(metaQuery, metaQueryIndex) => (
+											<MetaQuery
+												key={metaQueryIndex}
+												index={index}
+												query={metaQuery}
+												queryIndex={metaQueryIndex}
+												handleQuerySelectChange={
+													handleQuerySelectChange
+												}
+												handleMetaQueryTextChange={
+													handleMetaQueryTextChange
+												}
+												handleRemoveQuery={
+													handleRemoveQuery
+												}
+											/>
+										)
+									)}
+								</div>
+
+								<Button
+									icon={plus}
+									variant='secondary'
+									isSmall
+									onClick={handleAddMetaQuery}
+								/>
+							</div>
+						</div>
+
+						<div className='__field_row __exclude'>
+							<div className='__field_label'>
+								<label htmlFor={`exclude-${index}`}>
+									{__('Exclude', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<SelectMulti
+									id={`exclude-${index}`}
+									inputKey={`exclude-${index}`}
+									type={'product'}
+									inputPlaceholder={__(
+										'Start typing to find the post'
+									)}
+									inputNoOptionsMessage={__(
+										'No posts found',
+										'wc-ajax-product-filter'
+									)}
+									value={exclude}
+									isMultiple
+									onChange={handleExcludePosts}
+									renderAsFormField={false}
+								/>
+							</div>
+						</div>
+
+						<div className='__field_row __no_post_message'>
+							<div className='__field_label'>
+								<label htmlFor={`no-post-message-${index}`}>
+									{__(
+										'No Post Message',
+										'wc-ajax-product-filter'
+									)}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<div>
+									<Text
+										id={`no-post-message-${index}`}
+										renderAsFormField={false}
+										placeholder={__(
+											'Leave empty to use default',
+											'wc-ajax-product-filter'
+										)}
+										value={no_post_message}
+										onChange={(value) =>
+											handleQueryTextChange(
+												value,
+												'no_post_message'
+											)
+										}
+									/>
+								</div>
+							</div>
+						</div>
+					</>
+				)}
 			</fieldset>
 		</div>
 	);

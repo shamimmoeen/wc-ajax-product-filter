@@ -9647,7 +9647,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/close-small.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/close-small.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Field/Select */ "./src/components/Field/Select.js");
@@ -9658,6 +9658,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SVGIcons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../SVGIcons */ "./src/components/SVGIcons.js");
 /* harmony import */ var _TippyTooltip__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../TippyTooltip */ "./src/components/TippyTooltip.js");
 /* harmony import */ var _ProductQuery__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ProductQuery */ "./src/components/Form/ProductQuery.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _utilsForForm__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utilsForForm */ "./src/components/utilsForForm.js");
+
+
 
 
 
@@ -9691,7 +9696,7 @@ const Location = _ref => {
     product_query
   } = locationData;
   const firstRender = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(true);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(() => {
     if (firstRender.current) {
       firstRender.current = false;
       return;
@@ -9718,11 +9723,8 @@ const Location = _ref => {
   };
 
   const handleResultsMethodChange = value => {
-    if (value) {
-      updateLocation('results_method', 'wcapf-form');
-    } else {
-      updateLocation('results_method', '');
-    }
+    const resultsMethod = value ? 'wcapf-form' : '';
+    updateLocation('results_method', resultsMethod);
   };
 
   const handleQueryChange = (key, value) => {
@@ -9733,6 +9735,10 @@ const Location = _ref => {
   };
 
   const updateLocation = (key, value) => {
+    if ((0,lodash__WEBPACK_IMPORTED_MODULE_12__.isEqual)(value, locationData[key])) {
+      return;
+    }
+
     const newLocation = { ...locationData,
       [key]: value
     };
@@ -9799,7 +9805,7 @@ const Location = _ref => {
     }
   }, () => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     className: "__remove_location",
-    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"],
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"],
     variant: "tertiary",
     isDestructive: true,
     onClick: () => handleRemoveLocation(locationData)
@@ -9830,7 +9836,7 @@ const AvailableOn = () => {
   }
 
   const handleAddLocation = () => {
-    const _formLocations = [...formLocations, {}];
+    const _formLocations = [...formLocations, (0,_utilsForForm__WEBPACK_IMPORTED_MODULE_13__.defaultLocation)()];
     handleFormLocations(_formLocations);
   };
 
@@ -9846,8 +9852,8 @@ const AvailableOn = () => {
     handleFormLocations(_formLocations);
   };
 
-  const handleRemoveLocation = location => {
-    const _formLocations = formLocations.filter(_location => location !== _location);
+  const handleRemoveLocation = index => {
+    const _formLocations = formLocations.filter((_location, _index) => index !== _index);
 
     handleFormLocations(_formLocations);
   };
@@ -9877,7 +9883,7 @@ const AvailableOn = () => {
     index: index,
     handleFormLocation: handleFormLocation,
     showRemove: showRemove,
-    handleRemoveLocation: handleRemoveLocation
+    handleRemoveLocation: () => handleRemoveLocation(index)
   }))), multipleFormLocations && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     className: "__add_location",
     variant: "secondary",
@@ -14625,8 +14631,7 @@ const defaultMetaQuery = {
   meta_key: '',
   meta_type: 'alphabetic',
   operator: '=',
-  value: '',
-  decimal_places: 2
+  meta_value: ''
 };
 
 const TaxQuery = _ref => {
@@ -14645,7 +14650,7 @@ const TaxQuery = _ref => {
     terms
   } = query;
   const firstRender = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(true);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(() => {
     if (firstRender.current) {
       firstRender.current = false;
       return;
@@ -14704,14 +14709,14 @@ const MetaQuery = _ref2 => {
     query,
     queryIndex,
     handleQuerySelectChange,
+    handleMetaQueryTextChange,
     handleRemoveQuery
   } = _ref2;
   const {
     meta_key,
     meta_type,
     operator,
-    value,
-    decimal_places
+    meta_value
   } = query;
   const metaKey = metaKeys.find(option => meta_key === option.value);
   const metaType = metaTypes.find(option => meta_type === option.value);
@@ -14760,19 +14765,10 @@ const MetaQuery = _ref2 => {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: `meta-query-value-${postFix}`,
     placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Meta value'),
-    value: value,
+    value: meta_value,
+    onChange: value => handleMetaQueryTextChange(value, 'meta_value', queryIndex),
     renderAsFormField: false
-  }))), 'decimal' === meta_type && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "__decimal_places_input"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    htmlFor: `meta-query-decimal-places-${postFix}`
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Decimal Places', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Text__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    id: `meta-query-decimal-places-${postFix}`,
-    type: 'number',
-    value: decimal_places,
-    renderAsFormField: false,
-    min: 0
-  })));
+  }))));
 };
 
 const ProductQuery = _ref3 => {
@@ -14781,6 +14777,7 @@ const ProductQuery = _ref3 => {
     query,
     handleQueryChange
   } = _ref3;
+  const [expanded, setExpanded] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const {
     post_status,
     sticky_posts,
@@ -14896,6 +14893,19 @@ const ProductQuery = _ref3 => {
     handleQueryChange('tax_query', queries);
   };
 
+  const handleMetaQueryTextChange = (value, key, queryIndex) => {
+    const queries = meta_query.map((query, index) => {
+      if (queryIndex === index) {
+        return { ...query,
+          [key]: value
+        };
+      }
+
+      return query;
+    });
+    handleQueryChange('meta_query', queries);
+  };
+
   const handleRemoveQuery = (queryIndex, queryType) => {
     let queries;
 
@@ -14925,6 +14935,16 @@ const ProductQuery = _ref3 => {
   }
 
   const code = '[wcapf_product_query]';
+  const expandBtnLabel = expanded ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Collapse', 'wc-ajax-product-filter') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Expand', 'wc-ajax-product-filter');
+
+  const handleExpandQuery = () => {
+    if (expanded) {
+      setExpanded(false);
+    } else {
+      setExpanded(true);
+    }
+  };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__column"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
@@ -14948,7 +14968,10 @@ const ProductQuery = _ref3 => {
     size: 24
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Place the shortcode on the selected page to show the product loop.', 'wc-ajax-product-filter')))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Place the shortcode on the selected page to show the product loop.', 'wc-ajax-product-filter')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: 'link',
+    onClick: handleExpandQuery
+  }, expandBtnLabel))), expanded && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__field_row __post_status"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "__field_label"
@@ -15118,6 +15141,7 @@ const ProductQuery = _ref3 => {
     query: metaQuery,
     queryIndex: metaQueryIndex,
     handleQuerySelectChange: handleQuerySelectChange,
+    handleMetaQueryTextChange: handleMetaQueryTextChange,
     handleRemoveQuery: handleRemoveQuery
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
@@ -15156,7 +15180,7 @@ const ProductQuery = _ref3 => {
     placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Leave empty to use default', 'wc-ajax-product-filter'),
     value: no_post_message,
     onChange: value => handleQueryTextChange(value, 'no_post_message')
-  }))))));
+  })))))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ProductQuery);
@@ -17386,6 +17410,7 @@ function mergeSelectOptions(freeOptions, proOptions) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "defaultFormSettings": function() { return /* binding */ defaultFormSettings; },
+/* harmony export */   "defaultLocation": function() { return /* binding */ defaultLocation; },
 /* harmony export */   "filterModeOptions": function() { return /* binding */ filterModeOptions; },
 /* harmony export */   "formLayoutOptions": function() { return /* binding */ formLayoutOptions; },
 /* harmony export */   "formVisibilityOptions": function() { return /* binding */ formVisibilityOptions; },
@@ -17396,29 +17421,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/components/utils.js");
 
 
-const defaultLocation = {
-  location: 'product_archive_pages',
-  sub_location: '',
-  product_query: {
-    post_status: ['publish'],
-    sticky_posts: 'default',
-    default_order: 'default',
-    order_direction: 'desc',
-    order_meta_value: '',
-    order_meta_type: 'alphabetic',
-    columns: 3,
-    posts_per_page: 9,
-    offset: 0,
-    enable_pagination: '',
-    tax_query: [],
-    meta_query: [],
-    exclude: [],
-    no_post_message: ''
-  }
-};
+function defaultLocation() {
+  return {
+    location: 'product_archive_pages',
+    sub_location: '',
+    results_method: '',
+    product_query: wcapf_admin_params.default_product_query
+  };
+}
 function defaultFormSettings() {
   return {
-    form_locations: [defaultLocation],
+    form_locations: [defaultLocation()],
     priority: '0',
     form_layout: 'vertical',
     columns_per_row: '4',
