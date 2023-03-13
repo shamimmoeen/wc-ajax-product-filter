@@ -651,6 +651,8 @@ class WCAPF_Walker {
 		$item_active  = $this->item_active( $item );
 		$input_name   = $filter_key;
 
+		$count_allowed = $this->count_allowed();
+
 		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
 
 		if ( $item_active || $item_active_as_current_query ) {
@@ -663,7 +665,7 @@ class WCAPF_Walker {
 			$attrs .= ' disabled="disabled"';
 
 			$input_name .= '-disabled';
-		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] ) {
+		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] && $count_allowed ) {
 			$attrs .= ' disabled="disabled"';
 		}
 
@@ -706,7 +708,7 @@ class WCAPF_Walker {
 
 		$count = $item['count'];
 
-		if ( $this->show_count && '-1' !== $count ) {
+		if ( $this->show_count && '-1' !== $count && $count_allowed ) {
 			$for_screen_reader = sprintf(
 				_n( '%d product', '%d products', $count, 'wc-ajax-product-filter' ),
 				number_format_i18n( $count )
@@ -725,7 +727,7 @@ class WCAPF_Walker {
 		if ( $this->enable_tooltip ) {
 			$tooltip_content = ! empty( $item['tooltip'] ) ? $item['tooltip'] : $item['name'];
 
-			if ( $this->show_count_in_tooltip ) {
+			if ( $this->show_count_in_tooltip && $count_allowed ) {
 				$count_before = apply_filters( 'wcapf_tooltip_count_before', ' (' );
 				$count_after  = apply_filters( 'wcapf_tooltip_count_after', ')' );
 
@@ -737,7 +739,7 @@ class WCAPF_Walker {
 
 		$item_classes = 'wcapf-filter-item';
 
-		if ( 0 == $item['count'] ) {
+		if ( 0 == $item['count'] && $count_allowed ) {
 			$item_classes .= ' empty-item';
 		}
 
@@ -786,6 +788,10 @@ class WCAPF_Walker {
 		}
 
 		return false;
+	}
+
+	private function count_allowed() {
+		return ! in_array( $this->filter_type, array( 'sort-by', 'per-page' ) );
 	}
 
 	/**
@@ -998,7 +1004,7 @@ class WCAPF_Walker {
 			$input_attrs .= ' data-enable-search="1"';
 		}
 
-		if ( $use_chosen && $this->show_count ) {
+		if ( $use_chosen && $this->show_count && $this->count_allowed() ) {
 			$input_classes .= ' with-count';
 		}
 
@@ -1035,6 +1041,8 @@ class WCAPF_Walker {
 		$item_value  = $this->item_value( $item );
 		$item_active = $this->item_active( $item );
 
+		$count_allowed = $this->count_allowed();
+
 		$option  = '';
 		$attrs   = '';
 		$classes = array();
@@ -1048,7 +1056,7 @@ class WCAPF_Walker {
 
 		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
 			$attrs .= ' disabled="disabled"';
-		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] ) {
+		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] && $count_allowed ) {
 			$attrs .= ' disabled="disabled"';
 		}
 
@@ -1058,7 +1066,7 @@ class WCAPF_Walker {
 			$classes[] = 'depth-' . $item['depth'];
 		}
 
-		if ( 0 == $item['count'] ) {
+		if ( 0 == $item['count'] && $count_allowed ) {
 			$classes[] = 'empty-item';
 		}
 
@@ -1078,7 +1086,7 @@ class WCAPF_Walker {
 
 		$use_chosen = $this->use_chosen;
 
-		if ( $use_chosen && $this->show_count ) {
+		if ( $use_chosen && $this->show_count && $count_allowed ) {
 			$attrs .= ' data-count="' . $count . '"';
 			$attrs .= ' data-count-markup="' . $this->dropdown_item_count( $count ) . '"';
 		}
@@ -1093,7 +1101,7 @@ class WCAPF_Walker {
 
 		$option .= apply_filters( 'wcapf_dropdown_item_name', $inner, $item, $this );
 
-		if ( ! $use_chosen && $this->show_count && '-1' !== $count ) {
+		if ( ! $use_chosen && $this->show_count && '-1' !== $count && $count_allowed ) {
 			$option .= $this->dropdown_item_count( $count );
 		}
 

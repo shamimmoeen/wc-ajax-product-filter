@@ -68,14 +68,7 @@ class WCAPF_URL_Builder {
 		$this->filter_key      = $filter_key;
 		$this->enable_multiple = $enable_multiple;
 		$this->base_url        = WCAPF_Helper::wcapf_option( 'base_url' );
-
-		$keys_to_exclude = WCAPF_Helper::wcapf_option( 'keys_to_exclude' );
-
-		if ( $keys_to_exclude ) {
-			$this->excluded_keys = explode( ',', $keys_to_exclude );
-		} else {
-			$this->excluded_keys = array();
-		}
+		$this->excluded_keys   = apply_filters( 'wcapf_url_vars_to_exclude', array( 'product-page' ) );
 
 		$this->query_vars = $this->set_query();
 	}

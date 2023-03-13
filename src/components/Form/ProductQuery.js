@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { Button, CheckboxControl, Icon } from '@wordpress/components';
+import { Button, Icon } from '@wordpress/components';
 import { useLayoutEffect, useRef, useState } from '@wordpress/element';
 import { closeSmall, plus } from '@wordpress/icons';
 import Select from '../Field/Select';
@@ -8,43 +8,123 @@ import Text from '../Field/Text';
 import { orderDirectionOptions } from './utils';
 import { copiedToClipboardNotice } from '../notices';
 import { ClipboardIcon } from '../SVGIcons';
+import TippyTooltip from '../TippyTooltip';
 
-const stickyPostOptions = [
+const layoutOptions = [
+	{
+		label: __('Standard shop loop', 'wc-ajax-product-filter'),
+		value: 'standard',
+	},
+	{
+		label: __('Products + Pagination', 'wc-ajax-product-filter'),
+		value: 'products_with_pagination',
+	},
+	{
+		label: __('Products only', 'wc-ajax-product-filter'),
+		value: 'products_only',
+	},
+];
+
+const productTypeOptions = [
+	{
+		label: __('Default', 'wc-ajax-product-filter'),
+		value: 'products',
+	},
+	{
+		label: __('On Sale', 'wc-ajax-product-filter'),
+		value: 'on_sale',
+	},
+	{
+		label: __('Best Selling', 'wc-ajax-product-filter'),
+		value: 'best_selling',
+	},
+	{
+		label: __('Top Rated', 'wc-ajax-product-filter'),
+		value: 'top_rated',
+	},
+];
+
+const visibilityOptions = [
+	{
+		label: __('Visible', 'wc-ajax-product-filter'),
+		value: 'visible',
+	},
+	{
+		label: __('Catalog', 'wc-ajax-product-filter'),
+		value: 'catalog',
+	},
+	{
+		label: __('Search', 'wc-ajax-product-filter'),
+		value: 'search',
+	},
+	{
+		label: __('Hidden', 'wc-ajax-product-filter'),
+		value: 'hidden',
+	},
+	{
+		label: __('Featured', 'wc-ajax-product-filter'),
+		value: 'featured',
+	},
+];
+
+const orderByOptions = [
 	{
 		label: __('Default', 'wc-ajax-product-filter'),
 		value: 'default',
 	},
 	{
-		label: __('Ignore', 'wc-ajax-product-filter'),
-		value: 'ignore',
+		label: __('Date', 'wc-ajax-product-filter'),
+		value: 'date',
 	},
 	{
-		label: __('Exclude', 'wc-ajax-product-filter'),
-		value: 'exclude',
+		label: __('ID', 'wc-ajax-product-filter'),
+		value: 'id',
+	},
+	{
+		label: __('Menu Order', 'wc-ajax-product-filter'),
+		value: 'menu_order',
+	},
+	{
+		label: __('Popularity', 'wc-ajax-product-filter'),
+		value: 'popularity',
+	},
+	{
+		label: __('Price', 'wc-ajax-product-filter'),
+		value: 'price',
+	},
+	{
+		label: __('Rating', 'wc-ajax-product-filter'),
+		value: 'rating',
+	},
+	{
+		label: __('Random', 'wc-ajax-product-filter'),
+		value: 'rand',
+	},
+	{
+		label: __('Title', 'wc-ajax-product-filter'),
+		value: 'title',
 	},
 ];
 
-const postStatuses = wcapf_admin_params.post_statuses;
-const sortByOptions = wcapf_admin_params.sort_by_options;
+const orderDirections = orderDirectionOptions();
 const metaKeys = wcapf_admin_params.meta_keys;
 const metaTypes = wcapf_admin_params.meta_types;
-const sortDirections = orderDirectionOptions();
-const orderByOptions = [
-	{ label: __('Default', 'wc-ajax-product-filter'), value: 'default' },
-	...sortByOptions,
-];
 const filterTypes = wcapf_admin_params.filter_types;
 const taxonomyType = filterTypes.find((option) => 'taxonomy' === option.value);
 const taxonomies = taxonomyType ? taxonomyType.options : [];
 
 const taxQueryOperators = [
 	{
-		label: __('Include', 'wc-ajax-product-filter'),
-		value: 'include',
+		label: __('IN', 'wc-ajax-product-filter'),
+		value: 'IN',
 	},
 	{
-		label: __('Exclude', 'wc-ajax-product-filter'),
-		value: 'exclude',
+		label: __('NOT IN', 'wc-ajax-product-filter'),
+		value: 'NOT IN',
+	},
+	{
+		label: __('AND', 'wc-ajax-product-filter'),
+		value: 'AND',
 	},
 ];
 
@@ -93,7 +173,7 @@ const metaQueryOperators = [
 
 const defaultTaxQuery = {
 	taxonomy: '',
-	operator: 'include',
+	operator: 'IN',
 	terms: [],
 };
 
@@ -323,16 +403,13 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 	const [expanded, setExpanded] = useState(false);
 
 	const {
-		post_status,
-		sticky_posts,
-		default_order,
-		order_direction,
-		order_meta_value,
-		order_meta_type,
+		layout,
+		type,
+		visibility,
+		orderby,
+		order,
 		columns,
-		posts_per_page,
-		offset,
-		enable_pagination,
+		limit,
 		tax_query,
 		meta_query,
 		exclude,
@@ -349,24 +426,6 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 		navigator.clipboard.writeText(text);
 
 		copiedToClipboardNotice();
-	};
-
-	const handlePostStatusChange = (value) => {
-		let newPostStatus = [...post_status];
-
-		if (post_status.includes(value)) {
-			newPostStatus = post_status.filter((status) => value !== status);
-		} else {
-			newPostStatus.push(value);
-		}
-
-		handleQueryChange('post_status', newPostStatus);
-	};
-
-	const handleEnablePagination = () => {
-		const enablePagination = !enable_pagination;
-
-		handleQueryChange('enable_pagination', enablePagination);
 	};
 
 	const handleSelectChange = (selected, key) => {
@@ -467,24 +526,22 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 		handleQueryChange('meta_query', metaQueries);
 	};
 
-	const stickyPosts = stickyPostOptions.find(
-		(option) => sticky_posts === option.value
+	const layoutOption = layoutOptions.find(
+		(option) => layout === option.value
 	);
 
-	const defaultOrder = orderByOptions.find(
-		(option) => default_order === option.value
+	const productType = productTypeOptions.find(
+		(option) => type === option.value
 	);
 
-	const orderDirection = sortDirections.find(
-		(option) => order_direction === option.value
+	const productVisibility = visibilityOptions.find(
+		(option) => visibility === option.value
 	);
 
-	const orderMetaValue = metaKeys.find(
-		(option) => order_meta_value === option.value
-	);
+	const orderBy = orderByOptions.find((option) => orderby === option.value);
 
-	const orderMetaType = metaTypes.find(
-		(option) => order_meta_type === option.value
+	const orderDirection = orderDirections.find(
+		(option) => order === option.value
 	);
 
 	let classes = '__code';
@@ -493,7 +550,7 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 		classes += ' __clipboard-api-found';
 	}
 
-	const code = '[wcapf_product_query]';
+	const code = '[wcapf_products]';
 
 	const expandBtnLabel = expanded
 		? __('Collapse', 'wc-ajax-product-filter')
@@ -546,136 +603,126 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 
 				{expanded && (
 					<>
-						<div className='__field_row __post_status'>
+						<div className='__field_row __layout'>
 							<div className='__field_label'>
 								<label>
-									{__(
-										'Post Status',
-										'wc-ajax-product-filter'
-									)}
-								</label>
-							</div>
-							<div className='__field_input'>
-								{postStatuses.map(({ label, value }) => (
-									<CheckboxControl
-										key={value}
-										label={label}
-										checked={post_status.includes(value)}
-										onChange={() =>
-											handlePostStatusChange(value)
+									{__('Layout', 'wc-ajax-product-filter')}
+									<TippyTooltip
+										content={
+											<>
+												<b>Standard shop loop:</b> It
+												comes with results count,
+												orderby, product loop and
+												pagination depending on your
+												theme.
+												<br />
+												<br />
+												<b>Products + Pagination:</b> A
+												customized product loop with
+												pagination at the bottom.
+												<br />
+												<br />
+												<b>Products only:</b> Show only
+												the products without any
+												pagination.
+											</>
 										}
 									/>
-								))}
-							</div>
-						</div>
-
-						<div className='__field_row __sticky_posts'>
-							<div className='__field_label'>
-								<label htmlFor={`stickyPosts-${index}`}>
-									{__(
-										'Sticky Posts',
-										'wc-ajax-product-filter'
-									)}
 								</label>
 							</div>
 							<div className='__field_input'>
 								<Select
-									id={`stickyPosts-${index}`}
-									inputKey={`stickyPosts-${index}`}
-									options={stickyPostOptions}
-									value={stickyPosts}
+									id={`layout-${index}`}
+									inputKey={`layout-${index}`}
+									options={layoutOptions}
+									value={layoutOption}
+									onChange={(selected) =>
+										handleSelectChange(selected, 'layout')
+									}
+								/>
+							</div>
+						</div>
+
+						<div className='__field_row __type'>
+							<div className='__field_label'>
+								<label>
+									{__('Type', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<Select
+									id={`type-${index}`}
+									inputKey={`type-${index}`}
+									options={productTypeOptions}
+									value={productType}
+									onChange={(selected) =>
+										handleSelectChange(selected, 'type')
+									}
+								/>
+							</div>
+						</div>
+
+						<div className='__field_row __visibility'>
+							<div className='__field_label'>
+								<label>
+									{__('Visibility', 'wc-ajax-product-filter')}
+								</label>
+							</div>
+							<div className='__field_input'>
+								<Select
+									id={`visibility-${index}`}
+									inputKey={`visibility-${index}`}
+									options={visibilityOptions}
+									value={productVisibility}
 									onChange={(selected) =>
 										handleSelectChange(
 											selected,
-											'sticky_posts'
+											'visibility'
 										)
 									}
 								/>
 							</div>
 						</div>
 
-						<div className='__field_row __default_order'>
+						<div className='__field_row __order'>
 							<div className='__field_label'>
-								<label htmlFor={`default_order-${index}`}>
-									{__(
-										'Default Order',
-										'wc-ajax-product-filter'
-									)}
+								<label htmlFor={`order-${index}`}>
+									{__('Order By', 'wc-ajax-product-filter')}
 								</label>
 							</div>
 							<div className='__field_input'>
 								<div className='__top_input'>
-									<div className='__default_order_select'>
+									<div className='__order_select'>
 										<Select
-											id={`default_order-${index}`}
-											inputKey={`default_order-${index}`}
+											id={`order-${index}`}
+											inputKey={`order-${index}`}
 											options={orderByOptions}
-											value={defaultOrder}
+											value={orderBy}
 											onChange={(selected) =>
 												handleSelectChange(
 													selected,
-													'default_order'
+													'orderby'
 												)
 											}
 										/>
 									</div>
-									{'rand' !== default_order && (
+									{'rand' !== orderby && (
 										<div className='__order_direction_select'>
 											<Select
 												id={`order_direction-${index}`}
 												inputKey={`order_direction-${index}`}
-												options={sortDirections}
+												options={orderDirections}
 												value={orderDirection}
 												onChange={(selected) =>
 													handleSelectChange(
 														selected,
-														'order_direction'
+														'order'
 													)
 												}
 											/>
 										</div>
 									)}
 								</div>
-
-								{'meta_value' === default_order && (
-									<div className='__meta_value_input'>
-										<div className='__meta_value_select'>
-											<Select
-												id={`meta_value-${index}`}
-												inputKey={`meta_value-${index}`}
-												placeholder={__(
-													'Select meta key',
-													'wc-ajax-product-filter'
-												)}
-												options={metaKeys}
-												value={orderMetaValue}
-												onChange={(selected) =>
-													handleSelectChange(
-														selected,
-														'order_meta_value'
-													)
-												}
-											/>
-										</div>
-
-										{order_meta_value && (
-											<div className='__meta_type_select'>
-												<Select
-													id={`meta_type-${index}`}
-													inputKey={`meta_type-${index}`}
-													options={metaTypes}
-													value={orderMetaType}
-													onChange={(selected) =>
-														handleSelectChange(
-															selected,
-															'order_meta_type'
-														)
-													}
-												/>
-											</div>
-										)}
-									</div>
-								)}
 							</div>
 						</div>
 
@@ -700,66 +747,28 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 							</div>
 						</div>
 
-						<div className='__field_row __posts_per_page'>
+						<div className='__field_row __limit'>
 							<div className='__field_label'>
-								<label htmlFor={`posts_per_page-${index}`}>
-									{__(
-										'Posts Per Page',
-										'wc-ajax-product-filter'
-									)}
+								<label htmlFor={`limit-${index}`}>
+									{__('Limit', 'wc-ajax-product-filter')}
+									<TippyTooltip
+										content={__(
+											"The number of products to display per page. Put '-1' to display all products.",
+											'wc-ajax-product-filter'
+										)}
+									/>
 								</label>
 							</div>
 							<div className='__field_input'>
 								<Text
-									id={`posts_per_page-${index}`}
+									id={`limit-${index}`}
 									type={'number'}
 									renderAsFormField={false}
-									value={posts_per_page}
+									value={limit}
 									onChange={(value) =>
-										handleQueryTextChange(
-											value,
-											'posts_per_page'
-										)
+										handleQueryTextChange(value, 'limit')
 									}
-									min={1}
-								/>
-							</div>
-						</div>
-
-						<div className='__field_row __offset'>
-							<div className='__field_label'>
-								<label htmlFor={`offset-${index}`}>
-									{__('Offset', 'wc-ajax-product-filter')}
-								</label>
-							</div>
-							<div className='__field_input'>
-								<Text
-									id={`offset-${index}`}
-									type={'number'}
-									renderAsFormField={false}
-									value={offset}
-									onChange={(value) =>
-										handleQueryTextChange(value, 'offset')
-									}
-									min={0}
-								/>
-							</div>
-						</div>
-
-						<div className='__field_row __enable_pagination'>
-							<div className='__field_label'>
-								<label htmlFor={`enable_pagination-${index}`}>
-									{__(
-										'Enable Pagination',
-										'wc-ajax-product-filter'
-									)}
-								</label>
-							</div>
-							<div className='__field_input'>
-								<CheckboxControl
-									id={`enable_pagination-${index}`}
-									checked={enable_pagination}
-									onChange={handleEnablePagination}
+									min={-1}
 								/>
 							</div>
 						</div>
@@ -869,35 +878,41 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 							</div>
 						</div>
 
-						<div className='__field_row __no_post_message'>
-							<div className='__field_label'>
-								<label htmlFor={`no-post-message-${index}`}>
-									{__(
-										'No Post Message',
-										'wc-ajax-product-filter'
-									)}
-								</label>
-							</div>
-							<div className='__field_input'>
-								<div>
-									<Text
-										id={`no-post-message-${index}`}
-										renderAsFormField={false}
-										placeholder={__(
-											'Leave empty to use default',
-											'wc-ajax-product-filter'
-										)}
-										value={no_post_message}
-										onChange={(value) =>
-											handleQueryTextChange(
-												value,
-												'no_post_message'
-											)
-										}
-									/>
+						{'standard' !== layout && (
+							<>
+								<div className='__field_row __no_post_message'>
+									<div className='__field_label'>
+										<label
+											htmlFor={`no-post-message-${index}`}
+										>
+											{__(
+												'No Post Message',
+												'wc-ajax-product-filter'
+											)}
+										</label>
+									</div>
+									<div className='__field_input'>
+										<div>
+											<Text
+												id={`no-post-message-${index}`}
+												renderAsFormField={false}
+												placeholder={__(
+													'Leave empty to use default',
+													'wc-ajax-product-filter'
+												)}
+												value={no_post_message}
+												onChange={(value) =>
+													handleQueryTextChange(
+														value,
+														'no_post_message'
+													)
+												}
+											/>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
+							</>
+						)}
 					</>
 				)}
 			</fieldset>

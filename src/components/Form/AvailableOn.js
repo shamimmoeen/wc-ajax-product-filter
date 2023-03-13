@@ -149,11 +149,11 @@ const Location = ({
 						<div className='__column __results_method_checkbox'>
 							<CheckboxControl
 								label={__(
-									'Is combined with another form?',
+									'Already have a product query?',
 									'wc-ajax-product-filter'
 								)}
 								help={__(
-									'Enable this if there is another form on this page with a product query. If multiple queries are found on a page, the query with the highest priority will work only.',
+									'Enable this if there is already a product query on the selected page. If multiple queries are found on a page, the query with the highest priority will work only.',
 									'wc-ajax-product-filter'
 								)}
 								checked={'wcapf-form' === results_method}

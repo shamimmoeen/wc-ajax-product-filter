@@ -1,29 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
-import Select from '../../Field/Select';
 import useSettingsData from '../useSettingsData';
-import { foundProVersion } from '../../utils';
-
-const WCAPF_PRO = foundProVersion();
-
-const sortByFormOptions = wcapf_admin_params.sort_by_form_options;
-
-let sortByFormTooltip;
-
-if (WCAPF_PRO) {
-	sortByFormTooltip = __(
-		"If the selected form doesn't contain the *Sort By* filter then the default sorting options won't be replaced.",
-		'wc-ajax-product-filter'
-	);
-}
 
 const Integration = () => {
 	const { state, dispatch } = useSettings();
-	const { handleCheckboxChange, handleSelectChange } = useSettingsData(
-		state,
-		dispatch
-	);
+	const { handleCheckboxChange } = useSettingsData(state, dispatch);
 
 	const {
 		settings: {
@@ -31,16 +13,10 @@ const Integration = () => {
 			enable_pagination_via_ajax,
 			sorting_control,
 			sorting_data_in_active_filters,
-			replace_sorting_options,
-			sort_by_form,
 			use_term_slug,
 			child_terms_only,
 		},
 	} = state;
-
-	const sortByForm = sortByFormOptions.find(
-		(option) => sort_by_form === option.value
-	);
 
 	return (
 		<>
@@ -51,7 +27,7 @@ const Integration = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Enable this to show the active filters on top of the products loop, only works on product archive pages.',
+					'Enable this to show the active filters on top of the products loop, only works in the standard shop loop.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={active_filters_on_top}
@@ -93,36 +69,6 @@ const Integration = () => {
 				isChecked={sorting_data_in_active_filters}
 				onChange={handleCheckboxChange}
 			/>
-
-			<Checkbox
-				id={'replace_sorting_options'}
-				label={__('Replace sorting options', 'wc-ajax-product-filter')}
-				description={__(
-					'Enable this to replace the default product sorting options.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={replace_sorting_options}
-				onChange={handleCheckboxChange}
-				isPro
-			/>
-
-			{'1' === replace_sorting_options && (
-				<Select
-					id={'sort_by_form'}
-					label={__('Sort by form', 'wc-ajax-product-filter')}
-					description={__(
-						'Select the form that contains the <b>Sort By</b> filter with the sorting options you want.',
-						'wc-ajax-product-filter'
-					)}
-					tooltip={sortByFormTooltip}
-					value={sortByForm}
-					onChange={handleSelectChange}
-					options={sortByFormOptions}
-					isDisabled={!WCAPF_PRO}
-					maxMenuHeight={120}
-					renderAsFormField
-				/>
-			)}
 
 			<Checkbox
 				id={'use_term_slug'}

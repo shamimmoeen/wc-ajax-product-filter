@@ -64,9 +64,10 @@ export function defaultSettings() {
 		submit_btn_label: '',
 		apply_btn_label: '',
 		results_count_markup: '',
-		pagination_container: '.woocommerce-pagination',
+		sort_by_prefix: '',
+		per_page_prefix: '',
 		more_selectors: '',
-		keys_to_exclude: '',
+		custom_scripts: '',
 		author_roles: [],
 		multiple_form_locations: '',
 		// Miscellaneous

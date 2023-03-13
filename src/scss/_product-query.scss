@@ -50,7 +50,7 @@
             flex-shrink: 0;
 
             @media (min-width: 768px) {
-                width: 120px;
+                width: 115px;
                 min-height: 30px;
             }
         }
@@ -60,29 +60,14 @@
         }
     }
 
-    .__post_status {
-        margin-bottom: calc(1.5em - 8px);
-
-        @media (max-width: 767px) {
-            margin-bottom: calc(2em - 8px);
-        }
-
-        .components-base-control {
-            display: inline-flex;
-
-            @include ltr {
-                margin-right: 12px;
-            }
-
-            @include rtl {
-                margin-left: 12px;
-            }
-        }
+    .__layout .__custom_react_select {
+        width: 180px;
     }
 
-    .__enable_pagination {
-        .components-base-control__field {
-            margin: 0;
+    .__type,
+    .__visibility {
+        .__custom_react_select {
+            width: 120px;
         }
     }
 
@@ -92,38 +77,18 @@
         }
     }
 
-    .__sticky_posts {
-        .__custom_react_select {
-            max-width: 90px;
-        }
-    }
-
-    .__default_order {
+    .__order {
         .__field_input {
             .__top_input {
                 display: flex;
                 gap: 10px;
 
-                .__default_order_select {
-                    width: 170px;
+                .__order_select {
+                    width: 120px;
                 }
 
                 .__order_direction_select {
                     width: 75px;
-                }
-            }
-
-            .__meta_value_input {
-                margin-top: 1em;
-                display: flex;
-                gap: 10px;
-
-                .__meta_value_select {
-                    width: 170px;
-                }
-
-                .__meta_type_select {
-                    width: 115px;
                 }
             }
         }
@@ -218,14 +183,6 @@
                 .__meta_value {
                     max-width: 140px;
                 }
-            }
-        }
-    }
-
-    .__exclude {
-        .__custom_react_select {
-            @media (min-width: 768px) {
-                min-width: 300px;
             }
         }
     }

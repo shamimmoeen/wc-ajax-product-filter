@@ -95,6 +95,8 @@ abstract class WCAPF_Filter_Type {
 	 * @param $ranges
 	 * @param $filtered_count
 	 *
+	 * TODO: Maybe refactor.
+	 *
 	 * @return array
 	 */
 	public function get_filtered_ranges_counts( $ranges, $filtered_count ) {
@@ -162,8 +164,12 @@ abstract class WCAPF_Filter_Type {
 		$options  = array();
 		$defaults = array();
 
-		if ( 'product-status' === $this->field->type ) {
+		$type = $this->field->type;
+
+		if ( 'product-status' === $type ) {
 			$defaults = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
+		} elseif ( 'sort-by' === $type ) {
+			$defaults = wp_list_pluck( WCAPF_API_Utils::sort_by_options(), 'label', 'value' );
 		}
 
 		foreach ( $manual_options as $option ) {
@@ -172,8 +178,14 @@ abstract class WCAPF_Filter_Type {
 			$tooltip = isset( $option['tooltip'] ) ? $option['tooltip'] : '';
 			$count   = 0;
 
-			if ( empty( $label ) && ! empty( $defaults[ $value ] ) ) {
-				$label = $defaults[ $value ];
+			if ( empty( $label ) ) {
+				if ( 'per-page' === $type ) {
+					$label = $value;
+				} else {
+					if ( ! empty( $defaults[ $value ] ) ) {
+						$label = $defaults[ $value ];
+					}
+				}
 			}
 
 			$item = array_merge(

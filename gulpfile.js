@@ -120,7 +120,7 @@ function browser() {
 	browserSync.init(
 		{
 			open: false, // Stop the browser from automatically opening
-			proxy: 'http://wcfilter.test/',
+			proxy: 'http://wcfilter-2.test/',
 			files: [
 				'./**/*.php',
 			],

@@ -49,18 +49,14 @@ class WCAPF_Frontend_Scripts {
 	/**
 	 * Loads the frontend scripts.
 	 *
-	 * @param bool $for_preview Determines if the scripts should be loaded for preview purposes.
-	 *
 	 * @return void
 	 */
-	public static function load_frontend_scripts( $for_preview = false ) {
-		if ( ! $for_preview && ! empty( WCAPF_Helper::wcapf_option( 'disable_wcapf' ) ) ) {
+	public function load_frontend_scripts() {
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'disable_wcapf' ) ) ) {
 			return;
 		}
 
-		$load_scripts = apply_filters( 'wcapf_load_scripts_conditionally', false );
-
-		if ( true === $load_scripts && ! $for_preview && ! WCAPF_Helper::found_wcapf() ) {
+		if ( WCAPF_Helper::load_scripts_conditionally() && ! WCAPF_Helper::found_wcapf() ) {
 			return;
 		}
 
@@ -158,7 +154,10 @@ class WCAPF_Frontend_Scripts {
 			);
 		}
 
-		$deps = array( 'jquery' );
+		wp_register_script( 'wcapf-params', false, array(), false, true );
+		wp_localize_script( 'wcapf-params', 'wcapf_params', $this->get_js_params() );
+
+		$deps = array( 'jquery', 'wcapf-params' );
 
 		/**
 		 * Required for the scrollTo, slideToggle animations.
@@ -176,30 +175,16 @@ class WCAPF_Frontend_Scripts {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
 			true
 		);
-
-		// Load the js variables in the header.
-		wp_register_script( 'wcapf-params', false );
-
-		wp_localize_script(
-			'wcapf-params',
-			'wcapf_params',
-			self::get_js_params( $for_preview )
-		);
-
-		wp_enqueue_script( 'wcapf-params' );
 	}
 
 	/**
 	 * Frontend js params.
 	 *
-	 * @param bool $for_preview
-	 *
 	 * @return array
 	 */
-	private static function get_js_params( $for_preview ) {
+	private function get_js_params() {
 		$js_data = array(
 			'enable_pagination_via_ajax',
-			'pagination_container',
 			'sorting_control',
 			'attach_chosen_on_sorting',
 			'loading_animation',
@@ -209,13 +194,15 @@ class WCAPF_Frontend_Scripts {
 			'scroll_window_custom_element',
 			'scroll_to_top_offset',
 			'disable_scroll_animation',
+			'custom_scripts',
 		);
 
 		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
 
 		$settings = array(
-			'shop_loop_container' => $shop_loop_identifier,
-			'not_found_container' => $shop_loop_identifier,
+			'shop_loop_container'  => $shop_loop_identifier,
+			'not_found_container'  => $shop_loop_identifier,
+			'pagination_container' => '.woocommerce-pagination',
 		);
 
 		foreach ( $js_data as $key ) {
@@ -249,7 +236,7 @@ class WCAPF_Frontend_Scripts {
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
 			'restore_focus_after_filtering'            => true,
-			'loading_overlay_options'                  => self::get_loading_options( $settings ),
+			'loading_overlay_options'                  => $this->get_loading_options( $settings ),
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'immediate_scroll_on_paginate'             => false,
@@ -258,7 +245,6 @@ class WCAPF_Frontend_Scripts {
 			'found_wcapf'                              => WCAPF_Helper::found_wcapf(),
 			'update_document_title'                    => true,
 			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
-			'for_preview'                              => $for_preview,
 		);
 
 		$params = array_merge( $params, $settings );
@@ -273,7 +259,7 @@ class WCAPF_Frontend_Scripts {
 	 *
 	 * @return array
 	 */
-	public static function get_loading_options( $settings ) {
+	private function get_loading_options( $settings ) {
 		$loading_overlay_options = array();
 
 		if ( isset( $settings['loading_animation'] ) ) {
