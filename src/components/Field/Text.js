@@ -201,6 +201,44 @@ const Text = ({
 								/>
 							)}
 
+							{'sort_by_prefix' === id && (
+								<TippyTooltip
+									content={
+										<>
+											This prefix will be used in the
+											active filters, before the sort by
+											value.
+											<br />
+											<br />
+											Default is "Sort by:", for a value
+											"Title" it becomes
+											<br />
+											"Sort by: Title" in the active
+											filters.
+										</>
+									}
+								/>
+							)}
+
+							{'per_page_prefix' === id && (
+								<TippyTooltip
+									content={
+										<>
+											This prefix will be used in the
+											active filters, before the per page
+											value.
+											<br />
+											<br />
+											Default is "Per page:", for a value
+											"15" it becomes
+											<br />
+											"Per page: 15" in the active
+											filters.
+										</>
+									}
+								/>
+							)}
+
 							{proTag(isPro)}
 						</label>
 					</div>

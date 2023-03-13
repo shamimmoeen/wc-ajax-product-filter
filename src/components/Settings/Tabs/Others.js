@@ -6,6 +6,7 @@ import ProFeaturesNotice from '../../ProFeaturesNotice';
 import { foundProVersion } from '../../utils';
 import { useSettings } from '../SettingsContext';
 import useSettingsData from '../useSettingsData';
+import Textarea from '../../Field/Textarea';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -35,9 +36,10 @@ const Others = () => {
 			submit_btn_label,
 			apply_btn_label,
 			results_count_markup,
-			pagination_container,
+			sort_by_prefix,
+			per_page_prefix,
 			more_selectors,
-			keys_to_exclude,
+			custom_scripts,
 			author_roles,
 			multiple_form_locations,
 		},
@@ -174,36 +176,30 @@ const Others = () => {
 				/>
 			)}
 
-			<div className='__form_fields_separator' />
-
-			<h4 className='__section_heading'>
-				{__('Element Selectors', 'wc-ajax-product-filter')}
-			</h4>
-
-			<p className='__description'>
-				{__(
-					'Adjust the css selectors of elements according to your theme. Is needed when filtering via ajax.',
-					'wc-ajax-product-filter'
-				)}
-			</p>
-
 			<Text
-				id={'pagination_container'}
-				label={__('Pagination', 'wc-ajax-product-filter')}
-				description={__(
-					'The css class of the pagination element. Supports multiple css classes separated by commas.',
-					'wc-ajax-product-filter'
-				)}
-				value={pagination_container}
+				id={'sort_by_prefix'}
+				label={__('Sort by prefix', 'wc-ajax-product-filter')}
+				value={sort_by_prefix}
 				onChange={handleTextFieldChange}
 			/>
 
 			{WCAPF_PRO && (
 				<Text
+					id={'per_page_prefix'}
+					label={__('Per page prefix', 'wc-ajax-product-filter')}
+					value={per_page_prefix}
+					onChange={handleTextFieldChange}
+				/>
+			)}
+
+			<div className='__form_fields_separator' />
+
+			{WCAPF_PRO && (
+				<Text
 					id={'more_selectors'}
-					label={__('Additional', 'wc-ajax-product-filter')}
+					label={__('Additional Selectors', 'wc-ajax-product-filter')}
 					description={__(
-						'If you want to update additional elements give the css classes separated by commas.',
+						'If you want to update additional elements give the css classes separated by commas. Applicable when filtering via ajax.',
 						'wc-ajax-product-filter'
 					)}
 					value={more_selectors}
@@ -212,33 +208,20 @@ const Others = () => {
 				/>
 			)}
 
-			{WCAPF_PRO && (
-				<>
-					<div className='__form_fields_separator' />
-
-					<h4 className='__section_heading'>
-						{__('URL Parameters', 'wc-ajax-product-filter')}
-					</h4>
-
-					<Text
-						id={'keys_to_exclude'}
-						label={__('Keys to exclude', 'wc-ajax-product-filter')}
-						description={__(
-							'Give the keys separated by commas that you want to exclude when building the filter url.',
-							'wc-ajax-product-filter'
-						)}
-						value={keys_to_exclude}
-						onChange={handleTextFieldChange}
-						isPro
-					/>
-				</>
-			)}
-
-			<div className='__form_fields_separator' />
-
-			<h4 className='__section_heading'>
-				{__('Post Author Filter', 'wc-ajax-product-filter')}
-			</h4>
+			<Textarea
+				id={'custom_scripts'}
+				label={__(
+					'JavaScript after ajax update',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'You may want to run javascript codes after updating the shop loop via ajax. Use it in such situations otherwise leave it empty.',
+					'wc-ajax-product-filter	'
+				)}
+				value={custom_scripts}
+				onChange={handleTextFieldChange}
+				rows={3}
+			/>
 
 			<SelectMulti
 				id={'author_roles'}
@@ -258,16 +241,10 @@ const Others = () => {
 
 			{WCAPF_PRO && (
 				<>
-					<div className='__form_fields_separator' />
-
-					<h4 className='__section_heading'>
-						{__('Form Settings', 'wc-ajax-product-filter')}
-					</h4>
-
 					<Checkbox
 						id={'multiple_form_locations'}
 						label={__(
-							'Multiple locations',
+							'Form in multiple locations',
 							'wc-ajax-product-filter'
 						)}
 						description={__(

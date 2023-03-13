@@ -29,7 +29,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @return array
 	 */
-	public function get_full_join_n_where_clauses() {
+	private function get_full_join_n_where_clauses() {
 		$joins  = array();
 		$wheres = array();
 
@@ -188,7 +188,7 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		return apply_filters( 'wcapf_filters_data', $filters_data );
+		return $filters_data;
 	}
 
 	/**
@@ -615,16 +615,16 @@ class WCAPF_Product_Filter {
 	 */
 	private function active_product_status_filter_data( $filter_values, $field_instance ) {
 		$manual_options = $field_instance->manual_options;
+		$defaults       = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
 		$filter_data    = array();
 
 		foreach ( $filter_values as $filter_value ) {
-			$label = '';
+			$key    = array_search( $filter_value, array_column( $manual_options, 'value' ) );
+			$option = isset( $manual_options[ $key ] ) ? $manual_options[ $key ] : array();
+			$label  = isset( $option['label'] ) ? $option['label'] : '';
 
-			foreach ( $manual_options as $manual_option ) {
-				if ( $filter_value === $manual_option['value'] ) {
-					$label = $manual_option['label'];
-					break;
-				}
+			if ( ! $label ) {
+				$label = $defaults[ $filter_value ];
 			}
 
 			$filter_data[ $filter_value ] = $label ?: $filter_value;
@@ -784,16 +784,12 @@ class WCAPF_Product_Filter {
 
 		if ( isset( $_GET['orderby'] ) ) {
 			$values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( sanitize_key( $_GET['orderby'] ) );
+			$prefix = WCAPF_Helper::sort_by_prefix();
 
 			$active_filters = array();
 
-			$label = apply_filters(
-				'wcapf_active_filter_label_for_default_sorting',
-				__( 'Sort By: ', 'wc-ajax-product-filter' )
-			);
-
 			foreach ( $values as $value ) {
-				$active_filters[ $value ] = $label . $value;
+				$active_filters[ $value ] = $prefix . ' ' . $value;
 			}
 
 			$data = array(
@@ -817,64 +813,3 @@ class WCAPF_Product_Filter {
 	}
 
 }
-
-/**
- * @param array    $args     The query clauses.
- * @param WP_Query $wp_query Query instance.
- *
- * @return array The modified query clauses.
- */
-function wcapf_posts_clauses( $args, $wp_query ) {
-	if ( ! $wp_query->is_main_query() ) {
-		return $args;
-	}
-
-	$filter = new WCAPF_Product_Filter();
-
-	$args['join']  .= $filter->get_full_join_clause();
-	$args['where'] .= $filter->get_full_where_clause();
-
-	/**
-	 * The filter to apply the sort-by filter.
-	 */
-	return apply_filters( 'wcapf_sql_clauses', $args );
-}
-
-/**
- * Query the products, applying sorting/ordering etc. This applies to the
- * main WordPress loop.
- *
- * @param WP_Query $q Query instance.
- *
- * @return void
- */
-function wcapf_set_product_query( $q ) {
-	if ( ! is_shop() && ! is_product_taxonomy() ) {
-		return;
-	}
-
-	$filter = new WCAPF_Product_Filter();
-
-	$chosen_filters = $filter->get_chosen_filters();
-
-	$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
-
-	/**
-	 * We must hook the filter early to avoid the sorting issues.
-	 */
-	add_filter( 'posts_clauses', 'wcapf_posts_clauses', 5, 2 );
-
-	/**
-	 * The filter to apply the per-page filter.
-	 */
-	do_action( 'wcapf_filter_products_query', $q );
-}
-
-add_action( 'woocommerce_product_query', 'wcapf_set_product_query' );
-
-/**
- * Prevent redirect to product page while filtering on the search page and getting a single result.
- *
- * @since 3.3.2
- */
-add_filter( 'woocommerce_redirect_single_search_result', '__return_false' );

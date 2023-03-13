@@ -103,8 +103,15 @@ class WCAPF_Field_Instance {
 		if ( 'product-status' === $field_type ) {
 			$get_options    = 'manual_entry';
 			$manual_options = $this->get_sub_field_value( 'product_status_options' );
+		} elseif ( 'sort-by' === $field_type ) {
+			$get_options    = 'manual_entry';
+			$manual_options = $this->get_sub_field_value( 'sort_by_options' );
+		} elseif ( 'per-page' === $field_type ) {
+			$get_options    = 'manual_entry';
+			$manual_options = $this->get_sub_field_value( 'per_page_options' );
 		}
 
+		// TODO: Maybe remove hooks.
 		$get_options    = apply_filters( 'wcapf_field_instance_get_options', $get_options, $this->instance );
 		$manual_options = apply_filters( 'wcapf_field_instance_manual_options', $manual_options, $this->instance );
 
@@ -263,16 +270,10 @@ class WCAPF_Field_Instance {
 
 		if ( ! $all_items_label ) {
 			switch ( $type ) {
-				case 'category':
-					$all_items_label = __( 'All Categories', 'wc-ajax-product-filter' );
-					break;
+				case 'sort-by':
+				case 'per-page':
+					$all_items_label = __( 'Default', 'wc-ajax-product-filter' );
 
-				case 'tag':
-					$all_items_label = __( 'All Tags', 'wc-ajax-product-filter' );
-					break;
-
-				default:
-					$all_items_label = apply_filters( 'wcapf_default_all_items_label', '', $type );
 					break;
 			}
 		}

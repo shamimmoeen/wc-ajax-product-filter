@@ -229,14 +229,6 @@ class WCAPF_Admin {
 				// Loads the media utils.
 				wp_enqueue_media();
 
-				// Loads the wcapf frontend styles for the filter preview.
-				WCAPF_Frontend_Scripts::load_frontend_scripts( true );
-
-				/**
-				 * Hook to load the pro version scripts.
-				 */
-				do_action( 'wcapf_load_preview_scripts' );
-
 				// Single form admin ui scripts.
 				$this->load_scripts( 'form' );
 
@@ -299,7 +291,6 @@ class WCAPF_Admin {
 			} else {
 				$settings = $helper::get_settings();
 
-				$params['form_places']     = $utils::get_form_places();
 				$params['filter_types']    = $utils::get_filter_types();
 				$params['meta_keys']       = $helper::get_available_meta_keys();
 				$params['date_formats']    = $utils::display_date_formats();
@@ -307,7 +298,6 @@ class WCAPF_Admin {
 				$params['time_periods']    = $utils::time_period_options();
 				$params['sort_by_options'] = $utils::sort_by_options();
 				$params['meta_types']      = $utils::meta_type_options();
-				$params['post_statuses']   = $utils::post_statuses();
 				$params['user_roles']      = $user_roles;
 
 				$params['author_roles']            = isset( $settings['author_roles'] )
@@ -328,8 +318,7 @@ class WCAPF_Admin {
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = $utils::get_settings();
 
-			$params['sort_by_form_options'] = $utils::get_sort_by_form_options();
-			$params['global_filter_keys']   = $utils::get_filter_keys( true );
+			$params['global_filter_keys'] = $utils::get_filter_keys( true );
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

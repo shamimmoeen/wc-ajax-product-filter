@@ -46,14 +46,16 @@ class WCAPF_Hooks {
 		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
-		add_action( 'paginate_links', array( $this, 'modify_paginated_links' ) );
+		add_filter( 'paginate_links', array( $this, 'modify_paginated_link' ) );
+		add_filter( 'woocommerce_redirect_single_search_result', array( $this, 'single_search_redirect' ) );
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'insert_before_shop_loop' ), 0 );
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
 		add_action( 'woocommerce_before_shop_loop', array( $this, 'active_filters_before_shop_loop' ), - 10 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'active_filters_before_no_products' ), - 10 );
-		add_filter( 'wcapf_form_filter_data', array( $this, 'set_form_filters_data' ) );
+		add_filter( 'wcapf_form_filter_data', array( $this, 'set_form_filter_data' ) );
+		add_action( 'woocommerce_product_query', array( $this, 'set_query' ) );
 	}
 
 	/**
@@ -63,25 +65,9 @@ class WCAPF_Hooks {
 	 * @return void
 	 */
 	public function content_top() {
-		global $wp_query, $wcapf_filter_keys, $wp;
+		global $wp_query;
 
-		return;
-
-		// echo '<pre>';
-		// print_r( $wp_query );
-		// echo '</pre>';
-
-		// echo '<pre>';
-		// print_r( $wcapf_filter_keys );
-		// echo '</pre>';
-
-		// $url_builder = new WCAPF_URL_Builder( 'product-cat', true );
-
-		// echo $url_builder->get_filter_url( '16', true );
-		// echo '<br/>';
-		// echo '<br/>';
-
-		echo '<input type="checkbox" id="show_query" /><label for="show_query">Show Query</label>';
+		echo '<input type="checkbox" id="show_query"><label for="show_query">Show Query</label>';
 
 		echo '<div class="query">';
 		echo '<pre>';
@@ -130,14 +116,23 @@ class WCAPF_Hooks {
 		return $classes;
 	}
 
+	/**
+	 * Determines if we proceed or not.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
 	private function should_we_proceed() {
 		return WCAPF_Helper::found_wcapf();
 	}
 
 	/**
-	 * Suppress canonical redirect.
+	 * Return false to cancel the redirect.
 	 *
-	 * @param bool $redirect
+	 * @param string $redirect The redirect url.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */
@@ -150,14 +145,17 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 * @param string $link
+	 * Remove the paginated part for the first page only.
+	 *
+	 * @param string $link The paginated link URL.
 	 *
 	 * @source https://weusewp.com/tutorial/pagination-remove-page-1/
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
-	public function modify_paginated_links( $link ) {
+	public function modify_paginated_link( $link ) {
 		if ( ! $this->should_we_proceed() ) {
 			return $link;
 		}
@@ -170,7 +168,24 @@ class WCAPF_Hooks {
 	}
 
 	/**
+	 * Prevent redirecting to the product page if a single result is found while filtering on the search page.
+	 *
+	 * @since 3.3.2
+	 *
+	 * @return bool
+	 */
+	public function single_search_redirect( $redirect ) {
+		if ( ! $this->should_we_proceed() ) {
+			return $redirect;
+		}
+
+		return false;
+	}
+
+	/**
 	 * HTML wrapper to insert before the shop loop.
+	 *
+	 * @return void
 	 */
 	public function insert_before_shop_loop() {
 		if ( ! $this->should_we_proceed() ) {
@@ -182,6 +197,8 @@ class WCAPF_Hooks {
 
 	/**
 	 * HTML wrapper to insert after the shop loop.
+	 *
+	 * @return void
 	 */
 	public function insert_after_shop_loop() {
 		if ( ! $this->should_we_proceed() ) {
@@ -195,6 +212,8 @@ class WCAPF_Hooks {
 	 * HTML wrapper to insert before the not found product loops.
 	 *
 	 * @param string $template_name The template name.
+	 *
+	 * @return void
 	 */
 	public function insert_before_no_products( $template_name ) {
 		if ( ! $this->should_we_proceed() ) {
@@ -210,6 +229,8 @@ class WCAPF_Hooks {
 	 * HTML wrapper to insert after the not found product loops.
 	 *
 	 * @param string $template_name The template name.
+	 *
+	 * @return void
 	 */
 	public function insert_after_no_products( $template_name ) {
 		if ( ! $this->should_we_proceed() ) {
@@ -225,6 +246,8 @@ class WCAPF_Hooks {
 	 * Renders the active filters before shop loop.
 	 *
 	 * @since 4.0.0
+	 *
+	 * @return void
 	 */
 	public function active_filters_before_shop_loop() {
 		if ( ! $this->should_we_proceed() ) {
@@ -238,6 +261,8 @@ class WCAPF_Hooks {
 	 * Renders the active filters before shop loop.
 	 *
 	 * @since 4.0.0
+	 *
+	 * @return void
 	 */
 	private function render_active_filters() {
 		if ( ! empty( WCAPF_Helper::wcapf_option( 'active_filters_on_top' ) ) ) {
@@ -255,6 +280,8 @@ class WCAPF_Hooks {
 	 * Renders the active filters before no products found template.
 	 *
 	 * @since 4.0.0
+	 *
+	 * @return void
 	 */
 	public function active_filters_before_no_products( $template_name ) {
 		if ( ! $this->should_we_proceed() ) {
@@ -267,7 +294,7 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 * Sets the filters data according to the form and wcapf settings.
+	 * Sets the filter data according to the form and wcapf settings.
 	 *
 	 * @param array $data The filter data.
 	 *
@@ -275,7 +302,7 @@ class WCAPF_Hooks {
 	 *
 	 * @return array The filter data that will be merged with filter settings.
 	 */
-	public function set_form_filters_data( $data ) {
+	public function set_form_filter_data( $data ) {
 		$empty_options = array( 'show', 'remove' );
 		$remove_empty  = WCAPF_Helper::wcapf_option( 'remove_empty' );
 
@@ -292,6 +319,48 @@ class WCAPF_Hooks {
 			),
 			$data
 		);
+	}
+
+	/**
+	 * Query the products, applying sorting/ordering etc. This applies to the
+	 * main WordPress loop.
+	 *
+	 * @return void
+	 */
+	public function set_query() {
+		if ( ! is_shop() && ! is_product_taxonomy() ) {
+			return;
+		}
+
+		$filter = new WCAPF_Product_Filter();
+
+		$chosen_filters = $filter->get_chosen_filters();
+
+		$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
+
+		/**
+		 * We must hook the filter early to avoid the sorting issues.
+		 */
+		add_filter( 'posts_clauses', array( $this, 'posts_clauses' ), 5, 2 );
+	}
+
+	/**
+	 * @param array    $args     The query clauses.
+	 * @param WP_Query $wp_query Query instance.
+	 *
+	 * @return array The modified query clauses.
+	 */
+	public function posts_clauses( $args, $wp_query ) {
+		if ( ! $wp_query->is_main_query() ) {
+			return $args;
+		}
+
+		$filter = new WCAPF_Product_Filter();
+
+		$args['join']  .= $filter->get_full_join_clause();
+		$args['where'] .= $filter->get_full_where_clause();
+
+		return $args;
 	}
 
 }

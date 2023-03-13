@@ -361,6 +361,10 @@
 			$( window ).trigger( 'scroll' );
 			$( window ).trigger( 'resize' );
 
+			if ( wcapf_params.custom_scripts ) {
+				eval( wcapf_params.custom_scripts );
+			}
+
 			$body.trigger( 'wcapf_after_updating_products', [ $response, triggeredBy ] );
 		},
 		filterProducts: function( triggeredBy = 'filter' ) {
@@ -716,7 +720,7 @@
 				].join( '' );
 			};
 
-			const options = {
+			const defaults = {
 				inherit_select_classes: true,
 				inherit_option_classes: true,
 				no_results_text: wcapf_params.chosen_no_results_text,
@@ -726,11 +730,12 @@
 			};
 
 			if ( wcapf_params.is_rtl ) {
-				options[ 'rtl' ] = true;
+				defaults[ 'rtl' ] = true;
 			}
 
 			$body.find( '.wcapf-chosen' ).each( function() {
-				const $this = $( this );
+				const $this   = $( this );
+				const options = { ...defaults };
 
 				// If hierarchy enabled then we show the selected options.
 				if ( $this.hasClass( 'has-hierarchy' ) ) {
@@ -760,6 +765,8 @@
 				if ( wcapf_params.search_box_in_default_orderby ) {
 					disableSearch = false;
 				}
+
+				const options = { ...defaults };
 
 				options[ 'disable_search' ] = disableSearch;
 

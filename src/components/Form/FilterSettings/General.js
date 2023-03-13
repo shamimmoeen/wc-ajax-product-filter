@@ -395,12 +395,30 @@ const General = ({ index }) => {
 			)}
 
 			{'results-count' === component && (
-				<div className='__form_control'>
-					<p>
-						A shortcode <code>[wcapf_results_count]</code> is
-						available to show the results count outside the form.
-					</p>
-				</div>
+				<>
+					<Checkbox
+						id={'show_if_empty'}
+						index={index}
+						label={__(
+							'Show conditionally',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Enable this to show the results count only when a filter is applied.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={show_if_empty}
+						onChange={handleCheckboxChange}
+					/>
+
+					<div className='__form_control'>
+						<p>
+							A shortcode <code>[wcapf_results_count]</code> is
+							available to show the results count outside the
+							form.
+						</p>
+					</div>
+				</>
 			)}
 		</>
 	);

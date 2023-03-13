@@ -277,24 +277,6 @@ class WCAPF_API_Utils {
 		return $taxonomies;
 	}
 
-	public static function get_form_places() {
-		return array(
-			array(
-				'label' => __( 'Product archive pages', 'wc-ajax-product-filter' ),
-				'value' => 'product_archive_pages',
-			),
-			array(
-				'label'   => __( 'Taxonomy', 'wc-ajax-product-filter' ),
-				'value'   => 'taxonomy',
-				'options' => self::get_available_taxonomies( true ),
-			),
-			array(
-				'label' => __( 'Page', 'wc-ajax-product-filter' ),
-				'value' => 'page',
-			),
-		);
-	}
-
 	public static function display_date_formats() {
 		return apply_filters(
 			'wcapf_display_date_formats',
@@ -453,25 +435,6 @@ class WCAPF_API_Utils {
 		);
 	}
 
-	/**
-	 * Gets the post statuses.
-	 *
-	 * @return array
-	 */
-	public static function post_statuses() {
-		$raw   = array_reverse( get_post_statuses() );
-		$array = array();
-
-		foreach ( $raw as $post_status => $label ) {
-			$array[] = array(
-				'label' => $label,
-				'value' => $post_status,
-			);
-		}
-
-		return $array;
-	}
-
 	public static function user_role_options() {
 		$_user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
 		$user_roles  = array();
@@ -591,32 +554,6 @@ class WCAPF_API_Utils {
 			'id'    => $id,
 			'title' => get_the_title( $id ),
 		);
-	}
-
-	/**
-	 * Gets the forms for the sort by form options dropdown.
-	 *
-	 * @return array
-	 */
-	public static function get_sort_by_form_options() {
-		$args = array(
-			'post_type'   => 'wcapf-form',
-			'nopaging'    => true,
-			'post_status' => 'publish',
-			'fields'      => 'ids',
-		);
-
-		$forms   = get_posts( $args );
-		$options = array();
-
-		foreach ( $forms as $form_id ) {
-			$options[] = array(
-				'label' => get_the_title( $form_id ),
-				'value' => $form_id,
-			);
-		}
-
-		return $options;
 	}
 
 }

@@ -32,11 +32,10 @@ const wcapf_params = wcapf_params || {
 	'found_wcapf': '',
 	'update_document_title': '',
 	'use_tippyjs': '',
-	'for_preview': '',
 	'shop_loop_container': '',
 	'not_found_container': '',
-	'enable_pagination_via_ajax': '',
 	'pagination_container': '',
+	'enable_pagination_via_ajax': '',
 	'sorting_control': '',
 	'attach_chosen_on_sorting': '',
 	'loading_animation': '',
@@ -47,6 +46,7 @@ const wcapf_params = wcapf_params || {
 	'scroll_to_top_offset': '',
 	'disable_scroll_animation': '',
 	'more_selectors': '',
+	'custom_scripts': '',
 };
 
 jQuery( document ).ready( function( $ ) {

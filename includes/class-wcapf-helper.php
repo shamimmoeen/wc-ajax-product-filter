@@ -32,8 +32,9 @@ class WCAPF_Helper {
 	 * @return string
 	 */
 	public static function form_edit_url( $form_id ) {
-		// TODO: Fix it.
-		return add_query_arg( 'id', $form_id, self::forms_page_url() );
+		$forms_page_url = admin_url( 'admin.php?page=wcapf' );
+
+		return add_query_arg( 'id', $form_id, $forms_page_url );
 	}
 
 	/**
@@ -395,6 +396,17 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Determines if we load the js, css scripts conditionally(only when in the pages where filters found).
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function load_scripts_conditionally() {
+		return apply_filters( 'wcapf_load_scripts_conditionally', true );
+	}
+
+	/**
 	 * @param int $rating The rating.
 	 *
 	 * @return string
@@ -646,6 +658,13 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * @return bool
+	 */
+	public static function animation_enabled_in_accordion() {
+		return apply_filters( 'wcapf_enable_animation_in_accordion', false );
+	}
+
+	/**
 	 * Determines if we keep the filter accordion as opened when the filter is active.
 	 *
 	 * TODO: Maybe move to inside the method.
@@ -685,7 +704,7 @@ class WCAPF_Helper {
 	 */
 	public static function no_results_text() {
 		return self::wcapf_option(
-			'opening_btn_label',
+			'no_results_text',
 			__( 'No results for:', 'wc-ajax-product-filter' )
 		);
 	}
@@ -697,6 +716,15 @@ class WCAPF_Helper {
 	 */
 	public static function empty_filter_text() {
 		return self::wcapf_option( 'empty_filter_text', __( 'N/A', 'wc-ajax-product-filter' ) );
+	}
+
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function sort_by_prefix() {
+		return self::wcapf_option( 'sort_by_prefix', __( 'Sort by:', 'wc-ajax-product-filter' ) );
 	}
 
 	public static function opening_btn_label() {

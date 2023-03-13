@@ -33,32 +33,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Defines constant WCAPF_SLUG
 if ( ! defined( 'WCAPF_SLUG' ) ) {
-	define( 'WCAPF_SLUG', 'wc-ajax-product-filter' );
+	define( 'WCAPF_SLUG', 'wc-ajax-product-filter', false );
 }
 
 // Defines constant WCAPF_VERSION
 if ( ! defined( 'WCAPF_VERSION' ) ) {
-	define( 'WCAPF_VERSION', '4.0.0' );
+	define( 'WCAPF_VERSION', '4.0.0', false );
 }
 
 // Defines constant WCAPF_PLUGIN_FILE
 if ( ! defined( 'WCAPF_PLUGIN_FILE' ) ) {
-	define( 'WCAPF_PLUGIN_FILE', __FILE__ );
+	define( 'WCAPF_PLUGIN_FILE', __FILE__, false );
 }
 
 // Defines constant WCAPF_PLUGIN_DIR
 if ( ! defined( 'WCAPF_PLUGIN_DIR' ) ) {
-	define( 'WCAPF_PLUGIN_DIR', __DIR__ );
+	define( 'WCAPF_PLUGIN_DIR', __DIR__, false );
 }
 
 // Defines constant WCAPF_PLUGIN_URL
 if ( ! defined( 'WCAPF_PLUGIN_URL' ) ) {
-	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ), false );
 }
 
 // Defines constant WCAPF_CACHE_TIME
 if ( ! defined( 'WCAPF_CACHE_TIME' ) ) {
-	define( 'WCAPF_CACHE_TIME', 60 * 60 * 12 );
+	define( 'WCAPF_CACHE_TIME', 60 * 60 * 12, false );
 }
 
 /**
@@ -97,3 +97,23 @@ function wcapf_setup() {
 }
 
 wcapf_setup();
+
+// TODO: Remove this
+
+add_action( 'wp_default_scripts', 'wcapf_pp_fix_jquery_migrate_issue' );
+
+/**
+ * Remove jquery migrate related logs on console.
+ *
+ * @param array $scripts The default scripts.
+ *
+ * @return void
+ */
+function wcapf_pp_fix_jquery_migrate_issue( $scripts ) {
+	if ( ! empty( $scripts->registered['jquery'] ) ) {
+		$scripts->registered['jquery']->deps = array_diff(
+			$scripts->registered['jquery']->deps,
+			array( 'jquery-migrate' )
+		);
+	}
+}

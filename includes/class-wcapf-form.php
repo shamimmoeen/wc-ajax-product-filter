@@ -396,6 +396,12 @@ class WCAPF_Form {
 	 * @return void
 	 */
 	protected function render_list_type_filter( $field_instance ) {
+		$valid_types = array( 'taxonomy', 'rating', 'product-status', 'post-author', 'post-meta' );
+
+		if ( ! in_array( $field_instance->filter_type, $valid_types ) ) {
+			return;
+		}
+
 		$walker = new WCAPF_Walker( $field_instance );
 
 		$this->before_filter( $field_instance );
