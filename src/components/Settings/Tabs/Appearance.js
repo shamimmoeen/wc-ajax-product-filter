@@ -13,12 +13,12 @@ const WCAPF_PRO = foundProVersion();
 
 const enablePrimaryTextColor = wcapf_admin_params.enable_primary_text_color;
 
-const numberRangeSliderPresets = [];
+const numberRangeSliderStyles = [];
 
 for (let index = 1; index <= 11; index++) {
-	numberRangeSliderPresets.push({
-		label: sprintf(__('Preset %d', 'wc-ajax-product-filter'), index),
-		value: 'preset-' + index,
+	numberRangeSliderStyles.push({
+		label: sprintf(__('Style %d', 'wc-ajax-product-filter'), index),
+		value: 'style-' + index,
 	});
 }
 
@@ -73,7 +73,7 @@ const Appearance = () => {
 			attach_chosen_on_sorting,
 			improve_native_select,
 			improve_scrollbar,
-			number_range_slider_preset,
+			number_range_slider_style,
 			label_size,
 			active_label_style,
 			star_icon_color,
@@ -88,8 +88,8 @@ const Appearance = () => {
 		handleTextFieldChange(value, key);
 	};
 
-	const numberRangeSliderPreset = numberRangeSliderPresets.find(
-		(option) => number_range_slider_preset === option.value
+	const numberRangeSliderStyle = numberRangeSliderStyles.find(
+		(option) => number_range_slider_style === option.value
 	);
 
 	return (
@@ -196,18 +196,18 @@ const Appearance = () => {
 			/>
 
 			<Select
-				id={'number_range_slider_preset'}
+				id={'number_range_slider_style'}
 				label={__(
-					'Number range slider preset',
+					'Number range slider style',
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Select the number range slider preset from available presets.',
+					'Select the number range slider style from the available ones.',
 					'wc-ajax-product-filter'
 				)}
-				value={numberRangeSliderPreset}
+				value={numberRangeSliderStyle}
 				onChange={handleSelectChange}
-				options={numberRangeSliderPresets}
+				options={numberRangeSliderStyles}
 				maxMenuHeight={180}
 				renderAsFormField
 			/>

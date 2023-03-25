@@ -244,7 +244,7 @@ const Others = () => {
 					<Checkbox
 						id={'multiple_form_locations'}
 						label={__(
-							'Form in multiple locations',
+							'Form multiple locations',
 							'wc-ajax-product-filter'
 						)}
 						description={__(

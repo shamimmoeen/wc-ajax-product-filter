@@ -29,7 +29,7 @@
  * @var string $thousand_separator
  * @var string $decimal_separator
  * @var string $slider_id
- * @var string $slider_preset
+ * @var string $slider_style
  * @var string $filter_url
  * @var string $clear_filter_url
  */
@@ -89,7 +89,7 @@ $range_wrapper_classes = 'wcapf-range-wrapper';
 // Add slider preset class.
 if ( 'range_slider' === $display_type ) {
 	$range_wrapper_classes .= ' wcapf-range-slider';
-	$range_wrapper_classes .= ! empty( $slider_preset ) ? ' ' . $slider_preset : ' preset-1';
+	$range_wrapper_classes .= ! empty( $slider_style ) ? ' ' . $slider_style : ' style-1';
 } else {
 	$range_wrapper_classes .= ' wcapf-range-number';
 }

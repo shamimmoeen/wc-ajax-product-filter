@@ -193,7 +193,7 @@ const Filter = ({ index }) => {
 							{onlyType || activeFilters ? (
 								<span>&#8212;</span>
 							) : (
-								displayType.label
+								displayType?.label
 							)}
 						</div>
 					</div>

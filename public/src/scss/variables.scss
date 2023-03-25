@@ -1,27 +1,13 @@
-body {
-	// twentytwentythree
-	//--wp--preset--font-size--medium: 16px;
-
-	.wcapf-form-fields {
-		//width: 280px;
-		//width: 400px;
-	}
-}
-
 :root {
 	--wcapf-primary-color: rgba(var(--wcapf-primary-color-rgb), 1);
 	--wcapf-primary-text-color: rgba(var(--wcapf-primary-text-color-rgb), 1);
 	--wcapf-active-label-grey-style-bg-color: #ddd; // #f0f0f0;
 	--wcapf-chosen-multiselect-grey-style-close-color: 119, 119, 119;
+	--wcapf-disabled-bg-color: #f4f4f0;
 
-	--wcapf-filter-checked-outline-color: #333; // TODO: Maybe redundant.
 	--wcapf-filter-base-bottom-margin: 2em; // 3em
 	--wcapf-filter-line-height: inherit;
 	--wcapf-filter-count-opacity: .6;
-	--wcapf-filter-outline-color: #e9e9e9; // #ddd // #d8d8da // #ccd0dc // #ced4da // #e9e9e9
-	--wcapf-nouislider-input-field-margin-bottom: 1.5em;
-	--wcapf-nouislider-plain-text-margin-bottom: 1.2em;
-	--wcapf-range-slider-bottom-padding: 1em;
 
 	// Filter Title
 	--wcapf-filter-title-font-size: 1.25em;
@@ -36,11 +22,14 @@ body {
 	--wcapf-input-text-font-size: 1em;
 	--wcapf-input-text-hr-padding: 0.625em;
 	--wcapf-input-text-vr-padding: 0.375em;
-	--wcapf-input-text-border-color: #ced4da;
+	--wcapf-input-text-border-color: #ddd;
 	--wcapf-input-text-border-radius: 0.25em;
 
-	// Range Filter Input Field
+	// Range Slider
 	--wcapf-range-filter-unit-size: 2em;
+	--wcapf-nouislider-input-field-margin-bottom: 1.5em;
+	--wcapf-nouislider-plain-text-margin-bottom: 1.2em;
+	--wcapf-range-slider-bottom-padding: 1em;
 
 	// List
 	--wcapf-layered-nav-list-child-left-padding: 1.618em;
@@ -50,7 +39,7 @@ body {
 	--wcapf-checkbox-radio-space: 0.5em;
 
 	// Dropdown
-	--wcapf-dropdown-border-color: #ced4da; // #ccd0dc // #d8d8da // #ced4da
+	--wcapf-dropdown-border-color: #ddd; // #ccd0dc // #d8d8da // #ced4da
 	--wcapf-dropdown-border-radius: 0.25em;
 
 	// Label
@@ -89,7 +78,9 @@ body {
 
 	// Active as current tax
 	--wcapf-current-tax-item-cursor: default;
-	--wcapf-disabled-label-bg-color: #eee;
+	--wcapf-label-active-as-ancestor-bg-color: var(--wcapf-disabled-bg-color);
+	--wcapf-label-active-as-archive-bg-color: #e9e9e9;
+	--wcapf-labeled-nav-disabled-bg-color: var(--wcapf-disabled-bg-color);
 
 	// Buttons
 	--wcapf-btn-secondary-bg-color: #fff;

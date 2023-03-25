@@ -50,6 +50,8 @@ class WCAPF_Form {
 		$fields = isset( $this->form['filters'] ) ? $this->form['filters'] : array();
 		$fields = apply_filters( 'wcapf_form_filters', $fields, $this->form );
 
+		$number_input_types = WCAPF_Helper::number_input_display_types();
+
 		foreach ( $fields as $field ) {
 			$field_data     = $field['settings'];
 			$field_instance = new WCAPF_Field_Instance( $field_data );
@@ -61,10 +63,10 @@ class WCAPF_Form {
 
 			if ( 'component' === $field_type ) {
 				$this->render_components( $field_instance );
-			} elseif ( 'price' === $field_type ) {
+			} elseif ( 'price' === $field_type && in_array( $field_instance->display_type, $number_input_types ) ) {
 				$this->render_price_filter( $field_instance );
 			} else {
-				$this->render_list_type_filter( $field_instance );
+				$this->render_filter( $field_instance );
 			}
 		}
 
@@ -164,7 +166,7 @@ class WCAPF_Form {
 		$range = WCAPF_Product_Filter_Utils::get_price_range( $field_instance );
 
 		$this->before_filter( $field_instance );
-		$this->render_range_input_filter( $field_instance, $range );
+		$this->render_number_inputs( $field_instance, $range );
 		$this->after_filter();
 	}
 
@@ -277,7 +279,7 @@ class WCAPF_Form {
 	 *
 	 * @return void
 	 */
-	protected function render_range_input_filter( $field_instance, $range_min_max ) {
+	protected function render_number_inputs( $field_instance, $range_min_max ) {
 		$display_type          = $field_instance->display_type;
 		$display_values_as     = $field_instance->get_sub_field_value( 'number_range_slider_display_values_as' );
 		$alignment             = $field_instance->get_sub_field_value( 'alignment' );
@@ -300,12 +302,12 @@ class WCAPF_Form {
 			$range_max_value = isset( $range_min_max['max'] ) ? $range_min_max['max'] : '';
 		}
 
-		$hide_range_input = apply_filters(
-			'wcapf_hide_range_input_when_min_max_values_are_equal',
+		$hide_inputs = apply_filters(
+			'wcapf_hide_number_inputs_when_min_max_values_are_equal',
 			'remove' === $field_instance->hide_empty
 		);
 
-		if ( $range_min_value === $range_max_value && $auto_detect && $hide_range_input ) {
+		if ( $range_min_value === $range_max_value && $auto_detect && $hide_inputs ) {
 			echo '<div>' . esc_html( WCAPF_Helper::empty_filter_text() ) . '</div>';
 
 			return;
@@ -346,8 +348,8 @@ class WCAPF_Form {
 
 		$step = apply_filters( 'wcapf_filter_range_step', $step, $min_value, $max_value, $field_instance );
 
-		$slider_id     = $filter_key . '-slider-' . $filter_id;
-		$slider_preset = WCAPF_Helper::wcapf_option( 'number_range_slider_preset' );
+		$slider_id    = $filter_key . '-slider-' . $filter_id;
+		$slider_style = WCAPF_Helper::wcapf_option( 'number_range_slider_style' );
 
 		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
@@ -372,7 +374,7 @@ class WCAPF_Form {
 			'thousand_separator'    => $thousand_separator,
 			'decimal_separator'     => $decimal_separator,
 			'slider_id'             => $slider_id,
-			'slider_preset'         => $slider_preset,
+			'slider_style'          => $slider_style,
 			'filter_url'            => $url_builder->get_range_url(),
 			'clear_filter_url'      => $url_builder->get_clear_filter_url(),
 		);
@@ -395,7 +397,7 @@ class WCAPF_Form {
 	 *
 	 * @return void
 	 */
-	protected function render_list_type_filter( $field_instance ) {
+	protected function render_filter( $field_instance ) {
 		$valid_types = array( 'taxonomy', 'rating', 'product-status', 'post-author', 'post-meta' );
 
 		if ( ! in_array( $field_instance->filter_type, $valid_types ) ) {

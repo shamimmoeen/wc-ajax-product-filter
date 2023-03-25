@@ -181,6 +181,10 @@
 					outline: 2px solid var(--wcapf-primary-color);
 					outline-offset: 2px;
 				}
+
+				&[disabled] ~ .wcapf-filter-item-label {
+					background-color: var(--wcapf-labeled-nav-disabled-bg-color);
+				}
 			}
 
 			&.empty-item {
@@ -201,7 +205,7 @@
 				input[type="checkbox"],
 				input[type="radio"] {
 					&:checked ~ .wcapf-filter-item-label {
-						background-color: var(--wcapf-disabled-label-bg-color);
+						background-color: var(--wcapf-label-active-as-archive-bg-color);
 						border-color: var(--wcapf-labeled-nav-border-color);
 						color: inherit;
 					}
@@ -209,8 +213,11 @@
 			}
 
 			&.active-as-ancestor {
-				.wcapf-filter-item-label {
-					background-color: var(--wcapf-disabled-label-bg-color);
+				input[type="checkbox"],
+				input[type="radio"] {
+					~ .wcapf-filter-item-label {
+						background-color: var(--wcapf-label-active-as-ancestor-bg-color);
+					}
 				}
 			}
 		}
@@ -220,9 +227,8 @@
 		li.wcapf-filter-option {
 			.wcapf-filter-item {
 				&:not(.current-tax-item) {
-					input[type="checkbox"],
-					input[type="radio"] {
-						&:checked ~ .wcapf-filter-item-label {
+					&.item-active {
+						.wcapf-filter-item-label {
 							background-color: var(--wcapf-primary-color);
 							border-color: var(--wcapf-primary-color);
 							color: var(--wcapf-primary-text-color);
@@ -237,9 +243,8 @@
 		li.wcapf-filter-option {
 			.wcapf-filter-item {
 				&:not(.current-tax-item) {
-					input[type="checkbox"],
-					input[type="radio"] {
-						&:checked ~ .wcapf-filter-item-label {
+					&.item-active {
+						.wcapf-filter-item-label {
 							background-color: var(--wcapf-active-label-grey-style-bg-color);
 						}
 					}
@@ -250,7 +255,7 @@
 }
 
 .wcapf-list-wrapper {
-	&:not(.display-type-color):not(.display-type-image) {
+	&:not(.display-type-color.preset-1):not(.display-type-image.preset-1) {
 		.wcapf-nav-item-count {
 			opacity: var(--wcapf-filter-count-opacity);
 
@@ -274,6 +279,7 @@
 		}
 	}
 
+	// TODO: Check with input type number.
 	input[type="text"] {
 		@include input_text;
 	}
@@ -363,8 +369,4 @@
 	.display-values-as-plain_text {
 		margin-bottom: var(--wcapf-nouislider-plain-text-margin-bottom);
 	}
-}
-
-a.wcapf-reset-filters-btn {
-	cursor: pointer;
 }

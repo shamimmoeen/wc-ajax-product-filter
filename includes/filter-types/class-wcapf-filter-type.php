@@ -198,7 +198,15 @@ abstract class WCAPF_Filter_Type {
 				)
 			);
 
-			$options[ $value ] = $item;
+			if ( 'sort-by' === $type ) {
+				// In sort-by filter, id is the unique value because id is generated from value and order direction.
+				$sort_by_id = $option['id'];
+				$item['id'] = $sort_by_id;
+
+				$options[ $sort_by_id ] = $item;
+			} else {
+				$options[ $value ] = $item;
+			}
 		}
 
 		return $options;

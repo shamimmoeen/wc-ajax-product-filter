@@ -4,11 +4,11 @@
 
 	--wcapf-stylish-checkbox-radio-size: 18px;
 	--wcapf-stylish-checkbox-radio-bg-color: #fff;
-	--wcapf-stylish-checkbox-radio-disabled-bg-color: #f4f4f0;
+	--wcapf-stylish-checkbox-radio-disabled-bg-color: var(--wcapf-disabled-bg-color);
 	--wcapf-stylish-checkbox-radio-disabled-text-color: #ccc;
 	--wcapf-stylish-checkbox-radio-primary-color: var(--wcapf-primary-color);
 	--wcapf-stylish-checkbox-radio-primary-text-color: var(--wcapf-primary-text-color);
-	--wcapf-stylish-checkbox-radio-border-color: var(--wcapf-dropdown-border-color);
+	--wcapf-stylish-checkbox-radio-border-color: #ddd;
 	--wcapf-stylish-checkbox-radio-border-size: 1px;
 	--wcapf-stylish-checkbox-radio-border-radius: 2px;
 	--wcapf-stylish-checkbox-checked-width: 6px;
