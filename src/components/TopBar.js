@@ -49,32 +49,26 @@ const TopBar = ({ view }) => {
 				})}
 			</div>
 
-			{'form' !== view && (
-				<div className='__cta'>
-					{!foundProVersion() && (
-						<a href={upgradeToProLink()} className='__upgrade_btn'>
-							<Icon icon={DiamondIcon} size={18} />
-							{__('Upgrade to PRO', 'wc-ajax-product-filter')}
-						</a>
-					)}
+			<div className='__cta'>
+				{!foundProVersion() && (
+					<a href={upgradeToProLink()} className='__upgrade_btn'>
+						<Icon icon={DiamondIcon} size={18} />
+						{__('Upgrade to PRO', 'wc-ajax-product-filter')}
+					</a>
+				)}
 
-					<div className='__plan'>
-						<div>
-							{__('You are on the', 'wc-ajax-product-filter')}
-						</div>
-						<div>
-							{foundProVersion()
-								? __('PRO Plan')
-								: __('FREE Plan')}
-						</div>
-					</div>
-
-					<div className='__version'>
-						<div>{__('Version', 'wc-ajax-product-filter')}</div>
-						<div>{pluginVersion()}</div>
+				<div className='__plan'>
+					<div>{__('You are on the', 'wc-ajax-product-filter')}</div>
+					<div>
+						{foundProVersion() ? __('PRO Plan') : __('FREE Plan')}
 					</div>
 				</div>
-			)}
+
+				<div className='__version'>
+					<div>{__('Version', 'wc-ajax-product-filter')}</div>
+					<div>{pluginVersion()}</div>
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -65,7 +65,16 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 		} else if ('text-options' === type) {
 			row = { value: '', label: '' };
 		} else if ('number-options' === type) {
-			row = { min_value: '', max_value: '', label: '' };
+			if ('rating' === filterType) {
+				row = {
+					min_value: '',
+					max_value: '',
+					label: '',
+					secondary_label: '',
+				};
+			} else {
+				row = { min_value: '', max_value: '', label: '' };
+			}
 		} else if ('time-period-options' === type) {
 			const firstOption = timePeriods[0];
 			const value = firstOption.value;
@@ -265,6 +274,11 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<th className={classes}>
 						{__('Label', 'wc-ajax-product-filter')}
 					</th>
+					{'rating' === filterType && (
+						<th className='__secondary_label'>
+							{__('Secondary Label', 'wc-ajax-product-filter')}
+						</th>
+					)}
 				</>
 			);
 		} else if ('time-period-options' === type) {
@@ -422,6 +436,54 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 			}
 		};
 
+		const secondaryColor = () => {
+			if ('1' === secondary_color_enabled) {
+				return (
+					<>
+						<ColorInput
+							slotName={SLOT_NAME}
+							value={secondary_color}
+							onChange={(value) =>
+								handleChange(value, rowIndex, 'secondary_color')
+							}
+						/>
+
+						<Button
+							variant='link'
+							isDestructive
+							onClick={() => handleRemoveSecondaryColor(rowIndex)}
+						>
+							<Icon icon={closeSmall} />
+						</Button>
+					</>
+				);
+			} else {
+				return (
+					<>
+						<Button
+							variant='link'
+							isDestructive
+							onClick={() => handleChange('', rowIndex, 'color')}
+						>
+							<Icon icon={closeSmall} />
+						</Button>
+
+						<Button
+							isSmall
+							icon={plus}
+							onClick={() =>
+								handleChange(
+									'1',
+									rowIndex,
+									'secondary_color_enabled'
+								)
+							}
+						/>
+					</>
+				);
+			}
+		};
+
 		return (
 			<>
 				{hasTooltip && (
@@ -456,45 +518,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 											}
 										/>
 
-										{'1' === secondary_color_enabled ? (
-											<>
-												<ColorInput
-													slotName={SLOT_NAME}
-													value={secondary_color}
-													onChange={(value) =>
-														handleChange(
-															value,
-															rowIndex,
-															'secondary_color'
-														)
-													}
-												/>
-
-												<Button
-													variant='link'
-													isDestructive
-													onClick={() =>
-														handleRemoveSecondaryColor(
-															rowIndex
-														)
-													}
-												>
-													<Icon icon={closeSmall} />
-												</Button>
-											</>
-										) : (
-											<Button
-												isSmall
-												icon={plus}
-												onClick={() =>
-													handleChange(
-														'1',
-														rowIndex,
-														'secondary_color_enabled'
-													)
-												}
-											/>
-										)}
+										{color && secondaryColor()}
 									</div>
 								)}
 
@@ -571,7 +595,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 				</>
 			);
 		} else if ('number-options' === type) {
-			const { min_value, max_value, label } = row;
+			const { min_value, max_value, label, secondary_label } = row;
 
 			let classes = '__label';
 
@@ -600,6 +624,17 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					</td>
 
 					<td>{inputField(classes, rowIndex, 'label', label)}</td>
+
+					{'rating' === filterType && (
+						<td>
+							{inputField(
+								'secondary_label',
+								rowIndex,
+								'secondary_label',
+								secondary_label
+							)}
+						</td>
+					)}
 				</>
 			);
 		} else if ('time-period-options' === type) {

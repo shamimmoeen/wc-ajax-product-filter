@@ -340,6 +340,7 @@ export function filterDefaultData() {
 		field_key: '',
 		// Taxonomy
 		display_type: 'checkbox',
+		swatch_preset: 'preset-1',
 		query_type: 'or',
 		all_items_label: '',
 		enable_multiple_filter: '1',
@@ -454,6 +455,7 @@ export function filterTypeDependentFields() {
 		'component',
 		'isACF',
 		'display_type',
+		'swatch_preset',
 		// Taxonomy
 		'get_options',
 		'order_terms_by',
@@ -748,11 +750,11 @@ const textFreeDisplayTypes = [
 function textProDisplayTypes(taxHierarchical = false) {
 	const textProDisplayTypes = [
 		{
-			label: __('Color', 'wc-ajax-product-filter'),
+			label: __('Color Swatch', 'wc-ajax-product-filter'),
 			value: 'color',
 		},
 		{
-			label: __('Image', 'wc-ajax-product-filter'),
+			label: __('Image Swatch', 'wc-ajax-product-filter'),
 			value: 'image',
 		},
 	];

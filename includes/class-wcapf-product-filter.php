@@ -74,43 +74,27 @@ class WCAPF_Product_Filter {
 
 		$filters_data = $this->filters_data( $query );
 
-		$range_input_display_types = WCAPF_Helper::range_input_display_types();
-		$attribute_names           = wc_get_attribute_taxonomy_names();
-
-		$already_filtered = array();
-
 		foreach ( $filters_data as $filter_key => $_filter_data ) {
 			$field_instance = new WCAPF_Field_Instance( $_filter_data );
 			$field_type     = $field_instance->type;
-			$display_type   = $field_instance->display_type;
 			$filter_values  = $query[ $filter_key ];
 
 			if ( 'taxonomy' === $field_type || 'rating' === $field_type ) {
 				$taxonomy = $field_instance->taxonomy;
 
-				if ( in_array( $taxonomy, $attribute_names ) ) {
+				if ( in_array( $taxonomy, wc_get_attribute_taxonomy_names() ) ) {
 					$taxonomies[ $filter_key ] = $this->set_attribute_filter_data( $filter_values, $field_instance );
 				} else {
 					$taxonomies[ $filter_key ] = $this->set_taxonomy_filter_data( $filter_values, $field_instance );
 				}
-
-				$already_filtered[] = $filter_key;
-			} elseif ( 'price' === $field_type && in_array( $display_type, $range_input_display_types ) ) {
+			} elseif ( 'price' === $field_type ) {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
-
-				$already_filtered[] = $filter_key;
 			} elseif ( 'product-status' === $field_type ) {
 				$statuses[ $filter_key ] = $this->set_filter_by_product_status_data( $filter_values, $field_instance );
-
-				$already_filtered[] = $filter_key;
 			} elseif ( 'post-author' === $field_type ) {
 				$post_author[ $filter_key ] = $this->set_filter_by_post_author_data( $filter_values, $field_instance );
-
-				$already_filtered[] = $filter_key;
 			} elseif ( 'post-meta' === $field_type ) {
 				$post_metas[ $filter_key ] = $this->set_filter_by_post_meta_data( $filter_values, $field_instance );
-
-				$already_filtered[] = $filter_key;
 			}
 		}
 
@@ -123,17 +107,10 @@ class WCAPF_Product_Filter {
 
 		$chosen = $this->set_default_sorting_data( $chosen );
 
-		$remaining_filters = array();
-
-		foreach ( array_keys( $filters_data ) as $_filter_key ) {
-			if ( in_array( $_filter_key, $already_filtered ) ) {
-				continue;
-			}
-
-			$remaining_filters[ $_filter_key ] = $filters_data[ $_filter_key ];
-		}
-
-		return apply_filters( 'wcapf_chosen_filters', $chosen, $remaining_filters, $query );
+		/**
+		 * Register a hook to add the sort-by, per-page filters data.
+		 */
+		return apply_filters( 'wcapf_chosen_filters', $chosen, $filters_data, $query );
 	}
 
 	/**
@@ -671,7 +648,7 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		$where = $utils::get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses );
+		$where = $this->get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses );
 
 		return array(
 			'query_type'     => $query_type,
@@ -704,46 +681,68 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * @param string $query_type
+	 * @param array  $or_filter_values
+	 * @param string $value_alias
+	 * @param array  $clauses
+	 *
+	 * @return string
+	 */
+	protected function get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses ) {
+		if ( 'or' === $query_type ) {
+			if ( $or_filter_values ) {
+				$or_clauses = "('" . implode( "','", $or_filter_values ) . "')";
+
+				$where = "$value_alias IN $or_clauses";
+			} elseif ( $clauses ) {
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . implode( ' OR ', $clauses ) . ' )';
+				} else {
+					$where = implode( ' OR ', $clauses );
+				}
+			} else {
+				$where = '1=0';
+			}
+		} else {
+			if ( $clauses ) {
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . implode( ' AND ', $clauses ) . ' )';
+				} else {
+					$where = implode( ' AND ', $clauses );
+				}
+			} else {
+				$where = '1=0';
+			}
+		}
+
+		return $where;
+	}
+
+	/**
 	 * @param string               $filter_value
 	 * @param WCAPF_Field_Instance $field_instance
 	 *
 	 * @return array
 	 */
-	private function set_filter_by_post_meta_data( $filter_value, $field_instance ) {
+	protected function set_filter_by_post_meta_data( $filter_value, $field_instance ) {
 		$filter_key = $field_instance->filter_key;
 		$query_type = $field_instance->query_type;
-		$meta_key   = $field_instance->meta_key;
 		$filter_id  = $field_instance->filter_id;
 
 		$active_filters = array();
 
 		$utils = new WCAPF_Product_Filter_Utils;
 
-		$meta_values = $utils::get_chosen_filter_values( $filter_value );
+		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
-		global $wpdb;
-
-		$join             = '';
 		$clauses          = array();
 		$or_filter_values = array();
 
-		if ( 'and' === $query_type ) {
-			foreach ( $meta_values as $index => $meta_value ) {
-				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
-
-				$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
-				$join .= " AND $join_alias.meta_key = '$meta_key')";
-			}
-		} else {
-			$join_alias = $utils::get_table_join_alias( $filter_key );
-
-			$join .= "LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
-			$join .= " AND $join_alias.meta_key = '$meta_key')";
-		}
+		$join = $this->get_post_meta_join_clause( $filter_values, $field_instance );
 
 		$value_alias = $utils::get_table_join_alias( $filter_key ) . '.meta_value';
 
-		foreach ( $meta_values as $index => $meta_value ) {
+		foreach ( $filter_values as $index => $meta_value ) {
 			// Active filters data.
 			$active_filters[ $meta_value ] = $meta_value;
 
@@ -758,16 +757,48 @@ class WCAPF_Product_Filter {
 			}
 		}
 
-		$where = $utils::get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses );
+		$where = $this->get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses );
 
 		return array(
 			'query_type'     => $query_type,
-			'values'         => $meta_values,
+			'values'         => $filter_values,
 			'join'           => $join,
 			'where'          => $where,
 			'filter_id'      => $filter_id,
 			'active_filters' => $active_filters,
 		);
+	}
+
+	/**
+	 * @param array                $filter_values
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @return string
+	 */
+	public function get_post_meta_join_clause( $filter_values, $field_instance ) {
+		global $wpdb;
+
+		$query_type = $field_instance->query_type;
+		$filter_key = $field_instance->filter_key;
+		$meta_key   = $field_instance->meta_key;
+
+		$join = '';
+
+		if ( 'and' === $query_type ) {
+			foreach ( $filter_values as $index => $meta_value ) {
+				$join_alias = WCAPF_Product_Filter_Utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
+
+				$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+				$join .= " AND $join_alias.meta_key = '$meta_key')";
+			}
+		} else {
+			$join_alias = WCAPF_Product_Filter_Utils::get_table_join_alias( $filter_key );
+
+			$join .= "LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+			$join .= " AND $join_alias.meta_key = '$meta_key')";
+		}
+
+		return $join;
 	}
 
 	/**

@@ -467,8 +467,8 @@ class WCAPF_API_Utils {
 			'wcapf_manual_option_allowed_keys',
 			array(
 				'value'   => 'sanitize_text_field',
-				'label'   => 'sanitize_text_field',
-				'tooltip' => 'wp_kses_data',
+				'label'   => 'wp_kses_post',
+				'tooltip' => 'wp_kses_post',
 			),
 			$type
 		);

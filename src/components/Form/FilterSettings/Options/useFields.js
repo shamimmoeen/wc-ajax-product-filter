@@ -27,27 +27,17 @@ const useFields = (index) => {
 
 	const filter = formFilters[index];
 
-	const { type: filterType, get_options } = filter;
+	const { get_options } = filter;
 
 	const getOptionsField = (id) => {
-		let description;
-
-		if ('taxonomy' === filterType || 'post-meta' === filterType) {
-			description = __(
-				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatch, you need to manually enter the options.'
-			);
-		} else {
-			description = __(
-				'Whether to get the options automatically or you want to add the options manually.'
-			);
-		}
-
 		return (
 			<Radio
 				id={id}
 				index={index}
 				label={__('Get Options', 'wc-ajax-product-filter')}
-				description={description}
+				description={__(
+					'Whether to get the options automatically or you want to add the options manually.'
+				)}
 				options={methodsOfGettingOptions()}
 				value={filter[id]}
 				onChange={handleGetOptionsChange}

@@ -43,7 +43,7 @@ class WCAPF_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_action( 'storefront_content_top', array( $this, 'content_top' ) );
+		// add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
 		add_filter( 'paginate_links', array( $this, 'modify_paginated_link' ) );

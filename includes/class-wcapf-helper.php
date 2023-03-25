@@ -330,7 +330,7 @@ class WCAPF_Helper {
 	/**
 	 * @return array
 	 */
-	public static function range_input_display_types() {
+	public static function number_input_display_types() {
 		return array( 'range_slider', 'range_number' );
 	}
 

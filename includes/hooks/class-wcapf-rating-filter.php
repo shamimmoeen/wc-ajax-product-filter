@@ -44,7 +44,6 @@ class WCAPF_Rating_Filter {
 	 */
 	private function init_hooks() {
 		add_filter( 'wcapf_field_filter_type', array( $this, 'set_rating_filter_type' ), 10, 3 );
-		add_filter( 'wcapf_field_taxonomy', array( $this, 'set_taxonomy_for_rating_filter' ), 10, 2 );
 
 		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms_query_args' ), 10, 2 );
 		add_filter( 'wcapf_taxonomy_terms', array( $this, 'set_rating_terms_data' ), 10, 2 );
@@ -52,12 +51,12 @@ class WCAPF_Rating_Filter {
 		add_filter( 'wcapf_taxonomy_filter_values', array( $this, 'set_rating_filter_values' ), 10, 2 );
 		add_filter( 'wcapf_active_taxonomy_filter_data', array( $this, 'set_rating_filter_data' ), 10, 3 );
 
-		add_filter( 'wcapf_menu_item_name', array( $this, 'set_rating_item_name' ), 10, 3 );
-		add_filter( 'wcapf_labeled_item_name', array( $this, 'set_rating_item_name' ), 10, 3 );
-		add_filter( 'wcapf_dropdown_item_name', array( $this, 'set_rating_dropdown_item_name' ), 10, 3 );
+		add_filter( 'wcapf_menu_items', array( $this, 'set_rating_items' ), 10, 2 );
 	}
 
 	/**
+	 * When displaying the rating filter options automatically mark this as a taxonomy filter.
+	 *
 	 * @param string $filter_type The filter type.
 	 * @param string $field_type  The field type.
 	 * @param string $get_options The field get_options method.
@@ -74,20 +73,6 @@ class WCAPF_Rating_Filter {
 		}
 
 		return 'taxonomy';
-	}
-
-	/**
-	 * @param string $taxonomy   The taxonomy name.
-	 * @param string $field_type The field type.
-	 *
-	 * @return string
-	 */
-	public function set_taxonomy_for_rating_filter( $taxonomy, $field_type ) {
-		if ( 'rating' === $field_type ) {
-			$taxonomy = 'product_visibility';
-		}
-
-		return $taxonomy;
 	}
 
 	/**
@@ -124,6 +109,8 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
+	 * Set the rating filter data for active filters.
+	 *
 	 * @param array                $filter_data    The filter data.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 * @param array                $ratings        The rating values.
@@ -144,14 +131,25 @@ class WCAPF_Rating_Filter {
 			if ( $use_star_icons ) {
 				$rating_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
 			} else {
-				$rating_data[ $rating ] = sprintf(
-					_n( '%d star', '%d stars', $rating, 'wc-ajax-product-filter' ),
-					$rating
-				);
+				$rating_data[ $rating ] = $this->get_rating_label( $rating );
 			}
 		}
 
 		return $rating_data;
+	}
+
+	/**
+	 * @param int $rating The rating.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public function get_rating_label( $rating ) {
+		return sprintf(
+			_n( '%d star', '%d stars', $rating, 'wc-ajax-product-filter' ),
+			number_format_i18n( $rating )
+		);
 	}
 
 	/**
@@ -201,53 +199,47 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
-	 * @param string       $inner  Tree/Menu item inner content.
-	 * @param array        $item   The item array.
-	 * @param WCAPF_Walker $walker The walker.
+	 * Fill the rating items with star icons.
 	 *
-	 * @return string
+	 * @param array        $items  The walker items.
+	 * @param WCAPF_Walker $walker The walker class instance.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
 	 */
-	public function set_rating_item_name( $inner, $item, $walker ) {
+	public function set_rating_items( $items, $walker ) {
 		if ( 'rating' !== $walker->type ) {
-			return $inner;
+			return $items;
 		}
 
 		if ( 'automatically' !== $walker->get_options ) {
-			return $inner;
+			return $items;
 		}
 
-		$rating = absint( $item['id'] );
+		$display_type   = $walker->display_type;
+		$dropdown_types = array( 'select', 'multiselect' );
+		$is_dropdown    = in_array( $display_type, $dropdown_types );
 
-		if ( ! $rating ) {
-			return $inner;
+		$parsed = array();
+
+		foreach ( $items as $key => $item ) {
+			$rating = absint( $item['id'] );
+
+			if ( $rating ) {
+				if ( $is_dropdown ) {
+					$item['name'] = WCAPF_Helper::get_rating_entities( $rating );
+				} else {
+					$item['name'] = WCAPF_Helper::get_rating_svg_icons( $rating );
+				}
+			}
+
+			$item['tooltip'] = $this->get_rating_label( $rating );
+
+			$parsed[ $key ] = $item;
 		}
 
-		return WCAPF_Helper::get_rating_svg_icons( $rating );
-	}
-
-	/**
-	 * @param string       $inner  Tree/Menu item inner content.
-	 * @param array        $item   The item array.
-	 * @param WCAPF_Walker $walker The walker.
-	 *
-	 * @return string
-	 */
-	public function set_rating_dropdown_item_name( $inner, $item, $walker ) {
-		if ( 'rating' !== $walker->type ) {
-			return $inner;
-		}
-
-		if ( 'automatically' !== $walker->get_options ) {
-			return $inner;
-		}
-
-		$rating = absint( $item['id'] );
-
-		if ( ! $rating ) {
-			return $inner;
-		}
-
-		return WCAPF_Helper::get_rating_entities( $rating );
+		return $parsed;
 	}
 
 }

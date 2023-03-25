@@ -533,50 +533,16 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * The meta key that contains the store/vendor/shop name.
+	 *
+	 * TODO: Maybe remove.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
 	public static function store_name_meta_key() {
 		return 'wcfmmp_store_name';
-	}
-
-	/**
-	 * @param string $query_type
-	 * @param array  $or_filter_values
-	 * @param string $value_alias
-	 * @param array  $clauses
-	 *
-	 * @return string
-	 */
-	public static function get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses ) {
-		if ( 'or' === $query_type ) {
-			if ( $or_filter_values ) {
-				$or_clauses = "('" . implode( "','", $or_filter_values ) . "')";
-
-				$where = "$value_alias IN $or_clauses";
-			} elseif ( $clauses ) {
-				if ( 1 < count( $clauses ) ) {
-					$where = '( ' . implode( ' OR ', $clauses ) . ' )';
-				} else {
-					$where = implode( ' OR ', $clauses );
-				}
-			} else {
-				$where = '1=0';
-			}
-		} else {
-			if ( $clauses ) {
-				if ( 1 < count( $clauses ) ) {
-					$where = '( ' . implode( ' AND ', $clauses ) . ' )';
-				} else {
-					$where = implode( ' AND ', $clauses );
-				}
-			} else {
-				$where = '1=0';
-			}
-		}
-
-		return $where;
 	}
 
 	/**

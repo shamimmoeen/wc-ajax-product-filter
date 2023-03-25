@@ -109,11 +109,10 @@ class WCAPF_Field_Instance {
 		} elseif ( 'per-page' === $field_type ) {
 			$get_options    = 'manual_entry';
 			$manual_options = $this->get_sub_field_value( 'per_page_options' );
+		} elseif ( 'rating' === $field_type ) {
+			$get_options    = $this->get_sub_field_value( 'number_get_options' );
+			$manual_options = $this->get_sub_field_value( 'number_manual_options' );
 		}
-
-		// TODO: Maybe remove hooks.
-		$get_options    = apply_filters( 'wcapf_field_instance_get_options', $get_options, $this->instance );
-		$manual_options = apply_filters( 'wcapf_field_instance_manual_options', $manual_options, $this->instance );
 
 		// Default is 'automatically'.
 		$get_options = 'manual_entry' === $get_options ? 'manual_entry' : 'automatically';
@@ -303,7 +302,11 @@ class WCAPF_Field_Instance {
 	private function get_taxonomy() {
 		$taxonomy = $this->get_sub_field_value( 'taxonomy' );
 
-		return apply_filters( 'wcapf_field_taxonomy', $taxonomy, $this->get_field_type() );
+		if ( 'rating' === $this->type && 'automatically' == $this->get_options ) {
+			$taxonomy = 'product_visibility';
+		}
+
+		return $taxonomy;
 	}
 
 	/**
@@ -389,15 +392,14 @@ class WCAPF_Field_Instance {
 	}
 
 	private function get_post_property() {
-		$type = $this->get_field_type();
+		$type     = $this->get_field_type();
+		$property = '';
 
 		if ( 'post-author' === $type ) {
-			return 'post_author';
-		} elseif ( 'post-date' === $type ) {
-			return 'post_date';
-		} else {
-			return 'post_modified';
+			$property = 'post_author';
 		}
+
+		return $property;
 	}
 
 	/**

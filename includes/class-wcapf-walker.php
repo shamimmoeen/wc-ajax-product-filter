@@ -23,6 +23,13 @@ class WCAPF_Walker {
 	public $display_type;
 
 	/**
+	 * The preset that determines the nav menu style.
+	 *
+	 * @var string
+	 */
+	public $preset;
+
+	/**
 	 * Taxonomy.
 	 *
 	 * @var string
@@ -347,6 +354,9 @@ class WCAPF_Walker {
 
 		$filter_data = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 
+		/**
+		 * Register a hook to add the sort-by, per-page filter data.
+		 */
 		return apply_filters( 'wcapf_walker_filter_data', $filter_data, $filter_type );
 	}
 
@@ -412,7 +422,7 @@ class WCAPF_Walker {
 
 		if ( 'radio' === $display_type || 'select' === $display_type ) {
 			$all_items = array(
-				0 => array(
+				array(
 					'id'    => '',
 					'name'  => $this->all_items_label,
 					'count' => '-1',
@@ -483,13 +493,21 @@ class WCAPF_Walker {
 			$wrapper_classes[] = 'show-hidden-options';
 		}
 
+		// TODO: Use walker class property instead.
+		$preset = $this->preset;
+
+		if ( $preset ) {
+			$wrapper_classes[] = $preset;
+		}
+
+		$wrapper_classes = apply_filters( 'wcapf_walker_wrapper_class', $wrapper_classes, $this );
 		$wrapper_classes = implode( ' ', $wrapper_classes );
 
 		$menu = '<div class="' . esc_attr( $wrapper_classes ) . '">';
 		$menu .= $html;
 		$menu .= '</div>';
 
-		return apply_filters( 'wcapf_walker_menu', $menu, $items, $this );
+		return $menu;
 	}
 
 	private function get_soft_limit_status( $items ) {
@@ -694,44 +712,13 @@ class WCAPF_Walker {
 
 		$input_markup .= $attrs . '>';
 
-		// TODO: Maybe not the right place to implement the hook instead use 'wcapf_menu_items' hook.
-		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
-
-		$inner = '<span class="wcapf-filter-item-label"';
-
-		if ( $this->enable_search_field ) {
-			$inner .= ' data-label="' . esc_attr( $name ) . '"';
-		}
-
-		$inner .= '>';
-		$inner .= wp_kses_post( $name );
-
-		$count = $item['count'];
-
-		if ( $this->show_count && '-1' !== $count && $count_allowed ) {
-			$for_screen_reader = sprintf(
-				_n( '%d product', '%d products', $count, 'wc-ajax-product-filter' ),
-				number_format_i18n( $count )
-			);
-
-			$inner .= '<span class="wcapf-nav-item-count">';
-			$inner .= '<span aria-hidden="true">' . esc_html( $count ) . '</span>';
-			$inner .= '<span class="screen-reader-text">' . esc_html( $for_screen_reader ) . '</span>';
-			$inner .= '</span>';
-		}
-
-		$inner .= '</span>';
-
 		$tooltip_data = '';
 
 		if ( $this->enable_tooltip ) {
 			$tooltip_content = ! empty( $item['tooltip'] ) ? $item['tooltip'] : $item['name'];
 
-			if ( $this->show_count_in_tooltip && $count_allowed ) {
-				$count_before = apply_filters( 'wcapf_tooltip_count_before', ' (' );
-				$count_after  = apply_filters( 'wcapf_tooltip_count_after', ')' );
-
-				$tooltip_content .= $count_before . $item['count'] . $count_after;
+			if ( $this->show_count_in_tooltip && '-1' !== $item['count'] && $count_allowed ) {
+				$tooltip_content .= ' (' . $item['count'] . ')';
 			}
 
 			$tooltip_data = ' data-wcapf-tooltip-' . $this->tooltip_position . '="' . esc_attr( $tooltip_content ) . '"';
@@ -751,10 +738,14 @@ class WCAPF_Walker {
 			$item_classes .= ' active-as-ancestor';
 		}
 
+		if ( $item_active ) {
+			$item_classes .= ' item-active';
+		}
+
 		$html .= '<div class="' . esc_attr( $item_classes ) . '">';
 		$html .= '<label for="' . esc_attr( $unique_id ) . '"' . $tooltip_data . '>';
 		$html .= $input_markup;
-		$html .= $inner;
+		$html .= $this->menu_item_inner( $item );
 		$html .= '</label>';
 
 		if ( $has_children ) {
@@ -792,6 +783,20 @@ class WCAPF_Walker {
 
 	private function count_allowed() {
 		return ! in_array( $this->filter_type, array( 'sort-by', 'per-page' ) );
+	}
+
+	/**
+	 * Menu item inner content.
+	 *
+	 * @param array $item The item data.
+	 *
+	 * @return string
+	 */
+	protected function menu_item_inner( $item ) {
+		$item['show_count']    = $this->show_count && '-1' !== $item['count'] && $this->count_allowed();
+		$item['enable_search'] = $this->enable_search_field;
+
+		return WCAPF_Template_Loader::get_instance()->load( 'menu-item', array( 'item' => $item ), false );
 	}
 
 	/**
@@ -1086,9 +1091,16 @@ class WCAPF_Walker {
 
 		$use_chosen = $this->use_chosen;
 
+		$item_count = ' (' . $count . ')';
+
 		if ( $use_chosen && $this->show_count && $count_allowed ) {
+			// Add the empty attribute to avoid the undefined issue in js.
+			if ( '-1' === $count ) {
+				$item_count = '';
+			}
+
 			$attrs .= ' data-count="' . $count . '"';
-			$attrs .= ' data-count-markup="' . $this->dropdown_item_count( $count ) . '"';
+			$attrs .= ' data-count-markup="' . $item_count . '"';
 		}
 
 		$option .= '<option' . $attrs . '>';
@@ -1097,16 +1109,15 @@ class WCAPF_Walker {
 			$option .= $this->dropdown_item_indent( $item );
 		}
 
-		$inner = $item['name'];
-
-		$option .= apply_filters( 'wcapf_dropdown_item_name', $inner, $item, $this );
+		$option .= $item['name'];
 
 		if ( ! $use_chosen && $this->show_count && '-1' !== $count && $count_allowed ) {
-			$option .= $this->dropdown_item_count( $count );
+			$option .= $item_count;
 		}
 
 		$option .= '</option>';
 
+		// TODO: Use a template.
 		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
 
 		$children = isset( $item['children'] ) ? $item['children'] : array();
@@ -1118,26 +1129,6 @@ class WCAPF_Walker {
 		}
 
 		return $inner;
-	}
-
-	/**
-	 * The count markup for dropdown.
-	 *
-	 * @param $count
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	private function dropdown_item_count( $count ) {
-		if ( '-1' === $count ) {
-			return '';
-		}
-
-		$count_before = apply_filters( 'wcapf_dropdown_item_count_before', ' (' );
-		$count_after  = apply_filters( 'wcapf_dropdown_item_count_after', ')' );
-
-		return $count_before . $count . $count_after;
 	}
 
 	/**
@@ -1158,88 +1149,6 @@ class WCAPF_Walker {
 		}
 
 		return $indent;
-	}
-
-	/**
-	 * Build the labeled nav menu.
-	 *
-	 * @param array $items The array of items.
-	 */
-	private function build_labeled_nav( $items ) {
-		$html  = '';
-		$index = 0;
-
-		$html .= '<ul class="wcapf-filter-options">';
-
-		foreach ( $items as $item ) {
-			$index ++;
-			$attrs = '';
-
-			$html .= '<li class="wcapf-filter-option"' . $attrs . '>';
-			$html .= $this->labeled_item( $item, $index );
-			$html .= '</li>';
-		}
-
-		$html .= '</ul>';
-
-		return $html;
-	}
-
-	private function labeled_item( $item, $index ) {
-		$attrs       = '';
-		$classes     = 'item';
-		$item_active = $this->item_active( $item );
-
-		if ( $item_active ) {
-			$classes .= ' checked';
-		}
-
-		$item_value = rawurlencode( $item['id'] );
-		$filter_url = $this->url_builder->get_filter_url( $item_value, $item_active );
-
-		$classes = apply_filters( 'wcapf_labeled_item_classes', $classes, $index, $this, $item );
-		$attrs   = apply_filters( 'wcapf_labeled_item_attrs', $attrs, $item, $this );
-
-		$html = '<button class="' . $classes . '" data-url="' . esc_url( $filter_url ) . '"' . $attrs . '>';
-
-		$label = apply_filters( 'wcapf_labeled_item_name', $item['name'], $item, $this );
-		$html  .= wp_kses_post( $label );
-
-		if ( $this->show_count ) {
-			$html .= '<span class="wcapf-nav-item-count">' . $item['count'] . '</span>';
-		}
-
-		$html .= '</button>';
-
-		$html = $this->menu_item( $item );
-
-		return $html;
-	}
-
-	/**
-	 * Menu item inner content.
-	 *
-	 * @param array $item  The item array.
-	 * @param mixed $depth The item depth.
-	 *
-	 * @return string
-	 */
-	private function menu_item_inner( $item, $unique_id, $depth = null ) {
-		$inner = '<label for="' . esc_attr( $unique_id ) . '">';
-
-		$name = apply_filters( 'wcapf_menu_item_name', $item['name'], $item, $this );
-
-		$inner .= '<span>' . wp_kses_post( $name ) . '</span>';
-
-		$count = $item['count'];
-
-		if ( $this->show_count && '-1' !== $count ) {
-			$inner .= '<span class="wcapf-nav-item-count">' . esc_html( $count ) . '</span>';
-		}
-
-		$inner .= '</label>';
-
-		return apply_filters( 'wcapf_tree_item_inner', $inner, $item, $unique_id, $this, $depth );
 	}
 
 }

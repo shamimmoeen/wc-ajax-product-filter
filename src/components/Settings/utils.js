@@ -23,7 +23,7 @@ export function defaultSettings() {
 		attach_chosen_on_sorting: '',
 		improve_native_select: '1',
 		improve_scrollbar: '1',
-		number_range_slider_preset: 'preset-1',
+		number_range_slider_style: 'style-1',
 		label_size: 'fixed',
 		active_label_style: 'primary',
 		star_icon_color: '#fda256',

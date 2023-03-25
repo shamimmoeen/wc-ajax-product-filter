@@ -14,6 +14,23 @@ import Select from '../../../Field/Select';
 import Checkbox from '../../../Field/Checkbox';
 import { foundProVersion } from '../../../utils';
 
+const swatchDisplayTypes = ['color', 'image'];
+
+const swatchPresets = [
+	{
+		label: __('Preset 1', 'wc-ajax-product-filter'),
+		value: 'preset-1',
+	},
+	{
+		label: __('Preset 2', 'wc-ajax-product-filter'),
+		value: 'preset-2',
+	},
+	{
+		label: __('Preset 3', 'wc-ajax-product-filter'),
+		value: 'preset-3',
+	},
+];
+
 const ValueTypeText = ({ index }) => {
 	const { state, dispatch } = useForm();
 
@@ -39,6 +56,7 @@ const ValueTypeText = ({ index }) => {
 		type,
 		taxHierarchical,
 		display_type,
+		swatch_preset,
 		hierarchical,
 		enable_hierarchy_accordion,
 		value_type,
@@ -79,21 +97,54 @@ const ValueTypeText = ({ index }) => {
 			}
 		}
 
+		let description;
+
+		if (swatchDisplayTypes.includes(display_type)) {
+			description = __(
+				'Determines how the filter will be shown on the frontend. <b>Note:</b> You need to manually enter the filter options and set the swatch data.'
+			);
+		} else {
+			description = __(
+				'Determines how the filter will be shown on the frontend.'
+			);
+		}
+
 		return (
 			<Select
 				id={'display_type'}
 				index={index}
 				label={__('Display Type', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines how the filter will be shown on the frontend.',
-					'wc-ajax-product-filter'
-				)}
+				description={description}
 				options={options}
 				value={value}
 				onChange={handleSelectChange}
 				renderAsFormField={true}
 			/>
 		);
+	};
+
+	const swatchPresetField = () => {
+		if (swatchDisplayTypes.includes(display_type)) {
+			const swatchPreset = swatchPresets.find(
+				(option) => swatch_preset === option.value
+			);
+
+			return (
+				<Select
+					id={'swatch_preset'}
+					index={index}
+					label={__('Swatch Preset', 'wc-ajax-product-filter')}
+					description={__(
+						'Select the swatch style from the available presets.',
+						'wc-ajax-product-filter'
+					)}
+					options={swatchPresets}
+					value={swatchPreset}
+					onChange={handleSelectChange}
+					renderAsFormField={true}
+				/>
+			);
+		}
 	};
 
 	const hierarchyField = () => {
@@ -146,6 +197,8 @@ const ValueTypeText = ({ index }) => {
 	return (
 		<>
 			{displayTypeField()}
+
+			{swatchPresetField()}
 
 			{enableMultipleFilterField('enable_multiple_filter')}
 

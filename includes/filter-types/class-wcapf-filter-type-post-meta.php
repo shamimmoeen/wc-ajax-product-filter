@@ -29,6 +29,17 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	}
 
 	protected function prepare_items() {
+		$meta_values = $this->get_text_automatic_values();
+		$meta_values = $this->get_updated_meta_values_count( $meta_values );
+		$meta_values = $this->filter_by_hide_empty( $meta_values );
+
+		return apply_filters( 'wcapf_post_meta_text_items', $meta_values, $this->field );
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function get_text_automatic_values() {
 		$meta_values = array();
 
 		$_meta_values = $this->get_meta_values();
@@ -47,10 +58,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 			$meta_values[ $meta_value ] = $data;
 		}
 
-		$meta_values = $this->get_updated_meta_values_count( $meta_values );
-		$meta_values = $this->filter_by_hide_empty( $meta_values );
-
-		return apply_filters( 'wcapf_post_meta_text_items', $meta_values, $this->field );
+		return $meta_values;
 	}
 
 	/**
@@ -58,7 +66,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	 *
 	 * @return array
 	 */
-	private function get_meta_values() {
+	protected function get_meta_values() {
 		$query = $this->get_sql_query();
 
 		global $wpdb;
@@ -103,7 +111,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
 		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
 		$where .= " AND metas.meta_key = '$this->meta_key'";
-		$where .= " AND metas.meta_value <> ''"; // Check for empty and null columns.
+		$where .= " AND metas.meta_value <> ''"; // TODO: Check for empty and null columns.
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -143,7 +151,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	 *
 	 * @return array
 	 */
-	private function get_updated_meta_values_count( $meta_values ) {
+	protected function get_updated_meta_values_count( $meta_values ) {
 		if ( ! $meta_values ) {
 			return array();
 		}
@@ -165,7 +173,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	 *
 	 * @return array
 	 */
-	private function get_filtered_meta_product_counts() {
+	protected function get_filtered_meta_product_counts() {
 		$query = $this->get_sql_query( 'filtered' );
 
 		global $wpdb;

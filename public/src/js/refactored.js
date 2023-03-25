@@ -592,18 +592,24 @@
 				'.list-type-custom-checkbox [type="checkbox"]';
 
 			$body.on( 'change', nativeInputs, function() {
+				$( this ).closest( '.wcapf-filter-item' ).toggleClass( 'item-active' );
+
 				WCAPF.requestFilter( $( this ).data( 'url' ) );
 			} );
 
 			const customRadioSelector = '.list-type-custom-radio';
 
 			$body.on( 'change', customRadioSelector + ' [type="checkbox"]', function() {
+				$( this ).closest( '.wcapf-filter-item' ).toggleClass( 'item-active' );
+
 				// https://stackoverflow.com/a/5839924
 				$( this )
 					.closest( customRadioSelector )
-					.find( '.wcapf-filter-item:not(.current-tax-item):not(.active-as-ancestor) [type="checkbox"]' )
+					.find( '.wcapf-filter-item.item-active [type="checkbox"]' )
 					.not( this )
-					.prop( 'checked', false );
+					.prop( 'checked', false )
+					.closest( '.wcapf-filter-item' )
+					.removeClass( 'item-active' );
 
 				WCAPF.requestFilter( $( this ).data( 'url' ) );
 			} );
@@ -908,7 +914,8 @@
 					placement: tooltipPosition,
 					content( reference ) {
 						return reference.getAttribute( identifier );
-					}
+					},
+					allowHTML: true,
 				} );
 
 				window.tippyInstances = tippyInstances.concat( instances );

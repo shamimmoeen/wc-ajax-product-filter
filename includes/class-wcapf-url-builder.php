@@ -116,7 +116,7 @@ class WCAPF_URL_Builder {
 	 */
 	public function get_filter_url( $value, $is_active ) {
 		// If no value is provided then we need to remove the filter key from url.
-		if ( ! $value ) {
+		if ( ! strlen( $value ) ) {
 			return $this->url_without_current_filter();
 		}
 
