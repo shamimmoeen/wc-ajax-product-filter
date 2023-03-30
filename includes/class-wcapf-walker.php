@@ -23,11 +23,13 @@ class WCAPF_Walker {
 	public $display_type;
 
 	/**
-	 * The preset that determines the nav menu style.
+	 * Layout.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var string
 	 */
-	public $preset;
+	public $layout;
 
 	/**
 	 * Taxonomy.
@@ -198,6 +200,15 @@ class WCAPF_Walker {
 	protected $items;
 
 	/**
+	 * The css classes to add to the list wrapper element.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @var string
+	 */
+	protected $wrapper_classes;
+
+	/**
 	 * Determines the soft limit status.
 	 *
 	 * @var string
@@ -260,6 +271,7 @@ class WCAPF_Walker {
 	private function set_properties( $field ) {
 		$default_properties = array(
 			'display_type'               => '',
+			'layout'                     => '',
 			'taxonomy'                   => '',
 			'hierarchical'               => '',
 			'use_term_slug'              => '',
@@ -475,6 +487,8 @@ class WCAPF_Walker {
 					$wrapper_classes[] = 'show-count';
 				}
 			}
+
+			$wrapper_classes[] = 'layout-' . $this->layout;
 		}
 
 		if ( in_array( $display_type, $native_list_types ) ) {
@@ -493,11 +507,8 @@ class WCAPF_Walker {
 			$wrapper_classes[] = 'show-hidden-options';
 		}
 
-		// TODO: Use walker class property instead.
-		$preset = $this->preset;
-
-		if ( $preset ) {
-			$wrapper_classes[] = $preset;
+		if ( $this->wrapper_classes ) {
+			$wrapper_classes[] = $this->wrapper_classes;
 		}
 
 		$wrapper_classes = apply_filters( 'wcapf_walker_wrapper_class', $wrapper_classes, $this );
@@ -817,14 +828,15 @@ class WCAPF_Walker {
 
 			$aria_label = sprintf( __( 'Expand/Collapse %s', 'wc-ajax-product-filter' ), $item['name'] );
 
-			$toggle_content = apply_filters( 'wcapf_hierarchy_accordion_toggle_content', '' );
-
-			$html .= '<span';
-			$html .= ' class="wcapf-hierarchy-accordion-toggle"';
-			$html .= ' role="button" aria-pressed="' . $is_active . '" tabindex="0"';
-			$html .= ' aria-label="' . esc_attr( $aria_label ) . '"';
-			$html .= ' data-id="' . esc_attr( $unique_id ) . '"';
-			$html .= '>' . $toggle_content . '</span>';
+			return WCAPF_Template_Loader::get_instance()->load(
+				'hierarchy-accordion',
+				array(
+					'is_active'  => $is_active,
+					'aria_label' => $aria_label,
+					'unique_id'  => $unique_id,
+				),
+				false
+			);
 		}
 
 		return $html;
@@ -1117,7 +1129,6 @@ class WCAPF_Walker {
 
 		$option .= '</option>';
 
-		// TODO: Use a template.
 		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
 
 		$children = isset( $item['children'] ) ? $item['children'] : array();

@@ -27,6 +27,7 @@ export function defaultSettings() {
 		label_size: 'fixed',
 		active_label_style: 'primary',
 		star_icon_color: '#fda256',
+		rating_star_use_fontawesome: '',
 		remove_focus_style: '',
 		primary_btn_class: '',
 		secondary_btn_class: '',

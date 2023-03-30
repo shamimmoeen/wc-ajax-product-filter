@@ -20,6 +20,7 @@ const ValueTypeNumber = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
@@ -142,6 +143,8 @@ const ValueTypeNumber = ({ index }) => {
 			{displayTypeField()}
 
 			{displayValuesField()}
+
+			{layoutFields(number_display_type)}
 
 			{alignmentField()}
 

@@ -16,21 +16,6 @@ import { foundProVersion } from '../../../utils';
 
 const swatchDisplayTypes = ['color', 'image'];
 
-const swatchPresets = [
-	{
-		label: __('Preset 1', 'wc-ajax-product-filter'),
-		value: 'preset-1',
-	},
-	{
-		label: __('Preset 2', 'wc-ajax-product-filter'),
-		value: 'preset-2',
-	},
-	{
-		label: __('Preset 3', 'wc-ajax-product-filter'),
-		value: 'preset-3',
-	},
-];
-
 const ValueTypeText = ({ index }) => {
 	const { state, dispatch } = useForm();
 
@@ -40,6 +25,7 @@ const ValueTypeText = ({ index }) => {
 	);
 
 	const {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
@@ -56,7 +42,7 @@ const ValueTypeText = ({ index }) => {
 		type,
 		taxHierarchical,
 		display_type,
-		swatch_preset,
+		native_display_type_layout,
 		hierarchical,
 		enable_hierarchy_accordion,
 		value_type,
@@ -101,11 +87,13 @@ const ValueTypeText = ({ index }) => {
 
 		if (swatchDisplayTypes.includes(display_type)) {
 			description = __(
-				'Determines how the filter will be shown on the frontend. <b>Note:</b> You need to manually enter the filter options and set the swatch data.'
+				'Determines the type of filter options on the frontend. <b>Note:</b> For color/image swatch, you need to manually enter the filter options and set the swatch data.',
+				'wc-ajax-product-filter'
 			);
 		} else {
 			description = __(
-				'Determines how the filter will be shown on the frontend.'
+				'Determines the type of filter options on the frontend.',
+				'wc-ajax-product-filter'
 			);
 		}
 
@@ -113,7 +101,7 @@ const ValueTypeText = ({ index }) => {
 			<Select
 				id={'display_type'}
 				index={index}
-				label={__('Display Type', 'wc-ajax-product-filter')}
+				label={__('Display', 'wc-ajax-product-filter')}
 				description={description}
 				options={options}
 				value={value}
@@ -123,34 +111,11 @@ const ValueTypeText = ({ index }) => {
 		);
 	};
 
-	const swatchPresetField = () => {
-		if (swatchDisplayTypes.includes(display_type)) {
-			const swatchPreset = swatchPresets.find(
-				(option) => swatch_preset === option.value
-			);
-
-			return (
-				<Select
-					id={'swatch_preset'}
-					index={index}
-					label={__('Swatch Preset', 'wc-ajax-product-filter')}
-					description={__(
-						'Select the swatch style from the available presets.',
-						'wc-ajax-product-filter'
-					)}
-					options={swatchPresets}
-					value={swatchPreset}
-					onChange={handleSelectChange}
-					renderAsFormField={true}
-				/>
-			);
-		}
-	};
-
 	const hierarchyField = () => {
 		if (
 			'1' === taxHierarchical &&
-			hierarchicalDisplayTypes().includes(display_type)
+			hierarchicalDisplayTypes().includes(display_type) &&
+			'list-item' === native_display_type_layout
 		) {
 			return (
 				<Checkbox
@@ -173,6 +138,7 @@ const ValueTypeText = ({ index }) => {
 			'1' === taxHierarchical &&
 			'1' === hierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
+			'list-item' === native_display_type_layout &&
 			!['select', 'multi-select'].includes(display_type)
 		) {
 			return (
@@ -198,7 +164,7 @@ const ValueTypeText = ({ index }) => {
 		<>
 			{displayTypeField()}
 
-			{swatchPresetField()}
+			{layoutFields(display_type)}
 
 			{enableMultipleFilterField('enable_multiple_filter')}
 

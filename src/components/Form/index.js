@@ -78,12 +78,12 @@ const Form = () => {
 
 				// TODO: Remove commented codes.
 				for (let index = 0; index < formFilters.length; index++) {
-					// if (index === 0) {
-					// 	accordionStates[index] = true;
-					// } else {
-					// 	accordionStates[index] = false;
-					// }
-					accordionStates[index] = false;
+					if (index === 0) {
+						accordionStates[index] = true;
+					} else {
+						accordionStates[index] = false;
+					}
+					// accordionStates[index] = false;
 				}
 
 				dispatch({

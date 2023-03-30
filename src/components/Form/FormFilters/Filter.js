@@ -7,7 +7,7 @@ import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
 import {
 	componentsWithTypeOnly,
-	getDisplayType,
+	getDisplayTypeData,
 	getFilterKey,
 	getFilterTabs,
 	getFilterTitle,
@@ -145,7 +145,7 @@ const Filter = ({ index }) => {
 		? globalFilterKey
 		: getFilterKey(filter, filterType);
 
-	const displayType = getDisplayType(filter);
+	const displayType = getDisplayTypeData(filter);
 
 	const onlyType = 'component' === type && onlyWithType.includes(component);
 	const activeFilters = 'active-filters' === component;
@@ -208,7 +208,7 @@ const Filter = ({ index }) => {
 					<TabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='general'
+						initialTabName='appearance'
 						tabs={filterTabs}
 					>
 						{({ name }) => {

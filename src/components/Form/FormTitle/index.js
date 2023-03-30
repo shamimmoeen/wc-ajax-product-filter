@@ -199,6 +199,8 @@ const FormTitle = () => {
 
 		filters.forEach((filter) => {
 			const proData = [
+				'grid_columns',
+				'swatch_with_text',
 				'get_options',
 				'manual_options',
 				'parent_term',
@@ -276,6 +278,14 @@ const FormTitle = () => {
 				)
 			) {
 				proData.push('post_author_order_by');
+			}
+
+			if ('grid' === filter['native_display_type_layout']) {
+				proData.push('native_display_type_layout');
+			}
+
+			if ('grid' === filter['custom_display_type_layout']) {
+				proData.push('custom_display_type_layout');
 			}
 
 			const defaultData = pick(filterDefaultData(), proData);

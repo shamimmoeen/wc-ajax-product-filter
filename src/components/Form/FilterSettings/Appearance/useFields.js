@@ -1,4 +1,6 @@
 import { __ } from '@wordpress/i18n';
+import Select from '../../../Field/Select';
+import Number from '../../../Field/Number';
 import Checkbox from '../../../Field/Checkbox';
 import Radio from '../../../Field/Radio';
 import Text from '../../../Field/Text';
@@ -11,6 +13,7 @@ const useFields = (type, index) => {
 	const { state, dispatch } = useForm();
 
 	const {
+		handleSelectChange,
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
@@ -24,6 +27,10 @@ const useFields = (type, index) => {
 	const {
 		type: filterType,
 		display_type,
+		native_display_type_layout,
+		custom_display_type_layout,
+		grid_columns,
+		swatch_with_text,
 		enable_multiple_filter,
 		enable_tooltip,
 		tooltip_position,
@@ -33,6 +40,123 @@ const useFields = (type, index) => {
 		date_display_type,
 		time_period_enable_multiple_filter,
 	} = filter;
+
+	const layoutFields = (displayType) => {
+		let _displayType;
+		let id;
+		let availableLayouts = [];
+
+		if (
+			[
+				'checkbox',
+				'radio',
+				'range_checkbox',
+				'range_radio',
+				'time_period_checkbox',
+				'time_period_radio',
+			].includes(displayType)
+		) {
+			_displayType = native_display_type_layout;
+			id = 'native_display_type_layout';
+
+			availableLayouts = [
+				{
+					label: __('List Item', 'wc-ajax-product-filter'),
+					value: 'list-item',
+				},
+				{
+					label: __('Inline', 'wc-ajax-product-filter'),
+					value: 'inline',
+				},
+				{
+					label: __('Grid', 'wc-ajax-product-filter'),
+					value: 'grid',
+					isPro: true,
+				},
+			];
+		} else if (
+			[
+				'label',
+				'color',
+				'image',
+				'range_label',
+				'time_period_label',
+			].includes(displayType)
+		) {
+			_displayType = custom_display_type_layout;
+			id = 'custom_display_type_layout';
+
+			availableLayouts = [
+				{
+					label: __('Inline', 'wc-ajax-product-filter'),
+					value: 'inline',
+				},
+				{
+					label: __('Grid', 'wc-ajax-product-filter'),
+					value: 'grid',
+					isPro: true,
+				},
+			];
+		}
+
+		if (!_displayType) {
+			return;
+		}
+
+		const filterLayout = availableLayouts.find(
+			(option) => _displayType === option.value
+		);
+
+		const swatchDisplayTypes = ['color', 'image'];
+
+		return (
+			<>
+				<Select
+					id={id}
+					index={index}
+					label={__('Layout', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines the layout of the filter options on the frontend.',
+						'wc-ajax-product-filter'
+					)}
+					options={availableLayouts}
+					value={filterLayout}
+					onChange={handleSelectChange}
+					renderAsFormField={true}
+				/>
+
+				{'grid' === _displayType && (
+					<Number
+						id={'grid_columns'}
+						index={index}
+						label={__('Columns', 'wc-ajax-product-filter')}
+						description={__(
+							'Determines the number of columns for the grid layout.',
+							'wc-ajax-product-filter'
+						)}
+						value={grid_columns}
+						onChange={handleTextFieldChange}
+						min={1}
+						max={16}
+					/>
+				)}
+
+				{swatchDisplayTypes.includes(displayType) && (
+					<Checkbox
+						id={'swatch_with_text'}
+						index={index}
+						label={__('Show text', 'wc-ajax-product-filter')}
+						description={__(
+							'Enable this to show the option text beside the swatch.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={swatch_with_text}
+						onChange={handleCheckboxChange}
+					/>
+				)}
+			</>
+		);
+	};
 
 	const enableMultipleFilterField = (id) => {
 		let showField = false;
@@ -306,6 +430,7 @@ const useFields = (type, index) => {
 	};
 
 	return {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
