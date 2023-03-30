@@ -12,37 +12,27 @@ body.theme-onepress {
 
 // Astra theme
 body.theme-astra {
-	// Native select
-	#secondary .wcapf-filter .wcapf-list-wrapper.list-type-native ul.wcapf-filter-options li.wcapf-filter-option {
-		margin-bottom: var(--wcapf-layered-nav-list-vertical-spacing);
+	// Layout list-item
+	#secondary .wcapf-filter .wcapf-list-wrapper.layout-list-item ul.wcapf-filter-options li.wcapf-filter-option {
+		line-height: inherit;
+		margin-bottom: var(--wcapf-filter-item-vertical-spacing);
 	}
 
-	#secondary .wcapf-filter .wcapf-list-wrapper ul.wcapf-filter-options li.wcapf-filter-option {
+	// Layout inline
+	#secondary .wcapf-filter .wcapf-list-wrapper.layout-inline ul.wcapf-filter-options li.wcapf-filter-option {
 		line-height: inherit;
 	}
 
-	// Display type label
-	&:not(.rtl) #secondary .wcapf-filter .wcapf-list-wrapper.display-type-label li.wcapf-filter-option {
-		margin: 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin) 0;
+	&:not(.rtl) #secondary .wcapf-filter .wcapf-list-wrapper.layout-inline li.wcapf-filter-option {
+		margin: 0 var(--wcapf-filter-item-horizontal-spacing) var(--wcapf-filter-item-vertical-spacing) 0;
 	}
 
-	&.rtl #secondary .wcapf-filter .wcapf-list-wrapper.display-type-label li.wcapf-filter-option {
-		margin: 0 0 var(--wcapf-labeled-nav-margin) var(--wcapf-labeled-nav-margin);
+	&.rtl #secondary .wcapf-filter .wcapf-list-wrapper.layout-inline li.wcapf-filter-option {
+		margin: 0 0 var(--wcapf-filter-item-vertical-spacing) var(--wcapf-filter-item-horizontal-spacing);
 	}
 
 	// Combobox dropdown
 	#secondary .wcapf-chosen-container.chosen-container .chosen-results li {
 		margin: 0;
-	}
-
-	// Swatch
-	&:not(.rtl) #secondary .wcapf-filter .wcapf-list-wrapper.display-type-image li.wcapf-filter-option,
-	&:not(.rtl) #secondary .wcapf-filter .wcapf-list-wrapper.display-type-color li.wcapf-filter-option {
-		margin: 0 var(--wcapf-swatch-gap) var(--wcapf-swatch-gap) 0;
-	}
-
-	&.rtl #secondary .wcapf-filter .wcapf-list-wrapper.display-type-image li.wcapf-filter-option,
-	&.rtl #secondary .wcapf-filter .wcapf-list-wrapper.display-type-color li.wcapf-filter-option {
-		margin: 0 0 var(--wcapf-swatch-gap) var(--wcapf-swatch-gap);
 	}
 }

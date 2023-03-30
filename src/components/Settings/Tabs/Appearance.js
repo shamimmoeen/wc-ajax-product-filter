@@ -77,6 +77,7 @@ const Appearance = () => {
 			label_size,
 			active_label_style,
 			star_icon_color,
+			rating_star_use_fontawesome,
 			remove_focus_style,
 			primary_btn_class,
 			secondary_btn_class,
@@ -249,6 +250,20 @@ const Appearance = () => {
 					handleColorChange(value, 'star_icon_color')
 				}
 				renderAsFormField
+			/>
+
+			<Checkbox
+				id={'rating_star_use_fontawesome'}
+				label={__(
+					'FontAwesome for star icons',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Enable this if your site loads the FontAwesome icons.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={rating_star_use_fontawesome}
+				onChange={handleCheckboxChange}
 			/>
 
 			<Checkbox

@@ -168,7 +168,7 @@
 					const $filterItem = $( this );
 					const label       = $filterItem.find( '.wcapf-filter-item-label' ).data( 'label' );
 
-					if ( label.toLowerCase().includes( keyword.toLowerCase() ) ) {
+					if ( label.toString().toLowerCase().includes( keyword.toLowerCase() ) ) {
 						index++;
 
 						$filterItem.addClass( 'keyword-matched' );

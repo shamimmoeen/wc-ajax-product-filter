@@ -31,9 +31,13 @@
 	--wcapf-nouislider-plain-text-margin-bottom: 1.2em;
 	--wcapf-range-slider-bottom-padding: 1em;
 
-	// List
-	--wcapf-layered-nav-list-child-left-padding: 1.618em;
-	--wcapf-layered-nav-list-vertical-spacing: .4em;
+	// List-item
+	--wcapf-hierarchy-nav-indent: 1.618em;
+
+	// List item + inline
+	--wcapf-filter-item-vertical-spacing: .4em;
+	--wcapf-filter-item-horizontal-spacing: .4em;
+	--wcapf-list-type-native-horizontal-spacing: .875em;
 
 	// Checkbox/Radio
 	--wcapf-checkbox-radio-space: 0.5em;

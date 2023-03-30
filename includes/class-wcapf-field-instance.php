@@ -16,6 +16,7 @@
 class WCAPF_Field_Instance {
 
 	public $display_type;
+	public $layout;
 	public $query_type;
 	public $all_items_label;
 	public $use_chosen;
@@ -127,6 +128,7 @@ class WCAPF_Field_Instance {
 		$_all_items_label = $this->parse_all_items_label( $all_items_label );
 
 		$this->display_type    = $_display_type;
+		$this->layout          = $this->get_layout();
 		$this->all_items_label = $_all_items_label;
 		$this->use_chosen      = $this->get_sub_field_value( 'use_chosen' );
 		$this->show_count      = $show_count;
@@ -281,6 +283,24 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function get_layout() {
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) ) {
+			$value = $this->get_sub_field_value( 'native_display_type_layout' );
+
+			return ! empty( $value ) ? $value : 'list-item';
+		} else {
+			$value = $this->get_sub_field_value( 'custom_display_type_layout' );
+
+			// Disable list-item layout for custom list types.
+			return ! empty( $value ) && 'list-item' !== $value ? $value : 'inline';
+		}
+	}
+
+	/**
 	 * @return string
 	 */
 	private function get_filter_type() {
@@ -326,6 +346,11 @@ class WCAPF_Field_Instance {
 		$non_hierarchical_display_types = array( 'label', 'color', 'image' );
 
 		if ( in_array( $this->display_type, $non_hierarchical_display_types ) ) {
+			return false;
+		}
+
+		// Disable hierarchy for inline and grid layout.
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list-item' !== $this->layout ) {
 			return false;
 		}
 

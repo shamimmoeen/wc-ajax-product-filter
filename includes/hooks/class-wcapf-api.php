@@ -654,7 +654,7 @@ class WCAPF_API {
 
 				$value = str_replace( ' ', '&nbsp;', $value );
 			} elseif ( in_array( $key, $markup_fields ) ) {
-				$value = wp_kses_data( $value );
+				$value = wp_kses_post( $value );
 			} elseif ( 'product_status_options' === $key ) {
 				$value = WCAPF_API_Utils::sanitize_manual_options( $value, $filter_type );
 			} else {

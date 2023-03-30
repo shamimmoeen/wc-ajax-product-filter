@@ -430,24 +430,46 @@ class WCAPF_Helper {
 	 */
 	public static function get_rating_svg_icons( $rating ) {
 		$rating_html = '';
+		$star_icons  = self::get_rating_star_icons();
 
 		$remaining = 5 - $rating;
 
 		while ( $rating > 0 ) {
-			$rating_html .= '<i class="wcapf-icon-star-full"></i>';
+			$rating_html .= $star_icons['star_full'];
 			$rating --;
 		}
 
-		$show_empty_stars = apply_filters( 'wcapf_show_empty_star_in_rating', true );
+		$show_empty_stars = apply_filters( 'wcapf_show_empty_star_in_rating', false );
 
 		if ( $show_empty_stars ) {
 			while ( $remaining > 0 ) {
-				$rating_html .= '<i class="wcapf-icon-star-empty"></i>';
+				$rating_html .= $star_icons['star_empty'];
 				$remaining --;
 			}
 		}
 
 		return $rating_html;
+	}
+
+	/**
+	 * Gets the html markup of rating star icon.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_rating_star_icons() {
+		if ( self::wcapf_option( 'rating_star_use_fontawesome' ) ) {
+			$star_full  = '<i class="fa-solid fa-star wcapf-star-icon"></i>';
+			$star_empty = '<i class="fa-regular fa-star wcapf-star-icon"></i>';
+			$star_half  = '<i class="fa-solid fa-star-half-stroke wcapf-star-icon"></i>';
+		} else {
+			$star_full  = '<i class="wcapf-icon-star-full wcapf-star-icon"></i>';
+			$star_empty = '<i class="wcapf-icon-star-empty wcapf-star-icon"></i>';
+			$star_half  = '<i class="wcapf-icon-star-half wcapf-star-icon"></i>';
+		}
+
+		return compact( 'star_full', 'star_empty', 'star_half' );
 	}
 
 	/**
@@ -505,10 +527,10 @@ class WCAPF_Helper {
 			$attrs = 'class="' . esc_attr( $classes ) . '"';
 			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
-			$label = apply_filters( 'wcapf_active_filter_label', $label, $filter_data );
-
 			$html .= '<button ' . $attrs . '>';
+			$html .= '<span class="wcapf-nav-item-text">'; // To avoid the flex wrap issue.
 			$html .= wp_kses_post( $label );
+			$html .= '</span>';
 			$html .= '<span class="wcapf-cross-sign">&#215;</span>';
 			$html .= '</button>';
 		}

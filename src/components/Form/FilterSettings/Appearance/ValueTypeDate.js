@@ -22,6 +22,7 @@ const ValueTypeDate = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
@@ -175,6 +176,8 @@ const ValueTypeDate = ({ index }) => {
 			{useDropdownMonthField()}
 
 			{useDropdownYearField()}
+
+			{layoutFields(date_display_type)}
 
 			{enableMultipleFilterField('time_period_enable_multiple_filter')}
 

@@ -120,7 +120,7 @@ export function getFilterKey(filter, filterType) {
 	return filterKey;
 }
 
-export function getDisplayType(filter) {
+export function getDisplayTypeData(filter) {
 	const {
 		type,
 		value_type,
@@ -340,7 +340,10 @@ export function filterDefaultData() {
 		field_key: '',
 		// Taxonomy
 		display_type: 'checkbox',
-		swatch_preset: 'preset-1',
+		native_display_type_layout: 'list-item',
+		custom_display_type_layout: 'inline',
+		grid_columns: '2',
+		swatch_with_text: '',
 		query_type: 'or',
 		all_items_label: '',
 		enable_multiple_filter: '1',
@@ -455,7 +458,10 @@ export function filterTypeDependentFields() {
 		'component',
 		'isACF',
 		'display_type',
-		'swatch_preset',
+		'native_display_type_layout',
+		'custom_display_type_layout',
+		'grid_columns',
+		'swatch_with_text',
 		// Taxonomy
 		'get_options',
 		'order_terms_by',

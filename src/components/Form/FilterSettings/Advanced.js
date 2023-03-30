@@ -23,6 +23,7 @@ const Advanced = ({ index }) => {
 		component,
 		taxHierarchical,
 		display_type,
+		native_display_type_layout,
 		number_display_type,
 		date_display_type,
 		hierarchical,
@@ -147,7 +148,8 @@ const Advanced = ({ index }) => {
 			'taxonomy' === type &&
 			taxHierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
-			'1' === hierarchical
+			'1' === hierarchical &&
+			'list-item' === native_display_type_layout
 		) {
 			return false;
 		}
