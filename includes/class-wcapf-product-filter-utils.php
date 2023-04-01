@@ -366,6 +366,32 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * Formats a list of term_taxonomy_ids as "(id,id,id)" from term ids.
+	 *
+	 * Fix - https://wordpress.org/support/topic/selection-does-not-show/
+	 *
+	 * @param int[]  $term_ids The array of term ids.
+	 * @param string $taxonomy The taxonomy name.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function get_tt_ids_sql( $term_ids, $taxonomy ) {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'include'    => $term_ids,
+			)
+		);
+
+		$tt_ids = wp_list_pluck( $terms, 'term_taxonomy_id' );
+
+		return self::get_ids_sql( $tt_ids );
+	}
+
+	/**
 	 * @return string
 	 */
 	public static function get_product_ids_on_sale_sql() {

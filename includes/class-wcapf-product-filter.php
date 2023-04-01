@@ -343,7 +343,7 @@ class WCAPF_Product_Filter {
 			if ( $term_ids ) {
 				$join_alias = $utils::get_table_join_alias( $filter_key );
 
-				$ids   = $utils::get_ids_sql( $term_ids );
+				$ids   = $utils::get_tt_ids_sql( $term_ids, $taxonomy );
 				$where = "$join_alias.term_taxonomy_id IN $ids";
 			} else {
 				$where = '1=0';
@@ -360,7 +360,7 @@ class WCAPF_Product_Filter {
 					$and_term_id = array( $term_id );
 				}
 
-				$id_sql = $utils::get_ids_sql( $and_term_id );
+				$id_sql = $utils::get_tt_ids_sql( $and_term_id, $taxonomy );
 
 				$join_alias = $utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
 
@@ -445,10 +445,10 @@ class WCAPF_Product_Filter {
 
 		$filter_data = get_terms(
 			array(
-				'taxonomy'         => $taxonomy,
-				'hide_empty'       => false,
-				'term_taxonomy_id' => $term_ids,
-				'fields'           => 'id=>name',
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'include'    => $term_ids,
+				'fields'     => 'id=>name',
 			)
 		);
 

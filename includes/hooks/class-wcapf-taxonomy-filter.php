@@ -225,10 +225,10 @@ class WCAPF_Taxonomy_Filter {
 
 		$term_slugs = get_terms(
 			array(
-				'taxonomy'         => $field_instance->taxonomy,
-				'hide_empty'       => false,
-				'term_taxonomy_id' => $ancestor_ids,
-				'fields'           => 'slugs',
+				'taxonomy'   => $field_instance->taxonomy,
+				'hide_empty' => false,
+				'include'    => $ancestor_ids,
+				'fields'     => 'slugs',
 			)
 		);
 
