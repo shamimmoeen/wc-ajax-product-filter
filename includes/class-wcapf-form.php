@@ -47,13 +47,13 @@ class WCAPF_Form {
 
 		do_action( 'wcapf_before_form_filters', $form_id );
 
-		$fields = isset( $this->form['filters'] ) ? $this->form['filters'] : array();
-		$fields = apply_filters( 'wcapf_form_filters', $fields, $this->form );
+		$filters = isset( $this->form['filters'] ) ? $this->form['filters'] : array();
+		$filters = apply_filters( 'wcapf_form_filters', $filters, $this->form );
 
 		$number_input_types = WCAPF_Helper::number_input_display_types();
 
-		foreach ( $fields as $field ) {
-			$field_data     = $field['settings'];
+		foreach ( $filters as $filter ) {
+			$field_data     = $filter['field'];
 			$field_instance = new WCAPF_Field_Instance( $field_data );
 			$field_type     = $field_instance->type;
 
@@ -71,7 +71,7 @@ class WCAPF_Form {
 		}
 
 		if ( WCAPF_Helper::is_debugging() ) {
-			if ( ! $fields ) {
+			if ( ! $filters ) {
 				echo '<p>' . esc_html__( 'The form is empty.', 'wc-ajax-product-filter' ) . '</p>';
 			}
 

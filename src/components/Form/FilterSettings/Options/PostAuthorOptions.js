@@ -4,10 +4,8 @@ import useFields from './useFields';
 import { authorLimitByOptions } from '../../utils';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import SelectMulti from '../../../Field/SelectMulti';
-import Checkbox from '../../../Field/Checkbox';
 import ManualOptions from './ManualOptions';
 import ManualOptionsModal from './ManualOptionsModal';
-import { wcfmFound } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 
@@ -16,11 +14,8 @@ const userRoles = wcapf_admin_params.user_roles;
 const PostAuthorOptions = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const {
-		handleCheckboxChange,
-		handleToggleGroupChange,
-		handleSelectTermChange,
-	} = useFormFilterData(state, dispatch);
+	const { handleToggleGroupChange, handleSelectTermChange } =
+		useFormFilterData(state, dispatch);
 
 	const { getOptionsField, orderByField, orderDirectionField } =
 		useFields(index);
@@ -39,7 +34,6 @@ const PostAuthorOptions = ({ index }) => {
 		include_authors,
 		exclude_authors,
 		include_user_roles,
-		use_store_name,
 	} = filter;
 
 	const limitOptionsField = () => {
@@ -125,25 +119,6 @@ const PostAuthorOptions = ({ index }) => {
 		}
 	};
 
-	const useStoreNames = () => {
-		if (wcfmFound()) {
-			return (
-				<Checkbox
-					id={'use_store_name'}
-					index={index}
-					label={__('Use Store Name', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to show the store name as the option label.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={use_store_name}
-					onChange={handleCheckboxChange}
-					isPro={true}
-				/>
-			);
-		}
-	};
-
 	const manualOptions = () => {
 		if ('manual_entry' === get_options) {
 			return (
@@ -175,8 +150,6 @@ const PostAuthorOptions = ({ index }) => {
 			{excludeAuthorsField()}
 
 			{userRolesField()}
-
-			{useStoreNames()}
 
 			{manualOptions()}
 		</>

@@ -40,7 +40,6 @@ class WCAPF_Product_Filter_Utils {
 	 *
 	 * @return array
 	 *
-	 * @see wcapf_set_product_query()
 	 * @see WC_Query::append_product_sorting_table_join()
 	 */
 	public static function get_lookup_table_data() {
@@ -403,71 +402,6 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param string               $value          The min, max range using separator.
-	 *
-	 * @return string
-	 */
-	public static function get_label_for_number_range( $field_instance, $value ) {
-		$separator = WCAPF_Helper::range_values_separator();
-		$range     = explode( $separator, $value );
-
-		// TODO: Try with string or null values.
-		$range_min = $range[0];
-		$range_max = $range[1];
-
-		$value_prefix       = $field_instance->get_sub_field_value( 'value_prefix' );
-		$value_postfix      = $field_instance->get_sub_field_value( 'value_postfix' );
-		$values_separator   = $field_instance->get_sub_field_value( 'values_separator' );
-		$format_numbers     = $field_instance->get_sub_field_value( 'format_numbers' );
-		$decimal_places     = $field_instance->get_sub_field_value( 'decimal_places' );
-		$thousand_separator = $field_instance->get_sub_field_value( 'thousand_separator' );
-		$decimal_separator  = $field_instance->get_sub_field_value( 'decimal_separator' );
-
-		$space = '&nbsp;';
-
-		if ( ! self::starts_with( $values_separator, $space ) ) {
-			$values_separator = $space . $values_separator;
-		}
-
-		if ( ! self::ends_with( $values_separator, $space ) ) {
-			$values_separator = $values_separator . $space;
-		}
-
-		if ( $format_numbers ) {
-			$range_min = number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator );
-			$range_max = number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator );
-		}
-
-		$label = sprintf(
-			'%1$s%2$s%3$s%4$s%1$s%5$s%3$s',
-			$value_prefix,
-			$range_min,
-			$value_postfix,
-			$values_separator,
-			$range_max
-		);
-
-		return apply_filters( 'wcapf_label_for_number_range', $label, $field_instance );
-	}
-
-	public static function starts_with( $haystack, $needle ) {
-		$length = strlen( $needle );
-
-		return substr( $haystack, 0, $length ) === $needle;
-	}
-
-	public static function ends_with( $haystack, $needle ) {
-		$length = strlen( $needle );
-
-		if ( ! $length ) {
-			return true;
-		}
-
-		return substr( $haystack, - $length ) === $needle;
-	}
-
-	/**
 	 * Create a unique alias when joining on MySQL table.
 	 *
 	 * @param string $filter_key The filter key.
@@ -509,66 +443,6 @@ class WCAPF_Product_Filter_Utils {
 		$all_roles = $wp_roles->get_names();
 
 		return apply_filters( 'wcapf_user_roles', $all_roles );
-	}
-
-	/**
-	 * Gets the users for the post author filter.
-	 *
-	 * @param array  $args   The get users arguments.
-	 * @param string $column Determines the name column.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return array
-	 */
-	public static function get_users( $args = array(), $column = 'display_name' ) {
-		$defaults = array( 'fields' => array( 'ID', 'display_name' ) );
-		$args     = wp_parse_args( $args, $defaults );
-		$users    = get_users( $args );
-
-		$_items = array();
-
-		foreach ( $users as $user ) {
-			/**
-			 * @var WP_User $user
-			 */
-			$user_id = $user->ID;
-			$name    = $user->display_name;
-			$count   = 0;
-
-			$name = apply_filters( 'wcapf_post_author_filter_name', $name, $column, $user );
-
-			// TODO: Extract to pro.
-			// if ( $value_column ) {
-			// 	$meta_key   = self::store_name_meta_key();
-			// 	$store_name = get_user_meta( $user_id, $meta_key, true );
-			//
-			// 	if ( $store_name ) {
-			// 		$name = $store_name;
-			// 	}
-			// }
-
-			$_items[ $user_id ] = array(
-				'id'    => $user_id,
-				'name'  => $name,
-				'count' => $count,
-			);
-		}
-
-		return $_items;
-	}
-
-	/**
-	 * The meta key that contains the store/vendor/shop name.
-	 *
-	 * TODO: Maybe remove.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	public static function store_name_meta_key() {
-		return 'wcfmmp_store_name';
 	}
 
 	/**
@@ -636,21 +510,26 @@ class WCAPF_Product_Filter_Utils {
 		$form_data['settings']   = $form_settings;
 
 		$form_filters = array();
-		$filter_data  = apply_filters( 'wcapf_form_filter_data', array(), $form_data );
+
+		/**
+		 * Register a hook to modify the form filter data.
+		 */
+		$filter_data = apply_filters( 'wcapf_form_filter_data', array(), $form_data );
 
 		foreach ( $filters as $filter ) {
-			$settings = maybe_unserialize( $filter->post_content );
+			$id    = $filter->ID;
+			$field = maybe_unserialize( $filter->post_content );
 
-			$settings['form_id'] = $form_id;
+			$field['form_id'] = $form_id;
 
-			$settings = wp_parse_args( $filter_data, $settings );
+			$field = wp_parse_args( $filter_data, $field );
 
-			$form_filters[] = array(
-				'id'       => $filter->ID,
-				'title'    => $filter->post_title,
-				'key'      => $filter->post_name,
-				'type'     => $filter->post_excerpt,
-				'settings' => $settings,
+			$form_filters[ $id ] = array(
+				'id'    => $id,
+				'title' => $filter->post_title,
+				'key'   => $filter->post_name,
+				'type'  => $filter->post_excerpt,
+				'field' => $field,
 			);
 		}
 

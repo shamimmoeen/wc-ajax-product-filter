@@ -132,6 +132,12 @@
 	--wcapf-filter-item-horizontal-spacing: var(--wcapf-list-type-native-horizontal-spacing);
 }
 
+.wcapf-filter .wcapf-list-wrapper.layout-list-item {
+	.wcapf-filter-item {
+		display: flex;
+	}
+}
+
 .wcapf-filter .wcapf-list-wrapper.layout-inline {
 	ul.wcapf-filter-options {
 		margin-bottom: calc(var(--wcapf-filter-item-vertical-spacing) * -1);
@@ -365,5 +371,13 @@
 
 	.display-values-as-plain_text {
 		margin-bottom: var(--wcapf-nouislider-plain-text-margin-bottom);
+	}
+}
+
+.wcapf-date-input {
+	.date-input-wrapper {
+		.date-input {
+			@include input_text;
+		}
 	}
 }

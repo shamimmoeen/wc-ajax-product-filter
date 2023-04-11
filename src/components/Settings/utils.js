@@ -15,6 +15,7 @@ export function defaultSettings() {
 		sort_by_form: '',
 		use_term_slug: '1',
 		child_terms_only: '',
+		vendor_support: '',
 		// Appearance
 		primary_color: '#1c5da1',
 		primary_text_color: '#ffffff',

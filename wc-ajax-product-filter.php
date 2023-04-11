@@ -33,32 +33,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Defines constant WCAPF_SLUG
 if ( ! defined( 'WCAPF_SLUG' ) ) {
-	define( 'WCAPF_SLUG', 'wc-ajax-product-filter', false );
+	define( 'WCAPF_SLUG', 'wc-ajax-product-filter' );
 }
 
 // Defines constant WCAPF_VERSION
 if ( ! defined( 'WCAPF_VERSION' ) ) {
-	define( 'WCAPF_VERSION', '4.0.0', false );
+	define( 'WCAPF_VERSION', '4.0.0' );
 }
 
 // Defines constant WCAPF_PLUGIN_FILE
 if ( ! defined( 'WCAPF_PLUGIN_FILE' ) ) {
-	define( 'WCAPF_PLUGIN_FILE', __FILE__, false );
+	define( 'WCAPF_PLUGIN_FILE', __FILE__ );
 }
 
 // Defines constant WCAPF_PLUGIN_DIR
 if ( ! defined( 'WCAPF_PLUGIN_DIR' ) ) {
-	define( 'WCAPF_PLUGIN_DIR', __DIR__, false );
+	define( 'WCAPF_PLUGIN_DIR', __DIR__ );
 }
 
 // Defines constant WCAPF_PLUGIN_URL
 if ( ! defined( 'WCAPF_PLUGIN_URL' ) ) {
-	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ), false );
+	define( 'WCAPF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
 // Defines constant WCAPF_CACHE_TIME
 if ( ! defined( 'WCAPF_CACHE_TIME' ) ) {
-	define( 'WCAPF_CACHE_TIME', 60 * 60 * 12, false );
+	define( 'WCAPF_CACHE_TIME', 60 * 60 * 12 );
 }
 
 /**

@@ -242,6 +242,42 @@ class WCAPF_API {
 			$filter['include_user_roles'] = $parsed;
 		}
 
+		$type = isset( $filter['type'] ) ? $filter['type'] : '';
+
+		if ( 'taxonomy' === $type ) {
+			$manual_options = isset( $filter['manual_options'] ) ? $filter['manual_options'] : array();
+
+			if ( $manual_options ) {
+				$parsed = array();
+
+				foreach ( $manual_options as $option ) {
+					$term = get_term( $option['value'] );
+
+					$option['name'] = $term->name;
+
+					$parsed[] = $option;
+				}
+
+				$filter['manual_options'] = $parsed;
+			}
+		} elseif ( 'post-author' === $type ) {
+			$manual_options = isset( $filter['manual_options'] ) ? $filter['manual_options'] : array();
+
+			if ( $manual_options ) {
+				$parsed = array();
+
+				foreach ( $manual_options as $option ) {
+					$user = get_userdata( $option['value'] );
+
+					$option['name'] = $user->display_name;
+
+					$parsed[] = $option;
+				}
+
+				$filter['manual_options'] = $parsed;
+			}
+		}
+
 		return apply_filters( 'wcapf_parse_filter_data', $filter );
 	}
 
@@ -618,7 +654,6 @@ class WCAPF_API {
 		$markup_fields = array( 'help_text' );
 
 		$sanitized_filter = array();
-		$filter_type      = isset( $filter['type'] ) ? $filter['type'] : '';
 
 		foreach ( $filter as $key => $value ) {
 			if ( in_array( $key, $float_fields ) ) {
@@ -644,6 +679,8 @@ class WCAPF_API {
 			} elseif ( in_array( $key, $single_array_fields ) ) {
 				$value = isset( $value['value'] ) ? $value['value'] : '';
 			} elseif ( in_array( $key, $value_may_have_spaces ) ) {
+				$value = str_replace( ' ', '&nbsp;', $value );
+
 				$with_markup = array( 'values_separator', 'text_before_min_value', 'text_before_max_value' );
 
 				if ( in_array( $key, $with_markup ) ) {
@@ -651,12 +688,10 @@ class WCAPF_API {
 				} else {
 					$value = sanitize_text_field( $value );
 				}
-
-				$value = str_replace( ' ', '&nbsp;', $value );
 			} elseif ( in_array( $key, $markup_fields ) ) {
 				$value = wp_kses_post( $value );
 			} elseif ( 'product_status_options' === $key ) {
-				$value = WCAPF_API_Utils::sanitize_manual_options( $value, $filter_type );
+				$value = $this->sanitize_product_status_options( $value );
 			} else {
 				$value = sanitize_text_field( $value );
 			}
@@ -665,6 +700,38 @@ class WCAPF_API {
 		}
 
 		return apply_filters( 'wcapf_sanitize_filter_data', $sanitized_filter, $filter );
+	}
+
+	/**
+	 * @param array $options The array of options.
+	 *
+	 * @return array
+	 */
+	private function sanitize_product_status_options( $options ) {
+		if ( ! is_array( $options ) ) {
+			return array();
+		}
+
+		$array    = array();
+		$defaults = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
+
+		foreach ( $options as $option ) {
+			$option = WCAPF_API_Utils::sanitize_manual_option_data( $option );
+			$value  = $option['value'];
+			$label  = $option['label'];
+
+			if ( ! strlen( $value ) ) {
+				continue;
+			}
+
+			if ( ! strlen( $label ) ) {
+				$label = isset( $defaults[ $value ] ) ? $defaults[ $value ] : $value;
+			}
+
+			$array[] = array_merge( $option, array( 'label' => $label ) );
+		}
+
+		return $array;
 	}
 
 	public function get_form_preview() {

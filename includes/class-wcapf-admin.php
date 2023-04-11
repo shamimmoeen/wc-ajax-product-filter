@@ -323,8 +323,6 @@ class WCAPF_Admin {
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
-		$params['wcfm_marketplace_found'] = $helper::is_wcfm_marketplace_found();
-
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
 

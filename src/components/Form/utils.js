@@ -420,7 +420,6 @@ export function filterDefaultData() {
 		include_authors: [],
 		exclude_authors: [],
 		include_user_roles: [],
-		use_store_name: '',
 		// Sort By
 		sort_by_options: [],
 		// Per Page

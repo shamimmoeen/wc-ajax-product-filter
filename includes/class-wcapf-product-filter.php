@@ -74,12 +74,12 @@ class WCAPF_Product_Filter {
 
 		$filters_data = $this->filters_data( $query );
 
-		foreach ( $filters_data as $filter_key => $_filter_data ) {
-			$field_instance = new WCAPF_Field_Instance( $_filter_data );
-			$field_type     = $field_instance->type;
+		foreach ( $filters_data as $filter_key => $field ) {
+			$field_instance = new WCAPF_Field_Instance( $field );
+			$filter_type    = $field_instance->filter_type;
 			$filter_values  = $query[ $filter_key ];
 
-			if ( 'taxonomy' === $field_type || 'rating' === $field_type ) {
+			if ( 'taxonomy' === $filter_type ) {
 				$taxonomy = $field_instance->taxonomy;
 
 				if ( in_array( $taxonomy, wc_get_attribute_taxonomy_names() ) ) {
@@ -87,13 +87,13 @@ class WCAPF_Product_Filter {
 				} else {
 					$taxonomies[ $filter_key ] = $this->set_taxonomy_filter_data( $filter_values, $field_instance );
 				}
-			} elseif ( 'price' === $field_type ) {
+			} elseif ( 'price' === $filter_type ) {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
-			} elseif ( 'product-status' === $field_type ) {
+			} elseif ( 'product-status' === $filter_type ) {
 				$statuses[ $filter_key ] = $this->set_filter_by_product_status_data( $filter_values, $field_instance );
-			} elseif ( 'post-author' === $field_type ) {
+			} elseif ( 'post-author' === $filter_type ) {
 				$post_author[ $filter_key ] = $this->set_filter_by_post_author_data( $filter_values, $field_instance );
-			} elseif ( 'post-meta' === $field_type ) {
+			} elseif ( 'post-meta' === $filter_type ) {
 				$post_metas[ $filter_key ] = $this->set_filter_by_post_meta_data( $filter_values, $field_instance );
 			}
 		}
@@ -160,7 +160,7 @@ class WCAPF_Product_Filter {
 				$field_key = $filter['key'];
 
 				if ( in_array( $field_key, $filter_keys ) ) {
-					$filters_data[ $field_key ] = $filter['settings'];
+					$filters_data[ $field_key ] = $filter['field'];
 				}
 			}
 		}
@@ -438,7 +438,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @return array
 	 */
-	private function active_terms_filter_data( $filter_values, $field_instance ) {
+	protected function active_terms_filter_data( $filter_values, $field_instance ) {
 		$taxonomy = $field_instance->taxonomy;
 
 		$term_ids = array_map( 'absint', $filter_values );
@@ -498,7 +498,7 @@ class WCAPF_Product_Filter {
 
 		$range_id = implode( $separator, $filter_values );
 
-		$active_filters[ $range_id ] = $utils::get_label_for_number_range( $field_instance, $range_id );
+		$active_filters[ $range_id ] = $this->get_label_for_number_range( $field_instance, $range_id );
 
 		return array(
 			'query_type'     => $query_type,
@@ -507,6 +507,42 @@ class WCAPF_Product_Filter {
 			'where'          => $where,
 			'filter_id'      => $filter_id,
 			'active_filters' => $active_filters,
+		);
+	}
+
+	/**
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string               $value          The min, max range using separator.
+	 *
+	 * @return string
+	 */
+	protected function get_label_for_number_range( $field_instance, $value ) {
+		$separator = WCAPF_Helper::range_values_separator();
+		$range     = explode( $separator, $value );
+
+		$range_min = isset( $range[0] ) ? $range[0] : '';
+		$range_max = isset( $range[1] ) ? $range[1] : '';
+
+		$value_prefix       = $field_instance->get_sub_field_value( 'value_prefix' );
+		$value_postfix      = $field_instance->get_sub_field_value( 'value_postfix' );
+		$values_separator   = $field_instance->get_sub_field_value( 'values_separator' );
+		$format_numbers     = $field_instance->get_sub_field_value( 'format_numbers' );
+		$decimal_places     = $field_instance->get_sub_field_value( 'decimal_places' );
+		$thousand_separator = $field_instance->get_sub_field_value( 'thousand_separator' );
+		$decimal_separator  = $field_instance->get_sub_field_value( 'decimal_separator' );
+
+		if ( $format_numbers ) {
+			$range_min = number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator );
+			$range_max = number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator );
+		}
+
+		return sprintf(
+			'%1$s%2$s%3$s%4$s%1$s%5$s%3$s',
+			$value_prefix,
+			$range_min,
+			$value_postfix,
+			$values_separator,
+			$range_max
 		);
 	}
 
@@ -541,13 +577,6 @@ class WCAPF_Product_Filter {
 
 				$condition = "$wpdb->posts.ID IN $on_sale_products";
 			}
-
-			$condition = apply_filters(
-				'wcapf_filter_condition_for_product_status',
-				$condition,
-				$value,
-				$field_instance
-			);
 
 			if ( $condition ) {
 				$wheres[] = $condition;
@@ -591,23 +620,15 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	private function active_product_status_filter_data( $filter_values, $field_instance ) {
-		$manual_options = $field_instance->manual_options;
-		$defaults       = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
-		$filter_data    = array();
+		$options = wp_list_pluck( $field_instance->manual_options, 'label', 'value' );
+
+		$filter_data = array();
 
 		foreach ( $filter_values as $filter_value ) {
-			$key    = array_search( $filter_value, array_column( $manual_options, 'value' ) );
-			$option = isset( $manual_options[ $key ] ) ? $manual_options[ $key ] : array();
-			$label  = isset( $option['label'] ) ? $option['label'] : '';
-
-			if ( ! $label ) {
-				$label = $defaults[ $filter_value ];
-			}
-
-			$filter_data[ $filter_value ] = $label ?: $filter_value;
+			$filter_data[ $filter_value ] = ! empty( $options[ $filter_value ] ) ? $options[ $filter_value ] : $filter_value;
 		}
 
-		return apply_filters( 'wcapf_active_product_status_filter_data', $filter_data, $field_instance );
+		return $filter_data;
 	}
 
 	/**
@@ -639,7 +660,7 @@ class WCAPF_Product_Filter {
 
 		foreach ( $property_values as $value ) {
 			// Active filters data.
-			$active_filters[ $value ] = $this->get_label_for_post_author( $value );
+			$active_filters[ $value ] = $this->get_label_for_post_author( $value, $field_instance );
 
 			if ( 'or' === $query_type ) {
 				$or_filter_values[] = $value;
@@ -661,23 +682,26 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param string $value
+	 * @param string               $value
+	 * @param WCAPF_Field_Instance $field_instance
 	 *
-	 * @return mixed|string
+	 * @return string
 	 */
-	private function get_label_for_post_author( $value ) {
-		$args  = array( 'include' => array( $value ) );
-		$users = WCAPF_Product_Filter_Utils::get_users( $args );
-		$label = '';
+	protected function get_label_for_post_author( $value, $field_instance ) {
+		$args = array(
+			'fields'  => array( 'ID', 'display_name' ),
+			'include' => array( $value ),
+			'number'  => 1,
+		);
 
-		foreach ( $users as $user ) {
-			if ( $value === $user['id'] ) {
-				$label = $user['name'];
-				break;
-			}
-		}
+		$users = get_users( $args );
 
-		return $label;
+		/**
+		 * @var WP_User $user
+		 */
+		$user = $users[0];
+
+		return $user->display_name;
 	}
 
 	/**

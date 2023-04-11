@@ -73,7 +73,7 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 		$filtered_count = $wpdb->get_results( $query, ARRAY_A );
 		$filtered_count = wp_list_pluck( $filtered_count, 'count', 'author_id' );
 
-		return $this->get_filtered_ranges_counts( $items, $filtered_count );
+		return $this->sync_items_count( $items, $filtered_count );
 	}
 
 	private function get_sql_query() {

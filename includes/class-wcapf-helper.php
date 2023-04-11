@@ -340,15 +340,7 @@ class WCAPF_Helper {
 	 * @return bool
 	 */
 	public static function round_range_min_max_values( $instance ) {
-		$type  = $instance->type;
-		$round = false;
-
-		// For price filter we do the rounding.
-		if ( 'price' === $type ) {
-			$round = true;
-		}
-
-		return apply_filters( 'wcapf_round_range_min_max_values', $round, $instance );
+		return apply_filters( 'wcapf_round_range_min_max_values', true, $instance );
 	}
 
 	/**
