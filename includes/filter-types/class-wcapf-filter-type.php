@@ -81,7 +81,12 @@ abstract class WCAPF_Filter_Type {
 	 * @return array
 	 */
 	public function get_items() {
-		return $this->prepare_items();
+		/**
+		 * Register a hook to modify the filter items array.
+		 *
+		 * @since 4.0.0
+		 */
+		return apply_filters( 'wcapf_filter_items', $this->prepare_items(), $this->field );
 	}
 
 	/**
@@ -92,26 +97,27 @@ abstract class WCAPF_Filter_Type {
 	abstract protected function prepare_items();
 
 	/**
-	 * @param $ranges
-	 * @param $filtered_count
+	 * @param array $items          The items array.
+	 * @param array $filtered_count The filtered count array to sync with.
 	 *
-	 * TODO: Maybe refactor.
+	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	public function get_filtered_ranges_counts( $ranges, $filtered_count ) {
-		if ( ! $ranges ) {
+	public function sync_items_count( $items, $filtered_count ) {
+		if ( ! $items ) {
 			return array();
 		}
 
 		$updated_count = array();
 
-		foreach ( $ranges as $range ) {
+		foreach ( $items as $key => $range ) {
 			$id    = $range['id'];
 			$count = isset( $filtered_count[ $id ] ) ? $filtered_count[ $id ] : 0;
 
-			$range['count']  = $count;
-			$updated_count[] = $range;
+			$range['count'] = $count;
+
+			$updated_count[ $key ] = $range;
 		}
 
 		return $updated_count;
@@ -128,11 +134,9 @@ abstract class WCAPF_Filter_Type {
 		if ( 'remove' === $this->hide_empty ) {
 			$items_with_count = array();
 
-			foreach ( $items as $item ) {
-				$id = $item['id'];
-
+			foreach ( $items as $key => $item ) {
 				if ( $item['count'] ) {
-					$items_with_count[ $id ] = $item;
+					$items_with_count[ $key ] = $item;
 				}
 			}
 
@@ -154,23 +158,15 @@ abstract class WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Prepare the manual options.
+	 * Prepare the manual options for product-status, sort-by and per-page filter types.
 	 *
 	 * @param array $manual_options The manual options from the filter field.
 	 *
 	 * @return array
 	 */
 	protected function prepare_manual_options( $manual_options ) {
-		$options  = array();
-		$defaults = array();
-
-		$type = $this->field->type;
-
-		if ( 'product-status' === $type ) {
-			$defaults = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
-		} elseif ( 'sort-by' === $type ) {
-			$defaults = wp_list_pluck( WCAPF_API_Utils::sort_by_options(), 'label', 'value' );
-		}
+		$type    = $this->field->filter_type;
+		$options = array();
 
 		foreach ( $manual_options as $option ) {
 			$value   = $option['value'];
@@ -178,35 +174,24 @@ abstract class WCAPF_Filter_Type {
 			$tooltip = isset( $option['tooltip'] ) ? $option['tooltip'] : '';
 			$count   = 0;
 
-			if ( empty( $label ) ) {
-				if ( 'per-page' === $type ) {
-					$label = $value;
-				} else {
-					if ( ! empty( $defaults[ $value ] ) ) {
-						$label = $defaults[ $value ];
-					}
-				}
+			// In sort-by filter, id is the unique value because id is generated from value and order direction.
+			if ( 'sort-by' === $type ) {
+				$id = $option['id'];
+			} else {
+				$id = $value;
 			}
 
 			$item = array_merge(
 				$option,
 				array(
-					'id'      => $value,
+					'id'      => $id,
 					'name'    => $label,
 					'tooltip' => $tooltip,
 					'count'   => $count,
 				)
 			);
 
-			if ( 'sort-by' === $type ) {
-				// In sort-by filter, id is the unique value because id is generated from value and order direction.
-				$sort_by_id = $option['id'];
-				$item['id'] = $sort_by_id;
-
-				$options[ $sort_by_id ] = $item;
-			} else {
-				$options[ $value ] = $item;
-			}
+			$options[ $id ] = $item;
 		}
 
 		return $options;

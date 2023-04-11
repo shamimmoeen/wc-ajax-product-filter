@@ -432,7 +432,7 @@ class WCAPF_Field_Instance {
 	 *
 	 * @return string
 	 */
-	public function is_store_name_enabled() {
+	private function is_store_name_enabled() {
 		if ( ! WCAPF_Helper::is_wcfm_marketplace_found() ) {
 			return '';
 		}

@@ -221,7 +221,6 @@ const FormTitle = () => {
 				'time_period_show_count',
 				'time_period_options',
 				'options_order_type',
-				'use_store_name',
 				'search_field_placeholder',
 				'visibility_rules',
 			];

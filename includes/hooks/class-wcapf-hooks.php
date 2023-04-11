@@ -334,9 +334,11 @@ class WCAPF_Hooks {
 
 		$filter = new WCAPF_Product_Filter();
 
+		global $wcapf_chosen_filters;
+
 		$chosen_filters = $filter->get_chosen_filters();
 
-		$GLOBALS['wcapf_chosen_filters'] = $chosen_filters;
+		$wcapf_chosen_filters = $chosen_filters;
 
 		/**
 		 * We must hook the filter early to avoid the sorting issues.

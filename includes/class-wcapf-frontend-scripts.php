@@ -43,7 +43,8 @@ class WCAPF_Frontend_Scripts {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
+		// Loads after the pro version scripts are loaded.
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ), 99 );
 	}
 
 	/**

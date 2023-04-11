@@ -449,48 +449,20 @@ class WCAPF_API_Utils {
 		return $user_roles;
 	}
 
-	/**
-	 * Sanitize the manual options coming from the React UI.
-	 *
-	 * @param array  $options The array to sanitize.
-	 * @param string $type    The filter type.
-	 *
-	 * @return array
-	 */
-	public static function sanitize_manual_options( $options, $type ) {
-		if ( ! is_array( $options ) ) {
-			return array();
-		}
+	public static function sanitize_manual_option_data( $data ) {
+		$sanitized = array();
 
-		$array   = array();
-		$allowed = apply_filters(
-			'wcapf_manual_option_allowed_keys',
-			array(
-				'value'   => 'sanitize_text_field',
-				'label'   => 'wp_kses_post',
-				'tooltip' => 'wp_kses_post',
-			),
-			$type
-		);
-
-		foreach ( $options as $_option ) {
-			$option = array();
-
-			foreach ( $_option as $_key => $_value ) {
-				if ( ! array_key_exists( $_key, $allowed ) ) {
-					continue;
-				}
-
-				$callback = $allowed[ $_key ];
-				$value    = function_exists( $callback ) ? call_user_func( $callback, $_value ) : '';
-
-				$option[ $_key ] = $value;
+		foreach ( $data as $key => $_value ) {
+			if ( in_array( $key, array( 'label', 'secondary_label', 'tooltip' ) ) ) {
+				$value = wp_kses_post( $_value );
+			} else {
+				$value = sanitize_text_field( $_value );
 			}
 
-			$array[] = $option;
+			$sanitized[ $key ] = $value;
 		}
 
-		return $array;
+		return $sanitized;
 	}
 
 	/**

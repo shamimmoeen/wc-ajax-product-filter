@@ -71,10 +71,6 @@ export function slugify(value) {
 	return '__' + value.replace(/ /g, '_');
 }
 
-export function wcfmFound() {
-	return wcapf_admin_params.wcfm_marketplace_found;
-}
-
 export function mergeSelectOptions(freeOptions, proOptions, withPro = false) {
 	let options;
 

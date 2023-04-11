@@ -15,6 +15,7 @@ const Integration = () => {
 			sorting_data_in_active_filters,
 			use_term_slug,
 			child_terms_only,
+			vendor_support,
 		},
 	} = state;
 
@@ -89,6 +90,18 @@ const Integration = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={child_terms_only}
+				onChange={handleCheckboxChange}
+				isPro
+			/>
+
+			<Checkbox
+				id={'vendor_support'}
+				label={__('Vendor support', 'wc-ajax-product-filter')}
+				description={__(
+					'Enable this to show the store name as the option label in the post-author filter.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={vendor_support}
 				onChange={handleCheckboxChange}
 				isPro
 			/>

@@ -1,3 +1,54 @@
+/**
+ * The main js file.
+ *
+ * @since      3.0.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/public/src/js
+ * @author     wptools.io
+ */
+
+const wcapf_params = wcapf_params || {
+	'is_rtl': '',
+	'filter_input_delay': '',
+	'chosen_display_selected_options': '',
+	'chosen_no_results_text': '',
+	'chosen_options_none_text': '',
+	'search_box_in_default_orderby': '',
+	'preserve_hierarchy_accordion_state': '',
+	'preserve_soft_limit_state': '',
+	'enable_animation_for_filter_accordion': '',
+	'filter_accordion_animation_speed': '',
+	'filter_accordion_animation_easing': '',
+	'enable_animation_for_hierarchy_accordion': '',
+	'hierarchy_accordion_animation_speed': '',
+	'hierarchy_accordion_animation_easing': '',
+	'restore_focus_after_filtering': '',
+	'loading_overlay_options': '',
+	'scroll_to_top_speed': '',
+	'scroll_to_top_easing': '',
+	'immediate_scroll_on_paginate': '',
+	'is_mobile': '',
+	'reload_on_back': '',
+	'found_wcapf': '',
+	'update_document_title': '',
+	'use_tippyjs': '',
+	'shop_loop_container': '',
+	'not_found_container': '',
+	'pagination_container': '',
+	'enable_pagination_via_ajax': '',
+	'sorting_control': '',
+	'attach_chosen_on_sorting': '',
+	'loading_animation': '',
+	'scroll_window': '',
+	'scroll_window_for': '',
+	'scroll_window_when': '',
+	'scroll_window_custom_element': '',
+	'scroll_to_top_offset': '',
+	'disable_scroll_animation': '',
+	'more_selectors': '',
+	'custom_scripts': '',
+};
+
 ( function( $, window ) {
 
 	const _delay = parseInt( wcapf_params.filter_input_delay );
@@ -586,6 +637,44 @@
 				}, delay ) );
 			} );
 		},
+		handleDateInputFilters: function() {
+			$body.on( 'change', '.wcapf-date-input .date-input', function() {
+				const $filter = $( this ).closest( '.wcapf-date-input' );
+				const isRange = $filter.data( 'is-range' );
+
+				let filterUrl = '';
+
+				// Clear any previously set timer before setting a fresh one
+				clearTimeout( $filter.data( 'timer' ) );
+
+				if ( isRange ) {
+					const from = $filter.find( '.date-from-input' ).val();
+					const to   = $filter.find( '.date-to-input' ).val();
+
+					if ( from && to ) {
+						filterUrl = $filter.data( 'url' ).replace( '%1s', from ).replace( '%2s', to );
+					} else if ( ! from && ! to ) {
+						filterUrl = $filter.data( 'clear-filter-url' );
+					}
+				} else {
+					const from = $filter.find( '.date-from-input' ).val();
+
+					if ( from ) {
+						filterUrl = $filter.data( 'url' ).replace( '%s', from );
+					} else {
+						filterUrl = $filter.data( 'clear-filter-url' );
+					}
+				}
+
+				if ( filterUrl ) {
+					$filter.data( 'timer', setTimeout( function() {
+						$filter.removeData( 'timer' );
+
+						WCAPF.requestFilter( filterUrl );
+					}, delay ) );
+				}
+			} );
+		},
 		handleListFilters: function() {
 			const nativeInputs = '.list-type-native [type="checkbox"],' +
 				'.list-type-native [type="radio"],' +
@@ -691,6 +780,7 @@
 			} );
 		},
 		handleFilterTooltip: function() {
+			// noinspection JSUnresolvedReference
 			if ( 'function' !== typeof tippy ) {
 				return;
 			}
@@ -699,6 +789,7 @@
 				return;
 			}
 
+			// noinspection JSUnresolvedReference
 			tippy( '.wcapf-filter-tooltip', {
 				placement: 'top',
 				content( reference ) {
@@ -896,7 +987,34 @@
 				} );
 			} );
 		},
+		initDatepicker: function() {
+			if ( ! jQuery().datepicker ) {
+				return;
+			}
+
+			const $wcapfDateFilter = $body.find( '.wcapf-date-input' );
+
+			const format        = $wcapfDateFilter.attr( 'data-date-format' );
+			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
+			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
+
+			const $from = $wcapfDateFilter.find( '.date-from-input' );
+			const $to   = $wcapfDateFilter.find( '.date-to-input' );
+
+			$from.datepicker( {
+				dateFormat: format,
+				changeYear: yearDropdown,
+				changeMonth: monthDropdown,
+			} );
+
+			$to.datepicker( {
+				dateFormat: format,
+				changeYear: yearDropdown,
+				changeMonth: monthDropdown,
+			} );
+		},
 		initFilterOptionTooltip: function() {
+			// noinspection JSUnresolvedReference
 			if ( 'function' !== typeof tippy ) {
 				return;
 			}
@@ -910,6 +1028,7 @@
 			tooltipPositions.forEach( function( tooltipPosition ) {
 				const identifier = 'data-wcapf-tooltip-' + tooltipPosition;
 
+				// noinspection JSUnresolvedReference
 				const instances = tippy( '[' + identifier + ']', {
 					placement: tooltipPosition,
 					content( reference ) {
@@ -924,6 +1043,7 @@
 		init: function() {
 			WCAPF.initCombobox();
 			WCAPF.initRangeSlider();
+			WCAPF.initDatepicker();
 			WCAPF.initFilterOptionTooltip();
 		},
 		initPopState: function() {
@@ -964,11 +1084,20 @@
 	WCAPF.handleListFilters();
 	WCAPF.handleDropdownFilters();
 	WCAPF.handleNumberInputFilters();
+	WCAPF.handleDateInputFilters();
 	WCAPF.handlePagination();
 	WCAPF.handleDefaultOrderby();
 
 	WCAPF.handleClearFilter();
 
 	WCAPF.handleFilterTooltip();
+
+	/**
+	 * Make it compatible with other plugins.
+	 */
+	$( 'body' ).on( 'wcapf_after_updating_products', function() {
+		// woo-variation-swatches
+		$( document ).trigger( 'woo_variation_swatches_pro_init' );
+	} );
 
 }( jQuery, window.WCAPF ) );

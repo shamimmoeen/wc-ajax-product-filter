@@ -49,7 +49,7 @@ class WCAPF_Rating_Filter {
 		add_filter( 'wcapf_taxonomy_terms', array( $this, 'set_rating_terms_data' ), 10, 2 );
 
 		add_filter( 'wcapf_taxonomy_filter_values', array( $this, 'set_rating_filter_values' ), 10, 2 );
-		add_filter( 'wcapf_active_taxonomy_filter_data', array( $this, 'set_rating_filter_data' ), 10, 3 );
+		add_filter( 'wcapf_active_taxonomy_filter_data', array( $this, 'rating_filter_star_icons' ), 10, 3 );
 
 		add_filter( 'wcapf_menu_items', array( $this, 'set_rating_items' ), 10, 2 );
 	}
@@ -117,7 +117,7 @@ class WCAPF_Rating_Filter {
 	 *
 	 * @return array
 	 */
-	public function set_rating_filter_data( $filter_data, $field_instance, $ratings ) {
+	public function rating_filter_star_icons( $filter_data, $field_instance, $ratings ) {
 		if ( 'rating' !== $field_instance->type ) {
 			return $filter_data;
 		}
