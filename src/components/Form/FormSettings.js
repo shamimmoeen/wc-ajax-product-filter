@@ -1,13 +1,13 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Number from '../Field/Number';
-import Select from '../Field/Select';
+// import Select from '../Field/Select';
 import { foundProVersion } from '../utils';
-import {
-	filterModeOptions,
-	formLayoutOptions,
-	formVisibilityOptions,
-} from '../utilsForForm';
+// import {
+// 	filterModeOptions,
+// 	formLayoutOptions,
+// 	formVisibilityOptions,
+// } from '../utilsForForm';
 import AvailableOn from './AvailableOn';
 import { useForm } from './FormContext';
 import useFormSettings from './useFormSettings';
@@ -16,35 +16,38 @@ const WCAPF_PRO = foundProVersion();
 
 const FormSettings = () => {
 	const { state, dispatch } = useForm();
-	const { handleTextFieldChange, handleCheckboxChange, handleSelectChange } =
-		useFormSettings(state, dispatch);
+	const {
+		handleTextFieldChange,
+		handleCheckboxChange,
+		// handleSelectChange
+	} = useFormSettings(state, dispatch);
 
 	const {
 		formSettings: {
 			priority,
-			form_layout,
-			columns_per_row,
-			show_form_on_top_of_products,
-			filter_mode,
-			form_visibility,
+			// form_layout,
+			// columns_per_row,
+			// show_form_on_top_of_products,
+			// filter_mode,
+			// form_visibility,
 			show_clear_btn,
 		},
 	} = state;
 
-	const formLayouts = formLayoutOptions();
-	const formLayout = formLayouts.find(
-		(option) => form_layout === option.value
-	);
+	// const formLayouts = formLayoutOptions();
+	// const formLayout = formLayouts.find(
+	// 	(option) => form_layout === option.value
+	// );
 
-	const filterModes = filterModeOptions();
-	const filterMode = filterModes.find(
-		(option) => filter_mode === option.value
-	);
+	// const filterModes = filterModeOptions();
+	// const filterMode = filterModes.find(
+	// 	(option) => filter_mode === option.value
+	// );
 
-	const visibilityOptions = formVisibilityOptions();
-	const formVisibility = visibilityOptions.find(
-		(option) => form_visibility === option.value
-	);
+	// const visibilityOptions = formVisibilityOptions();
+	// const formVisibility = visibilityOptions.find(
+	// 	(option) => form_visibility === option.value
+	// );
 
 	return (
 		<>
@@ -64,7 +67,7 @@ const FormSettings = () => {
 				/>
 			)}
 
-			<Select
+			{/* <Select
 				id={'form_layout'}
 				label={__('Form Layout', 'wc-ajax-product-filter')}
 				description={__(
@@ -131,7 +134,7 @@ const FormSettings = () => {
 				value={formVisibility}
 				onChange={handleSelectChange}
 				renderAsFormField
-			/>
+			/> */}
 
 			<Checkbox
 				id={'show_clear_btn'}
