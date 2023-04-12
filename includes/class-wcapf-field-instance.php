@@ -433,7 +433,7 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function is_store_name_enabled() {
-		if ( ! WCAPF_Helper::is_wcfm_marketplace_found() ) {
+		if ( ! WCAPF_Helper::is_marketplace_plugin_found() ) {
 			return '';
 		}
 
