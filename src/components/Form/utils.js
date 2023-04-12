@@ -480,6 +480,7 @@ export function filterTypeDependentFields() {
 		'sort_by_options',
 		'per_page_options',
 		// Post Meta
+		'is_acf',
 		'value_type',
 		'value_decimal',
 		'value_decimal_places',
