@@ -65,13 +65,21 @@ class WCAPF_Hooks {
 	 * @return void
 	 */
 	public function content_top() {
-		global $wp_query;
+		global $wp_query, $wcapf_query;
+
+		$query = null;
+
+		if ( is_shop() || is_product_taxonomy() ) {
+			$query = $wp_query;
+		} else if ( $wcapf_query ) {
+			$query = $wcapf_query;
+		}
 
 		echo '<input type="checkbox" id="show_query"><label for="show_query">Show Query</label>';
 
 		echo '<div class="query">';
 		echo '<pre>';
-		print_r( $wp_query->request );
+		print_r( $query );
 		echo '</pre>';
 		echo '</div>';
 

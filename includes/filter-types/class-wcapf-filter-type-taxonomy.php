@@ -159,7 +159,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data(
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data(
 			$lookup_table_name,
 			'product_or_parent_id'
 		);
@@ -187,8 +187,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
 
-		$term_ids_sql = '(' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+		$term_ids_sql = $utils::get_ids_sql( $term_ids );
 
 		$where .= " AND $lookup_table_name.taxonomy = '$this->taxonomy'";
 		$where .= " AND $lookup_table_name.term_id IN $term_ids_sql";
@@ -221,7 +222,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$post_statuses = $helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data();
 
 		$query = array();
 		$join  = '';
@@ -288,6 +289,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
 
 		if ( $update_count ) {
 			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
@@ -322,7 +324,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$post_statuses = $helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data();
 
 		$query  = array();
 		$select = '';
@@ -348,12 +350,15 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$query['join'] = $join;
 
+		$term_ids_sql = $utils::get_ids_sql( $term_ids );
+
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
 		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
-		$where .= ' AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+		$where .= " AND terms.term_id IN $term_ids_sql";
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
 
 		if ( $update_count ) {
 			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
