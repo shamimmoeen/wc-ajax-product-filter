@@ -95,7 +95,7 @@ class WCAPF_Product_Filter_Utils {
 		$post_statuses  = $helper::filterable_post_statuses();
 		$hide_stock_out = $helper::hide_stock_out_items();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = self::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = self::get_main_query_data();
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_meta_lookup';
 
@@ -131,6 +131,7 @@ class WCAPF_Product_Filter_Utils {
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
 
 		$where .= $hide_stock_out ? " AND price_table.stock_status = 'instock'" : '';
 
@@ -186,6 +187,12 @@ class WCAPF_Product_Filter_Utils {
 		$meta_query_sql = array( 'join' => '', 'where' => '' );
 		$tax_query_sql  = array( 'join' => '', 'where' => '' );
 		$search_query   = '';
+		$where_sql      = '';
+
+		$post__in       = array();
+		$post__not_in   = array();
+		$author__in     = array();
+		$author__not_in = array();
 
 		if ( is_shop() || is_product_taxonomy() ) {
 			$tax_query    = WC_Query::get_main_tax_query();
@@ -196,7 +203,16 @@ class WCAPF_Product_Filter_Utils {
 			$tax_query      = new WP_Tax_Query( $tax_query );
 			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
 			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
+
+			$main_query     = WC_Query::get_main_query();
+			$post__in       = $main_query->get( 'post__in' );
+			$post__not_in   = $main_query->get( 'post__not_in' );
+			$author__in     = $main_query->get( 'author__in' );
+			$author__not_in = $main_query->get( 'author__not_in' );
 		} else {
+			/**
+			 * @var $wcapf_query WP_Query
+			 */
 			global $wcapf_query;
 
 			if ( $wcapf_query ) {
@@ -211,10 +227,50 @@ class WCAPF_Product_Filter_Utils {
 				$tax_query      = new WP_Tax_Query( $tax_query );
 				$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
 				$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
+
+				$post__in       = $wcapf_query->get( 'post__in' );
+				$post__not_in   = $wcapf_query->get( 'post__not_in' );
+				$author__in     = $wcapf_query->get( 'author__in' );
+				$author__not_in = $wcapf_query->get( 'author__not_in' );
 			}
 		}
 
-		return array( $meta_query_sql, $tax_query_sql, $search_query );
+		if ( $post__in ) {
+			$ids_in = self::get_ids_sql( $post__in );
+
+			$where_sql .= " AND $wpdb->posts.ID IN $ids_in";
+		}
+
+		if ( $post__not_in ) {
+			$ids_in = self::get_ids_sql( $post__not_in );
+
+			$where_sql .= " AND $wpdb->posts.ID NOT IN $ids_in";
+		}
+
+		if ( $author__in ) {
+			$ids_in = self::get_ids_sql( $author__in );
+
+			$where_sql .= " AND $wpdb->posts.post_author IN $ids_in";
+		}
+
+		if ( $author__not_in ) {
+			$ids_in = self::get_ids_sql( $author__not_in );
+
+			$where_sql .= " AND $wpdb->posts.post_author NOT IN $ids_in";
+		}
+
+		return array( $meta_query_sql, $tax_query_sql, $search_query, $where_sql );
+	}
+
+	/**
+	 * Formats a list of ids as "(id,id,id)".
+	 *
+	 * @param array $ids The list of ids to format.
+	 *
+	 * @return string The formatted list.
+	 */
+	public static function get_ids_sql( $ids ) {
+		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
 	}
 
 	/**
@@ -351,17 +407,6 @@ class WCAPF_Product_Filter_Utils {
 		$ids = $ids ?: array( 0 );
 
 		return self::get_ids_sql( $ids );
-	}
-
-	/**
-	 * Formats a list of ids as "(id,id,id)".
-	 *
-	 * @param array $ids The list of ids to format.
-	 *
-	 * @return string The formatted list.
-	 */
-	public static function get_ids_sql( $ids ) {
-		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
 	}
 
 	/**

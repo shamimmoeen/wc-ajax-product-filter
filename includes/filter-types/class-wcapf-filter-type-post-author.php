@@ -85,7 +85,7 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 		$post_statuses = $helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = $utils::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data();
 
 		$query = array();
 		$join  = '';
@@ -110,6 +110,7 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
 
 		if ( $update_count ) {
 			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
