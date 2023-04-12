@@ -44,7 +44,7 @@ const General = ({ index }) => {
 		meta_key,
 		component,
 		value_type,
-		is_acf,
+		// is_acf,
 		value_decimal,
 		value_decimal_places,
 		date_input_format,
@@ -234,7 +234,7 @@ const General = ({ index }) => {
 				</>
 			)}
 
-			{'post-meta' === type && 'text' === value_type && (
+			{/* {'post-meta' === type && 'text' === value_type && (
 				<Checkbox
 					id={'is_acf'}
 					index={index}
@@ -246,7 +246,7 @@ const General = ({ index }) => {
 					isChecked={is_acf}
 					onChange={handleCheckboxChange}
 				/>
-			)}
+			)} */}
 
 			{'post-meta' === type && 'number' === value_type && (
 				<>
