@@ -439,6 +439,10 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function active_terms_filter_data( $filter_values, $field_instance ) {
+		if ( ! $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
+			return array();
+		}
+
 		$taxonomy = $field_instance->taxonomy;
 
 		$term_ids = array_map( 'absint', $filter_values );
@@ -496,9 +500,11 @@ class WCAPF_Product_Filter {
 
 		$where = "NOT ($max < $alias.min_price OR $min > $alias.max_price)";
 
-		$range_id = implode( $separator, $filter_values );
+		if ( $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
+			$range_id = implode( $separator, $filter_values );
 
-		$active_filters[ $range_id ] = $this->get_label_for_number_range( $field_instance, $range_id );
+			$active_filters[ $range_id ] = $this->get_label_for_number_range( $field_instance, $range_id );
+		}
 
 		return array(
 			'query_type'     => $query_type,
@@ -601,7 +607,9 @@ class WCAPF_Product_Filter {
 			$where = '1=0';
 		}
 
-		$active_filters = $this->active_product_status_filter_data( $filter_values, $field_instance );
+		if ( $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
+			$active_filters = $this->active_product_status_filter_data( $filter_values, $field_instance );
+		}
 
 		return array(
 			'query_type'     => $query_type,
@@ -660,7 +668,9 @@ class WCAPF_Product_Filter {
 
 		foreach ( $property_values as $value ) {
 			// Active filters data.
-			$active_filters[ $value ] = $this->get_label_for_post_author( $value, $field_instance );
+			if ( $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
+				$active_filters[ $value ] = $this->get_label_for_post_author( $value, $field_instance );
+			}
 
 			if ( 'or' === $query_type ) {
 				$or_filter_values[] = $value;
@@ -768,7 +778,9 @@ class WCAPF_Product_Filter {
 
 		foreach ( $filter_values as $index => $meta_value ) {
 			// Active filters data.
-			$active_filters[ $meta_value ] = $meta_value;
+			if ( $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
+				$active_filters[ $meta_value ] = $meta_value;
+			}
 
 			if ( 'or' === $query_type ) {
 				$or_filter_values[] = $meta_value;
