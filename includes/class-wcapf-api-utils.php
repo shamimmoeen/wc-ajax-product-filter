@@ -202,18 +202,18 @@ class WCAPF_API_Utils {
 						'type'  => 'component',
 						'isPro' => true,
 					),
-					array(
-						'label' => __( 'Apply Mode', 'wc-ajax-product-filter' ),
-						'value' => 'apply-mode',
-						'type'  => 'component',
-						'isPro' => true,
-					),
-					array(
-						'label' => __( 'Submit Mode', 'wc-ajax-product-filter' ),
-						'value' => 'submit-mode',
-						'type'  => 'component',
-						'isPro' => true,
-					),
+					// array(
+					// 	'label' => __( 'Apply Mode', 'wc-ajax-product-filter' ),
+					// 	'value' => 'apply-mode',
+					// 	'type'  => 'component',
+					// 	'isPro' => true,
+					// ),
+					// array(
+					// 	'label' => __( 'Submit Mode', 'wc-ajax-product-filter' ),
+					// 	'value' => 'submit-mode',
+					// 	'type'  => 'component',
+					// 	'isPro' => true,
+					// ),
 				),
 			),
 		);
