@@ -522,10 +522,15 @@ class WCAPF_API_Utils {
 	 * @return array
 	 */
 	public static function get_form_data( $id ) {
-		return array(
+		$data = array(
 			'id'    => $id,
 			'title' => get_the_title( $id ),
 		);
+
+		/**
+		 * Register a hook to send the form locations with the data.
+		 */
+		return apply_filters( 'wcapf_admin_form_data', $data, $id );
 	}
 
 }

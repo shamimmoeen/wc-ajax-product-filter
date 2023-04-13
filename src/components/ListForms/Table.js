@@ -70,10 +70,6 @@ const Table = ({
 
 			const isDeleting = formId === deletingItemId;
 			const isDuplicating = formId === duplicatingItemId;
-			const availableOn = __(
-				'Product archive pages',
-				'wc-ajax-product-filter'
-			);
 
 			return (
 				<tr key={formId}>
@@ -82,7 +78,14 @@ const Table = ({
 							{formTitle}
 						</a>
 					</td>
-					<td className='__Available_on'>{availableOn}</td>
+					<td className='__Available_on'>
+						{WCAPF_PRO
+							? form.locations
+							: __(
+									'Product archive pages',
+									'wc-ajax-product-filter'
+							  )}
+					</td>
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
