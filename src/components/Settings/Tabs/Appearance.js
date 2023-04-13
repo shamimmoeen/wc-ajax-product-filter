@@ -5,11 +5,11 @@ import useSettingsData from '../useSettingsData';
 import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
 import Radio from '../../Field/Radio';
-import { foundProVersion } from '../../utils';
-import Text from '../../Field/Text';
+// import { foundProVersion } from '../../utils';
+// import Text from '../../Field/Text';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
 
-const WCAPF_PRO = foundProVersion();
+// const WCAPF_PRO = foundProVersion();
 
 const enablePrimaryTextColor = wcapf_admin_params.enable_primary_text_color;
 
@@ -44,16 +44,16 @@ const labelPresets = [
 	},
 ];
 
-const slideOutPanelPositionOptions = [
-	{
-		label: __('Left', 'wc-ajax-product-filter'),
-		value: 'left',
-	},
-	{
-		label: __('Right', 'wc-ajax-product-filter'),
-		value: 'right',
-	},
-];
+// const slideOutPanelPositionOptions = [
+// 	{
+// 		label: __('Left', 'wc-ajax-product-filter'),
+// 		value: 'left',
+// 	},
+// 	{
+// 		label: __('Right', 'wc-ajax-product-filter'),
+// 		value: 'right',
+// 	},
+// ];
 
 const Appearance = () => {
 	const { state, dispatch } = useSettings();
@@ -79,9 +79,9 @@ const Appearance = () => {
 			star_icon_color,
 			rating_star_use_fontawesome,
 			remove_focus_style,
-			primary_btn_class,
-			secondary_btn_class,
-			slide_out_panel_position,
+			// primary_btn_class,
+			// secondary_btn_class,
+			// slide_out_panel_position,
 		},
 	} = state;
 
@@ -277,7 +277,7 @@ const Appearance = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			<Text
+			{/* <Text
 				id={'primary_btn_class'}
 				label={__('Primary button class', 'wc-ajax-product-filter')}
 				description={__(
@@ -316,7 +316,7 @@ const Appearance = () => {
 					value={slide_out_panel_position}
 					onChange={handleRadioChange}
 				/>
-			)}
+			)} */}
 		</>
 	);
 };
