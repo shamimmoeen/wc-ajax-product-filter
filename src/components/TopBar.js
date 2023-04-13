@@ -4,7 +4,7 @@ import { DiamondIcon } from './SVGIcons';
 import {
 	foundProVersion,
 	getFormsPageLink,
-	getSeoRulesPageLink,
+	// getSeoRulesPageLink,
 	getSettingsPageLink,
 	pluginVersion,
 	upgradeToProLink,
@@ -16,11 +16,11 @@ const navMenus = [
 		id: 'forms',
 		href: getFormsPageLink(),
 	},
-	{
-		label: __('SEO Rules', 'wc-ajax-product-filter'),
-		id: 'seo-rules',
-		href: getSeoRulesPageLink(),
-	},
+	// {
+	// 	label: __('SEO Rules', 'wc-ajax-product-filter'),
+	// 	id: 'seo-rules',
+	// 	href: getSeoRulesPageLink(),
+	// },
 	{
 		label: __('Settings', 'wc-ajax-product-filter'),
 		id: 'settings',
