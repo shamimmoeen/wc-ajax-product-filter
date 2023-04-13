@@ -105,15 +105,15 @@ const Text = ({
 										<>
 											For example, the URL will be
 											<br />
-											?/color=blue&size=large
+											www.site.com/shop/?color=blue&size=large
 											<br />
-											where color & size are the filter
-											keys.
-											<br />
+											where <b>color</b> and <b>size</b>{' '}
+											are the filter keys.
+											{/* <br />
 											<br />
 											In the PRO version, the URL will be
 											<br />
-											/color-blue/size-large
+											www.site.com/color-blue/size-large */}
 										</>
 									}
 								/>
