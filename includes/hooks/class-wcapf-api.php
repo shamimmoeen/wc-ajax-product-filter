@@ -574,23 +574,26 @@ class WCAPF_API {
 
 		$error_data = array();
 
-		if ( ! WCAPF_Helper::found_pro_version() ) {
-			if ( post_type_exists( $post_name ) ) {
-				$error_data = array(
-					'key'       => 'field_key_error_',
-					'message'   => $this->generate_filter_key_error_message( 'post-type' ),
-					'order'     => $filter_order,
-					'field_key' => $post_name,
-				);
-			} elseif ( taxonomy_exists( $post_name ) ) {
-				$error_data = array(
-					'key'       => 'field_key_error_',
-					'message'   => $this->generate_filter_key_error_message( 'taxonomy' ),
-					'order'     => $filter_order,
-					'field_key' => $post_name,
-				);
-			}
+		// Check if pro version found and pretty url is enabled then don't generate the below errors.
+		// if ( ! WCAPF_Helper::found_pro_version() ) {
+
+		if ( post_type_exists( $post_name ) ) {
+			$error_data = array(
+				'key'       => 'field_key_error_',
+				'message'   => $this->generate_filter_key_error_message( 'post-type' ),
+				'order'     => $filter_order,
+				'field_key' => $post_name,
+			);
+		} elseif ( taxonomy_exists( $post_name ) ) {
+			$error_data = array(
+				'key'       => 'field_key_error_',
+				'message'   => $this->generate_filter_key_error_message( 'taxonomy' ),
+				'order'     => $filter_order,
+				'field_key' => $post_name,
+			);
 		}
+
+		// }
 
 		return array( $post_name, $error_data, $filter_type_data );
 	}
@@ -604,12 +607,12 @@ class WCAPF_API {
 	 */
 	private function generate_filter_key_error_message( $type ) {
 		$post_type_err = __(
-			"In the FREE version direct post type name can't be used as a filter key, it'll create conflict.",
+			"Post type name can't be used as a filter key, it'll create conflict.",
 			'wc-ajax-product-filter'
 		);
 
 		$tax_type_err = __(
-			"In the FREE version direct taxonomy name can't be used as a filter key, it'll create conflict.",
+			"Taxonomy name can't be used as a filter key, it'll create conflict.",
 			'wc-ajax-product-filter'
 		);
 
