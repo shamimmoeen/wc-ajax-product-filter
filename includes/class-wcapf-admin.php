@@ -95,14 +95,14 @@ class WCAPF_Admin {
 			'dashicons-filter'
 		);
 
-		add_submenu_page(
-			'wcapf',
-			__( 'WC Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
-			__( 'SEO Rules', 'wc-ajax-product-filter' ),
-			'manage_options',
-			'wcapf-seo-rules',
-			array( $this, 'render_seo_rules' )
-		);
+		// add_submenu_page(
+		// 	'wcapf',
+		// 	__( 'WC Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
+		// 	__( 'SEO Rules', 'wc-ajax-product-filter' ),
+		// 	'manage_options',
+		// 	'wcapf-seo-rules',
+		// 	array( $this, 'render_seo_rules' )
+		// );
 
 		add_submenu_page(
 			'wcapf',
