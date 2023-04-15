@@ -171,7 +171,7 @@ const useFormFilterData = (state, dispatch) => {
 		) {
 			updateFilterMany(index, key, value, {
 				[key]: value,
-				options_order_by: 'default',
+				options_order_by: 'none',
 			});
 		} else {
 			updateFilter(index, key, value);

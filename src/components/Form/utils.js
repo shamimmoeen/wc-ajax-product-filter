@@ -394,7 +394,7 @@ export function filterDefaultData() {
 		value_decimal: '',
 		value_decimal_places: '2',
 		date_input_format: 'timestamp',
-		options_order_by: 'default',
+		options_order_by: 'none',
 		options_order_dir: 'asc',
 		options_order_type: 'alphabetical',
 		// Post Meta - value type Date
@@ -611,8 +611,8 @@ export function metaValuesProOrderByOptions() {
 export function metaValuesOrderByOptions(isManualEntry) {
 	const freeOptions = [
 		{
-			label: __('Default', 'wc-ajax-product-filter'),
-			value: 'default',
+			label: __('None', 'wc-ajax-product-filter'),
+			value: 'none',
 		},
 	];
 
