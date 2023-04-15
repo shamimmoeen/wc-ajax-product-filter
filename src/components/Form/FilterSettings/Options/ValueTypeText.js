@@ -25,6 +25,12 @@ const ValueTypeText = ({ index }) => {
 
 	const { get_options, options_order_by } = filter;
 
+	const _orderDirectionField = () => {
+		if ('none' !== options_order_by) {
+			return orderDirectionField('options_order_dir');
+		}
+	};
+
 	const _orderTypeField = () => {
 		const allowed = ['label', 'value'];
 
@@ -55,7 +61,7 @@ const ValueTypeText = ({ index }) => {
 
 			{orderByField('options_order_by')}
 
-			{orderDirectionField('options_order_dir')}
+			{_orderDirectionField()}
 
 			{_orderTypeField()}
 
