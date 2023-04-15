@@ -23,7 +23,6 @@ const wcapf_params = wcapf_params || {
 	'hierarchy_accordion_animation_speed': '',
 	'hierarchy_accordion_animation_easing': '',
 	'restore_focus_after_filtering': '',
-	'loading_overlay_options': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
 	'immediate_scroll_on_paginate': '',
@@ -266,20 +265,6 @@ const wcapf_params = wcapf_params || {
 				}
 			} );
 		},
-		showLoadingAnimation: function() {
-			if ( ! wcapf_params.loading_animation ) {
-				return;
-			}
-
-			$.LoadingOverlay( 'show', wcapf_params.loading_overlay_options );
-		},
-		resetLoadingAnimation: function() {
-			if ( ! wcapf_params.loading_animation ) {
-				return;
-			}
-
-			$.LoadingOverlay( 'hide' );
-		},
 		scrollTo: function( triggeredBy ) {
 			if ( 'none' === wcapf_params.scroll_window ) {
 				return;
@@ -358,7 +343,7 @@ const wcapf_params = wcapf_params || {
 			// Track the current element focus.
 			focusedElm = document.activeElement;
 
-			WCAPF.showLoadingAnimation();
+			$body.find( '.wcapf-loader' ).addClass( 'is-active' );
 
 			// Scroll into view on paginate.
 			if ( 'paginate' === triggeredBy && wcapf_params.immediate_scroll_on_paginate ) {
@@ -378,7 +363,7 @@ const wcapf_params = wcapf_params || {
 		},
 		// Things are done before updating the products like hiding the loading indicator.
 		beforeUpdatingProducts: function( $response, triggeredBy ) {
-			WCAPF.resetLoadingAnimation();
+			$body.find( '.wcapf-loader' ).removeClass( 'is-active' );
 
 			// Maybe good for performance.
 			WCAPF.destroyTippyInstances();

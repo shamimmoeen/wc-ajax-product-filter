@@ -45,6 +45,7 @@ class WCAPF_Hooks {
 	private function init_hooks() {
 		// add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
+		add_action( 'wp_footer', array( $this, 'insert_loader' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
 		add_filter( 'paginate_links', array( $this, 'modify_paginated_link' ) );
 		add_filter( 'woocommerce_redirect_single_search_result', array( $this, 'single_search_redirect' ) );
@@ -133,6 +134,44 @@ class WCAPF_Hooks {
 	 */
 	private function should_we_proceed() {
 		return WCAPF_Helper::found_wcapf();
+	}
+
+	/**
+	 * Insert the loader.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function insert_loader() {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
+		$html = '<div class="wcapf-loader">';
+
+		$loading_animation = WCAPF_Helper::wcapf_option( 'loading_animation', 'overlay-with-icon' );
+
+		if ( 'overlay-with-icon' === $loading_animation ) {
+			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Spinner' );
+
+			$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_image . '.svg';
+			$image_src  = WCAPF_PLUGIN_URL . '/public/loaders/' . $loading_image . '.svg';
+
+			// Default image.
+			if ( ! file_exists( $image_file ) ) {
+				$image_src = WCAPF_PLUGIN_URL . '/public/loaders/Spinner.svg';
+			}
+
+			$image_size = WCAPF_Helper::wcapf_option( 'loading_image_size', '60' ) . 'px';
+			$image      = file_get_contents( $image_src );
+
+			$html .= '<div class="wcapf-loader-image" style="width: ' . $image_size . '">' . $image . '</div>';
+		}
+
+		$html .= '</div>';
+
+		echo $html;
 	}
 
 	/**

@@ -27,12 +27,6 @@ const animationOptions = [
 
 if (WCAPF_PRO) {
 	animationOptions.push({
-		label: __('Overlay + Loading Text', 'wc-ajax-product-filter'),
-		value: 'overlay-with-text',
-		isPro: true,
-	});
-
-	animationOptions.push({
 		label: __('None', 'wc-ajax-product-filter'),
 		value: 'none',
 		isPro: true,
@@ -109,9 +103,6 @@ const LoaderScrollTo = () => {
 			loading_image,
 			loading_image_src,
 			loading_image_size,
-			loading_text,
-			loading_text_size,
-			loading_text_color,
 			loading_overlay_color,
 			wait_cursor,
 			scroll_to_top_offset,
@@ -128,10 +119,6 @@ const LoaderScrollTo = () => {
 
 	const handleLoaderImageClear = () => {
 		handleImageRemove('loading_image');
-	};
-
-	const handleLoadingTextColorChange = (value) => {
-		handleTextFieldChange(value, 'loading_text_color');
 	};
 
 	const handleOverlayColorChange = (value) => {
@@ -249,44 +236,6 @@ const LoaderScrollTo = () => {
 					onChange={handleTextFieldChange}
 					type={'number'}
 				/>
-			)}
-
-			{WCAPF_PRO && 'overlay-with-text' === loading_animation && (
-				<>
-					<Text
-						id={'loading_text'}
-						label={__('Loading Text', 'wc-ajax-product-filter')}
-						description={__(
-							'Displays a text element in the loading overlay. If empty default will be used.',
-							'wc-ajax-product-filter'
-						)}
-						value={loading_text}
-						onChange={handleTextFieldChange}
-					/>
-
-					<Number
-						id={'loading_text_size'}
-						label={__('Text Size', 'wc-ajax-product-filter')}
-						description={__(
-							'Adjust the loading text size in px. Default is 60.',
-							'wc-ajax-product-filter'
-						)}
-						value={loading_text_size}
-						onChange={handleTextFieldChange}
-						type={'number'}
-					/>
-
-					<ColorInput
-						label={__('Text Color', 'wc-ajax-product-filter')}
-						description={__(
-							'Adjust the loading text color. Default is #666666.',
-							'wc-ajax-product-filter'
-						)}
-						value={loading_text_color}
-						onChange={handleLoadingTextColorChange}
-						renderAsFormField
-					/>
-				</>
 			)}
 
 			{WCAPF_PRO && 'none' !== loading_animation && (

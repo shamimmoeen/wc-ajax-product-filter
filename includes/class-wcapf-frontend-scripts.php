@@ -129,14 +129,6 @@ class WCAPF_Frontend_Scripts {
 			true
 		);
 
-		wp_enqueue_script(
-			'wcapf-loadingoverlay',
-			WCAPF_PLUGIN_URL . 'public/lib/loadingoverlay/loadingoverlay.min.js',
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/loadingoverlay/loadingoverlay.min.js' ),
-			true
-		);
-
 		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
 			wp_enqueue_script(
 				'wcapf-popper',
@@ -237,7 +229,6 @@ class WCAPF_Frontend_Scripts {
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
 			'restore_focus_after_filtering'            => true,
-			'loading_overlay_options'                  => $this->get_loading_options( $settings ),
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'immediate_scroll_on_paginate'             => false,
@@ -251,53 +242,6 @@ class WCAPF_Frontend_Scripts {
 		$params = array_merge( $params, $settings );
 
 		return apply_filters( 'wcapf_js_params', $params );
-	}
-
-	/**
-	 * @param array $settings
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return array
-	 */
-	private function get_loading_options( $settings ) {
-		$loading_overlay_options = array();
-
-		if ( isset( $settings['loading_animation'] ) ) {
-			$loading_animation  = $settings['loading_animation'];
-			$loading_image_size = isset( $settings['loading_image_size'] )
-				? absint( $settings['loading_image_size'] )
-				: 0;
-
-			if ( 'none' === $loading_animation ) {
-				$image_src = '';
-			} else {
-				$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_animation . '.svg';
-				$image_src  = WCAPF_PLUGIN_URL . '/public/loaders/' . $loading_animation . '.svg';
-
-				// Default image.
-				if ( ! file_exists( $image_file ) ) {
-					$image_src = WCAPF_PLUGIN_URL . '/public/loaders/Spinner.svg';
-				}
-			}
-
-			$image_size = $loading_image_size ? $loading_image_size . 'px' : '60px';
-
-			$loading_overlay_options = array(
-				'image'           => $image_src,
-				'size'            => $image_size,
-				'imageAutoResize' => false,
-				'imageAnimation'  => '',
-				'imageColor'      => '',
-				'imageClass'      => 'wcapf-loading-icon-wrapper',
-			);
-
-			if ( apply_filters( 'wcapf_use_colored_loading_animation', true ) ) {
-				$loading_overlay_options['imageClass'] = 'wcapf-colored-loading-icon-wrapper';
-			}
-		}
-
-		return $loading_overlay_options;
 	}
 
 }
