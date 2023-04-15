@@ -215,7 +215,7 @@ const Others = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'You may want to run javascript codes after updating the shop loop via ajax. Use it in such situations otherwise leave it empty.',
+					"You may want to run javascript codes after updating the shop loop via ajax. Leave it empty if you don't understand.",
 					'wc-ajax-product-filter	'
 				)}
 				value={custom_scripts}
