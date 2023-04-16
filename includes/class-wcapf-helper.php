@@ -570,7 +570,7 @@ class WCAPF_Helper {
 	/**
 	 * @return array
 	 */
-	public static function get_active_filters_data( $sort_data = false ) {
+	public static function get_active_filters_data() {
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 		$active_filters = array();
 
@@ -589,9 +589,27 @@ class WCAPF_Helper {
 			}
 		}
 
-		if ( ! $sort_data ) {
-			return $active_filters;
-		}
+		return $active_filters;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function get_chosen_filters() {
+		global $wcapf_chosen_filters;
+
+		return $wcapf_chosen_filters ?: array();
+	}
+
+	/**
+	 * Gets the active filter items for the active filters widget.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_active_filter_items() {
+		$active_filters = self::get_active_filters_data();
 
 		// Sort the data according to the order in $_GET variable.
 		$sorted = array();
@@ -602,16 +620,19 @@ class WCAPF_Helper {
 			}
 		}
 
-		return $sorted;
-	}
+		$filters_data = array();
 
-	/**
-	 * @return array
-	 */
-	public static function get_chosen_filters() {
-		global $wcapf_chosen_filters;
+		foreach ( $sorted as $filter ) {
+			$active_filters = isset( $filter['active_filters'] ) ? $filter['active_filters'] : array();
 
-		return $wcapf_chosen_filters ?: array();
+			foreach ( $active_filters as $value => $label ) {
+				$filter['active_filters'] = array( $value => $label );
+
+				$filters_data[] = $filter;
+			}
+		}
+
+		return $filters_data;
 	}
 
 	/**
