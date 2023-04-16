@@ -23,8 +23,7 @@ $title    = isset( $title ) ? $title : '';
 
 $helper = new WCAPF_Helper;
 
-$all_filters = $helper::get_active_filters_data();
-$total       = count( $all_filters );
+$all_filters = $helper::get_active_filters_data( true );
 
 $clear_all_btn_label = isset( $clear_all_btn_label ) ? $clear_all_btn_label : '';
 $show_clear_btn      = isset( $show_clear_btn ) && $show_clear_btn;
@@ -80,9 +79,22 @@ if ( $show_clear_btn && $all_filters ) {
 							$index = 0;
 							$class = '';
 
-							foreach ( $all_filters as $filter_data ) {
+							$filters_data = array();
+
+							foreach ( $all_filters as $filter ) {
+								$active_filters = isset( $filter['active_filters'] ) ? $filter['active_filters'] : array();
+
+								foreach ( $active_filters as $value => $label ) {
+									$filter['active_filters'] = array( $value => $label );
+
+									$filters_data[] = $filter;
+								}
+							}
+
+							$total = count( $filters_data );
+
+							foreach ( $filters_data as $filter_data ) {
 								$index ++;
-								$filter_key = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
 
 								if ( $index === $total ) {
 									$class = 'last-item';

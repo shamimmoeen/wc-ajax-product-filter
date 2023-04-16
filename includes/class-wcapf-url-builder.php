@@ -165,7 +165,7 @@ class WCAPF_URL_Builder {
 	private function active_values() {
 		$value = isset( $_GET[ $this->filter_key ] ) ? $_GET[ $this->filter_key ] : '';
 
-		return $value ? explode( ',', $value ) : array();
+		return strlen( $value ) ? explode( ',', $value ) : array();
 	}
 
 	/**
@@ -211,8 +211,7 @@ class WCAPF_URL_Builder {
 	public function get_reset_url() {
 		$vars = $this->query_vars;
 
-		$active_filters = WCAPF_Helper::get_active_filters_data();
-		$filter_keys    = wp_list_pluck( $active_filters, 'filter_key' );
+		$filter_keys = array_keys( WCAPF_Helper::get_active_filters_data() );
 
 		foreach ( $filter_keys as $filter_key ) {
 			if ( array_key_exists( $filter_key, $vars ) ) {

@@ -15,7 +15,7 @@
 
 $helper = new WCAPF_Helper;
 
-$all_filters = $helper::get_active_filters_data( true );
+$all_filters = $helper::get_active_filters_data();
 
 $btn_label   = isset( $btn_label ) ? $btn_label : '';
 $show_always = isset( $show_always ) && $show_always;

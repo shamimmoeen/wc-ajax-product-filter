@@ -570,12 +570,9 @@ class WCAPF_Helper {
 	/**
 	 * @return array
 	 */
-	public static function get_active_filters_data( $sort_by_value = false ) {
+	public static function get_active_filters_data( $sort_data = false ) {
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 		$active_filters = array();
-
-		// TODO: Use condition here.
-		$sort_by_value = true;
 
 		foreach ( $chosen_filters as $filter_type_filters ) {
 			foreach ( $filter_type_filters as $filter_type => $filter ) {
@@ -583,41 +580,29 @@ class WCAPF_Helper {
 				$filter_id       = isset( $filter['filter_id'] ) ? $filter['filter_id'] : '';
 				$filter_key      = ! empty( $filter['filter_key'] ) ? $filter['filter_key'] : $filter_type;
 
-				if ( ! $_active_filters ) {
-					continue;
-				}
-
-				foreach ( $_active_filters as $value => $label ) {
-					$active_filters[] = array(
-						'filter_key'     => $filter_key,
-						'filter_type'    => $filter_type,
-						'filter_id'      => $filter_id,
-						'active_filters' => array( $value => $label ),
-					);
-				}
+				$active_filters[ $filter_key ] = array(
+					'filter_key'     => $filter_key,
+					'filter_type'    => $filter_type,
+					'filter_id'      => $filter_id,
+					'active_filters' => $_active_filters,
+				);
 			}
+		}
+
+		if ( ! $sort_data ) {
+			return $active_filters;
 		}
 
 		// Sort the data according to the order in $_GET variable.
 		$sorted = array();
 
-		if ( $sort_by_value ) {
-			foreach ( $_GET as $_key => $_value ) {
-				foreach ( $active_filters as $active_filter ) {
-					if ( $_key === $active_filter['filter_key'] ) {
-						$sorted[] = $active_filter;
-					}
-				}
-			}
-		} else {
-			foreach ( $_GET as $_key => $_value ) {
-				if ( array_key_exists( $_key, $active_filters ) ) {
-					$sorted[ $_key ] = $active_filters[ $_key ];
-				}
+		foreach ( $_GET as $_key => $_value ) {
+			if ( array_key_exists( $_key, $active_filters ) ) {
+				$sorted[ $_key ] = $active_filters[ $_key ];
 			}
 		}
 
-		return apply_filters( 'wcapf_active_filters_data', $sorted, $sort_by_value, $chosen_filters );
+		return $sorted;
 	}
 
 	/**
@@ -640,9 +625,8 @@ class WCAPF_Helper {
 	 */
 	public static function is_filter_active( $filter_key ) {
 		$active_filters = self::get_active_filters_data();
-		$filter_keys    = wp_list_pluck( $active_filters, 'filter_key' );
 
-		return in_array( $filter_key, $filter_keys );
+		return array_key_exists( $filter_key, $active_filters );
 	}
 
 	/**
@@ -653,7 +637,7 @@ class WCAPF_Helper {
 	 * @return bool
 	 */
 	public static function is_marketplace_plugin_found() {
-		return class_exists( 'WCFMmp' ) || class_exists('WC_Vendors');
+		return class_exists( 'WCFMmp' ) || class_exists( 'WC_Vendors' );
 	}
 
 	/**

@@ -430,7 +430,11 @@ class WCAPF_Product_Filter_Utils {
 			)
 		);
 
-		$tt_ids = wp_list_pluck( $terms, 'term_taxonomy_id' );
+		if ( $terms ) {
+			$tt_ids = wp_list_pluck( $terms, 'term_taxonomy_id' );
+		} else {
+			$tt_ids = array( 0 );
+		}
 
 		return self::get_ids_sql( $tt_ids );
 	}
