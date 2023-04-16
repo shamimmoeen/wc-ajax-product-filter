@@ -99,9 +99,7 @@ const Settings = () => {
 			proSettings.push('remove_empty');
 		}
 
-		const proLoadingAnimations = ['overlay-with-text', 'none'];
-
-		if (proLoadingAnimations.includes(settings['loading_animation'])) {
+		if ('none' === settings['loading_animation']) {
 			proSettings.push('loading_animation');
 		}
 
@@ -116,15 +114,12 @@ const Settings = () => {
 			'remove_empty_filters',
 			'replace_sorting_options',
 			'child_terms_only',
-			'sort_by_form',
 			'slide_out_panel_position',
 			'loading_image',
 			'loading_image_src',
-			'loading_text',
-			'loading_text_size',
-			'loading_text_color',
 			'loading_overlay_color',
 			'scroll_on',
+			'scroll_window_delay',
 			'disable_scroll_animation',
 			'more_selectors',
 			'multiple_form_locations',
