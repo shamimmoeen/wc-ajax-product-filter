@@ -47,6 +47,7 @@ export function defaultSettings() {
 		scroll_window_custom_element: '',
 		scroll_on: 'all',
 		scroll_to_top_offset: '',
+		scroll_window_delay: '',
 		disable_scroll_animation: '',
 		// Others
 		search_field_default_placeholder: '',

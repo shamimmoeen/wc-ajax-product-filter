@@ -25,10 +25,10 @@ const wcapf_params = wcapf_params || {
 	'restore_focus_after_filtering': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
-	'immediate_scroll_on_paginate': '',
 	'is_mobile': '',
 	'reload_on_back': '',
 	'found_wcapf': '',
+	'wcapf_pro': '',
 	'update_document_title': '',
 	'use_tippyjs': '',
 	'shop_loop_container': '',
@@ -42,7 +42,9 @@ const wcapf_params = wcapf_params || {
 	'scroll_window_for': '',
 	'scroll_window_when': '',
 	'scroll_window_custom_element': '',
+	'scroll_on': '',
 	'scroll_to_top_offset': '',
+	'scroll_window_delay': '',
 	'disable_scroll_animation': '',
 	'more_selectors': '',
 	'custom_scripts': '',
@@ -52,6 +54,8 @@ const wcapf_params = wcapf_params || {
 
 	const _delay = parseInt( wcapf_params.filter_input_delay );
 	const delay  = _delay >= 0 ? _delay : 800;
+
+	const isPro = wcapf_params.wcapf_pro;
 
 	const $body = $( 'body' );
 
@@ -265,22 +269,8 @@ const wcapf_params = wcapf_params || {
 				}
 			} );
 		},
-		scrollTo: function( triggeredBy ) {
+		scrollTo: function() {
 			if ( 'none' === wcapf_params.scroll_window ) {
-				return;
-			}
-
-			const allowed    = [];
-			const scrollWhen = wcapf_params.scroll_window_when;
-
-			if ( 'all' === scrollWhen ) {
-				allowed.push( 'filter' );
-				allowed.push( 'paginate' );
-			} else {
-				allowed.push( scrollWhen );
-			}
-
-			if ( ! allowed.includes( triggeredBy ) ) {
 				return;
 			}
 
@@ -345,9 +335,8 @@ const wcapf_params = wcapf_params || {
 
 			$body.find( '.wcapf-loader' ).addClass( 'is-active' );
 
-			// Scroll into view on paginate.
-			if ( 'paginate' === triggeredBy && wcapf_params.immediate_scroll_on_paginate ) {
-				WCAPF.scrollTo( triggeredBy );
+			if ( ! isPro && 'immediately' === wcapf_params.scroll_window_when ) {
+				WCAPF.scrollTo();
 			}
 
 			$body.trigger( 'wcapf_before_fetching_products', [ triggeredBy ] );
@@ -385,11 +374,8 @@ const wcapf_params = wcapf_params || {
 			// Reinitialize wcapf.
 			WCAPF.init();
 
-			// Scroll into view.
-			if ( 'paginate' === triggeredBy && wcapf_params.immediate_scroll_on_paginate ) {
-				// Do nothing because it already happened.
-			} else {
-				WCAPF.scrollTo( triggeredBy );
+			if ( ! isPro && 'after' === wcapf_params.scroll_window_when ) {
+				WCAPF.scrollTo();
 			}
 
 			// Trigger events.

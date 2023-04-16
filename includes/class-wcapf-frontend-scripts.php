@@ -186,7 +186,6 @@ class WCAPF_Frontend_Scripts {
 			'scroll_window_when',
 			'scroll_window_custom_element',
 			'scroll_to_top_offset',
-			'disable_scroll_animation',
 			'custom_scripts',
 		);
 
@@ -231,10 +230,10 @@ class WCAPF_Frontend_Scripts {
 			'restore_focus_after_filtering'            => true,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
-			'immediate_scroll_on_paginate'             => false,
 			'is_mobile'                                => wp_is_mobile(),
 			'reload_on_back'                           => true,
 			'found_wcapf'                              => WCAPF_Helper::found_wcapf(),
+			'wcapf_pro'                                => WCAPF_Helper::found_pro_version(),
 			'update_document_title'                    => true,
 			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
 		);
