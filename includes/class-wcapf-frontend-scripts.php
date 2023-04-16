@@ -177,6 +177,7 @@ class WCAPF_Frontend_Scripts {
 	 */
 	private function get_js_params() {
 		$js_data = array(
+			'disable_ajax',
 			'enable_pagination_via_ajax',
 			'sorting_control',
 			'attach_chosen_on_sorting',

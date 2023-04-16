@@ -34,6 +34,7 @@ const wcapf_params = wcapf_params || {
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '',
+	'disable_ajax': '',
 	'enable_pagination_via_ajax': '',
 	'sorting_control': '',
 	'attach_chosen_on_sorting': '',
@@ -507,11 +508,13 @@ const wcapf_params = wcapf_params || {
 				url = url.replace( 'http://wcfilter-2.test', '//localhost:3001' );
 			}
 
-			// window.location.href = url;
+			if ( wcapf_params.disable_ajax ) {
+				window.location.href = url;
+			} else {
+				history.pushState( { wcapf: true }, '', url );
 
-			history.pushState( { wcapf: true }, '', url );
-
-			WCAPF.filterProducts( triggeredBy );
+				WCAPF.filterProducts( triggeredBy );
+			}
 		},
 		handleNumberInputFilters: function() {
 			const rangeNumberSelectors = '.wcapf-range-number .min-value, .wcapf-range-number .max-value';
