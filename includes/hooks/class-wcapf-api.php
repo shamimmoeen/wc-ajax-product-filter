@@ -253,6 +253,10 @@ class WCAPF_API {
 				foreach ( $manual_options as $option ) {
 					$term = get_term( $option['value'] );
 
+					if ( ! $term ) {
+						continue;
+					}
+
 					$option['name'] = $term->name;
 
 					$parsed[] = $option;
