@@ -1,0 +1,151 @@
+@import './mixins';
+
+.__list_table_wrapper {
+    @include list-table;
+
+    .__list_table_header {
+        @include list-table-header(120px);
+    }
+
+    .__list_table_inner {
+        &:not(.__forms_table) {
+            @media (max-width: 800px) {
+                overflow-x: auto;
+                padding-bottom: 15px;
+            }
+
+            table {
+                min-width: 720px;
+            }
+        }
+    }
+
+    .__list_table_inner {
+        table {
+            border-collapse: collapse;
+            width: 100%;
+
+            th {
+                background-color: #f8f9fa;
+            }
+
+            thead {
+                th {
+                    border-bottom: 1px solid #e2e4e7;
+                    font-weight: 500;
+                    padding: 0 var(--vr-padding);
+                    height: 36px;
+
+                    .__help_info {
+                        @include help-info;
+                    }
+                }
+            }
+
+            tbody {
+                td {
+                    border-bottom: 1px solid #e2e4e7;
+                    padding: var(--vr-padding) var(--vr-padding);
+
+                    &.__Actions {
+                        padding-bottom: 0;
+                        padding-top: 0;
+                        min-width: 130px;
+                    }
+
+                    @include post-title-with-info;
+                    @include component-with-extra;
+
+                    .components-button {
+                        &.is-small.has-icon {
+                            padding: 0;
+                            min-width: 30px;
+                            height: 30px;
+                        }
+
+                        svg {
+                            width: 16px;
+                            height: 16px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .__list_table_summary {
+        padding: var(--vr-padding) var(--hr-padding);
+    }
+}
+
+body {
+    &:not(.rtl) {
+        .__list_table_wrapper {
+
+            th,
+            td {
+                text-align: left;
+            }
+
+            thead {
+                .__Title {
+                    padding-left: var(--hr-padding);
+                }
+
+                .__Actions {
+                    padding-left: calc(var(--vr-padding) + 10px);
+                    padding-right: var(--hr-padding);
+                }
+            }
+
+            tbody {
+                td {
+                    &.__Title {
+                        padding-left: var(--hr-padding);
+                    }
+
+                    &.__Actions {
+                        padding-right: var(--hr-padding);
+                    }
+                }
+            }
+        }
+    }
+
+    &.rtl {
+        .__list_table_wrapper {
+
+            th,
+            td {
+                text-align: right;
+            }
+
+            thead {
+                .__Title {
+                    padding-right: var(--hr-padding);
+                }
+
+                .__Actions {
+                    padding-right: calc(var(--vr-padding) + 10px);
+                    padding-left: var(--hr-padding);
+                }
+            }
+
+            tbody {
+                td {
+                    &.__Title {
+                        padding-right: var(--hr-padding);
+                    }
+
+                    &.__Actions {
+                        padding-left: var(--hr-padding);
+                    }
+                }
+            }
+
+            .__edit_btn {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}

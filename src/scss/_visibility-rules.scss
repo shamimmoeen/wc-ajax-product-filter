@@ -1,0 +1,107 @@
+@import './variables';
+@import './mixins';
+
+.__visibility_rules {
+    .__form_control {
+        margin-bottom: 8px;
+    }
+
+    .components-base-control__field {
+        margin: 0;
+
+        .components-checkbox-control__input-container {
+            @include horizontal-space(6px);
+        }
+    }
+
+    .components-checkbox-control__input {
+        border-color: $inputBorderColor;
+    }
+
+    $border-radius: 1px;
+    $gap: 8px;
+
+    .or-clauses {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: $border-radius;
+        padding: $gap;
+    }
+
+    .or-clause {
+        display: flex;
+        align-items: center;
+        margin-bottom: $gap;
+        gap: $gap;
+
+        .cols {
+            align-items: center;
+            display: flex;
+            flex: 1;
+            gap: $gap;
+            background: #f8f9fa;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: $border-radius;
+            padding: $gap;
+
+            @media (min-width: 600px) {
+                .rule {
+                    width: 29%;
+                }
+
+                .operator {
+                    min-width: 100px;
+                }
+
+                .compare {
+                    width: 34%;
+                }
+
+                .include-children-checkbox {
+                    min-width: 130px;
+                }
+            }
+
+            @media (max-width: 599px) {
+                align-items: flex-start;
+                flex-direction: column;
+
+                .rule,
+                .operator,
+                .compare {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    @include button-link-delete;
+
+    .and-clauses-separator {
+        font-weight: 500;
+    }
+
+    .__rule_select,
+    .__archive_select {
+        .__react_select__option--is-selected {
+            .__info {
+                color: rgba(0, 0, 0, 0.3);
+            }
+        }
+    }
+
+    .__action_buttons {
+        display: flex;
+        gap: 4px;
+        justify-content: space-between;
+    }
+
+    .and-clauses {
+        .and-clause:last-child .and-clauses-separator {
+            display: none;
+        }
+
+        ~.__action_buttons {
+            margin-top: 1.5em;
+        }
+    }
+}

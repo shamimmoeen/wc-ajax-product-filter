@@ -16,16 +16,15 @@
 class WCAPF_Field_Instance {
 
 	public $display_type;
+	public $layout;
 	public $query_type;
 	public $all_items_label;
 	public $use_chosen;
-	public $chosen_no_results_message;
 	public $enable_multiple_filter;
 	public $show_count;
 	public $hide_empty;
 	public $get_options;
 	public $manual_options;
-	public $custom_appearance_options;
 	public $type;
 	public $filter_id;
 	public $filter_key;
@@ -37,7 +36,15 @@ class WCAPF_Field_Instance {
 	public $meta_key;
 	public $post_property;
 	public $use_store_name;
+	public $use_term_slug;
 	public $number_data_type;
+	public $form_id;
+	public $enable_search_field;
+	public $enable_reduce_height;
+	public $max_height;
+	public $soft_limit;
+	public $enable_soft_limit;
+	public $enable_max_height;
 
 	/**
 	 * The raw field instance.
@@ -69,47 +76,44 @@ class WCAPF_Field_Instance {
 		$value_type = $this->field_default_value_type();
 
 		if ( 'number' === $value_type ) {
-			$display_type              = $this->get_sub_field_value( 'number_display_type' );
-			$query_type                = $this->get_sub_field_value( 'number_range_query_type' );
-			$all_items_label           = $this->get_sub_field_value( 'number_range_select_all_items_label' );
-			$use_chosen                = $this->get_sub_field_value( 'number_range_use_chosen' );
-			$chosen_no_results_message = $this->get_sub_field_value( 'number_range_chosen_no_results_message' );
-			$enable_multiple_filter    = $this->get_sub_field_value( 'number_range_enable_multiple_filter' );
-			$show_count                = $this->get_sub_field_value( 'number_range_show_count' );
-			$hide_empty                = $this->get_sub_field_value( 'number_range_hide_empty' );
-			$get_options               = $this->get_sub_field_value( 'number_get_options' );
-			$manual_options            = $this->get_sub_field_value( 'number_manual_options' );
+			$display_type           = $this->get_sub_field_value( 'number_display_type' );
+			$query_type             = $this->get_sub_field_value( 'number_range_query_type' );
+			$all_items_label        = $this->get_sub_field_value( 'number_range_select_all_items_label' );
+			$enable_multiple_filter = $this->get_sub_field_value( 'number_range_enable_multiple_filter' );
+			$show_count             = $this->get_sub_field_value( 'number_range_show_count' );
+			$get_options            = $this->get_sub_field_value( 'number_get_options' );
+			$manual_options         = $this->get_sub_field_value( 'number_manual_options' );
 		} elseif ( 'date' === $value_type ) {
-			$display_type              = $this->get_sub_field_value( 'date_display_type' );
-			$query_type                = $this->get_sub_field_value( 'time_period_query_type' );
-			$all_items_label           = $this->get_sub_field_value( 'time_period_select_all_items_label' );
-			$use_chosen                = $this->get_sub_field_value( 'time_period_use_chosen' );
-			$chosen_no_results_message = $this->get_sub_field_value( 'time_period_chosen_no_results_message' );
-			$enable_multiple_filter    = $this->get_sub_field_value( 'time_period_enable_multiple_filter' );
-			$show_count                = $this->get_sub_field_value( 'time_period_show_count' );
-			$hide_empty                = $this->get_sub_field_value( 'time_period_hide_empty' );
-			$get_options               = 'manual_entry';
-			$manual_options            = $this->get_sub_field_value( 'time_period_options' );
+			$display_type           = $this->get_sub_field_value( 'date_display_type' );
+			$query_type             = $this->get_sub_field_value( 'time_period_query_type' );
+			$all_items_label        = $this->get_sub_field_value( 'time_period_select_all_items_label' );
+			$enable_multiple_filter = $this->get_sub_field_value( 'time_period_enable_multiple_filter' );
+			$show_count             = $this->get_sub_field_value( 'time_period_show_count' );
+			$get_options            = 'manual_entry';
+			$manual_options         = $this->get_sub_field_value( 'time_period_options' );
 		} else {
-			$display_type              = $this->get_sub_field_value( 'display_type' );
-			$query_type                = $this->get_sub_field_value( 'query_type' );
-			$all_items_label           = $this->get_sub_field_value( 'all_items_label' );
-			$use_chosen                = $this->get_sub_field_value( 'use_chosen' );
-			$chosen_no_results_message = $this->get_sub_field_value( 'chosen_no_results_message' );
-			$enable_multiple_filter    = $this->get_sub_field_value( 'enable_multiple_filter' );
-			$show_count                = $this->get_sub_field_value( 'show_count' );
-			$hide_empty                = $this->get_sub_field_value( 'hide_empty' );
-			$get_options               = $this->get_sub_field_value( 'get_options' );
-			$manual_options            = $this->get_sub_field_value( 'manual_options' );
+			$display_type           = $this->get_sub_field_value( 'display_type' );
+			$query_type             = $this->get_sub_field_value( 'query_type' );
+			$all_items_label        = $this->get_sub_field_value( 'all_items_label' );
+			$enable_multiple_filter = $this->get_sub_field_value( 'enable_multiple_filter' );
+			$show_count             = $this->get_sub_field_value( 'show_count' );
+			$get_options            = $this->get_sub_field_value( 'get_options' );
+			$manual_options         = $this->get_sub_field_value( 'manual_options' );
 		}
 
 		if ( 'product-status' === $field_type ) {
 			$get_options    = 'manual_entry';
 			$manual_options = $this->get_sub_field_value( 'product_status_options' );
+		} elseif ( 'sort-by' === $field_type ) {
+			$get_options    = 'manual_entry';
+			$manual_options = $this->get_sub_field_value( 'sort_by_options' );
+		} elseif ( 'per-page' === $field_type ) {
+			$get_options    = 'manual_entry';
+			$manual_options = $this->get_sub_field_value( 'per_page_options' );
+		} elseif ( 'rating' === $field_type ) {
+			$get_options    = $this->get_sub_field_value( 'number_get_options' );
+			$manual_options = $this->get_sub_field_value( 'number_manual_options' );
 		}
-
-		$get_options    = apply_filters( 'wcapf_field_instance_get_options', $get_options, $this->instance );
-		$manual_options = apply_filters( 'wcapf_field_instance_manual_options', $manual_options, $this->instance );
 
 		// Default is 'automatically'.
 		$get_options = 'manual_entry' === $get_options ? 'manual_entry' : 'automatically';
@@ -123,12 +127,12 @@ class WCAPF_Field_Instance {
 		$_display_type    = $this->parse_display_type( $display_type );
 		$_all_items_label = $this->parse_all_items_label( $all_items_label );
 
-		$this->display_type              = $_display_type;
-		$this->all_items_label           = $_all_items_label;
-		$this->use_chosen                = $use_chosen;
-		$this->chosen_no_results_message = $chosen_no_results_message;
-		$this->show_count                = $show_count;
-		$this->hide_empty                = $hide_empty;
+		$this->display_type    = $_display_type;
+		$this->layout          = $this->get_layout();
+		$this->all_items_label = $_all_items_label;
+		$this->use_chosen      = $this->get_sub_field_value( 'use_chosen' );
+		$this->show_count      = $show_count;
+		$this->hide_empty      = $this->get_sub_field_value( 'hide_empty' );
 
 		switch ( $_display_type ) {
 			case 'multiselect':
@@ -160,7 +164,7 @@ class WCAPF_Field_Instance {
 		$this->query_type             = $query_type;
 		$this->enable_multiple_filter = $enable_multiple_filter;
 
-		$this->filter_id  = $this->get_sub_field_value( 'field_id' );
+		$this->filter_id  = $this->get_sub_field_value( 'id' );
 		$this->filter_key = $this->get_sub_field_value( 'field_key' );
 
 		$this->filter_type  = $this->get_filter_type();
@@ -173,11 +177,19 @@ class WCAPF_Field_Instance {
 		$this->value_type       = $this->get_value_type();
 		$this->number_data_type = $this->get_number_data_type();
 
-		$this->post_property = $this->get_sub_field_value( 'post_property' );
+		$this->post_property = $this->get_post_property();
 
 		$this->use_store_name = $this->is_store_name_enabled();
+		$this->use_term_slug  = $this->get_sub_field_value( 'use_term_slug' );
 
-		$this->custom_appearance_options = $this->get_appearance_data();
+		$this->form_id = $this->get_sub_field_value( 'form_id' );
+
+		$this->enable_search_field  = $this->is_search_field_enabled();
+		$this->enable_reduce_height = $this->is_reduce_height_enabled();
+		$this->max_height           = $this->filter_options_max_height();
+		$this->soft_limit           = $this->no_of_visible_options();
+		$this->enable_soft_limit    = $this->is_soft_limit_enabled();
+		$this->enable_max_height    = $this->is_max_height_enabled();
 	}
 
 	/**
@@ -232,6 +244,7 @@ class WCAPF_Field_Instance {
 
 		$available_display_types = apply_filters( 'wcapf_field_display_types', $available_display_types );
 
+		// Default display type.
 		if ( 'price' === $this->get_field_type() ) {
 			$_display_type = 'range_slider';
 		} else {
@@ -258,74 +271,62 @@ class WCAPF_Field_Instance {
 
 		if ( ! $all_items_label ) {
 			switch ( $type ) {
-				case 'category':
-					$all_items_label = __( 'All categories', 'wc-ajax-product-filter' );
-					break;
+				case 'sort-by':
+				case 'per-page':
+					$all_items_label = __( 'Default', 'wc-ajax-product-filter' );
 
-				case 'tag':
-					$all_items_label = __( 'All tags', 'wc-ajax-product-filter' );
-					break;
-
-				default:
-					$all_items_label = apply_filters( 'wcapf_default_all_items_label', '', $type );
 					break;
 			}
 		}
 
-		return $all_items_label ?: __( 'All items', 'wc-ajax-product-filter' );
+		return $all_items_label ?: __( 'All Items', 'wc-ajax-product-filter' );
+	}
+
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function get_layout() {
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) ) {
+			$value = $this->get_sub_field_value( 'native_display_type_layout' );
+
+			return ! empty( $value ) ? $value : 'list-item';
+		} else {
+			$value = $this->get_sub_field_value( 'custom_display_type_layout' );
+
+			// Disable list-item layout for custom list types.
+			return ! empty( $value ) && 'list-item' !== $value ? $value : 'inline';
+		}
 	}
 
 	/**
 	 * @return string
 	 */
 	private function get_filter_type() {
-		$field_type = $this->get_field_type();
+		$field_type  = $this->get_field_type();
+		$filter_type = $field_type;
 
-		if ( in_array( $field_type, WCAPF_Helper::taxonomy_field_types() ) ) {
-			$filter_type = 'taxonomy';
-		} else {
-			$filter_type = $field_type;
-		}
-
-		return apply_filters( 'wcapf_field_filter_type', $filter_type, $field_type, $this->instance );
+		return apply_filters(
+			'wcapf_field_filter_type',
+			$filter_type,
+			$field_type,
+			$this->get_options,
+			$this->instance
+		);
 	}
 
 	/**
 	 * @return string
 	 */
 	private function get_taxonomy() {
-		if ( 'taxonomy' !== $this->get_filter_type() ) {
-			return '';
+		$taxonomy = $this->get_sub_field_value( 'taxonomy' );
+
+		if ( 'rating' === $this->type && 'automatically' == $this->get_options ) {
+			$taxonomy = 'product_visibility';
 		}
 
-		return $this->get_taxonomy_from_field_instance();
-	}
-
-	/**
-	 * @return string
-	 */
-	private function get_taxonomy_from_field_instance() {
-		$field_type = $this->get_field_type();
-
-		switch ( $field_type ) {
-			case 'category':
-				$taxonomy = 'product_cat';
-				break;
-
-			case 'tag':
-				$taxonomy = 'product_tag';
-				break;
-
-			case 'attribute':
-				$taxonomy = $this->get_sub_field_value( 'taxonomy' );
-				break;
-
-			default:
-				$taxonomy = '';
-				break;
-		}
-
-		return apply_filters( 'wcapf_field_taxonomy', $taxonomy, $field_type, $this->instance );
+		return $taxonomy;
 	}
 
 	/**
@@ -348,6 +349,11 @@ class WCAPF_Field_Instance {
 			return false;
 		}
 
+		// Disable hierarchy for inline and grid layout.
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list-item' !== $this->layout ) {
+			return false;
+		}
+
 		return boolval( $this->get_sub_field_value( 'hierarchical' ) );
 	}
 
@@ -356,6 +362,12 @@ class WCAPF_Field_Instance {
 	 */
 	private function is_hierarchy_accordion_enabled() {
 		if ( ! $this->taxonomy_is_hierarchical() ) {
+			return false;
+		}
+
+		$non_hierarchy_accordion_display_types = array( 'select', 'multiselect' );
+
+		if ( in_array( $this->display_type, $non_hierarchy_accordion_display_types ) ) {
 			return false;
 		}
 
@@ -404,13 +416,24 @@ class WCAPF_Field_Instance {
 		return apply_filters( 'wcapf_number_data_type', $data_type, $this->instance );
 	}
 
+	private function get_post_property() {
+		$type     = $this->get_field_type();
+		$property = '';
+
+		if ( 'post-author' === $type ) {
+			$property = 'post_author';
+		}
+
+		return $property;
+	}
+
 	/**
-	 * @return string
-	 *
 	 * @since 3.3.0
+	 *
+	 * @return string
 	 */
-	public function is_store_name_enabled() {
-		if ( ! class_exists( 'WCFMmp' ) ) {
+	private function is_store_name_enabled() {
+		if ( ! WCAPF_Helper::is_marketplace_plugin_found() ) {
 			return '';
 		}
 
@@ -418,12 +441,131 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return array
+	 * Determines if search field is enabled.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
 	 */
-	protected function get_appearance_data() {
-		$options = $this->get_sub_field_value( 'custom_appearance_options' );
+	private function is_search_field_enabled() {
+		if ( ! $this->is_search_options_possible() ) {
+			return false;
+		}
 
-		return apply_filters( 'wcapf_field_instance_appearance_options', $options, $this );
+		return $this->get_sub_field_value( 'enable_search_field' );
+	}
+
+	/**
+	 * Determines if search options is possible according to the display type.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_search_options_possible() {
+		return $this->is_reduce_height_possible( 'search' );
+	}
+
+	/**
+	 * Determines if reduce height is possible according to the display type.
+	 *
+	 * @param string $field
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_reduce_height_possible( $field = 'reduce-height' ) {
+		if ( $this->taxonomy_is_hierarchical() ) {
+			return false;
+		}
+
+		if ( 'reduce-height' === $field ) {
+			$not_allowed_display_types = array(
+				'select',
+				'multiselect',
+				'range_slider',
+				'range_number',
+				'range_select',
+				'range_multiselect',
+				'input_date',
+				'input_date_range',
+				'time_period_select',
+				'time_period_multiselect',
+			);
+		} else {
+			$not_allowed_display_types = array(
+				'range_slider',
+				'range_number',
+				'input_date',
+				'input_date_range',
+			);
+		}
+
+		if ( in_array( $this->display_type, $not_allowed_display_types ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if reduce height enabled.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function is_reduce_height_enabled() {
+		if ( ! $this->is_reduce_height_possible() ) {
+			return false;
+		}
+
+		return $this->get_sub_field_value( 'enable_reduce_height' );
+	}
+
+	/**
+	 * Filter options max height to appear the scrollbar.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return float
+	 */
+	private function filter_options_max_height() {
+		return floatval( $this->get_sub_field_value( 'max_height' ) );
+	}
+
+	/**
+	 * No of visible options for soft limit.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return int
+	 */
+	private function no_of_visible_options() {
+		return absint( $this->get_sub_field_value( 'soft_limit' ) );
+	}
+
+	/**
+	 * Determines if soft limit is enabled.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_soft_limit_enabled() {
+		return 'soft_limit' === $this->enable_reduce_height && 1 <= $this->soft_limit;
+	}
+
+	/**
+	 * Determines if max height is enabled.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function is_max_height_enabled() {
+		return 'max_height' === $this->enable_reduce_height && 1 <= $this->max_height;
 	}
 
 }

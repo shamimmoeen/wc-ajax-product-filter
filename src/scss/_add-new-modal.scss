@@ -1,0 +1,80 @@
+@import './variables';
+@import './mixins';
+
+.__add_new_modal {
+    max-width: 700px;
+    width: 100%;
+
+    .components-modal__content {
+        padding: 32px;
+    }
+
+    .__loader {
+        text-align: center;
+        margin: 4em 0;
+
+        svg {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    .__heading {
+        text-align: center;
+        margin-top: 0;
+
+        @include modal-heading;
+    }
+
+    .__step_inner {
+        margin: 2.5em 0;
+    }
+
+    .__title_step {
+        .components-text-control__input {
+            font-size: 1.7em;
+            height: 40px;
+            max-width: unset;
+            padding: 3px 8px;
+
+            &:not(:focus) {
+                border-color: $inputBorderColor;
+            }
+
+            &:disabled {
+                background-color: $inputDisabledBGColor;
+            }
+        }
+    }
+
+    .__next_btn {
+        min-width: 64px;
+        justify-content: center;
+    }
+
+    .__filter_response {
+        text-align: center;
+
+        h4 {
+            font-weight: 500;
+            font-size: 1.3em;
+        }
+
+        svg {
+            fill: none;
+            stroke: $successCheckColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            width: 100px;
+            height: 100px;
+        }
+
+        ._buttons {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin: 2em 0 1em;
+        }
+    }
+}

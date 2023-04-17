@@ -1,0 +1,38 @@
+// Onepress theme
+body.theme-onepress {
+	.wcapf-filter .wcapf-search-box input[type="text"],
+	.wcapf-range-wrapper input[type="text"]:focus {
+		border: 1px solid var(--wcapf-input-text-border-color) !important;
+	}
+
+	.wcapf-chosen-container.chosen-container-single .chosen-search input[type="text"]:focus {
+		border: var(--wcapf-chosen-search-input-border-size) solid var(--wcapf-chosen-search-input-border-color) !important;
+	}
+}
+
+// Astra theme
+body.theme-astra {
+	// Layout list-item
+	#secondary .wcapf-filter .wcapf-list-wrapper.layout-list-item ul.wcapf-filter-options li.wcapf-filter-option {
+		line-height: inherit;
+		margin-bottom: var(--wcapf-filter-item-vertical-spacing);
+	}
+
+	// Layout inline
+	#secondary .wcapf-filter .wcapf-list-wrapper.layout-inline ul.wcapf-filter-options li.wcapf-filter-option {
+		line-height: inherit;
+	}
+
+	&:not(.rtl) #secondary .wcapf-filter .wcapf-list-wrapper.layout-inline li.wcapf-filter-option {
+		margin: 0 var(--wcapf-filter-item-horizontal-spacing) var(--wcapf-filter-item-vertical-spacing) 0;
+	}
+
+	&.rtl #secondary .wcapf-filter .wcapf-list-wrapper.layout-inline li.wcapf-filter-option {
+		margin: 0 0 var(--wcapf-filter-item-vertical-spacing) var(--wcapf-filter-item-horizontal-spacing);
+	}
+
+	// Combobox dropdown
+	#secondary .wcapf-chosen-container.chosen-container .chosen-results li {
+		margin: 0;
+	}
+}

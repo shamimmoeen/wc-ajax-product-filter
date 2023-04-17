@@ -1,0 +1,98 @@
+@import "../mixins";
+
+.wcapf-dropdown-wrapper {
+	select {
+		width: 100%;
+	}
+
+	.wcapf-chosen-container {
+		width: 100% !important; // Important is required to make the 'chosen' element full-width.
+
+		// Hierarchy design.
+		.chosen-results {
+			li {
+				@for $i from 2 through 5 {
+					&.depth-#{$i} {
+						$j: $i - 1;
+
+						@include ltr {
+							padding-left: calc(calc(var(--wcapf-chosen-dropdown-item-hr-padding) + .875em) * #{$j});
+						}
+
+						@include rtl {
+							padding-right: calc(calc(var(--wcapf-chosen-dropdown-item-hr-padding) + .875em) * #{$j});
+						}
+					}
+				}
+			}
+		}
+
+		&.chosen-container {
+			.chosen-results {
+				li.empty-item {
+					cursor: var(--wcapf-empty-item-cursor);
+					opacity: var(--wcapf-empty-item-opacity);
+				}
+
+				li.current-tax-item,
+				li.active-as-ancestor {
+					opacity: 1;
+					color: var(--wcapf-primary-color);
+				}
+
+				li {
+					.wcapf-count {
+						opacity: var(--wcapf-filter-count-opacity);
+					}
+				}
+			}
+		}
+
+		&.chosen-container-multi {
+			.chosen-choices {
+				li.search-choice.empty-item {
+					cursor: var(--wcapf-empty-item-cursor);
+					opacity: var(--wcapf-empty-item-opacity);
+
+					.search-choice-close {
+						&:not(:hover) {
+							color: rgba(var(--wcapf-primary-text-color-rgb, 255, 255, 255), var(--wcapf-filter-count-opacity));
+						}
+					}
+				}
+			}
+
+			&.style-grey {
+				.chosen-choices {
+					li.search-choice {
+						background-color: var(--wcapf-active-label-grey-style-bg-color);
+						color: inherit;
+
+						.search-choice-close {
+							&:not(:hover) {
+								color: rgba(var(--wcapf-chosen-multiselect-grey-style-close-color), var(--wcapf-filter-count-opacity));
+							}
+
+							&:hover {
+								color: rgba(var(--wcapf-chosen-multiselect-grey-style-close-color), 1);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.chosen-single-inner {
+			.wcapf-count-0 {
+				opacity: var(--wcapf-filter-count-opacity);
+			}
+		}
+
+		.chosen-single-inner,
+		.chosen-choice-inner {
+			.wcapf-count {
+				opacity: var(--wcapf-filter-count-opacity);
+			}
+		}
+	}
+}

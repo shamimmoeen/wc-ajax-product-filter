@@ -1,17 +1,20 @@
 {
-  "overrides": [
-    {
-      "files": "*.php",
-      "options": {
-        "printWidth": 120,
-        "tabWidth": 4,
-        "useTabs": true,
-        "singleQuote": true,
-        "trailingCommaPHP": "all",
-        "braceStyle": "1tbs",
-        "requirePragma": false,
-        "insertPragma": false
-      }
-    }
-  ]
+	"jsxSingleQuote": true,
+	"singleQuote": true,
+	"bracketSpacing": true,
+	"overrides": [
+		{
+			"files": "*.php",
+			"options": {
+				"printWidth": 120,
+				"tabWidth": 4,
+				"useTabs": true,
+				"singleQuote": true,
+				"trailingCommaPHP": "all",
+				"braceStyle": "1tbs",
+				"requirePragma": false,
+				"insertPragma": false
+			}
+		}
+	]
 }

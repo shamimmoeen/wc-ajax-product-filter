@@ -1,29 +1,101 @@
 :root {
-	--wcapf-active-filters-group-bottom-margin: 1em;
-	--wcapf-active-filters-nav-hr-padding: 7px;
-	--wcapf-active-filters-nav-vr-padding: 1px;
-	--wcapf-clear-all-btn-top-margin: .6em;
-	--wcapf-filter-base-bottom-margin: 2em;
-	--wcapf-filter-checked-outline-color: #333;
-	--wcapf-filter-inner-top-padding: 1em;
-	--wcapf-filter-outline-color: #ddd;
-	--wcapf-hierarchy-accordion-toggle-bg-color: #ddd;
-	--wcapf-hierarchy-accordion-toggle-size: 14px;
-	--wcapf-hierarchy-accordion-toggle-space: .4em;
-	--wcapf-labeled-nav-border-radius: 6px;
-	--wcapf-labeled-nav-border-size: 1px;
-	--wcapf-labeled-nav-count-opacity: .8;
-	--wcapf-labeled-nav-hr-padding: 10px;
-	--wcapf-labeled-nav-margin: 4px;
-	--wcapf-labeled-nav-vr-padding: 3px;
-	--wcapf-layered-nav-item-disabled-cursor: not-allowed;
-	--wcapf-layered-nav-item-disabled-opacity: .5;
-	--wcapf-layered-nav-list-child-left-padding: 1.618em;
-	--wcapf-layered-nav-list-vertical-spacing: .2em;
+	--wcapf-primary-color: rgba(var(--wcapf-primary-color-rgb), 1);
+	--wcapf-primary-text-color: rgba(var(--wcapf-primary-text-color-rgb), 1);
+	--wcapf-active-label-grey-style-bg-color: #ddd; // #f0f0f0;
+	--wcapf-chosen-multiselect-grey-style-close-color: 119, 119, 119;
+	--wcapf-disabled-bg-color: #f4f4f0;
+
+	--wcapf-filter-base-bottom-margin: 2em; // 3em
+	--wcapf-filter-line-height: inherit;
+	--wcapf-filter-count-opacity: .6;
+
+	// Filter Title
+	--wcapf-filter-title-font-size: 1.25em;
+	--wcapf-filter-title-font-weight: 600; // normal // 500 for default font, 600 for PT Sans
+	--wcapf-filter-title-margin-bottom: 1em; // 1.4em
+	--wcapf-filter-title-line-height: 1.6;
+	--wcapf-filter-accordion-icon-size: .9em;
+	--wcapf-filter-title-inner-gap: .25em;
+
+	// Input type text
+	--wcapf-input-text-bg-color: #fff;
+	--wcapf-input-text-font-size: 1em;
+	--wcapf-input-text-hr-padding: 0.625em;
+	--wcapf-input-text-vr-padding: 0.375em;
+	--wcapf-input-text-border-color: #ddd;
+	--wcapf-input-text-border-radius: 0.25em;
+
+	// Range Slider
+	--wcapf-range-filter-unit-size: 2em;
 	--wcapf-nouislider-input-field-margin-bottom: 1.5em;
-	--wcapf-nouislider-plain-text-margin-bottom: 1em;
-	--wcapf-range-filter-input-max-width: 80px;
+	--wcapf-nouislider-plain-text-margin-bottom: 1.2em;
 	--wcapf-range-slider-bottom-padding: 1em;
-	--wcapf-results-container-loading-bg-color: #fff;
-	--wcapf-results-loading-body-bg-color: rgba(255, 255, 255, .7);
+
+	// List-item
+	--wcapf-hierarchy-nav-indent: 1.618em;
+
+	// List item + inline
+	--wcapf-filter-item-vertical-spacing: .4em;
+	--wcapf-filter-item-horizontal-spacing: .4em;
+	--wcapf-list-type-native-horizontal-spacing: .875em;
+
+	// Checkbox/Radio
+	--wcapf-checkbox-radio-space: 0.5em;
+
+	// Dropdown
+	--wcapf-dropdown-border-color: #ddd; // #ccd0dc // #d8d8da // #ced4da
+	--wcapf-dropdown-border-radius: 0.25em;
+
+	// Label
+	--wcapf-labeled-nav-bg-color: #fff;
+	--wcapf-labeled-nav-border-size: 1px;
+	--wcapf-labeled-nav-border-color: #ddd;
+	--wcapf-labeled-nav-margin: 0.4em;
+	--wcapf-labeled-nav-border-radius: 0.375em;
+	--wcapf-labeled-nav-hr-padding: 0.875em;
+	--wcapf-labeled-nav-vr-padding: 0.375em;
+
+	// Active filters
+	--wcapf-active-filters-before-products-bottom-margin: 1.5em;
+	--wcapf-active-filters-before-products-clear-button-gap: 1em;
+	--wcapf-clear-all-btn-top-margin: .8em;
+	--wcapf-active-filter-item-bg-color: var(--wcapf-labeled-nav-bg-color);
+	--wcapf-active-filter-item-border-size: var(--wcapf-labeled-nav-border-size);
+	--wcapf-active-filter-item-border-color: var(--wcapf-labeled-nav-border-color);
+	--wcapf-active-filter-item-margin: var(--wcapf-labeled-nav-margin);
+	--wcapf-active-filter-item-border-radius: var(--wcapf-labeled-nav-border-radius);
+	--wcapf-active-filter-item-hr-padding: var(--wcapf-labeled-nav-hr-padding);
+	--wcapf-active-filter-item-vr-padding: var(--wcapf-labeled-nav-vr-padding);
+	--wcapf-active-filter-item-cross-icon-gap: 2;
+	--wcapf-active-filter-item-cross-icon-hr-position: .7;
+	--wcapf-active-filter-item-cross-icon-opacity: .6;
+
+	// Search Box
+	--wcapf-search-box-margin-bottom: 1em;
+
+	// Soft Limit
+	--wcapf-soft-limit-wrapper-margin-top: 1em;
+
+	// Empty filter item
+	--wcapf-empty-item-cursor: default;
+	--wcapf-empty-item-opacity: .6;
+
+	// Active as current tax
+	--wcapf-current-tax-item-cursor: default;
+	--wcapf-label-active-as-ancestor-bg-color: var(--wcapf-disabled-bg-color);
+	--wcapf-label-active-as-archive-bg-color: #e9e9e9;
+	--wcapf-labeled-nav-disabled-bg-color: var(--wcapf-disabled-bg-color);
+
+	// Buttons
+	--wcapf-btn-secondary-bg-color: #fff;
+	--wcapf-btn-secondary-text-color: var(--wcapf-primary-color);
+	--wcapf-btn-primary-text-color: var(--wcapf-primary-text-color);
+	--wcapf-btn-primary-bg-color: var(--wcapf-primary-color);
+	--wcapf-btn-border-color: var(--wcapf-primary-color);
+	--wcapf-btn-border-size: 1px;
+	--wcapf-btn-border-radius: 0.125em;
+	--wcapf-btn-hr-padding: 1.375em;
+	--wcapf-btn-vr-padding: .5em;
+	--wcapf-btn-disabled-opacity: .6;
+	--wcapf-btn-disabled-cursor: default;
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstalling WC Ajax Product Filter deletes the plugin settings, filter post types.
+ * Uninstalling WC Ajax Product Filter deletes the plugin settings, forms and filters.
  *
  * @since        3.0.0
  * @package      wc-ajax-product-filter
@@ -28,5 +28,5 @@ global $wpdb;
 delete_option( $option_key );
 
 // Delete posts + data.
-$wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type = 'wcapf-filter';" );
+$wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type IN ('wcapf-form', 'wcapf-filter');" );
 $wpdb->query( "DELETE meta FROM $wpdb->postmeta meta LEFT JOIN $wpdb->posts posts ON posts.ID = meta.post_id WHERE posts.ID IS NULL;" );
