@@ -1,0 +1,189 @@
+@import './mixins';
+
+.support-many {
+    .__results_method_checkbox:last-child {
+        .components-base-control__help {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.__locations {
+    &:not(.support-many) {
+        .__product_query {
+            margin-bottom: 12px;
+        }
+    }
+}
+
+.__product_query {
+    border: 1px solid #ddd;
+    padding: 1em 0.75em 0;
+
+    legend {
+        font-weight: 500;
+        padding: 0 8px;
+    }
+
+    @include code;
+
+    .__code {
+        max-width: 200px;
+
+        .__text {
+            font-size: 1.1em;
+        }
+    }
+
+    .__field_row {
+        margin: 0 0 1.5em;
+        display: flex;
+        gap: 15px;
+
+        @media (max-width: 767px) {
+            flex-direction: column;
+            margin: 0 0 2em;
+        }
+
+        .__field_label {
+            font-weight: 500;
+            flex-shrink: 0;
+
+            @media (min-width: 768px) {
+                width: 115px;
+                min-height: 30px;
+            }
+        }
+
+        .__field_input {
+            flex: 1;
+        }
+    }
+
+    .__layout .__custom_react_select {
+        width: 180px;
+    }
+
+    .__type,
+    .__visibility {
+        .__custom_react_select {
+            width: 120px;
+        }
+    }
+
+    .components-text-control__input {
+        &[type="number"] {
+            max-width: 80px;
+        }
+    }
+
+    .__order {
+        .__field_input {
+            .__top_input {
+                display: flex;
+                gap: 10px;
+
+                .__order_select {
+                    width: 120px;
+                }
+
+                .__order_direction_select {
+                    width: 75px;
+                }
+            }
+        }
+    }
+
+    .__tax_query,
+    .__meta_query {
+
+        .__tax_query_row,
+        .__meta_query_row {
+            margin-bottom: 10px;
+
+            &:not(:last-child) {
+                border-bottom: 1px solid #f0f0f0;
+                padding-bottom: 10px;
+            }
+
+            .__top_input,
+            .__bottom_input {
+                display: flex;
+                gap: 10px;
+            }
+
+            .__top_input {
+                .__remove_query_btn {
+                    height: 30px;
+                    min-width: 30px;
+
+                    &:not(:hover) {
+                        opacity: .7;
+                    }
+                }
+            }
+        }
+    }
+
+    .__tax_query {
+        .__tax_query_row {
+            .__top_input {
+                .__taxonomy_select {
+                    @media (min-width: 768px) {
+                        width: 170px;
+                    }
+
+                    @media (max-width: 767px) {
+                        width: 140px;
+                    }
+                }
+
+                .__operator_select {
+                    width: 90px;
+                }
+            }
+
+            .__taxonomy_terms_select {
+                margin-top: 10px;
+            }
+        }
+    }
+
+    .__meta_query {
+        .__meta_query_row {
+            .__top_input {
+                .__meta_key_select {
+                    @media (min-width: 768px) {
+                        width: 170px;
+                    }
+
+                    @media (max-width: 767px) {
+                        width: 140px;
+                    }
+                }
+
+                .__meta_type_select {
+                    @media (min-width: 768px) {
+                        width: 110px;
+                    }
+
+                    @media (max-width: 767px) {
+                        width: 90px;
+                    }
+                }
+            }
+
+            .__bottom_input {
+                margin-top: 10px;
+
+                .__operator_select {
+                    width: 170px;
+                }
+
+                .__meta_value {
+                    max-width: 140px;
+                }
+            }
+        }
+    }
+}

@@ -6,31 +6,59 @@ import { useForm } from '../FormContext';
 import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
 import {
-	dateDisplayTypes,
-	numberDisplayTypes,
-	textDisplayTypes,
+	componentsWithTypeOnly,
+	getDisplayTypeData,
+	getFilterKey,
+	getFilterTabs,
+	getFilterTitle,
+	getFilterType,
+	getGlobalFilterKey,
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
+import useFormData from '../useFormData';
+import axios from 'axios';
+import {
+	filterDeletedErrorNotice,
+	removeFilterDeletedNotices,
+} from '../../notices';
 
-const filterTypes = wcapf_admin_params.filter_types;
+const onlyWithType = componentsWithTypeOnly();
 
-const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
-	const {
-		state: { formFilters },
-	} = useForm();
+const Filter = ({ index }) => {
+	const { state, dispatch } = useForm();
 
-	const [expanded, setExpanded] = useState(initialExpand);
+	const { setDirty } = useFormData(state, dispatch);
+
+	const [deleteBtnBusy, setDeleteBtnBusy] = useState(false);
+
+	const { filterKeys, accordionStates, formFilters } = state;
+
+	const filter = formFilters[index];
+
+	const { id, type, meta_key, component } = filter;
+
+	const isExpanded = accordionStates[index];
+
 	const dragHandleRef = useRef('');
 	const toggleIconRef = useRef('');
 
 	const toggleExpand = (e) => {
+		removeFilterDeletedNotices();
+
 		if (dragHandleRef.current.contains(e.target)) {
 			return;
 		}
 
-		const _expanded = !expanded;
-		setExpanded(_expanded);
+		const newStates = accordionStates.map((state, _index) => {
+			if (_index === index) {
+				return !isExpanded;
+			}
+
+			return state;
+		});
+
+		dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
 	};
 
 	const closeFilter = (e) => {
@@ -39,53 +67,90 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 		toggleIconRef.current.focus();
 	};
 
-	const toggleIcon = expanded ? chevronUp : chevronDown;
-	const topClass = expanded ? '__top open' : '__top';
+	const dispatchDeleteFilter = () => {
+		const _formFilters = [...formFilters];
+		_formFilters.splice(index, 1);
 
-	const filter = formFilters[index];
+		dispatch({
+			type: 'SET_FORM_FILTERS',
+			payload: _formFilters,
+		});
 
-	const {
-		title,
-		type,
-		taxonomy,
-		meta_key,
-		value_type,
-		field_key,
-		display_type,
-		number_display_type,
-		date_display_type,
-	} = filter;
+		const _newAccordionStates = [...accordionStates];
+		_newAccordionStates.splice(index, 1);
 
-	let filterType;
+		dispatch({
+			type: 'SET_ACCORDION_STATES',
+			payload: _newAccordionStates,
+		});
 
-	if ('taxonomy' === type) {
-		const taxonomyOption = filterTypes.find(
-			(option) => option.value === type
-		);
-		const taxonomies = taxonomyOption.options;
+		if (id) {
+			const _filterKeys = filterKeys.filter((data) => data.id !== id);
 
-		filterType = taxonomies.find((option) => option.value === taxonomy);
-	} else {
-		filterType = filterTypes.find((option) => option.value === type);
-	}
+			dispatch({
+				type: 'SET_FILTER_KEYS',
+				payload: _filterKeys,
+			});
+		}
 
-	let displayTypes;
-	let _displayType;
+		setDirty();
+	};
 
-	if ('number' === value_type || 'price' === type) {
-		displayTypes = numberDisplayTypes();
-		_displayType = number_display_type;
-	} else if ('date' === value_type) {
-		displayTypes = dateDisplayTypes();
-		_displayType = date_display_type;
-	} else {
-		displayTypes = textDisplayTypes();
-		_displayType = display_type;
-	}
+	const handleDeleteFilter = (callback) => {
+		if (id) {
+			callback();
 
-	const displayType = displayTypes.find(
-		(option) => option.value === _displayType
-	);
+			setDeleteBtnBusy(true);
+
+			const data = {
+				action: 'wcapf_delete_filter',
+				post_id: id,
+			};
+
+			axios
+				.get(wcapf_admin_params.ajaxurl, {
+					params: data,
+				})
+				.then((res) => {
+					setDeleteBtnBusy(false);
+
+					const {
+						data: { data, success },
+					} = res;
+
+					if (success) {
+						dispatchDeleteFilter();
+					} else {
+						filterDeletedErrorNotice(data);
+					}
+				})
+				.catch((err) => {
+					setDeleteBtnBusy(false);
+
+					filterDeletedErrorNotice(err.message);
+				});
+		} else {
+			dispatchDeleteFilter();
+		}
+	};
+
+	const toggleIcon = isExpanded ? chevronUp : chevronDown;
+	const topClass = isExpanded ? '__top open' : '__top';
+
+	const filterType = getFilterType(filter);
+	const filterTitle = getFilterTitle(filter, filterType);
+
+	const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
+	const filterKey = globalFilterKey
+		? globalFilterKey
+		: getFilterKey(filter, filterType);
+
+	const displayType = getDisplayTypeData(filter);
+
+	const onlyType = 'component' === type && onlyWithType.includes(component);
+	const activeFilters = 'active-filters' === component;
+
+	const filterTabs = getFilterTabs(filter);
 
 	return (
 		<div className='__item'>
@@ -95,60 +160,58 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 				</div>
 
 				<div className='_filter_header'>
-					<div className='__title'>{title}</div>
-					<div className='__type'>
-						{filterType && (
-							<span className='__filter_type'>
-								{filterType.label}
-							</span>
-						)}
-						{'post-meta' === type && (
-							<span className='__meta_key'>{meta_key}</span>
-						)}
+					<div className='__title'>
+						<div className='__truncated'>
+							{onlyType ? <span>&#8212;</span> : filterTitle}
+						</div>
 					</div>
-					<div className='__key'>{field_key}</div>
-					<div className='__display'>{displayType.label}</div>
+					<div className='__type'>
+						<div className='__wrapper'>
+							{filterType && (
+								<div className='__filter_type'>
+									{filterType.label}
+								</div>
+							)}
+							{'post-meta' === type && (
+								<div className='__truncated __meta_key'>
+									{meta_key}
+								</div>
+							)}
+						</div>
+					</div>
+					<div className='__key'>
+						<div className='__truncated'>
+							{onlyType || activeFilters ? (
+								<span>&#8212;</span>
+							) : (
+								filterKey
+							)}
+						</div>
+					</div>
+					<div className='__display'>
+						<div className='__truncated'>
+							{onlyType || activeFilters ? (
+								<span>&#8212;</span>
+							) : (
+								displayType?.label
+							)}
+						</div>
+					</div>
 				</div>
 
 				<div className='__accordion_toggle_button'>
 					<Button isSmall icon={toggleIcon} ref={toggleIconRef} />
 				</div>
 			</div>
-			{expanded && (
+			{isExpanded && (
 				<div className='__accordion_body'>
 					<TabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='options'
-						tabs={[
-							{
-								name: 'general',
-								title: __('General', 'wc-ajax-product-filter'),
-								className: 'general',
-							},
-							{
-								name: 'appearance',
-								title: __(
-									'Appearance',
-									'wc-ajax-product-filter'
-								),
-								className: 'appearance',
-							},
-							{
-								name: 'options',
-								title: __('Options', 'wc-ajax-product-filter'),
-								className: 'options',
-							},
-							{
-								name: 'advanced',
-								title: __('Advanced', 'wc-ajax-product-filter'),
-								className: 'advanced',
-							},
-						]}
+						initialTabName='general'
+						tabs={filterTabs}
 					>
-						{(tab) => {
-							const { name } = tab;
-
+						{({ name }) => {
 							if ('general' === name) {
 								return <General index={index} />;
 							} else if ('appearance' === name) {
@@ -162,9 +225,9 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 					</TabPanel>
 
 					<div className='__action_buttons'>
-						<button className='button-link' onClick={closeFilter}>
+						<Button variant='link' onClick={closeFilter}>
 							{__('Close', 'wc-ajax-product-filter')}
-						</button>
+						</Button>
 						{` | `}
 						<Dropdown
 							popoverProps={{ noArrow: false }}
@@ -172,13 +235,16 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 							position='top center'
 							focusOnMount={true}
 							renderToggle={({ isOpen, onToggle }) => (
-								<button
-									className='button-link button-link-delete'
+								<Button
+									variant='link'
+									isDestructive
+									isBusy={deleteBtnBusy}
+									disabled={deleteBtnBusy}
 									onClick={onToggle}
 									aria-expanded={isOpen}
 								>
-									{__('Remove', 'wc-ajax-product-filter')}
-								</button>
+									{__('Delete', 'wc-ajax-product-filter')}
+								</Button>
 							)}
 							renderContent={({ onToggle }) => (
 								<>
@@ -187,21 +253,19 @@ const Filter = ({ index, handleRemoveFilter, initialExpand = false }) => {
 										'wc-ajax-product-filter'
 									)}
 									{` `}
-									<button
-										className='button-link button-link-delete'
+									<Button
+										variant='link'
+										isDestructive
 										onClick={() =>
-											handleRemoveFilter(index)
+											handleDeleteFilter(onToggle)
 										}
 									>
-										{__('Remove', 'wc-ajax-product-filter')}
-									</button>
+										{__('Delete', 'wc-ajax-product-filter')}
+									</Button>
 									{` `}
-									<button
-										className='button-link'
-										onClick={onToggle}
-									>
+									<Button variant='link' onClick={onToggle}>
 										{__('Cancel', 'wc-ajax-product-filter')}
-									</button>
+									</Button>
 								</>
 							)}
 						/>

@@ -2,6 +2,18 @@
 @import "./global";
 @import "./mixins";
 @import "./partials/filter";
-
-// Form Presets
-@import "./form-presets/preset-1";
+@import "./partials/hierarchy-accordion";
+@import "./partials/focus-styles";
+@import "./partials/stylish-checkbox-radio";
+@import "./partials/range-slider";
+@import "./partials/native-dropdown";
+@import "./partials/chosen-dropdown";
+@import "./partials/search-box";
+@import "./partials/soft-limit";
+@import "./partials/scrollbar";
+@import "./partials/loader";
+@import "partials/filter-tooltip";
+@import "partials/filter-title";
+@import "partials/active-filters";
+@import "partials/button";
+@import "partials/theme-style";

@@ -2,9 +2,6 @@
 @import './mixins';
 
 .__edit_filter {
-	--vr-padding: 16px;
-	--hr-padding: 24px;
-
 	.__edit_filter_from {
 		background-color: #fff;
 
@@ -27,61 +24,61 @@
 		}
 	}
 
-	.__preview_card {
-		background-color: #fff;
+	// .__preview_card {
+	// 	background-color: #fff;
 
-		.__inner {
-			padding: var(--large-gap);
-		}
+	// 	.__inner {
+	// 		padding: var(--large-gap);
+	// 	}
 
-		.__preview_label {
-			font-size: 30px;
-			font-weight: 500;
-			line-height: 1;
-			margin: 0 0 1em;
-		}
-	}
+	// 	.__preview_label {
+	// 		font-size: 30px;
+	// 		font-weight: 500;
+	// 		line-height: 1;
+	// 		margin: 0 0 1em;
+	// 	}
+	// }
 
-	@media (min-width: 1240px) {
-		--preview-size: 400px;
+	// @media (min-width: 1240px) {
+	// 	--preview-size: 400px;
 
-		.__preview_card {
-			position: fixed;
-			top: 32px;
-			width: var(--preview-size);
-			height: 100%;
+	// 	.__preview_card {
+	// 		position: fixed;
+	// 		top: 32px;
+	// 		width: var(--preview-size);
+	// 		height: 100%;
 
-			.__inner {
-				padding: 50px;
-			}
-		}
+	// 		.__inner {
+	// 			padding: 50px;
+	// 		}
+	// 	}
 
-		@include ltr {
-			.__edit_filter_from {
-				margin-right: var(--preview-size);
-			}
+	// 	@include ltr {
+	// 		.__edit_filter_from {
+	// 			margin-right: var(--preview-size);
+	// 		}
 
-			.__preview_card {
-				box-shadow: inset 10px 0 30px rgb(0 0 0 / 5%);
-				right: 0;
-			}
-		}
+	// 		.__preview_card {
+	// 			box-shadow: inset 10px 0 30px rgb(0 0 0 / 5%);
+	// 			right: 0;
+	// 		}
+	// 	}
 
-		@include rtl {
-			.__edit_filter_from {
-				margin-left: var(--preview-size);
-			}
+	// 	@include rtl {
+	// 		.__edit_filter_from {
+	// 			margin-left: var(--preview-size);
+	// 		}
 
-			.__preview_card {
-				box-shadow: inset -10px 0 30px rgb(0 0 0 / 5%);
-				left: 0;
-			}
-		}
-	}
+	// 		.__preview_card {
+	// 			box-shadow: inset -10px 0 30px rgb(0 0 0 / 5%);
+	// 			left: 0;
+	// 		}
+	// 	}
+	// }
 
-	@media (max-width: 1239px) {
-		.__preview_card {
-			box-shadow: inset 0 10px 30px rgb(0 0 0 / 5%);
-		}
-	}
+	// @media (max-width: 1239px) {
+	// 	.__preview_card {
+	// 		box-shadow: inset 0 10px 30px rgb(0 0 0 / 5%);
+	// 	}
+	// }
 }

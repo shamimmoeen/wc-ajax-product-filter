@@ -6,9 +6,12 @@ export const initialState = {
 	isDirty: false,
 	title,
 	formId,
-	availableFilters: [],
+	filterKeys: [],
+	currentTab: 'filters',
+	accordionStates: [],
 	formFilters: [],
 	formSettings: {},
+	saveError: '',
 };
 
 const formReducer = (state, action) => {
@@ -25,14 +28,23 @@ const formReducer = (state, action) => {
 		case 'SET_FORM_ID':
 			return { ...state, formId: action.payload };
 
-		case 'SET_AVAILABLE_FILTERS':
-			return { ...state, availableFilters: action.payload };
+		case 'SET_FILTER_KEYS':
+			return { ...state, filterKeys: action.payload };
+
+		case 'SET_CURRENT_TAB':
+			return { ...state, currentTab: action.payload };
+
+		case 'SET_ACCORDION_STATES':
+			return { ...state, accordionStates: action.payload };
 
 		case 'SET_FORM_FILTERS':
 			return { ...state, formFilters: action.payload };
 
 		case 'SET_FORM_SETTINGS':
 			return { ...state, formSettings: action.payload };
+
+		case 'SET_ERROR':
+			return { ...state, saveError: action.payload };
 
 		default:
 			return state;

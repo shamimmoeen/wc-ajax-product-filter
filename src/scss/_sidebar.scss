@@ -1,4 +1,5 @@
 @import './variables';
+@import './mixins';
 
 .__sidebar {
     .components-card {
@@ -36,22 +37,10 @@
             }
         }
     }
-}
 
-body {
-    &:not(.rtl) {
-        .__sidebar {
-            .components-button {
-                margin: 0 4px 4px 0;
-            }
-        }
-    }
+    .components-button {
+        margin-bottom: 4px;
 
-    &.rtl {
-        .__sidebar {
-            .components-button {
-                margin: 0 0 4px 4px;
-            }
-        }
+        @include horizontal-space(4px);
     }
 }

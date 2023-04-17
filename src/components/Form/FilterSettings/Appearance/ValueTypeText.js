@@ -1,24 +1,34 @@
 import { __ } from '@wordpress/i18n';
+import { find } from 'lodash';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import useFields from './useFields';
-import { textDisplayTypes } from '../../utils';
+import {
+	hierarchicalDisplayTypes,
+	postMetaDisplayTypes,
+	sortByDisplayTypes,
+	taxonomyDisplayTypes,
+	textDisplayTypes,
+} from '../../utils';
 import Select from '../../../Field/Select';
 import Checkbox from '../../../Field/Checkbox';
+import { foundProVersion } from '../../../utils';
+
+const swatchDisplayTypes = ['color', 'image'];
 
 const ValueTypeText = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleHierarchyChange, handleCheckboxChange, handleSelectChange } =
-		useFormFilterData(state, dispatch);
+	const { handleCheckboxChange, handleSelectChange } = useFormFilterData(
+		state,
+		dispatch
+	);
 
 	const {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		tooltipPositionField,
@@ -32,6 +42,7 @@ const ValueTypeText = ({ index }) => {
 		type,
 		taxHierarchical,
 		display_type,
+		native_display_type_layout,
 		hierarchical,
 		enable_hierarchy_accordion,
 		value_type,
@@ -39,38 +50,59 @@ const ValueTypeText = ({ index }) => {
 
 	const displayTypeField = () => {
 		let options = [];
+		let value;
 
 		if ('taxonomy' === type) {
-			options = textDisplayTypes(true);
+			options = taxonomyDisplayTypes(true, taxHierarchical);
 		} else if ('post-meta' === type && 'text' === value_type) {
-			options = textDisplayTypes(true);
+			options = postMetaDisplayTypes(true);
+		} else if ('sort-by' === type || 'per-page' === type) {
+			options = sortByDisplayTypes();
 		} else {
-			let allOptions;
-
-			if ('rating' === type || 'product-status' === type) {
-				allOptions = textDisplayTypes(true);
-			} else {
-				allOptions = textDisplayTypes(false);
-			}
-
-			const notAllowed = ['color', 'image'];
-
-			options = allOptions.filter(
-				(option) => !notAllowed.includes(option.value)
-			);
+			options = textDisplayTypes();
 		}
 
-		const value = options.find((option) => display_type === option.value);
+		value = options.find((option) => display_type === option.value);
+
+		if (!foundProVersion()) {
+			const freeDisplayTypes = [
+				'checkbox',
+				'radio',
+				'select',
+				'multi-select',
+				'label',
+			];
+
+			if (!freeDisplayTypes.includes(display_type)) {
+				const _proOptions = find(options, { proGroup: true });
+				const proOptions = _proOptions.options;
+
+				value = proOptions.find(
+					(option) => option.value === display_type
+				);
+			}
+		}
+
+		let description;
+
+		if (swatchDisplayTypes.includes(display_type)) {
+			description = __(
+				'Determines the type of filter options on the frontend. <b>Note:</b> For color/image swatch, you need to manually enter the filter options and set the swatch data.',
+				'wc-ajax-product-filter'
+			);
+		} else {
+			description = __(
+				'Determines the type of filter options on the frontend.',
+				'wc-ajax-product-filter'
+			);
+		}
 
 		return (
 			<Select
 				id={'display_type'}
 				index={index}
-				label={__('Display Type', 'wc-ajax-product-filter')}
-				description={__(
-					'Determines how the filter will be shown on the frontend.',
-					'wc-ajax-product-filter'
-				)}
+				label={__('Display', 'wc-ajax-product-filter')}
+				description={description}
 				options={options}
 				value={value}
 				onChange={handleSelectChange}
@@ -80,7 +112,11 @@ const ValueTypeText = ({ index }) => {
 	};
 
 	const hierarchyField = () => {
-		if ('1' === taxHierarchical) {
+		if (
+			'1' === taxHierarchical &&
+			hierarchicalDisplayTypes().includes(display_type) &&
+			'list-item' === native_display_type_layout
+		) {
 			return (
 				<Checkbox
 					id={'hierarchical'}
@@ -91,15 +127,20 @@ const ValueTypeText = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={hierarchical}
-					onChange={handleHierarchyChange}
-					isPro={true}
+					onChange={handleCheckboxChange}
 				/>
 			);
 		}
 	};
 
 	const hierarchyAccordionField = () => {
-		if ('1' === taxHierarchical && '1' === hierarchical) {
+		if (
+			'1' === taxHierarchical &&
+			'1' === hierarchical &&
+			hierarchicalDisplayTypes().includes(display_type) &&
+			'list-item' === native_display_type_layout &&
+			!['select', 'multi-select'].includes(display_type)
+		) {
 			return (
 				<Checkbox
 					id={'enable_hierarchy_accordion'}
@@ -123,17 +164,13 @@ const ValueTypeText = ({ index }) => {
 		<>
 			{displayTypeField()}
 
+			{layoutFields(display_type)}
+
 			{enableMultipleFilterField('enable_multiple_filter')}
 
 			{queryTypeField('query_type')}
 
 			{allItemsLabelField('all_items_label')}
-
-			{useChosenField('use_chosen')}
-
-			{allItemsLabelFieldForUseChosen('all_items_label')}
-
-			{noResultsMessageField('chosen_no_results_message')}
 
 			{hierarchyField()}
 

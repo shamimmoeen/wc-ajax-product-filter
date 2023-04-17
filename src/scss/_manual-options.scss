@@ -6,13 +6,93 @@
 		margin-bottom: 1.5em;
 	}
 
+	.__responsive_table {
+		box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+		overflow-x: auto;
+		position: relative;
+		z-index: 1;
+
+		&.text-options,
+		&.taxonomy-options {
+			table {
+				min-width: 650px;
+			}
+
+			th.__color_image {
+				width: 35%;
+			}
+		}
+
+		&.sort-by-options {
+			table {
+				min-width: 600px;
+			}
+
+			.__sort_by,
+			.__meta_info {
+				.__custom_react_select {
+					width: 100%;
+				}
+			}
+
+			.__direction {
+				.__custom_react_select {
+					max-width: 80px;
+				}
+			}
+
+			th.__sort_by {
+				width: 180px;
+			}
+
+			th.__direction {
+				width: 80px;
+			}
+		}
+
+		&.product-status-options {
+			table {
+				min-width: 480px;
+			}
+
+			th.__product_status {
+				width: 150px;
+			}
+		}
+
+		&.post-author-options {
+			table {
+				min-width: 480px;
+			}
+		}
+
+		&.per-page-options {
+			table {
+				min-width: 480px;
+			}
+		}
+
+		&.number-options {
+			table {
+				min-width: 600px;
+			}
+		}
+
+		&.time-period-options {
+			table {
+				min-width: 480px;
+			}
+		}
+	}
+
 	.wp-list-table.widefat {
 		border: none;
-		box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+		box-shadow: none;
 
 		thead {
 			th {
 				border-color: #ddd;
+				font-size: 13px;
 				font-weight: 500;
 			}
 		}
@@ -36,14 +116,10 @@
 			}
 
 			&.__action {
-				text-align: center;
 				width: 40px;
 			}
 
 			@media (min-width: 600px) {
-				&.__value {
-					width: 200px;
-				}
 
 				&.__min_value,
 				&.__max_value,
@@ -55,36 +131,6 @@
 					width: 170px;
 				}
 			}
-
-			&.__product_status {
-				width: 150px;
-			}
-
-			&.__sort_by {
-				width: 200px;
-			}
-
-			&.__direction {
-				width: 100px;
-			}
-
-			@media (min-width: 600px) and (max-width: 1499px) {
-				&.__sort_by {
-					width: 185px;
-				}
-
-				&.__direction {
-					width: 85px;
-				}
-			}
-		}
-
-		td {
-			vertical-align: middle;
-
-			>div {
-				display: flex;
-			}
 		}
 
 		.__drag_handler {
@@ -95,11 +141,6 @@
 
 		@media (min-width: 600px) {
 			td {
-				.__value {
-					.components-text-control__input {
-						max-width: 180px;
-					}
-				}
 
 				.__min_value,
 				.__max_value,
@@ -117,25 +158,6 @@
 			}
 		}
 
-		.__product_status {
-			.__custom_react_select {
-				min-width: 140px;
-			}
-		}
-
-		.__time_period {
-			.__custom_react_select {
-				min-width: 150px;
-			}
-		}
-
-		.__sort_by,
-		.__meta_info {
-			.__custom_react_select {
-				width: 180px;
-			}
-		}
-
 		.__meta_info {
 			flex-direction: column;
 			gap: 5px;
@@ -148,34 +170,41 @@
 			}
 		}
 
-		.__direction {
-			.__custom_react_select {
-				min-width: 80px;
-			}
-		}
-
 		.__term_name,
 		.__author_name {
 			display: block;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.__term_id,
 		.__author_id {
-			@include info;
+			color: rgba(0, 0, 0, 0.3);
 		}
 
-		td {
-			.__img_preview {
-				max-height: 38px;
-				width: auto;
-			}
+		.__swatch_wrapper {
+			flex-direction: column;
+			justify-content: center;
+			align-items: flex-start;
 
-			.__color,
-			.__image {
+			.__primary_settings {
+				display: flex;
 				align-items: center;
-				gap: 8px;
-			}
+				gap: 10px;
 
+				.__img_preview {
+					height: 38px;
+					width: 38px;
+				}
+
+				.__color,
+				.__image {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+			}
 		}
 	}
 
@@ -183,6 +212,7 @@
 		display: flex;
 		justify-content: space-between;
 		margin-top: 1.5em;
+		margin-bottom: 2em;
 
 		@media (max-width: 392px) {
 			flex-direction: column;
@@ -194,38 +224,38 @@
 		}
 	}
 
-	@media (max-width: 599px) {
-		.__responsive_table {
-			@include responsive-table;
-
-			&.number-options,
-			&.time-period-options {
-				table {
-					min-width: 460px;
-				}
+	.__responsive_table {
+		td {
+			>div {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
 			}
 
-			&.product-status-options {
-				table {
-					min-width: 480px;
-				}
+			.__drag_handler_wrapper,
+			.__remove_row_button_wrapper {
+				align-items: flex-start;
 			}
+		}
 
-			&.sort-by-options {
-				table {
-					min-width: 600px;
+		&:not(.post-author-options):not(.taxonomy-options):not(.text-options) {
+			td {
+				>div {
+					min-height: 30px;
+
+					@media (max-width: 782px) {
+						min-height: 40px;
+					}
 				}
 			}
 		}
-	}
 
-	@media (min-width: 1120px) and (max-width: 1199px) {
-		.__responsive_table {
-			&.sort-by-options {
-				@include responsive-table;
-
-				table {
-					min-width: 600px;
+		&.post-author-options,
+		&.taxonomy-options,
+		&.text-options {
+			td {
+				>div {
+					min-height: 40px;
 				}
 			}
 		}

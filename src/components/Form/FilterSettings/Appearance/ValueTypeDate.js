@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
+import { find } from 'lodash';
 import Checkbox from '../../../Field/Checkbox';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
+import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import { dateDisplayTypes } from '../../utils';
@@ -20,12 +22,10 @@ const ValueTypeDate = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		tooltipPositionField,
@@ -42,10 +42,22 @@ const ValueTypeDate = ({ index }) => {
 
 	const displayTypeField = () => {
 		const options = dateDisplayTypes(true);
+		let value;
 
-		const value = options.find(
-			(option) => date_display_type === option.value
-		);
+		value = options.find((option) => option.value === date_display_type);
+
+		if (!foundProVersion()) {
+			const freeDisplayTypes = ['input_date', 'input_date_range'];
+
+			if (!freeDisplayTypes.includes(date_display_type)) {
+				const _proOptions = find(options, { proGroup: true });
+				const proOptions = _proOptions.options;
+
+				value = proOptions.find(
+					(option) => option.value === date_display_type
+				);
+			}
+		}
 
 		return (
 			<Select
@@ -165,19 +177,13 @@ const ValueTypeDate = ({ index }) => {
 
 			{useDropdownYearField()}
 
+			{layoutFields(date_display_type)}
+
 			{enableMultipleFilterField('time_period_enable_multiple_filter')}
 
 			{queryTypeField('time_period_query_type')}
 
 			{allItemsLabelField('time_period_select_all_items_label')}
-
-			{useChosenField('time_period_use_chosen')}
-
-			{allItemsLabelFieldForUseChosen(
-				'time_period_select_all_items_label'
-			)}
-
-			{noResultsMessageField('time_period_chosen_no_results_message')}
 
 			{showCountField('time_period_show_count')}
 

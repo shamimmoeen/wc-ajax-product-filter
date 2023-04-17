@@ -1,8 +1,21 @@
-import axios from 'axios';
+import { concat } from 'lodash';
 
 export function foundProVersion() {
-	// return wcapf_admin_params.foundPro;
-	return false;
+	return wcapf_admin_params.found_pro || false;
+}
+
+export function getInputId(id, index = '', subIndex = '') {
+	let fieldId = id;
+
+	if ('' !== index) {
+		fieldId += '-' + index;
+	}
+
+	if ('' !== subIndex) {
+		fieldId += '-' + subIndex;
+	}
+
+	return fieldId;
 }
 
 // To disable the input element.
@@ -30,40 +43,8 @@ export function proTag(isProFeature) {
 	return <span className='__pro_tag' />;
 }
 
-export function upgradeToProLink() {
-	return '#';
-}
-
 export function pluginVersion() {
 	return wcapf_admin_params.version;
-}
-
-export function getAdditionalData() {
-	const data = {
-		action: 'wcapf_get_filter_additional_data',
-	};
-
-	return axios.get(wcapf_admin_params.ajaxurl, {
-		params: data,
-	});
-}
-
-export function getAvailableFilters() {
-	const data = {
-		action: 'wcapf_get_available_filters',
-	};
-
-	return axios.get(wcapf_admin_params.ajaxurl, {
-		params: data,
-	});
-}
-
-export function getFiltersPageLink() {
-	return wcapf_admin_params.filters_page_link;
-}
-
-export function getEditFilterLink(filterId) {
-	return getFiltersPageLink() + '&id=' + filterId;
 }
 
 export function getFormsPageLink() {
@@ -74,41 +55,41 @@ export function getEditFormLink(formId) {
 	return getFormsPageLink() + '&id=' + formId;
 }
 
+export function getSeoRulesPageLink() {
+	return wcapf_admin_params.seo_rules_page_link;
+}
+
 export function getSettingsPageLink() {
 	return wcapf_admin_params.settings_page_link;
+}
+
+export function upgradeToProLink() {
+	return wcapf_admin_params.upgrade_page_link;
 }
 
 export function slugify(value) {
 	return '__' + value.replace(/ /g, '_');
 }
 
-export function wcfmFound() {
-	return wcapf_admin_params.wcfm_marketplace_found;
-}
+export function mergeSelectOptions(freeOptions, proOptions, withPro = false) {
+	let options;
 
-export function getNoOfMaxTermsToRender() {
-	const maxItems =
-		parseInt(wcapf_admin_params.max_items_in_custom_appearance_modal) || 99;
+	if (withPro && !foundProVersion()) {
+		const _proOptions = proOptions.map((option) => {
+			option.isPro = true;
 
-	return maxItems < 1 ? 99 : maxItems;
-}
+			return option;
+		});
 
-export function getTimeoutForRemovingMediaFrames() {
-	const timeout =
-		parseInt(wcapf_admin_params.timeout_for_cleaning_wp_media_frames) ||
-		100;
+		options = concat(freeOptions, [
+			{
+				proGroup: true,
+				options: _proOptions,
+			},
+		]);
+	} else {
+		options = concat(freeOptions, proOptions);
+	}
 
-	return timeout < 99 ? 100 : timeout;
-}
-
-// Causing too many media frame instances at every render.
-export function removeMediaFrames(timeout) {
-	const $ = jQuery;
-
-	$('body').children('button.browser').remove();
-	$('body').children('div[id^="__wp-uploader-id"]').remove();
-
-	setTimeout(() => {
-		$('body').children('div.wp-uploader-browser').remove();
-	}, timeout);
+	return options;
 }

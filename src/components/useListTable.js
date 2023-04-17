@@ -14,7 +14,7 @@ const useListTable = (dispatch, items, postType) => {
 	const [addNewModalOpen, setAddNewModalOpen] = useState(false);
 	const [deleteModalId, setDeleteModalId] = useState(null);
 	const [duplicateModalId, setDuplicateModalId] = useState(null);
-	const [publishModalId, setPublishModalId] = useState(null);
+	const [publishModalOpen, setPublishModalOpen] = useState(false);
 	const [deletingItemId, setDeletingItemId] = useState(null);
 	const [duplicatingItemId, setDuplicatingItemId] = useState(null);
 
@@ -133,17 +133,17 @@ const useListTable = (dispatch, items, postType) => {
 			});
 	};
 
-	const handleOpenPublishModal = (id) => {
+	const handleOpenPublishModal = () => {
 		removeItemDeletedNotices();
 		removeItemDuplicatedNotices();
 
-		setPublishModalId(id);
+		setPublishModalOpen(true);
 	};
 
 	const handleClosePublishModal = () => {
 		removeCopiedToClipboardNotice();
 
-		setPublishModalId(null);
+		setPublishModalOpen(false);
 	};
 
 	return {
@@ -158,7 +158,7 @@ const useListTable = (dispatch, items, postType) => {
 		handleOpenDuplicateModal,
 		handleCloseDuplicateModal,
 		handleDuplicateItem,
-		publishModalId,
+		publishModalOpen,
 		handleOpenPublishModal,
 		handleClosePublishModal,
 		deletingItemId,

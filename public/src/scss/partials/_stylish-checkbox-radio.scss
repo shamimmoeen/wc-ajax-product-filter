@@ -1,0 +1,116 @@
+.stylish-checkbox-radio {
+	// Increase the vertical spacing when using stylish checkbox and radio.
+	--wcapf-checkbox-radio-space: 10px;
+
+	--wcapf-stylish-checkbox-radio-size: 18px;
+	--wcapf-stylish-checkbox-radio-bg-color: #fff;
+	--wcapf-stylish-checkbox-radio-disabled-bg-color: var(--wcapf-disabled-bg-color);
+	--wcapf-stylish-checkbox-radio-disabled-text-color: #ccc;
+	--wcapf-stylish-checkbox-radio-primary-color: var(--wcapf-primary-color);
+	--wcapf-stylish-checkbox-radio-primary-text-color: var(--wcapf-primary-text-color);
+	--wcapf-stylish-checkbox-radio-border-color: #ddd;
+	--wcapf-stylish-checkbox-radio-border-size: 1px;
+	--wcapf-stylish-checkbox-radio-border-radius: 2px;
+	--wcapf-stylish-checkbox-checked-width: 6px;
+	--wcapf-stylish-checkbox-checked-height: 12px;
+	--wcapf-stylish-radio-checked-size: 6px;
+
+	input[type="checkbox"],
+	input[type="radio"] {
+		-webkit-appearance: none;
+		appearance: none;
+		width: var(--wcapf-stylish-checkbox-radio-size);
+		height: var(--wcapf-stylish-checkbox-radio-size);
+		border: var(--wcapf-stylish-checkbox-radio-border-size) solid var(--wcapf-stylish-checkbox-radio-border-color);
+		border-radius: var(--wcapf-stylish-checkbox-radio-border-radius);
+		background-color: var(--wcapf-stylish-checkbox-radio-bg-color);
+		position: relative;
+		outline: none;
+		display: inline-flex;
+		flex-shrink: 0;
+		transition: none;
+		box-shadow: none;
+
+		&::after {
+			content: none;
+		}
+
+		&:focus {
+			outline: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--wcapf-primary-color);
+			outline-offset: 2px;
+		}
+	}
+
+	input[type="radio"] {
+		border-radius: 50%;
+	}
+
+	input[type="checkbox"],
+	input[type="radio"] {
+		&:disabled {
+			background: var(--wcapf-stylish-checkbox-radio-disabled-bg-color);
+		}
+	}
+
+	input[type="checkbox"]:checked {
+		background-color: var(--wcapf-stylish-checkbox-radio-primary-color);
+		border-color: var(--wcapf-stylish-checkbox-radio-primary-color);
+
+		&::before {
+			content: '';
+			left: 50%;
+			top: calc(50% - 2px);
+			transform: translate(-50%, -50%) rotate(45deg);
+			width: var(--wcapf-stylish-checkbox-checked-width);
+			height: var(--wcapf-stylish-checkbox-checked-height);
+			border-style: solid;
+			border-color: var(--wcapf-stylish-checkbox-radio-primary-text-color);
+			border-width: 0 2px 2px 0;
+			position: absolute;
+		}
+	}
+
+	input[type="radio"]:checked {
+		background-color: var(--wcapf-stylish-checkbox-radio-primary-color);
+		border-color: var(--wcapf-stylish-checkbox-radio-primary-color);
+
+		&::before {
+			content: '';
+			width: var(--wcapf-stylish-radio-checked-size);
+			height: var(--wcapf-stylish-radio-checked-size);
+			background-color: var(--wcapf-stylish-checkbox-radio-primary-text-color);
+			border-radius: 10px;
+			left: 50%;
+			top: 50%;
+			position: absolute;
+			transform: translate(-50%, -50%);
+		}
+	}
+
+	@mixin active-taxonomy {
+		background-color: var(--wcapf-stylish-checkbox-radio-disabled-bg-color); // #d1d1d1; // #eee
+		border-color: var(--wcapf-stylish-checkbox-radio-border-color);
+	}
+
+	.current-tax-item {
+		input[type="checkbox"]:checked {
+			@include active-taxonomy;
+
+			&::before {
+				border-color: var(--wcapf-stylish-checkbox-radio-disabled-text-color); // #ededed; // #ccc
+			}
+		}
+
+		input[type="radio"]:checked {
+			@include active-taxonomy;
+
+			&::before {
+				background-color: var(--wcapf-stylish-checkbox-radio-disabled-text-color);
+			}
+		}
+	}
+}

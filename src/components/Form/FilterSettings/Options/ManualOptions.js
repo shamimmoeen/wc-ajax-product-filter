@@ -6,9 +6,16 @@ import {
 	cancelCircleFilled,
 	plus,
 	closeSmall,
+	// chevronDown,
 } from '@wordpress/icons';
 import { isEmpty } from 'lodash';
-import { getTableData } from '../../utils';
+import classnames from 'classnames';
+import {
+	getTableData,
+	orderDirectionOptions,
+	swatchCanBeEnabled,
+	tooltipCanBeEnabled,
+} from '../../utils';
 import Select from '../../../Field/Select';
 import Text from '../../../Field/Text';
 import ColorInput from '../../../Field/ColorInput';
@@ -19,6 +26,12 @@ import useFormFilterData from '../../useFormFilterData';
 
 const statusOptions = wcapf_admin_params.status_options;
 const timePeriods = wcapf_admin_params.time_periods;
+const sortByOptions = wcapf_admin_params.sort_by_options;
+const metaKeys = wcapf_admin_params.meta_keys;
+const metaTypes = wcapf_admin_params.meta_types;
+const sortDirections = orderDirectionOptions();
+
+const SLOT_NAME = 'popover-slot-for-options-table';
 
 const ManualOptions = ({ index: filterIndex, openModal }) => {
 	const { state, dispatch } = useForm();
@@ -38,6 +51,9 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 
 	const rows = filter[optionsKey];
 
+	const hasTooltip = tooltipCanBeEnabled(filter) && '1' === enable_tooltip;
+	const hasSwatch = swatchCanBeEnabled(filter);
+
 	const emptyRow = () => {
 		let row;
 
@@ -49,12 +65,35 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 		} else if ('text-options' === type) {
 			row = { value: '', label: '' };
 		} else if ('number-options' === type) {
-			row = { min_value: '', max_value: '', label: '' };
+			if ('rating' === filterType) {
+				row = {
+					min_value: '',
+					max_value: '',
+					label: '',
+					secondary_label: '',
+				};
+			} else {
+				row = { min_value: '', max_value: '', label: '' };
+			}
 		} else if ('time-period-options' === type) {
 			const firstOption = timePeriods[0];
 			const value = firstOption.value;
 
 			row = { value, label: '' };
+		} else if ('sort-by-options' === type) {
+			const firstSortByOption = sortByOptions[0];
+			const sortByValue = firstSortByOption.value;
+
+			const firstSortDirection = sortDirections[1];
+			const sortDirectionValue = firstSortDirection.value;
+
+			row = {
+				value: sortByValue,
+				direction: sortDirectionValue,
+				label: '',
+			};
+		} else if ('per-page-options' === type) {
+			row = { value: '', label: '' };
 		}
 
 		return row;
@@ -117,7 +156,6 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 	};
 
 	const handleInputChange = (value, key, index) => {
-		console.log(key, index, value);
 		handleChange(value, index, key);
 	};
 
@@ -126,8 +164,8 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 			if (_index === index) {
 				return {
 					..._row,
-					secondaryColorEnabled: '',
-					secondaryColor: '',
+					secondary_color_enabled: '',
+					secondary_color: '',
 				};
 			}
 
@@ -137,10 +175,10 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 		updateRows(_rows);
 	};
 
-	const handleAddImage = (imageId, imageUrl, index) => {
+	const handleAddImage = (image_id, image_url, index) => {
 		const _rows = rows.map((_row, _index) => {
 			if (_index === index) {
-				return { ..._row, imageId, imageUrl };
+				return { ..._row, image_id, image_url };
 			}
 
 			return _row;
@@ -152,7 +190,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 	const handleRemoveImage = (index) => {
 		const _rows = rows.map((_row, _index) => {
 			if (_index === index) {
-				return { ..._row, imageId: '', imageUrl: '' };
+				return { ..._row, image_id: '', image_url: '' };
 			}
 
 			return _row;
@@ -181,6 +219,18 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 			});
 
 		customUploader.open();
+	};
+
+	const handleSwatchChange = (index, type) => {
+		const _rows = rows.map((_row, _index) => {
+			if (_index === index) {
+				return { ..._row, swatch: type };
+			}
+
+			return _row;
+		});
+
+		updateRows(_rows);
 	};
 
 	const tableHeader = () => {
@@ -224,6 +274,11 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<th className={classes}>
 						{__('Label', 'wc-ajax-product-filter')}
 					</th>
+					{'rating' === filterType && (
+						<th className='__secondary_label'>
+							{__('Secondary Label', 'wc-ajax-product-filter')}
+						</th>
+					)}
 				</>
 			);
 		} else if ('time-period-options' === type) {
@@ -231,6 +286,31 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 				<>
 					<th className='__time_period'>
 						{__('Period', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+				</>
+			);
+		} else if ('sort-by-options' === type) {
+			return (
+				<>
+					<th className='__sort_by'>
+						{__('Sort by', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__direction'>
+						{__('Direction', 'wc-ajax-product-filter')}
+					</th>
+					<th className='__label'>
+						{__('Label', 'wc-ajax-product-filter')}
+					</th>
+				</>
+			);
+		} else if ('per-page-options' === type) {
+			return (
+				<>
+					<th className='__per_page'>
+						{__('Per page', 'wc-ajax-product-filter')}
 					</th>
 					<th className='__label'>
 						{__('Label', 'wc-ajax-product-filter')}
@@ -246,21 +326,6 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<th className='__label'>
 						{__('Label', 'wc-ajax-product-filter')}
 					</th>
-					{'1' === enable_tooltip && (
-						<th className='__tooltip'>
-							{__('Tooltip', 'wc-ajax-product-filter')}
-						</th>
-					)}
-					{'color' === display_type && (
-						<th className='__color'>
-							{__('Color', 'wc-ajax-product-filter')}
-						</th>
-					)}
-					{'image' === display_type && (
-						<th className='__image'>
-							{__('Image', 'wc-ajax-product-filter')}
-						</th>
-					)}
 				</>
 			);
 		} else if ('post-author-options' === type) {
@@ -272,21 +337,6 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<th className='__label'>
 						{__('Label', 'wc-ajax-product-filter')}
 					</th>
-					{'1' === enable_tooltip && (
-						<th className='__tooltip'>
-							{__('Tooltip', 'wc-ajax-product-filter')}
-						</th>
-					)}
-					{'color' === display_type && (
-						<th className='__color'>
-							{__('Color', 'wc-ajax-product-filter')}
-						</th>
-					)}
-					{'image' === display_type && (
-						<th className='__image'>
-							{__('Image', 'wc-ajax-product-filter')}
-						</th>
-					)}
 				</>
 			);
 		}
@@ -321,100 +371,191 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 		);
 	};
 
+	const appearanceHeaders = () => {
+		return (
+			<>
+				{hasTooltip && (
+					<th className='__tooltip'>
+						{__('Tooltip', 'wc-ajax-product-filter')}
+					</th>
+				)}
+
+				{hasSwatch && (
+					<th className='__color_image'>
+						{__('Color / Image Swatch', 'wc-ajax-product-filter')}
+					</th>
+				)}
+			</>
+		);
+	};
+
 	const appearanceColumns = (row, rowIndex) => {
 		const {
 			tooltip,
+			swatch,
 			color,
-			secondaryColorEnabled,
-			secondaryColor,
-			imageId,
-			imageUrl,
+			secondary_color_enabled,
+			secondary_color,
+			image_id,
+			image_url,
 		} = row;
+
+		const currentSwatch = swatch ? swatch : display_type;
+
+		const swatchButtons = () => {
+			if ('color' === currentSwatch) {
+				return (
+					<div className='__swatch_switches'>
+						{__('Color', 'wc-ajax-product-filter')}
+						{` `}/{` `}
+						<Button
+							variant='link'
+							onClick={() =>
+								handleSwatchChange(rowIndex, 'image')
+							}
+						>
+							{__('Image', 'wc-ajax-product-filter')}
+						</Button>
+					</div>
+				);
+			} else if ('image' === currentSwatch) {
+				return (
+					<div className='__swatch_switches'>
+						<Button
+							variant='link'
+							onClick={() =>
+								handleSwatchChange(rowIndex, 'color')
+							}
+						>
+							{__('Color', 'wc-ajax-product-filter')}
+						</Button>
+						{` `}/{` `}
+						{__('Image', 'wc-ajax-product-filter')}
+					</div>
+				);
+			}
+		};
+
+		const secondaryColor = () => {
+			if ('1' === secondary_color_enabled) {
+				return (
+					<>
+						<ColorInput
+							slotName={SLOT_NAME}
+							value={secondary_color}
+							onChange={(value) =>
+								handleChange(value, rowIndex, 'secondary_color')
+							}
+						/>
+
+						<Button
+							variant='link'
+							isDestructive
+							onClick={() => handleRemoveSecondaryColor(rowIndex)}
+						>
+							<Icon icon={closeSmall} />
+						</Button>
+					</>
+				);
+			} else {
+				return (
+					<>
+						<Button
+							variant='link'
+							isDestructive
+							onClick={() => handleChange('', rowIndex, 'color')}
+						>
+							<Icon icon={closeSmall} />
+						</Button>
+
+						<Button
+							isSmall
+							icon={plus}
+							onClick={() =>
+								handleChange(
+									'1',
+									rowIndex,
+									'secondary_color_enabled'
+								)
+							}
+						/>
+					</>
+				);
+			}
+		};
 
 		return (
 			<>
-				{'1' === enable_tooltip && (
+				{hasTooltip && (
 					<td>
 						{inputField('__tooltip', rowIndex, 'tooltip', tooltip)}
 					</td>
 				)}
 
-				{'color' === display_type && (
+				{hasSwatch && (
 					<td>
-						<div className='__color'>
-							<ColorInput
-								value={color}
-								onChange={(value) =>
-									handleChange(value, rowIndex, 'color')
-								}
-							/>
-
-							{'1' === secondaryColorEnabled ? (
-								<>
-									<ColorInput
-										value={secondaryColor}
-										onChange={(value) =>
-											handleChange(
-												value,
-												rowIndex,
-												'secondaryColor'
-											)
-										}
-									/>
-
-									<Button
-										variant='link'
-										isDestructive
-										onClick={() =>
-											handleRemoveSecondaryColor(rowIndex)
-										}
-									>
-										<Icon icon={closeSmall} />
-									</Button>
-								</>
-							) : (
-								<Button
+						<div className='__swatch_wrapper'>
+							<div className='__primary_settings'>
+								{/* <Button
+									className='__more_settings'
+									icon={chevronDown}
 									isSmall
-									icon={plus}
-									onClick={() =>
-										handleChange(
-											'1',
-											rowIndex,
-											'secondaryColorEnabled'
-										)
-									}
-								/>
-							)}
-						</div>
-					</td>
-				)}
+								></Button> */}
 
-				{'image' === display_type && (
-					<td>
-						<div className='__image'>
-							{imageId ? (
-								<>
-									<img
-										className='__img_preview'
-										src={imageUrl}
-									/>
+								{swatchButtons()}
 
-									<Button
-										variant='link'
-										isDestructive
-										onClick={() =>
-											handleRemoveImage(rowIndex)
-										}
-									>
-										<Icon icon={closeSmall} />
-									</Button>
-								</>
-							) : (
-								<Button
-									icon={PictureIcon}
-									onClick={() => openMediaUpload(rowIndex)}
-								/>
-							)}
+								{'color' === currentSwatch && (
+									<div className='__color'>
+										<ColorInput
+											slotName={SLOT_NAME}
+											value={color}
+											onChange={(value) =>
+												handleChange(
+													value,
+													rowIndex,
+													'color'
+												)
+											}
+										/>
+
+										{color && secondaryColor()}
+									</div>
+								)}
+
+								{'image' === currentSwatch && (
+									<div className='__image'>
+										{image_id ? (
+											<>
+												<img
+													className='__img_preview'
+													src={image_url}
+												/>
+
+												<Button
+													variant='link'
+													isDestructive
+													onClick={() =>
+														handleRemoveImage(
+															rowIndex
+														)
+													}
+												>
+													<Icon icon={closeSmall} />
+												</Button>
+											</>
+										) : (
+											<Button
+												icon={PictureIcon}
+												onClick={() =>
+													openMediaUpload(rowIndex)
+												}
+											/>
+										)}
+									</div>
+								)}
+							</div>
+
+							<div className='__more_settings'></div>
 						</div>
 					</td>
 				)}
@@ -439,6 +580,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 							selected
 						)}
 					</td>
+
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
@@ -448,11 +590,12 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 			return (
 				<>
 					<td>{inputField('__value', rowIndex, 'value', value)}</td>
+
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
 		} else if ('number-options' === type) {
-			const { min_value, max_value, label } = row;
+			const { min_value, max_value, label, secondary_label } = row;
 
 			let classes = '__label';
 
@@ -470,6 +613,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 							min_value
 						)}
 					</td>
+
 					<td>
 						{inputField(
 							'__max_value',
@@ -478,7 +622,19 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 							max_value
 						)}
 					</td>
+
 					<td>{inputField(classes, rowIndex, 'label', label)}</td>
+
+					{'rating' === filterType && (
+						<td>
+							{inputField(
+								'secondary_label',
+								rowIndex,
+								'secondary_label',
+								secondary_label
+							)}
+						</td>
+					)}
 				</>
 			);
 		} else if ('time-period-options' === type) {
@@ -497,6 +653,92 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 							selected
 						)}
 					</td>
+
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+				</>
+			);
+		} else if ('sort-by-options' === type) {
+			const { value, direction, label, meta_key, meta_type } = row;
+
+			const sortByValue = sortByOptions.find(
+				(option) => value === option.value
+			);
+
+			const sortDirectionValue = sortDirections.find(
+				(option) => direction === option.value
+			);
+
+			const isDisabled = 'rand' === value;
+
+			const metaValue = metaKeys.find(
+				(option) => meta_key === option.value
+			);
+
+			const metaType = metaTypes.find(
+				(option) => meta_type === option.value
+			);
+
+			return (
+				<>
+					<td>
+						{selectField(
+							'__sort_by',
+							rowIndex,
+							'value',
+							sortByOptions,
+							sortByValue
+						)}
+
+						{'meta_value' === value && (
+							<div className='__meta_info'>
+								<div>
+									{__('Meta Key', 'wc-ajax-product-filter')}
+									{selectField(
+										'__meta_key',
+										rowIndex,
+										'meta_key',
+										metaKeys,
+										metaValue
+									)}
+								</div>
+
+								<div>
+									{__('Meta Type', 'wc-ajax-product-filter')}
+									{selectField(
+										'__meta_type',
+										rowIndex,
+										'meta_type',
+										metaTypes,
+										metaType
+									)}
+								</div>
+							</div>
+						)}
+					</td>
+
+					<td>
+						{!isDisabled &&
+							selectField(
+								'__direction',
+								rowIndex,
+								'direction',
+								sortDirections,
+								sortDirectionValue
+							)}
+					</td>
+
+					<td>{inputField('__label', rowIndex, 'label', label)}</td>
+				</>
+			);
+		} else if ('per-page-options' === type) {
+			const { value, label } = row;
+
+			return (
+				<>
+					<td>
+						{inputField('__per_page', rowIndex, 'value', value)}
+					</td>
+
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
@@ -516,8 +758,6 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					</td>
 
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
-
-					{appearanceColumns(row, rowIndex)}
 				</>
 			);
 		} else if ('post-author-options' === type) {
@@ -536,67 +776,76 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					</td>
 
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
-
-					{appearanceColumns(row, rowIndex)}
 				</>
 			);
 		}
 	};
 
 	const table = () => {
-		const classes = `__responsive_table ${type}`;
+		const classes = classnames(
+			'__responsive_table',
+			type,
+			{ 'tooltip-enabled': hasTooltip },
+			{ 'swatch-enabled': hasSwatch }
+		);
 
 		return (
-			<div className={classes}>
-				<table className='wp-list-table widefat fixed striped'>
-					<thead>
-						<tr>
-							<th className='__drag_handle' />
-							{tableHeader()}
-							<th className='__action' />
-						</tr>
-					</thead>
-					<ReactSortable
-						list={rows}
-						setList={setRows}
-						tag={'tbody'}
-						direction={'vertical'}
-						handle='.__drag_handler'
-						onSort={setDirty}
-					>
-						{rows.map((row, rowIndex) => {
-							return (
-								<tr key={`filter-option-${rowIndex}`}>
-									<td>
-										<div>
-											<Icon
-												icon={dragHandle}
-												className='__drag_handler'
-											/>
-										</div>
-									</td>
-									{tableBody(row, rowIndex)}
-									<td>
-										<div>
-											<button
-												className='button-link button-link-delete'
-												onClick={() =>
-													handleRemove(rowIndex)
-												}
-											>
+			<>
+				<div className={classes}>
+					<table className='wp-list-table widefat fixed striped'>
+						<thead>
+							<tr>
+								<th className='__drag_handle' />
+								{tableHeader()}
+								{appearanceHeaders()}
+								<th className='__action' />
+							</tr>
+						</thead>
+						<ReactSortable
+							list={rows}
+							setList={setRows}
+							tag={'tbody'}
+							direction={'vertical'}
+							handle='.__drag_handler'
+							onSort={setDirty}
+						>
+							{rows.map((row, rowIndex) => {
+								return (
+									<tr key={`filter-option-${rowIndex}`}>
+										<td>
+											<div className='__drag_handler_wrapper'>
 												<Icon
-													icon={cancelCircleFilled}
-													size={20}
+													icon={dragHandle}
+													className='__drag_handler'
 												/>
-											</button>
-										</div>
-									</td>
-								</tr>
-							);
-						})}
-					</ReactSortable>
-				</table>
-			</div>
+											</div>
+										</td>
+										{tableBody(row, rowIndex)}
+										{appearanceColumns(row, rowIndex)}
+										<td>
+											<div className='__remove_row_button_wrapper'>
+												<button
+													className='button-link button-link-delete'
+													onClick={() =>
+														handleRemove(rowIndex)
+													}
+												>
+													<Icon
+														icon={
+															cancelCircleFilled
+														}
+														size={20}
+													/>
+												</button>
+											</div>
+										</td>
+									</tr>
+								);
+							})}
+						</ReactSortable>
+					</table>
+				</div>
+			</>
 		);
 	};
 
@@ -635,10 +884,19 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 		'wc-ajax-product-filter'
 	);
 
+	const withLabelAndTooltips = ['taxonomy', 'product-status', 'post-meta'];
+
 	if ('rating' === filterType) {
 		description = sprintf(
 			__(
 				'Add the options that will be available to the filter. To show stars in the label, put <code>[star]</code> for filled star, <code>[star-empty]</code> for empty star and <code>[star-half]</code> for half star.',
+				'wc-ajax-product-filter'
+			)
+		);
+	} else if (withLabelAndTooltips.includes(filterType)) {
+		description = sprintf(
+			__(
+				'Add the options that will be available to the filter. <b>Note:</b> Leave the label and tooltip fields empty if you do not want to override.',
 				'wc-ajax-product-filter'
 			)
 		);

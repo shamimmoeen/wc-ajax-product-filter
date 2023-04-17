@@ -5,10 +5,17 @@ import { merge } from 'lodash';
 import TopBar from '../TopBar';
 import FormTitle from './FormTitle';
 import FormTabPanel from './FormTabPanel';
-import FormPreview from './FormPreview';
+// import FormPreview from './FormPreview';
 import Notifications from '../Notifications';
-import { getAvailableFilters } from '../utils';
 import { defaultFormSettings } from '../utilsForForm';
+import {
+	filterDefaultData,
+	proFilterComponents,
+	proFilterTypes,
+} from './utils';
+import { foundProVersion } from '../utils';
+
+const WCAPF_PRO = foundProVersion();
 
 const Form = () => {
 	const { dispatch } = useForm();
@@ -28,21 +35,61 @@ const Form = () => {
 	};
 
 	useEffect(() => {
-		Promise.all([getAvailableFilters(), getFormData()])
-			.then((results) => {
-				const resAvailableFilters = results[0];
-				const resFormFilters = results[1];
-
-				const {
-					data: { data: availableFilters },
-				} = resAvailableFilters;
-
+		getFormData()
+			.then((response) => {
 				const {
 					data: { data: formData },
-				} = resFormFilters;
+				} = response;
 
-				const formFilters = formData['form_filters'];
+				const filterKeys = formData['filter_keys'];
+				const formFilters = [];
+				const _formFilters = formData['form_filters'];
 				const formSettings = formData['form_settings'];
+
+				const proTypes = proFilterTypes();
+				const proComponents = proFilterComponents();
+
+				for (let index = 0; index < _formFilters.length; index++) {
+					const _formFilter = _formFilters[index];
+
+					const isPro =
+						proTypes.includes(_formFilter['type']) ||
+						proComponents.includes(_formFilter['component']);
+
+					if (!WCAPF_PRO && isPro) {
+						continue;
+					}
+
+					const formFilter = {
+						...filterDefaultData(),
+						..._formFilter,
+					};
+
+					formFilters.push(formFilter);
+				}
+
+				dispatch({
+					type: 'SET_FILTER_KEYS',
+					payload: filterKeys,
+				});
+
+				// The accordion states of form filters.
+				const accordionStates = [];
+
+				// TODO: Remove commented codes.
+				for (let index = 0; index < formFilters.length; index++) {
+					// if (index === 0) {
+					// 	accordionStates[index] = true;
+					// } else {
+					// 	accordionStates[index] = false;
+					// }
+					accordionStates[index] = false;
+				}
+
+				dispatch({
+					type: 'SET_ACCORDION_STATES',
+					payload: accordionStates,
+				});
 
 				dispatch({
 					type: 'SET_FORM_FILTERS',
@@ -52,19 +99,6 @@ const Form = () => {
 				dispatch({
 					type: 'SET_FORM_SETTINGS',
 					payload: merge(defaultFormSettings(), formSettings),
-				});
-
-				const _availableFilters = availableFilters.map((item) => {
-					if (formFilters.find((filter) => filter.id === item.id)) {
-						return { ...item, status: 'added' };
-					}
-
-					return item;
-				});
-
-				dispatch({
-					type: 'SET_AVAILABLE_FILTERS',
-					payload: _availableFilters,
 				});
 
 				dispatch({ type: 'SET_LOADING', payload: false });
@@ -91,7 +125,7 @@ const Form = () => {
 						</div>
 					</div>
 
-					<FormPreview />
+					{/* <FormPreview /> */}
 				</div>
 
 				<Notifications />

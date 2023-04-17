@@ -1,6 +1,6 @@
 {
   "name": "wc-ajax-product-filter",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "main": "Gruntfile.js",
   "author": "wptools.io",
   "scripts": {
@@ -45,7 +45,9 @@
     "less-plugin-clean-css": "^1.5.1"
   },
   "dependencies": {
+    "@tippyjs/react": "^4.2.6",
     "@wordpress/icons": "^9.5.0",
+    "array-move": "^4.0.0",
     "axios": "^0.27.2",
     "postcss": "^8.4.14",
     "react-paginate": "^8.1.3",

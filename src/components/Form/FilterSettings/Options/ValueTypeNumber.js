@@ -1,9 +1,9 @@
 import { __ } from '@wordpress/i18n';
+import Checkbox from '../../../Field/Checkbox';
 import Number from '../../../Field/Number';
 import Text from '../../../Field/Text';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
-import FieldNumber from './FieldNumber';
 import ManualOptions from './ManualOptions';
 import useFields from './useFields';
 
@@ -23,15 +23,18 @@ const ValueTypeNumber = ({ index }) => {
 
 	const {
 		number_display_type,
+		number_range_slider_display_values_as,
 		number_get_options,
+		auto_detect_min_max,
 		min_value,
-		min_value_auto_detect,
 		max_value,
-		max_value_auto_detect,
 		step,
 		value_prefix,
 		value_postfix,
 		values_separator,
+		text_before_min_value,
+		text_before_max_value,
+		format_numbers,
 		decimal_places,
 		thousand_separator,
 		decimal_separator,
@@ -72,89 +75,157 @@ const ValueTypeNumber = ({ index }) => {
 
 		if (showField) {
 			return (
-				<div className='number-ui-options'>
-					<div className='cols-wrapper'>
-						<FieldNumber
-							id={'min_value'}
-							index={index}
-							label={__('Min Value', 'wc-ajax-product-filter')}
-							description={__(
-								'The minimum value that a user can select.',
-								'wc-ajax-product-filter'
-							)}
-							disabled={'1' === min_value_auto_detect}
-							value={min_value}
-							onChange={handleTextFieldChange}
-							checkboxId={'min_value_auto_detect'}
-							checkIsChecked={min_value_auto_detect}
-							onCheckChange={handleCheckboxChange}
-						/>
-						<FieldNumber
-							id={'max_value'}
-							index={index}
-							label={__('Max Value', 'wc-ajax-product-filter')}
-							description={__(
-								'The maximum value that a user can select.',
-								'wc-ajax-product-filter'
-							)}
-							disabled={'1' === max_value_auto_detect}
-							value={max_value}
-							onChange={handleTextFieldChange}
-							checkboxId={'max_value_auto_detect'}
-							checkIsChecked={max_value_auto_detect}
-							onCheckChange={handleCheckboxChange}
-						/>
-						<Number
-							id={'step'}
-							index={index}
-							label={__('Step', 'wc-ajax-product-filter')}
-							description={__(
-								'The step specifies the size of the increment.',
-								'wc-ajax-product-filter'
-							)}
-							value={step}
-							onChange={handleTextFieldChange}
-						/>
-					</div>
-					<div className='cols-wrapper'>
-						<Text
-							id={'value_prefix'}
-							index={index}
-							label={__('Value Prefix', 'wc-ajax-product-filter')}
-							description={__(
-								'Text to appear before the values. Example: A currency symbol, $.',
-								'wc-ajax-product-filter'
-							)}
-							value={value_prefix}
-							onChange={handleTextFieldChange}
-						/>
-						<Text
-							id={'value_postfix'}
-							index={index}
-							label={__(
-								'Value Postfix',
-								'wc-ajax-product-filter'
-							)}
-							description={__(
-								'Text to appear after the values. Example: A currency symbol, €.',
-								'wc-ajax-product-filter'
-							)}
-							value={value_postfix}
-							onChange={handleTextFieldChange}
-						/>
-						<Text
-							id={'values_separator'}
-							index={index}
-							label={__(
-								'Values Separator',
-								'wc-ajax-product-filter'
-							)}
-							value={values_separator}
-							onChange={handleTextFieldChange}
-						/>
-					</div>
-					{'range_number' !== number_display_type && (
-						<div className='cols-wrapper'>
+				<>
+					<Checkbox
+						id={'auto_detect_min_max'}
+						index={index}
+						label={__(
+							'Auto detect Min and Max',
+							'wc-ajax-product-filter'
+						)}
+						description={__(
+							'Whether to detect the min and max values from the database.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={auto_detect_min_max}
+						onChange={handleCheckboxChange}
+					/>
+
+					{'1' !== auto_detect_min_max && (
+						<>
+							<Number
+								id={'min_value'}
+								index={index}
+								label={__(
+									'Min Value',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'The minimum value that a user can select.',
+									'wc-ajax-product-filter'
+								)}
+								value={min_value}
+								onChange={handleTextFieldChange}
+							/>
+
+							<Number
+								id={'max_value'}
+								index={index}
+								label={__(
+									'Max Value',
+									'wc-ajax-product-filter'
+								)}
+								description={__(
+									'The maximum value that a user can select.',
+									'wc-ajax-product-filter'
+								)}
+								value={max_value}
+								onChange={handleTextFieldChange}
+							/>
+						</>
+					)}
+
+					<Number
+						id={'step'}
+						index={index}
+						label={__('Step', 'wc-ajax-product-filter')}
+						description={__(
+							'Determines the size of the increment amount.',
+							'wc-ajax-product-filter'
+						)}
+						value={step}
+						onChange={handleTextFieldChange}
+						min='1'
+					/>
+
+					<Text
+						id={'value_prefix'}
+						index={index}
+						label={__('Value Prefix', 'wc-ajax-product-filter')}
+						description={__(
+							'This should be used for the unit. Example: $',
+							'wc-ajax-product-filter'
+						)}
+						value={value_prefix}
+						onChange={handleTextFieldChange}
+						customClass='input-small'
+					/>
+
+					<Text
+						id={'value_postfix'}
+						index={index}
+						label={__('Value Postfix', 'wc-ajax-product-filter')}
+						description={__(
+							'This should be used for the unit. Example: €',
+							'wc-ajax-product-filter'
+						)}
+						value={value_postfix}
+						onChange={handleTextFieldChange}
+						customClass='input-small'
+					/>
+
+					<Text
+						id={'values_separator'}
+						index={index}
+						label={__('Values Separator', 'wc-ajax-product-filter')}
+						description={__(
+							'Text to appear between the min and max values. Example: –',
+							'wc-ajax-product-filter'
+						)}
+						value={values_separator}
+						onChange={handleTextFieldChange}
+					/>
+
+					{'range_slider' === number_display_type &&
+						'plain_text' ===
+							number_range_slider_display_values_as && (
+							<>
+								<Text
+									id={'text_before_min_value'}
+									index={index}
+									label={__(
+										'Text before min value',
+										'wc-ajax-product-filter'
+									)}
+									description={__(
+										'Text to appear before the min value.',
+										'wc-ajax-product-filter'
+									)}
+									value={text_before_min_value}
+									onChange={handleTextFieldChange}
+								/>
+
+								<Text
+									id={'text_before_max_value'}
+									index={index}
+									label={__(
+										'Text before max value',
+										'wc-ajax-product-filter'
+									)}
+									description={__(
+										'Text to appear before the max value.',
+										'wc-ajax-product-filter'
+									)}
+									value={text_before_max_value}
+									onChange={handleTextFieldChange}
+								/>
+							</>
+						)}
+
+					<Checkbox
+						id={'format_numbers'}
+						index={index}
+						label={__('Format Numbers', 'wc-ajax-product-filter')}
+						description={__(
+							'Enable this if you want to format the numbers.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={format_numbers}
+						onChange={handleCheckboxChange}
+					/>
+
+					{'1' === format_numbers && (
+						<>
 							<Number
 								id={'decimal_places'}
 								index={index}
@@ -164,7 +235,10 @@ const ValueTypeNumber = ({ index }) => {
 								)}
 								value={decimal_places}
 								onChange={handleTextFieldChange}
+								min='1'
+								max='6'
 							/>
+
 							<Text
 								id={'thousand_separator'}
 								index={index}
@@ -174,7 +248,9 @@ const ValueTypeNumber = ({ index }) => {
 								)}
 								value={thousand_separator}
 								onChange={handleTextFieldChange}
+								customClass='input-small'
 							/>
+
 							<Text
 								id={'decimal_separator'}
 								index={index}
@@ -184,10 +260,11 @@ const ValueTypeNumber = ({ index }) => {
 								)}
 								value={decimal_separator}
 								onChange={handleTextFieldChange}
+								customClass='input-small'
 							/>
-						</div>
+						</>
 					)}
-				</div>
+				</>
 			);
 		}
 	};

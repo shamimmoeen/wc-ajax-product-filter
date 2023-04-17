@@ -6,7 +6,7 @@ import {
 	removeCopiedToClipboardNotice,
 } from '../notices';
 
-const PublishModal = ({ isOpen: id, closeModal, postType }) => {
+const PublishModal = ({ isOpen, closeModal }) => {
 	const clipboardApiFound = window.isSecureContext && navigator.clipboard;
 
 	const handleCopyToClipboard = (text) => {
@@ -26,16 +26,9 @@ const PublishModal = ({ isOpen: id, closeModal, postType }) => {
 	const getTabContent = (tab) => {
 		let description;
 		let code;
-		let shortcode;
-		let widgetName;
 
-		if ('filter' === postType) {
-			shortcode = `[wcapf_filter id="${id}"]`;
-			widgetName = 'WC Ajax Product Filter';
-		} else if ('form' === postType) {
-			shortcode = `[wcapf_form id="${id}"]`;
-			widgetName = 'WC Ajax Product Filter Form';
-		}
+		const shortcode = `[wcapf_form]`;
+		const widgetName = 'WC Ajax Product Filter — Form';
 
 		const widgetsPageLink = wcapf_admin_params.widgets_page_link;
 
@@ -54,7 +47,7 @@ const PublishModal = ({ isOpen: id, closeModal, postType }) => {
 		} else {
 			description = sprintf(
 				__(
-					'If you want to use it in a widget, go to the widgets page, add <b>%s</b> widget to the desired area.',
+					'Go to the widgets page, add <b>%s</b> widget to the desired area.',
 					'wc-ajax-product-filter'
 				),
 				widgetName
@@ -106,23 +99,15 @@ const PublishModal = ({ isOpen: id, closeModal, postType }) => {
 		);
 	};
 
-	let heading;
-
-	if ('filter' === postType) {
-		heading = __('Publish Filter', 'wc-ajax-product-filter');
-	} else if ('form' === postType) {
-		heading = __('Publish Form', 'wc-ajax-product-filter');
-	}
-
 	return (
-		id && (
+		isOpen && (
 			<Modal
 				onRequestClose={closeModal}
 				__experimentalHideHeader
 				className='__publish_modal'
 			>
 				<>
-					<h3>{heading}</h3>
+					<h3>{__('Publish Form', 'wc-ajax-product-filter')}</h3>
 
 					<TabPanel
 						className='__publish_tab_panel'
@@ -130,26 +115,23 @@ const PublishModal = ({ isOpen: id, closeModal, postType }) => {
 						onSelect={handleTabChange}
 						tabs={[
 							{
+								name: 'widget',
+								title: __('Widget', 'wc-ajax-product-filter'),
+							},
+							{
 								name: 'shortcode',
 								title: __(
 									'Shortcode',
 									'wc-ajax-product-filter'
 								),
-								className: 'shortcode',
 							},
 							{
 								name: 'php-code',
 								title: __('PHP Code', 'wc-ajax-product-filter'),
-								className: 'php-code',
-							},
-							{
-								name: 'widget',
-								title: __('Widget', 'wc-ajax-product-filter'),
-								className: 'widget',
 							},
 						]}
 					>
-						{(tab) => getTabContent(tab.name)}
+						{({ name }) => getTabContent(name)}
 					</TabPanel>
 				</>
 			</Modal>

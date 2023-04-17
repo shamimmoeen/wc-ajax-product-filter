@@ -8,13 +8,21 @@ import {
 	EditIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { slugify } from '../utils';
+import { foundProVersion, slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
+import TippyTooltip from '../TippyTooltip';
 
-// TODO: Add form location column.
+const WCAPF_PRO = foundProVersion();
+
+const filterOnTooltip = __(
+	'Determines where you want to show the form to filter the products.',
+	'wc-ajax-product-filter'
+);
+
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),
+	__('Available on', 'wc-ajax-product-filter'),
 	__('Actions', 'wc-ajax-product-filter'),
 ];
 
@@ -36,12 +44,14 @@ const Table = ({
 		return (
 			<tr>
 				{headers.map((item) => {
+					const id = slugify(item);
+
 					return (
-						<th
-							className={slugify(item)}
-							key={`posts-table-${item}`}
-						>
+						<th className={id} key={`posts-table-${item}`}>
 							{item}
+							{'__Available_on' === id && (
+								<TippyTooltip content={filterOnTooltip} />
+							)}
 						</th>
 					);
 				})}
@@ -53,43 +63,49 @@ const Table = ({
 		forms.map((_form) => {
 			const form = prepareFormData(_form);
 
-			const filterId = form.id;
-			const filterTitle = form.title
+			const formId = form.id;
+			const formTitle = form.title
 				? form.title
 				: __('(no title)', 'wc-ajax-product-filter');
 
-			const isDeleting = filterId === deletingItemId;
-			const isDuplicating = filterId === duplicatingItemId;
+			const isDeleting = formId === deletingItemId;
+			const isDuplicating = formId === duplicatingItemId;
 
 			return (
-				<tr key={filterId}>
+				<tr key={formId}>
 					<td className='__Title'>
 						<a href={form.editLink} className='__post_title'>
-							{filterTitle}
+							{formTitle}
 						</a>
-						<span className='__post_id'>
-							{__('ID', 'wc-ajax-product-filter')}:{` `}
-							{filterId}
-						</span>
+					</td>
+					<td className='__Available_on'>
+						{WCAPF_PRO
+							? form.locations
+							: __(
+									'Product archive pages',
+									'wc-ajax-product-filter'
+							  )}
 					</td>
 					<td className='__Actions'>
 						<Button
 							icon={DeleteIcon}
-							onClick={() => openDeleteModal(filterId)}
+							onClick={() => openDeleteModal(formId)}
 							isBusy={isDeleting}
 							disabled={isDeleting}
 							isSmall
 						/>
-						<Button
-							icon={DuplicateIcon}
-							onClick={() => openDuplicateModal(filterId)}
-							isBusy={isDuplicating}
-							disabled={isDuplicating}
-							isSmall
-						/>
+						{WCAPF_PRO && (
+							<Button
+								icon={DuplicateIcon}
+								onClick={() => openDuplicateModal(formId)}
+								isBusy={isDuplicating}
+								disabled={isDuplicating}
+								isSmall
+							/>
+						)}
 						<Button
 							icon={CodeIcon}
-							onClick={() => openPublishModal(filterId)}
+							onClick={openPublishModal}
 							isSmall
 						/>
 						<Button
@@ -149,7 +165,7 @@ const Table = ({
 					<h2>{__('List of Forms', 'wc-ajax-product-filter')}</h2>
 
 					<Button variant='primary' onClick={openAddNewModal}>
-						<Icon icon={PlusIcon} size={16} />
+						<Icon icon={PlusIcon} size={14} />
 						{__('Add New', 'wc-ajax-product-filter')}
 					</Button>
 				</div>

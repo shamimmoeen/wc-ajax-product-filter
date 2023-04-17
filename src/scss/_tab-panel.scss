@@ -22,30 +22,16 @@
 		}
 	}
 
-	// TODO: Remove unnecessary css codes.
-	&.filter_ui {
-		.__available_filters {
-			margin-bottom: 2em;
+	.components-tab-panel__tab-content {
+		min-height: 120px;
+		padding: 40px;
 
-			.__inner {
-				padding: 0;
-			}
+		@media (max-width: 960px) {
+			padding: 40px 24px;
 		}
-	}
 
-	&:not(.filter_ui),
-	.__filter_ui_tab_panel {
-		.components-tab-panel__tab-content {
-			min-height: 120px;
-			padding: 40px;
-
-			@media (max-width: 960px) {
-				padding: 40px 24px;
-			}
-
-			@media (max-width: 599px) {
-				padding: 30px 16px 40px;
-			}
+		@media (max-width: 599px) {
+			padding: 30px 16px 40px;
 		}
 	}
 }

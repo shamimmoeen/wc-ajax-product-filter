@@ -9,7 +9,7 @@ const ProFeaturesNotice = ({ message }) => {
 					<p>
 						{message}
 						{` `}
-						<a href={upgradeToProLink()} target='_blank'>
+						<a href={upgradeToProLink()}>
 							{__('Upgrade', 'wc-ajax-product-filter')}
 						</a>
 					</p>

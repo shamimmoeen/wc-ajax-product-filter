@@ -1,7 +1,6 @@
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useForm } from '../../FormContext';
-import { manualEntryOrderTypes, metaValuesOrderByOptions } from '../../utils';
 import ManualOptions from './ManualOptions';
 import ManualOptionsModal from './ManualOptionsModal';
 import useFields from './useFields';
@@ -25,21 +24,6 @@ const ValueTypeText = ({ index }) => {
 	const filter = formFilters[index];
 
 	const { get_options, options_order_by } = filter;
-
-	const _orderByField = () => {
-		let _options = metaValuesOrderByOptions();
-		let options;
-
-		if ('automatically' === get_options) {
-			options = _options.filter(
-				(option) => !manualEntryOrderTypes().includes(option.value)
-			);
-		} else {
-			options = _options;
-		}
-
-		return orderByField('options_order_by', options, true);
-	};
 
 	const _orderDirectionField = () => {
 		if ('none' !== options_order_by) {
@@ -75,7 +59,7 @@ const ValueTypeText = ({ index }) => {
 		<>
 			{getOptionsField('get_options')}
 
-			{_orderByField()}
+			{orderByField('options_order_by')}
 
 			{_orderDirectionField()}
 

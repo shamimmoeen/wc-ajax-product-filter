@@ -1,0 +1,219 @@
+.wcapf-range-slider {
+	--wcapf-nouislider-target-bg-color: #e1e1e1;
+	--wcapf-nouislider-target-border-radius: 5px;
+	--wcapf-nouislider-connects-border-radius: 5px;
+	--wcapf-nouislider-handle-border-radius: 50%;
+
+	.wcapf-noui-handle {
+		outline: none;
+	}
+
+	@mixin focus-style-1 {
+		&:not([disabled]) .wcapf-noui-handle {
+			&:focus-visible {
+				outline: 0.1875em solid var(--wcapf-primary-color);
+				outline-offset: -0.1875em;
+			}
+		}
+	}
+
+	@mixin focus-style-2 {
+		&:not([disabled]) .wcapf-noui-handle {
+			&:focus-visible {
+				box-shadow: 0 0 0 0.5em rgba(var(--wcapf-primary-color-rgb), .1);
+			}
+		}
+	}
+
+	&.style-1 {
+		--handle-size: 1.5em;
+
+		--wcapf-nouislider-target-size: 0.25em;
+		--wcapf-nouislider-target-bg-color: #eef0f7;
+		--wcapf-nouislider-target-border-radius: 0;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-border-radius: 50%;
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				border: 1px solid #dee1e9;
+				box-shadow: rgba(17, 17, 26, 0.1) 0 1px 0;
+			}
+
+			@include focus-style-1;
+		}
+	}
+
+	&.style-2 {
+		--handle-size: 1.3125em;
+
+		--wcapf-nouislider-target-size: 0.1875em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-border-radius: 50%;
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				border: 0.125em solid var(--wcapf-primary-color);
+			}
+
+			@include focus-style-2;
+		}
+	}
+
+	&.style-3 {
+		--handle-size: 1.375em;
+
+		--wcapf-nouislider-target-size: 0.375em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				box-shadow: 0 1px 4px 0.5px rgba(0, 0, 0, 0.3);
+			}
+
+			@include focus-style-1;
+		}
+	}
+
+	&.style-4 {
+		--handle-size: 1.75em;
+
+		--wcapf-nouislider-target-size: 0.875em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				box-shadow: 0 1px 4px 0.5px rgba(0, 0, 0, 0.3);
+			}
+
+			@include focus-style-1;
+		}
+	}
+
+	&.style-5 {
+		--handle-size: 1.125em;
+
+		--wcapf-nouislider-target-size: 0.25em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			@include focus-style-2;
+		}
+	}
+
+	&.style-6 {
+		--handle-size: 1.625em;
+
+		--wcapf-nouislider-target-bg-color: rgba(var(--wcapf-primary-color-rgb), 0.1);
+		--wcapf-nouislider-target-size: 0.625em;
+		--wcapf-nouislider-connect-bg-color: rgba(var(--wcapf-primary-color-rgb), .8);
+		--wcapf-nouislider-handle-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			@include focus-style-2;
+		}
+	}
+
+	&.style-7 {
+		--handle-size: 1.5em;
+
+		--wcapf-nouislider-target-size: 0.5em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-border-radius: 50%;
+		--wcapf-nouislider-handle-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			@include focus-style-2;
+		}
+	}
+
+	&.style-8 {
+		--handle-size: 1.125em;
+
+		--wcapf-nouislider-target-size: 0.3125em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-border-radius: 50%;
+		--wcapf-nouislider-handle-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			@include focus-style-2;
+		}
+	}
+
+	&.style-9 {
+		--handle-size: 1.5em;
+
+		--wcapf-nouislider-target-size: 0.375em;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				border: 0.375em solid var(--wcapf-primary-color);
+			}
+
+			@include focus-style-2;
+		}
+	}
+
+	&.style-10 {
+		--target-border-radius: 0;
+		--handle-size: 1.75em;
+
+		--wcapf-nouislider-target-size: 0.25em;
+		--wcapf-nouislider-target-border-radius: 0;
+		--wcapf-nouislider-connects-border-radius: 0;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-bg-color: #fff;
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			.wcapf-noui-handle {
+				box-shadow: 0 1px 4px 0.5px rgba(0, 0, 0, 0.3);
+			}
+
+			@include focus-style-1;
+		}
+	}
+
+	&.style-11 {
+		--handle-size: 1.5em;
+
+		--wcapf-nouislider-target-size: 0.5em;
+		--wcapf-nouislider-target-border-radius: 0;
+		--wcapf-nouislider-connects-border-radius: 0;
+		--wcapf-nouislider-connect-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-border-radius: 0;
+		--wcapf-nouislider-handle-bg-color: var(--wcapf-primary-color);
+		--wcapf-nouislider-handle-hr-size: var(--handle-size);
+		--wcapf-nouislider-handle-vr-size: var(--handle-size);
+
+		.wcapf-noui-slider {
+			@include focus-style-2;
+		}
+	}
+}

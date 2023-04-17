@@ -1,0 +1,33 @@
+.wcapf-enable-scrollbar {
+	overflow-y: auto;
+}
+
+.wcapf-pretty-scroll .wcapf-enable-scrollbar {
+	--wcapf-scrollbar-width: 0.375em;
+	--wcapf-scrollbar-border-radius: 0.125em;
+	--wcapf-scrollbar-track-bg-color: #e7e8ea; // #f1f1f1 #e7e8ea
+	--wcapf-scrollbar-thumb-bg-color: #b1b4b7; // #c9c9c9 // #d9d9d9 // #b1b4b7
+	--wcapf-scrollbar-thumb-hover-bg-color: #a0a0a0; // #a0a0a0
+
+	/* width */
+	&::-webkit-scrollbar {
+		width: var(--wcapf-scrollbar-width);
+	}
+
+	/* Track */
+	&::-webkit-scrollbar-track {
+		background: var(--wcapf-scrollbar-track-bg-color);
+		border-radius: var(--wcapf-scrollbar-border-radius);
+	}
+
+	/* Handle */
+	&::-webkit-scrollbar-thumb {
+		background: var(--wcapf-scrollbar-thumb-bg-color);
+		border-radius: var(--wcapf-scrollbar-border-radius);
+	}
+
+	/* Handle on hover */
+	&::-webkit-scrollbar-thumb:hover {
+		background: var(--wcapf-scrollbar-thumb-hover-bg-color);
+	}
+}
