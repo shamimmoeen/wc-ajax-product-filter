@@ -97,6 +97,104 @@ abstract class WCAPF_Filter_Type {
 	abstract protected function prepare_items();
 
 	/**
+	 * Gets the main query data.
+	 *
+	 * @param string $primary_table  The primary table name.
+	 * @param string $primary_column The primary column name.
+	 *
+	 * @return array
+	 */
+	public function get_main_query_data( $primary_table = '', $primary_column = '' ) {
+		global $wpdb;
+
+		if ( ! $primary_table ) {
+			$primary_table = $wpdb->posts;
+		}
+
+		if ( ! $primary_column ) {
+			$primary_column = 'ID';
+		}
+
+		$meta_query_sql = array( 'join' => '', 'where' => '' );
+		$tax_query_sql  = array( 'join' => '', 'where' => '' );
+		$search_query   = '';
+		$where_sql      = '';
+
+		$post__in       = array();
+		$post__not_in   = array();
+		$author__in     = array();
+		$author__not_in = array();
+
+		if ( is_shop() || is_product_taxonomy() ) {
+			$tax_query    = WC_Query::get_main_tax_query();
+			$meta_query   = WC_Query::get_main_meta_query();
+			$search_query = WC_Query::get_main_search_query_sql();
+
+			$meta_query     = new WP_Meta_Query( $meta_query );
+			$tax_query      = new WP_Tax_Query( $tax_query );
+			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
+			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
+
+			$main_query     = WC_Query::get_main_query();
+			$post__in       = $main_query->get( 'post__in' );
+			$post__not_in   = $main_query->get( 'post__not_in' );
+			$author__in     = $main_query->get( 'author__in' );
+			$author__not_in = $main_query->get( 'author__not_in' );
+		}
+
+		list(
+			$meta_query_sql,
+			$tax_query_sql,
+			$search_query,
+			$post__in,
+			$post__not_in,
+			$author__in,
+			$author__not_in
+			) = apply_filters(
+			'wcapf_main_query_data',
+			array(
+				$meta_query_sql,
+				$tax_query_sql,
+				$search_query,
+				$post__in,
+				$post__not_in,
+				$author__in,
+				$author__not_in
+			),
+			$primary_table,
+			$primary_column
+		);
+
+		$utils = new WCAPF_Product_Filter_Utils;
+
+		if ( $post__in ) {
+			$ids_in = $utils::get_ids_sql( $post__in );
+
+			$where_sql .= " AND $wpdb->posts.ID IN $ids_in";
+		}
+
+		if ( $post__not_in ) {
+			$ids_in = $utils::get_ids_sql( $post__not_in );
+
+			$where_sql .= " AND $wpdb->posts.ID NOT IN $ids_in";
+		}
+
+		if ( $author__in ) {
+			$ids_in = $utils::get_ids_sql( $author__in );
+
+			$where_sql .= " AND $wpdb->posts.post_author IN $ids_in";
+		}
+
+		if ( $author__not_in ) {
+			$ids_in = $utils::get_ids_sql( $author__not_in );
+
+			$where_sql .= " AND $wpdb->posts.post_author NOT IN $ids_in";
+		}
+
+		return array( $meta_query_sql, $tax_query_sql, $search_query, $where_sql );
+	}
+
+	/**
 	 * @param array $items          The items array.
 	 * @param array $filtered_count The filtered count array to sync with.
 	 *

@@ -159,7 +159,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
-		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data(
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data(
 			$lookup_table_name,
 			'product_or_parent_id'
 		);
@@ -222,7 +222,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$post_statuses = $helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
 
 		$query = array();
 		$join  = '';
@@ -324,7 +324,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$post_statuses = $helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
 
 		$query  = array();
 		$select = '';
