@@ -163,7 +163,8 @@ class WCAPF_Form {
 	 * @return void
 	 */
 	protected function render_price_filter( $field_instance ) {
-		$range = WCAPF_Product_Filter_Utils::get_price_range( $field_instance );
+		$filter_type = new WCAPF_Filter_Type_Price( $field_instance );
+		$range       = $filter_type->get_items();
 
 		$this->before_filter( $field_instance );
 		$this->render_number_inputs( $field_instance, $range );

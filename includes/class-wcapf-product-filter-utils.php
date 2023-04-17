@@ -83,196 +83,6 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	public static function get_price_range( $field_instance ) {
-		global $wpdb;
-
-		$helper = new WCAPF_Helper();
-
-		$post_statuses  = $helper::filterable_post_statuses();
-		$hide_stock_out = $helper::hide_stock_out_items();
-
-		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = self::get_main_query_data();
-
-		$lookup_table_name = $wpdb->prefix . 'wc_product_meta_lookup';
-
-		$join  = '';
-		$where = '';
-		$query = array();
-
-		$select = 'SELECT MIN( price_table.min_price ) AS min_price, MAX( price_table.max_price ) AS max_price';
-
-		$query['select'] = $select;
-		$query['from']   = "FROM $wpdb->posts";
-
-		$join .= " LEFT JOIN $lookup_table_name AS price_table ON $wpdb->posts.ID = price_table.product_id";
-		$join .= $meta_query_sql['join'];
-		$join .= $tax_query_sql['join'];
-
-		$update_range = false;
-
-		if ( 'and' === WCAPF_Helper::get_field_relations() ) {
-			$update_range = true;
-		}
-
-		$update_range = apply_filters( 'wcapf_update_range_min_max', $update_range, $field_instance );
-
-		if ( $update_range ) {
-			$join .= self::get_join_clause();
-		}
-
-		$query['join'] = $join;
-
-		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
-
-		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
-		$where .= $search_query ? ' AND ' . $search_query : '';
-		$where .= $where_sql;
-
-		$where .= $hide_stock_out ? " AND price_table.stock_status = 'instock'" : '';
-
-		if ( $update_range ) {
-			$where .= self::get_where_clauses_by_other_filters( 'price' );
-		}
-
-		$query['where'] = $where;
-
-		$query = apply_filters( 'wcapf_price_min_max_sql_query', $query, $field_instance );
-		$query = implode( ' ', $query );
-
-		$results = $wpdb->get_row( $query, ARRAY_A );
-
-		$min = isset( $results['min_price'] ) ? floatval( $results['min_price'] ) : 0;
-		$max = isset( $results['max_price'] ) ? floatval( $results['max_price'] ) : 0;
-
-		// Check to see if we should add taxes to the prices if store are excl tax but display incl.
-		$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
-
-		if ( wc_tax_enabled() && ! wc_prices_include_tax() && 'incl' === $tax_display_mode ) {
-			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
-			$tax_rates = WC_Tax::get_rates( $tax_class );
-
-			if ( $tax_rates ) {
-				$min += WC_Tax::get_tax_total( WC_Tax::calc_exclusive_tax( $min, $tax_rates ) );
-				$max += WC_Tax::get_tax_total( WC_Tax::calc_exclusive_tax( $max, $tax_rates ) );
-			}
-		}
-
-		return compact( 'min', 'max' );
-	}
-
-	/**
-	 * Gets the main wc query data.
-	 *
-	 * @param string $primary_table  The primary table name.
-	 * @param string $primary_column The primary column name.
-	 *
-	 * @return array
-	 */
-	public static function get_main_query_data( $primary_table = '', $primary_column = '' ) {
-		global $wpdb;
-
-		if ( ! $primary_table ) {
-			$primary_table = $wpdb->posts;
-		}
-
-		if ( ! $primary_column ) {
-			$primary_column = 'ID';
-		}
-
-		$meta_query_sql = array( 'join' => '', 'where' => '' );
-		$tax_query_sql  = array( 'join' => '', 'where' => '' );
-		$search_query   = '';
-		$where_sql      = '';
-
-		$post__in       = array();
-		$post__not_in   = array();
-		$author__in     = array();
-		$author__not_in = array();
-
-		if ( is_shop() || is_product_taxonomy() ) {
-			$tax_query    = WC_Query::get_main_tax_query();
-			$meta_query   = WC_Query::get_main_meta_query();
-			$search_query = WC_Query::get_main_search_query_sql();
-
-			$meta_query     = new WP_Meta_Query( $meta_query );
-			$tax_query      = new WP_Tax_Query( $tax_query );
-			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
-			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
-
-			$main_query     = WC_Query::get_main_query();
-			$post__in       = $main_query->get( 'post__in' );
-			$post__not_in   = $main_query->get( 'post__not_in' );
-			$author__in     = $main_query->get( 'author__in' );
-			$author__not_in = $main_query->get( 'author__not_in' );
-		}
-
-		list(
-			$meta_query_sql,
-			$tax_query_sql,
-			$search_query,
-			$post__in,
-			$post__not_in,
-			$author__in,
-			$author__not_in
-			) = apply_filters(
-			'wcapf_main_query_data',
-			array(
-				$meta_query_sql,
-				$tax_query_sql,
-				$search_query,
-				$post__in,
-				$post__not_in,
-				$author__in,
-				$author__not_in
-			),
-			$primary_table,
-			$primary_column
-		);
-
-		if ( $post__in ) {
-			$ids_in = self::get_ids_sql( $post__in );
-
-			$where_sql .= " AND $wpdb->posts.ID IN $ids_in";
-		}
-
-		if ( $post__not_in ) {
-			$ids_in = self::get_ids_sql( $post__not_in );
-
-			$where_sql .= " AND $wpdb->posts.ID NOT IN $ids_in";
-		}
-
-		if ( $author__in ) {
-			$ids_in = self::get_ids_sql( $author__in );
-
-			$where_sql .= " AND $wpdb->posts.post_author IN $ids_in";
-		}
-
-		if ( $author__not_in ) {
-			$ids_in = self::get_ids_sql( $author__not_in );
-
-			$where_sql .= " AND $wpdb->posts.post_author NOT IN $ids_in";
-		}
-
-		return array( $meta_query_sql, $tax_query_sql, $search_query, $where_sql );
-	}
-
-	/**
-	 * Formats a list of ids as "(id,id,id)".
-	 *
-	 * @param array $ids The list of ids to format.
-	 *
-	 * @return string The formatted list.
-	 */
-	public static function get_ids_sql( $ids ) {
-		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
-	}
-
-	/**
 	 * @return string
 	 */
 	public static function get_join_clause() {
@@ -281,6 +91,41 @@ class WCAPF_Product_Filter_Utils {
 		$join = ' ' . $filter->get_full_join_clause();
 
 		return apply_filters( 'wcapf_filter_join_clause', $join );
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_where_clause( $query_type, $filter_key ) {
+		$main_query_type = WCAPF_Helper::get_field_relations();
+
+		// Maybe include post__in, post__not_in and other vars from the main products query.
+		$where = '';
+
+		if ( 'and' === $main_query_type ) {
+			if ( 'and' === $query_type ) {
+				$where = self::get_full_where_clause();
+			} elseif ( 'or' === $query_type ) {
+				$where = self::get_where_clauses_by_other_filters( $filter_key );
+			}
+		} elseif ( 'or' === $main_query_type ) {
+			if ( 'and' === $query_type ) {
+				$where = self::get_self_where_clause( $filter_key );
+			} elseif ( 'or' === $query_type ) {
+				$where = ' AND 1=1';
+			}
+		}
+
+		return apply_filters( 'wcapf_filter_where_clause', $where, $query_type, $filter_key );
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_full_where_clause() {
+		$filter = new WCAPF_Product_Filter();
+
+		return $filter->get_full_where_clause();
 	}
 
 	/**
@@ -339,41 +184,6 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * @return string
 	 */
-	public static function get_where_clause( $query_type, $filter_key ) {
-		$main_query_type = WCAPF_Helper::get_field_relations();
-
-		// Maybe include post__in, post__not_in and other vars from the main products query.
-		$where = '';
-
-		if ( 'and' === $main_query_type ) {
-			if ( 'and' === $query_type ) {
-				$where = self::get_full_where_clause();
-			} elseif ( 'or' === $query_type ) {
-				$where = self::get_where_clauses_by_other_filters( $filter_key );
-			}
-		} elseif ( 'or' === $main_query_type ) {
-			if ( 'and' === $query_type ) {
-				$where = self::get_self_where_clause( $filter_key );
-			} elseif ( 'or' === $query_type ) {
-				$where = ' AND 1=1';
-			}
-		}
-
-		return apply_filters( 'wcapf_filter_where_clause', $where, $query_type, $filter_key );
-	}
-
-	/**
-	 * @return string
-	 */
-	public static function get_full_where_clause() {
-		$filter = new WCAPF_Product_Filter();
-
-		return $filter->get_full_where_clause();
-	}
-
-	/**
-	 * @return string
-	 */
 	public static function get_self_where_clause( $filter_key ) {
 		$chosen_filters = WCAPF_Helper::get_chosen_filters();
 
@@ -406,6 +216,17 @@ class WCAPF_Product_Filter_Utils {
 		$ids = $ids ?: array( 0 );
 
 		return self::get_ids_sql( $ids );
+	}
+
+	/**
+	 * Formats a list of ids as "(id,id,id)".
+	 *
+	 * @param array $ids The list of ids to format.
+	 *
+	 * @return string The formatted list.
+	 */
+	public static function get_ids_sql( $ids ) {
+		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
 	}
 
 	/**

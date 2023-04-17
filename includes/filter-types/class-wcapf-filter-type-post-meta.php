@@ -89,7 +89,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$post_statuses = $helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
-		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $utils::get_main_query_data();
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
 
 		$query = array();
 		$join  = '';
