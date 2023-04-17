@@ -1,4 +1,5 @@
 @import './variables';
+@import './mixins';
 
 .__top_bar {
     align-items: center;
@@ -15,14 +16,20 @@
     }
 
     h2 {
+        display: inline-block;
         font-size: 14px;
         line-height: 2.5;
-        display: inline-block;
+        margin-top: 0;
+        margin-bottom: 0;
         padding: 5px 0;
+
+        @include horizontal-space(10px);
 
         .__icon {
             color: #babbbc;
             vertical-align: middle;
+
+            @include horizontal-space(4px);
         }
     }
 
@@ -78,32 +85,6 @@
                 &:last-child {
                     font-weight: 600;
                     font-size: 14px;
-                }
-            }
-        }
-    }
-}
-
-body {
-    &:not(.rtl) {
-        .__top_bar {
-            h2 {
-                margin: 0 10px 0 0;
-
-                .__icon {
-                    margin-right: 4px;
-                }
-            }
-        }
-    }
-
-    &.rtl {
-        .__top_bar {
-            h2 {
-                margin: 0 0 0 10px;
-
-                .__icon {
-                    margin-left: 4px;
                 }
             }
         }

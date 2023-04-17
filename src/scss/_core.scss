@@ -1,3 +1,5 @@
+@import './mixins';
+
 body {
 	background-color: #fff;
 
@@ -17,17 +19,6 @@ body {
 
 	.__wcapf_layout {
 		padding: var(--large-gap);
-
-		// TODO: Maybe redundant.
-		.__post_data_fetching {
-			margin: 5em 0;
-			text-align: center;
-
-			.components-spinner {
-				height: 64px;
-				width: 64px;
-			}
-		}
 	}
 }
 
@@ -52,23 +43,27 @@ body {
 	bottom: 20px;
 	z-index: 100100;
 
+	@include ltr {
+		right: 20px;
+	}
+
+	@include rtl {
+		left: 20px;
+	}
+
 	.components-snackbar {
 		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
 			0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 	}
 }
 
-// Snackbar RTL Styles.
-body {
-	&:not(.rtl) {
-		.components-snackbar-list {
-			right: 20px;
-		}
+// Tippy js tooltip.
+.__help_info {
+	svg {
+		fill: #666;
 	}
+}
 
-	&.rtl {
-		.components-snackbar-list {
-			left: 20px;
-		}
-	}
+.tippy-box.__tippy_tooltip {
+	font-size: 13px;
 }

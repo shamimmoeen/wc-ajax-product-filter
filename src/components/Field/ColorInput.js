@@ -1,9 +1,14 @@
 import { Button, ColorPicker, Dropdown } from '@wordpress/components';
+import { proTag } from '../utils';
 
-const DropdownColorPicker = ({ value, onChange }) => {
+const DropdownColorPicker = ({ value, onChange, disableAlpha, slotName }) => {
 	return (
 		<Dropdown
 			position='bottom right'
+			popoverProps={{
+				noArrow: false,
+				__unstableSlotName: slotName,
+			}}
 			renderToggle={({ isOpen, onToggle }) => (
 				<div className='components-circular-option-picker__option-wrapper'>
 					<Button
@@ -22,6 +27,7 @@ const DropdownColorPicker = ({ value, onChange }) => {
 					color={value}
 					onChange={(color) => onChange(color)}
 					defaultValue='#fff'
+					enableAlpha={!disableAlpha}
 				/>
 			)}
 		/>
@@ -30,24 +36,31 @@ const DropdownColorPicker = ({ value, onChange }) => {
 
 const ColorInput = ({
 	label,
-	id,
 	value,
 	onChange,
 	description,
+	isPro,
+	disableAlpha = true,
 	renderAsFormField = false,
+	slotName,
 }) => {
 	if (renderAsFormField) {
 		return (
 			<div className='__form_control'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={id}>{label}</label>
+						<label>
+							{label}
+							{proTag(isPro)}
+						</label>
 					</div>
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
 							<DropdownColorPicker
 								value={value}
 								onChange={onChange}
+								disableAlpha={disableAlpha}
+								slotName={slotName}
 							/>
 						</div>
 					</div>
@@ -61,7 +74,13 @@ const ColorInput = ({
 			</div>
 		);
 	} else {
-		return <DropdownColorPicker value={value} onChange={onChange} />;
+		return (
+			<DropdownColorPicker
+				value={value}
+				onChange={onChange}
+				slotName={slotName}
+			/>
+		);
 	}
 };
 

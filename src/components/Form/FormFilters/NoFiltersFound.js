@@ -24,9 +24,9 @@ const NoFiltersFound = ({ addFilter }) => {
 			<Button
 				variant='primary'
 				onClick={addFilter}
-				icon={plus}
 				className='__add_filter_btn'
 			>
+				<Icon icon={plus} />
 				{__('Add Filter', 'wc-ajax-product-filter')}
 			</Button>
 		</div>

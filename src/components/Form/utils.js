@@ -1,102 +1,410 @@
-import { sprintf, __ } from '@wordpress/i18n';
-import { merge } from 'lodash';
-import { foundProVersion } from '../utils';
+import { __ } from '@wordpress/i18n';
+import { isEmpty, merge, find } from 'lodash';
+import { mergeSelectOptions } from '../utils';
 
-export function newFilterData(index) {
-	let title;
+export function newFilterData(index, formFilters) {
+	let data = {};
 
-	if (index > 1) {
-		title = sprintf(__('New Filter (%d)', 'wc-ajax-product-filter'), index);
-	} else {
-		title = __('New Filter', 'wc-ajax-product-filter');
+	const types = wcapf_admin_params.filter_types;
+
+	const _taxonomyTypes = find(types, { value: 'taxonomy' });
+	const taxonomyTypes = _taxonomyTypes.options;
+
+	for (let i = 0; i < taxonomyTypes.length; i++) {
+		const taxonomyType = taxonomyTypes[i];
+		const { type, value: taxonomy, taxHierarchical } = taxonomyType;
+
+		const found = find(formFilters, { type, taxonomy });
+
+		if (!found) {
+			data = {
+				type,
+				taxonomy,
+				taxHierarchical: taxHierarchical ? '1' : '',
+			};
+
+			break;
+		}
 	}
 
-	return merge(filterDefaultData(), {
+	if (isEmpty(data)) {
+		const notAllowedTypes = [
+			'taxonomy',
+			'sort-by',
+			'per-page',
+			'component',
+		];
+
+		for (let i = 0; i < types.length; i++) {
+			const otherType = types[i];
+
+			if (!notAllowedTypes.includes(otherType.value)) {
+				const { value: type } = otherType;
+
+				const found = find(formFilters, { type });
+
+				if (!found) {
+					data = { type };
+
+					break;
+				}
+			}
+		}
+	}
+
+	if (isEmpty(data)) {
+		data = { type: 'post-meta' };
+	}
+
+	return merge(filterDefaultData(), data, {
 		isNew: true,
 		uniqueIndex: index,
-		title,
 	});
+}
+
+/**
+ * Gets the filter type data for the current filter.
+ */
+export function getFilterType(filter) {
+	const { type, taxonomy, component } = filter;
+	const types = wcapf_admin_params.filter_types;
+
+	let filterType;
+
+	if ('taxonomy' === type) {
+		const taxonomies = find(types, { value: type });
+
+		filterType = find(taxonomies.options, { value: taxonomy });
+	} else if ('component' === type) {
+		const components = find(types, { value: type });
+
+		filterType = find(components.options, { value: component });
+	} else {
+		filterType = find(types, { value: type });
+	}
+
+	return filterType;
+}
+
+export function getFilterTitle(filter, filterType) {
+	const { title, type, meta_key } = filter;
+
+	let filterTitle = title;
+
+	if (!filterTitle) {
+		filterTitle = filterType.label;
+
+		if ('post-meta' === type && meta_key) {
+			filterTitle += `[${meta_key}]`;
+		}
+	}
+
+	return filterTitle;
+}
+
+export function getFilterKey(filter, filterType) {
+	const { field_key, type, meta_key } = filter;
+
+	let filterKey = field_key;
+
+	if (!filterKey) {
+		if ('post-meta' === type) {
+			if (meta_key) {
+				filterKey = meta_key;
+			}
+		} else if ('component' !== type) {
+			filterKey = filterType.key;
+		}
+	}
+
+	return filterKey;
+}
+
+export function getDisplayTypeData(filter) {
+	const {
+		type,
+		value_type,
+		display_type,
+		number_display_type,
+		date_display_type,
+	} = filter;
+
+	let displayTypes;
+	let _displayType;
+
+	if ('number' === value_type || 'price' === type) {
+		displayTypes = numberDisplayTypes();
+		_displayType = number_display_type;
+	} else if ('date' === value_type) {
+		displayTypes = dateDisplayTypes();
+		_displayType = date_display_type;
+	} else {
+		displayTypes = allTextDisplayTypes();
+		_displayType = display_type;
+	}
+
+	const displayType = displayTypes.find(
+		(option) => option.value === _displayType
+	);
+
+	return displayType;
+}
+
+export function getFilterTabs(filter) {
+	const availableTabs = [
+		{
+			name: 'general',
+			title: __('General', 'wc-ajax-product-filter'),
+		},
+		{
+			name: 'appearance',
+			title: __('Appearance', 'wc-ajax-product-filter'),
+		},
+		{
+			name: 'options',
+			title: __('Options', 'wc-ajax-product-filter'),
+		},
+		{
+			name: 'advanced',
+			title: __('Advanced', 'wc-ajax-product-filter'),
+		},
+	];
+
+	const { type } = filter;
+
+	if ('component' === type) {
+		return availableTabs.filter(({ name }) => 'general' === name);
+	}
+
+	return availableTabs;
+}
+
+/**
+ * Gets the filter types by disabling the used filter types in the form.
+ */
+export function getFilterTypes(otherFilters) {
+	const _filterTypes = wcapf_admin_params.filter_types;
+
+	const _taxonomyTypes = find(_filterTypes, { value: 'taxonomy' });
+	const taxonomyOptions = _taxonomyTypes.options;
+
+	const taxonomyTypes = taxonomyOptions.map((taxonomyType) => {
+		const { value } = taxonomyType;
+
+		if (find(otherFilters, { taxonomy: value })) {
+			return { ...taxonomyType, isDisabled: true };
+		}
+
+		return taxonomyType;
+	});
+
+	const filterTypes = _filterTypes.map((filterType) => {
+		const { value } = filterType;
+
+		if ('taxonomy' === value) {
+			return { ...filterType, options: taxonomyTypes };
+		} else if ('post-meta' === value) {
+			return filterType;
+		} else {
+			if (find(otherFilters, { type: value })) {
+				return { ...filterType, isDisabled: true };
+			}
+
+			return filterType;
+		}
+	});
+
+	return filterTypes;
+}
+
+export function getMetaKeys(otherFilters) {
+	const _metaKeys = wcapf_admin_params.meta_keys;
+
+	const metaKeys = _metaKeys.map((metaKey) => {
+		if (find(otherFilters, { meta_key: metaKey.value })) {
+			return { ...metaKey, isDisabled: true };
+		}
+
+		return metaKey;
+	});
+
+	return metaKeys;
+}
+
+export function getGlobalFilterKey(filterKeys, filter) {
+	const { id, type, taxonomy, meta_key } = filter;
+
+	if (id) {
+		return;
+	}
+
+	if ('taxonomy' === type) {
+		const found = find(filterKeys, { type, taxonomy });
+
+		if (found) {
+			return found.field_key;
+		}
+	} else if ('post-meta' === type) {
+		const found = find(filterKeys, { type, meta_key });
+
+		if (found) {
+			return found.field_key;
+		}
+	} else {
+		const found = find(filterKeys, { type });
+
+		if (found) {
+			return found.field_key;
+		}
+	}
+}
+
+export function getFilterKeyError(
+	filterKeys,
+	filter,
+	formFilters,
+	currentFilterIndex
+) {
+	if (filter['id']) {
+		return;
+	}
+
+	let filterKeyError;
+	const field_key = filter['field_key'];
+
+	// We'll use the default key.
+	if (isEmpty(field_key)) {
+		return;
+	}
+
+	const otherFilters = [];
+
+	const filterTypes = wcapf_admin_params.filter_types;
+	const taxonomyType = find(filterTypes, { value: 'taxonomy' });
+	const taxonomyTypes = taxonomyType.options;
+
+	for (let index = 0; index < formFilters.length; index++) {
+		if (index === currentFilterIndex) {
+			continue;
+		}
+
+		const formFilter = formFilters[index];
+
+		// We'll use the default key.
+		if (isEmpty(formFilter['field_key'])) {
+			const { type, taxonomy, meta_key } = formFilter;
+
+			if ('taxonomy' === type) {
+				const taxonomyData = find(taxonomyTypes, { value: taxonomy });
+				formFilter['field_key'] = taxonomyData['key'];
+			} else if ('post-meta' === type) {
+				formFilter['field_key'] = `_${meta_key}`;
+			} else {
+				const typeData = find(filterTypes, { value: type });
+				formFilter['field_key'] = typeData['key'];
+			}
+		}
+
+		otherFilters.push(formFilter);
+	}
+
+	const errorMessage = __(
+		'Filter key is in use by another filter type.',
+		'wc-ajax-product-filter'
+	);
+
+	if (find(otherFilters, { field_key })) {
+		console.log('found in this form', find(otherFilters, { field_key })); // TODO: Remove.
+
+		filterKeyError = errorMessage;
+	} else if (find(filterKeys, { field_key })) {
+		console.log('found in other forms', find(filterKeys, { field_key })); // TODO: Remove.
+
+		filterKeyError = errorMessage;
+	}
+
+	return filterKeyError;
 }
 
 export function filterDefaultData() {
 	return {
 		id: '',
 		title: '',
-		type: 'post-author',
+		type: '',
 		taxonomy: '',
 		taxHierarchical: '',
 		meta_key: '',
+		component: '',
 		isACF: '',
 		value_type: 'text',
-		field_key: 'post-author',
+		field_key: '',
 		// Taxonomy
 		display_type: 'checkbox',
-		query_type: 'and',
+		native_display_type_layout: 'list-item',
+		custom_display_type_layout: 'inline',
+		grid_columns: '2',
+		swatch_with_text: '',
+		query_type: 'or',
 		all_items_label: '',
-		use_chosen: '',
-		chosen_no_results_message: '',
-		enable_multiple_filter: '',
+		enable_multiple_filter: '1',
 		hierarchical: '',
 		enable_hierarchy_accordion: '',
-		show_count: '',
+		show_count: '1',
 		enable_tooltip: '',
 		show_count_in_tooltip: '',
 		tooltip_position: 'top',
 		get_options: 'automatically',
+		manual_options: [],
 		order_terms_by: 'default',
 		order_terms_dir: 'asc',
 		limit_options: 'off',
+		include_terms: [],
+		include_child: '',
+		exclude_terms: [],
+		exclude_child: '',
 		parent_term: '',
-		only_parent: '',
-		limit_values_by_id: '',
-		limit_values_include_children: '',
-		exclude_values_id: '',
-		exclude_values_include_children: '',
+		direct_child_only: '',
 		// Price Filter
 		number_display_type: 'range_slider',
-		number_range_slider_display_values_as: 'plain_text',
-		align_values_at_the_end: '1',
-		number_range_enable_multiple_filter: '',
-		number_range_query_type: 'and',
+		number_range_slider_display_values_as: 'input_field',
+		alignment: 'default',
+		number_range_enable_multiple_filter: '1',
+		number_range_query_type: 'or',
 		number_range_select_all_items_label: '',
-		number_range_use_chosen: '',
-		number_range_chosen_no_results_message: '',
-		number_range_show_count: '',
-		number_range_hide_empty: '',
+		number_range_show_count: '1',
 		number_get_options: 'automatically',
-		manual_options: [],
 		number_manual_options: [],
-		time_period_options: [],
+		auto_detect_min_max: '1',
 		min_value: '0',
-		min_value_auto_detect: '',
 		max_value: '100',
-		max_value_auto_detect: '',
-		step: '10',
+		step: '1',
 		value_prefix: '',
 		value_postfix: '',
-		values_separator: '-',
-		decimal_places: '0',
+		values_separator: '–',
+		text_before_min_value: '',
+		text_before_max_value: '',
+		format_numbers: '',
+		decimal_places: '2',
 		thousand_separator: '',
 		decimal_separator: '.',
 		// Product Status
 		product_status_options: [],
 		// Post Meta
+		is_acf: '',
 		value_decimal: '',
 		value_decimal_places: '2',
+		date_input_format: 'timestamp',
 		options_order_by: 'none',
 		options_order_dir: 'asc',
 		options_order_type: 'alphabetical',
 		// Post Meta - value type Date
 		date_display_type: 'input_date',
 		date_format: 'dd-mm-yy',
-		time_period_enable_multiple_filter: '',
-		time_period_query_type: 'and',
+		time_period_enable_multiple_filter: '1',
+		time_period_query_type: 'or',
 		time_period_select_all_items_label: '',
-		time_period_use_chosen: '',
-		time_period_chosen_no_results_message: '',
 		show_date_inputs_inline: '',
-		time_period_show_count: '',
-		time_period_hide_empty: '',
+		time_period_show_count: '1',
 		date_picker_month_dropdown: '',
 		date_picker_year_dropdown: '',
 		date_from_prefix: '',
@@ -105,20 +413,38 @@ export function filterDefaultData() {
 		date_to_prefix: '',
 		date_to_postfix: '',
 		date_to_placeholder: '',
+		time_period_options: [],
 		// Post Author
 		post_author_order_by: 'default',
 		post_author_order_dir: 'asc',
+		include_authors: [],
+		exclude_authors: [],
 		include_user_roles: [],
+		// Sort By
+		sort_by_options: [],
+		// Per Page
+		per_page_options: [],
 		// Advanced Settings
-		hide_title: '',
+		show_title: '1',
 		enable_accordion: '',
 		accordion_default_state: 'expanded',
 		help_text: '',
-		options_with_no_products: 'remove',
 		enable_search_field: '',
+		search_field_placeholder: '',
 		enable_reduce_height: 'no',
 		soft_limit: '5',
 		max_height: '200',
+		show_in_active_filters: '1',
+		visibility_rules: [],
+		// Active filters
+		empty_filter_message: '',
+		// Reset Button
+		show_if_empty: '',
+		// Error
+		type_error: '',
+		meta_key_error: '',
+		field_key_error: '',
+		field_key_error_: '', // Comes from server side.
 	};
 }
 
@@ -128,24 +454,33 @@ export function filterTypeDependentFields() {
 		'taxonomy',
 		'taxHierarchical',
 		'meta_key',
+		'component',
 		'isACF',
+		'display_type',
+		'native_display_type_layout',
+		'custom_display_type_layout',
+		'grid_columns',
+		'swatch_with_text',
 		// Taxonomy
 		'get_options',
 		'order_terms_by',
 		'order_terms_dir',
 		'limit_options',
+		'include_terms',
+		'include_child',
+		'exclude_terms',
+		'exclude_child',
 		'parent_term',
-		'only_parent',
-		'limit_values_by_id',
-		'limit_values_include_children',
-		'exclude_values_id',
-		'exclude_values_include_children',
+		'direct_child_only',
 		// Manual Options
 		'number_get_options',
 		'manual_options',
 		'number_manual_options',
 		'time_period_options',
+		'sort_by_options',
+		'per_page_options',
 		// Post Meta
+		'is_acf',
 		'value_type',
 		'value_decimal',
 		'value_decimal_places',
@@ -153,6 +488,18 @@ export function filterTypeDependentFields() {
 		'options_order_dir',
 		'options_order_type',
 	];
+}
+
+export function proFilterTypes() {
+	return ['sort-by', 'per-page'];
+}
+
+export function proFilterComponents() {
+	return ['results-count', 'apply-mode', 'submit-mode'];
+}
+
+export function componentsWithTypeOnly() {
+	return ['reset-button', 'results-count', 'apply-mode', 'submit-mode'];
 }
 
 export function methodsOfGettingOptions() {
@@ -169,8 +516,12 @@ export function methodsOfGettingOptions() {
 	];
 }
 
-export function taxonomyLimitByOptions() {
-	return [
+export function taxonomyProLimitByOptions() {
+	return ['child', 'parent_only'];
+}
+
+export function taxonomyLimitByOptions(hierarchical = false, withPro = false) {
+	const nonHierarchicalOptions = [
 		{
 			label: __('Off', 'wc-ajax-product-filter'),
 			value: 'off',
@@ -183,6 +534,9 @@ export function taxonomyLimitByOptions() {
 			label: __('Exclude', 'wc-ajax-product-filter'),
 			value: 'exclude',
 		},
+	];
+
+	const hierarchicalProOptions = [
 		{
 			label: __('Child of', 'wc-ajax-product-filter'),
 			value: 'child',
@@ -192,17 +546,27 @@ export function taxonomyLimitByOptions() {
 			value: 'parent_only',
 		},
 	];
+
+	if (hierarchical) {
+		return mergeSelectOptions(
+			nonHierarchicalOptions,
+			hierarchicalProOptions,
+			withPro
+		);
+	}
+
+	return nonHierarchicalOptions;
 }
 
-export function termsOrderByOptions() {
-	return [
+export function termsProOrderByOptions() {
+	return ['slug', 'count', 'include'];
+}
+
+export function termsOrderByOptions(isManualEntry) {
+	const freeOptions = [
 		{
 			label: __('Default', 'wc-ajax-product-filter'),
 			value: 'default',
-		},
-		{
-			label: __('Term Order', 'wc-ajax-product-filter'),
-			value: 'term_order',
 		},
 		{
 			label: __('ID', 'wc-ajax-product-filter'),
@@ -212,6 +576,17 @@ export function termsOrderByOptions() {
 			label: __('Name', 'wc-ajax-product-filter'),
 			value: 'name',
 		},
+	];
+
+	let includeLabel;
+
+	if (isManualEntry) {
+		includeLabel = __('Entry', 'wc-ajax-product-filter');
+	} else {
+		includeLabel = __('Include', 'wc-ajax-product-filter');
+	}
+
+	const proOptions = [
 		{
 			label: __('Slug', 'wc-ajax-product-filter'),
 			value: 'slug',
@@ -221,39 +596,49 @@ export function termsOrderByOptions() {
 			value: 'count',
 		},
 		{
-			label: __('Entry', 'wc-ajax-product-filter'),
-			value: 'entry',
+			label: includeLabel,
+			value: 'include',
 		},
 	];
+
+	return mergeSelectOptions(freeOptions, proOptions, true);
 }
 
-export function metaValuesOrderByOptions() {
-	return [
+export function metaValuesProOrderByOptions() {
+	return ['value', 'label', 'count', 'include'];
+}
+
+export function metaValuesOrderByOptions(isManualEntry) {
+	const freeOptions = [
 		{
-			label: __('Default', 'wc-ajax-product-filter'),
+			label: __('None', 'wc-ajax-product-filter'),
 			value: 'none',
 		},
+	];
+
+	const proOptions = [
 		{
 			label: __('Value', 'wc-ajax-product-filter'),
 			value: 'value',
-		},
-		{
-			label: __('Count', 'wc-ajax-product-filter'),
-			value: 'count',
 		},
 		{
 			label: __('Label', 'wc-ajax-product-filter'),
 			value: 'label',
 		},
 		{
-			label: __('Entry', 'wc-ajax-product-filter'),
-			value: 'entry',
+			label: __('Count', 'wc-ajax-product-filter'),
+			value: 'count',
 		},
 	];
-}
 
-export function manualEntryOrderTypes() {
-	return ['label', 'entry'];
+	if (isManualEntry) {
+		proOptions.push({
+			label: __('Entry', 'wc-ajax-product-filter'),
+			value: 'include',
+		});
+	}
+
+	return mergeSelectOptions(freeOptions, proOptions, true);
 }
 
 export function orderDirectionOptions() {
@@ -282,8 +667,12 @@ export function orderTypeOptions() {
 	];
 }
 
-export function authorOrderByOptions() {
-	return [
+export function authorProOrderByOptions() {
+	return ['count', 'include'];
+}
+
+export function authorOrderByOptions(isManualEntry) {
+	const freeOptions = [
 		{
 			label: __('Default', 'wc-ajax-product-filter'),
 			value: 'default',
@@ -296,15 +685,28 @@ export function authorOrderByOptions() {
 			label: __('Name', 'wc-ajax-product-filter'),
 			value: 'name',
 		},
+	];
+
+	let includeLabel;
+
+	if (isManualEntry) {
+		includeLabel = __('Entry', 'wc-ajax-product-filter');
+	} else {
+		includeLabel = __('Include', 'wc-ajax-product-filter');
+	}
+
+	const proOptions = [
 		{
 			label: __('Count', 'wc-ajax-product-filter'),
 			value: 'count',
 		},
 		{
-			label: __('Entry', 'wc-ajax-product-filter'),
-			value: 'entry',
+			label: includeLabel,
+			value: 'include',
 		},
 	];
+
+	return mergeSelectOptions(freeOptions, proOptions, true);
 }
 
 export function authorLimitByOptions() {
@@ -328,25 +730,77 @@ export function authorLimitByOptions() {
 	];
 }
 
-export function productStatusOptions() {
-	return [
+const textFreeDisplayTypes = [
+	{
+		label: __('Checkbox', 'wc-ajax-product-filter'),
+		value: 'checkbox',
+	},
+	{
+		label: __('Radio', 'wc-ajax-product-filter'),
+		value: 'radio',
+	},
+	{
+		label: __('Select', 'wc-ajax-product-filter'),
+		value: 'select',
+	},
+	{
+		label: __('Multiselect', 'wc-ajax-product-filter'),
+		value: 'multi-select',
+	},
+	{
+		label: __('Label', 'wc-ajax-product-filter'),
+		value: 'label',
+	},
+];
+
+function textProDisplayTypes(taxHierarchical = false) {
+	const textProDisplayTypes = [
 		{
-			label: __('Featured', 'wc-ajax-product-filter'),
-			value: 'featured',
+			label: __('Color Swatch', 'wc-ajax-product-filter'),
+			value: 'color',
 		},
 		{
-			label: __('On Sale', 'wc-ajax-product-filter'),
-			value: 'on_sale',
+			label: __('Image Swatch', 'wc-ajax-product-filter'),
+			value: 'image',
 		},
 	];
+
+	// if (taxHierarchical) {
+	// 	textProDisplayTypes.push({
+	// 		label: __('Hierarchy Select', 'wc-ajax-product-filter'),
+	// 		value: 'hierarchy-select',
+	// 	});
+	// }
+
+	return textProDisplayTypes;
 }
 
-export function textDisplayTypes(withPro = false) {
-	const options = [
-		{
-			label: __('Checkbox', 'wc-ajax-product-filter'),
-			value: 'checkbox',
-		},
+export function taxonomyDisplayTypes(withPro = false, taxHierarchical = false) {
+	return mergeSelectOptions(
+		textFreeDisplayTypes,
+		textProDisplayTypes(taxHierarchical),
+		withPro
+	);
+}
+
+export function postMetaDisplayTypes(withPro = false) {
+	return mergeSelectOptions(
+		textFreeDisplayTypes,
+		textProDisplayTypes(),
+		withPro
+	);
+}
+
+export function textDisplayTypes() {
+	return textFreeDisplayTypes;
+}
+
+export function allTextDisplayTypes() {
+	return mergeSelectOptions(textFreeDisplayTypes, textProDisplayTypes(true));
+}
+
+export function sortByDisplayTypes() {
+	return [
 		{
 			label: __('Radio', 'wc-ajax-product-filter'),
 			value: 'radio',
@@ -355,43 +809,11 @@ export function textDisplayTypes(withPro = false) {
 			label: __('Select', 'wc-ajax-product-filter'),
 			value: 'select',
 		},
-		{
-			label: __('Multi select', 'wc-ajax-product-filter'),
-			value: 'multi-select',
-		},
-		{
-			label: __('Label', 'wc-ajax-product-filter'),
-			value: 'label',
-		},
-		{
-			label: __('Color', 'wc-ajax-product-filter'),
-			value: 'color',
-		},
-		{
-			label: __('Image', 'wc-ajax-product-filter'),
-			value: 'image',
-		},
 	];
-
-	if (withPro && !foundProVersion()) {
-		const proDisplayTypes = ['color', 'image'];
-
-		return options.map((option) => {
-			if (!proDisplayTypes.includes(option.value)) {
-				return option;
-			} else {
-				option.isPro = true;
-
-				return option;
-			}
-		});
-	}
-
-	return options;
 }
 
 export function numberDisplayTypes(withPro = false) {
-	const options = [
+	const freeOptions = [
 		{
 			label: __('Range - Slider', 'wc-ajax-product-filter'),
 			value: 'range_slider',
@@ -400,6 +822,9 @@ export function numberDisplayTypes(withPro = false) {
 			label: __('Range - Number', 'wc-ajax-product-filter'),
 			value: 'range_number',
 		},
+	];
+
+	const proOptions = [
 		{
 			label: __('Range - Checkbox', 'wc-ajax-product-filter'),
 			value: 'range_checkbox',
@@ -422,25 +847,11 @@ export function numberDisplayTypes(withPro = false) {
 		},
 	];
 
-	if (withPro && !foundProVersion()) {
-		const allowed = ['range_slider', 'range_number'];
-
-		return options.map((option) => {
-			if (allowed.includes(option.value)) {
-				return option;
-			} else {
-				option.isPro = true;
-
-				return option;
-			}
-		});
-	}
-
-	return options;
+	return mergeSelectOptions(freeOptions, proOptions, withPro);
 }
 
 export function dateDisplayTypes(withPro = false) {
-	const options = [
+	const freeOptions = [
 		{
 			label: __('Input - Date', 'wc-ajax-product-filter'),
 			value: 'input_date',
@@ -449,6 +860,9 @@ export function dateDisplayTypes(withPro = false) {
 			label: __('Input - Date Range', 'wc-ajax-product-filter'),
 			value: 'input_date_range',
 		},
+	];
+
+	const proOptions = [
 		{
 			label: __('Time Period - Checkbox', 'wc-ajax-product-filter'),
 			value: 'time_period_checkbox',
@@ -462,7 +876,7 @@ export function dateDisplayTypes(withPro = false) {
 			value: 'time_period_select',
 		},
 		{
-			label: __('Time Period - Multi select', 'wc-ajax-product-filter'),
+			label: __('Time Period - Multiselect', 'wc-ajax-product-filter'),
 			value: 'time_period_multiselect',
 		},
 		{
@@ -471,21 +885,7 @@ export function dateDisplayTypes(withPro = false) {
 		},
 	];
 
-	if (withPro && !foundProVersion()) {
-		const allowed = ['input_date', 'input_date_range'];
-
-		return options.map((option) => {
-			if (allowed.includes(option.value)) {
-				return option;
-			} else {
-				option.isPro = true;
-
-				return option;
-			}
-		});
-	}
-
-	return options;
+	return mergeSelectOptions(freeOptions, proOptions, withPro);
 }
 
 export function accordionStates() {
@@ -499,58 +899,6 @@ export function accordionStates() {
 			value: 'collapsed',
 		},
 	];
-}
-
-// TODO: Delete these.
-export function getMetaOptions(meta_keys) {
-	const metaOptions = [];
-
-	for (const key in meta_keys) {
-		const option = { label: key, value: key };
-
-		metaOptions.push(option);
-	}
-
-	return metaOptions;
-}
-
-export function getTaxonomy(filterType, taxonomy) {
-	let _taxonomy;
-
-	if ('category' === filterType) {
-		_taxonomy = 'product_cat';
-	} else if ('tag' === filterType) {
-		_taxonomy = 'product_tag';
-	} else {
-		_taxonomy = taxonomy;
-	}
-
-	return _taxonomy;
-}
-
-export function isTaxonomyHierarchical(currentTaxonomy, hierarchicalData) {
-	let hierarchical;
-
-	if ('product_cat' === currentTaxonomy) {
-		hierarchical = true;
-	} else if ('product_tag' === currentTaxonomy) {
-		hierarchical = false;
-	} else {
-		hierarchical = hierarchicalData[currentTaxonomy];
-	}
-
-	return hierarchical;
-}
-
-export function isTaxonomyFilters(filterType) {
-	const taxonomyFilterTypes = [
-		'category',
-		'tag',
-		'attribute',
-		'custom-taxonomy',
-	];
-
-	return taxonomyFilterTypes.includes(filterType);
 }
 
 export function getTableData(filterType, filterData) {
@@ -576,6 +924,12 @@ export function getTableData(filterType, filterData) {
 			type = 'time-period-options';
 			optionsKey = 'time_period_options';
 		}
+	} else if ('sort-by' === filterType) {
+		type = 'sort-by-options';
+		optionsKey = 'sort_by_options';
+	} else if ('per-page' === filterType) {
+		type = 'per-page-options';
+		optionsKey = 'per_page_options';
 	} else if ('post-author' === filterType) {
 		type = 'post-author-options';
 		optionsKey = 'manual_options';
@@ -585,4 +939,80 @@ export function getTableData(filterType, filterData) {
 	}
 
 	return { type, optionsKey };
+}
+
+export function hierarchicalDisplayTypes() {
+	return ['checkbox', 'radio', 'select', 'multi-select'];
+}
+
+export function tooltipCanBeEnabled(filter) {
+	const {
+		type,
+		value_type,
+		display_type,
+		number_display_type,
+		date_display_type,
+	} = filter;
+
+	let enabled = false;
+
+	const _displayTypes = ['select', 'multi-select', 'hierarchy-select'];
+
+	const _numberDisplayTypes = [
+		'range_slider',
+		'range_number',
+		'range_select',
+		'range_multiselect',
+	];
+
+	const _dateDisplayTypes = [
+		'input_date',
+		'input_date_range',
+		'time_period_select',
+		'time_period_multiselect',
+	];
+
+	if ('price' === type) {
+		if (!_numberDisplayTypes.includes(number_display_type)) {
+			enabled = true;
+		}
+	} else if ('post-meta' === type) {
+		if ('text' === value_type) {
+			if (!_displayTypes.includes(display_type)) {
+				enabled = true;
+			}
+		} else if ('number' === value_type) {
+			if (!_numberDisplayTypes.includes(number_display_type)) {
+				enabled = true;
+			}
+		} else if ('date' === value_type) {
+			if (!_dateDisplayTypes.includes(date_display_type)) {
+				enabled = true;
+			}
+		}
+	} else {
+		if (!_displayTypes.includes(display_type)) {
+			enabled = true;
+		}
+	}
+
+	return enabled;
+}
+
+export function swatchCanBeEnabled(filter) {
+	const { type, value_type, display_type } = filter;
+
+	if ('taxonomy' === type) {
+		if ('color' === display_type || 'image' === display_type) {
+			return true;
+		}
+	} else if ('post-meta' === type) {
+		if ('text' === value_type) {
+			if ('color' === display_type || 'image' === display_type) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

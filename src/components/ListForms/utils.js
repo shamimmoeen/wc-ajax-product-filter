@@ -1,16 +1,11 @@
 import { getEditFormLink } from '../utils';
+import { merge } from 'lodash';
 
 export function prepareFormData(raw) {
-	const { id, title } = raw;
+	const { id } = raw;
 
-	// TODO: Edit shortcode.
 	const shortcode = `[wcapf_form id="${id}"]`;
 	const editLink = getEditFormLink(id);
 
-	return {
-		id,
-		title,
-		shortcode,
-		editLink,
-	};
+	return merge(raw, { shortcode, editLink });
 }

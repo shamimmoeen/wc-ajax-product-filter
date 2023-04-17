@@ -43,17 +43,24 @@ class WCAPF_Frontend_Scripts {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
+		// Loads after the pro version scripts are loaded.
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ), 99 );
 	}
 
 	/**
 	 * Loads the frontend scripts.
 	 *
-	 * @param bool $for_preview Determines if the scripts should be loaded for preview purposes.
-	 *
 	 * @return void
 	 */
-	public static function load_frontend_scripts( $for_preview = false ) {
+	public function load_frontend_scripts() {
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'disable_wcapf' ) ) ) {
+			return;
+		}
+
+		if ( WCAPF_Helper::load_scripts_conditionally() && ! WCAPF_Helper::found_wcapf() ) {
+			return;
+		}
+
 		wp_enqueue_style(
 			'wcapf-icons',
 			WCAPF_PLUGIN_URL . 'public/icons/icons.css',
@@ -86,6 +93,22 @@ class WCAPF_Frontend_Scripts {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
 		);
 
+		// Add css variables.
+		$primary_color      = WCAPF_Helper::wcapf_option( 'primary_color', '#345DBB' );
+		$primary_text_color = WCAPF_Helper::wcapf_option( 'primary_text_color', '#ffffff' );
+		$star_icon_color    = WCAPF_Helper::wcapf_option( 'star_icon_color', 'rgb(240, 201, 48)' );
+
+		list( $r, $g, $b ) = WCAPF_Helper::get_rgb_from_hex( $primary_color );
+		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
+
+		$variables = ":root {
+			--wcapf-primary-color-rgb: $r, $g, $b;
+			--wcapf-primary-text-color-rgb: $r2, $g2, $b2;
+			--wcapf-star-icon-color: $star_icon_color;
+		}";
+
+		wp_add_inline_style( 'wc-ajax-product-filter-public-styles', $variables );
+
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
 			? '.min.js'
 			: '.js';
@@ -106,18 +129,33 @@ class WCAPF_Frontend_Scripts {
 			true
 		);
 
-		wp_enqueue_script(
-			'wcapf-loadingoverlay',
-			WCAPF_PLUGIN_URL . 'public/lib/loadingoverlay/loadingoverlay.min.js',
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/loadingoverlay/loadingoverlay.min.js' ),
-			true
-		);
+		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
+			wp_enqueue_script(
+				'wcapf-popper',
+				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/popper.min.js',
+				array(),
+				false,
+				true
+			);
 
-		$deps = array( 'jquery' );
+			wp_enqueue_script(
+				'wcapf-tippy',
+				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/tippy-bundle.umd.min.js',
+				array(),
+				false,
+				true
+			);
+		}
+
+		wp_register_script( 'wcapf-params', false, array(), false, true );
+		wp_localize_script( 'wcapf-params', 'wcapf_params', $this->get_js_params() );
+
+		$deps = array( 'jquery', 'wcapf-params' );
 
 		/**
 		 * Required for the scrollTo, slideToggle animations.
+		 *
+		 * TODO: Maybe use a filter or decision comes from the admin via plugin settings.
 		 *
 		 * @source https://stackoverflow.com/a/27598883
 		 */
@@ -130,68 +168,75 @@ class WCAPF_Frontend_Scripts {
 			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
 			true
 		);
-
-		// Load the js variables in the header.
-		wp_register_script( 'wcapf-params', false );
-
-		wp_localize_script(
-			'wcapf-params',
-			'wcapf_params',
-			self::get_js_params( $for_preview )
-		);
-
-		wp_enqueue_script( 'wcapf-params' );
 	}
 
 	/**
 	 * Frontend js params.
 	 *
-	 * @param bool $for_preview
-	 *
 	 * @return array
 	 */
-	private static function get_js_params( $for_preview ) {
-		$settings = WCAPF_Helper::get_settings();
+	private function get_js_params() {
+		$js_data = array(
+			'disable_ajax',
+			'enable_pagination_via_ajax',
+			'sorting_control',
+			'attach_chosen_on_sorting',
+			'loading_animation',
+			'scroll_window',
+			'scroll_window_for',
+			'scroll_window_when',
+			'scroll_window_custom_element',
+			'scroll_to_top_offset',
+			'custom_scripts',
+		);
 
-		$disable_inputs = true;
+		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
 
-		if ( isset( $settings['loading_animation'] ) && $settings['loading_animation'] ) {
-			$disable_inputs = false;
+		$settings = array(
+			'shop_loop_container'  => $shop_loop_identifier,
+			'not_found_container'  => $shop_loop_identifier,
+			'pagination_container' => '.woocommerce-pagination',
+		);
+
+		foreach ( $js_data as $key ) {
+			$settings[ $key ] = WCAPF_Helper::wcapf_option( $key );
 		}
 
-		$disable_inputs   = apply_filters( 'wcapf_disable_inputs_while_fetching_results', $disable_inputs );
-		$history_popstate = apply_filters( 'wcapf_apply_filters_on_browser_history_change', true );
-
-		$loading_overlay_options = array();
-
-		if ( isset( $settings['loading_image'] ) && $settings['loading_image'] ) {
-			$image = wp_get_attachment_image_src( $settings['loading_image'], 'full' );
-
-			if ( $image ) {
-				$image_src = $image[0];
-
-				$loading_overlay_options = array(
-					'image'          => $image_src,
-					'imageAnimation' => '',
-					'imageClass'     => 'wcapf-loading-overlay-img',
-				);
-			}
+		// Prevent attaching combobox on default orderby if combobox is disabled globally.
+		if ( empty( $settings['use_chosen'] ) ) {
+			$settings['attach_chosen_on_sorting'] = '';
 		}
+
+		$chosen_no_results_text   = WCAPF_Helper::no_results_text();
+		$chosen_options_none_text = WCAPF_Helper::wcapf_option(
+			'chosen_no_options_text',
+			__( 'No options to choose', 'wc-ajax-product-filter' )
+		);
 
 		$params = array(
+			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => 800, // In milliseconds.
-			'chosen_lib_search_threshold'              => 10,
+			'chosen_display_selected_options'          => false,
+			'chosen_no_results_text'                   => $chosen_no_results_text,
+			'chosen_options_none_text'                 => $chosen_options_none_text,
+			'search_box_in_default_orderby'            => true,
 			'preserve_hierarchy_accordion_state'       => true,
-			'enable_animation_for_hierarchy_accordion' => true,
+			'preserve_soft_limit_state'                => true,
+			'enable_animation_for_filter_accordion'    => false,
+			'filter_accordion_animation_speed'         => 400,
+			'filter_accordion_animation_easing'        => 'swing',
+			'enable_animation_for_hierarchy_accordion' => false,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
-			'loading_overlay_options'                  => $loading_overlay_options,
+			'restore_focus_after_filtering'            => true,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),
-			'disable_inputs_while_fetching_results'    => $disable_inputs,
-			'apply_filters_on_browser_history_change'  => $history_popstate,
-			'for_preview'                              => $for_preview,
+			'reload_on_back'                           => true,
+			'found_wcapf'                              => WCAPF_Helper::found_wcapf(),
+			'wcapf_pro'                                => WCAPF_Helper::found_pro_version(),
+			'update_document_title'                    => true,
+			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
 		);
 
 		$params = array_merge( $params, $settings );

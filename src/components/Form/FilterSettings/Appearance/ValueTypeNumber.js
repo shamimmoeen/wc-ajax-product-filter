@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
-import Checkbox from '../../../Field/Checkbox';
+import { find } from 'lodash';
+import ToggleGroup from '../../../Field/ToggleGroup';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
+import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import { numberDisplayTypes } from '../../utils';
@@ -10,7 +12,7 @@ import useFields from './useFields';
 const ValueTypeNumber = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleRadioChange, handleCheckboxChange, handleSelectChange } =
+	const { handleRadioChange, handleToggleGroupChange, handleSelectChange } =
 		useFormFilterData(state, dispatch);
 
 	const { formFilters } = state;
@@ -18,12 +20,10 @@ const ValueTypeNumber = ({ index }) => {
 	const filter = formFilters[index];
 
 	const {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		showCountInTooltipField,
@@ -33,15 +33,27 @@ const ValueTypeNumber = ({ index }) => {
 	const {
 		number_display_type,
 		number_range_slider_display_values_as,
-		align_values_at_the_end,
+		alignment,
 	} = filter;
 
 	const displayTypeField = () => {
 		const options = numberDisplayTypes(true);
+		let value;
 
-		const value = options.find(
-			(option) => number_display_type === option.value
-		);
+		value = options.find((option) => option.value === number_display_type);
+
+		if (!foundProVersion()) {
+			const freeDisplayTypes = ['range_slider', 'range_number'];
+
+			if (!freeDisplayTypes.includes(number_display_type)) {
+				const _proOptions = find(options, { proGroup: true });
+				const proOptions = _proOptions.options;
+
+				value = proOptions.find(
+					(option) => option.value === number_display_type
+				);
+			}
+		}
 
 		return (
 			<Select
@@ -66,19 +78,22 @@ const ValueTypeNumber = ({ index }) => {
 				<Radio
 					id={'number_range_slider_display_values_as'}
 					index={index}
-					label={__('Display values as', 'wc-ajax-product-filter')}
+					label={__(
+						'Display slider values as',
+						'wc-ajax-product-filter'
+					)}
 					description={__(
 						'Determines how the slider values will be shown on the frontend.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
 						{
-							label: __('Plain Text', 'wc-ajax-product-filter'),
-							value: 'plain_text',
-						},
-						{
 							label: __('Input Field', 'wc-ajax-product-filter'),
 							value: 'input_field',
+						},
+						{
+							label: __('Plain Text', 'wc-ajax-product-filter'),
+							value: 'plain_text',
 						},
 					]}
 					onChange={handleRadioChange}
@@ -88,19 +103,36 @@ const ValueTypeNumber = ({ index }) => {
 		}
 	};
 
-	const alignValuesField = () => {
-		if ('range_slider' === number_display_type) {
+	const alignmentField = () => {
+		if (
+			'range_slider' === number_display_type &&
+			'plain_text' === number_range_slider_display_values_as
+		) {
 			return (
-				<Checkbox
-					id={'align_values_at_the_end'}
+				<ToggleGroup
+					id={'alignment'}
 					index={index}
-					label={__('Align values', 'wc-ajax-product-filter')}
+					label={__('Alignment', 'wc-ajax-product-filter')}
 					description={__(
-						'Whether to align the slider values in the line; first item is on the start line, last item on the end line.',
+						'Whether to align the text in the center or justified by distributing space between them.',
 						'wc-ajax-product-filter'
 					)}
-					isChecked={align_values_at_the_end}
-					onChange={handleCheckboxChange}
+					options={[
+						{
+							label: __('Default', 'wc-ajax-product-filter'),
+							value: 'default',
+						},
+						{
+							label: __('Centered', 'wc-ajax-product-filter'),
+							value: 'centered',
+						},
+						{
+							label: __('Justified', 'wc-ajax-product-filter'),
+							value: 'justified',
+						},
+					]}
+					value={alignment}
+					onChange={handleToggleGroupChange}
 				/>
 			);
 		}
@@ -112,21 +144,15 @@ const ValueTypeNumber = ({ index }) => {
 
 			{displayValuesField()}
 
-			{alignValuesField()}
+			{layoutFields(number_display_type)}
+
+			{alignmentField()}
 
 			{enableMultipleFilterField('number_range_enable_multiple_filter')}
 
 			{queryTypeField('number_range_query_type')}
 
 			{allItemsLabelField('number_range_select_all_items_label')}
-
-			{useChosenField('number_range_use_chosen')}
-
-			{allItemsLabelFieldForUseChosen(
-				'number_range_select_all_items_label'
-			)}
-
-			{noResultsMessageField('number_range_chosen_no_results_message')}
 
 			{showCountField('number_range_show_count')}
 

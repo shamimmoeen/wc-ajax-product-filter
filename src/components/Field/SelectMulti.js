@@ -4,6 +4,7 @@ import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
 import axios from 'axios';
 import { FormatSelectMultiLabel } from './utilsForReactSelect';
+import { getInputId } from '../utils';
 
 const SelectMulti = ({
 	label,
@@ -22,19 +23,36 @@ const SelectMulti = ({
 	checkboxId,
 	checkIsChecked,
 	onCheckChange,
+	renderAsFormField = true,
+	inputKey,
+	inputPlaceholder,
+	inputNoOptionsMessage,
+	maxMenuHeight,
 }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
 		let ajaxParams;
 
 		if ('author' === type) {
 			ajaxParams = {
-				action: 'wcapf_get_post_authors_for_dropdown',
+				action: 'wcapf_get_authors_for_dropdown',
+				keyword,
+				page,
+			};
+		} else if ('page' === type) {
+			ajaxParams = {
+				action: 'wcapf_get_pages_for_dropdown',
+				keyword,
+				page,
+			};
+		} else if ('product' === type) {
+			ajaxParams = {
+				action: 'wcapf_get_products_for_dropdown',
 				keyword,
 				page,
 			};
 		} else {
 			ajaxParams = {
-				action: 'wcapf_get_taxonomy_terms_for_dropdown',
+				action: 'wcapf_get_terms_for_dropdown',
 				taxonomy,
 				only_parent: onlyParent,
 				keyword,
@@ -96,13 +114,23 @@ const SelectMulti = ({
 		noOptionsMessage = __('No terms found', 'wc-ajax-product-filter');
 	}
 
+	if (inputPlaceholder) {
+		placeholder = inputPlaceholder;
+	}
+
+	if (inputNoOptionsMessage) {
+		noOptionsMessage = inputNoOptionsMessage;
+	}
+
 	const loadingMessage = __('Loading...', 'wc-ajax-product-filter');
+
+	const inputId = getInputId(id, index);
 
 	const renderSelect = () => {
 		if (isUserRoles) {
 			return (
 				<ReactSelect
-					inputId={`${id}-${index}`}
+					inputId={inputId}
 					value={value}
 					options={options}
 					placeholder={placeholder}
@@ -110,6 +138,7 @@ const SelectMulti = ({
 					loadingMessage={() => loadingMessage}
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
+					maxMenuHeight={maxMenuHeight}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id, index)}
 					isClearable
@@ -128,7 +157,8 @@ const SelectMulti = ({
 		} else {
 			return (
 				<AsyncPaginate
-					inputId={`${id}-${index}`}
+					key={inputKey}
+					inputId={inputId}
 					value={value}
 					loadOptions={loadOptions}
 					additional={{
@@ -139,6 +169,7 @@ const SelectMulti = ({
 					loadingMessage={() => loadingMessage}
 					formatOptionLabel={FormatSelectMultiLabel}
 					isMulti={isMultiple}
+					maxMenuHeight={maxMenuHeight}
 					closeMenuOnSelect={!isMultiple}
 					onChange={(selected) => onChange(selected, id, index)}
 					isClearable
@@ -157,40 +188,53 @@ const SelectMulti = ({
 		}
 	};
 
-	return (
-		<div className='__form_control react_select'>
-			<div className='__inner'>
-				<div className='__label'>
-					<label htmlFor={`${id}-${index}`}>{label}</label>
-				</div>
-				<div className='__wrapper'>
-					<div className='__input_wrapper'>
-						{renderSelect()}
+	const includeChild = () => {
+		let label;
 
-						{showIncludeChildren && (
-							<CheckboxControl
-								label={__(
-									'Include children',
-									'wc-ajax-product-filter'
-								)}
-								className='__include_child_terms'
-								checked={checkIsChecked}
-								onChange={(checked) =>
-									onCheckChange(checked, checkboxId, index)
-								}
-							/>
-						)}
+		if ('direct_child_only' === checkboxId) {
+			label = __('Direct child only', 'wc-ajax-product-filter');
+		} else {
+			label = __('Include children', 'wc-ajax-product-filter');
+		}
+
+		return (
+			<CheckboxControl
+				label={label}
+				className='__include_child_terms'
+				checked={checkIsChecked}
+				onChange={(checked) =>
+					onCheckChange(checked, checkboxId, index)
+				}
+			/>
+		);
+	};
+
+	if (renderAsFormField) {
+		return (
+			<div className='__form_control react_select'>
+				<div className='__inner'>
+					<div className='__label'>
+						<label htmlFor={inputId}>{label}</label>
+					</div>
+					<div className='__wrapper'>
+						<div className='__input_wrapper'>
+							{renderSelect()}
+
+							{showIncludeChildren && includeChild()}
+						</div>
 					</div>
 				</div>
+				{description && (
+					<p
+						className='description'
+						dangerouslySetInnerHTML={{ __html: description }}
+					/>
+				)}
 			</div>
-			{description && (
-				<p
-					className='description'
-					dangerouslySetInnerHTML={{ __html: description }}
-				/>
-			)}
-		</div>
-	);
+		);
+	}
+
+	return renderSelect();
 };
 
 export default SelectMulti;

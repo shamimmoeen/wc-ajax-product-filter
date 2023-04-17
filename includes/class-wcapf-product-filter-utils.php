@@ -40,7 +40,6 @@ class WCAPF_Product_Filter_Utils {
 	 *
 	 * @return array
 	 *
-	 * @see wcapf_set_product_query()
 	 * @see WC_Query::append_product_sorting_table_join()
 	 */
 	public static function get_lookup_table_data() {
@@ -84,106 +83,14 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 *
-	 * @return array
+	 * @return string
 	 */
-	public static function get_price_range( $field_instance ) {
-		global $wpdb;
+	public static function get_join_clause() {
+		$filter = new WCAPF_Product_Filter();
 
-		$helper = new WCAPF_Helper();
+		$join = ' ' . $filter->get_full_join_clause();
 
-		$post_statuses  = $helper::filterable_post_statuses();
-		$hide_stock_out = $helper::hide_stock_out_items();
-
-		list( $meta_query_sql, $tax_query_sql, $search_query ) = self::get_main_query_data();
-
-		$lookup_table_name = $wpdb->prefix . 'wc_product_meta_lookup';
-
-		$join  = '';
-		$where = '';
-		$query = array();
-
-		$select = 'SELECT MIN( price_table.min_price ) AS min_price, MAX( price_table.max_price ) AS max_price';
-
-		$query['select'] = $select;
-		$query['from']   = "FROM $wpdb->posts";
-
-		$join .= " LEFT JOIN $lookup_table_name AS price_table ON $wpdb->posts.ID = price_table.product_id";
-		$join .= $meta_query_sql['join'];
-		$join .= $tax_query_sql['join'];
-
-		$query['join'] = $join;
-
-		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
-
-		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
-		$where .= $search_query ? ' AND ' . $search_query : '';
-
-		$where .= $hide_stock_out ? " AND price_table.stock_status = 'instock'" : '';
-
-		$query['where'] = $where;
-
-		$query = apply_filters( 'wcapf_price_min_max_sql_query', $query, $field_instance );
-		$query = implode( ' ', $query );
-
-		$results = $wpdb->get_row( $query, ARRAY_A );
-
-		$min = isset( $results['min_price'] ) ? floatval( $results['min_price'] ) : 0;
-		$max = isset( $results['max_price'] ) ? floatval( $results['max_price'] ) : 0;
-
-		// Check to see if we should add taxes to the prices if store are excl tax but display incl.
-		$tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
-
-		if ( wc_tax_enabled() && ! wc_prices_include_tax() && 'incl' === $tax_display_mode ) {
-			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
-			$tax_rates = WC_Tax::get_rates( $tax_class );
-
-			if ( $tax_rates ) {
-				$min += WC_Tax::get_tax_total( WC_Tax::calc_exclusive_tax( $min, $tax_rates ) );
-				$max += WC_Tax::get_tax_total( WC_Tax::calc_exclusive_tax( $max, $tax_rates ) );
-			}
-		}
-
-		return compact( 'min', 'max' );
-	}
-
-	/**
-	 * Gets the main wc query data.
-	 *
-	 * @param string $primary_table  The primary table name.
-	 * @param string $primary_column The primary column name.
-	 *
-	 * @return array
-	 */
-	public static function get_main_query_data( $primary_table = '', $primary_column = '' ) {
-		global $wpdb;
-
-		if ( ! $primary_table ) {
-			$primary_table = $wpdb->posts;
-		}
-
-		if ( ! $primary_column ) {
-			$primary_column = 'ID';
-		}
-
-		if ( is_shop() || is_product_taxonomy() ) {
-			$tax_query    = WC_Query::get_main_tax_query();
-			$meta_query   = WC_Query::get_main_meta_query();
-			$search_query = WC_Query::get_main_search_query_sql();
-
-			$meta_query     = new WP_Meta_Query( $meta_query );
-			$tax_query      = new WP_Tax_Query( $tax_query );
-			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
-			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
-		} else {
-			$meta_query_sql = array( 'join' => '', 'where' => '' );
-			$tax_query_sql  = array( 'join' => '', 'where' => '' );
-			$search_query   = '';
-		}
-
-		return array( $meta_query_sql, $tax_query_sql, $search_query );
+		return apply_filters( 'wcapf_filter_join_clause', $join );
 	}
 
 	/**
@@ -303,17 +210,6 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * @return string
 	 */
-	public static function get_join_clause() {
-		$filter = new WCAPF_Product_Filter();
-
-		$join = ' ' . $filter->get_full_join_clause();
-
-		return apply_filters( 'wcapf_filter_join_clause', $join );
-	}
-
-	/**
-	 * @return string
-	 */
 	public static function get_featured_product_ids_sql() {
 		$ids = wc_get_featured_product_ids();
 
@@ -334,6 +230,36 @@ class WCAPF_Product_Filter_Utils {
 	}
 
 	/**
+	 * Formats a list of term_taxonomy_ids as "(id,id,id)" from term ids.
+	 *
+	 * Fix - https://wordpress.org/support/topic/selection-does-not-show/
+	 *
+	 * @param int[]  $term_ids The array of term ids.
+	 * @param string $taxonomy The taxonomy name.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function get_tt_ids_sql( $term_ids, $taxonomy ) {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'include'    => $term_ids,
+			)
+		);
+
+		if ( $terms ) {
+			$tt_ids = wp_list_pluck( $terms, 'term_taxonomy_id' );
+		} else {
+			$tt_ids = array( 0 );
+		}
+
+		return self::get_ids_sql( $tt_ids );
+	}
+
+	/**
 	 * @return string
 	 */
 	public static function get_product_ids_on_sale_sql() {
@@ -342,38 +268,6 @@ class WCAPF_Product_Filter_Utils {
 		$ids = $ids ?: array( 0 );
 
 		return self::get_ids_sql( $ids );
-	}
-
-	/**
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param string               $value          The min, max range using separator.
-	 *
-	 * @return string
-	 */
-	public static function get_label_for_number_range( $field_instance, $value ) {
-		$separator = WCAPF_Helper::range_values_separator();
-		$range     = explode( $separator, $value );
-
-		$range_min = $range[0];
-		$range_max = $range[1];
-
-		$value_prefix       = $field_instance->get_sub_field_value( 'value_prefix' );
-		$value_postfix      = $field_instance->get_sub_field_value( 'value_postfix' );
-		$values_separator   = $field_instance->get_sub_field_value( 'values_separator' );
-		$decimal_places     = $field_instance->get_sub_field_value( 'decimal_places' );
-		$thousand_separator = $field_instance->get_sub_field_value( 'thousand_separator' );
-		$decimal_separator  = $field_instance->get_sub_field_value( 'decimal_separator' );
-
-		$label = sprintf(
-			'%1$s%2$s%3$s%4$s%1$s%5$s%3$s',
-			$value_prefix,
-			number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator ),
-			$value_postfix,
-			$values_separator,
-			number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator )
-		);
-
-		return apply_filters( 'wcapf_label_for_number_range', $label, $field_instance );
 	}
 
 	/**
@@ -418,6 +312,99 @@ class WCAPF_Product_Filter_Utils {
 		$all_roles = $wp_roles->get_names();
 
 		return apply_filters( 'wcapf_user_roles', $all_roles );
+	}
+
+	/**
+	 * Adjust the parent term id for hierarchy terms.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance
+	 * @param array                $terms
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function adjust_parent_id_for_hierarchy_terms( $field_instance, $terms ) {
+		$modified = array();
+		$taxonomy = $field_instance->taxonomy;
+
+		foreach ( $terms as $_id => $_data ) {
+			if ( ! array_key_exists( $_data['parent_id'], $terms ) ) {
+				$ancestors = get_ancestors( $_id, $taxonomy );
+				$parent_id = 0;
+
+				foreach ( $ancestors as $ancestor ) {
+					if ( array_key_exists( $ancestor, $terms ) ) {
+						$parent_id = $ancestor;
+						break;
+					}
+				}
+
+				$_data['parent_id'] = $parent_id;
+			}
+
+			$modified[ $_id ] = $_data;
+		}
+
+		return $modified;
+	}
+
+	/**
+	 * Prepare the form filters and return them to be used on the frontend.
+	 *
+	 * @param WP_Post $form The form.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array
+	 */
+	public static function get_form_filters( $form ) {
+		$form_data     = array();
+		$form_id       = $form->ID;
+		$form_settings = maybe_unserialize( $form->post_content );
+
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+				'post_parent' => $form_id,
+				'nopaging'    => true,
+				'orderby'     => 'menu_order',
+				'order'       => 'ASC',
+			)
+		);
+
+		$form_data['form_id']    = $form_id;
+		$form_data['form_title'] = $form->post_title;
+		$form_data['settings']   = $form_settings;
+
+		$form_filters = array();
+
+		/**
+		 * Register a hook to modify the form filter data.
+		 */
+		$filter_data = apply_filters( 'wcapf_form_filter_data', array(), $form_data );
+
+		foreach ( $filters as $filter ) {
+			$id    = $filter->ID;
+			$field = maybe_unserialize( $filter->post_content );
+
+			$field['form_id'] = $form_id;
+
+			$field = wp_parse_args( $filter_data, $field );
+
+			$form_filters[ $id ] = array(
+				'id'    => $id,
+				'title' => $filter->post_title,
+				'key'   => $filter->post_name,
+				'type'  => $filter->post_excerpt,
+				'field' => $field,
+			);
+		}
+
+		$form_data['filters'] = $form_filters;
+
+		return $form_data;
 	}
 
 }

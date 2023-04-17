@@ -95,6 +95,17 @@ export function removeItemSavedNotices() {
 	removeNotice(itemSaveErrorNoticeId);
 }
 
+// Filter Delete Notices.
+const filterDeleteNoticeId = 'filter-delete-error';
+
+export function filterDeletedErrorNotice(message) {
+	addSuccessNotice(message, filterDeleteNoticeId, '😟');
+}
+
+export function removeFilterDeletedNotices() {
+	removeNotice(filterDeleteNoticeId);
+}
+
 // Settings notices.
 const settingsSaveSuccessNoticeId = 'settings-save-success';
 const settingsSaveErrorNoticeId = 'settings-save-error';

@@ -1,13 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import useFields from './useFields';
-import { authorLimitByOptions, authorOrderByOptions } from '../../utils';
+import { authorLimitByOptions } from '../../utils';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import SelectMulti from '../../../Field/SelectMulti';
-import Checkbox from '../../../Field/Checkbox';
 import ManualOptions from './ManualOptions';
 import ManualOptionsModal from './ManualOptionsModal';
-import { wcfmFound } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 
@@ -16,11 +14,8 @@ const userRoles = wcapf_admin_params.user_roles;
 const PostAuthorOptions = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const {
-		handleCheckboxChange,
-		handleToggleGroupChange,
-		handleSelectTermChange,
-	} = useFormFilterData(state, dispatch);
+	const { handleToggleGroupChange, handleSelectTermChange } =
+		useFormFilterData(state, dispatch);
 
 	const { getOptionsField, orderByField, orderDirectionField } =
 		useFields(index);
@@ -35,32 +30,11 @@ const PostAuthorOptions = ({ index }) => {
 
 	const {
 		get_options,
-		post_author_order_by,
 		limit_options,
-		limit_values_by_id,
-		exclude_values_id,
+		include_authors,
+		exclude_authors,
 		include_user_roles,
-		use_store_name,
 	} = filter;
-
-	const _orderByField = () => {
-		let _options = authorOrderByOptions();
-		let options;
-
-		if ('automatically' === get_options) {
-			options = _options.filter((option) => 'entry' !== option.value);
-		} else {
-			options = _options;
-		}
-
-		return orderByField('post_author_order_by', options, true);
-	};
-
-	const _orderDirectionField = () => {
-		if ('default' !== post_author_order_by) {
-			return orderDirectionField('post_author_order_dir');
-		}
-	};
 
 	const limitOptionsField = () => {
 		if ('automatically' === get_options) {
@@ -87,7 +61,7 @@ const PostAuthorOptions = ({ index }) => {
 		if ('automatically' === get_options && 'include' === limit_options) {
 			return (
 				<SelectMulti
-					id={'limit_values_by_id'}
+					id={'include_authors'}
 					index={index}
 					label={__('Authors to include', 'wc-ajax-product-filter')}
 					description={__(
@@ -95,7 +69,7 @@ const PostAuthorOptions = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isMultiple={true}
-					value={limit_values_by_id}
+					value={include_authors}
 					onChange={handleSelectTermChange}
 					type={'author'}
 				/>
@@ -107,7 +81,7 @@ const PostAuthorOptions = ({ index }) => {
 		if ('automatically' === get_options && 'exclude' === limit_options) {
 			return (
 				<SelectMulti
-					id={'exclude_values_id'}
+					id={'exclude_authors'}
 					index={index}
 					label={__('Authors to exclude', 'wc-ajax-product-filter')}
 					description={__(
@@ -115,7 +89,7 @@ const PostAuthorOptions = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isMultiple={true}
-					value={exclude_values_id}
+					value={exclude_authors}
 					onChange={handleSelectTermChange}
 					type={'author'}
 				/>
@@ -145,25 +119,6 @@ const PostAuthorOptions = ({ index }) => {
 		}
 	};
 
-	const useStoreNames = () => {
-		if (wcfmFound()) {
-			return (
-				<Checkbox
-					id={'use_store_name'}
-					index={index}
-					label={__('Use Store Name', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to show the store name as the option label.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={use_store_name}
-					onChange={handleCheckboxChange}
-					isPro={true}
-				/>
-			);
-		}
-	};
-
 	const manualOptions = () => {
 		if ('manual_entry' === get_options) {
 			return (
@@ -184,9 +139,9 @@ const PostAuthorOptions = ({ index }) => {
 		<>
 			{getOptionsField('get_options')}
 
-			{_orderByField()}
+			{orderByField('post_author_order_by')}
 
-			{_orderDirectionField()}
+			{orderDirectionField('post_author_order_dir')}
 
 			{limitOptionsField()}
 
@@ -195,8 +150,6 @@ const PostAuthorOptions = ({ index }) => {
 			{excludeAuthorsField()}
 
 			{userRolesField()}
-
-			{useStoreNames()}
 
 			{manualOptions()}
 		</>

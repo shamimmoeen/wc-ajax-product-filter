@@ -1,3 +1,4 @@
+import { getInputId, proTag } from '../utils';
 import Text from './Text';
 
 const Number = ({
@@ -7,13 +8,17 @@ const Number = ({
 	value,
 	onChange,
 	description,
+	isPro,
 	...rest
 }) => {
 	return (
 		<div className='__form_control number'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={`${id}-${index}`}>{label}</label>
+					<label htmlFor={getInputId(id, index)}>
+						{label}
+						{proTag(isPro)}
+					</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>

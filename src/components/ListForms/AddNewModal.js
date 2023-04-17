@@ -2,11 +2,17 @@ import { __ } from '@wordpress/i18n';
 import { Button, Flex, Icon, Modal, Spinner } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { itemCreateErrorNotice, removeItemCreateNotice } from '../notices';
-import { getEditFormLink } from '../utils';
+import { foundProVersion, getEditFormLink } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { CheckIcon } from '../SVGIcons';
 import axios from 'axios';
 import { defaultFormSettings } from '../utilsForForm';
+import ProFeaturesNotice from '../ProFeaturesNotice';
+
+const proMessage = __(
+	'Upgrade to PRO to create multiple forms to show on different archives and pages.',
+	'wc-ajax-product-filter'
+);
 
 const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	const {
@@ -52,14 +58,34 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		setTitle('');
 	};
 
-	const handleSubmit = () => {
+	const formSubmissionDisabled = () => {
+		if (foundProVersion()) {
+			return false;
+		}
+
+		if (forms.length >= 1) {
+			return true;
+		}
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		if (!title) {
+			return;
+		}
+
+		if (formSubmissionDisabled()) {
+			return;
+		}
+
 		removeItemCreateNotice();
 
 		setLoading(true);
 
 		const formData = new FormData();
 
-		formData.append('action', 'wcapf_save_form');
+		formData.append('action', 'wcapf_add_form');
 		formData.append('form_title', title);
 		formData.append('form_settings', JSON.stringify(defaultFormSettings()));
 
@@ -123,17 +149,24 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		} else {
 			return (
 				<>
+					{formSubmissionDisabled() && (
+						<ProFeaturesNotice message={proMessage} />
+					)}
+
 					<div className='__step_inner __title_step'>
-						<input
-							type={'text'}
-							placeholder={__(
-								'Enter form title',
-								'wc-ajax-product-filter'
-							)}
-							className='components-text-control__input'
-							value={title}
-							onChange={handleTitleChange}
-						/>
+						<form onSubmit={handleSubmit}>
+							<input
+								type={'text'}
+								placeholder={__(
+									'Enter form title',
+									'wc-ajax-product-filter'
+								)}
+								className='components-text-control__input'
+								value={title}
+								onChange={handleTitleChange}
+								disabled={formSubmissionDisabled()}
+							/>
+						</form>
 					</div>
 
 					<Flex justify={'space-between'}>

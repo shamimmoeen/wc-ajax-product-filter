@@ -187,11 +187,9 @@ export const SingleValueForSelectRule = (props) => {
 
 export const Group = (props) => {
 	if (props.data.proGroup) {
-		return (
-			<div className='__pro_group'>
-				<components.Group {...props} />
-			</div>
-		);
+		return <components.Group {...props} className='__pro_group' />;
+	} else if (props.data.components) {
+		return <components.Group {...props} className='__form_components' />;
 	}
 
 	return <components.Group {...props} />;
@@ -212,6 +210,14 @@ export const FormatGroupLabel = (data) => {
 			<span className='__pro_heading_wrapper'>
 				<span className='__pro_heading'>
 					{__('Pro', 'wc-ajax-product-filter')}
+				</span>
+			</span>
+		);
+	} else if (data.components) {
+		return (
+			<span className='__form_components_divider'>
+				<span className='__form_components_heading'>
+					{__('Components', 'wc-ajax-product-filter')}
 				</span>
 			</span>
 		);

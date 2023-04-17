@@ -1,12 +1,20 @@
 import { __ } from '@wordpress/i18n';
+import { find } from 'lodash';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
+import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import {
+	authorOrderByOptions,
+	authorProOrderByOptions,
+	metaValuesOrderByOptions,
+	metaValuesProOrderByOptions,
 	methodsOfGettingOptions,
 	orderDirectionOptions,
 	orderTypeOptions,
+	termsOrderByOptions,
+	termsProOrderByOptions,
 } from '../../utils';
 
 const useFields = (index) => {
@@ -19,27 +27,17 @@ const useFields = (index) => {
 
 	const filter = formFilters[index];
 
-	const { type: filterType } = filter;
+	const { get_options } = filter;
 
 	const getOptionsField = (id) => {
-		let description;
-
-		if ('taxonomy' === filterType || 'post-meta' === filterType) {
-			description = __(
-				'Whether to get the options automatically or you want to add the options manually. <b>Note:</b> For color/image swatches, you need to manually enter the options.'
-			);
-		} else {
-			description = __(
-				'Whether to get the options automatically or you want to add the options manually.'
-			);
-		}
-
 		return (
 			<Radio
 				id={id}
 				index={index}
 				label={__('Get Options', 'wc-ajax-product-filter')}
-				description={description}
+				description={__(
+					'Whether to get the options automatically or you want to add the options manually.'
+				)}
 				options={methodsOfGettingOptions()}
 				value={filter[id]}
 				onChange={handleGetOptionsChange}
@@ -47,8 +45,35 @@ const useFields = (index) => {
 		);
 	};
 
-	const orderByField = (id, options, isPro = false) => {
-		const value = options.find((option) => option.value === filter[id]);
+	const orderByField = (id) => {
+		const isManualEntry = 'manual_entry' === get_options;
+		let options;
+		let proOptions;
+		let value;
+
+		if ('order_terms_by' === id) {
+			options = termsOrderByOptions(isManualEntry);
+			proOptions = termsProOrderByOptions();
+		} else if ('options_order_by' === id) {
+			options = metaValuesOrderByOptions(isManualEntry);
+			proOptions = metaValuesProOrderByOptions();
+		} else if ('post_author_order_by' === id) {
+			options = authorOrderByOptions(isManualEntry);
+			proOptions = authorProOrderByOptions();
+		}
+
+		value = options.find((option) => option.value === filter[id]);
+
+		if (!foundProVersion()) {
+			if (proOptions.includes(filter[id])) {
+				const _proOptions = find(options, { proGroup: true });
+				const proOptions = _proOptions.options;
+
+				value = proOptions.find(
+					(option) => option.value === filter[id]
+				);
+			}
+		}
 
 		return (
 			<Select
@@ -63,7 +88,6 @@ const useFields = (index) => {
 				value={value}
 				onChange={handleSelectChange}
 				renderAsFormField
-				isPro={isPro}
 			/>
 		);
 	};

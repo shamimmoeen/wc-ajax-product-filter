@@ -1,3 +1,4 @@
+import { removeCopiedToClipboardNotice } from '../notices';
 import useFormData from './useFormData';
 
 const useFormSettings = (state, dispatch) => {
@@ -5,7 +6,9 @@ const useFormSettings = (state, dispatch) => {
 
 	const { formSettings } = state;
 
-	const handleRadioChange = (value, key) => {
+	const handleRadioChange = (e, key) => {
+		const value = e.target.value;
+
 		updateFormSettings(key, value);
 	};
 
@@ -17,6 +20,14 @@ const useFormSettings = (state, dispatch) => {
 
 	const handleTextFieldChange = (value, key) => {
 		updateFormSettings(key, value);
+	};
+
+	const handleSelectChange = (selectedItem, key) => {
+		updateFormSettings(key, selectedItem.value);
+	};
+
+	const handleFormLocations = (value) => {
+		updateFormSettings('form_locations', value);
 	};
 
 	const updateFormSettings = (key, value) => {
@@ -31,6 +42,8 @@ const useFormSettings = (state, dispatch) => {
 			payload: { ...formSettings, [key]: value },
 		});
 
+		removeCopiedToClipboardNotice();
+
 		setDirty();
 	};
 
@@ -38,6 +51,8 @@ const useFormSettings = (state, dispatch) => {
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
+		handleSelectChange,
+		handleFormLocations,
 	};
 };
 

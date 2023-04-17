@@ -9,21 +9,24 @@ import {
 	Group,
 	FormatGroupLabel,
 } from '../Field/utilsForReactSelect';
-import { proTag } from '../utils';
+import TippyTooltip from '../TippyTooltip';
+import { getInputId, proTag } from '../utils';
 
 const SimpleReactSelect = ({
-	id,
-	index = '',
+	inputId,
+	placeholder,
 	options,
 	value,
 	onChange,
 	classes,
 	isSearchable,
 	portalTarget,
+	maxMenuHeight,
+	isDisabled,
 }) => {
 	return (
 		<ReactSelect
-			inputId={`${id}-${index}`}
+			inputId={inputId}
 			components={{
 				IndicatorSeparator,
 				DropdownIndicator,
@@ -33,6 +36,7 @@ const SimpleReactSelect = ({
 			}}
 			formatGroupLabel={FormatGroupLabel}
 			isSearchable={isSearchable}
+			placeholder={placeholder}
 			noOptionsMessage={() =>
 				__('No option found', 'wc-ajax-product-filter')
 			}
@@ -41,7 +45,9 @@ const SimpleReactSelect = ({
 			onChange={onChange}
 			styles={customStyles}
 			className={classes}
+			isDisabled={isDisabled}
 			menuPortalTarget={portalTarget}
+			maxMenuHeight={maxMenuHeight}
 			classNamePrefix='__react_select'
 			theme={(theme) => ({
 				...theme,
@@ -57,16 +63,21 @@ const SimpleReactSelect = ({
 
 const Select = ({
 	id,
-	index,
+	index = '',
 	label,
 	description,
+	placeholder,
 	options,
 	value,
 	onChange,
 	isSearchable = false,
 	renderAsFormField = false,
+	inputKey,
 	portalTarget = false,
+	maxMenuHeight,
 	isPro = false,
+	isDisabled = false,
+	tooltip,
 }) => {
 	let customClasses = '__custom_react_select __single_select';
 	let html;
@@ -75,12 +86,14 @@ const Select = ({
 		customClasses += ` ${id}`;
 	}
 
+	const inputId = getInputId(id, index);
+
 	if (renderAsFormField) {
 		html = (
 			<div className='__form_control react_select_simple'>
 				<div className='__inner'>
 					<div className='__label'>
-						<label htmlFor={`${id}-${index}`}>
+						<label htmlFor={inputId}>
 							{label}
 							{proTag(isPro)}
 						</label>
@@ -88,17 +101,21 @@ const Select = ({
 					<div className='__wrapper'>
 						<div className='__input_wrapper'>
 							<SimpleReactSelect
-								id={id}
-								index={index}
+								key={inputKey}
+								inputId={inputId}
+								placeholder={placeholder}
 								options={options}
 								value={value}
 								classes={customClasses}
 								isSearchable={isSearchable}
+								isDisabled={isDisabled}
 								portalTarget={portalTarget}
+								maxMenuHeight={maxMenuHeight}
 								onChange={(selectedItem) =>
 									onChange(selectedItem, id, index)
 								}
 							/>
+							{tooltip && <TippyTooltip content={tooltip} />}
 						</div>
 					</div>
 				</div>
@@ -113,12 +130,15 @@ const Select = ({
 	} else {
 		html = (
 			<SimpleReactSelect
-				id={id}
-				index={index}
+				key={inputKey}
+				inputId={inputId}
+				placeholder={placeholder}
 				options={options}
 				value={value}
 				classes={customClasses}
+				isDisabled={isDisabled}
 				portalTarget={portalTarget}
+				maxMenuHeight={maxMenuHeight}
 				onChange={(selectedItem) => onChange(selectedItem)}
 				isSearchable={isSearchable}
 			/>

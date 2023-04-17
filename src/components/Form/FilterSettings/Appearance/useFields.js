@@ -1,15 +1,19 @@
 import { __ } from '@wordpress/i18n';
+import Select from '../../../Field/Select';
+import Number from '../../../Field/Number';
 import Checkbox from '../../../Field/Checkbox';
 import Radio from '../../../Field/Radio';
 import Text from '../../../Field/Text';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
+import { tooltipCanBeEnabled } from '../../utils';
 
 const useFields = (type, index) => {
 	const { state, dispatch } = useForm();
 
 	const {
+		handleSelectChange,
 		handleRadioChange,
 		handleCheckboxChange,
 		handleTextFieldChange,
@@ -23,19 +27,136 @@ const useFields = (type, index) => {
 	const {
 		type: filterType,
 		display_type,
+		native_display_type_layout,
+		custom_display_type_layout,
+		grid_columns,
+		swatch_with_text,
 		enable_multiple_filter,
-		use_chosen,
 		enable_tooltip,
 		tooltip_position,
 		show_count_in_tooltip,
 		number_display_type,
 		number_range_enable_multiple_filter,
-		number_range_use_chosen,
 		date_display_type,
 		time_period_enable_multiple_filter,
-		time_period_use_chosen,
-		value_type,
 	} = filter;
+
+	const layoutFields = (displayType) => {
+		let _displayType;
+		let id;
+		let availableLayouts = [];
+
+		if (
+			[
+				'checkbox',
+				'radio',
+				'range_checkbox',
+				'range_radio',
+				'time_period_checkbox',
+				'time_period_radio',
+			].includes(displayType)
+		) {
+			_displayType = native_display_type_layout;
+			id = 'native_display_type_layout';
+
+			availableLayouts = [
+				{
+					label: __('List Item', 'wc-ajax-product-filter'),
+					value: 'list-item',
+				},
+				{
+					label: __('Inline', 'wc-ajax-product-filter'),
+					value: 'inline',
+				},
+				{
+					label: __('Grid', 'wc-ajax-product-filter'),
+					value: 'grid',
+					isPro: true,
+				},
+			];
+		} else if (
+			[
+				'label',
+				'color',
+				'image',
+				'range_label',
+				'time_period_label',
+			].includes(displayType)
+		) {
+			_displayType = custom_display_type_layout;
+			id = 'custom_display_type_layout';
+
+			availableLayouts = [
+				{
+					label: __('Inline', 'wc-ajax-product-filter'),
+					value: 'inline',
+				},
+				{
+					label: __('Grid', 'wc-ajax-product-filter'),
+					value: 'grid',
+					isPro: true,
+				},
+			];
+		}
+
+		if (!_displayType) {
+			return;
+		}
+
+		const filterLayout = availableLayouts.find(
+			(option) => _displayType === option.value
+		);
+
+		const swatchDisplayTypes = ['color', 'image'];
+
+		return (
+			<>
+				<Select
+					id={id}
+					index={index}
+					label={__('Layout', 'wc-ajax-product-filter')}
+					description={__(
+						'Determines the layout of the filter options on the frontend.',
+						'wc-ajax-product-filter'
+					)}
+					options={availableLayouts}
+					value={filterLayout}
+					onChange={handleSelectChange}
+					renderAsFormField={true}
+				/>
+
+				{'grid' === _displayType && (
+					<Number
+						id={'grid_columns'}
+						index={index}
+						label={__('Columns', 'wc-ajax-product-filter')}
+						description={__(
+							'Determines the number of columns for the grid layout.',
+							'wc-ajax-product-filter'
+						)}
+						value={grid_columns}
+						onChange={handleTextFieldChange}
+						min={1}
+						max={16}
+					/>
+				)}
+
+				{swatchDisplayTypes.includes(displayType) && (
+					<Checkbox
+						id={'swatch_with_text'}
+						index={index}
+						label={__('Show text', 'wc-ajax-product-filter')}
+						description={__(
+							'Enable this to show the option text beside the swatch.',
+							'wc-ajax-product-filter'
+						)}
+						isChecked={swatch_with_text}
+						onChange={handleCheckboxChange}
+					/>
+				)}
+			</>
+		);
+	};
 
 	const enableMultipleFilterField = (id) => {
 		let showField = false;
@@ -118,17 +239,17 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Query Type', 'wc-ajax-product-filter')}
 					description={__(
-						'AND: products that have both options, OR: products that matched any option.',
+						'OR: products that matched any option, AND: products that have both options.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
 						{
-							label: __('AND', 'wc-ajax-product-filter'),
-							value: 'and',
-						},
-						{
 							label: __('OR', 'wc-ajax-product-filter'),
 							value: 'or',
+						},
+						{
+							label: __('AND', 'wc-ajax-product-filter'),
+							value: 'and',
 						},
 					]}
 					onChange={handleRadioChange}
@@ -142,15 +263,21 @@ const useFields = (type, index) => {
 		let showField = false;
 
 		if ('text' === type) {
-			showField = 'radio' === display_type || 'select' === display_type;
+			showField = ['radio', 'select', 'multi-select'].includes(
+				display_type
+			);
 		} else if ('number' === type) {
-			showField =
-				'range_radio' === number_display_type ||
-				'range_select' === number_display_type;
+			showField = [
+				'range_radio',
+				'range_select',
+				'range_multiselect',
+			].includes(number_display_type);
 		} else if ('date' === type) {
-			showField =
-				'time_period_radio' === date_display_type ||
-				'time_period_select' === date_display_type;
+			showField = [
+				'time_period_radio',
+				'time_period_select',
+				'time_period_multiselect',
+			].includes(date_display_type);
 		}
 
 		if (showField) {
@@ -160,109 +287,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('All Items Label', 'wc-ajax-product-filter')}
 					description={__(
-						'Change the default option label.',
-						'wc-ajax-product-filter'
-					)}
-					value={filter[id]}
-					onChange={handleTextFieldChange}
-				/>
-			);
-		}
-	};
-
-	const useChosenField = (id) => {
-		let showField = false;
-
-		if ('text' === type) {
-			showField =
-				'select' === display_type || 'multi-select' === display_type;
-		} else if ('number' === type) {
-			showField =
-				'range_select' === number_display_type ||
-				'range_multiselect' === number_display_type;
-		} else if ('date' === type) {
-			showField =
-				'time_period_select' === date_display_type ||
-				'time_period_multiselect' === date_display_type;
-		}
-
-		if (showField) {
-			return (
-				<Checkbox
-					id={id}
-					index={index}
-					label={__('Enable ComboBox', 'wc-ajax-product-filter')}
-					description={__(
-						'Whether to use jQuery Chosen library instead of the native select element.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={filter[id]}
-					onChange={handleCheckboxChange}
-				/>
-			);
-		}
-	};
-
-	const allItemsLabelFieldForUseChosen = (id) => {
-		let showField = false;
-
-		if ('text' === type) {
-			showField = 'multi-select' === display_type && '1' === use_chosen;
-		} else if ('number' === type) {
-			showField =
-				'range_multiselect' === number_display_type &&
-				'1' === number_range_use_chosen;
-		} else if ('date' === type) {
-			showField =
-				'time_period_multiselect' === date_display_type &&
-				'1' === time_period_use_chosen;
-		}
-
-		if (showField) {
-			return (
-				<Text
-					id={id}
-					index={index}
-					label={__('All Items Label', 'wc-ajax-product-filter')}
-					description={__(
-						'Change the default option label. Leave blank to show the default label.',
-						'wc-ajax-product-filter'
-					)}
-					value={filter[id]}
-					onChange={handleTextFieldChange}
-				/>
-			);
-		}
-	};
-
-	const noResultsMessageField = (id) => {
-		let showField = false;
-
-		if ('text' === type) {
-			showField =
-				('select' === display_type ||
-					'multi-select' === display_type) &&
-				'1' === use_chosen;
-		} else if ('number' === type) {
-			showField =
-				('range_select' === number_display_type ||
-					'range_multiselect' === number_display_type) &&
-				'1' === number_range_use_chosen;
-		} else if ('date' === type) {
-			showField =
-				('time_period_select' === date_display_type ||
-					'time_period_multiselect' === date_display_type) &&
-				'1' === time_period_use_chosen;
-		}
-
-		if (showField) {
-			return (
-				<Text
-					id={id}
-					index={index}
-					label={__('No Matches Message', 'wc-ajax-product-filter')}
-					description={__(
-						'This message is usually displayed when no options match the search term. Leave blank to show the default message.',
+						'Change the default option label. Leave blank to use the default label.',
 						'wc-ajax-product-filter'
 					)}
 					value={filter[id]}
@@ -318,7 +343,7 @@ const useFields = (type, index) => {
 				<Checkbox
 					id={id}
 					index={index}
-					label={__('Show Count', 'wc-ajax-product-filter')}
+					label={__('Show count', 'wc-ajax-product-filter')}
 					description={__(
 						'Whether to show the product count in filter options.',
 						'wc-ajax-product-filter'
@@ -330,59 +355,15 @@ const useFields = (type, index) => {
 		}
 	};
 
-	const tooltipCanBeEnabled = () => {
-		let enabled = false;
-
-		const _displayTypes = ['select', 'multi-select'];
-
-		const _numberDisplayTypes = [
-			'range_slider',
-			'range_number',
-			'range_select',
-			'range_multiselect',
-		];
-
-		const _dateDisplayTypes = [
-			'input_date',
-			'input_date_range',
-			'time_period_select',
-			'time_period_multiselect',
-		];
-
-		if ('price' === filterType) {
-			if (!_numberDisplayTypes.includes(number_display_type)) {
-				enabled = true;
-			}
-		} else if ('post-meta' === filterType) {
-			if ('text' === value_type) {
-				if (!_displayTypes.includes(display_type)) {
-					enabled = true;
-				}
-			} else if ('number' === value_type) {
-				if (!_numberDisplayTypes.includes(number_display_type)) {
-					enabled = true;
-				}
-			} else if ('date' === value_type) {
-				if (!_dateDisplayTypes.includes(date_display_type)) {
-					enabled = true;
-				}
-			}
-		} else {
-			if (!_displayTypes.includes(display_type)) {
-				enabled = true;
-			}
-		}
-
-		return enabled;
-	};
+	const tooltipEnabled = tooltipCanBeEnabled(filter);
 
 	const enableTooltipField = () => {
-		if (tooltipCanBeEnabled()) {
+		if (tooltipEnabled) {
 			return (
 				<Checkbox
 					id={'enable_tooltip'}
 					index={index}
-					label={__('Enable Tooltip', 'wc-ajax-product-filter')}
+					label={__('Enable tooltip', 'wc-ajax-product-filter')}
 					description={__(
 						'Display additional information in a tooltip when users hover over the option.',
 						'wc-ajax-product-filter'
@@ -395,12 +376,12 @@ const useFields = (type, index) => {
 	};
 
 	const tooltipPositionField = () => {
-		if (tooltipCanBeEnabled() && '1' === enable_tooltip) {
+		if (tooltipEnabled && '1' === enable_tooltip) {
 			return (
 				<ToggleGroup
 					id={'tooltip_position'}
 					index={index}
-					label={__('Tooltip Position', 'wc-ajax-product-filter')}
+					label={__('Tooltip position', 'wc-ajax-product-filter')}
 					description={__(
 						'Determines on which side the tooltip will be placed.',
 						'wc-ajax-product-filter'
@@ -431,7 +412,7 @@ const useFields = (type, index) => {
 	};
 
 	const showCountInTooltipField = () => {
-		if (tooltipCanBeEnabled() && '1' === enable_tooltip) {
+		if (tooltipEnabled && '1' === enable_tooltip) {
 			return (
 				<Checkbox
 					id={'show_count_in_tooltip'}
@@ -449,12 +430,10 @@ const useFields = (type, index) => {
 	};
 
 	return {
+		layoutFields,
 		enableMultipleFilterField,
 		queryTypeField,
 		allItemsLabelField,
-		useChosenField,
-		allItemsLabelFieldForUseChosen,
-		noResultsMessageField,
 		showCountField,
 		enableTooltipField,
 		tooltipPositionField,

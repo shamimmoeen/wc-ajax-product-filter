@@ -3,7 +3,7 @@
  * Plugin Name: WC Ajax Product Filter
  * Plugin URI: https://wptools.io/wc-ajax-product-filter
  * Description: A plugin to filter WooCommerce products with AJAX request.
- * Version: 3.3.1
+ * Version: 4.0.0
  * Requires at least: 4.0
  * Requires PHP: 5.5
  * Author: wptools.io
@@ -38,7 +38,7 @@ if ( ! defined( 'WCAPF_SLUG' ) ) {
 
 // Defines constant WCAPF_VERSION
 if ( ! defined( 'WCAPF_VERSION' ) ) {
-	define( 'WCAPF_VERSION', '3.3.1' );
+	define( 'WCAPF_VERSION', '4.0.0' );
 }
 
 // Defines constant WCAPF_PLUGIN_FILE
@@ -97,3 +97,23 @@ function wcapf_setup() {
 }
 
 wcapf_setup();
+
+// TODO: Remove this
+
+add_action( 'wp_default_scripts', 'wcapf_pp_fix_jquery_migrate_issue' );
+
+/**
+ * Remove jquery migrate related logs on console.
+ *
+ * @param array $scripts The default scripts.
+ *
+ * @return void
+ */
+function wcapf_pp_fix_jquery_migrate_issue( $scripts ) {
+	if ( ! empty( $scripts->registered['jquery'] ) ) {
+		$scripts->registered['jquery']->deps = array_diff(
+			$scripts->registered['jquery']->deps,
+			array( 'jquery-migrate' )
+		);
+	}
+}

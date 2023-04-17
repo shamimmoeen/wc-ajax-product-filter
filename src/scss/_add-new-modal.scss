@@ -40,6 +40,10 @@
             &:not(:focus) {
                 border-color: $inputBorderColor;
             }
+
+            &:disabled {
+                background-color: $inputDisabledBGColor;
+            }
         }
     }
 

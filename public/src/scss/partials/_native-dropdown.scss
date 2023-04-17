@@ -1,0 +1,65 @@
+@import "../data-image";
+@import "../mixins";
+
+.wcapf-dropdown-wrapper .wcapf-select-improved {
+	--wcapf-select-improved-hr-padding: .625em;
+	--wcapf-select-improved-vr-padding: .375em;
+
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	outline: 0;
+	box-shadow: none;
+	font-size: 1em;
+	cursor: pointer;
+	text-overflow: unset;
+	text-indent: unset;
+	padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
+	line-height: inherit;
+	height: unset;
+	min-height: unset;
+	max-width: unset;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid var(--wcapf-dropdown-border-color);
+	border-radius: var(--wcapf-dropdown-border-radius);
+
+	&:not(.wcapf-select-multiple) {
+		background-image: var(--wcapf-chevrons-icon);
+		background-repeat: no-repeat;
+		background-size: 0.9375em;
+
+		@include ltr {
+			background-position: right 0.3125em top 50%;
+			padding-right: 1.625em;
+		}
+
+		@include rtl {
+			background-position: left 0.3125em top 50%;
+			padding-left: 1.625em;
+		}
+	}
+
+	::-ms-expand {
+		display: none;
+	}
+
+	// Seems to work for multiple select.
+	option {
+		padding: var(--wcapf-select-improved-vr-padding) var(--wcapf-select-improved-hr-padding);
+
+		&.empty-item {
+			cursor: var(--wcapf-empty-item-cursor);
+			opacity: var(--wcapf-empty-item-opacity);
+		}
+
+		&.current-tax-item,
+		&.active-as-ancestor {
+			cursor: var(--wcapf-current-tax-item-cursor);
+		}
+	}
+
+	&:focus {
+		outline: none;
+	}
+}

@@ -1,0 +1,109 @@
+@mixin ltr {
+	$self: &;
+
+	@at-root body:not(.rtl) {
+		#{$self} {
+			@content;
+		}
+	}
+}
+
+@mixin rtl {
+	$self: &;
+
+	@at-root body.rtl {
+		#{$self} {
+			@content;
+		}
+	}
+}
+
+@mixin box-sizing {
+	*,
+	::before,
+	::after {
+		box-sizing: border-box;
+	}
+}
+
+@mixin input_text {
+	background-color: var(--wcapf-input-text-bg-color);
+	border: 1px solid var(--wcapf-input-text-border-color);
+	border-radius: var(--wcapf-input-text-border-radius);
+	box-shadow: none;
+	font-size: var(--wcapf-input-text-font-size);
+	height: auto;
+	line-height: inherit;
+	margin: 0;
+	max-width: unset;
+	min-height: auto;
+	outline: none;
+	padding: var(--wcapf-input-text-vr-padding) var(--wcapf-input-text-hr-padding);
+	width: 100%;
+
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		background-color: var(--wcapf-input-text-bg-color); // For storefront theme
+	}
+}
+
+// It is copied to pro version.
+@mixin label {
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	cursor: pointer;
+	font-size: 1em;
+	font-weight: normal;
+	outline: none;
+	text-transform: none;
+	letter-spacing: normal;
+	min-height: auto;
+	height: auto;
+	width: auto;
+	margin: 0;
+	padding: 0;
+	line-height: inherit;
+
+	// When including, must set the display.
+}
+
+@mixin button {
+	background: none;
+	box-shadow: none;
+	border: none;
+	color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	margin: 0;
+	padding: 0;
+	transition: none;
+	line-height: inherit;
+	height: auto;
+	min-height: unset;
+	min-width: unset;
+	text-align: inherit;
+	text-decoration: none;
+	text-transform: none;
+	cursor: pointer;
+	letter-spacing: normal;
+	outline: none;
+
+	// When including, must set the width, border-radius.
+
+	&:hover,
+	&:focus {
+		background: none;
+		border: none;
+		box-shadow: none;
+		color: inherit;
+		outline: none;
+		transition: none;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wcapf-primary-color);
+		outline-offset: 2px;
+	}
+}

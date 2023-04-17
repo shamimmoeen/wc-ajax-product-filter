@@ -1,0 +1,9 @@
+@import './mixins';
+
+.__import_sample_form {
+    @include empty-content;
+
+    .components-button {
+        gap: 4px;
+    }
+}
