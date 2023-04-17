@@ -1,0 +1,69 @@
+@import './mixins';
+
+body {
+	background-color: #fff;
+
+	&.auto-fold #wpcontent,
+	#wpcontent {
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	#wpbody-content {
+		padding-bottom: 0;
+	}
+
+	#wpfooter {
+		display: none;
+	}
+
+	.__wcapf_layout {
+		padding: var(--large-gap);
+	}
+}
+
+.__main {
+	@media (min-width: 1200px) {
+		display: grid;
+		grid-template-columns: 5fr 2fr;
+		gap: 40px;
+	}
+}
+
+.__description {
+	margin: 2px 0 5px;
+}
+
+/**
+* Snackbar styles.
+*/
+.components-snackbar-list {
+	width: auto;
+	position: fixed;
+	bottom: 20px;
+	z-index: 100100;
+
+	@include ltr {
+		right: 20px;
+	}
+
+	@include rtl {
+		left: 20px;
+	}
+
+	.components-snackbar {
+		box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%),
+			0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
+	}
+}
+
+// Tippy js tooltip.
+.__help_info {
+	svg {
+		fill: #666;
+	}
+}
+
+.tippy-box.__tippy_tooltip {
+	font-size: 13px;
+}

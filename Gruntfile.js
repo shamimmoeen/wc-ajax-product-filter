@@ -9,7 +9,7 @@ module.exports = function( grunt ) {
 
 		addtextdomain: {
 			options: {
-				textdomain: 'wc-ajax-product-filter-pro',
+				textdomain: 'wc-ajax-product-filter',
 			},
 			update_all_domains: {
 				options: {
@@ -32,8 +32,8 @@ module.exports = function( grunt ) {
 				options: {
 					domainPath: '/languages',
 					exclude: [ '\.git/*', 'bin/*', 'node_modules/*', 'tests/*' ],
-					mainFile: 'wc-ajax-product-filter-pro.php',
-					potFilename: 'wc-ajax-product-filter-pro.pot',
+					mainFile: 'wc-ajax-product-filter.php',
+					potFilename: 'wc-ajax-product-filter.pot',
 					potHeaders: {
 						poedit: true,
 						'x-poedit-keywordslist': true

@@ -1,0 +1,345 @@
+@import './variables';
+
+@mixin modal-heading {
+    font-size: 1.5em;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+@mixin list-table {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid $separatorBorderColor;
+    border-radius: $blockBorderRadius;
+    box-shadow: $blockBoxShadow;
+    outline: none;
+    position: relative;
+}
+
+@mixin empty-content {
+    min-height: 270px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 24px;
+    text-align: center;
+
+    .dashicon {
+        width: 40px;
+        height: 40px;
+        font-size: 40px;
+        color: #babbbc;
+    }
+
+    h3 {
+        font-weight: 500;
+        margin-top: 1.5em;
+    }
+
+    p {
+        margin: 0 0 2em;
+    }
+}
+
+@mixin primary-button($button-size: false) {
+    font-weight: 500;
+    justify-content: center;
+    min-width: $button-size;
+    text-transform: uppercase;
+    gap: 7px;
+    height: 40px;
+}
+
+@mixin list-table-header($button-size) {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--vr-padding) var(--hr-padding);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    h2 {
+        font-size: 16px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .components-button {
+        @include primary-button($button-size);
+    }
+}
+
+@mixin button-link-delete {
+    .button-link-delete {
+        svg {
+            fill: $linkDeleteColor;
+            opacity: 0.2;
+            transition: opacity 0.1s linear;
+        }
+
+        &:hover,
+        &:focus {
+            svg {
+                opacity: 0.8;
+            }
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 1px rgb(204 24 24 / 80%), 0 0 2px 1px rgb(204 24 24 / 60%);
+            outline: 1px solid transparent;
+        }
+    }
+}
+
+@mixin horizontal-space($space) {
+    $self: &;
+
+    @at-root body {
+        &:not(.rtl) {
+            #{$self} {
+                margin-right: $space;
+            }
+        }
+
+        &.rtl {
+            #{$self} {
+                margin-left: $space;
+            }
+        }
+    }
+}
+
+@mixin horizontal-space-left($space) {
+    $self: &;
+
+    @at-root body {
+        &:not(.rtl) {
+            #{$self} {
+                margin-left: $space;
+            }
+        }
+
+        &.rtl {
+            #{$self} {
+                margin-right: $space;
+            }
+        }
+    }
+}
+
+@mixin loader($size: 32px) {
+    text-align: center;
+
+    .components-spinner {
+        width: $size;
+        height: $size;
+    }
+}
+
+@mixin fixed-height-modal {
+    width: 80em;
+
+    &.ajax-done {
+        min-height: 70%;
+    }
+
+    .components-modal__content {
+        &::after {
+            content: "";
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .__modal_footer {
+            box-sizing: border-box;
+            border-top: 1px solid #ddd;
+            padding: 0 32px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            width: 100%;
+            z-index: 10;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+
+            .components-button+.components-button {
+                @include horizontal-space-left(4px);
+            }
+        }
+    }
+
+    &.ajax-done {
+        .components-modal__content {
+            padding-bottom: 0;
+            margin-bottom: 60px;
+        }
+    }
+
+    .__loader {
+        @include loader;
+    }
+}
+
+@mixin image-picker {
+    .__image_picker_button {
+        height: 30px;
+    }
+
+    .__image_picker_group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        $size: 40px;
+
+        .__thumbnail {
+            padding: 0;
+            width: $size + 6px;
+            height: $size + 6px;
+            align-items: center;
+            justify-content: center;
+
+            span {
+                border-radius: 2px;
+                background-size: $size $size;
+                display: inline-flex;
+                width: $size;
+                height: $size;
+            }
+        }
+
+        @include button-link-delete;
+    }
+}
+
+@mixin responsive-table {
+    overflow-x: auto;
+    padding-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+@mixin info {
+    color: rgba(0, 0, 0, 0.3);
+    display: inline-flex;
+}
+
+@mixin post-title-with-info {
+    .__post_title {
+        font-weight: 500;
+        display: inline-flex;
+        text-decoration: none;
+
+        @include horizontal-space(4px);
+    }
+
+    .__post_id {
+        @include info;
+    }
+}
+
+@mixin component-with-extra {
+    .__component {
+        display: inline-flex;
+
+        @include horizontal-space(4px);
+    }
+
+    .__component_extra {
+        @include info;
+    }
+}
+
+@mixin inner-tab {
+    .components-tab-panel__tabs {
+        border: none;
+        justify-content: flex-start;
+        gap: 24px;
+
+        .components-tab-panel__tabs-item {
+            font-weight: normal;
+            font-size: 12.5px;
+            padding-left: 0;
+            padding-right: 0;
+
+            &:not(.active-tab) {
+                color: #667085;
+            }
+        }
+    }
+
+    .components-tab-panel__tab-content {
+        padding: 24px;
+        max-width: unset;
+        min-height: unset;
+        margin: unset;
+
+        .__form_control {
+            &:first-child {
+                margin-top: .5em;
+            }
+        }
+    }
+}
+
+@mixin help-info {
+    cursor: help;
+    margin: 5px;
+    position: relative;
+    top: 3px;
+}
+
+@mixin code {
+    .__code {
+        align-items: center;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+        padding: 0 14px;
+        min-height: 38px;
+        transition: all 0.15s ease-in;
+
+        &.__clipboard-api-found {
+            &:hover {
+                opacity: .75;
+            }
+
+            &:active {
+                opacity: .3;
+                transform: scale(.98);
+            }
+        }
+
+        .__text {
+            font-size: 1.3em;
+            font-weight: 500;
+            padding: 7px 0;
+        }
+    }
+}
+
+@mixin ltr {
+    $self: &;
+
+    @at-root body:not(.rtl) {
+        #{$self} {
+            @content;
+        }
+    }
+}
+
+@mixin rtl {
+    $self: &;
+
+    @at-root body.rtl {
+        #{$self} {
+            @content;
+        }
+    }
+}

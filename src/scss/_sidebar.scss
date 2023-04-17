@@ -1,0 +1,46 @@
+@import './variables';
+@import './mixins';
+
+.__sidebar {
+    .components-card {
+        border: 1px solid $separatorBorderColor;
+        border-radius: $blockBorderRadius;
+        box-shadow: $blockBoxShadow;
+    }
+
+    .components-card-header {
+        h2 {
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+
+    .__pro_features_card,
+    .components-card {
+        &:not(:last-child) {
+            margin-bottom: var(--large-gap);
+        }
+
+        @media (max-width: 1199px) {
+            margin-top: var(--large-gap);
+        }
+    }
+
+    .__card_heading {
+        margin: 0;
+    }
+
+    .components-card-body {
+        p {
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+
+    .components-button {
+        margin-bottom: 4px;
+
+        @include horizontal-space(4px);
+    }
+}

@@ -1,0 +1,55 @@
+@import './mixins';
+
+.__title_wrapper {
+	align-items: center;
+	border-bottom: 1px solid rgb(0 0 0 / 5%);
+	display: flex;
+	gap: 12px;
+	padding: var(--vr-padding) var(--hr-padding);
+	// Applicable when form preview is disabled
+	max-width: 1300px;
+	margin: 0 auto;
+
+	$size: 40px;
+
+	.__back_button {
+		color: #c3c4c7;
+		height: $size;
+		padding: 0;
+		justify-content: center;
+		min-width: $size;
+
+		&:hover,
+		&:focus {
+			color: var(--wp-admin-theme-color);
+		}
+
+		svg {
+			width: 20px;
+			height: 20px;
+
+			@include rtl {
+				transform: rotate(180deg);
+			}
+		}
+	}
+
+	.components-text-control__input {
+		font-size: 1.7em;
+		height: $size;
+		padding: 3px 8px;
+		border-color: rgb(0 0 0 / 10%);
+	}
+
+	.__save_button {
+		font-weight: 500;
+		min-width: 110px;
+		height: $size;
+		text-transform: uppercase;
+		justify-content: center;
+
+		.__icon {
+			@include horizontal-space(7px);
+		}
+	}
+}

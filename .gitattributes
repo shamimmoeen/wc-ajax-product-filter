@@ -44,6 +44,8 @@ node_modules export-ignore
 *.sql export-ignore
 *.tar.gz export-ignore
 *.zip export-ignore
+.dist export-ignore
+.vscode export-ignore
 
 # Ignore source codes.
 admin/src export-ignore
@@ -52,8 +54,9 @@ public/src export-ignore
 
 yarn.lock -diff
 package-lock.json -diff
-composer.lock
+composer.lock -diff
 admin/css/* -diff
 admin/js/* -diff
 public/css/* -diff
 public/js/* -diff
+build/* -diff

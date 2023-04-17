@@ -2,8 +2,8 @@
 Contributors: shamimmoeen
 Tags: product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter
 Requires at least: 4.0
-Tested up to: 6.0.2
-Stable tag: 3.3.1
+Tested up to: 6.1.1
+Stable tag: 4.0.0
 Requires PHP: 5.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -99,6 +99,10 @@ If you have problems with the work of the plugin you should follow these steps:
 12. Plugin settings
 
 == Changelog ==
+
+= 4.0.0 =
+
+* Refactor the ADMIN UI
 
 = 3.3.1 =
 
