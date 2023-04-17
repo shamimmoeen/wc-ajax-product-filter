@@ -209,31 +209,30 @@ class WCAPF_Product_Filter_Utils {
 			$post__not_in   = $main_query->get( 'post__not_in' );
 			$author__in     = $main_query->get( 'author__in' );
 			$author__not_in = $main_query->get( 'author__not_in' );
-		} else {
-			/**
-			 * @var $wcapf_query WP_Query
-			 */
-			global $wcapf_query;
-
-			if ( $wcapf_query ) {
-				$tax_query  = isset( $wcapf_query->tax_query, $wcapf_query->tax_query->queries )
-					? $wcapf_query->tax_query->queries
-					: array();
-				$meta_query = isset( $wcapf_query->query_vars['meta_query'] )
-					? $wcapf_query->query_vars['meta_query']
-					: array();
-
-				$meta_query     = new WP_Meta_Query( $meta_query );
-				$tax_query      = new WP_Tax_Query( $tax_query );
-				$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
-				$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
-
-				$post__in       = $wcapf_query->get( 'post__in' );
-				$post__not_in   = $wcapf_query->get( 'post__not_in' );
-				$author__in     = $wcapf_query->get( 'author__in' );
-				$author__not_in = $wcapf_query->get( 'author__not_in' );
-			}
 		}
+
+		list(
+			$meta_query_sql,
+			$tax_query_sql,
+			$search_query,
+			$post__in,
+			$post__not_in,
+			$author__in,
+			$author__not_in
+			) = apply_filters(
+			'wcapf_main_query_data',
+			array(
+				$meta_query_sql,
+				$tax_query_sql,
+				$search_query,
+				$post__in,
+				$post__not_in,
+				$author__in,
+				$author__not_in
+			),
+			$primary_table,
+			$primary_column
+		);
 
 		if ( $post__in ) {
 			$ids_in = self::get_ids_sql( $post__in );
