@@ -49,23 +49,25 @@ const Form = () => {
 				const proTypes = proFilterTypes();
 				const proComponents = proFilterComponents();
 
-				for (let index = 0; index < _formFilters.length; index++) {
-					const _formFilter = _formFilters[index];
+				if (_formFilters) {
+					for (let index = 0; index < _formFilters.length; index++) {
+						const _formFilter = _formFilters[index];
 
-					const isPro =
-						proTypes.includes(_formFilter['type']) ||
-						proComponents.includes(_formFilter['component']);
+						const isPro =
+							proTypes.includes(_formFilter['type']) ||
+							proComponents.includes(_formFilter['component']);
 
-					if (!WCAPF_PRO && isPro) {
-						continue;
+						if (!WCAPF_PRO && isPro) {
+							continue;
+						}
+
+						const formFilter = {
+							...filterDefaultData(),
+							..._formFilter,
+						};
+
+						formFilters.push(formFilter);
 					}
-
-					const formFilter = {
-						...filterDefaultData(),
-						..._formFilter,
-					};
-
-					formFilters.push(formFilter);
 				}
 
 				dispatch({
