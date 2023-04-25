@@ -9813,7 +9813,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Field_ColorInput__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Field/ColorInput */ "./src/components/Field/ColorInput.js");
 /* harmony import */ var _Field_Select__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Field/Select */ "./src/components/Field/Select.js");
 /* harmony import */ var _Field_Radio__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Field/Radio */ "./src/components/Field/Radio.js");
-/* harmony import */ var _ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ProFeaturesNotice */ "./src/components/ProFeaturesNotice.js");
 
 
 
@@ -9823,8 +9822,8 @@ __webpack_require__.r(__webpack_exports__);
 
  // import { foundProVersion } from '../../utils';
 // import Text from '../../Field/Text';
-
- // const WCAPF_PRO = foundProVersion();
+// import ProFeaturesNotice from '../../ProFeaturesNotice';
+// const WCAPF_PRO = foundProVersion();
 
 const enablePrimaryTextColor = wcapf_admin_params.enable_primary_text_color;
 const numberRangeSliderStyles = [];
@@ -9897,9 +9896,7 @@ const Appearance = () => {
   };
 
   const numberRangeSliderStyle = numberRangeSliderStyles.find(option => number_range_slider_style === option.value);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ProFeaturesNotice__WEBPACK_IMPORTED_MODULE_8__["default"], {
-    message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('There are settings available only in the PRO version.', 'wc-ajax-product-filter')
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_5__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_ColorInput__WEBPACK_IMPORTED_MODULE_5__["default"], {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Primary Color', 'wc-ajax-product-filter'),
     description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set a primary color according to your theme.', 'wc-ajax-product-filter'),
     value: primary_color,
