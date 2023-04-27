@@ -670,7 +670,9 @@ class WCAPF_API {
 			$filters = get_posts(
 				array(
 					'post_type'   => 'wcapf-filter',
+					'post_status' => 'any',
 					'post_parent' => $post_id,
+					'nopaging'    => true,
 					'fields'      => 'ids',
 				)
 			);
