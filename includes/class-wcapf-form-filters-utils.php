@@ -95,8 +95,10 @@ class WCAPF_Form_Filters_Utils {
 				}
 
 				// Don't add same filter type in a form multiple times.
-				if ( ! $migrate && in_array( $filter_type, $filter_types ) ) {
-					continue;
+				if ( in_array( $filter_type, $filter_types ) ) {
+					$post_status = 'draft';
+				} else {
+					$post_status = 'publish';
 				}
 
 				if ( 'component' !== $type ) {
@@ -121,7 +123,7 @@ class WCAPF_Form_Filters_Utils {
 					$post_arr['ID'] = $filter_id;
 
 					if ( $migrate ) {
-						$post_arr['post_status']  = 'publish';
+						$post_arr['post_status']  = $post_status;
 						$post_arr['post_parent']  = $new_form_id;
 						$post_arr['post_excerpt'] = $filter_type;
 					}
@@ -129,7 +131,7 @@ class WCAPF_Form_Filters_Utils {
 					$new_filter_id = wp_update_post( $post_arr, true );
 				} else {
 					$post_arr['post_type']    = 'wcapf-filter';
-					$post_arr['post_status']  = 'publish';
+					$post_arr['post_status']  = $post_status;
 					$post_arr['post_parent']  = $new_form_id;
 					$post_arr['post_excerpt'] = $filter_type;
 
