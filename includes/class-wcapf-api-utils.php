@@ -246,8 +246,6 @@ class WCAPF_API_Utils {
 
 		$final_array = array_merge( $main_taxonomies, $attributes, $others, $optional_taxonomies );
 
-		$found_pro = WCAPF_Helper::found_pro_version();
-
 		foreach ( $final_array as $name ) {
 			if ( $only_with_archive && ( ! is_taxonomy_viewable( $name ) || 'product_shipping_class' === $name ) ) {
 				continue;
@@ -258,11 +256,8 @@ class WCAPF_API_Utils {
 			} elseif ( in_array( $name, $attributes ) ) {
 				$default_filter_key = str_replace( 'pa_', '', $name );
 			} else {
-				if ( ! $found_pro ) {
-					$default_filter_key = '_' . $name;
-				} else {
-					$default_filter_key = $name;
-				}
+				// Check if pro version found and pretty url is enabled then don't add the underscore.
+				$default_filter_key = '_' . $name;
 			}
 
 			$taxonomies[] = array(
