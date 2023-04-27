@@ -94,13 +94,13 @@ class WCAPF_API {
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 		$form    = get_post( $post_id );
 
-		if ( 'wcapf-form' !== $form->post_type ) {
+		if ( ! $form || 'wcapf-form' !== $form->post_type ) {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
 		}
 
 		$args = array(
 			'post_type'   => 'wcapf-filter',
-			'post_status' => 'publish',
+			'post_status' => 'any',
 			'nopaging'    => true,
 			'post_parent' => $post_id,
 			'order'       => 'ASC',
