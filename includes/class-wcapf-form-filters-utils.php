@@ -120,10 +120,10 @@ class WCAPF_Form_Filters_Utils {
 				$post_arr = array( 'post_title' => $filter_title );
 
 				if ( $filter_id && 'wcapf-filter' === get_post_type( $filter_id ) ) {
-					$post_arr['ID'] = $filter_id;
+					$post_arr['ID']          = $filter_id;
+					$post_arr['post_status'] = $post_status;
 
 					if ( $migrate ) {
-						$post_arr['post_status']  = $post_status;
 						$post_arr['post_parent']  = $new_form_id;
 						$post_arr['post_excerpt'] = $filter_type;
 					}
