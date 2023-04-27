@@ -562,6 +562,8 @@ class WCAPF_Product_Filter {
 		$query_type = $field_instance->query_type;
 		$filter_id  = $field_instance->filter_id;
 
+		$active_filters = array();
+
 		$utils = new WCAPF_Product_Filter_Utils;
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
