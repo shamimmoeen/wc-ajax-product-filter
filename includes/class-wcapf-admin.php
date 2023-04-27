@@ -26,13 +26,10 @@ class WCAPF_Admin {
 		add_action( 'admin_menu', array( $this, 'modify_admin_menu_label' ) );
 		add_action( 'in_admin_header', array( $this, 'disable_admin_notices' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
-		add_action( 'admin_footer-widgets.php', array( $this, 'js_scripts_for_legacy_widget' ) );
 	}
 
 	/**
 	 * Adds plugin's action links.
-	 *
-	 * TODO: Show the upgrade to pro and filters list instead of settings links.
 	 *
 	 * @param array $links The default links.
 	 *
@@ -137,9 +134,9 @@ class WCAPF_Admin {
 		echo $element;
 	}
 
-	public function render_seo_rules() {
-		echo '<div id="wcapf-seo-rules-admin-ui"></div>';
-	}
+	// public function render_seo_rules() {
+	// 	echo '<div id="wcapf-seo-rules-admin-ui"></div>';
+	// }
 
 	public function render_settings() {
 		echo '<div id="wcapf-settings-admin-ui"></div>';
@@ -381,40 +378,6 @@ class WCAPF_Admin {
 			array(),
 			$asset_file['version']
 		);
-	}
-
-	/**
-	 * Run the js scripts when the 'widget-added' event is triggered.
-	 *
-	 * @since 3.1.0
-	 *
-	 * @return void
-	 */
-	public function js_scripts_for_legacy_widget() {
-		?>
-		<!--suppress ES6ConvertVarToLetConst -->
-		<script>
-			( function( $ ) {
-				$( document ).on( 'widget-added', function( e, $control ) {
-					$control.find( '.wcapf-widget-dropdown-field' ).on( 'change', function() {
-						var $dropdown        = $( this );
-						var $selectedOption  = $( this ).find( 'option:selected' );
-						var editLink         = $selectedOption.attr( 'data-edit-link' );
-						var $editLink        = $dropdown.closest( '.widget-content' ).find( '.edit-link' );
-						var $editLinkWrapper = $editLink.parent();
-
-						$( $editLink.attr( 'href', editLink ) );
-
-						if ( ! editLink.length ) {
-							$editLinkWrapper.hide();
-						} else {
-							$editLinkWrapper.show();
-						}
-					} );
-				} );
-			} )( jQuery );
-		</script>
-		<?php
 	}
 
 }
