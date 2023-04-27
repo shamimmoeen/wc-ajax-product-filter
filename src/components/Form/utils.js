@@ -65,7 +65,7 @@ export function newFilterData(index, formFilters) {
 /**
  * Gets the filter type data for the current filter.
  */
-export function getFilterType(filter) {
+export function getFilterTypeData(filter) {
 	const { type, taxonomy, component } = filter;
 	const types = wcapf_admin_params.filter_types;
 
@@ -148,6 +148,45 @@ export function getDisplayTypeData(filter) {
 	);
 
 	return displayType;
+}
+
+function getFilterType(filter) {
+	const { type, taxonomy, meta_key } = filter;
+	let filterType;
+
+	if ('taxonomy' === type) {
+		filterType = `taxonomy>${taxonomy}`;
+	} else if ('post-meta' === type) {
+		filterType = `post-meta>${meta_key}`;
+	} else {
+		filterType = type;
+	}
+
+	return filterType;
+}
+
+export function multipleFilterInstanceFound(formFilters, currentFilterIndex) {
+	if (!formFilters) {
+		return false;
+	}
+
+	const filterTypes = [];
+	let filterType;
+	const excludedTypes = ['component'];
+
+	for (let index = 0; index < formFilters.length; index++) {
+		const filter = formFilters[index];
+
+		if (index === currentFilterIndex) {
+			filterType = getFilterType(filter);
+		} else {
+			if (!excludedTypes.includes(filter.type)) {
+				filterTypes.push(getFilterType(filter));
+			}
+		}
+	}
+
+	return filterTypes.includes(filterType);
 }
 
 export function getFilterTabs(filter) {

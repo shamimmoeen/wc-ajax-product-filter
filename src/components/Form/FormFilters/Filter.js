@@ -1,7 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useState } from '@wordpress/element';
-import { Button, Dropdown, TabPanel } from '@wordpress/components';
+import { Button, Dropdown, TabPanel, Notice } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
+import classnames from 'classnames';
 import { useForm } from '../FormContext';
 import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
@@ -11,8 +12,9 @@ import {
 	getFilterKey,
 	getFilterTabs,
 	getFilterTitle,
-	getFilterType,
+	getFilterTypeData,
 	getGlobalFilterKey,
+	multipleFilterInstanceFound,
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
@@ -134,10 +136,24 @@ const Filter = ({ index }) => {
 		}
 	};
 
-	const toggleIcon = isExpanded ? chevronUp : chevronDown;
-	const topClass = isExpanded ? '__top open' : '__top';
+	const multipleFilterInstance = multipleFilterInstanceFound(
+		formFilters,
+		index
+	);
 
-	const filterType = getFilterType(filter);
+	const multipleFilterInstanceMessage = __(
+		'There are multiple filters found in the form for the same entity. Please remove the other ones then save the form.',
+		'wc-ajax-product-filter'
+	);
+
+	const toggleIcon = isExpanded ? chevronUp : chevronDown;
+	const topClass = classnames(
+		'__top',
+		{ open: isExpanded },
+		{ multiple_filter_instance_found: multipleFilterInstance }
+	);
+
+	const filterType = getFilterTypeData(filter);
 	const filterTitle = getFilterTitle(filter, filterType);
 
 	const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
@@ -151,6 +167,18 @@ const Filter = ({ index }) => {
 	const activeFilters = 'active-filters' === component;
 
 	const filterTabs = getFilterTabs(filter);
+
+	const filterInner = (name) => {
+		if ('general' === name) {
+			return <General index={index} />;
+		} else if ('appearance' === name) {
+			return <Appearance index={index} />;
+		} else if ('options' === name) {
+			return <Options index={index} />;
+		} else if ('advanced' === name) {
+			return <Advanced index={index} />;
+		}
+	};
 
 	return (
 		<div className='__item'>
@@ -211,17 +239,20 @@ const Filter = ({ index }) => {
 						initialTabName='general'
 						tabs={filterTabs}
 					>
-						{({ name }) => {
-							if ('general' === name) {
-								return <General index={index} />;
-							} else if ('appearance' === name) {
-								return <Appearance index={index} />;
-							} else if ('options' === name) {
-								return <Options index={index} />;
-							} else if ('advanced' === name) {
-								return <Advanced index={index} />;
-							}
-						}}
+						{({ name }) => (
+							<>
+								{multipleFilterInstance && (
+									<Notice
+										status='error'
+										isDismissible={false}
+										className='multiple_filter_instance_notice'
+									>
+										{multipleFilterInstanceMessage}
+									</Notice>
+								)}
+								{filterInner(name)}
+							</>
+						)}
 					</TabPanel>
 
 					<div className='__action_buttons'>
