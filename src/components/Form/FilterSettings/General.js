@@ -10,7 +10,7 @@ import {
 	getGlobalFilterKey,
 	getFilterTypes,
 	getMetaKeys,
-	getFilterType,
+	getFilterTypeData,
 	getFilterTitle,
 	getFilterKey,
 	componentsWithTypeOnly,
@@ -96,7 +96,7 @@ const General = ({ index }) => {
 		}
 	}
 
-	const filterType = getFilterType(filter);
+	const filterType = getFilterTypeData(filter);
 	const filterTitle = getFilterTitle(filter, filterType);
 	const filterKey = getFilterKey(filter, filterType);
 

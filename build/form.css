@@ -1299,6 +1299,10 @@ body.rtl .__filters_drop_zone .__add_filter_btn {
   border-color: #D8EBF5;
   border-radius: 2px 2px 0 0;
 }
+.__form_filters .__top.multiple_filter_instance_found {
+  background-color: #ffe6e6;
+  border-color: #f6c6c6;
+}
 .__form_filters .__top .__drag_handle_wrapper {
   display: inline-flex;
 }
@@ -1402,9 +1406,15 @@ body.rtl .__form_filters .__top .__pro_tag {
 .__form_filters .__accordion_body .components-tab-panel__tab-content .__form_control:first-child {
   margin-top: 0.5em;
 }
-.__form_filters .__accordion_body .components-notice {
+.__form_filters .__accordion_body .components-notice:not(.multiple_filter_instance_notice) {
   border: none;
   padding: 2px 10px;
+}
+.__form_filters .__accordion_body .components-notice.multiple_filter_instance_notice {
+  margin: 0 0 1.5em;
+  border-color: #d93e3e;
+  color: #d93e3e;
+  background-color: #ffe6e6;
 }
 .__form_filters .__accordion_body > .__action_buttons {
   background-color: #f8f9fa;
