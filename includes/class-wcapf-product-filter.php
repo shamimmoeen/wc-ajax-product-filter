@@ -183,6 +183,7 @@ class WCAPF_Product_Filter {
 				'post_type'      => 'wcapf-form',
 				'post_status'    => 'publish',
 				'posts_per_page' => 1,
+				'orderby'        => 'ID',
 				'order'          => 'ASC',
 			)
 		);
