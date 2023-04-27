@@ -17,11 +17,6 @@ $item_attr = '';
 if ( $item['enable_search'] ) {
 	$item_attr = ' data-label="' . esc_attr( $item['name'] ) . '"';
 }
-
-// TODO: Check
-// echo '<pre>';
-// print_r($item);
-// echo '</pre>';
 ?>
 
 <span class="wcapf-filter-item-label"<?php echo $item_attr; ?>>
