@@ -76,7 +76,7 @@ class WCAPF_API_Utils {
 		foreach ( $filters as $filter ) {
 			$filter_id    = $filter->ID;
 			$filter_key   = $filter->post_name;
-			$post_excerpt = $filter->post_excerpt;
+			$post_excerpt = html_entity_decode( $filter->post_excerpt );
 			$filter_data  = explode( '>', $post_excerpt );
 			$type         = isset( $filter_data[0] ) ? $filter_data[0] : '';
 			$filter_type  = $type;
