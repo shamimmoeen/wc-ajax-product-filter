@@ -47,7 +47,6 @@ class WCAPF {
 		add_action( 'admin_notices', array( $this, 'show_admin_notice' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'woocommerce_loaded', array( $this, 'load_dependencies' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'load_backend_scripts' ) );
 	}
 
 	/**
@@ -171,106 +170,6 @@ class WCAPF {
 	 */
 	private function wc_loaded() {
 		return ! $this->wc_required_notice();
-	}
-
-	/**
-	 * Loads the backend scripts.
-	 *
-	 * TODO: Remove this.
-	 */
-	public function load_backend_scripts() {
-		if ( ! $this->wc_loaded() ) {
-			return;
-		}
-
-		global $typenow;
-
-		if ( 'wcapf-filter' !== $typenow && 'wcapf-form' !== $typenow ) {
-			return;
-		}
-
-		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
-			? '.min.css'
-			: '.css';
-
-		wp_enqueue_style(
-			'wc-ajax-product-filter-admin-styles',
-			WCAPF_PLUGIN_URL . 'admin/css/wc-ajax-product-filter-admin-styles' . $ext,
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/admin/css/wc-ajax-product-filter-admin-styles' . $ext )
-		);
-
-		wp_enqueue_style( 'wcapf-remodal', WCAPF_PLUGIN_URL . 'admin/lib/remodal/remodal.css' );
-		wp_enqueue_style( 'wcapf-remodal-theme', WCAPF_PLUGIN_URL . 'admin/lib/remodal/remodal-default-theme.css' );
-
-		wp_enqueue_script(
-			'wcapf-remodal',
-			WCAPF_PLUGIN_URL . 'admin/lib/remodal/remodal.min.js',
-			array( 'jquery' ),
-			false,
-			true
-		);
-
-		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
-			? '.min.js'
-			: '.js';
-
-		$main_admin_script_deps = array(
-			'jquery',
-			'wp-util',
-			'jquery-serialize-object',
-			'jquery-ui-draggable',
-			'jquery-ui-droppable',
-			'jquery-ui-sortable',
-			'wcapf-remodal',
-		);
-
-		$admin_scripts = apply_filters( 'wcapf_admin_scripts_before_main_script', array() );
-
-		if ( $admin_scripts ) {
-			foreach ( $admin_scripts as $script ) {
-				$handle = isset( $script['handle'] ) ? $script['handle'] : '';
-				$src    = isset( $script['src'] ) ? $script['src'] : '';
-				$deps   = isset( $script['deps'] ) ? $script['deps'] : array();
-				$path   = isset( $script['path'] ) ? $script['path'] : '';
-				$footer = isset( $script['in_footer'] ) ? $script['in_footer'] : true;
-
-				if ( $handle && $src ) {
-					$main_admin_script_deps[] = $handle;
-
-					wp_enqueue_script( $handle, $src, $deps, filemtime( $path ), $footer );
-				}
-			}
-		}
-
-		wp_enqueue_script(
-			'wc-ajax-product-filter-admin-scripts',
-			WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts' . $ext,
-			$main_admin_script_deps,
-			filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts' . $ext ),
-			true
-		);
-
-		wp_localize_script(
-			'wc-ajax-product-filter-admin-scripts',
-			'wcapf_admin_params',
-			$this->admin_js_params()
-		);
-
-		wp_enqueue_media();
-	}
-
-	/**
-	 * Admin js params.
-	 *
-	 * @return array
-	 */
-	private function admin_js_params() {
-		$params = array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-		);
-
-		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
 
 }
