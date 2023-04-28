@@ -348,7 +348,7 @@ export function getFilterKeyError(
 	}
 
 	const errorMessage = __(
-		'Filter key is in use by another filter type.',
+		'Filter key is in use by another entity.',
 		'wc-ajax-product-filter'
 	);
 

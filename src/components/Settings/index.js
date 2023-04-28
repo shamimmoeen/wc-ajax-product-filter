@@ -32,7 +32,7 @@ const genericErrorMessage = __(
 );
 
 const filterKeyInUseMessage = __(
-	'Filter key is in use by another filter type.',
+	'Filter key is in use by another entity.',
 	'wc-ajax-product-filter'
 );
 
@@ -160,6 +160,13 @@ const Settings = () => {
 		const updateFilterKeys = filterKeysChanged ? '1' : '';
 
 		if (!filterKeysAreValid) {
+			if ('filter-keys' !== currentTab) {
+				dispatch({
+					type: 'SET_CURRENT_TAB',
+					payload: 'filter-keys',
+				});
+			}
+
 			return;
 		}
 

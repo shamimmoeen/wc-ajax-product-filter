@@ -145,7 +145,7 @@ const Text = ({
 											view.
 											<br />
 											<br />
-											Default is "No results for:", for a
+											Default is "No results for:". For a
 											keyword "purple" the text will be
 											"No results for: <u>purple</u>"
 										</>
@@ -210,7 +210,7 @@ const Text = ({
 											value.
 											<br />
 											<br />
-											Default is "Sort by:", for a value
+											Default is "Sort by:". For a value
 											"Title" it becomes
 											<br />
 											"Sort by: Title" in the active
@@ -229,7 +229,7 @@ const Text = ({
 											value.
 											<br />
 											<br />
-											Default is "Per page:", for a value
+											Default is "Per page:". For a value
 											"15" it becomes
 											<br />
 											"Per page: 15" in the active
