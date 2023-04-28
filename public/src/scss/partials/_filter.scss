@@ -5,8 +5,8 @@
 }
 
 .wcapf-filter {
-	margin: 0 0 var(--wcapf-filter-base-bottom-margin);
 	line-height: var(--wcapf-filter-line-height);
+	margin: 0 0 var(--wcapf-filter-base-bottom-margin);
 }
 
 .wcapf-filter-title ~ .wcapf-filter-inner > div {
@@ -16,18 +16,18 @@
 .wcapf-filter .wcapf-list-wrapper {
 	ul.wcapf-filter-options {
 		border: none;
+		line-height: inherit;
 		list-style-type: none;
 		margin: 0;
 		padding: 0;
 		width: 100%;
-		line-height: inherit;
 
 		li.wcapf-filter-option {
 			border: none;
+			line-height: inherit;
 			list-style-type: none;
 			margin: 0;
 			padding: 0;
-			line-height: inherit;
 
 			label {
 				@include label;
@@ -74,9 +74,9 @@
 
 		input[type="checkbox"],
 		input[type="radio"] {
+			cursor: pointer;
 			margin: 0;
 			padding: 0;
-			cursor: pointer;
 
 			@include ltr {
 				margin-right: var(--wcapf-checkbox-radio-space);
@@ -120,8 +120,8 @@
 				outline: none;
 
 				&:focus-visible {
-					outline-offset: 2px;
 					outline: 2px solid var(--wcapf-primary-color);
+					outline-offset: 2px;
 				}
 			}
 		}
@@ -157,12 +157,12 @@
 }
 
 .wcapf-label-size-fixed {
-	--wcapf-labeled-nav-border-radius: 6px;
 	--wcapf-active-filter-item-border-radius: 6px;
-	--wcapf-labeled-nav-hr-padding: 10px;
 	--wcapf-active-filter-item-hr-padding: 10px;
-	--wcapf-labeled-nav-vr-padding: 3px;
 	--wcapf-active-filter-item-vr-padding: 3px;
+	--wcapf-labeled-nav-border-radius: 6px;
+	--wcapf-labeled-nav-hr-padding: 10px;
+	--wcapf-labeled-nav-vr-padding: 3px;
 }
 
 .wcapf-filter .wcapf-list-wrapper.display-type-label {
@@ -181,11 +181,11 @@
 
 		input[type="checkbox"],
 		input[type="radio"] {
-			position: absolute;
-			opacity: 0;
 			font-size: 0;
-			width: 0;
 			height: 0;
+			opacity: 0;
+			position: absolute;
+			width: 0;
 
 			&:focus-visible ~ .wcapf-filter-item-label {
 				outline: 2px solid var(--wcapf-primary-color);
@@ -274,15 +274,32 @@
 }
 
 .wcapf-range-wrapper {
-	.range-values {
-		> span {
-			align-items: center;
-			display: inline-flex; // Remove extra whitespace between span elements
-			white-space: nowrap;
+	&:not(.wcapf-range-spinbox) {
+		.range-values {
+			> span {
+				align-items: center;
+				display: inline-flex; // Remove extra whitespace between span elements
+				white-space: nowrap;
+			}
 		}
 	}
 
-	// TODO: Check with input type number.
+	&.wcapf-range-spinbox {
+		.range-values {
+			.wcapf-range-start,
+			.wcapf-range-end {
+				flex: 1;
+			}
+
+			.wcapf-range-separator {
+				align-items: center;
+				display: inline-flex; // Remove extra whitespace between span elements
+				white-space: nowrap;
+			}
+		}
+	}
+
+	input[type="number"],
 	input[type="text"] {
 		@include input_text;
 	}
@@ -295,8 +312,8 @@
 	.justify-between {
 		align-items: center;
 		display: flex;
-		justify-content: space-between;
 		gap: 0.625em;
+		justify-content: space-between;
 
 		&.display-values-as-plain_text {
 			.wcapf-range-separator {

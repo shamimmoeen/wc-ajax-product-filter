@@ -284,6 +284,7 @@ class WCAPF_Form {
 		$display_type          = $field_instance->display_type;
 		$display_values_as     = $field_instance->get_sub_field_value( 'number_range_slider_display_values_as' );
 		$alignment             = $field_instance->get_sub_field_value( 'alignment' );
+		$input_type_number     = $field_instance->get_sub_field_value( 'input_type_number' );
 		$auto_detect           = $field_instance->get_sub_field_value( 'auto_detect_min_max' );
 		$range_min_value       = $field_instance->get_sub_field_value( 'min_value' );
 		$range_max_value       = $field_instance->get_sub_field_value( 'max_value' );
@@ -360,6 +361,7 @@ class WCAPF_Form {
 			'display_type'          => $display_type,
 			'display_values_as'     => $display_values_as,
 			'alignment'             => $alignment,
+			'input_type_number'     => $input_type_number,
 			'min_value'             => $min_value,
 			'max_value'             => $max_value,
 			'range_min_value'       => $range_min_value,

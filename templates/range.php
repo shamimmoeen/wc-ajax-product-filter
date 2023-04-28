@@ -14,6 +14,7 @@
  * @var string $display_type
  * @var string $display_values_as
  * @var string $alignment
+ * @var string $input_type_number
  * @var string $min_value
  * @var string $max_value
  * @var string $range_min_value
@@ -71,10 +72,26 @@ $_attrs[] = 'data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
 $attrs = implode( ' ', $_attrs );
 
-// We don't show the text before min and max values when display type is input field.
+// We don't show the text before min and max values when displaying the slider values in input fields.
 if ( 'input_field' === $display_values_as ) {
 	$text_before_min_value = '';
 	$text_before_max_value = '';
+}
+
+$input_type      = 'text';
+$show_as_spinbox = false;
+$spinbox_attrs   = '';
+
+if (
+	$input_type_number &&
+	( 'range_slider' === $display_type && 'input_field' === $display_values_as ) || 'range_number' === $display_type
+) {
+	$input_type      = 'number';
+	$show_as_spinbox = true;
+
+	$spinbox_attrs .= 'step="' . esc_attr( $step ) . '"';
+	$spinbox_attrs .= 'min="' . esc_attr( $range_min_value ) . '"';
+	$spinbox_attrs .= 'max="' . esc_attr( $range_max_value ) . '"';
 }
 
 // Do the formatting.
@@ -85,6 +102,10 @@ if ( $format_numbers ) {
 
 // Range wrapper classes.
 $range_wrapper_classes = 'wcapf-range-wrapper';
+
+if ( $show_as_spinbox ) {
+	$range_wrapper_classes .= ' wcapf-range-spinbox';
+}
 
 // Add slider preset class.
 if ( 'range_slider' === $display_type ) {
@@ -103,7 +124,7 @@ if ( 'range_number' === $display_type ) {
 
 $wrapper_classes .= ' display-values-as-' . $display_values_as;
 
-if ( $unit_position ) {
+if ( $unit_position && ! $show_as_spinbox ) {
 	$wrapper_classes .= ' unit-position-' . $unit_position;
 }
 
@@ -121,7 +142,7 @@ if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
 				<span class="wcapf-min-value-prefix"><?php echo wp_kses_post( $text_before_min_value ); ?></span>
 			<?php endif; ?>
 
-			<?php if ( 'left' === $unit_position ) : ?>
+			<?php if ( 'left' === $unit_position && ! $show_as_spinbox ) : ?>
 				<span class="wcapf-range-unit"><?php echo sanitize_text_field( $value_unit ); ?></span>
 			<?php endif; ?>
 
@@ -129,15 +150,16 @@ if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
 				<span class="min-value"><?php echo esc_html( $min_value ); ?></span>
 			<?php else: ?>
 				<input
-					type="text"
+					type="<?php echo esc_attr( $input_type ); ?>"
 					class="min-value"
 					id="<?php echo esc_attr( $filter_key ); ?>-<?php echo esc_attr( $filter_id ); ?>-min"
 					value="<?php echo esc_attr( $min_value ); ?>"
 					autocomplete="off"
+					<?php echo $spinbox_attrs; ?>
 				>
 			<?php endif; ?>
 
-			<?php if ( 'right' === $unit_position ) : ?>
+			<?php if ( 'right' === $unit_position && ! $show_as_spinbox ) : ?>
 				<span class="wcapf-range-unit"><?php echo sanitize_text_field( $value_unit ); ?></span>
 			<?php endif; ?>
 		</span>
@@ -151,7 +173,7 @@ if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
 				<span class="wcapf-max-value-prefix"><?php echo wp_kses_post( $text_before_max_value ); ?></span>
 			<?php endif; ?>
 
-			<?php if ( 'left' === $unit_position ) : ?>
+			<?php if ( 'left' === $unit_position && ! $show_as_spinbox ) : ?>
 				<span class="wcapf-range-unit"><?php echo sanitize_text_field( $value_unit ); ?></span>
 			<?php endif; ?>
 
@@ -159,15 +181,16 @@ if ( 'input_field' === $display_values_as || 'justified' === $alignment ) {
 				<span class="max-value"><?php echo esc_html( $max_value ); ?></span>
 			<?php else: ?>
 				<input
-					type="text"
+					type="<?php echo esc_attr( $input_type ); ?>"
 					class="max-value"
 					id="<?php echo esc_attr( $filter_key ); ?>-<?php echo esc_attr( $filter_id ); ?>-max"
 					value="<?php echo esc_attr( $max_value ); ?>"
 					autocomplete="off"
+					<?php echo $spinbox_attrs; ?>
 				>
 			<?php endif; ?>
 
-			<?php if ( 'right' === $unit_position ) : ?>
+			<?php if ( 'right' === $unit_position & ! $show_as_spinbox ) : ?>
 				<span class="wcapf-range-unit"><?php echo sanitize_text_field( $value_unit ); ?></span>
 			<?php endif; ?>
 		</span>
