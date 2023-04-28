@@ -66,7 +66,7 @@ const General = ({ index }) => {
 		);
 
 		filterKeyDisabledInfo = __(
-			'Filter key can not be changed after it is saved. But you can change the filter keys globally from "Settings > Filter Keys" section.',
+			'Filter key can not be changed after it is saved. But you can change the filter keys globally from "Settings > Filter Keys" tab.',
 			'wc-ajax-product-filter'
 		);
 	}
@@ -90,7 +90,7 @@ const General = ({ index }) => {
 
 		if (globalFilterKey) {
 			filterKeyDisabledInfo = __(
-				'This key is already assigned for this filter type and can not be changed from here. But you can change the filter keys globally from "Settings > Filter Keys" section.',
+				'This key is already assigned for this entity and can not be changed from here. But you can change the filter keys globally from "Settings > Filter Keys" tab.',
 				'wc-ajax-product-filter'
 			);
 		}
