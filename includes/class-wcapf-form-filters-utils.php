@@ -294,7 +294,7 @@ class WCAPF_Form_Filters_Utils {
 	 */
 	private function sanitize_filter_data( $filter, $migrate ) {
 		$float_fields  = array( 'min_value', 'max_value', 'step' );
-		$absint_fields = array( 'id', 'decimal_places', 'soft_limit', 'max_height' );
+		$absint_fields = array( 'id', 'decimal_places', 'soft_limit', 'max_height', 'gap' );
 
 		$limit_fields = array(
 			'include_terms',

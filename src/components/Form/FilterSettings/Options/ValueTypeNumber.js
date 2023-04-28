@@ -29,6 +29,7 @@ const ValueTypeNumber = ({ index }) => {
 		min_value,
 		max_value,
 		step,
+		gap,
 		value_prefix,
 		value_postfix,
 		values_separator,
@@ -138,12 +139,27 @@ const ValueTypeNumber = ({ index }) => {
 						min='1'
 					/>
 
+					{!automaticDisplayTypes.includes(number_display_type) && (
+						<Number
+							id={'gap'}
+							index={index}
+							label={__('Gap', 'wc-ajax-product-filter')}
+							description={__(
+								'Determines the gap between the ranges.',
+								'wc-ajax-product-filter'
+							)}
+							value={gap}
+							onChange={handleTextFieldChange}
+							min='0'
+						/>
+					)}
+
 					<Text
 						id={'value_prefix'}
 						index={index}
 						label={__('Value Prefix', 'wc-ajax-product-filter')}
 						description={__(
-							'This should be used for the unit. Example: $',
+							'This should be used for the unit, space(s) allowed. Example: $',
 							'wc-ajax-product-filter'
 						)}
 						value={value_prefix}
@@ -156,7 +172,7 @@ const ValueTypeNumber = ({ index }) => {
 						index={index}
 						label={__('Value Postfix', 'wc-ajax-product-filter')}
 						description={__(
-							'This should be used for the unit. Example: €',
+							'This should be used for the unit, space(s) allowed. Example: €',
 							'wc-ajax-product-filter'
 						)}
 						value={value_postfix}
@@ -169,7 +185,7 @@ const ValueTypeNumber = ({ index }) => {
 						index={index}
 						label={__('Values Separator', 'wc-ajax-product-filter')}
 						description={__(
-							'Text to appear between the min and max values. Example: –',
+							'Text to appear between the min and max values, space(s) allowed. Example: –',
 							'wc-ajax-product-filter'
 						)}
 						value={values_separator}
