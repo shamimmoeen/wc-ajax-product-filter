@@ -766,15 +766,6 @@ class WCAPF_Helper {
 		$db_options  = get_option( $option_name );
 		$db_options  = $db_options ?: array();
 
-		/**
-		 * For v3 to v4 migration, sets the default author roles for our post-author filter.
-		 *
-		 * TODO: Should be deprecated.
-		 */
-		if ( ! isset( $db_options['author_roles'] ) ) {
-			$db_options['author_roles'] = array( 'administrator', 'shop_manager' );
-		}
-
 		if ( has_filter( $option_name ) ) {
 			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
 		} else {
@@ -843,7 +834,7 @@ class WCAPF_Helper {
 	 */
 	public static function is_debugging() {
 		if ( ! current_user_can( 'administrator' ) ) {
-			// return false; // TODO: Uncomment from production.
+			return false;
 		}
 
 		return ! empty( self::wcapf_option( 'debug_mode' ) );
