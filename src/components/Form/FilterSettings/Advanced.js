@@ -149,7 +149,8 @@ const Advanced = ({ index }) => {
 			taxHierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
 			'1' === hierarchical &&
-			'list-item' === native_display_type_layout
+			'list-item' === native_display_type_layout &&
+			'search' === field
 		) {
 			return false;
 		}
@@ -246,6 +247,43 @@ const Advanced = ({ index }) => {
 
 	const reduceHeightField = () => {
 		if (isApplicable()) {
+			let reduceHeightOptions;
+
+			// Soft limit not possible when hierarchy show is enabled.
+			if (
+				'taxonomy' === type &&
+				taxHierarchical &&
+				hierarchicalDisplayTypes().includes(display_type) &&
+				'1' === hierarchical &&
+				'list-item' === native_display_type_layout
+			) {
+				reduceHeightOptions = [
+					{
+						label: __('No', 'wc-ajax-product-filter'),
+						value: 'no',
+					},
+					{
+						label: __('Set max height', 'wc-ajax-product-filter'),
+						value: 'max_height',
+					},
+				];
+			} else {
+				reduceHeightOptions = [
+					{
+						label: __('No', 'wc-ajax-product-filter'),
+						value: 'no',
+					},
+					{
+						label: __('Set max height', 'wc-ajax-product-filter'),
+						value: 'max_height',
+					},
+					{
+						label: __('Soft Limit', 'wc-ajax-product-filter'),
+						value: 'soft_limit',
+					},
+				];
+			}
+
 			return (
 				<Radio
 					id={'enable_reduce_height'}
@@ -255,23 +293,7 @@ const Advanced = ({ index }) => {
 						'Enable this if you want to reduce the filter height.',
 						'wc-ajax-product-filter'
 					)}
-					options={[
-						{
-							label: __('No', 'wc-ajax-product-filter'),
-							value: 'no',
-						},
-						{
-							label: __(
-								'Set max height',
-								'wc-ajax-product-filter'
-							),
-							value: 'max_height',
-						},
-						{
-							label: __('Soft Limit', 'wc-ajax-product-filter'),
-							value: 'soft_limit',
-						},
-					]}
+					options={reduceHeightOptions}
 					onChange={handleRadioChange}
 					value={enable_reduce_height}
 				/>

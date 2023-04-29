@@ -493,7 +493,9 @@ class WCAPF_Walker {
 
 		if ( in_array( $display_type, $native_list_types ) ) {
 			if ( $this->hierarchical ) {
-				$html = $this->build_hierarchical_menu( $items );
+				$html = $this->get_max_height_wrapper_start_markup();
+				$html .= $this->build_hierarchical_menu( $items );
+				$html .= $this->get_max_height_wrapper_end_markup();
 			} else {
 				$html = $this->build_non_hierarchical_menu( $items );
 			}
@@ -544,6 +546,21 @@ class WCAPF_Walker {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function get_max_height_wrapper_start_markup() {
+		$html = '';
+
+		if ( $this->enable_max_height ) {
+			$html .= '<div class="wcapf-enable-scrollbar" style="max-height: ' . $this->max_height . 'px;">';
+		}
+
+		return $html;
 	}
 
 	/**
@@ -843,6 +860,21 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function get_max_height_wrapper_end_markup() {
+		$html = '';
+
+		if ( $this->enable_max_height ) {
+			$html .= '</div>';
+		}
+
+		return $html;
+	}
+
+	/**
 	 * Build non-hierarchical menu.
 	 *
 	 * @param array $items The array of items.
@@ -860,15 +892,9 @@ class WCAPF_Walker {
 		// Show the search field before the filter options.
 		$html .= $this->get_search_field();
 
-		$wrapper_classes = 'wcapf-filter-options';
-		$wrapper_styles  = '';
+		$html .= $this->get_max_height_wrapper_start_markup();
 
-		if ( $this->enable_max_height ) {
-			$wrapper_classes .= ' wcapf-enable-scrollbar';
-			$wrapper_styles  = ' style="max-height: ' . $this->max_height . 'px;"';
-		}
-
-		$html .= '<ul class="' . $wrapper_classes . '"' . $wrapper_styles . '>';
+		$html .= '<ul class="wcapf-filter-options">';
 
 		foreach ( $items as $item ) {
 			$index ++;
@@ -885,6 +911,8 @@ class WCAPF_Walker {
 		}
 
 		$html .= '</ul>';
+
+		$html .= $this->get_max_height_wrapper_end_markup();
 
 		if ( count( $items ) > $visible_items ) {
 			$html .= $this->get_soft_limit_toggle();

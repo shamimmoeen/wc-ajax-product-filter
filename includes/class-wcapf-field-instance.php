@@ -476,7 +476,7 @@ class WCAPF_Field_Instance {
 	 * @return bool
 	 */
 	private function is_reduce_height_possible( $field = 'reduce-height' ) {
-		if ( $this->taxonomy_is_hierarchical() ) {
+		if ( $this->taxonomy_is_hierarchical() && 'search' === $field ) {
 			return false;
 		}
 
