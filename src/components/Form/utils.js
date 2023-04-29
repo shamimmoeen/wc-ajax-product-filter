@@ -110,7 +110,7 @@ export function getFilterKey(filter, filterType) {
 	if (!filterKey) {
 		if ('post-meta' === type) {
 			if (meta_key) {
-				filterKey = meta_key;
+				filterKey = `_${meta_key}`;
 			}
 		} else if ('component' !== type) {
 			filterKey = filterType.key;
