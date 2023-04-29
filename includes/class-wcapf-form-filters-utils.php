@@ -225,7 +225,7 @@ class WCAPF_Form_Filters_Utils {
 		// Set default filter key.
 		if ( ! $post_name ) {
 			if ( 'post-meta' === $type ) {
-				$post_name = $meta_key;
+				$post_name = '_' . $meta_key;
 			} else {
 				$post_name = $filter_type_data['key'];
 			}
