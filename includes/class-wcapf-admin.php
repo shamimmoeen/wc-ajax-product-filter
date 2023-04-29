@@ -269,6 +269,7 @@ class WCAPF_Admin {
 		$params = array(
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			'version' => WCAPF_VERSION,
+			'wp'      => get_bloginfo( 'version' ),
 		);
 
 		$helper = new WCAPF_Helper();
