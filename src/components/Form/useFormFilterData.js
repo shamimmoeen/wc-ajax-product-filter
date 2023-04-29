@@ -222,6 +222,21 @@ const useFormFilterData = (state, dispatch) => {
 		}
 	};
 
+	const handleShowHierarchyChange = (value, key, index) => {
+		const _value = value ? '1' : '';
+
+		const many = { [key]: _value };
+
+		if (
+			_value &&
+			'soft_limit' === formFilters[index]['enable_reduce_height']
+		) {
+			many['enable_reduce_height'] = 'no';
+		}
+
+		updateFilterMany(index, [key], _value, many);
+	};
+
 	return {
 		handleFilterTypeChange,
 		handleFilterKeyChange,
@@ -234,6 +249,7 @@ const useFormFilterData = (state, dispatch) => {
 		handleSelectChange,
 		handleSelectTermChange,
 		handleManualOptionsChange,
+		handleShowHierarchyChange,
 	};
 };
 

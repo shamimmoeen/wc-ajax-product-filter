@@ -19,10 +19,11 @@ const swatchDisplayTypes = ['color', 'image'];
 const ValueTypeText = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleCheckboxChange, handleSelectChange } = useFormFilterData(
-		state,
-		dispatch
-	);
+	const {
+		handleCheckboxChange,
+		handleSelectChange,
+		handleShowHierarchyChange,
+	} = useFormFilterData(state, dispatch);
 
 	const {
 		layoutFields,
@@ -127,7 +128,7 @@ const ValueTypeText = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={hierarchical}
-					onChange={handleCheckboxChange}
+					onChange={handleShowHierarchyChange}
 				/>
 			);
 		}

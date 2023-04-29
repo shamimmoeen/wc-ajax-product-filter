@@ -10082,7 +10082,7 @@ const Advanced = _ref => {
       return false;
     }
 
-    if ('taxonomy' === type && taxHierarchical && (0,_utils__WEBPACK_IMPORTED_MODULE_9__.hierarchicalDisplayTypes)().includes(display_type) && '1' === hierarchical && 'list-item' === native_display_type_layout) {
+    if ('taxonomy' === type && taxHierarchical && (0,_utils__WEBPACK_IMPORTED_MODULE_9__.hierarchicalDisplayTypes)().includes(display_type) && '1' === hierarchical && 'list-item' === native_display_type_layout && 'search' === field) {
       return false;
     }
 
@@ -10142,12 +10142,18 @@ const Advanced = _ref => {
 
   const reduceHeightField = () => {
     if (isApplicable()) {
-      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        id: 'enable_reduce_height',
-        index: index,
-        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reduce height', 'wc-ajax-product-filter'),
-        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to reduce the filter height.', 'wc-ajax-product-filter'),
-        options: [{
+      let reduceHeightOptions; // Soft limit not possible when hierarchy show is enabled.
+
+      if ('taxonomy' === type && taxHierarchical && (0,_utils__WEBPACK_IMPORTED_MODULE_9__.hierarchicalDisplayTypes)().includes(display_type) && '1' === hierarchical && 'list-item' === native_display_type_layout) {
+        reduceHeightOptions = [{
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No', 'wc-ajax-product-filter'),
+          value: 'no'
+        }, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Set max height', 'wc-ajax-product-filter'),
+          value: 'max_height'
+        }];
+      } else {
+        reduceHeightOptions = [{
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('No', 'wc-ajax-product-filter'),
           value: 'no'
         }, {
@@ -10156,7 +10162,15 @@ const Advanced = _ref => {
         }, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Soft Limit', 'wc-ajax-product-filter'),
           value: 'soft_limit'
-        }],
+        }];
+      }
+
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Field_Radio__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        id: 'enable_reduce_height',
+        index: index,
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reduce height', 'wc-ajax-product-filter'),
+        description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Enable this if you want to reduce the filter height.', 'wc-ajax-product-filter'),
+        options: reduceHeightOptions,
         onChange: handleRadioChange,
         value: enable_reduce_height
       });
@@ -10595,7 +10609,8 @@ const ValueTypeText = _ref => {
   } = (0,_FormContext__WEBPACK_IMPORTED_MODULE_3__.useForm)();
   const {
     handleCheckboxChange,
-    handleSelectChange
+    handleSelectChange,
+    handleShowHierarchyChange
   } = (0,_useFormFilterData__WEBPACK_IMPORTED_MODULE_4__["default"])(state, dispatch);
   const {
     layoutFields,
@@ -10678,7 +10693,7 @@ const ValueTypeText = _ref => {
         label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Show hierarchy', 'wc-ajax-product-filter'),
         description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Whether to show the filter options as hierarchical.', 'wc-ajax-product-filter'),
         isChecked: hierarchical,
-        onChange: handleCheckboxChange
+        onChange: handleShowHierarchyChange
       });
     }
   };
@@ -15854,6 +15869,20 @@ const useFormFilterData = (state, dispatch) => {
     }
   };
 
+  const handleShowHierarchyChange = (value, key, index) => {
+    const _value = value ? '1' : '';
+
+    const many = {
+      [key]: _value
+    };
+
+    if (_value && 'soft_limit' === formFilters[index]['enable_reduce_height']) {
+      many['enable_reduce_height'] = 'no';
+    }
+
+    updateFilterMany(index, [key], _value, many);
+  };
+
   return {
     handleFilterTypeChange,
     handleFilterKeyChange,
@@ -15865,7 +15894,8 @@ const useFormFilterData = (state, dispatch) => {
     handleToggleGroupChange,
     handleSelectChange,
     handleSelectTermChange,
-    handleManualOptionsChange
+    handleManualOptionsChange,
+    handleShowHierarchyChange
   };
 };
 
