@@ -24,6 +24,7 @@ import {
 	filterDeletedErrorNotice,
 	removeFilterDeletedNotices,
 } from '../../notices';
+import { wpVersion } from '../../utils';
 
 const onlyWithType = componentsWithTypeOnly();
 
@@ -180,6 +181,19 @@ const Filter = ({ index }) => {
 		}
 	};
 
+	let dropdownProps;
+
+	if (6.2 <= wpVersion()) {
+		dropdownProps = {
+			popoverProps: { noArrow: false, position: 'top center' },
+		};
+	} else {
+		dropdownProps = {
+			popoverProps: { noArrow: false },
+			position: 'top center',
+		};
+	}
+
 	return (
 		<div className='__item'>
 			<div className={topClass} onClick={toggleExpand}>
@@ -261,9 +275,8 @@ const Filter = ({ index }) => {
 						</Button>
 						{` | `}
 						<Dropdown
-							popoverProps={{ noArrow: false }}
+							{...dropdownProps}
 							contentClassName='__remove_popover'
-							position='top center'
 							focusOnMount={true}
 							renderToggle={({ isOpen, onToggle }) => (
 								<Button

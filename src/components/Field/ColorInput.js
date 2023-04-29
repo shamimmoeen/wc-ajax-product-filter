@@ -1,14 +1,27 @@
 import { Button, ColorPicker, Dropdown } from '@wordpress/components';
-import { proTag } from '../utils';
+import { proTag, wpVersion } from '../utils';
 
 const DropdownColorPicker = ({ value, onChange, disableAlpha, slotName }) => {
-	return (
-		<Dropdown
-			position='bottom right'
-			popoverProps={{
+	let dropdownProps;
+
+	if (6.2 <= wpVersion()) {
+		dropdownProps = {
+			popoverProps: {
 				noArrow: false,
 				__unstableSlotName: slotName,
-			}}
+				position: 'bottom right',
+			},
+		};
+	} else {
+		dropdownProps = {
+			popoverProps: { noArrow: false, __unstableSlotName: slotName },
+			position: 'bottom right',
+		};
+	}
+
+	return (
+		<Dropdown
+			{...dropdownProps}
 			renderToggle={({ isOpen, onToggle }) => (
 				<div className='components-circular-option-picker__option-wrapper'>
 					<Button
