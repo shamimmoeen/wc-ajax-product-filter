@@ -85,7 +85,7 @@ const Text = ({
 	isFilterKey = false,
 	isDisabled = false,
 	tooltip,
-	customClass,
+	customClass = '',
 	isPro,
 	...rest
 }) => {

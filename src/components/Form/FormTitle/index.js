@@ -13,7 +13,7 @@ import {
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
-import { foundProVersion } from '../../utils';
+import { GENERIC_ERROR_MESSAGE, foundProVersion } from '../../utils';
 import {
 	getFilterKeyError,
 	filterDefaultData,
@@ -27,11 +27,6 @@ import {
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
 
 const WCAPF_PRO = foundProVersion();
-
-const genericErrorMessage = __(
-	'Please fix the errors below.',
-	'wc-ajax-product-filter'
-);
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();
@@ -135,7 +130,7 @@ const FormTitle = () => {
 
 			const filterKeyError = getFilterKeyError(
 				filterKeys,
-				_formFilter,
+				formFilter,
 				formFilters,
 				index
 			);
@@ -154,24 +149,26 @@ const FormTitle = () => {
 			validatedFormFilters.push(_formFilter);
 		}
 
-		const newStates = accordionStates.map((isExpanded, index) => {
-			if (invalidFormFilters.includes(index)) {
-				return true;
-			} else if (isExpanded) {
-				return false;
-			}
+		if (!isValid) {
+			const newStates = accordionStates.map((isExpanded, index) => {
+				if (invalidFormFilters.includes(index)) {
+					return true;
+				} else if (isExpanded) {
+					return false;
+				}
 
-			return isExpanded;
-		});
+				return isExpanded;
+			});
 
-		dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+			dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+		}
 
 		dispatch({ type: 'SET_FORM_FILTERS', payload: validatedFormFilters });
 
 		if (!isValid) {
 			dispatch({
 				type: 'SET_ERROR',
-				payload: genericErrorMessage,
+				payload: GENERIC_ERROR_MESSAGE,
 			});
 
 			if ('filters' !== currentTab) {
@@ -382,7 +379,7 @@ const FormTitle = () => {
 				} else if (data.errors) {
 					dispatch({
 						type: 'SET_ERROR',
-						payload: genericErrorMessage,
+						payload: GENERIC_ERROR_MESSAGE,
 					});
 
 					const errorsData = data['errors'];
