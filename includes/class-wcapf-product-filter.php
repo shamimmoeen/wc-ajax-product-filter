@@ -453,6 +453,7 @@ class WCAPF_Product_Filter {
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
 				'include'    => $term_ids,
+				'orderby'    => 'include',
 				'fields'     => 'id=>name',
 			)
 		);
