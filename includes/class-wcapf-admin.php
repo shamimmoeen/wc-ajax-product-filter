@@ -216,6 +216,14 @@ class WCAPF_Admin {
 			);
 
 			wp_enqueue_script( 'wcapf-admin-scripts' );
+
+			wp_enqueue_script(
+				'wc-ajax-product-filter-admin-scripts',
+				WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts.js',
+				array(),
+				filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts.js' ),
+				true
+			);
 		}
 
 		if ( 'toplevel_page_wcapf' === $hook ) {
@@ -270,6 +278,7 @@ class WCAPF_Admin {
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			'version' => WCAPF_VERSION,
 			'wp'      => get_bloginfo( 'version' ),
+			'dirty'   => false,
 		);
 
 		$helper = new WCAPF_Helper();
