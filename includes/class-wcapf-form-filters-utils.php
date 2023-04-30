@@ -29,15 +29,49 @@ class WCAPF_Form_Filters_Utils {
 		$filters        = array();
 		$errors         = array();
 
+		// Check for error coming for filter keys.
 		if ( $form_filters ) {
 			foreach ( $form_filters as $filter_order => $filter ) {
-				$filter_title = isset( $filter['title'] ) ? sanitize_text_field( $filter['title'] ) : '';
-				$filter_id    = isset( $filter['id'] ) ? absint( $filter['id'] ) : 0;
-				$post_name    = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
-				$type         = isset( $filter['type'] ) ? sanitize_text_field( $filter['type'] ) : '';
-				$taxonomy     = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
-				$meta_key     = isset( $filter['meta_key'] ) ? sanitize_text_field( $filter['meta_key'] ) : '';
-				$component    = isset( $filter['component'] ) ? sanitize_text_field( $filter['component'] ) : '';
+				list(
+					,
+					,
+					$post_name,
+					$type,
+					$taxonomy,
+					$meta_key,
+					) = $this->get_filter_data( $filter );
+
+				list( , $error_data ) = $this->retrieve_filter_key(
+					$type,
+					$possible_types,
+					$taxonomy,
+					$filter,
+					$post_name,
+					$meta_key,
+					$filter_order
+				);
+
+				if ( $error_data ) {
+					$errors[] = $error_data;
+				}
+			}
+		}
+
+		if ( $errors ) {
+			wp_send_json_error( array( 'errors' => $errors ) );
+		}
+
+		if ( $form_filters ) {
+			foreach ( $form_filters as $filter_order => $filter ) {
+				list(
+					$filter_title,
+					$filter_id,
+					$post_name,
+					$type,
+					$taxonomy,
+					$meta_key,
+					$component
+					) = $this->get_filter_data( $filter );
 
 				if ( ! in_array( $type, $valid_types ) ) {
 					continue;
@@ -51,7 +85,7 @@ class WCAPF_Form_Filters_Utils {
 					continue;
 				}
 
-				list( $post_name, $error_data, $filter_type_data ) = $this->retrieve_filter_key(
+				list( $post_name, , $filter_type_data ) = $this->retrieve_filter_key(
 					$type,
 					$possible_types,
 					$taxonomy,
@@ -60,17 +94,6 @@ class WCAPF_Form_Filters_Utils {
 					$meta_key,
 					$filter_order
 				);
-
-				if ( $error_data ) {
-					$errors[] = $error_data;
-
-					continue;
-				}
-
-				// Don't proceed if error found from previous filters.
-				if ( $errors ) {
-					continue;
-				}
 
 				if ( 'taxonomy' === $type ) {
 					$taxonomy = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
@@ -172,6 +195,23 @@ class WCAPF_Form_Filters_Utils {
 		}
 
 		return array( $filters, $errors );
+	}
+
+	/**
+	 * @param $filter
+	 *
+	 * @return array
+	 */
+	private function get_filter_data( $filter ) {
+		$filter_title = isset( $filter['title'] ) ? sanitize_text_field( $filter['title'] ) : '';
+		$filter_id    = isset( $filter['id'] ) ? absint( $filter['id'] ) : 0;
+		$post_name    = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
+		$type         = isset( $filter['type'] ) ? sanitize_text_field( $filter['type'] ) : '';
+		$taxonomy     = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
+		$meta_key     = isset( $filter['meta_key'] ) ? sanitize_text_field( $filter['meta_key'] ) : '';
+		$component    = isset( $filter['component'] ) ? sanitize_text_field( $filter['component'] ) : '';
+
+		return array( $filter_title, $filter_id, $post_name, $type, $taxonomy, $meta_key, $component );
 	}
 
 	/**
