@@ -260,6 +260,7 @@ class WCAPF_Taxonomy_Filter {
 				'taxonomy'   => $field_instance->taxonomy,
 				'hide_empty' => false,
 				'slug'       => $term_slugs,
+				'orderby'    => 'slug__in',
 			)
 		);
 
