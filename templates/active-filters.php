@@ -12,6 +12,7 @@
  * @var string $location             Determines where we are showing the active filters. Available options are:
  *                                   inside-form, before-products.
  * @var string $show_title           Determines if we show the title.
+ * @var string $layout               Determines the active filters' layout, possible values are simple, extended.
  * @var string $title                The title.
  * @var string $show_clear_btn       Whether to show the clear filter button in heading or not.
  * @var string $clear_all_btn_label  The clear all button label.
@@ -19,11 +20,12 @@
  */
 
 $location = isset( $location ) ? $location : 'inside-form';
+$layout   = isset( $layout ) ? $layout : 'simple';
 $title    = isset( $title ) ? $title : '';
 
 $helper = new WCAPF_Helper;
 
-$all_filters = $helper::get_active_filter_items();
+$all_filters = $helper::get_active_filter_items( $layout );
 $total       = count( $all_filters );
 
 $clear_all_btn_label = isset( $clear_all_btn_label ) ? $clear_all_btn_label : '';
@@ -33,6 +35,7 @@ $empty_message       = isset( $empty_message ) ? $empty_message : '';
 $unique_id = wp_unique_id( 'af-' );
 $classes   = array( 'wcapf-active-filters', 'wcapf-active-filters-' . $unique_id );
 $classes[] = 'location-' . $location;
+$classes[] = 'layout-' . $layout;
 
 $reset_btn_class = 'wcapf-reset-filters-btn';
 
@@ -75,28 +78,48 @@ if ( $show_clear_btn && $all_filters ) {
 			<div class="wcapf-filter-inner">
 				<div class="wcapf-active-filter-items-wrapper">
 					<?php if ( $all_filters ) : ?>
-						<div class="wcapf-active-filter-items">
-							<?php
-							$index = 0;
-							$class = '';
+						<?php if ( 'simple' === $layout ) : ?>
+							<div class="wcapf-active-filter-items">
+								<?php
+								$index = 0;
+								$class = '';
 
-							foreach ( $all_filters as $filter_data ) {
-								$index ++;
+								foreach ( $all_filters as $filter_data ) {
+									$index ++;
 
-								if ( $index === $total ) {
-									$class = 'last-item';
+									if ( $index === $total ) {
+										$class = 'last-item';
+									}
+
+									echo $helper::get_active_filters_markup( $filter_data, $class );
 								}
 
-								echo $helper::get_active_filter_markup( $filter_data, $class );
-							}
+								if ( 'before-products' === $location ) {
+									echo '<div class="wcapf-reset-filters-btn-wrapper">';
+									echo $helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
+									echo '</div>';
+								}
+								?>
+							</div>
+						<?php else: ?>
+							<?php
+							foreach ( $all_filters as $filter_key => $filter_data ) {
+								$filter_id = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : '';
 
-							if ( 'before-products' === $location ) {
-								echo '<div class="wcapf-reset-filters-btn-wrapper">';
-								echo $helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
-								echo '</div>';
+								echo '<div class="wcapf-active-filter-group">';
+
+								if ( $filter_id ) {
+									echo '<h5>' . get_the_title( $filter_id ) . '</h5>';
+								}
+
+								echo '<div class="active-items">';
+
+								echo $helper::get_active_filters_markup( $filter_data );
+
+								echo '</div></div>';
 							}
 							?>
-						</div>
+						<?php endif; ?>
 					<?php endif; ?>
 
 					<?php if ( ! $all_filters && $empty_message ) : ?>

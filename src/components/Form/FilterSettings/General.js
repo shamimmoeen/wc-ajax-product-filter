@@ -52,6 +52,7 @@ const General = ({ index }) => {
 		field_key_error,
 		field_key_error_,
 		show_title,
+		active_filters_layout,
 		empty_filter_message,
 		show_if_empty,
 	} = filter;
@@ -346,6 +347,28 @@ const General = ({ index }) => {
 						onChange={handleCheckboxChange}
 					/>
 
+					<Radio
+						id={'active_filters_layout'}
+						index={index}
+						label={__('Layout', 'wc-ajax-product-filter')}
+						description={__(
+							'Simple: Show all the active items one by one, Extended: Group the active items by filter type and show them separately with filter title.',
+							'wc-ajax-product-filter'
+						)}
+						options={[
+							{
+								label: __('Simple', 'wc-ajax-product-filter'),
+								value: 'simple',
+							},
+							{
+								label: __('Extended', 'wc-ajax-product-filter'),
+								value: 'extended',
+							},
+						]}
+						value={active_filters_layout}
+						onChange={handleRadioChange}
+					/>
+
 					<Text
 						id={'empty_filter_message'}
 						index={index}
@@ -354,7 +377,7 @@ const General = ({ index }) => {
 							'wc-ajax-product-filter'
 						)}
 						description={__(
-							'Show a message when no filter is applied. Leave it empty to not show any message.',
+							'Show a message when no filter is applied. Leave it empty to not show the active filters when no filter is applied.',
 							'wc-ajax-product-filter'
 						)}
 						value={empty_filter_message}

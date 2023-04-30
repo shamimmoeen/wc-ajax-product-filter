@@ -318,13 +318,15 @@ class WCAPF_Hooks {
 	 */
 	private function render_active_filters() {
 		if ( ! empty( WCAPF_Helper::wcapf_option( 'active_filters_on_top' ) ) ) {
-			WCAPF_Template_Loader::get_instance()->load(
-				'active-filters',
+			$active_filters_on_top_args = apply_filters(
+				'wcapf_active_filters_on_top_args',
 				array(
 					'location'            => 'before-products',
 					'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
 				)
 			);
+
+			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $active_filters_on_top_args );
 		}
 	}
 
