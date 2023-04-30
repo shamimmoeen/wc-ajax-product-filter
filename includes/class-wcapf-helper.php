@@ -503,7 +503,7 @@ class WCAPF_Helper {
 	 *
 	 * @return string
 	 */
-	public static function get_active_filter_markup( $filter_data, $extra_class = '' ) {
+	public static function get_active_filters_markup( $filter_data, $extra_class = '' ) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 		$filter_key     = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
 
@@ -604,11 +604,13 @@ class WCAPF_Helper {
 	/**
 	 * Gets the active filter items for the active filters widget.
 	 *
+	 * @param string $layout Determines the active filters layout, possible values are simple, extended.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return array
 	 */
-	public static function get_active_filter_items() {
+	public static function get_active_filter_items( $layout = 'simple' ) {
 		$active_filters = self::get_active_filters_data();
 
 		// Sort the data according to the order in $_GET variable.
@@ -620,15 +622,35 @@ class WCAPF_Helper {
 			}
 		}
 
+		if ( 'extended' === $layout ) {
+			$grouped = array();
+
+			foreach ( $sorted as $filter_data ) {
+				$filter_key      = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
+				$_active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
+
+				if ( array_key_exists( $filter_key, $grouped ) ) {
+					$old = $grouped[ $filter_key ]['active_filters'];
+					$new = $old + $_active_filters;
+
+					$grouped[ $filter_key ]['active_filters'] = $new;
+				} else {
+					$grouped[ $filter_key ] = $filter_data;
+				}
+			}
+
+			return $grouped;
+		}
+
 		$filters_data = array();
 
-		foreach ( $sorted as $filter ) {
-			$active_filters = isset( $filter['active_filters'] ) ? $filter['active_filters'] : array();
+		foreach ( $sorted as $filter_data ) {
+			$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 
 			foreach ( $active_filters as $value => $label ) {
-				$filter['active_filters'] = array( $value => $label );
+				$filter_data['active_filters'] = array( $value => $label );
 
-				$filters_data[] = $filter;
+				$filters_data[] = $filter_data;
 			}
 		}
 

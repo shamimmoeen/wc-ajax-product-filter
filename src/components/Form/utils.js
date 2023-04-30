@@ -478,6 +478,7 @@ export function filterDefaultData() {
 		show_in_active_filters: '1',
 		visibility_rules: [],
 		// Active filters
+		active_filters_layout: 'simple',
 		empty_filter_message: '',
 		// Reset Button
 		show_if_empty: '',

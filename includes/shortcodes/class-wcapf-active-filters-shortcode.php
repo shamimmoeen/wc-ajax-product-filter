@@ -25,6 +25,7 @@ class WCAPF_Active_Filters_Shortcode {
 		$a = shortcode_atts( array(
 			'title'               => '',
 			'show_title'          => '1',
+			'layout'              => 'simple',
 			'empty_message'       => '',
 			'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
 		), $attrs );
