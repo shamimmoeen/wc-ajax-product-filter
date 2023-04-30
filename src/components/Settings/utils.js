@@ -23,6 +23,8 @@ export function defaultSettings() {
 		attach_chosen_on_sorting: '',
 		improve_native_select: '1',
 		improve_scrollbar: '1',
+		improve_input_type_text_number: '1',
+		hierarchy_toggle_at_end: '1',
 		number_range_slider_style: 'style-1',
 		label_size: 'fixed',
 		active_label_style: 'primary',

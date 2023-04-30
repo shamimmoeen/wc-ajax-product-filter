@@ -471,7 +471,11 @@ class WCAPF_Walker {
 
 				// Hierarchy List.
 				if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
-					$wrapper_classes[] = 'has-hierarchy-accordion';
+					$wrapper_classes[] = 'hierarchy-list';
+
+					if ( WCAPF_Helper::wcapf_option( 'hierarchy_toggle_at_end' ) ) {
+						$wrapper_classes[] = 'hierarchy-toggle-at-end';
+					}
 				}
 			} else {
 				$input_type = $this->enable_multiple_filter ? 'checkbox' : 'radio';

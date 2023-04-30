@@ -73,6 +73,8 @@ const Appearance = () => {
 			attach_chosen_on_sorting,
 			improve_native_select,
 			improve_scrollbar,
+			improve_input_type_text_number,
+			hierarchy_toggle_at_end,
 			number_range_slider_style,
 			label_size,
 			active_label_style,
@@ -193,6 +195,34 @@ const Appearance = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={improve_scrollbar}
+				onChange={handleCheckboxChange}
+			/>
+
+			<Checkbox
+				id={'improve_input_type_text_number'}
+				label={__(
+					'Improve input type text/number',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Enable this if you want to use styles from your theme for input type text/number.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={improve_input_type_text_number}
+				onChange={handleCheckboxChange}
+			/>
+
+			<Checkbox
+				id={'hierarchy_toggle_at_end'}
+				label={__(
+					'Hierarchy toggle at end',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'Uncheck this to show the hierarchy toggle just after the item label instead of at the end of the item.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={hierarchy_toggle_at_end}
 				onChange={handleCheckboxChange}
 			/>
 
