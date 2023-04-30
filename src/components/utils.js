@@ -1,4 +1,15 @@
+import { __ } from '@wordpress/i18n';
 import { concat } from 'lodash';
+
+export const GENERIC_ERROR_MESSAGE = __(
+	'Please fix the errors below.',
+	'wc-ajax-product-filter'
+);
+
+export const FILTER_KEY_IN_USE_MESSAGE = __(
+	'Filter key is in use by another entity.',
+	'wc-ajax-product-filter'
+);
 
 export function foundProVersion() {
 	return wcapf_admin_params.found_pro || false;

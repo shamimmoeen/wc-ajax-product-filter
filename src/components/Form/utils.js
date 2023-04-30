@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { isEmpty, merge, find } from 'lodash';
-import { mergeSelectOptions } from '../utils';
+import { FILTER_KEY_IN_USE_MESSAGE, mergeSelectOptions } from '../utils';
 
 export function newFilterData(index, formFilters) {
 	let data = {};
@@ -327,7 +327,7 @@ export function getFilterKeyError(
 			continue;
 		}
 
-		const formFilter = formFilters[index];
+		const formFilter = { ...formFilters[index] };
 
 		// We'll use the default key.
 		if (isEmpty(formFilter['field_key'])) {
@@ -347,19 +347,14 @@ export function getFilterKeyError(
 		otherFilters.push(formFilter);
 	}
 
-	const errorMessage = __(
-		'Filter key is in use by another entity.',
-		'wc-ajax-product-filter'
-	);
-
 	if (find(otherFilters, { field_key })) {
 		console.log('found in this form', find(otherFilters, { field_key })); // TODO: Remove.
 
-		filterKeyError = errorMessage;
+		filterKeyError = FILTER_KEY_IN_USE_MESSAGE;
 	} else if (find(filterKeys, { field_key })) {
 		console.log('found in other forms', find(filterKeys, { field_key })); // TODO: Remove.
 
-		filterKeyError = errorMessage;
+		filterKeyError = FILTER_KEY_IN_USE_MESSAGE;
 	}
 
 	return filterKeyError;
