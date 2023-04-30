@@ -201,6 +201,8 @@ const Settings = () => {
 
 					dispatch({ type: 'SET_DIRTY', payload: false });
 
+					wcapf_admin_params.dirty = false;
+
 					dispatch({
 						type: 'SET_FILTER_KEYS_CHANGED',
 						payload: false,

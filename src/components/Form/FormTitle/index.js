@@ -374,6 +374,8 @@ const FormTitle = () => {
 
 					dispatch({ type: 'SET_DIRTY', payload: false });
 
+					wcapf_admin_params.dirty = false;
+
 					itemSavedSuccessNotice(
 						__('Form saved successfully', 'wc-ajax-product-filter')
 					);
