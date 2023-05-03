@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Flex, Icon, Modal, Spinner } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { itemCreateErrorNotice, removeItemCreateNotice } from '../notices';
+import { itemCreateErrorNotice, removeItemCreateNotices } from '../notices';
 import { foundProVersion, getEditFormLink } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { CheckIcon } from '../SVGIcons';
@@ -44,13 +44,13 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	}, [loading]);
 
 	const handleTitleChange = (e) => {
-		removeItemCreateNotice();
+		removeItemCreateNotices();
 
 		setTitle(e.target.value);
 	};
 
 	const handleCloseModal = () => {
-		removeItemCreateNotice();
+		removeItemCreateNotices();
 
 		setAddNewModalOpen(false);
 		setLoading(false);
@@ -79,7 +79,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 			return;
 		}
 
-		removeItemCreateNotice();
+		removeItemCreateNotices();
 
 		setLoading(true);
 
@@ -165,6 +165,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 								value={title}
 								onChange={handleTitleChange}
 								disabled={formSubmissionDisabled()}
+								autoFocus
 							/>
 						</form>
 					</div>

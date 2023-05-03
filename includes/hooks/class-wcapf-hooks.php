@@ -386,6 +386,8 @@ class WCAPF_Hooks {
 			return;
 		}
 
+		WCAPF_V4_Migration()->try_to_run_v4_migration();
+
 		$filter = new WCAPF_Product_Filter();
 
 		global $wcapf_chosen_filters;

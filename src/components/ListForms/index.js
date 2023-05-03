@@ -8,6 +8,7 @@ import useListTable from '../useListTable';
 import DeleteModal from '../Modals/DeleteModal';
 import DuplicateModal from '../Modals/DuplicateModal';
 import PublishModal from '../Modals/PublishModal';
+import V4MigrationNotice from '../V4MigrationNotice';
 
 const ListForms = () => {
 	const {
@@ -39,6 +40,8 @@ const ListForms = () => {
 	return (
 		<div className='__wcapf_admin'>
 			<TopBar view={'forms'} />
+
+			<V4MigrationNotice />
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>
