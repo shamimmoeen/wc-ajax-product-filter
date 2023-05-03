@@ -84,6 +84,19 @@ function wcapf_deactivate() {
 register_activation_hook( WCAPF_PLUGIN_FILE, 'wcapf_activate' );
 register_deactivation_hook( WCAPF_PLUGIN_FILE, 'wcapf_deactivate' );
 
+add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
+
+/**
+ * We are not loading the wcapf-pro-v1 as it is not compatible with wcapf-basic-v4.
+ *
+ * @since 4.0.0
+ *
+ * @return void
+ */
+function wcapf_unload_pro_v1() {
+	remove_action( 'woocommerce_loaded', 'wcapf_pro_loads_dependencies', 99 );
+}
+
 // Include the WCAPF main class
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf.php';
 
