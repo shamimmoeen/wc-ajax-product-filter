@@ -1,0 +1,54 @@
+import { Button } from '@wordpress/components';
+
+const showMigrationNotice = wcapf_admin_params.show_v4_migration_notice;
+const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
+const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
+
+const V4MigrationNotice = () => {
+	const handleDismissNotice = () => {
+		removeWCAPFMigrationNotice();
+	};
+
+	return (
+		<>
+			{showMigrationNotice && (
+				<div
+					className='notice notice-info'
+					id='wcapf-v4-migration-notice'
+				>
+					<p>
+						<strong>
+							WC Ajax Product Filter - V4 Migration Notice
+						</strong>
+					</p>
+					<p>
+						The plugin has been upgraded to v4. We have improved the
+						backend and refactored the codes. As a migration
+						process, a form has been created automatically with all
+						the existing filters of your shop. You are requested to
+						check the order of filters by visiting the form.
+					</p>
+					<p>
+						<Button variant='link' href={migrationFormEditUrl}>
+							Check the order of filters
+						</Button>{' '}
+						|{' '}
+						<Button
+							variant='link'
+							href={migrationDocUrl}
+							target='_blank'
+						>
+							Read more about upgrade
+						</Button>{' '}
+						|{' '}
+						<Button variant='link' onClick={handleDismissNotice}>
+							I understand, remove the notice
+						</Button>
+					</p>
+				</div>
+			)}
+		</>
+	);
+};
+
+export default V4MigrationNotice;

@@ -52,6 +52,7 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_products_for_dropdown', array( $this, 'get_products_for_dropdown' ) );
 
 		// For form.
+		add_action( 'wp_ajax_wcapf_create_sample_form', array( $this, 'create_sample_form' ) );
 		add_action( 'wp_ajax_wcapf_get_form_data', array( $this, 'get_form_data' ) );
 		add_action( 'wp_ajax_wcapf_add_form', array( $this, 'add_form' ) );
 		add_action( 'wp_ajax_wcapf_save_form', array( $this, 'save_form' ) );
@@ -63,17 +64,20 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_save_settings', array( $this, 'save_settings' ) );
 	}
 
-	public function add_form() {
-		$form_title     = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
-		$_form_settings = isset( $_POST['form_settings'] ) ? $_POST['form_settings'] : '';
-		$form_settings  = stripslashes( $_form_settings );
-		$form_settings  = json_decode( $form_settings, true );
+	/**
+	 * Creates the sample form via ajax.
+	 *
+	 * @return void
+	 */
+	public function create_sample_form() {
+		$form_settings = WCAPF_V4_Migration()->form_default_data();
 
 		$post_arr = array(
-			'post_title'   => $form_title,
+			'post_title'   => __( 'Sample form', 'wc-ajax-product-filter' ),
+			'post_content' => maybe_serialize( $form_settings ),
+			'menu_order'   => 0,
 			'post_type'    => 'wcapf-form',
 			'post_status'  => 'publish',
-			'post_content' => maybe_serialize( $form_settings ),
 		);
 
 		$new_form_id = wp_insert_post( $post_arr, true );
@@ -81,6 +85,9 @@ class WCAPF_API {
 		if ( is_wp_error( $new_form_id ) ) {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
+
+		$form_filters_utils = new WCAPF_Form_Filters_Utils();
+		$form_filters_utils->save_form_filters( WCAPF_V4_Migration()->get_sample_filters(), $new_form_id );
 
 		wp_send_json_success( WCAPF_API_Utils::get_form_data( $new_form_id ) );
 	}
@@ -294,6 +301,28 @@ class WCAPF_API {
 	 */
 	private function parse_form_settings( $sanitized ) {
 		return apply_filters( 'wcapf_parse_form_settings', $sanitized );
+	}
+
+	public function add_form() {
+		$form_title     = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
+		$_form_settings = isset( $_POST['form_settings'] ) ? $_POST['form_settings'] : '';
+		$form_settings  = stripslashes( $_form_settings );
+		$form_settings  = json_decode( $form_settings, true );
+
+		$post_arr = array(
+			'post_title'   => $form_title,
+			'post_type'    => 'wcapf-form',
+			'post_status'  => 'publish',
+			'post_content' => maybe_serialize( $form_settings ),
+		);
+
+		$new_form_id = wp_insert_post( $post_arr, true );
+
+		if ( is_wp_error( $new_form_id ) ) {
+			wp_send_json_error( $new_form_id->get_error_message() );
+		}
+
+		wp_send_json_success( WCAPF_API_Utils::get_form_data( $new_form_id ) );
 	}
 
 	/**

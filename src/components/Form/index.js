@@ -14,6 +14,7 @@ import {
 	proFilterTypes,
 } from './utils';
 import { foundProVersion } from '../utils';
+import V4MigrationNotice from '../V4MigrationNotice';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -118,6 +119,8 @@ const Form = () => {
 		<>
 			<div className='__wcapf_admin'>
 				<TopBar view={'form'} />
+
+				<V4MigrationNotice />
 
 				<div className='__edit_filter'>
 					<div className='__edit_filter_from'>

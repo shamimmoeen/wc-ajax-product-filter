@@ -27,6 +27,7 @@ import {
 	foundProVersion,
 } from '../utils';
 import { defaultSettings } from './utils';
+import V4MigrationNotice from '../V4MigrationNotice';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -276,6 +277,8 @@ const Settings = () => {
 	return (
 		<div className='__wcapf_admin'>
 			<TopBar view={'settings'} />
+
+			<V4MigrationNotice />
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>
