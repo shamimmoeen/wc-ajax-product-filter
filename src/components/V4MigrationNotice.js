@@ -3,6 +3,7 @@ import { Button } from '@wordpress/components';
 const showMigrationNotice = wcapf_admin_params.show_v4_migration_notice;
 const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
 const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
+const showProUpgradeNotice = wcapf_admin_params.show_pro_v2_upgrade_notice;
 
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {
@@ -13,7 +14,7 @@ const V4MigrationNotice = () => {
 		<>
 			{showMigrationNotice && (
 				<div
-					className='notice notice-info'
+					className='notice notice-info v4-upgrade-notice'
 					id='wcapf-v4-migration-notice'
 				>
 					<p>
@@ -44,6 +45,21 @@ const V4MigrationNotice = () => {
 						<Button variant='link' onClick={handleDismissNotice}>
 							I understand, remove the notice
 						</Button>
+					</p>
+				</div>
+			)}
+
+			{showProUpgradeNotice && (
+				<div className='notice notice-info v4-upgrade-notice'>
+					<p>
+						<strong>
+							WC Ajax Product Filter Pro - Upgrade Required
+						</strong>
+					</p>
+					<p>
+						Thank you for using the pro version. WC Ajax Product
+						Filter v4 requires you to upgrade WC Ajax Product Filter
+						Pro to v2.0.0. Please upgrade.
 					</p>
 				</div>
 			)}

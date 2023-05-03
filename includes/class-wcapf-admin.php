@@ -345,9 +345,10 @@ class WCAPF_Admin {
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
 		// v4 migration related data.
-		$params['show_v4_migration_notice'] = $this->v4_migration_notice_can_be_shown();
-		$params['v4_migrated_form_url']     = $this->get_v4_migrated_form_url();
-		$params['v4_migration_doc_url']     = $this->get_v4_migration_doc_url();
+		$params['show_v4_migration_notice']   = $this->v4_migration_notice_can_be_shown();
+		$params['v4_migrated_form_url']       = $this->get_v4_migrated_form_url();
+		$params['v4_migration_doc_url']       = $this->get_v4_migration_doc_url();
+		$params['show_pro_v2_upgrade_notice'] = $this->pro_v2_upgrade_notice_can_be_shown();
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
@@ -411,6 +412,29 @@ class WCAPF_Admin {
 	 */
 	public function get_v4_migration_doc_url() {
 		return '';
+	}
+
+	/**
+	 * Determines if the pro v2 upgrade notice should be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	private function pro_v2_upgrade_notice_can_be_shown() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		if ( ! is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ) {
+			return false;
+		}
+
+		if ( defined( 'WCAPF_PRO_VERSION' ) && ! version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -559,21 +583,17 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function show_v2_pro_version_upgrade_notice() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		if ( ! defined( 'WCAPF_PRO_VERSION' ) ) {
-			return;
-		}
-
-		if ( ! version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
+		if ( ! $this->pro_v2_upgrade_notice_can_be_shown() ) {
 			return;
 		}
 		?>
 		<div class="notice notice-info">
 			<p>
-				<b>WC Ajax Product Filter</b> v4 requires you to upgrade <b>WC Ajax Product Filter Pro</b> to v2.0.0.
+				<strong>WC Ajax Product Filter Pro - Upgrade Required</strong>
+			</p>
+			<p>
+				Thank you for using the pro version. WC Ajax Product Filter v4 requires you to upgrade WC Ajax Product
+				Filter Pro to v2.0.0. Please upgrade.
 			</p>
 		</div>
 		<?php
