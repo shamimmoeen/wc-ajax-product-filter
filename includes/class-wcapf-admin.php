@@ -519,7 +519,7 @@ class WCAPF_Admin {
 			<p>
 				<a href="<?php echo esc_url( $form_url ); ?>">Check the order of filters</a>
 				|
-				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank">Read more about upgrade</a>
+				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank">Learn more about upgrade</a>
 				|
 				<a href="javascript:void(0)" onclick="removeWCAPFMigrationNotice()">I understand, remove
 					the notice</a>
