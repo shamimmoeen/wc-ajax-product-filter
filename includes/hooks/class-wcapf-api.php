@@ -251,7 +251,7 @@ class WCAPF_API {
 
 		$type = isset( $filter['type'] ) ? $filter['type'] : '';
 
-		if ( 'taxonomy' === $type ) {
+		if ( 'taxonomy' === $type ) { // Set the term name for the options table.
 			$manual_options = isset( $filter['manual_options'] ) ? $filter['manual_options'] : array();
 
 			if ( $manual_options ) {
@@ -271,7 +271,7 @@ class WCAPF_API {
 
 				$filter['manual_options'] = $parsed;
 			}
-		} elseif ( 'post-author' === $type ) {
+		} elseif ( 'post-author' === $type ) { // Set the username for the options table.
 			$manual_options = isset( $filter['manual_options'] ) ? $filter['manual_options'] : array();
 
 			if ( $manual_options ) {
