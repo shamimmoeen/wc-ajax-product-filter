@@ -15,6 +15,10 @@ export function foundProVersion() {
 	return wcapf_admin_params.found_pro || false;
 }
 
+export function showProV2UpgradeNotice() {
+	return wcapf_admin_params.show_pro_v2_upgrade_notice || false;
+}
+
 export function wpVersion() {
 	return parseFloat(wcapf_admin_params.wp);
 }

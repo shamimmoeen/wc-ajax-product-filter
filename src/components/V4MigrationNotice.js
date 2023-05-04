@@ -1,9 +1,10 @@
 import { Button } from '@wordpress/components';
+import { showProV2UpgradeNotice } from './utils';
 
 const showMigrationNotice = wcapf_admin_params.show_v4_migration_notice;
 const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
 const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
-const showProUpgradeNotice = wcapf_admin_params.show_pro_v2_upgrade_notice;
+const showProUpgradeNotice = showProV2UpgradeNotice();
 
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {

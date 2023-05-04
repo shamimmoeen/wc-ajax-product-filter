@@ -25,9 +25,11 @@ import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
 	foundProVersion,
+	showProV2UpgradeNotice,
 } from '../utils';
 import { defaultSettings } from './utils';
 import V4MigrationNotice from '../V4MigrationNotice';
+import ProV2UpgradeModal from '../Modals/ProV2UpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -74,6 +76,15 @@ const Settings = () => {
 	} = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
+	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
+
+	const handleOpenProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(true);
+	};
+
+	const handleCloseProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(false);
+	};
 
 	useEffect(() => {
 		if (!isDirty) {
@@ -168,6 +179,12 @@ const Settings = () => {
 	};
 
 	const handleSaveSettings = () => {
+		if (showProV2UpgradeNotice()) {
+			handleOpenProV2UpgradeModal();
+
+			return;
+		}
+
 		const { isValid, validatedFilterKeys } = validateFilterKeys();
 		const updateFilterKeys = filterKeysChanged ? '1' : '';
 
@@ -279,6 +296,11 @@ const Settings = () => {
 			<TopBar view={'settings'} />
 
 			<V4MigrationNotice />
+
+			<ProV2UpgradeModal
+				isOpen={proV2UpgradeModalOpen}
+				closeModal={handleCloseProV2UpgradeModal}
+			/>
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>
