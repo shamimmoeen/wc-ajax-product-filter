@@ -554,9 +554,9 @@ class WCAPF_V4_Migration {
 
 			if ( 'taxonomy' === $migrated_data['type'] ) {
 				// Set taxonomy.
-				if ( 'category' === $migrated_data['taxonomy'] ) {
+				if ( 'category' === $v3_field_data['type'] ) {
 					$migrated_data['taxonomy'] = 'product_cat';
-				} elseif ( 'tag' === $migrated_data['taxonomy'] ) {
+				} elseif ( 'tag' === $v3_field_data['type'] ) {
 					$migrated_data['taxonomy'] = 'product_tag';
 				}
 
