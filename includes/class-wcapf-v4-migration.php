@@ -664,6 +664,15 @@ class WCAPF_V4_Migration {
 				}
 			}
 
+			// Hide Active filters.
+			if ( 'component' === $migrated_data['type'] && 'active-filters' === $migrated_data['component'] ) {
+				$show_if_empty = $v3_field_data['show_if_empty'];
+
+				if ( ! $show_if_empty ) {
+					$migrated_data['empty_filter_message'] = '';
+				}
+			}
+
 			$migrated_filters[] = $migrated_data;
 		}
 
