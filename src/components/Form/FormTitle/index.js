@@ -13,7 +13,11 @@ import {
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
-import { GENERIC_ERROR_MESSAGE, foundProVersion } from '../../utils';
+import {
+	GENERIC_ERROR_MESSAGE,
+	foundProVersion,
+	showProV2UpgradeNotice,
+} from '../../utils';
 import {
 	getFilterKeyError,
 	filterDefaultData,
@@ -25,6 +29,7 @@ import {
 	proFilterComponents,
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
+import ProV2UpgradeModal from '../../Modals/ProV2UpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -33,6 +38,7 @@ const FormTitle = () => {
 	const { setDirty } = useFormData(state, dispatch);
 
 	const [publishModalOpen, setPublishModalOpen] = useState(false);
+	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const {
@@ -75,6 +81,14 @@ const FormTitle = () => {
 		removeCopiedToClipboardNotice();
 
 		setPublishModalOpen(false);
+	};
+
+	const handleOpenProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(true);
+	};
+
+	const handleCloseProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(false);
 	};
 
 	const formFiltersAreValid = () => {
@@ -452,7 +466,11 @@ const FormTitle = () => {
 
 	const handleSubmit = () => {
 		if (isDirty) {
-			handleSaveForm();
+			if (showProV2UpgradeNotice()) {
+				handleOpenProV2UpgradeModal();
+			} else {
+				handleSaveForm();
+			}
 		} else {
 			handleOpenPublishModal();
 		}
@@ -469,6 +487,11 @@ const FormTitle = () => {
 			<PublishModal
 				isOpen={publishModalOpen}
 				closeModal={handleClosePublishModal}
+			/>
+
+			<ProV2UpgradeModal
+				isOpen={proV2UpgradeModalOpen}
+				closeModal={handleCloseProV2UpgradeModal}
 			/>
 		</>
 	);
