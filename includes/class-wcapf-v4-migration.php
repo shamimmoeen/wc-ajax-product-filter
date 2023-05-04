@@ -488,6 +488,10 @@ class WCAPF_V4_Migration {
 
 		$filter_default_data = $this->filter_default_data();
 
+		$taxonomy_types  = array( 'custom-taxonomy', 'attribute', 'category', 'tag' );
+		$component_types = array( 'reset-button', 'active-filters' );
+		$swatch_types    = array( 'image', 'color' );
+
 		$migrated_filters = array();
 
 		foreach ( $filters as $filter ) {
@@ -519,57 +523,12 @@ class WCAPF_V4_Migration {
 					$value = $filter->post_title;
 				}
 
-				// Migrate taxonomy type.
-				$taxonomy_types = array( 'custom-taxonomy', 'attribute', 'category', 'tag' );
-
+				// Taxonomy type.
 				if ( 'type' === $key && in_array( $value, $taxonomy_types ) ) {
-					if ( 'category' === $value ) {
-						$v3_field_data['taxonomy'] = 'product_cat';
-					} elseif ( 'tag' === $value ) {
-						$v3_field_data['taxonomy'] = 'product_tag';
-					}
-
-					if ( ! empty( $v3_field_data['limit_values_by_id'] ) ) {
-						$v3_field_data['include_terms'] = explode( ',', $v3_field_data['limit_values_by_id'] );
-					}
-
-					if ( ! empty( $v3_field_data['exclude_values_id'] ) ) {
-						$v3_field_data['exclude_terms'] = explode( ',', $v3_field_data['exclude_values_id'] );
-					}
-
-					if ( ! empty( $v3_field_data['custom_appearance_options'] ) ) {
-						$display_type    = $v3_field_data['display_type'];
-						$appearance_data = $v3_field_data['custom_appearance_options'];
-
-						$manual_options = array();
-
-						foreach ( $appearance_data as $id => $data ) {
-							$data = array_merge(
-								$data,
-								array(
-									'id'                      => $id,
-									'swatch'                  => $display_type,
-									'secondary_color_enabled' => '',
-									'secondary_color'         => '',
-								)
-							);
-
-							$manual_options[] = $data;
-						}
-
-						$v3_field_data['manual_options'] = $manual_options;
-					}
-
-					if ( in_array( $v3_field_data['display_type'], array( 'image', 'color' ) ) ) {
-						$v3_field_data['get_options'] = 'manual_entry';
-					}
-
 					$value = 'taxonomy';
 				}
 
 				// Component type.
-				$component_types = array( 'reset-button', 'active-filters' );
-
 				if ( 'type' === $key && in_array( $value, $component_types ) ) {
 					$v3_field_data['component'] = $value;
 
@@ -589,6 +548,118 @@ class WCAPF_V4_Migration {
 				}
 
 				$migrated_data[ $key ] = $value;
+			}
+
+			if ( 'taxonomy' === $migrated_data['type'] ) {
+				// Set taxonomy.
+				if ( 'category' === $migrated_data['taxonomy'] ) {
+					$migrated_data['taxonomy'] = 'product_cat';
+				} elseif ( 'tag' === $migrated_data['taxonomy'] ) {
+					$migrated_data['taxonomy'] = 'product_tag';
+				}
+
+				// Tax hierarchical data.
+				if ( ! empty( $migrated_data['taxonomy'] ) ) {
+					$migrated_data['taxHierarchical'] = is_taxonomy_hierarchical( $migrated_data['taxonomy'] );
+				}
+
+				// Order data.
+				if ( empty( $migrated_data['order_terms_by'] ) ) {
+					$migrated_data['order_terms_by'] = 'default';
+				}
+
+				if ( empty( $migrated_data['order_terms_dir'] ) ) {
+					$migrated_data['order_terms_dir'] = 'asc';
+				}
+
+				// Options data.
+				$include_terms = array();
+				$exclude_terms = array();
+				$parent_term   = 0;
+				$child_terms   = array();
+
+				if ( ! empty( $v3_field_data['limit_values_by_id'] ) ) {
+					$include_terms = explode( ',', $v3_field_data['limit_values_by_id'] );
+
+					$migrated_data['include_terms'] = $include_terms;
+				}
+
+				if ( ! empty( $v3_field_data['exclude_values_id'] ) ) {
+					$exclude_terms = explode( ',', $v3_field_data['exclude_values_id'] );
+
+					$migrated_data['exclude_terms'] = $exclude_terms;
+				}
+
+				if ( ! empty( $v3_field_data['parent_term'] ) ) {
+					$parent_term = absint( $v3_field_data['parent_term'] );
+
+					if ( $parent_term ) {
+						$migrated_data['parent_term'] = $parent_term;
+
+						$children = get_term_children( $parent_term, $migrated_data['taxonomy'] );
+
+						if ( $children ) {
+							$child_terms = $children;
+						}
+					}
+				}
+
+				$limit_by = $migrated_data['limit_options'];
+
+				if ( ! empty( $v3_field_data['custom_appearance_options'] ) ) {
+					$display_type    = $migrated_data['display_type'];
+					$appearance_data = $v3_field_data['custom_appearance_options'];
+
+					$manual_options = array();
+
+					foreach ( $appearance_data as $id => $data ) {
+						$data = array_merge(
+							$data,
+							array(
+								'label'                   => '',
+								'tooltip'                 => '',
+								'value'                   => $id,
+								'swatch'                  => $display_type,
+								'secondary_color_enabled' => '',
+								'secondary_color'         => '',
+							)
+						);
+
+						switch ( $limit_by ) {
+							case 'include':
+								if ( $include_terms && in_array( $id, $include_terms ) ) {
+									$manual_options[] = $data;
+								}
+
+								break;
+
+							case 'exclude':
+								if ( $exclude_terms && ! in_array( $id, $exclude_terms ) ) {
+									$manual_options[] = $data;
+								}
+
+								break;
+
+							case 'child':
+								if ( $parent_term && $child_terms && in_array( $id, $child_terms ) ) {
+									$manual_options[] = $data;
+								}
+
+								break;
+
+							default:
+								$manual_options[] = $data;
+
+								break;
+						}
+					}
+
+					$migrated_data['manual_options'] = $manual_options;
+				}
+
+				if ( in_array( $migrated_data['display_type'], $swatch_types ) ) {
+					$migrated_data['get_options'] = 'manual_entry';
+				}
 			}
 
 			$migrated_filters[] = $migrated_data;
