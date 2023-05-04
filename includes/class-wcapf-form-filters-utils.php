@@ -375,10 +375,12 @@ class WCAPF_Form_Filters_Utils {
 				}
 			} elseif ( in_array( $key, $absint_fields ) ) {
 				$value = absint( $value );
-			} elseif ( in_array( $key, $limit_fields ) && ! $migrate ) {
-				// Pick the ids only.
-				$value = wp_list_pluck( $value, 'value' );
-				$value = array_map( 'sanitize_text_field', $value );
+			} elseif ( in_array( $key, $limit_fields ) ) {
+				if ( ! $migrate ) {
+					// Pick the ids only.
+					$value = wp_list_pluck( $value, 'value' );
+					$value = array_map( 'sanitize_text_field', $value );
+				}
 			} elseif ( in_array( $key, $single_array_fields ) ) {
 				$value = isset( $value['value'] ) ? $value['value'] : '';
 			} elseif ( in_array( $key, $value_may_have_spaces ) ) {
@@ -396,7 +398,9 @@ class WCAPF_Form_Filters_Utils {
 			} elseif ( 'product_status_options' === $key ) {
 				$value = $this->sanitize_product_status_options( $value );
 			} else {
-				$value = sanitize_text_field( $value );
+				if ( ! $migrate ) {
+					$value = sanitize_text_field( $value );
+				}
 			}
 
 			$sanitized_filter[ $key ] = $value;
