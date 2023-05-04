@@ -51,7 +51,7 @@ node_modules export-ignore
 admin/src export-ignore
 public/lib/nouislider/less export-ignore
 public/src export-ignore
-src
+src export-ignore
 
 yarn.lock -diff
 package-lock.json -diff
