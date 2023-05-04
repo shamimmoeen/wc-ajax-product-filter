@@ -483,6 +483,8 @@ class WCAPF_V4_Migration {
 			array(
 				'post_type' => 'wcapf-filter',
 				'nopaging'  => true,
+				'orderby'   => 'ID',
+				'order'     => 'ASC',
 			)
 		);
 
