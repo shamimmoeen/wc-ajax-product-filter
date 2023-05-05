@@ -124,18 +124,18 @@ class WCAPF_Admin {
 			array( $this, 'render_settings' )
 		);
 
-		if ( ! WCAPF_Helper::found_pro_version() ) {
-			$label = __( 'Upgrade to PRO', 'wc-ajax-product-filter' );
-
-			add_submenu_page(
-				'wcapf',
-				__( 'WC Ajax Product Filter - Upgrade to PRO', 'wc-ajax-product-filter' ),
-				'<span style="color: limegreen; font-weight: bold">' . $label . '</span>',
-				'manage_options',
-				'wcapf-upgrade',
-				array( $this, 'render_upgrade_page' )
-			);
-		}
+		// if ( ! WCAPF_Helper::found_pro_version() ) {
+		// 	$label = __( 'Upgrade to PRO', 'wc-ajax-product-filter' );
+		//
+		// 	add_submenu_page(
+		// 		'wcapf',
+		// 		__( 'WC Ajax Product Filter - Upgrade to PRO', 'wc-ajax-product-filter' ),
+		// 		'<span style="color: limegreen; font-weight: bold">' . $label . '</span>',
+		// 		'manage_options',
+		// 		'wcapf-upgrade',
+		// 		array( $this, 'render_upgrade_page' )
+		// 	);
+		// }
 	}
 
 	public function render_form() {
@@ -156,9 +156,9 @@ class WCAPF_Admin {
 		echo '<div id="wcapf-settings-admin-ui"></div>';
 	}
 
-	public function render_upgrade_page() {
-		WCAPF_Template_Loader::get_instance()->load( 'admin/upgrade-to-pro' );
-	}
+	// public function render_upgrade_page() {
+	// 	WCAPF_Template_Loader::get_instance()->load( 'admin/upgrade-to-pro' );
+	// }
 
 	/**
 	 * Modify the label of custom admin menu.
