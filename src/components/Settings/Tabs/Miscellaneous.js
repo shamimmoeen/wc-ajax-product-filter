@@ -33,7 +33,7 @@ const Miscellaneous = () => {
 				id={'disable_wcapf'}
 				label={__('Disable WCAPF', 'wc-ajax-product-filter')}
 				description={__(
-					'Check this to disable <b>WC Ajax Product Filter</b> on the front-end for testing purposes.',
+					'Check this to disable <b>WC Ajax Product Filter</b> in the front end for testing purposes.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={disable_wcapf}

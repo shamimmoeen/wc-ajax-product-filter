@@ -67,7 +67,7 @@ const ValueTypeNumber = ({ index }) => {
 				index={index}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines how the filter will be shown on the frontend.',
+					'Determines how the filter will be shown in the front end.',
 					'wc-ajax-product-filter'
 				)}
 				options={options}
@@ -89,7 +89,7 @@ const ValueTypeNumber = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Determines how the slider values will be shown on the frontend.',
+						'Determines how the slider values will be shown in the front end.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
