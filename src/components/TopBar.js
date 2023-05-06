@@ -51,7 +51,11 @@ const TopBar = ({ view }) => {
 
 			<div className='__cta'>
 				{!foundProVersion() && (
-					<a href={upgradeToProLink()} className='__upgrade_btn'>
+					<a
+						target='_blank'
+						href={upgradeToProLink()}
+						className='__upgrade_btn'
+					>
 						<Icon icon={DiamondIcon} size={18} />
 						{__('Upgrade to PRO', 'wc-ajax-product-filter')}
 					</a>

@@ -16,6 +16,15 @@ const question = __(
 	'wc-ajax-product-filter'
 );
 
+const documentationURL =
+	'https://wptools.io/docs/wc-ajax-product-filter/?utm_source=WP+Admin&utm_medium=inside+plugin&utm_campaign=WCAPF+Documentation';
+const demoURL =
+	'https://demos.wptools.io/wc-ajax-product-filter/?utm_source=WP+Admin&utm_medium=inside+plugin&utm_campaign=WCAPF+Demo';
+const wpSupportURL =
+	'https://wordpress.org/support/plugin/wc-ajax-product-filter/';
+const supportURL =
+	'https://wptools.io/support/?utm_source=WP+Admin&utm_medium=inside+plugin&utm_campaign=WCAPF+Support';
+
 const Sidebar = () => {
 	return (
 		<div className='__sidebar'>
@@ -26,10 +35,18 @@ const Sidebar = () => {
 				<CardBody>
 					<p dangerouslySetInnerHTML={{ __html: documentation }} />
 					<div className='__buttons'>
-						<Button variant='secondary'>
+						<Button
+							variant='secondary'
+							href={documentationURL}
+							target='_blank'
+						>
 							{__('To Documentation', 'wc-ajax-product-filter')}
 						</Button>
-						<Button variant='secondary'>
+						<Button
+							variant='secondary'
+							href={demoURL}
+							target='_blank'
+						>
 							{__('View Demos', 'wc-ajax-product-filter')}
 						</Button>
 					</div>
@@ -42,7 +59,11 @@ const Sidebar = () => {
 				</CardHeader>
 				<CardBody>
 					<p dangerouslySetInnerHTML={{ __html: support }} />
-					<Button variant='secondary'>
+					<Button
+						variant='secondary'
+						href={wpSupportURL}
+						target='_blank'
+					>
 						{__('To Support', 'wc-ajax-product-filter')}
 					</Button>
 				</CardBody>
@@ -54,7 +75,11 @@ const Sidebar = () => {
 				</CardHeader>
 				<CardBody>
 					<p dangerouslySetInnerHTML={{ __html: question }} />
-					<Button variant='secondary'>
+					<Button
+						variant='secondary'
+						href={supportURL}
+						target='_blank'
+					>
 						{__('Ask Us', 'wc-ajax-product-filter')}
 					</Button>
 				</CardBody>
