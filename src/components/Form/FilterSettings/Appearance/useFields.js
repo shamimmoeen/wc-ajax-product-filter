@@ -116,7 +116,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Layout', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines the layout of the filter options on the frontend.',
+						'Determines the layout of the filter options in the front end.',
 						'wc-ajax-product-filter'
 					)}
 					options={availableLayouts}

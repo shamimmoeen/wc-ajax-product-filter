@@ -60,7 +60,7 @@ const Others = () => {
 
 			<p className='__description'>
 				{__(
-					'Here you can change the phrases shown on the front-end. Leave empty to use the default.',
+					'Here you can change the phrases shown in the front end. Leave empty to use the default.',
 					'wc-ajax-product-filter'
 				)}
 			</p>

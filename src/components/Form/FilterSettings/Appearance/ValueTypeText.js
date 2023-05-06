@@ -88,12 +88,12 @@ const ValueTypeText = ({ index }) => {
 
 		if (swatchDisplayTypes.includes(display_type)) {
 			description = __(
-				'Determines the type of filter options on the frontend. <b>Note:</b> For color/image swatch, you need to manually enter the filter options and set the swatch data.',
+				'Determines the display type of filter options in the front end. <b>Note:</b> For color/image swatch, you need to manually enter the filter options and set the swatch data.',
 				'wc-ajax-product-filter'
 			);
 		} else {
 			description = __(
-				'Determines the type of filter options on the frontend.',
+				'Determines the display type of filter options in the front end.',
 				'wc-ajax-product-filter'
 			);
 		}

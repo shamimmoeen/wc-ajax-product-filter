@@ -58,7 +58,7 @@ const FormSettings = () => {
 					id={'priority'}
 					label={__('Priority', 'wc-ajax-product-filter')}
 					description={__(
-						'Form with higher priority will be shown first when multiple forms are found in a page.',
+						'Forms with higher priority will be shown first when multiple forms are found on a page.',
 						'wc-ajax-product-filter'
 					)}
 					value={priority ? priority : 0}
