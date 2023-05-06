@@ -83,7 +83,7 @@ export function getSettingsPageLink() {
 }
 
 export function upgradeToProLink() {
-	return wcapf_admin_params.upgrade_page_link;
+	return 'https://wptools.io/wc-ajax-product-filter/?utm_source=WCAPF+Free&utm_medium=inside+plugin&utm_campaign=WCAPF+Pro+Upgrade';
 }
 
 export function slugify(value) {

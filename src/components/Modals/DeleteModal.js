@@ -34,7 +34,11 @@ const DeleteModal = ({ isOpen, closeModal, deleteItem, postType }) => {
 						<Button variant='secondary' onClick={closeModal}>
 							{__('No', 'wc-ajax-product-filter')}
 						</Button>
-						<Button variant='primary' onClick={deleteItem}>
+						<Button
+							variant='primary'
+							onClick={deleteItem}
+							autoFocus
+						>
 							{__('Yes', 'wc-ajax-product-filter')}
 						</Button>
 					</div>
