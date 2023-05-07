@@ -81,7 +81,7 @@ const ValueTypeNumber = ({ index }) => {
 						id={'auto_detect_min_max'}
 						index={index}
 						label={__(
-							'Auto detect Min and Max',
+							'Auto-detect min and max',
 							'wc-ajax-product-filter'
 						)}
 						description={__(
