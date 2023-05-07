@@ -307,7 +307,7 @@ const Advanced = ({ index }) => {
 				<Number
 					id={'max_height'}
 					index={index}
-					label={__('Filter max height', 'wc-ajax-product-filter	')}
+					label={__('Filter max-height', 'wc-ajax-product-filter	')}
 					description={__(
 						'Set the filter container max height in px.',
 						'wc-ajax-product-filter	'
