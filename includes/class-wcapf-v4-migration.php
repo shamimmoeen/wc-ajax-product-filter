@@ -562,7 +562,13 @@ class WCAPF_V4_Migration {
 
 				// Tax hierarchical data.
 				if ( ! empty( $migrated_data['taxonomy'] ) ) {
-					$migrated_data['taxHierarchical'] = is_taxonomy_hierarchical( $migrated_data['taxonomy'] );
+					$hierarchical = '';
+
+					if ( is_taxonomy_hierarchical( $migrated_data['taxonomy'] ) ) {
+						$hierarchical = '1';
+					}
+
+					$migrated_data['taxHierarchical'] = $hierarchical;
 				}
 
 				// Order data.
