@@ -131,7 +131,7 @@ const ValueTypeDate = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Whether to show the month dropdown in datepicker.',
+						'Whether to show the month dropdown in the date picker.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={date_picker_month_dropdown}
@@ -155,7 +155,7 @@ const ValueTypeDate = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Whether to show the year dropdown in datepicker.',
+						'Whether to show the year dropdown in the date picker.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={date_picker_year_dropdown}
