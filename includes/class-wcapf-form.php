@@ -123,23 +123,24 @@ class WCAPF_Form {
 	 * @return void
 	 */
 	private function render_active_filters( $field_instance ) {
-		$title           = $field_instance->get_sub_field_value( 'title' );
-		$show_title      = $field_instance->get_sub_field_value( 'show_title' );
-		$layout          = $field_instance->get_sub_field_value( 'active_filters_layout' );
-		$empty_message   = $field_instance->get_sub_field_value( 'empty_filter_message' );
-		$show_clear_btn  = $field_instance->get_sub_field_value( 'show_clear_btn' );
-		$clear_btn_label = WCAPF_Helper::clear_all_button_label();
+		$title            = $field_instance->get_sub_field_value( 'title' );
+		$show_title       = $field_instance->get_sub_field_value( 'show_title' );
+		$layout           = $field_instance->get_sub_field_value( 'active_filters_layout' );
+		$empty_message    = $field_instance->get_sub_field_value( 'empty_filter_message' );
+		$show_clear_btn   = $field_instance->get_sub_field_value( 'show_clear_btn' );
+		$clear_btn_label  = WCAPF_Helper::clear_all_button_label();
+		$clear_btn_layout = $field_instance->get_sub_field_value( 'clear_all_btn_layout' );
 
 		WCAPF_Template_Loader::get_instance()->load(
 			'active-filters',
 			array(
-				'location'            => 'inside-form',
-				'title'               => $title,
-				'show_title'          => $show_title,
-				'layout'              => $layout,
-				'empty_message'       => $empty_message,
-				'show_clear_btn'      => $show_clear_btn,
-				'clear_all_btn_label' => $clear_btn_label,
+				'title'                => $title,
+				'show_title'           => $show_title,
+				'layout'               => $layout,
+				'empty_message'        => $empty_message,
+				'show_clear_btn'       => $show_clear_btn,
+				'clear_all_btn_label'  => $clear_btn_label,
+				'clear_all_btn_layout' => $clear_btn_layout,
 			)
 		);
 	}

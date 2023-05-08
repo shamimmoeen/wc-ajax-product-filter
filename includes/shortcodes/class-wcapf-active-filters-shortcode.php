@@ -23,12 +23,11 @@ class WCAPF_Active_Filters_Shortcode {
 
 	public function shortcode_output( $attrs = array() ) {
 		$a = shortcode_atts( array(
-			'title'               => '',
-			'show_title'          => '1',
-			'layout'              => 'simple',
-			'empty_message'       => '',
-			'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
-			'location'            => 'inside-form',
+			'title'                => __( 'Active Filters', 'wc-ajax-product-filter' ),
+			'layout'               => 'simple',
+			'empty_message'        => '',
+			'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
+			'clear_all_btn_layout' => 'block',
 		), $attrs );
 
 		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $a, false );
