@@ -321,12 +321,14 @@ class WCAPF_Hooks {
 			$active_filters_on_top_args = apply_filters(
 				'wcapf_active_filters_on_top_args',
 				array(
-					'location'            => 'before-products',
-					'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
+					'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
+					'clear_all_btn_layout' => 'inline',
 				)
 			);
 
+			echo '<div class="wcapf-active-filters-before-shop-loop">';
 			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $active_filters_on_top_args );
+			echo '</div>';
 		}
 	}
 
