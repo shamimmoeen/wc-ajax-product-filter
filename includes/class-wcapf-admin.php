@@ -512,9 +512,10 @@ class WCAPF_Admin {
 				<strong>WC Ajax Product Filter - V4 Migration Notice</strong>
 			</p>
 			<p>
-				The plugin has been upgraded to v4. We have improved the backend and refactored the codes. As a
-				migration process, a form has been created automatically with all the existing filters of your shop. You
-				are requested to check the order of filters by visiting the form.
+				The plugin has been upgraded to v4. We have changed the admin UI and refactored the codes for better
+				performance and easier future improvements. As a migration process, a form has been created
+				automatically with all the existing filters of your shop. You are requested to check the order of
+				filters by visiting the form.
 			</p>
 			<p>
 				<a href="<?php echo esc_url( $form_url ); ?>">Check the order of filters</a>

@@ -146,7 +146,7 @@ const Text = ({
 											<br />
 											<br />
 											Default is "No results for:". For a
-											keyword "purple" the text will be
+											keyword "purple", the text will be
 											"No results for: <u>purple</u>"
 										</>
 									}
@@ -172,7 +172,7 @@ const Text = ({
 								<TippyTooltip
 									content={
 										<>
-											Applicable when there is no options
+											Applicable when there are no options
 											to filter by or the filter is empty.
 											<br />
 											<br />
@@ -211,10 +211,8 @@ const Text = ({
 											<br />
 											<br />
 											Default is "Sort by:". For a value
-											"Title" it becomes
-											<br />
-											"Sort by: Title" in the active
-											filters.
+											"Title", it becomes "Sort by: Title"
+											in the active filters.
 										</>
 									}
 								/>
@@ -230,10 +228,8 @@ const Text = ({
 											<br />
 											<br />
 											Default is "Per page:". For a value
-											"15" it becomes
-											<br />
-											"Per page: 15" in the active
-											filters.
+											of "15", it becomes "Per page: 15"
+											in the active filters.
 										</>
 									}
 								/>

@@ -196,7 +196,7 @@ const LoaderScrollTo = () => {
 					id={'loading_icon'}
 					label={__('Loading Icon', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the loading icon from available icons.',
+						'Select the loading icon from the available icons.',
 						'wc-ajax-product-filter'
 					)}
 					value={loadingIcon}
@@ -293,7 +293,7 @@ const LoaderScrollTo = () => {
 							id={'scroll_on'}
 							label={__('Scroll on', 'wc-ajax-product-filter')}
 							description={__(
-								'Determines when to scroll on.',
+								'Determines the event in which we scroll the window.',
 								'wc-ajax-product-filter'
 							)}
 							value={scrollOn}
