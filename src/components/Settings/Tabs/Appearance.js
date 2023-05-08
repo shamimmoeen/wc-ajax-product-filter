@@ -215,7 +215,7 @@ const Appearance = () => {
 			<Checkbox
 				id={'hierarchy_toggle_at_end'}
 				label={__(
-					'Hierarchy toggle at end',
+					'Hierarchy toggle at the end',
 					'wc-ajax-product-filter'
 				)}
 				description={__(

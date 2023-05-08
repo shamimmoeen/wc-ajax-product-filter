@@ -84,7 +84,7 @@ const General = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Determines what do we do with the options with zero products.',
+					'Determines what we do with the options with zero products.',
 					'wc-ajax-product-filter'
 				)}
 				options={removeEmptyOptions}
@@ -108,7 +108,7 @@ const General = () => {
 				id={'disable_ajax'}
 				label={__('Disable Ajax', 'wc-ajax-product-filter')}
 				description={__(
-					'Enable this if you want to disable filtering via ajax.',
+					'Enable this if you want to disable filtering via Ajax.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={disable_ajax}
