@@ -28,9 +28,8 @@ class WCAPF_Active_Filters_Shortcode {
 			'layout'              => 'simple',
 			'empty_message'       => '',
 			'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
+			'location'            => 'inside-form',
 		), $attrs );
-
-		$a['location'] = 'before-products';
 
 		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $a, false );
 	}
