@@ -62,12 +62,12 @@ const General = ({ index }) => {
 
 	if (id) {
 		typeDisabledInfo = __(
-			'Filter type can not be changed after it is saved. But you can permanently delete the filter and add a new one.',
+			'Filter type can not be changed once it is saved. But you can permanently delete the filter and add a new one.',
 			'wc-ajax-product-filter'
 		);
 
 		filterKeyDisabledInfo = __(
-			'Filter key can not be changed after it is saved. But you can change the filter keys globally from "Settings > Filter Keys" tab.',
+			'Once a filter key is set, you can not change it from the filter. But you can change the filter keys globally from "Settings > Filter Keys" tab.',
 			'wc-ajax-product-filter'
 		);
 	}
@@ -123,7 +123,7 @@ const General = ({ index }) => {
 					index={index}
 					label={__('Filter Title', 'wc-ajax-product-filter')}
 					description={__(
-						'Give a title to the filter which will appear before the filter options.',
+						'Give a title to the filter that will appear before the filter options.',
 						'wc-ajax-product-filter'
 					)}
 					value={title}
@@ -143,7 +143,7 @@ const General = ({ index }) => {
 				index={index}
 				label={__('Filter Type', 'wc-ajax-product-filter')}
 				description={__(
-					'Select the filter type by which you want to filter the products.',
+					'Determines the type of entity by which the products will be filtered.',
 					'wc-ajax-product-filter'
 				)}
 				options={filterTypes}

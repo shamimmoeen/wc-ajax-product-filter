@@ -41,7 +41,7 @@ const V4MigrationNotice = () => {
 							href={migrationDocUrl}
 							target='_blank'
 						>
-							Learn more about upgrade
+							Learn more about migration
 						</Button>{' '}
 						|{' '}
 						<Button variant='link' onClick={handleDismissNotice}>
