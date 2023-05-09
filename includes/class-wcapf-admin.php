@@ -405,13 +405,17 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 *
-	 * TODO: Update the v4 migration documentation url.
-	 *
 	 * @return string
 	 */
 	public function get_v4_migration_doc_url() {
-		return '';
+		return add_query_arg(
+			array(
+				'utm_source'   => 'WP+Admin',
+				'utm_medium'   => 'inside+plugin',
+				'utm_campaign' => 'WCAPF+V4+Migration',
+			),
+			'https://wptools.io/docs/wc-ajax-product-filter/v3-to-v4-migration/'
+		);
 	}
 
 	/**
@@ -520,7 +524,7 @@ class WCAPF_Admin {
 			<p>
 				<a href="<?php echo esc_url( $form_url ); ?>">Check the order of filters</a>
 				|
-				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank">Learn more about upgrade</a>
+				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank">Learn more about migration</a>
 				|
 				<a href="javascript:void(0)" onclick="removeWCAPFMigrationNotice()">I understand, remove
 					the notice</a>

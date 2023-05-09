@@ -243,7 +243,7 @@ const LoaderScrollTo = () => {
 				<ColorInput
 					label={__('Overlay Color', 'wc-ajax-product-filter')}
 					description={__(
-						'Adjust the loading overlay color. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.',
+						'Adjust the loading overlay color. Default is #FFFFFFCC. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.',
 						'wc-ajax-product-filter'
 					)}
 					value={loading_overlay_color}
