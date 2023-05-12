@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import { getInputId, proTag } from '../utils';
+import TippyTooltip from '../TippyTooltip';
 
 const Radio = ({
 	label,
@@ -10,6 +11,7 @@ const Radio = ({
 	isVertical,
 	onChange,
 	description,
+	tooltip,
 	isPro,
 }) => {
 	return (
@@ -19,6 +21,7 @@ const Radio = ({
 					<label>
 						{label}
 						{proTag(isPro)}
+						{tooltip && <TippyTooltip content={tooltip} />}
 					</label>
 				</div>
 				<div

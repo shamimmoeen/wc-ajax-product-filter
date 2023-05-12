@@ -211,7 +211,11 @@ const FormTitle = () => {
 		filters.forEach((filter) => {
 			const proData = [
 				'grid_columns',
-				'swatch_with_text',
+				'enable_swatch',
+				'swatch_type',
+				'auto_swatch_data',
+				'swatch_with_input',
+				'swatch_with_label',
 				'get_options',
 				'manual_options',
 				'parent_term',
