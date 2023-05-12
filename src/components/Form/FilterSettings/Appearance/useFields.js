@@ -30,7 +30,6 @@ const useFields = (type, index) => {
 		native_display_type_layout,
 		custom_display_type_layout,
 		grid_columns,
-		swatch_with_text,
 		enable_multiple_filter,
 		enable_tooltip,
 		tooltip_position,
@@ -75,13 +74,7 @@ const useFields = (type, index) => {
 				},
 			];
 		} else if (
-			[
-				'label',
-				'color',
-				'image',
-				'range_label',
-				'time_period_label',
-			].includes(displayType)
+			['label', 'range_label', 'time_period_label'].includes(displayType)
 		) {
 			_displayType = custom_display_type_layout;
 			id = 'custom_display_type_layout';
@@ -106,8 +99,6 @@ const useFields = (type, index) => {
 		const filterLayout = availableLayouts.find(
 			(option) => _displayType === option.value
 		);
-
-		const swatchDisplayTypes = ['color', 'image'];
 
 		return (
 			<>
@@ -137,21 +128,7 @@ const useFields = (type, index) => {
 						value={grid_columns}
 						onChange={handleTextFieldChange}
 						min={1}
-						max={16}
-					/>
-				)}
-
-				{swatchDisplayTypes.includes(displayType) && (
-					<Checkbox
-						id={'swatch_with_text'}
-						index={index}
-						label={__('Show text', 'wc-ajax-product-filter')}
-						description={__(
-							'Enable this to show the option text beside the swatch.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={swatch_with_text}
-						onChange={handleCheckboxChange}
+						max={12} // TODO: Check with doc.
 					/>
 				)}
 			</>

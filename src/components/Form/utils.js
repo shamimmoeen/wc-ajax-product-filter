@@ -377,7 +377,6 @@ export function filterDefaultData() {
 		native_display_type_layout: 'list-item',
 		custom_display_type_layout: 'inline',
 		grid_columns: '2',
-		swatch_with_text: '',
 		query_type: 'or',
 		all_items_label: '',
 		enable_multiple_filter: '1',
@@ -398,6 +397,12 @@ export function filterDefaultData() {
 		exclude_child: '',
 		parent_term: '',
 		direct_child_only: '',
+		// Swatch Data
+		enable_swatch: '',
+		swatch_type: 'color',
+		auto_swatch_data: '',
+		swatch_with_input: '1',
+		swatch_with_label: '1',
 		// Price Filter
 		number_display_type: 'range_slider',
 		number_range_slider_display_values_as: 'input_field',
@@ -497,7 +502,11 @@ export function filterTypeDependentFields() {
 		'native_display_type_layout',
 		'custom_display_type_layout',
 		'grid_columns',
-		'swatch_with_text',
+		'enable_swatch',
+		'swatch_type',
+		'auto_swatch_data',
+		'swatch_with_input',
+		'swatch_with_label',
 		// Taxonomy
 		'get_options',
 		'order_terms_by',
@@ -791,23 +800,14 @@ const textFreeDisplayTypes = [
 ];
 
 function textProDisplayTypes(taxHierarchical = false) {
-	const textProDisplayTypes = [
-		{
-			label: __('Color Swatch', 'wc-ajax-product-filter'),
-			value: 'color',
-		},
-		{
-			label: __('Image Swatch', 'wc-ajax-product-filter'),
-			value: 'image',
-		},
-	];
+	const textProDisplayTypes = [];
 
-	// if (taxHierarchical) {
-	// 	textProDisplayTypes.push({
-	// 		label: __('Hierarchy Select', 'wc-ajax-product-filter'),
-	// 		value: 'hierarchy-select',
-	// 	});
-	// }
+	if (taxHierarchical) {
+		// textProDisplayTypes.push({
+		// 	label: __('Hierarchy Select', 'wc-ajax-product-filter'),
+		// 	value: 'hierarchy-select',
+		// });
+	}
 
 	return textProDisplayTypes;
 }
@@ -816,14 +816,6 @@ export function taxonomyDisplayTypes(withPro = false, taxHierarchical = false) {
 	return mergeSelectOptions(
 		textFreeDisplayTypes,
 		textProDisplayTypes(taxHierarchical),
-		withPro
-	);
-}
-
-export function postMetaDisplayTypes(withPro = false) {
-	return mergeSelectOptions(
-		textFreeDisplayTypes,
-		textProDisplayTypes(),
 		withPro
 	);
 }
