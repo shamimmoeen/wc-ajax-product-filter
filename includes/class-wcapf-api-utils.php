@@ -469,7 +469,7 @@ class WCAPF_API_Utils {
 		$settings = WCAPF_Helper::get_settings();
 
 		// Send the author roles with labels.
-		if ( $settings['author_roles'] ) {
+		if ( ! empty ( $settings['author_roles'] ) ) {
 			$array       = WCAPF_Product_Filter_Utils::get_user_roles();
 			$with_labels = array();
 
