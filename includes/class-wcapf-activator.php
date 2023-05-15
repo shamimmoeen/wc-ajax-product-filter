@@ -20,17 +20,14 @@ class WCAPF_Activator {
 		$settings_option_key   = 'wcapf_settings';
 		$db_version_option_key = 'wcapf_db_version';
 
-		// If any records for v3 exist, bail out as we will process the migration from other places.
+		// If any records for v3 exist, we'll do the migration.
 		if ( get_option( $settings_option_key ) && ! get_option( $db_version_option_key ) ) {
+			WCAPF_V4_Migration()->try_to_run_v4_migration();
+
 			return;
 		}
 
-		// Loads the required class.
-		if ( ! function_exists( 'WCAPF_V4_Migration' ) ) {
-			require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-v4-migration.php';
-		}
-
-		// Update the default settings.
+		// Initialize the default settings.
 		$default_settings  = WCAPF_V4_Migration()->default_settings();
 		$existing_settings = get_option( $settings_option_key, array() );
 
