@@ -291,12 +291,12 @@ class WCAPF_Field_Instance {
 		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) ) {
 			$value = $this->get_sub_field_value( 'native_display_type_layout' );
 
-			return ! empty( $value ) ? $value : 'list-item';
+			return ! empty( $value ) ? $value : 'list';
 		} else {
 			$value = $this->get_sub_field_value( 'custom_display_type_layout' );
 
-			// Disable list-item layout for custom list types.
-			return ! empty( $value ) && 'list-item' !== $value ? $value : 'inline';
+			// Disable list layout for custom list types.
+			return ! empty( $value ) && 'list' !== $value ? $value : 'inline';
 		}
 	}
 
@@ -350,7 +350,7 @@ class WCAPF_Field_Instance {
 		}
 
 		// Disable hierarchy for inline and grid layout.
-		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list-item' !== $this->layout ) {
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list' !== $this->layout ) {
 			return false;
 		}
 

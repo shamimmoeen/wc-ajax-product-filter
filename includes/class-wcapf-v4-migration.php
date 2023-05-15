@@ -202,7 +202,7 @@ class WCAPF_V4_Migration {
 			'field_key'                             => '',
 			// Taxonomy
 			'display_type'                          => 'checkbox',
-			'native_display_type_layout'            => 'list-item',
+			'native_display_type_layout'            => 'list',
 			'custom_display_type_layout'            => 'inline',
 			'grid_columns'                          => '2',
 			'query_type'                            => 'or',
@@ -229,7 +229,6 @@ class WCAPF_V4_Migration {
 			'enable_swatch'                         => '',
 			'swatch_type'                           => 'color',
 			'auto_swatch_data'                      => '',
-			'swatch_with_input'                     => '1',
 			'swatch_with_label'                     => '1',
 			// Price Filter
 			'number_display_type'                   => 'range_slider',
@@ -423,7 +422,7 @@ class WCAPF_V4_Migration {
 			'improve_native_select'            => '1',
 			'improve_scrollbar'                => '1',
 			'improve_input_type_text_number'   => '1',
-			'hierarchy_toggle_at_end'          => '1',
+			'hierarchy_toggle_at_end'          => '',
 			'number_range_slider_style'        => 'style-1',
 			'label_size'                       => 'fixed',
 			'active_label_style'               => 'primary',

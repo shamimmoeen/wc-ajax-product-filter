@@ -45,7 +45,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 
 	const { type: filterType } = filter;
 
-	const { display_type, enable_tooltip } = filter;
+	const { swatch_type, enable_tooltip } = filter;
 
 	const { type, optionsKey } = getTableData(filterType, filter);
 
@@ -400,7 +400,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 			image_url,
 		} = row;
 
-		const currentSwatch = swatch ? swatch : display_type;
+		const currentSwatch = swatch ? swatch : swatch_type;
 
 		const swatchButtons = () => {
 			if ('color' === currentSwatch) {

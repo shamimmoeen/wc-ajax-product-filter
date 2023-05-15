@@ -9,8 +9,13 @@
 	margin: 0 0 var(--wcapf-filter-base-bottom-margin);
 }
 
+/*
+ * Fix the height issue caused by negative margin of child element by applying display: inline-block; width: 100%.
+ */
 .wcapf-filter-title ~ .wcapf-filter-inner > div {
+	display: inline-block;
 	padding-top: var(--wcapf-filter-title-margin-bottom);
+	width: 100%;
 }
 
 .wcapf-filter .wcapf-list-wrapper {
@@ -39,7 +44,7 @@
 /**
  * Hierarchy Nav List
  */
-.wcapf-filter .wcapf-list-wrapper.layout-list-item {
+.wcapf-filter .wcapf-list-wrapper.layout-list {
 	> ul.wcapf-filter-options {
 		margin-bottom: calc(var(--wcapf-filter-item-vertical-spacing) * -1);
 	}
@@ -132,19 +137,31 @@
 	--wcapf-filter-item-horizontal-spacing: var(--wcapf-list-type-native-horizontal-spacing);
 }
 
-.wcapf-filter .wcapf-list-wrapper.layout-list-item {
+.wcapf-filter .wcapf-list-wrapper.layout-list {
 	.wcapf-filter-item {
 		display: flex;
 	}
 }
 
+/*
+ * Fix layout issue when showing the filter options inline by showing the filter options inline using float,
+ * applying flex to list wrapper.
+ */
 .wcapf-filter .wcapf-list-wrapper.layout-inline {
+	display: flex;
+
 	ul.wcapf-filter-options {
 		margin-bottom: calc(var(--wcapf-filter-item-vertical-spacing) * -1);
+
+		&::after {
+			clear: both;
+			content: '';
+			display: table;
+		}
 	}
 
 	li.wcapf-filter-option {
-		display: inline-flex;
+		float: left;
 
 		@include ltr {
 			margin: 0 var(--wcapf-filter-item-horizontal-spacing) var(--wcapf-filter-item-vertical-spacing) 0;
@@ -165,6 +182,7 @@
 	--wcapf-labeled-nav-vr-padding: 3px;
 }
 
+// TODO: We need to apply the design by specifying 'label-style-1' class.
 .wcapf-filter .wcapf-list-wrapper.display-type-label {
 	.wcapf-filter-item {
 		label {
@@ -259,7 +277,7 @@
 	}
 }
 
-.wcapf-list-wrapper:not(.swatch-without-text) {
+.wcapf-list-wrapper:not(.count-badge) {
 	.wcapf-nav-item-count {
 		opacity: var(--wcapf-filter-count-opacity);
 

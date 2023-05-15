@@ -6,6 +6,7 @@ import useFields from './useFields';
 import {
 	hierarchicalDisplayTypes,
 	sortByDisplayTypes,
+	swatchDisplayTypes,
 	taxonomyDisplayTypes,
 	textDisplayTypes,
 } from '../../utils';
@@ -49,7 +50,6 @@ const ValueTypeText = ({ index }) => {
 		enable_swatch,
 		swatch_type,
 		auto_swatch_data,
-		swatch_with_input,
 		swatch_with_label,
 	} = filter;
 
@@ -109,7 +109,7 @@ const ValueTypeText = ({ index }) => {
 		if (
 			'1' === taxHierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
-			'list-item' === native_display_type_layout
+			'list' === native_display_type_layout
 		) {
 			return (
 				<Checkbox
@@ -132,7 +132,7 @@ const ValueTypeText = ({ index }) => {
 			'1' === taxHierarchical &&
 			'1' === hierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
-			'list-item' === native_display_type_layout &&
+			'list' === native_display_type_layout &&
 			!['select', 'multi-select'].includes(display_type)
 		) {
 			return (
@@ -155,7 +155,7 @@ const ValueTypeText = ({ index }) => {
 	};
 
 	const swatchFields = () => {
-		if (!['checkbox', 'radio'].includes(display_type)) {
+		if (!swatchDisplayTypes().includes(display_type)) {
 			return;
 		}
 
@@ -228,25 +228,10 @@ const ValueTypeText = ({ index }) => {
 						/>
 
 						<Checkbox
-							id={'swatch_with_input'}
-							index={index}
-							label={__(
-								'Show with input',
-								'wc-ajax-product-filter'
-							)}
-							description={__(
-								'Enable this to show swatches with checkbox and radio buttons. For radio buttons, you will see the <b>All Items</b> option.',
-								'wc-ajax-product-filter'
-							)}
-							isChecked={swatch_with_input}
-							onChange={handleCheckboxChange}
-						/>
-
-						<Checkbox
 							id={'swatch_with_label'}
 							index={index}
 							label={__(
-								'Show with label',
+								'Swatch with label',
 								'wc-ajax-product-filter'
 							)}
 							description={__(

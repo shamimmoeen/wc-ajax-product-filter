@@ -374,7 +374,7 @@ export function filterDefaultData() {
 		field_key: '',
 		// Taxonomy
 		display_type: 'checkbox',
-		native_display_type_layout: 'list-item',
+		native_display_type_layout: 'list',
 		custom_display_type_layout: 'inline',
 		grid_columns: '2',
 		query_type: 'or',
@@ -401,7 +401,6 @@ export function filterDefaultData() {
 		enable_swatch: '',
 		swatch_type: 'color',
 		auto_swatch_data: '',
-		swatch_with_input: '1',
 		swatch_with_label: '1',
 		// Price Filter
 		number_display_type: 'range_slider',
@@ -505,7 +504,6 @@ export function filterTypeDependentFields() {
 		'enable_swatch',
 		'swatch_type',
 		'auto_swatch_data',
-		'swatch_with_input',
 		'swatch_with_label',
 		// Taxonomy
 		'get_options',
@@ -1028,16 +1026,17 @@ export function tooltipCanBeEnabled(filter) {
 	return enabled;
 }
 
+export function swatchDisplayTypes() {
+	// TODO: Enable swatches for 'select' and 'multi-select' display types.
+	return ['checkbox', 'radio', 'label'];
+}
+
 export function swatchCanBeEnabled(filter) {
-	const { type, value_type, display_type } = filter;
+	const { type, display_type, enable_swatch } = filter;
 
 	if ('taxonomy' === type) {
-		if ('color' === display_type || 'image' === display_type) {
-			return true;
-		}
-	} else if ('post-meta' === type) {
-		if ('text' === value_type) {
-			if ('color' === display_type || 'image' === display_type) {
+		if (swatchDisplayTypes().includes(display_type)) {
+			if ('1' === enable_swatch) {
 				return true;
 			}
 		}

@@ -214,7 +214,6 @@ const FormTitle = () => {
 				'enable_swatch',
 				'swatch_type',
 				'auto_swatch_data',
-				'swatch_with_input',
 				'swatch_with_label',
 				'get_options',
 				'manual_options',
