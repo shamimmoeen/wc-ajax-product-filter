@@ -143,7 +143,7 @@ const General = ({ index }) => {
 				index={index}
 				label={__('Filter Type', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines the type of entity by which the products will be filtered.',
+					'Determines the entity by which the products will be filtered.',
 					'wc-ajax-product-filter'
 				)}
 				options={filterTypes}

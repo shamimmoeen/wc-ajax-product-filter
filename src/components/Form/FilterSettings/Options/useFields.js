@@ -36,7 +36,7 @@ const useFields = (index) => {
 				index={index}
 				label={__('Get Options', 'wc-ajax-product-filter')}
 				description={__(
-					'Whether to get the options automatically or you want to add the options manually.'
+					'Determines whether you want the options to be obtained automatically or if you prefer to add them manually.'
 				)}
 				options={methodsOfGettingOptions()}
 				value={filter[id]}
@@ -81,7 +81,7 @@ const useFields = (index) => {
 				index={index}
 				label={__('Order By', 'wc-ajax-product-filter')}
 				description={__(
-					'Field to order options by.',
+					'Select the criteria by which you want the items to be ordered.',
 					'wc-ajax-product-filter'
 				)}
 				options={options}

@@ -228,7 +228,6 @@ class WCAPF_V4_Migration {
 			// Swatch Data
 			'enable_swatch'                         => '',
 			'swatch_type'                           => 'color',
-			'auto_swatch_data'                      => '',
 			'swatch_with_label'                     => '1',
 			// Price Filter
 			'number_display_type'                   => 'range_slider',
@@ -429,10 +428,6 @@ class WCAPF_V4_Migration {
 			'star_icon_color'                  => '#fda256',
 			'rating_star_use_fontawesome'      => '',
 			'remove_focus_style'               => '',
-			'color_swatch_width'               => '',
-			'color_swatch_height'              => '',
-			'image_swatch_width'               => '',
-			'image_swatch_height'              => '',
 			'primary_btn_class'                => '',
 			'secondary_btn_class'              => '',
 			'slide_out_panel_position'         => 'left',

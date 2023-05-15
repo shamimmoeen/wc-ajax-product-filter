@@ -5,12 +5,11 @@ import useSettingsData from '../useSettingsData';
 import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
 import Radio from '../../Field/Radio';
-import { foundProVersion } from '../../utils';
+// import { foundProVersion } from '../../utils';
 // import Text from '../../Field/Text';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
-import SwatchSize from '../../Field/SwatchSize';
 
-const WCAPF_PRO = foundProVersion();
+// const WCAPF_PRO = foundProVersion();
 
 const enablePrimaryTextColor = wcapf_admin_params.enable_primary_text_color;
 
@@ -82,10 +81,6 @@ const Appearance = () => {
 			star_icon_color,
 			rating_star_use_fontawesome,
 			remove_focus_style,
-			color_swatch_width,
-			color_swatch_height,
-			image_swatch_width,
-			image_swatch_height,
 			// primary_btn_class,
 			// secondary_btn_class,
 			// slide_out_panel_position,
@@ -311,48 +306,6 @@ const Appearance = () => {
 				isChecked={remove_focus_style}
 				onChange={handleCheckboxChange}
 			/>
-
-			{WCAPF_PRO && (
-				<>
-					<SwatchSize
-						label={__(
-							'Color swatch size',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Change the color swatch size here. The default is 44 x 44 px.',
-							'wc-ajax-product-filter'
-						)}
-						width={color_swatch_width}
-						onWidthChange={(value) =>
-							handleTextFieldChange(value, 'color_swatch_width')
-						}
-						height={color_swatch_height}
-						onHeightChange={(value) =>
-							handleTextFieldChange(value, 'color_swatch_height')
-						}
-					/>
-
-					<SwatchSize
-						label={__(
-							'Image swatch size',
-							'wc-ajax-product-filter'
-						)}
-						description={__(
-							'Change the image swatch size here. The default is 60 x 60 px.',
-							'wc-ajax-product-filter'
-						)}
-						width={image_swatch_width}
-						onWidthChange={(value) =>
-							handleTextFieldChange(value, 'image_swatch_width')
-						}
-						height={image_swatch_height}
-						onHeightChange={(value) =>
-							handleTextFieldChange(value, 'image_swatch_height')
-						}
-					/>
-				</>
-			)}
 
 			{/* <Text
 				id={'primary_btn_class'}
