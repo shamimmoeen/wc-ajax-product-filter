@@ -60,8 +60,8 @@ const useFields = (type, index) => {
 
 			availableLayouts = [
 				{
-					label: __('List Item', 'wc-ajax-product-filter'),
-					value: 'list-item',
+					label: __('List', 'wc-ajax-product-filter'),
+					value: 'list',
 				},
 				{
 					label: __('Inline', 'wc-ajax-product-filter'),

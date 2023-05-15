@@ -149,7 +149,7 @@ const Advanced = ({ index }) => {
 			taxHierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
 			'1' === hierarchical &&
-			'list-item' === native_display_type_layout &&
+			'list' === native_display_type_layout &&
 			'search' === field
 		) {
 			return false;
@@ -255,7 +255,7 @@ const Advanced = ({ index }) => {
 				taxHierarchical &&
 				hierarchicalDisplayTypes().includes(display_type) &&
 				'1' === hierarchical &&
-				'list-item' === native_display_type_layout
+				'list' === native_display_type_layout
 			) {
 				reduceHeightOptions = [
 					{
