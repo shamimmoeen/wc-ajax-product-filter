@@ -27,9 +27,6 @@ class WCAPF_Admin {
 		add_action( 'in_admin_header', array( $this, 'disable_admin_notices' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
 
-		// Run the v4 migration if required.
-		add_action( 'admin_init', array( $this, 'run_v4_migration_from_admin_area' ) );
-
 		// V4 migration notice.
 		add_action( 'admin_notices', array( $this, 'show_v4_migration_notice' ) );
 		add_action( 'admin_footer', array( $this, 'dismiss_v4_migration_notice_scripts' ) );
@@ -483,17 +480,6 @@ class WCAPF_Admin {
 			array(),
 			$asset_file['version']
 		);
-	}
-
-	/**
-	 * Run the v4 migration if required.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	public function run_v4_migration_from_admin_area() {
-		WCAPF_V4_Migration()->try_to_run_v4_migration();
 	}
 
 	/**
