@@ -502,10 +502,10 @@ class WCAPF_Admin {
 				<strong>WC Ajax Product Filter - V4 Migration Notice</strong>
 			</p>
 			<p>
-				The plugin has been upgraded to v4. We have changed the admin UI and refactored the codes for better
-				performance and easier future improvements. As a migration process, a form has been created
-				automatically with all the existing filters of your shop. You are requested to check the order of
-				filters by visiting the form.
+				The plugin has been upgraded to v4. We have made changes to the admin UI and refactored the code for
+				improved performance and easier future enhancements. As part of the migration process, a form has been
+				automatically created with all the existing filters from your shop. We kindly request you visit the form
+				and review the order of the filters.
 			</p>
 			<p>
 				<a href="<?php echo esc_url( $form_url ); ?>">Check the order of filters</a>
@@ -623,9 +623,9 @@ class WCAPF_Admin {
 		$return_url = WCAPF_Helper::forms_page_url();
 
 		if ( ! isset( $_REQUEST['_wpnonce'] ) ||
-			 ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'run_wcapf_v4_migrate' )
-			   && ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'debug_action' )
-			 )
+		     ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'run_wcapf_v4_migrate' )
+		       && ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'debug_action' )
+		     )
 		) {
 			wp_safe_redirect( $return_url );
 			die;
