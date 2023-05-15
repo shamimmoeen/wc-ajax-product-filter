@@ -253,7 +253,7 @@ class WCAPF_Form {
 	 *
 	 * @return array
 	 */
-	private function get_filter_classes( $field_instance ) {
+	protected function get_filter_classes( $field_instance ) {
 		$classes = array( 'wcapf-filter', 'wcapf-filter-' . $field_instance->filter_id );
 
 		$type = $field_instance->type;
@@ -274,7 +274,7 @@ class WCAPF_Form {
 			$classes[] = 'has-soft-limit';
 		}
 
-		return apply_filters( 'wcapf_filter_classes', $classes, $field_instance );
+		return $classes;
 	}
 
 	/**
