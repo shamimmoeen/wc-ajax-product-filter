@@ -20,6 +20,13 @@ class WCAPF_Activator {
 		$settings_option_key   = 'wcapf_settings';
 		$db_version_option_key = 'wcapf_db_version';
 
+		// Loads the required files.
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-v4-migration.php';
+
 		// If any records for v3 exist, we'll do the migration.
 		if ( get_option( $settings_option_key ) && ! get_option( $db_version_option_key ) ) {
 			WCAPF_V4_Migration()->try_to_run_v4_migration();
