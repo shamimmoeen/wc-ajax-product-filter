@@ -1086,13 +1086,52 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	private function dropdown_item( $item ) {
-		$item_id     = $item['id'];
-		$item_value  = $this->item_value( $item );
-		$item_active = $this->item_active( $item );
+		$count_allowed = $this->count_allowed();
+		$use_chosen    = $this->use_chosen;
 
+		$attrs = $this->get_dropdown_item_attributes( $item );
+
+		$option = '<option' . $attrs . '>';
+
+		if ( $this->hierarchical && ! $use_chosen ) {
+			$option .= $this->dropdown_item_indent( $item );
+		}
+
+		$option .= $item['name'];
+
+		$count      = $item['count'];
+		$item_count = ' (' . $count . ')';
+
+		if ( ! $use_chosen && $this->show_count && '-1' !== $count && $count_allowed ) {
+			$option .= $item_count;
+		}
+
+		$option .= '</option>';
+
+		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
+
+		$children = isset( $item['children'] ) ? $item['children'] : array();
+
+		if ( $children ) {
+			foreach ( $children as $child_item ) {
+				$inner .= $this->dropdown_item( $child_item );
+			}
+		}
+
+		return $inner;
+	}
+
+	/**
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	protected function get_dropdown_item_attributes( $item ) {
+		$item_id       = $item['id'];
+		$item_value    = $this->item_value( $item );
+		$item_active   = $this->item_active( $item );
 		$count_allowed = $this->count_allowed();
 
-		$option  = '';
 		$attrs   = '';
 		$classes = array();
 
@@ -1147,31 +1186,7 @@ class WCAPF_Walker {
 			$attrs .= ' data-count-markup="' . $item_count . '"';
 		}
 
-		$option .= '<option' . $attrs . '>';
-
-		if ( $this->hierarchical && ! $use_chosen ) {
-			$option .= $this->dropdown_item_indent( $item );
-		}
-
-		$option .= $item['name'];
-
-		if ( ! $use_chosen && $this->show_count && '-1' !== $count && $count_allowed ) {
-			$option .= $item_count;
-		}
-
-		$option .= '</option>';
-
-		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
-
-		$children = isset( $item['children'] ) ? $item['children'] : array();
-
-		if ( $children ) {
-			foreach ( $children as $child_item ) {
-				$inner .= $this->dropdown_item( $child_item );
-			}
-		}
-
-		return $inner;
+		return $attrs;
 	}
 
 	/**
