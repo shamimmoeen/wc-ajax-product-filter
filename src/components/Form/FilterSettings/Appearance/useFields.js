@@ -107,7 +107,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Layout', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines the layout of the filter options in the front end.',
+						'Determines the arrangement of the filter options in the front end.',
 						'wc-ajax-product-filter'
 					)}
 					options={availableLayouts}
@@ -122,13 +122,13 @@ const useFields = (type, index) => {
 						index={index}
 						label={__('Columns', 'wc-ajax-product-filter')}
 						description={__(
-							'Determines the number of columns for the grid layout.',
+							'Specifies the number of columns to be displayed in the grid layout.',
 							'wc-ajax-product-filter'
 						)}
 						value={grid_columns}
 						onChange={handleTextFieldChange}
 						min={1}
-						max={12} // TODO: Check with doc.
+						max={12}
 					/>
 				)}
 			</>
@@ -156,7 +156,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Multiple Selection', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines if the user can select multiple options when filtering products.',
+						'Controls whether users can select multiple options when filtering products.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={filter[id]}
@@ -216,7 +216,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Query Type', 'wc-ajax-product-filter')}
 					description={__(
-						'OR: products that matched any option, AND: products that have both options.',
+						'Choose "OR" to display products matching any selected option or "AND" to show products matching all selected options.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
@@ -322,7 +322,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Show count', 'wc-ajax-product-filter')}
 					description={__(
-						'Whether to show the product count in filter options.',
+						'Determines whether the product count is shown alongside the filter options.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={filter[id]}

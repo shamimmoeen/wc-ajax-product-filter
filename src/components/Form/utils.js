@@ -400,7 +400,6 @@ export function filterDefaultData() {
 		// Swatch Data
 		enable_swatch: '',
 		swatch_type: 'color',
-		auto_swatch_data: '',
 		swatch_with_label: '1',
 		// Price Filter
 		number_display_type: 'range_slider',
@@ -503,7 +502,6 @@ export function filterTypeDependentFields() {
 		'grid_columns',
 		'enable_swatch',
 		'swatch_type',
-		'auto_swatch_data',
 		'swatch_with_label',
 		// Taxonomy
 		'get_options',

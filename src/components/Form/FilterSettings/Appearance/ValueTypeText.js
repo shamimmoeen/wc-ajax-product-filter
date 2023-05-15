@@ -49,7 +49,6 @@ const ValueTypeText = ({ index }) => {
 		value_type,
 		enable_swatch,
 		swatch_type,
-		auto_swatch_data,
 		swatch_with_label,
 	} = filter;
 
@@ -94,7 +93,7 @@ const ValueTypeText = ({ index }) => {
 				index={index}
 				label={__('Display', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines the display type of filter options in the front end.',
+					'Determines how the filter options are presented in the front end.',
 					'wc-ajax-product-filter'
 				)}
 				options={options}
@@ -166,7 +165,7 @@ const ValueTypeText = ({ index }) => {
 					index={index}
 					label={__('Enable swatches', 'wc-ajax-product-filter')}
 					description={__(
-						'Whether to display the filter options in color/image swatches.',
+						'Should the filter options be displayed using color/image swatches?',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={enable_swatch}
@@ -182,10 +181,6 @@ const ValueTypeText = ({ index }) => {
 							label={__('Swatch type', 'wc-ajax-product-filter')}
 							description={__(
 								'Select the swatch type, color, or image.',
-								'wc-ajax-product-filter'
-							)}
-							tooltip={__(
-								'For color swatch, if color is not found in an option and the image is found then the image will be shown, and vice versa.',
 								'wc-ajax-product-filter'
 							)}
 							options={[
@@ -209,25 +204,6 @@ const ValueTypeText = ({ index }) => {
 						/>
 
 						<Checkbox
-							id={'auto_swatch_data'}
-							index={index}
-							label={__(
-								'Swatch data from meta',
-								'wc-ajax-product-filter'
-							)}
-							description={__(
-								'With <a href="https://wptools.io/docs/wc-ajax-product-filter/common/color-image-swatches/?utm_source=Filter+Swatches&utm_medium=inside+plugin&utm_campaign=WCAPF+Swatches+Documentation" target="_blank">supported plugins</a>, swatch data can be obtained from term meta, <b>otherwise, manually input filter options and set swatch data.</b>',
-								'wc-ajax-product-filter'
-							)}
-							tooltip={__(
-								"If you are using any of the supported plugins for the variation swatches, the swatch data can be obtained from term meta. However, if you're not using any of these supported plugins, you'll have to manually input the filter options and configure the swatch data.",
-								'wc-ajax-product-filter'
-							)}
-							isChecked={auto_swatch_data}
-							onChange={handleCheckboxChange}
-						/>
-
-						<Checkbox
 							id={'swatch_with_label'}
 							index={index}
 							label={__(
@@ -235,7 +211,7 @@ const ValueTypeText = ({ index }) => {
 								'wc-ajax-product-filter'
 							)}
 							description={__(
-								'Enable this to show the option label beside the Swatch.',
+								'Enable this to display the label beside the swatch.',
 								'wc-ajax-product-filter'
 							)}
 							isChecked={swatch_with_label}
