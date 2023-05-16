@@ -49,7 +49,7 @@ const Others = () => {
 		<>
 			<ProFeaturesNotice
 				message={__(
-					'There are settings available only in the PRO version.',
+					'There are settings available only in the Pro version.',
 					'wc-ajax-product-filter'
 				)}
 			/>

@@ -33,7 +33,7 @@ const Miscellaneous = () => {
 				id={'disable_wcapf'}
 				label={__('Disable WCAPF', 'wc-ajax-product-filter')}
 				description={__(
-					'Check this to disable WC Ajax Product Filter in the front end for testing purposes.',
+					'Check this to disable WCAPF - WooCommerce Ajax Product Filter in the front end for testing purposes.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={disable_wcapf}
@@ -55,7 +55,7 @@ const Miscellaneous = () => {
 				id={'remove_data'}
 				label={__('Remove Data', 'wc-ajax-product-filter')}
 				description={__(
-					'Enable this to remove all data when uninstalling WC Ajax Product Filter via the <b>Plugins</b> page.',
+					'Enable this to remove all data when uninstalling WCAPF - WooCommerce Ajax Product Filter via the <b>Plugins</b> page.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={remove_data}

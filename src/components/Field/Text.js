@@ -111,7 +111,7 @@ const Text = ({
 											are the filter keys.
 											{/* <br />
 											<br />
-											In the PRO version, the URL will be
+											In the Pro version, the URL will be
 											<br />
 											www.site.com/color-blue/size-large */}
 										</>

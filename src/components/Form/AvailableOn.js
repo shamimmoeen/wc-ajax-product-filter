@@ -306,7 +306,7 @@ const AvailableOn = () => {
 
 								<TippyTooltip
 									content={__(
-										'Upgrade to PRO to select taxonomies and pages.',
+										'Upgrade to Pro to select taxonomies and pages.',
 										'wc-ajax-product-filter'
 									)}
 								/>

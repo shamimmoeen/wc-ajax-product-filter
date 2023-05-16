@@ -1,6 +1,6 @@
 <?php
 /**
- * Setup WC Ajax Product Filter.
+ * Setup WCAPF - WooCommerce Ajax Product Filter.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
@@ -9,7 +9,7 @@
  */
 
 /**
- * WC Ajax Product Filter main class.
+ * WCAPF - WooCommerce Ajax Product Filter main class.
  *
  * @since  3.0.0
  * @author wptools.io
@@ -74,32 +74,14 @@ class WCAPF {
 	 */
 	private function wc_required_notice() {
 		$message             = '';
-		$required_plugins    = array();
 		$required_wc_version = '3.6';
 		$current_wc_version  = defined( 'WC_VERSION' ) ? WC_VERSION : '';
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
-			$required_plugins[] = sprintf(
-				'<a href="%1$s" target="_blank">WooCommerce</a>',
-				'https://wordpress.org/plugins/woocommerce/'
-			);
-		}
-
-		if ( $required_plugins ) {
-			$message = sprintf(
-				/* translators: our plugin, required plugins */
-				__( '%1$s requires you to install %2$s.', 'wc-ajax-product-filter' ),
-				'<strong>' . __( 'WC Ajax Product Filter', 'wc-ajax-product-filter' ) . '</strong>',
-				implode( ', ', $required_plugins )
-			);
+			$message = 'Please activate the <b>WooCommerce</b> plugin to use the <b>WCAPF - WooCommerce Ajax Product Filter</b>.';
 		} elseif ( version_compare( $current_wc_version, $required_wc_version, '<' ) ) {
 			$message = sprintf(
-				/* translators: our plugin, minimum woocommerce version, current woocommerce version */
-				__(
-					'%1$s requires WooCommerce %2$s (you are using %3$s).',
-					'wc-ajax-product-filter'
-				),
-				'<strong>' . __( 'WC Ajax Product Filter', 'wc-ajax-product-filter' ) . '</strong>',
+				'Please update your <strong>WooCommerce</strong> to %s or higher to use <strong>WCAPF - WooCommerce Ajax Product Filter</strong> plugin (you are currently using %s).',
 				$required_wc_version,
 				$current_wc_version
 			);
@@ -161,6 +143,13 @@ class WCAPF {
 
 		// Loads the widgets.
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-filter-widget.php';
+
+		/**
+		 * Register a hook to load any other dependencies after the plugin files are loaded.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'wcapf_loaded' );
 	}
 
 	/**

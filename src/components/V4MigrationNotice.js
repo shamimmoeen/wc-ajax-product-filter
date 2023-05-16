@@ -20,20 +20,25 @@ const V4MigrationNotice = () => {
 				>
 					<p>
 						<strong>
-							WC Ajax Product Filter - V4 Migration Notice
+							WCAPF - WooCommerce Ajax Product Filter (v4.0.0
+							Migration Notice)
 						</strong>
 					</p>
 					<p>
-						The plugin has been upgraded to v4. We have changed the
-						admin UI and refactored the codes for better performance
-						and easier future improvements. As a migration process,
-						a form has been created automatically with all the
-						existing filters of your shop. You are requested to
-						check the order of filters by visiting the form.
+						The <i>WC Ajax Product Filter</i> plugin has been
+						upgraded to v4.0.0 and is now named{' '}
+						<i>WCAPF - WooCommerce Ajax Product Filter</i>. We have
+						redesigned the admin UI to provide a more intuitive user
+						experience and refactored the codebase for improved
+						performance and easier future enhancements. As part of
+						the migration process, a form has been automatically
+						created with all the existing filters from your shop. We
+						kindly request that you visit the form and review the
+						order of the filters.
 					</p>
 					<p>
 						<Button variant='link' href={migrationFormEditUrl}>
-							Check the order of filters
+							Review the filters
 						</Button>{' '}
 						|{' '}
 						<Button
@@ -55,13 +60,16 @@ const V4MigrationNotice = () => {
 				<div className='notice notice-info v4-upgrade-notice'>
 					<p>
 						<strong>
-							WC Ajax Product Filter Pro - Upgrade Required
+							WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade
+							Required)
 						</strong>
 					</p>
 					<p>
 						Thank you for using the Pro version. To ensure
-						compatibility with WC Ajax Product Filter v4, it is
-						necessary to upgrade WC Ajax Product Filter Pro to
+						compatibility with{' '}
+						<i>WCAPF - WooCommerce Ajax Product Filter</i> v4.0.0,
+						it is necessary to upgrade{' '}
+						<i>WCAPF - WooCommerce Ajax Product Filter Pro</i> to
 						v2.0.0. Please proceed with the upgrade.
 					</p>
 				</div>
