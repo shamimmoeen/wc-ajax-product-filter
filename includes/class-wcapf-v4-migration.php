@@ -495,7 +495,6 @@ class WCAPF_V4_Migration {
 
 		$taxonomy_types  = array( 'custom-taxonomy', 'attribute', 'category', 'tag' );
 		$component_types = array( 'reset-button', 'active-filters' );
-		$swatch_types    = array( 'image', 'color' );
 
 		$migrated_filters = array();
 
@@ -668,8 +667,19 @@ class WCAPF_V4_Migration {
 					$migrated_data['manual_options'] = $manual_options;
 				}
 
-				if ( in_array( $migrated_data['display_type'], $swatch_types ) ) {
+				$swatch_types    = array( 'image', 'color' );
+				$v3_display_type = $migrated_data['display_type'];
+
+				if ( in_array( $v3_display_type, $swatch_types ) ) {
 					$migrated_data['get_options'] = 'manual_entry';
+
+					$migrated_data['display_type']               = 'label';
+					$migrated_data['custom_display_type_layout'] = 'inline';
+
+					// Enable swatches.
+					$migrated_data['enable_swatch']     = '1';
+					$migrated_data['swatch_type']       = $v3_display_type;
+					$migrated_data['swatch_with_label'] = '';
 				}
 			}
 
