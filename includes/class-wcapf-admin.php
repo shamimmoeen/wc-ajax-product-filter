@@ -583,8 +583,8 @@ class WCAPF_Admin {
 				<strong>WC Ajax Product Filter Pro - Upgrade Required</strong>
 			</p>
 			<p>
-				Thank you for using the pro version. WC Ajax Product Filter v4 requires you to upgrade WC Ajax Product
-				Filter Pro to v2.0.0. Please upgrade.
+				Thank you for using the Pro version. To ensure compatibility with WC Ajax Product Filter v4, it is
+				necessary to upgrade WC Ajax Product Filter Pro to v2.0.0. Please proceed with the upgrade.
 			</p>
 		</div>
 		<?php
@@ -623,9 +623,9 @@ class WCAPF_Admin {
 		$return_url = WCAPF_Helper::forms_page_url();
 
 		if ( ! isset( $_REQUEST['_wpnonce'] ) ||
-		     ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'run_wcapf_v4_migrate' )
-		       && ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'debug_action' )
-		     )
+			 ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'run_wcapf_v4_migrate' )
+			   && ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'debug_action' )
+			 )
 		) {
 			wp_safe_redirect( $return_url );
 			die;
