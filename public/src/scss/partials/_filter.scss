@@ -145,10 +145,11 @@
 
 /*
  * Fix layout issue when showing the filter options inline by showing the filter options inline using float,
- * applying flex to list wrapper.
+ * applying display flex and flex-direction column to list wrapper.
  */
 .wcapf-filter .wcapf-list-wrapper.layout-inline {
 	display: flex;
+	flex-direction: column;
 
 	ul.wcapf-filter-options {
 		margin-bottom: calc(var(--wcapf-filter-item-vertical-spacing) * -1);
