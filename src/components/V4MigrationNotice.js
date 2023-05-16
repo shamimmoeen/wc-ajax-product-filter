@@ -59,9 +59,10 @@ const V4MigrationNotice = () => {
 						</strong>
 					</p>
 					<p>
-						Thank you for using the pro version. WC Ajax Product
-						Filter v4 requires you to upgrade WC Ajax Product Filter
-						Pro to v2.0.0. Please upgrade.
+						Thank you for using the Pro version. To ensure
+						compatibility with WC Ajax Product Filter v4, it is
+						necessary to upgrade WC Ajax Product Filter Pro to
+						v2.0.0. Please proceed with the upgrade.
 					</p>
 				</div>
 			)}
