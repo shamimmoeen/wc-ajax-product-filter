@@ -75,7 +75,7 @@ class WCAPF_Admin {
 			$upgrade_page_action_link = sprintf(
 				'<a href="%1$s" style="color: #00a32a; font-weight: bold;" target="_blank" aria-label="%2$s">%2$s</a>',
 				$plugin_page_link,
-				__( 'Upgrade to PRO', 'wc-ajax-product-filter' )
+				__( 'Upgrade to Pro', 'wc-ajax-product-filter' )
 			);
 
 			$new_links = array_merge( $pre_links, $links, array( $upgrade_page_action_link ) );
@@ -95,7 +95,7 @@ class WCAPF_Admin {
 	 */
 	public function register_admin_pages() {
 		add_menu_page(
-			'WC Ajax Product Filter',
+			'WCAPF - WooCommerce Ajax Product Filter',
 			'WCAPF',
 			'manage_options',
 			'wcapf',
@@ -105,7 +105,7 @@ class WCAPF_Admin {
 
 		// add_submenu_page(
 		// 	'wcapf',
-		// 	__( 'WC Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
+		// 	__( 'WCAPF - WooCommerce Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
 		// 	__( 'SEO Rules', 'wc-ajax-product-filter' ),
 		// 	'manage_options',
 		// 	'wcapf-seo-rules',
@@ -114,7 +114,7 @@ class WCAPF_Admin {
 
 		add_submenu_page(
 			'wcapf',
-			__( 'WC Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
+			__( 'WCAPF - WooCommerce Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
 			__( 'Settings', 'wc-ajax-product-filter' ),
 			'manage_options',
 			'wcapf-settings',
@@ -122,11 +122,11 @@ class WCAPF_Admin {
 		);
 
 		// if ( ! WCAPF_Helper::found_pro_version() ) {
-		// 	$label = __( 'Upgrade to PRO', 'wc-ajax-product-filter' );
+		// 	$label = __( 'Upgrade to Pro', 'wc-ajax-product-filter' );
 		//
 		// 	add_submenu_page(
 		// 		'wcapf',
-		// 		__( 'WC Ajax Product Filter - Upgrade to PRO', 'wc-ajax-product-filter' ),
+		// 		__( 'WCAPF - WooCommerce Ajax Product Filter - Upgrade to Pro', 'wc-ajax-product-filter' ),
 		// 		'<span style="color: limegreen; font-weight: bold">' . $label . '</span>',
 		// 		'manage_options',
 		// 		'wcapf-upgrade',
@@ -499,16 +499,17 @@ class WCAPF_Admin {
 		?>
 		<div class="notice notice-info" id="wcapf-v4-migration-notice">
 			<p>
-				<strong>WC Ajax Product Filter - V4 Migration Notice</strong>
+				<strong>WCAPF - WooCommerce Ajax Product Filter (v4.0.0 Migration Notice)</strong>
 			</p>
 			<p>
-				The plugin has been upgraded to v4. We have made changes to the admin UI and refactored the code for
-				improved performance and easier future enhancements. As part of the migration process, a form has been
-				automatically created with all the existing filters from your shop. We kindly request you visit the form
-				and review the order of the filters.
+				The <i>WC Ajax Product Filter</i> plugin has been upgraded to v4.0.0 and is now named <i>WCAPF -
+					WooCommerce Ajax Product Filter</i>. We have redesigned the admin UI to provide a more intuitive
+				user experience and refactored the codebase for improved performance and easier future enhancements. As
+				part of the migration process, a form has been automatically created with all the existing filters from
+				your shop. We kindly request that you visit the form and review the order of the filters.
 			</p>
 			<p>
-				<a href="<?php echo esc_url( $form_url ); ?>">Check the order of filters</a>
+				<a href="<?php echo esc_url( $form_url ); ?>">Review the filters</a>
 				|
 				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank">Learn more about migration</a>
 				|
@@ -580,11 +581,12 @@ class WCAPF_Admin {
 		?>
 		<div class="notice notice-info">
 			<p>
-				<strong>WC Ajax Product Filter Pro - Upgrade Required</strong>
+				<strong>WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade Required)</strong>
 			</p>
 			<p>
-				Thank you for using the Pro version. To ensure compatibility with WC Ajax Product Filter v4, it is
-				necessary to upgrade WC Ajax Product Filter Pro to v2.0.0. Please proceed with the upgrade.
+				Thank you for using the Pro version. To ensure compatibility with <i>WCAPF - WooCommerce Ajax Product
+					Filter</i> v4.0.0, it is necessary to upgrade <i>WCAPF - WooCommerce Ajax Product Filter Pro</i> to
+				v2.0.0. Please proceed with the upgrade.
 			</p>
 		</div>
 		<?php

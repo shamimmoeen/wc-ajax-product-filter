@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstalling WC Ajax Product Filter deletes the plugin settings, forms and filters.
+ * Uninstalling WCAPF - WooCommerce Ajax Product Filter deletes the plugin settings, forms and filters.
  *
  * @since        3.0.0
  * @package      wc-ajax-product-filter

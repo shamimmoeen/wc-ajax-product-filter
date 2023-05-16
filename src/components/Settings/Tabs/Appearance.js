@@ -7,7 +7,7 @@ import Select from '../../Field/Select';
 import Radio from '../../Field/Radio';
 // import { foundProVersion } from '../../utils';
 // import Text from '../../Field/Text';
-import ProFeaturesNotice from '../../ProFeaturesNotice';
+// import ProFeaturesNotice from '../../ProFeaturesNotice';
 
 // const WCAPF_PRO = foundProVersion();
 
@@ -97,12 +97,12 @@ const Appearance = () => {
 
 	return (
 		<>
-			<ProFeaturesNotice
+			{/* <ProFeaturesNotice
 				message={__(
-					'There are settings available only in the PRO version.',
+					'There are settings available only in the Pro version.',
 					'wc-ajax-product-filter'
 				)}
-			/>
+			/> */}
 
 			<ColorInput
 				label={__('Primary Color', 'wc-ajax-product-filter')}

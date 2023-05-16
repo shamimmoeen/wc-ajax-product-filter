@@ -1,4 +1,4 @@
-=== WC Ajax Product Filter ===
+=== WCAPF - WooCommerce Ajax Product Filter ===
 Contributors: shamimmoeen
 Tags: product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter
 Requires at least: 4.0
@@ -8,11 +8,11 @@ Requires PHP: 5.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-WooCommerce Ajax Product Filter - adds advanced product filtering to your shop.
+WCAPF - WooCommerce Ajax Product Filter - adds advanced product filtering to your shop.
 
 == Description ==
 
-WooCommerce Ajax Product Filter – is a plugin that allows you to filter your products easily by categories, attributes, prices, and post metas. You can sort products, and navigate to the next and previous pages without reloading the page.
+WCAPF - WooCommerce Ajax Product Filter – is a plugin that allows you to filter your products easily by categories, attributes, prices, and post metas. You can sort products, and navigate to the next and previous pages without reloading the page.
 
 [Free Demo](https://demos.wptools.io/wc-ajax-product-filter/) | [Paid Demo](https://demos.wptools.io/wc-ajax-product-filter-pro/)
 
@@ -104,25 +104,30 @@ If you have problems with the work of the plugin you should follow these steps:
 
 * Refactor the ADMIN UI
 
-= 3.3.1 =
+= 3.3.2 (04 January 2023) =
+
+* Prevent redirect to product page while filtering on the search page and getting a single result.
+* Fix SQL error caused by joining alias
+
+= 3.3.1 (27 September 2022) =
 
 * Make it compatible with woo-variation-swatches
 
-= 3.3.0 =
+= 3.3.0 (13 September 2022) =
 
 * Feature - Option to specify user roles for post author filter
 
-= 3.2.0 =
+= 3.2.0 (01 August 2022) =
 
 * Fix - custom loading image issue
 
-= 3.1.0 =
+= 3.1.0 (29 July 2022) =
 
 * Fix - loading image upload button js issue
 * Fix - product sorting via ajax issue
 * Fix - products count result not updating issue
 
-= 3.0.0 =
+= 3.0.0 (17 July 2022) =
 
 * Release pro version
 * Refactor the plugin

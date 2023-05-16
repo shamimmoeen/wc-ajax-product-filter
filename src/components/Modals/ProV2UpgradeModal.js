@@ -9,14 +9,19 @@ const ProV2UpgradeModal = ({ isOpen, closeModal }) => {
 				__experimentalHideHeader
 				className='__pro_v2_upgrade_modal'
 			>
-				<h3>WC Ajax Product Filter Pro - Upgrade Required</h3>
+				<h3>
+					WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade
+					Required)
+				</h3>
 
 				<div className='__separator' />
 
 				<p>
-					Thank you for using the pro version. WC Ajax Product Filter
-					v4 requires you to upgrade WC Ajax Product Filter Pro to
-					v2.0.0. Please upgrade.
+					Thank you for using the Pro version. To ensure compatibility
+					with <i>WCAPF - WooCommerce Ajax Product Filter</i> v4.0.0,
+					it is necessary to upgrade{' '}
+					<i>WCAPF - WooCommerce Ajax Product Filter Pro</i> to
+					v2.0.0. Please proceed with the upgrade.
 				</p>
 
 				<div className='__buttons'>

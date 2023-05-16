@@ -155,7 +155,7 @@ const FilterKeys = () => {
 			{!isEmpty(globalFilterKeys) && (
 				<ProFeaturesNotice
 					message={__(
-						'Changing the order of filter keys is a PRO feature.',
+						'Changing the order of filter keys is a Pro feature.',
 						'wc-ajax-product-filter'
 					)}
 				/>

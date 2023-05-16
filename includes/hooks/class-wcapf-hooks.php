@@ -1,6 +1,6 @@
 <?php
 /**
- * WC Ajax Product Filter hooks class.
+ * WCAPF - WooCommerce Ajax Product Filter hooks class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter

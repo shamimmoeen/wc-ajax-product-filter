@@ -34,7 +34,7 @@ const TopBar = ({ view }) => {
 			<div className='__navbar'>
 				<h2>
 					<Icon icon={'filter'} className='__icon' />
-					WC Ajax Product Filter
+					WCAPF - WooCommerce Ajax Product Filter
 				</h2>
 
 				{navMenus.map((menu) => {
@@ -57,14 +57,14 @@ const TopBar = ({ view }) => {
 						className='__upgrade_btn'
 					>
 						<Icon icon={DiamondIcon} size={18} />
-						{__('Upgrade to PRO', 'wc-ajax-product-filter')}
+						{__('Upgrade to Pro', 'wc-ajax-product-filter')}
 					</a>
 				)}
 
 				<div className='__plan'>
 					<div>{__('You are on the', 'wc-ajax-product-filter')}</div>
 					<div>
-						{foundProVersion() ? __('PRO Plan') : __('FREE Plan')}
+						{foundProVersion() ? __('Pro Plan') : __('Free Plan')}
 					</div>
 				</div>
 
