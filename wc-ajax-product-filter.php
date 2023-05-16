@@ -84,8 +84,6 @@ function wcapf_deactivate() {
 register_activation_hook( WCAPF_PLUGIN_FILE, 'wcapf_activate' );
 register_deactivation_hook( WCAPF_PLUGIN_FILE, 'wcapf_deactivate' );
 
-add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
-
 /**
  * We are not loading the wcapf-pro-v1 as it is not compatible with wcapf-v4.
  *
@@ -96,6 +94,8 @@ add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
 function wcapf_unload_pro_v1() {
 	remove_action( 'woocommerce_loaded', 'wcapf_pro_loads_dependencies', 99 );
 }
+
+add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
 
 // Include the WCAPF main class
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf.php';
@@ -110,10 +110,6 @@ function wcapf_setup() {
 }
 
 wcapf_setup();
-
-// TODO: Remove this
-
-add_action( 'wp_default_scripts', 'wcapf_pp_fix_jquery_migrate_issue' );
 
 /**
  * Remove jquery migrate related logs on console.
@@ -130,3 +126,6 @@ function wcapf_pp_fix_jquery_migrate_issue( $scripts ) {
 		);
 	}
 }
+
+// TODO: Remove this
+add_action( 'wp_default_scripts', 'wcapf_pp_fix_jquery_migrate_issue' );
