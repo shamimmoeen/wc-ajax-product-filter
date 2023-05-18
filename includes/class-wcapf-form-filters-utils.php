@@ -122,6 +122,13 @@ class WCAPF_Form_Filters_Utils {
 					$post_status = 'draft';
 				} else {
 					$post_status = 'publish';
+
+					// When migrating we'll keep the existing post_status.
+					if ( $migrate && ! empty( $filter['post_status'] ) ) {
+						$post_status = sanitize_text_field( $filter['post_status'] );
+
+						unset( $filter['post_status'] );
+					}
 				}
 
 				if ( 'component' !== $type ) {

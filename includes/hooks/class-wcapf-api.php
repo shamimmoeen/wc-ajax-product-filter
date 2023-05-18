@@ -70,7 +70,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function create_sample_form() {
-		$form_settings = WCAPF_V4_Migration()->form_default_data();
+		$form_settings = WCAPF_Default_Data::form_default_data();
 
 		$post_arr = array(
 			'post_title'   => __( 'Sample form', 'wc-ajax-product-filter' ),
@@ -87,7 +87,7 @@ class WCAPF_API {
 		}
 
 		$form_filters_utils = new WCAPF_Form_Filters_Utils();
-		$form_filters_utils->save_form_filters( WCAPF_V4_Migration()->get_sample_filters(), $new_form_id );
+		$form_filters_utils->save_form_filters( WCAPF_Default_Data::get_sample_filters(), $new_form_id );
 
 		wp_send_json_success( WCAPF_API_Utils::get_form_data( $new_form_id ) );
 	}

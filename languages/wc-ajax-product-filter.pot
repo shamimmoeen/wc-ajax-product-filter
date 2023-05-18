@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WCAPF - WooCommerce Ajax Product Filter 4.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/wc-ajax-product-filter-dev\n"
-"POT-Creation-Date: 2023-05-16 09:25:08+00:00\n"
+"POT-Creation-Date: 2023-05-18 18:01:39+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,23 +25,23 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: includes/class-wcapf-admin.php:54
+#: includes/class-wcapf-admin.php:43
 msgid "Add Filters"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:60 includes/class-wcapf-admin.php:118
+#: includes/class-wcapf-admin.php:49 includes/class-wcapf-admin.php:107
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:78
+#: includes/class-wcapf-admin.php:67
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:117
+#: includes/class-wcapf-admin.php:106
 msgid "WCAPF - WooCommerce Ajax Product Filter - Settings"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:174
+#: includes/class-wcapf-admin.php:163
 msgid "Forms"
 msgstr ""
 
@@ -50,7 +50,7 @@ msgid "Taxonomy"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:150
-#: includes/class-wcapf-v4-migration.php:56
+#: includes/class-wcapf-default-data.php:122
 msgid "Price"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgid "Per Page"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:190
-#: includes/class-wcapf-form-filters-utils.php:140
+#: includes/class-wcapf-form-filters-utils.php:147
 #: includes/shortcodes/class-wcapf-active-filters-shortcode.php:26
 msgid "Active Filters"
 msgstr ""
@@ -93,12 +93,12 @@ msgid "Results Count"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:296
-#: includes/class-wcapf-v4-migration.php:159
+#: includes/class-wcapf-default-data.php:225
 msgid "Featured"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:300
-#: includes/class-wcapf-v4-migration.php:163
+#: includes/class-wcapf-default-data.php:229
 msgid "On Sale"
 msgstr ""
 
@@ -179,6 +179,22 @@ msgstr ""
 msgid "Decimal"
 msgstr ""
 
+#: includes/class-wcapf-default-data.php:112
+msgid "Category"
+msgstr ""
+
+#: includes/class-wcapf-default-data.php:158
+msgid "Any"
+msgstr ""
+
+#: includes/class-wcapf-default-data.php:209
+msgid "Tag"
+msgstr ""
+
+#: includes/class-wcapf-default-data.php:219
+msgid "Status"
+msgstr ""
+
 #: includes/class-wcapf-field-instance.php:276
 msgid "Default"
 msgstr ""
@@ -187,15 +203,15 @@ msgstr ""
 msgid "All Items"
 msgstr ""
 
-#: includes/class-wcapf-form-filters-utils.php:308
+#: includes/class-wcapf-form-filters-utils.php:315
 msgid "Post type name can't be used as a filter key, it'll create conflict."
 msgstr ""
 
-#: includes/class-wcapf-form-filters-utils.php:313
+#: includes/class-wcapf-form-filters-utils.php:320
 msgid "Taxonomy name can't be used as a filter key, it'll create conflict."
 msgstr ""
 
-#: includes/class-wcapf-form-filters-utils.php:318
+#: includes/class-wcapf-form-filters-utils.php:325
 msgid "Please make it unique by adding an underscore."
 msgstr ""
 
@@ -287,26 +303,6 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
-#: includes/class-wcapf-v4-migration.php:46
-msgid "Category"
-msgstr ""
-
-#: includes/class-wcapf-v4-migration.php:92
-msgid "Any"
-msgstr ""
-
-#: includes/class-wcapf-v4-migration.php:143
-msgid "Tag"
-msgstr ""
-
-#: includes/class-wcapf-v4-migration.php:153
-msgid "Status"
-msgstr ""
-
-#: includes/class-wcapf-v4-migration.php:705
-msgid "Default form"
-msgstr ""
-
 #: includes/class-wcapf-walker.php:850
 msgid "Expand/Collapse %s"
 msgstr ""
@@ -363,6 +359,10 @@ msgid_plural "%d stars"
 msgstr[0] ""
 msgstr[1] ""
 
+#: includes/migration/class-wcapf-v4-migration.php:366
+msgid "Default form"
+msgstr ""
+
 #: includes/widgets/class-wcapf-filter-widget.php:23
 msgid "Display a form to filter products in your store."
 msgstr ""
@@ -397,23 +397,6 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "https://wptools.io"
-msgstr ""
-
-#: includes/class-wcapf-admin.php:607
-msgctxt "[ADMIN] WooCommerce Tools tab, name of the tool"
-msgid "Run WCAPF V4 Migration"
-msgstr ""
-
-#: includes/class-wcapf-admin.php:608
-msgctxt "[ADMIN] WooCommerce Tools tab, button for the tool"
-msgid "Run"
-msgstr ""
-
-#: includes/class-wcapf-admin.php:609
-msgctxt "[ADMIN] WooCommerce Tools tab, description of the tool"
-msgid ""
-"This will create a form with all existing filters of your shop; you may "
-"need to manually set the order of filters by visiting the form."
 msgstr ""
 
 #: includes/class-wcapf-post-type.php:54

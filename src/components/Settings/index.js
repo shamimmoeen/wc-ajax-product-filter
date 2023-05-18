@@ -28,7 +28,6 @@ import {
 	showProV2UpgradeNotice,
 } from '../utils';
 import { defaultSettings } from './utils';
-import V4MigrationNotice from '../V4MigrationNotice';
 import ProV2UpgradeModal from '../Modals/ProV2UpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
@@ -294,8 +293,6 @@ const Settings = () => {
 	return (
 		<div className='__wcapf_admin'>
 			<TopBar view={'settings'} />
-
-			<V4MigrationNotice />
 
 			<ProV2UpgradeModal
 				isOpen={proV2UpgradeModalOpen}
