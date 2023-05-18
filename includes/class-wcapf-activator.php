@@ -20,22 +20,39 @@ class WCAPF_Activator {
 		$settings_option_key   = 'wcapf_settings';
 		$db_version_option_key = 'wcapf_db_version';
 
-		// Loads the required files.
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-v4-migration.php';
-
 		// If any records for v3 exist, we'll do the migration.
-		if ( get_option( $settings_option_key ) && ! get_option( $db_version_option_key ) ) {
-			WCAPF_V4_Migration()->try_to_run_v4_migration();
+		if ( ! get_option( $db_version_option_key ) ) {
+			$filters = get_posts(
+				array(
+					'post_type'   => 'wcapf-filter',
+					'post_status' => 'any',
+					'fields'      => 'ids',
+				)
+			);
 
-			return;
+			/**
+			 * wcapf db version was not found in database, but filters found. this means the user is migrating from v3 to v4.
+			 */
+			if ( $filters ) {
+				// Loads the dependencies for the migration.
+				require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
+				require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
+				require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
+				require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-default-data.php';
+				require_once WCAPF_PLUGIN_DIR . '/includes/migration/class-wcapf-v4-migration.php';
+
+				$migration = WCAPF_V4_Migration::instance();
+				$migration->try_to_run_v4_migration();
+
+				return;
+			}
 		}
 
+		// Loads the required class.
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-default-data.php';
+
 		// Initialize the default settings.
-		$default_settings  = WCAPF_V4_Migration()->default_settings();
+		$default_settings  = WCAPF_Default_Data::default_settings();
 		$existing_settings = get_option( $settings_option_key, array() );
 
 		update_option( $settings_option_key, array_merge( $default_settings, $existing_settings ) );

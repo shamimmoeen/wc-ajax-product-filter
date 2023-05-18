@@ -39,9 +39,20 @@
 
 	.components-notice {
 		margin: 0 0 1.5em;
-		border-color: $svgDeleteColor;
-		color: $svgDeleteColor;
-		background-color: #ffe6e6;
+
+		&.is-error {
+			border-color: $svgDeleteColor;
+			color: $svgDeleteColor;
+			background-color: #ffe6e6;
+		}
+
+		&.is-info {
+			background-color: rgba(114, 174, 230, 0.1);
+		}
+
+		~.__filters_list_header {
+			margin-top: 2em;
+		}
 	}
 
 	.__filters_list_header {

@@ -107,6 +107,7 @@ class WCAPF {
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-default-data.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
@@ -117,7 +118,6 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-url-builder.php';
-		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-v4-migration.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 
 		// Loads the filter types.
@@ -134,6 +134,10 @@ class WCAPF {
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-post-author-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-rating-filter.php';
 		require_once WCAPF_PLUGIN_DIR . '/includes/hooks/class-wcapf-taxonomy-filter.php';
+
+		// Migration dependencies.
+		require_once WCAPF_PLUGIN_DIR . '/includes/migration/class-wcapf-v4-migration.php';
+		require_once WCAPF_PLUGIN_DIR . '/includes/migration/class-wcapf-v4-migration-hooks.php';
 
 		// Loads the shortcodes.
 		require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-active-filters-shortcode.php';

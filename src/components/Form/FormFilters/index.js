@@ -10,6 +10,7 @@ import Filter from './Filter';
 import NoFiltersFound from './NoFiltersFound';
 import { newFilterData } from '../utils';
 import { arrayMoveImmutable } from 'array-move';
+import V4ReviewFiltersNotice from '../../V4ReviewFiltersNotice';
 
 const FormFilters = () => {
 	const { state, dispatch } = useForm();
@@ -74,6 +75,8 @@ const FormFilters = () => {
 				<NoFiltersFound addFilter={addFilter} />
 			) : (
 				<>
+					<V4ReviewFiltersNotice />
+
 					{saveError && (
 						<Notice status='error' isDismissible={false}>
 							{saveError}
