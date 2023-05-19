@@ -3,7 +3,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { useForm } from '../FormContext';
 import useFormData from '../useFormData';
 import axios from 'axios';
-import { find, pick, omit, isEmpty } from 'lodash';
+import { find, pick, omit, isEmpty, has } from 'lodash';
 import {
 	removeCopiedToClipboardNotice,
 	itemSavedSuccessNotice,
@@ -47,7 +47,7 @@ const FormTitle = () => {
 		formId,
 		filterKeys,
 		currentTab,
-		accordionStates,
+		filterStates,
 		formFilters,
 		formSettings,
 	} = state;
@@ -108,7 +108,7 @@ const FormTitle = () => {
 				proTypes.includes(formFilter['type']) ||
 				proComponents.includes(formFilter['component']);
 
-			if (!WCAPF_PRO && isPro) {
+			if (isPro && !WCAPF_PRO) {
 				continue;
 			}
 
@@ -156,7 +156,12 @@ const FormTitle = () => {
 			}
 
 			if (dataRequired) {
-				invalidFormFilters.push(index);
+				if (has(_formFilter, 'isNew')) {
+					invalidFormFilters.push(_formFilter['uniqueIndex']);
+				} else {
+					invalidFormFilters.push(_formFilter['id']);
+				}
+
 				isValid = false;
 			}
 
@@ -164,17 +169,23 @@ const FormTitle = () => {
 		}
 
 		if (!isValid) {
-			const newStates = accordionStates.map((isExpanded, index) => {
-				if (invalidFormFilters.includes(index)) {
-					return true;
-				} else if (isExpanded) {
-					return false;
+			const newStates = {};
+
+			for (const id in filterStates) {
+				if (invalidFormFilters.map(String).includes(id)) {
+					newStates[id] = {
+						accordionStatus: true,
+						currentTab: 'general',
+					};
+				} else {
+					newStates[id] = {
+						...filterStates[id],
+						accordionStatus: false,
+					};
 				}
+			}
 
-				return isExpanded;
-			});
-
-			dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+			dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 		}
 
 		dispatch({ type: 'SET_FORM_FILTERS', payload: validatedFormFilters });
@@ -193,22 +204,14 @@ const FormTitle = () => {
 		return { isValid, validatedFormFilters };
 	};
 
-	const sanitizedFormFilters = (validatedFormFilters) => {
-		const filters = [];
-
-		validatedFormFilters.forEach((_filter) => {
-			const filter = omit(_filter, ['isNew', 'uniqueIndex']);
-
-			filters.push(filter);
-		});
-
+	const removeProDataFromFilters = (validatedFormFilters) => {
 		if (WCAPF_PRO) {
-			return filters;
+			return validatedFormFilters;
 		}
 
 		const sanitizedFilters = [];
 
-		filters.forEach((filter) => {
+		validatedFormFilters.forEach((filter) => {
 			const proData = [
 				'grid_columns',
 				'enable_swatch',
@@ -310,7 +313,7 @@ const FormTitle = () => {
 		return sanitizedFilters;
 	};
 
-	const sanitizedFormSettings = () => {
+	const removeProDataFromSettings = () => {
 		if (WCAPF_PRO) {
 			return formSettings;
 		}
@@ -347,8 +350,8 @@ const FormTitle = () => {
 			return;
 		}
 
-		const sanitizedFilters = sanitizedFormFilters(validatedFormFilters);
-		const sanitizedSettings = sanitizedFormSettings();
+		const sanitizedFilters = removeProDataFromFilters(validatedFormFilters);
+		const sanitizedSettings = removeProDataFromSettings();
 
 		setLoading(true);
 
@@ -428,24 +431,38 @@ const FormTitle = () => {
 						payload: formFiltersWithErrors,
 					});
 
-					const newStates = accordionStates.map(
-						(isExpanded, index) => {
-							const error = find(errorsData, { order: index });
+					const newStates = {};
 
-							if (error) {
-								return true;
-							} else if (isExpanded) {
-								return false;
-							}
+					for (
+						let index = 0;
+						index < formFiltersWithErrors.length;
+						index++
+					) {
+						const error = find(errorsData, { order: index });
+						const filter = formFiltersWithErrors[index];
 
-							return isExpanded;
+						let filterId;
+
+						if (has(filter, 'isNew')) {
+							filterId = filter['uniqueIndex'];
+						} else {
+							filterId = filter['id'];
 						}
-					);
 
-					dispatch({
-						type: 'SET_ACCORDION_STATES',
-						payload: newStates,
-					});
+						if (error) {
+							newStates[filterId] = {
+								accordionStatus: true,
+								currentTab: 'general',
+							};
+						} else {
+							newStates[filterId] = {
+								...filterStates[filterId],
+								accordionStatus: false,
+							};
+						}
+					}
+
+					dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 
 					if ('filters' !== currentTab) {
 						dispatch({

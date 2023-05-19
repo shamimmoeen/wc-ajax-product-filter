@@ -85,6 +85,10 @@ const Settings = () => {
 		setProV2UpgradeModalOpen(false);
 	};
 
+	const handleTabChange = (newTab) => {
+		dispatch({ type: 'SET_CURRENT_TAB', payload: newTab });
+	};
+
 	useEffect(() => {
 		if (!isDirty) {
 			return;
@@ -319,8 +323,8 @@ const Settings = () => {
 							</div>
 
 							<CustomTabPanel
-								state={state}
-								dispatch={dispatch}
+								currentTab={currentTab}
+								onChangeTab={handleTabChange}
 								className='__tab_panel __settings_tab'
 								activeClass='active-tab'
 								tabs={tabs}

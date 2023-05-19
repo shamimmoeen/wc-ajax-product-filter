@@ -63,6 +63,9 @@ class WCAPF_Form_Filters_Utils {
 
 		if ( $form_filters ) {
 			foreach ( $form_filters as $filter_order => $filter ) {
+				$is_new       = isset( $filter['isNew'] ) ? $filter['isNew'] : '';
+				$unique_index = isset( $filter['uniqueIndex'] ) ? $filter['uniqueIndex'] : '';
+
 				list(
 					$filter_title,
 					$filter_id,
@@ -182,6 +185,15 @@ class WCAPF_Form_Filters_Utils {
 
 				$sanitized = $this->sanitize_filter_data( $filter, $migrate );
 
+				// Remove 'isNew', 'uniqueIndex' when saving into the database.
+				if ( isset( $sanitized['isNew'] ) ) {
+					unset( $sanitized['isNew'] );
+				}
+
+				if ( isset( $sanitized['uniqueIndex'] ) ) {
+					unset( $sanitized['uniqueIndex'] );
+				}
+
 				$post_arr = array(
 					'ID'           => $new_filter_id,
 					'post_content' => maybe_serialize( $sanitized ),
@@ -196,6 +208,15 @@ class WCAPF_Form_Filters_Utils {
 				$new_filter_id = wp_update_post( $post_arr, true );
 
 				if ( ! is_wp_error( $new_filter_id ) ) {
+					// Add 'isNew', 'uniqueIndex' when returning the filter data for React UI.
+					if ( $is_new ) {
+						$sanitized['isNew'] = $is_new;
+					}
+
+					if ( $unique_index ) {
+						$sanitized['uniqueIndex'] = $unique_index;
+					}
+
 					$filters[] = $sanitized;
 				}
 			}
