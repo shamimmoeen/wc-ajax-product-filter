@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { mergeSelectOptions } from './utils';
+import { merge } from 'lodash';
 
 export function defaultLocation() {
 	return {
@@ -13,9 +14,7 @@ export function defaultLocation() {
 export function defaultFormSettings() {
 	const defaultSettings = wcapf_admin_params.form_default_data;
 
-	defaultSettings.form_locations = [defaultLocation()];
-
-	return defaultSettings;
+	return merge({}, defaultSettings, { form_locations: [defaultLocation()] });
 }
 
 export function formLayoutOptions() {

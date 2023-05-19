@@ -56,7 +56,7 @@ export function newFilterData(index, formFilters) {
 		data = { type: 'post-meta' };
 	}
 
-	return merge(filterDefaultData(), data, {
+	return merge({}, filterDefaultData(), data, {
 		isNew: true,
 		uniqueIndex: index,
 	});

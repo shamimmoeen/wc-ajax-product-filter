@@ -100,7 +100,7 @@ const Form = () => {
 
 				dispatch({
 					type: 'SET_FORM_SETTINGS',
-					payload: merge(defaultFormSettings(), formSettings),
+					payload: merge({}, defaultFormSettings(), formSettings),
 				});
 
 				dispatch({ type: 'SET_LOADING', payload: false });
