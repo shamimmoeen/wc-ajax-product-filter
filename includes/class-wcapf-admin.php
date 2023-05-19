@@ -337,10 +337,10 @@ class WCAPF_Admin {
 		}
 
 		if ( 'wcapf_page_wcapf-settings' === $screen_id ) {
+			$params['default_settings'] = WCAPF_Default_Data::default_settings();
+
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = $utils::get_settings();
-
-			$params['default_settings'] = WCAPF_Default_Data::default_settings();
 
 			$params['global_filter_keys'] = $utils::get_filter_keys( true );
 		}
