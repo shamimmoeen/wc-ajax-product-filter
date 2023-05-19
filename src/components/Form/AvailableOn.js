@@ -243,7 +243,7 @@ const AvailableOn = () => {
 		<div className='__form_control __available_on'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor='scroll_window'>
+					<label>
 						{__('Available on', 'wc-ajax-product-filter')}
 						{proTag(true)}
 						{WCAPF_PRO && (

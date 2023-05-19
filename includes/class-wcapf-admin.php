@@ -304,10 +304,14 @@ class WCAPF_Admin {
 		$user_roles = $utils::user_role_options();
 
 		if ( 'toplevel_page_wcapf' === $screen_id ) {
+			$params['form_default_data'] = WCAPF_Default_Data::form_default_data();
+
 			if ( ! isset( $_GET['id'] ) ) {
 				$params['forms'] = $utils::get_forms();
 			} else {
 				$settings = $helper::get_settings();
+
+				$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
 
 				$params['filter_types']    = $utils::get_filter_types();
 				$params['meta_keys']       = $helper::get_available_meta_keys();
@@ -335,6 +339,8 @@ class WCAPF_Admin {
 		if ( 'wcapf_page_wcapf-settings' === $screen_id ) {
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = $utils::get_settings();
+
+			$params['default_settings'] = WCAPF_Default_Data::default_settings();
 
 			$params['global_filter_keys'] = $utils::get_filter_keys( true );
 		}

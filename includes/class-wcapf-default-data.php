@@ -19,6 +19,11 @@ class WCAPF_Default_Data {
 		return array(
 			'form_locations' => '',
 			'priority'       => '0',
+			// 'form_layout' => 'vertical',
+			// 'columns_per_row' => '4',
+			// 'show_form_on_top_of_products' => '1',
+			// 'filter_mode' => 'immediate',
+			// 'form_visibility' => 'always_display',
 			'show_clear_btn' => '',
 		);
 	}
