@@ -371,7 +371,6 @@ export function filterTypeDependentFields() {
 		'taxHierarchical',
 		'meta_key',
 		'component',
-		'isACF',
 		'display_type',
 		'native_display_type_layout',
 		'custom_display_type_layout',
@@ -398,7 +397,6 @@ export function filterTypeDependentFields() {
 		'sort_by_options',
 		'per_page_options',
 		// Post Meta
-		'is_acf',
 		'value_type',
 		'value_decimal',
 		'value_decimal_places',

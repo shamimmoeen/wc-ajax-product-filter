@@ -44,7 +44,6 @@ const General = ({ index }) => {
 		meta_key,
 		component,
 		value_type,
-		// is_acf,
 		value_decimal,
 		value_decimal_places,
 		date_input_format,
@@ -234,20 +233,6 @@ const General = ({ index }) => {
 					/>
 				</>
 			)}
-
-			{/* {'post-meta' === type && 'text' === value_type && (
-				<Checkbox
-					id={'is_acf'}
-					index={index}
-					label={__('Is ACF Field', 'wc-ajax-product-filter')}
-					description={__(
-						'Enable this if this is a field of <b>Advanced Custom Fields</b>. If enabled the labels and values will be synced directly.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={is_acf}
-					onChange={handleCheckboxChange}
-				/>
-			)} */}
 
 			{'post-meta' === type && 'number' === value_type && (
 				<>
