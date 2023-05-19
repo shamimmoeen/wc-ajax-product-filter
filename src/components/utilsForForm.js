@@ -6,21 +6,16 @@ export function defaultLocation() {
 		location: 'product_archive_pages',
 		sub_location: '',
 		results_method: '',
-		product_query: wcapf_admin_params.default_product_query,
+		product_query: wcapf_admin_params.default_product_query || {},
 	};
 }
 
 export function defaultFormSettings() {
-	return {
-		form_locations: [defaultLocation()],
-		priority: '0',
-		// form_layout: 'vertical',
-		// columns_per_row: '4',
-		// show_form_on_top_of_products: '1',
-		// filter_mode: 'immediate',
-		// form_visibility: 'always_display',
-		show_clear_btn: '',
-	};
+	const defaultSettings = wcapf_admin_params.form_default_data;
+
+	defaultSettings.form_locations = [defaultLocation()];
+
+	return defaultSettings;
 }
 
 export function formLayoutOptions() {
