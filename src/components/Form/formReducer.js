@@ -8,7 +8,8 @@ export const initialState = {
 	formId,
 	filterKeys: [],
 	currentTab: 'filters',
-	accordionStates: [],
+	addFilterIndex: 1,
+	filterStates: {},
 	formFilters: [],
 	formSettings: {},
 	saveError: '',
@@ -34,8 +35,11 @@ const formReducer = (state, action) => {
 		case 'SET_CURRENT_TAB':
 			return { ...state, currentTab: action.payload };
 
-		case 'SET_ACCORDION_STATES':
-			return { ...state, accordionStates: action.payload };
+		case 'INCREMENT_ADD_FILTER_INDEX':
+			return { ...state, addFilterIndex: state.addFilterIndex + 1 };
+
+		case 'SET_FILTER_STATES':
+			return { ...state, filterStates: action.payload };
 
 		case 'SET_FORM_FILTERS':
 			return { ...state, formFilters: action.payload };

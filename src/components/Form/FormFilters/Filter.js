@@ -1,8 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useState } from '@wordpress/element';
-import { Button, Dropdown, TabPanel, Notice } from '@wordpress/components';
+import { Button, Dropdown, Notice } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
 import classnames from 'classnames';
+import { omit } from 'lodash';
 import { useForm } from '../FormContext';
 import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
@@ -25,6 +26,7 @@ import {
 	removeFilterDeletedNotices,
 } from '../../notices';
 import { wpVersion } from '../../utils';
+import CustomTabPanel from '../../CustomTabPanel';
 
 const onlyWithType = componentsWithTypeOnly();
 
@@ -35,16 +37,46 @@ const Filter = ({ index }) => {
 
 	const [deleteBtnBusy, setDeleteBtnBusy] = useState(false);
 
-	const { filterKeys, accordionStates, formFilters } = state;
+	const { filterKeys, filterStates, formFilters } = state;
 
 	const filter = formFilters[index];
 
-	const { id, type, meta_key, component } = filter;
+	const { id, uniqueIndex, type, meta_key, component } = filter;
 
-	const isExpanded = accordionStates[index];
+	let filterState;
+
+	if (filter.isNew) {
+		filterState = filterStates[uniqueIndex];
+	} else {
+		filterState = filterStates[id];
+	}
+
+	const isExpanded = filterState?.accordionStatus || false;
+	const currentTab = filterState?.currentTab || 'general';
 
 	const dragHandleRef = useRef('');
 	const toggleIconRef = useRef('');
+
+	const updateFilterStates = (key, value) => {
+		let newStates;
+
+		if (filter.isNew) {
+			newStates = {
+				...filterStates,
+				[uniqueIndex]: {
+					...filterStates[uniqueIndex],
+					[key]: value,
+				},
+			};
+		} else {
+			newStates = {
+				...filterStates,
+				[id]: { ...filterStates[id], [key]: value },
+			};
+		}
+
+		dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
+	};
 
 	const toggleExpand = (e) => {
 		removeFilterDeletedNotices();
@@ -53,21 +85,19 @@ const Filter = ({ index }) => {
 			return;
 		}
 
-		const newStates = accordionStates.map((state, _index) => {
-			if (_index === index) {
-				return !isExpanded;
-			}
+		const accordionStatus = !isExpanded;
 
-			return state;
-		});
-
-		dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+		updateFilterStates('accordionStatus', accordionStatus);
 	};
 
 	const closeFilter = (e) => {
 		toggleExpand(e);
 
 		toggleIconRef.current.focus();
+	};
+
+	const handleFilterTabChange = (newTab) => {
+		updateFilterStates('currentTab', newTab);
 	};
 
 	const dispatchDeleteFilter = () => {
@@ -79,21 +109,22 @@ const Filter = ({ index }) => {
 			payload: _formFilters,
 		});
 
-		const _newAccordionStates = [...accordionStates];
-		_newAccordionStates.splice(index, 1);
+		let filterId;
 
-		dispatch({
-			type: 'SET_ACCORDION_STATES',
-			payload: _newAccordionStates,
-		});
+		if (filter.isNew) {
+			filterId = uniqueIndex;
+		} else {
+			filterId = id;
+		}
+
+		const newStates = omit(filterStates, filterId);
+
+		dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 
 		if (id) {
 			const _filterKeys = filterKeys.filter((data) => data.id !== id);
 
-			dispatch({
-				type: 'SET_FILTER_KEYS',
-				payload: _filterKeys,
-			});
+			dispatch({ type: 'SET_FILTER_KEYS', payload: _filterKeys });
 		}
 
 		setDirty();
@@ -247,11 +278,12 @@ const Filter = ({ index }) => {
 			</div>
 			{isExpanded && (
 				<div className='__accordion_body'>
-					<TabPanel
+					<CustomTabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='general'
 						tabs={filterTabs}
+						currentTab={currentTab}
+						onChangeTab={handleFilterTabChange}
 					>
 						{({ name }) => (
 							<>
@@ -267,7 +299,7 @@ const Filter = ({ index }) => {
 								{filterInner(name)}
 							</>
 						)}
-					</TabPanel>
+					</CustomTabPanel>
 
 					<div className='__action_buttons'>
 						<Button variant='link' onClick={closeFilter}>

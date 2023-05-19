@@ -9,26 +9,32 @@ import CustomTabPanel from '../CustomTabPanel';
 const FormTabPanel = () => {
 	const { state, dispatch } = useForm();
 
-	const { isLoading, currentTab, accordionStates } = state;
+	const { isLoading, currentTab, filterStates } = state;
 
+	const handleTabChange = (newTab) => {
+		dispatch({ type: 'SET_CURRENT_TAB', payload: newTab });
+	};
+
+	// Reset the accordion and tab states of form filters when moving to the 'settings' tab.
 	useEffect(() => {
 		if ('settings' === currentTab) {
-			const newStates = accordionStates.map((_isExpanded) => {
-				if (_isExpanded) {
-					return false;
-				}
+			const newStates = {};
 
-				return _isExpanded;
-			});
+			for (const id in filterStates) {
+				newStates[id] = {
+					accordionStatus: false,
+					currentTab: 'general',
+				};
+			}
 
-			dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+			dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 		}
 	}, [currentTab]);
 
 	return (
 		<CustomTabPanel
-			state={state}
-			dispatch={dispatch}
+			currentTab={currentTab}
+			onChangeTab={handleTabChange}
 			className='__tab_panel __form_tab_panel'
 			activeClass='active-tab'
 			tabs={[

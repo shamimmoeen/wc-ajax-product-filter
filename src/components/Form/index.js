@@ -70,33 +70,27 @@ const Form = () => {
 					}
 				}
 
-				dispatch({
-					type: 'SET_FILTER_KEYS',
-					payload: filterKeys,
-				});
+				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
-				// The accordion states of form filters.
-				const accordionStates = [];
+				// The accordion and tab states of form filters.
+				const filterStates = {};
 
-				// TODO: Remove commented codes.
 				for (let index = 0; index < formFilters.length; index++) {
+					const filterId = formFilters[index]['id'];
+					let accordionStatus = false; // False means collapsed.
+					let currentTab = 'general'; // The name of the first tab.
+
 					// if (index === 0) {
-					// 	accordionStates[index] = true;
-					// } else {
-					// 	accordionStates[index] = false;
+					// 	accordionStatus = true;
+					// 	currentTab = 'advanced';
 					// }
-					accordionStates[index] = false;
+
+					filterStates[filterId] = { accordionStatus, currentTab };
 				}
 
-				dispatch({
-					type: 'SET_ACCORDION_STATES',
-					payload: accordionStates,
-				});
+				dispatch({ type: 'SET_FILTER_STATES', payload: filterStates });
 
-				dispatch({
-					type: 'SET_FORM_FILTERS',
-					payload: formFilters,
-				});
+				dispatch({ type: 'SET_FORM_FILTERS', payload: formFilters });
 
 				dispatch({
 					type: 'SET_FORM_SETTINGS',
