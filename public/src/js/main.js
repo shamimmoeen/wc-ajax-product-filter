@@ -54,11 +54,12 @@ const wcapf_params = wcapf_params || {
 ( function( $, window ) {
 
 	const _delay = parseInt( wcapf_params.filter_input_delay );
-	const delay  = _delay >= 0 ? _delay : 800;
+	const delay  = _delay >= 0 ? _delay : 300;
 
 	const isPro = wcapf_params.wcapf_pro;
 
-	const $body = $( 'body' );
+	const $body     = $( 'body' );
+	const $document = $( document );
 
 	const instanceIds = [];
 
@@ -340,7 +341,7 @@ const wcapf_params = wcapf_params || {
 				WCAPF.scrollTo();
 			}
 
-			$body.trigger( 'wcapf_before_fetching_products', [ triggeredBy ] );
+			$document.trigger( 'wcapf_before_fetching_products', [ triggeredBy ] );
 		},
 		destroyTippyInstances: function() {
 			if ( wcapf_params.use_tippyjs ) {
@@ -358,7 +359,7 @@ const wcapf_params = wcapf_params || {
 			// Maybe good for performance.
 			WCAPF.destroyTippyInstances();
 
-			$body.trigger( 'wcapf_before_updating_products', [ $response, triggeredBy ] );
+			$document.trigger( 'wcapf_before_updating_products', [ $response, triggeredBy ] );
 		},
 		afterUpdatingProducts: function( $response, triggeredBy ) {
 			WCAPF.updateProductsCountResult( $response );
@@ -388,7 +389,7 @@ const wcapf_params = wcapf_params || {
 				eval( wcapf_params.custom_scripts );
 			}
 
-			$body.trigger( 'wcapf_after_updating_products', [ $response, triggeredBy ] );
+			$document.trigger( 'wcapf_after_updating_products', [ $response, triggeredBy ] );
 		},
 		filterProducts: function( triggeredBy = 'filter' ) {
 			WCAPF.beforeFetchingProducts( triggeredBy );
@@ -899,8 +900,6 @@ const wcapf_params = wcapf_params || {
 						$minValue.val( minValue );
 						$maxValue.val( maxValue );
 					}
-
-					$body.trigger( 'wcapf-nouislider-update', [ $item, values ] );
 				} );
 
 				function filterProductsAccordingToSlider( values ) {
@@ -923,7 +922,14 @@ const wcapf_params = wcapf_params || {
 				}
 
 				slider.noUiSlider.on( 'change', function( values ) {
-					filterProductsAccordingToSlider( values );
+					// Clear any previously set timer before setting a fresh one
+					clearTimeout( $item.data( 'timer' ) );
+
+					$item.data( 'timer', setTimeout( function() {
+						$item.removeData( 'timer' );
+
+						filterProductsAccordingToSlider( values );
+					}, delay ) );
 				} );
 
 				$minValue.on( 'input', function() {
@@ -1069,7 +1075,7 @@ const wcapf_params = wcapf_params || {
 	/**
 	 * Make it compatible with other plugins.
 	 */
-	$( 'body' ).on( 'wcapf_after_updating_products', function() {
+	$( document ).on( 'wcapf_after_updating_products', function() {
 		// woo-variation-swatches
 		$( document ).trigger( 'woo_variation_swatches_pro_init' );
 	} );

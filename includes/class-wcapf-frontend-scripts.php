@@ -215,7 +215,7 @@ class WCAPF_Frontend_Scripts {
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
-			'filter_input_delay'                       => 800, // In milliseconds.
+			'filter_input_delay'                       => 300, // In milliseconds.
 			'chosen_display_selected_options'          => false,
 			'chosen_no_results_text'                   => $chosen_no_results_text,
 			'chosen_options_none_text'                 => $chosen_options_none_text,
