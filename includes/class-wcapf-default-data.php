@@ -97,6 +97,7 @@ class WCAPF_Default_Data {
 			'results_count_markup'             => '',
 			'sort_by_prefix'                   => '',
 			'per_page_prefix'                  => '',
+			'input_delay'                      => '300',
 			'more_selectors'                   => '',
 			'custom_scripts'                   => '',
 			'author_roles'                     => array( 'administrator', 'shop_manager' ),

@@ -7,6 +7,7 @@ import { foundProVersion } from '../../utils';
 import { useSettings } from '../SettingsContext';
 import useSettingsData from '../useSettingsData';
 import Textarea from '../../Field/Textarea';
+import Number from '../../Field/Number';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -38,6 +39,7 @@ const Others = () => {
 			results_count_markup,
 			sort_by_prefix,
 			per_page_prefix,
+			input_delay,
 			more_selectors,
 			custom_scripts,
 			author_roles,
@@ -193,6 +195,19 @@ const Others = () => {
 			)}
 
 			<div className='__form_fields_separator' />
+
+			<Number
+				id={'input_delay'}
+				label={__('Input Delay', 'wc-ajax-product-filter')}
+				description={__(
+					'Specify the delay (in milliseconds) before triggering the filter action when the user interacts with the input fields. Default is 300.',
+					'wc-ajax-product-filter'
+				)}
+				value={input_delay}
+				onChange={handleTextFieldChange}
+				type={'number'}
+				min={0}
+			/>
 
 			{WCAPF_PRO && (
 				<Text
