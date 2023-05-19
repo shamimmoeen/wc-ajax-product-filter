@@ -267,7 +267,6 @@ class WCAPF_Default_Data {
 			'taxHierarchical'                       => '',
 			'meta_key'                              => '',
 			'component'                             => '',
-			'isACF'                                 => '',
 			'value_type'                            => 'text',
 			'field_key'                             => '',
 			// Taxonomy
@@ -327,7 +326,6 @@ class WCAPF_Default_Data {
 			// Product Status
 			'product_status_options'                => array(),
 			// Post Meta
-			'is_acf'                                => '',
 			'value_decimal'                         => '',
 			'value_decimal_places'                  => '2',
 			'date_input_format'                     => 'timestamp',
