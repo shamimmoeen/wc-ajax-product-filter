@@ -158,18 +158,17 @@ class WCAPF_Hooks {
 		$loading_animation = WCAPF_Helper::wcapf_option( 'loading_animation', 'overlay-with-icon' );
 
 		if ( 'overlay-with-icon' === $loading_animation ) {
-			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Spinner' );
+			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Dual-Ring' );
 
 			$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_image . '.svg';
-			$image_src  = WCAPF_PLUGIN_URL . '/public/loaders/' . $loading_image . '.svg';
 
 			// Default image.
 			if ( ! file_exists( $image_file ) ) {
-				$image_src = WCAPF_PLUGIN_URL . '/public/loaders/Spinner.svg';
+				$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/Dual-Ring.svg';
 			}
 
 			$image_size = WCAPF_Helper::wcapf_option( 'loading_image_size', '60' ) . 'px';
-			$image      = file_get_contents( $image_src );
+			$image      = file_get_contents( $image_file );
 
 			$html .= '<div class="wcapf-loader-image" style="width: ' . $image_size . '">' . $image . '</div>';
 		}
