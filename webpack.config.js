@@ -9,6 +9,5 @@ module.exports = {
 		form: path.resolve(process.cwd(), 'src', 'form.js'),
 		settings: path.resolve(process.cwd(), 'src', 'settings.js'),
 		'seo-rules': path.resolve(process.cwd(), 'src', 'seo-rules.js'),
-		'form-filters-block': path.resolve(process.cwd(), 'block', 'index.js'),
 	},
 };

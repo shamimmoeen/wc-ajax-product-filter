@@ -1,8 +1,0 @@
-{
-	"apiVersion": 2,
-	"name": "wcapf/form-filters-block",
-	"title": "WCAPF - Product Filter Form",
-	"description": "Display a form to filter products in your store.",
-	"category": "text",
-	"editorScript": "file:../build/form-filters-block.js"
-}
