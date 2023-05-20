@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { useRef } from '@wordpress/element';
 import { Button, Flex, Icon, Notice } from '@wordpress/components';
 import { plus } from '@wordpress/icons';
 import { ReactSortable } from 'react-sortablejs';
@@ -14,7 +13,6 @@ import V4ReviewFiltersNotice from '../../V4ReviewFiltersNotice';
 const FormFilters = () => {
 	const { state, dispatch } = useForm();
 	const { setDirty } = useFormData(state, dispatch);
-	const filterRefs = useRef({});
 
 	const { addFilterIndex, filterStates, formFilters, saveError } = state;
 
@@ -52,16 +50,6 @@ const FormFilters = () => {
 		setDirty();
 
 		dispatch({ type: 'INCREMENT_ADD_FILTER_INDEX' });
-	};
-
-	// Scroll the expanded filter into view.
-	const handleScrollToViewPort = (filterId) => {
-		if (filterRefs.current[filterId]) {
-			filterRefs.current[filterId].scrollIntoView({
-				behavior: 'smooth',
-				block: 'start',
-			});
-		}
 	};
 
 	return (
@@ -111,10 +99,6 @@ const FormFilters = () => {
 									key={filterId}
 									index={index}
 									filter={filter}
-									ref={(el) =>
-										(filterRefs.current[filterId] = el)
-									}
-									onExpand={handleScrollToViewPort}
 								/>
 							);
 						})}
