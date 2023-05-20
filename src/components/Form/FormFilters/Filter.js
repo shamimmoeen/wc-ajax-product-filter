@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useRef, useState, forwardRef } from '@wordpress/element';
+import { useRef, useState } from '@wordpress/element';
 import { Button, Dropdown, Notice } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
 import classnames from 'classnames';
@@ -30,7 +30,7 @@ import CustomTabPanel from '../../CustomTabPanel';
 
 const onlyWithType = componentsWithTypeOnly();
 
-const Filter = forwardRef(({ index, onExpand }, ref) => {
+const Filter = ({ index }) => {
 	const { state, dispatch } = useForm();
 
 	const { setDirty } = useFormData(state, dispatch);
@@ -75,11 +75,6 @@ const Filter = forwardRef(({ index, onExpand }, ref) => {
 		}
 
 		const accordionStatus = !isExpanded;
-
-		// Scroll the expanded filter into view.
-		if (accordionStatus) {
-			onExpand(filterId);
-		}
 
 		updateFilterStates('accordionStatus', accordionStatus);
 	};
@@ -212,7 +207,7 @@ const Filter = forwardRef(({ index, onExpand }, ref) => {
 	}
 
 	return (
-		<div className='__item' ref={ref}>
+		<div className='__item'>
 			<div className={topClass} onClick={toggleExpand}>
 				<div className='__drag_handle_wrapper' ref={dragHandleRef}>
 					<Icon className='__drag_handler' icon={dragHandle} />
@@ -336,6 +331,6 @@ const Filter = forwardRef(({ index, onExpand }, ref) => {
 			)}
 		</div>
 	);
-});
+};
 
 export default Filter;
