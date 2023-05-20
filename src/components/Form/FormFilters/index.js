@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { useRef } from '@wordpress/element';
 import { Button, Flex, Icon, Notice } from '@wordpress/components';
 import { plus } from '@wordpress/icons';
 import { ReactSortable } from 'react-sortablejs';
@@ -13,6 +14,7 @@ import V4ReviewFiltersNotice from '../../V4ReviewFiltersNotice';
 const FormFilters = () => {
 	const { state, dispatch } = useForm();
 	const { setDirty } = useFormData(state, dispatch);
+	const filterRefs = useRef({});
 
 	const { addFilterIndex, filterStates, formFilters, saveError } = state;
 
@@ -52,8 +54,18 @@ const FormFilters = () => {
 		dispatch({ type: 'INCREMENT_ADD_FILTER_INDEX' });
 	};
 
+	// Scroll the expanded filter into view.
+	const handleScrollToViewPort = (filterId) => {
+		if (filterRefs.current[filterId]) {
+			filterRefs.current[filterId].scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			});
+		}
+	};
+
 	return (
-		<div className='__filters_drop_zone'>
+		<div className='__filters_drop_zone' id='__filters_drop_zone'>
 			{isEmpty(formFilters) ? (
 				<NoFiltersFound addFilter={addFilter} />
 			) : (
@@ -90,23 +102,21 @@ const FormFilters = () => {
 						className='__form_filters'
 					>
 						{formFilters.map((filter, index) => {
-							if (filter.isNew) {
-								return (
-									<Filter
-										key={filter.uniqueIndex}
-										index={index}
-										filter={filter}
-									/>
-								);
-							} else {
-								return (
-									<Filter
-										key={filter.id}
-										index={index}
-										filter={filter}
-									/>
-								);
-							}
+							const filterId = filter.isNew
+								? filter.uniqueIndex
+								: filter.id;
+
+							return (
+								<Filter
+									key={filterId}
+									index={index}
+									filter={filter}
+									ref={(el) =>
+										(filterRefs.current[filterId] = el)
+									}
+									onExpand={handleScrollToViewPort}
+								/>
+							);
 						})}
 					</ReactSortable>
 
