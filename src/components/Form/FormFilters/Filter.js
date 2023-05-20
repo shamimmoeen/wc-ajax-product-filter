@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useRef, useState } from '@wordpress/element';
+import { useRef, useState, forwardRef } from '@wordpress/element';
 import { Button, Dropdown, Notice } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
 import classnames from 'classnames';
@@ -30,7 +30,7 @@ import CustomTabPanel from '../../CustomTabPanel';
 
 const onlyWithType = componentsWithTypeOnly();
 
-const Filter = ({ index }) => {
+const Filter = forwardRef(({ index, onExpand }, ref) => {
 	const { state, dispatch } = useForm();
 
 	const { setDirty } = useFormData(state, dispatch);
@@ -43,14 +43,15 @@ const Filter = ({ index }) => {
 
 	const { id, uniqueIndex, type, meta_key, component } = filter;
 
-	let filterState;
+	let filterId;
 
 	if (filter.isNew) {
-		filterState = filterStates[uniqueIndex];
+		filterId = uniqueIndex;
 	} else {
-		filterState = filterStates[id];
+		filterId = id;
 	}
 
+	const filterState = filterStates[filterId] || {};
 	const isExpanded = filterState?.accordionStatus || false;
 	const currentTab = filterState?.currentTab || 'general';
 
@@ -58,22 +59,10 @@ const Filter = ({ index }) => {
 	const toggleIconRef = useRef('');
 
 	const updateFilterStates = (key, value) => {
-		let newStates;
-
-		if (filter.isNew) {
-			newStates = {
-				...filterStates,
-				[uniqueIndex]: {
-					...filterStates[uniqueIndex],
-					[key]: value,
-				},
-			};
-		} else {
-			newStates = {
-				...filterStates,
-				[id]: { ...filterStates[id], [key]: value },
-			};
-		}
+		const newStates = {
+			...filterStates,
+			[filterId]: { ...filterStates[filterId], [key]: value },
+		};
 
 		dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 	};
@@ -86,6 +75,11 @@ const Filter = ({ index }) => {
 		}
 
 		const accordionStatus = !isExpanded;
+
+		// Scroll the expanded filter into view.
+		if (accordionStatus) {
+			onExpand(filterId);
+		}
 
 		updateFilterStates('accordionStatus', accordionStatus);
 	};
@@ -108,14 +102,6 @@ const Filter = ({ index }) => {
 			type: 'SET_FORM_FILTERS',
 			payload: _formFilters,
 		});
-
-		let filterId;
-
-		if (filter.isNew) {
-			filterId = uniqueIndex;
-		} else {
-			filterId = id;
-		}
 
 		const newStates = omit(filterStates, filterId);
 
@@ -226,7 +212,7 @@ const Filter = ({ index }) => {
 	}
 
 	return (
-		<div className='__item'>
+		<div className='__item' ref={ref}>
 			<div className={topClass} onClick={toggleExpand}>
 				<div className='__drag_handle_wrapper' ref={dragHandleRef}>
 					<Icon className='__drag_handler' icon={dragHandle} />
@@ -350,6 +336,6 @@ const Filter = ({ index }) => {
 			)}
 		</div>
 	);
-};
+});
 
 export default Filter;
