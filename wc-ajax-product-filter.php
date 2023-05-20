@@ -129,32 +129,3 @@ function wcapf_pp_fix_jquery_migrate_issue( $scripts ) {
 
 // TODO: Remove this
 add_action( 'wp_default_scripts', 'wcapf_pp_fix_jquery_migrate_issue' );
-
-add_action( 'enqueue_block_editor_assets', 'wcapf_enqueue_block_assets' );
-function wcapf_enqueue_block_assets() {
-	$file = 'form-filters-block';
-
-	$asset_path = WCAPF_PLUGIN_DIR . '/build/' . $file . '.asset.php';
-
-	if ( ! file_exists( $asset_path ) ) {
-		/** @noinspection PhpMultipleClassDeclarationsInspection */
-		throw new Error(
-			'You need to run `npm start` or `npm run build` for the ' . $file . ' admin ui'
-		);
-	}
-
-	$asset_file = require( $asset_path );
-
-	wp_enqueue_script(
-		'wcapf-form-filters-block',
-		plugin_dir_url( __FILE__ ) . 'build/form-filters-block.js',
-		$asset_file['dependencies'],
-		$asset_file['version']
-	);
-}
-
-add_action( 'init', 'wcapf_register_form_filters_block_in_php' );
-
-function wcapf_register_form_filters_block_in_php() {
-	register_block_type( WCAPF_PLUGIN_DIR . '/build' );
-}
