@@ -66,7 +66,7 @@ class WCAPF_Default_Data {
 			'slide_out_panel_position'         => 'left',
 			// Loader & Scroll To
 			'loading_animation'                => 'overlay-with-icon',
-			'loading_icon'                     => 'Spinner',
+			'loading_icon'                     => 'Dual-Ring',
 			'loading_image'                    => '',
 			'loading_image_src'                => '',
 			'loading_image_size'               => '60',
