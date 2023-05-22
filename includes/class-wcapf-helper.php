@@ -629,13 +629,15 @@ class WCAPF_Helper {
 				$filter_key      = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
 				$_active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 
-				if ( array_key_exists( $filter_key, $grouped ) ) {
-					$old = $grouped[ $filter_key ]['active_filters'];
-					$new = $old + $_active_filters;
+				if ( $_active_filters ) {
+					if ( array_key_exists( $filter_key, $grouped ) ) {
+						$old = $grouped[ $filter_key ]['active_filters'];
+						$new = $old + $_active_filters;
 
-					$grouped[ $filter_key ]['active_filters'] = $new;
-				} else {
-					$grouped[ $filter_key ] = $filter_data;
+						$grouped[ $filter_key ]['active_filters'] = $new;
+					} else {
+						$grouped[ $filter_key ] = $filter_data;
+					}
 				}
 			}
 
