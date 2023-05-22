@@ -43,7 +43,6 @@ class WCAPF_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		// add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_action( 'wp_footer', array( $this, 'insert_loader' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
@@ -57,34 +56,6 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_before_template_part', array( $this, 'active_filters_before_no_products' ), - 10 );
 		add_filter( 'wcapf_form_filter_data', array( $this, 'set_form_filter_data' ) );
 		add_action( 'woocommerce_product_query', array( $this, 'set_query' ) );
-	}
-
-	/**
-	 *
-	 * TODO: Remove from production build.
-	 *
-	 * @return void
-	 */
-	public function content_top() {
-		global $wp_query, $wcapf_query;
-
-		$query = null;
-
-		if ( is_shop() || is_product_taxonomy() ) {
-			$query = $wp_query;
-		} else if ( $wcapf_query ) {
-			$query = $wcapf_query;
-		}
-
-		echo '<input type="checkbox" id="show_query"><label for="show_query">Show Query</label>';
-
-		echo '<div class="query">';
-		echo '<pre>';
-		print_r( $query );
-		echo '</pre>';
-		echo '</div>';
-
-		echo '<style>.query {display: none} #show_query:checked ~ .query {display: block;}</style>';
 	}
 
 	/**
