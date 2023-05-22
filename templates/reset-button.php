@@ -13,6 +13,10 @@
  * @var string $show_always Whether to show the reset filters button if no filter is applied.
  */
 
+if ( ! WCAPF_Helper::found_wcapf() ) {
+	return;
+}
+
 $helper = new WCAPF_Helper;
 
 $all_filters = $helper::get_active_filters_data();

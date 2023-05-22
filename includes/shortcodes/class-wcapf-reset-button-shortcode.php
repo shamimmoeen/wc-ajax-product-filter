@@ -46,4 +46,4 @@ class WCAPF_Reset_Button_Shortcode {
 
 }
 
-add_shortcode( 'wcapf_reset_btn', array( WCAPF_Reset_Button_Shortcode::get_instance(), 'shortcode_output' ) );
+add_shortcode( 'wcapf_reset_button', array( WCAPF_Reset_Button_Shortcode::get_instance(), 'shortcode_output' ) );

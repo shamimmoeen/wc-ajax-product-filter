@@ -18,6 +18,10 @@
  * @var string $show_clear_btn       Whether to show the clear filter button in heading or not.
  */
 
+if ( ! WCAPF_Helper::found_wcapf() ) {
+	return;
+}
+
 $layout = ! empty( $layout ) ? $layout : 'simple';
 $title  = ! empty( $title ) ? $title : '';
 
