@@ -500,13 +500,6 @@ const wcapf_params = wcapf_params || {
 				return;
 			}
 
-			const hostname = location.hostname;
-
-			// TODO: Remove from production build.
-			if ( 'localhost' === hostname ) {
-				url = url.replace( 'http://wcfilter-2.test', '//localhost:3000' );
-			}
-
 			if ( wcapf_params.disable_ajax ) {
 				window.location.href = url;
 			} else {
