@@ -6,6 +6,7 @@
 .eslintignore
 .eslintrc
 .git
+.eslintrc.js
 .gitattributes
 .gitignore
 .github
@@ -29,6 +30,7 @@ phpunit.xml.dist
 multisite.xml
 multisite.xml.dist
 .phpcs.xml
+.prettierrc
 phpcs.xml
 .phpcs.xml.dist
 phpcs.xml.dist
@@ -42,4 +44,10 @@ node_modules
 *.sql
 *.tar.gz
 *.zip
+.dist
+.vscode
+
+# Ignore source codes.
+public/lib/nouislider/less
+public/src
 src
