@@ -484,7 +484,7 @@ class WCAPF_Walker {
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				if ( 'label' === $display_type ) {
-					$wrapper_classes[] = 'style-' . WCAPF_Helper::wcapf_option( 'active_label_style' );
+					$wrapper_classes[] = 'default-primary-style';
 				}
 
 				if ( $show_count ) {
@@ -1038,7 +1038,7 @@ class WCAPF_Walker {
 		$all_items_label = $this->all_items_label;
 
 		if ( 'multiselect' === $display_type && $use_chosen ) {
-			$input_classes .= ' style-' . WCAPF_Helper::wcapf_option( 'active_label_style' );
+			$input_classes .= ' default-primary-style';
 		}
 
 		if ( 'multiselect' === $display_type ) {

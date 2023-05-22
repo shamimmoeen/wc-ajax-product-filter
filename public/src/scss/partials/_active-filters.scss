@@ -46,11 +46,6 @@
 }
 
 .wcapf-active-filter-items-wrapper {
-	> .wcapf-active-filter-items,
-	> .wcapf-active-filter-group {
-		margin: 0 0 calc(var(--wcapf-active-filter-item-margin) * -1);
-	}
-
 	.wcapf-active-filter-item {
 		@include button;
 

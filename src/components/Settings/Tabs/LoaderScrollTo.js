@@ -109,7 +109,6 @@ const LoaderScrollTo = () => {
 			scroll_window,
 			scroll_window_custom_element,
 			scroll_on,
-			scroll_window_delay,
 			disable_scroll_animation,
 		},
 	} = state;
@@ -293,7 +292,7 @@ const LoaderScrollTo = () => {
 							id={'scroll_on'}
 							label={__('Scroll on', 'wc-ajax-product-filter')}
 							description={__(
-								'Determines the event in which we scroll the window.',
+								'Specify the event for which you want to scroll the window.',
 								'wc-ajax-product-filter'
 							)}
 							value={scrollOn}
@@ -321,21 +320,6 @@ const LoaderScrollTo = () => {
 
 					{WCAPF_PRO && (
 						<>
-							<Number
-								id={'scroll_window_delay'}
-								label={__(
-									'Scroll window delay',
-									'wc-ajax-product-filter'
-								)}
-								description={__(
-									'Specify the time to delay in milliseconds before starting to scroll the window.',
-									'wc-ajax-product-filter'
-								)}
-								value={scroll_window_delay}
-								onChange={handleTextFieldChange}
-								type={'number'}
-							/>
-
 							<Checkbox
 								id={'disable_scroll_animation'}
 								label={__(

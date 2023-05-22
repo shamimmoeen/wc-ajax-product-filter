@@ -9,7 +9,7 @@
 		--wcapf-hierarchy-accordion-toggle-size: 13px;
 	}
 
-	&:not(.hierarchy-toggle-at-end) {
+	&.hierarchy-toggle-at-end {
 		.wcapf-filter-item {
 			@include ltr {
 				padding-right: calc(var(--wcapf-hierarchy-accordion-button-size) + var(--wcapf-hierarchy-accordion-button-hr-space));

@@ -36,3 +36,14 @@ body.theme-astra {
 		margin: 0;
 	}
 }
+
+// Flatsome theme
+.theme-flatsome {
+	.wcapf-active-filters.clear-all-btn-layout-inline .wcapf-active-filter-items .wcapf-reset-filters-btn-wrapper {
+		vertical-align: middle;
+
+		.wcapf-reset-filters-btn {
+			vertical-align: unset;
+		}
+	}
+}

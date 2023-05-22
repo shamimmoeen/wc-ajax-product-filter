@@ -105,7 +105,6 @@ class WCAPF_Hooks {
 		$improve_text_inputs = WCAPF_Helper::wcapf_option( 'improve_input_type_text_number' );
 		$remove_focus_style  = WCAPF_Helper::wcapf_option( 'remove_focus_style' );
 		$use_wait_cursor     = WCAPF_Helper::wcapf_option( 'wait_cursor' );
-		$label_size          = WCAPF_Helper::wcapf_option( 'label_size' );
 
 		if ( $improve_scrollbar ) {
 			$classes[] = 'wcapf-pretty-scroll';
@@ -121,10 +120,6 @@ class WCAPF_Hooks {
 
 		if ( $use_wait_cursor ) {
 			$classes[] = 'wcapf-use-wait-cursor';
-		}
-
-		if ( 'fixed' === $label_size ) {
-			$classes[] = 'wcapf-label-size-fixed';
 		}
 
 		return $classes;

@@ -4,7 +4,6 @@ import Checkbox from '../../Field/Checkbox';
 import useSettingsData from '../useSettingsData';
 import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
-import Radio from '../../Field/Radio';
 // import { foundProVersion } from '../../utils';
 // import Text from '../../Field/Text';
 // import ProFeaturesNotice from '../../ProFeaturesNotice';
@@ -22,28 +21,6 @@ for (let index = 1; index <= 11; index++) {
 	});
 }
 
-const labelSizes = [
-	{
-		label: __('Fixed', 'wc-ajax-product-filter'),
-		value: 'fixed',
-	},
-	{
-		label: __('Fluid', 'wc-ajax-product-filter'),
-		value: 'fluid',
-	},
-];
-
-const labelPresets = [
-	{
-		label: __('Primary', 'wc-ajax-product-filter'),
-		value: 'primary',
-	},
-	{
-		label: __('Grey', 'wc-ajax-product-filter'),
-		value: 'grey',
-	},
-];
-
 // const slideOutPanelPositionOptions = [
 // 	{
 // 		label: __('Left', 'wc-ajax-product-filter'),
@@ -57,12 +34,8 @@ const labelPresets = [
 
 const Appearance = () => {
 	const { state, dispatch } = useSettings();
-	const {
-		handleCheckboxChange,
-		handleTextFieldChange,
-		handleRadioChange,
-		handleSelectChange,
-	} = useSettingsData(state, dispatch);
+	const { handleCheckboxChange, handleTextFieldChange, handleSelectChange } =
+		useSettingsData(state, dispatch);
 
 	const {
 		settings: {
@@ -76,8 +49,6 @@ const Appearance = () => {
 			improve_input_type_text_number,
 			hierarchy_toggle_at_end,
 			number_range_slider_style,
-			label_size,
-			active_label_style,
 			star_icon_color,
 			rating_star_use_fontawesome,
 			remove_focus_style,
@@ -240,32 +211,6 @@ const Appearance = () => {
 				onChange={handleSelectChange}
 				options={numberRangeSliderStyles}
 				maxMenuHeight={180}
-				renderAsFormField
-			/>
-
-			<Radio
-				id={'label_size'}
-				label={__('Label size', 'wc-ajax-product-filter')}
-				description={__(
-					'This changes the size of elements when displaying the filter options as Label and the active filter items.',
-					'wc-ajax-product-filter'
-				)}
-				value={label_size}
-				onChange={handleRadioChange}
-				options={labelSizes}
-				renderAsFormField
-			/>
-
-			<Radio
-				id={'active_label_style'}
-				label={__('Active label style', 'wc-ajax-product-filter')}
-				description={__(
-					'This changes the active state style of labels and multiselect(ComboBox enabled) items.',
-					'wc-ajax-product-filter'
-				)}
-				value={active_label_style}
-				onChange={handleRadioChange}
-				options={labelPresets}
 				renderAsFormField
 			/>
 
