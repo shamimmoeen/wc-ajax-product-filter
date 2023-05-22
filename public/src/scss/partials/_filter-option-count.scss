@@ -1,0 +1,13 @@
+.wcapf-list-wrapper:not(.count-badge) {
+	.wcapf-nav-item-count {
+		opacity: var(--wcapf-filter-count-opacity);
+
+		&::before {
+			content: ' (';
+		}
+
+		&::after {
+			content: ')';
+		}
+	}
+}

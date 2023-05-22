@@ -203,7 +203,7 @@ class WCAPF_Frontend_Scripts {
 		}
 
 		// Prevent attaching combobox on default orderby if combobox is disabled globally.
-		if ( empty( $settings['use_chosen'] ) ) {
+		if ( empty( WCAPF_Helper::wcapf_option( 'use_chosen' ) ) ) {
 			$settings['attach_chosen_on_sorting'] = '';
 		}
 
@@ -219,7 +219,7 @@ class WCAPF_Frontend_Scripts {
 			'chosen_display_selected_options'          => false,
 			'chosen_no_results_text'                   => $chosen_no_results_text,
 			'chosen_options_none_text'                 => $chosen_options_none_text,
-			'search_box_in_default_orderby'            => true,
+			'search_box_in_default_orderby'            => false,
 			'preserve_hierarchy_accordion_state'       => true,
 			'preserve_soft_limit_state'                => true,
 			'enable_animation_for_filter_accordion'    => false,

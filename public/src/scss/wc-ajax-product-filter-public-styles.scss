@@ -1,10 +1,15 @@
 @import "./variables";
 @import "./global";
 @import "./mixins";
+
 @import "./partials/filter";
+@import "./partials/filter-option-count";
 @import "./partials/hierarchy-accordion";
 @import "./partials/focus-styles";
 @import "./partials/stylish-checkbox-radio";
+@import "./partials/display-type-label";
+@import "./partials/pretty-text-inputs";
+@import "./partials/number-range";
 @import "./partials/range-slider";
 @import "./partials/native-dropdown";
 @import "./partials/chosen-dropdown";
@@ -12,8 +17,8 @@
 @import "./partials/soft-limit";
 @import "./partials/scrollbar";
 @import "./partials/loader";
-@import "partials/filter-tooltip";
-@import "partials/filter-title";
-@import "partials/active-filters";
-@import "partials/button";
-@import "partials/theme-style";
+@import "./partials/filter-tooltip";
+@import "./partials/filter-title";
+@import "./partials/active-filters";
+@import "./partials/button";
+@import "./partials/theme-style";

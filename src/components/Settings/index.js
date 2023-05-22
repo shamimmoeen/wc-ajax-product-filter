@@ -121,14 +121,12 @@ const Settings = () => {
 
 		return omit(merged, [
 			'remove_empty_filters',
-			'replace_sorting_options',
 			'child_terms_only',
 			'slide_out_panel_position',
 			'loading_image',
 			'loading_image_src',
 			'loading_overlay_color',
 			'scroll_on',
-			'scroll_window_delay',
 			'disable_scroll_animation',
 			'more_selectors',
 			'multiple_form_locations',

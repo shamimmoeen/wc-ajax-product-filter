@@ -45,7 +45,6 @@ const wcapf_params = wcapf_params || {
 	'scroll_window_custom_element': '',
 	'scroll_on': '',
 	'scroll_to_top_offset': '',
-	'scroll_window_delay': '',
 	'disable_scroll_animation': '',
 	'more_selectors': '',
 	'custom_scripts': '',
@@ -385,6 +384,9 @@ const wcapf_params = wcapf_params || {
 			$( window ).trigger( 'scroll' );
 			$( window ).trigger( 'resize' );
 
+			// A3 Lazy Load support.
+			$( window ).trigger( 'lazyshow' );
+
 			if ( wcapf_params.custom_scripts ) {
 				eval( wcapf_params.custom_scripts );
 			}
@@ -506,7 +508,7 @@ const wcapf_params = wcapf_params || {
 
 			// TODO: Remove from production build.
 			if ( 'localhost' === hostname ) {
-				url = url.replace( 'http://wcfilter-2.test', '//localhost:3001' );
+				url = url.replace( 'http://wcfilter-2.test', '//localhost:3000' );
 			}
 
 			if ( wcapf_params.disable_ajax ) {
