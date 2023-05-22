@@ -364,7 +364,7 @@ class WCAPF_Hooks {
 			array(
 				'hide_empty'    => $remove_empty,
 				'update_count'  => ! empty( WCAPF_Helper::wcapf_option( 'update_count' ) ),
-				'use_chosen'    => ! empty( WCAPF_Helper::wcapf_option( 'use_chosen' ) ),
+				'use_combobox'  => ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ),
 				'use_term_slug' => ! empty( WCAPF_Helper::wcapf_option( 'use_term_slug' ) ),
 			),
 			$data

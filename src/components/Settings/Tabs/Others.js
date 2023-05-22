@@ -25,7 +25,7 @@ const Others = () => {
 		settings: {
 			search_field_default_placeholder,
 			no_results_text,
-			chosen_no_options_text,
+			combobox_no_options_text,
 			empty_filter_text,
 			show_more_btn_label,
 			show_less_btn_label,
@@ -82,9 +82,9 @@ const Others = () => {
 			/>
 
 			<Text
-				id={'chosen_no_options_text'}
+				id={'combobox_no_options_text'}
 				label={__('No options text', 'wc-ajax-product-filter')}
-				value={chosen_no_options_text}
+				value={combobox_no_options_text}
 				onChange={handleTextFieldChange}
 			/>
 

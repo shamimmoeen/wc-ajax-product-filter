@@ -153,7 +153,7 @@ const Text = ({
 								/>
 							)}
 
-							{'chosen_no_options_text' === id && (
+							{'combobox_no_options_text' === id && (
 								<TippyTooltip
 									content={
 										<>

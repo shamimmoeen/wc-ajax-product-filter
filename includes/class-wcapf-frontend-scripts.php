@@ -180,7 +180,7 @@ class WCAPF_Frontend_Scripts {
 			'disable_ajax',
 			'enable_pagination_via_ajax',
 			'sorting_control',
-			'attach_chosen_on_sorting',
+			'attach_combobox_on_sorting',
 			'loading_animation',
 			'scroll_window',
 			'scroll_window_for',
@@ -203,22 +203,22 @@ class WCAPF_Frontend_Scripts {
 		}
 
 		// Prevent attaching combobox on default orderby if combobox is disabled globally.
-		if ( empty( WCAPF_Helper::wcapf_option( 'use_chosen' ) ) ) {
-			$settings['attach_chosen_on_sorting'] = '';
+		if ( empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+			$settings['attach_combobox_on_sorting'] = '';
 		}
 
-		$chosen_no_results_text   = WCAPF_Helper::no_results_text();
-		$chosen_options_none_text = WCAPF_Helper::wcapf_option(
-			'chosen_no_options_text',
+		$combobox_no_results_text   = WCAPF_Helper::no_results_text();
+		$combobox_options_none_text = WCAPF_Helper::wcapf_option(
+			'combobox_no_options_text',
 			__( 'No options to choose', 'wc-ajax-product-filter' )
 		);
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => WCAPF_Helper::wcapf_option( 'input_delay' ),
-			'chosen_display_selected_options'          => false,
-			'chosen_no_results_text'                   => $chosen_no_results_text,
-			'chosen_options_none_text'                 => $chosen_options_none_text,
+			'combobox_display_selected_options'        => false,
+			'combobox_no_results_text'                 => $combobox_no_results_text,
+			'combobox_options_none_text'               => $combobox_options_none_text,
 			'search_box_in_default_orderby'            => false,
 			'preserve_hierarchy_accordion_state'       => true,
 			'preserve_soft_limit_state'                => true,
