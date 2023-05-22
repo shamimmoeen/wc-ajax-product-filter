@@ -26,7 +26,7 @@ class WCAPF_Filter_Widget extends WP_Widget {
 
 		parent::__construct(
 			false, // Base ID
-			'WCAPF - WooCommerce Ajax Product Filter — Form', // Name of Widget
+			'WCAPF - Product Filter Form', // Name of Widget
 			$widget_ops // args
 		);
 	}
