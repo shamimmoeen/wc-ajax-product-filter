@@ -109,19 +109,6 @@ class WCAPF_Admin {
 			'wcapf-settings',
 			array( $this, 'render_settings' )
 		);
-
-		// if ( ! WCAPF_Helper::found_pro_version() ) {
-		// 	$label = __( 'Upgrade to Pro', 'wc-ajax-product-filter' );
-		//
-		// 	add_submenu_page(
-		// 		'wcapf',
-		// 		__( 'WCAPF - WooCommerce Ajax Product Filter - Upgrade to Pro', 'wc-ajax-product-filter' ),
-		// 		'<span style="color: limegreen; font-weight: bold">' . $label . '</span>',
-		// 		'manage_options',
-		// 		'wcapf-upgrade',
-		// 		array( $this, 'render_upgrade_page' )
-		// 	);
-		// }
 	}
 
 	public function render_form() {
