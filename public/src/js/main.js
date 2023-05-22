@@ -291,7 +291,7 @@ const wcapf_params = wcapf_params || {
 				return;
 			}
 
-			let adjustingOffset, offset;
+			let adjustingOffset = 0, offset = 0;
 
 			if ( wcapf_params.scroll_to_top_offset ) {
 				adjustingOffset = parseInt( wcapf_params.scroll_to_top_offset );
@@ -318,15 +318,11 @@ const wcapf_params = wcapf_params || {
 					offset = 0;
 				}
 
-				if ( wcapf_params.disable_scroll_animation ) {
-					window.scrollTo( { top: offset } );
-				} else {
-					$( 'html, body' ).stop().animate(
-						{ scrollTop: offset },
-						wcapf_params.scroll_to_top_speed,
-						wcapf_params.scroll_to_top_easing
-					);
-				}
+				$( 'html, body' ).stop().animate(
+					{ scrollTop: offset },
+					wcapf_params.scroll_to_top_speed,
+					wcapf_params.scroll_to_top_easing
+				);
 			}
 		},
 		// Things are done before fetching the products like showing the loading indicator.
