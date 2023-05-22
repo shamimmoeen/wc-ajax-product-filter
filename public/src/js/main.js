@@ -10,9 +10,9 @@
 const wcapf_params = wcapf_params || {
 	'is_rtl': '',
 	'filter_input_delay': '',
-	'chosen_display_selected_options': '',
-	'chosen_no_results_text': '',
-	'chosen_options_none_text': '',
+	'combobox_display_selected_options': '',
+	'combobox_no_results_text': '',
+	'combobox_options_none_text': '',
 	'search_box_in_default_orderby': '',
 	'preserve_hierarchy_accordion_state': '',
 	'preserve_soft_limit_state': '',
@@ -37,7 +37,7 @@ const wcapf_params = wcapf_params || {
 	'disable_ajax': '',
 	'enable_pagination_via_ajax': '',
 	'sorting_control': '',
-	'attach_chosen_on_sorting': '',
+	'attach_combobox_on_sorting': '',
 	'loading_animation': '',
 	'scroll_window': '',
 	'scroll_window_for': '',
@@ -797,8 +797,8 @@ const wcapf_params = wcapf_params || {
 			const defaults = {
 				inherit_select_classes: true,
 				inherit_option_classes: true,
-				no_results_text: wcapf_params.chosen_no_results_text,
-				options_none_text: wcapf_params.chosen_options_none_text,
+				no_results_text: wcapf_params.combobox_no_results_text,
+				options_none_text: wcapf_params.combobox_options_none_text,
 				search_contains: true, // Match from anywhere in string.
 				search_in_values: true, // Search in values also.
 			};
@@ -815,7 +815,7 @@ const wcapf_params = wcapf_params || {
 				if ( $this.hasClass( 'has-hierarchy' ) ) {
 					options[ 'display_selected_options' ] = true;
 				} else {
-					options[ 'display_selected_options' ] = wcapf_params.chosen_display_selected_options;
+					options[ 'display_selected_options' ] = wcapf_params.combobox_display_selected_options;
 				}
 
 				// Enable templating when showing count.
@@ -833,7 +833,7 @@ const wcapf_params = wcapf_params || {
 			} );
 
 			// Attach chosen for default orderby.
-			if ( wcapf_params.attach_chosen_on_sorting ) {
+			if ( wcapf_params.attach_combobox_on_sorting ) {
 				let disableSearch = true;
 
 				if ( wcapf_params.search_box_in_default_orderby ) {

@@ -42,8 +42,8 @@ const Appearance = () => {
 			primary_color,
 			primary_text_color,
 			stylish_checkbox_radio,
-			use_chosen,
-			attach_chosen_on_sorting,
+			use_combobox,
+			attach_combobox_on_sorting,
 			improve_native_select,
 			improve_scrollbar,
 			improve_input_type_text_number,
@@ -116,19 +116,19 @@ const Appearance = () => {
 			/>
 
 			<Checkbox
-				id={'use_chosen'}
+				id={'use_combobox'}
 				label={__('Enable ComboBox', 'wc-ajax-product-filter')}
 				description={__(
 					'Turns the native select element into a custom select box with improved design and behavior.',
 					'wc-ajax-product-filter'
 				)}
-				isChecked={use_chosen}
+				isChecked={use_combobox}
 				onChange={handleCheckboxChange}
 			/>
 
-			{'1' === use_chosen && (
+			{'1' === use_combobox && (
 				<Checkbox
-					id={'attach_chosen_on_sorting'}
+					id={'attach_combobox_on_sorting'}
 					label={__(
 						'ComboBox for sorting dropdown',
 						'wc-ajax-product-filter'
@@ -137,12 +137,12 @@ const Appearance = () => {
 						'Attach ComboBox for the default sorting dropdown instead of the native select element.',
 						'wc-ajax-product-filter'
 					)}
-					isChecked={attach_chosen_on_sorting}
+					isChecked={attach_combobox_on_sorting}
 					onChange={handleCheckboxChange}
 				/>
 			)}
 
-			{'1' !== use_chosen && (
+			{'1' !== use_combobox && (
 				<Checkbox
 					id={'improve_native_select'}
 					label={__(

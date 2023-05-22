@@ -19,7 +19,7 @@ class WCAPF_Field_Instance {
 	public $layout;
 	public $query_type;
 	public $all_items_label;
-	public $use_chosen;
+	public $use_combobox;
 	public $enable_multiple_filter;
 	public $show_count;
 	public $hide_empty;
@@ -130,7 +130,7 @@ class WCAPF_Field_Instance {
 		$this->display_type    = $_display_type;
 		$this->layout          = $this->get_layout();
 		$this->all_items_label = $_all_items_label;
-		$this->use_chosen      = $this->get_sub_field_value( 'use_chosen' );
+		$this->use_combobox    = $this->get_sub_field_value( 'use_combobox' );
 		$this->show_count      = $show_count;
 		$this->hide_empty      = $this->get_sub_field_value( 'hide_empty' );
 

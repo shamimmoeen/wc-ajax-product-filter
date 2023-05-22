@@ -67,11 +67,11 @@ class WCAPF_Walker {
 	public $all_items_label;
 
 	/**
-	 * Use chosen.
+	 * Use combobox.
 	 *
 	 * @var string
 	 */
-	public $use_chosen;
+	public $use_combobox;
 
 	/**
 	 * Enable multiple filter.
@@ -277,7 +277,7 @@ class WCAPF_Walker {
 			'use_term_slug'              => '',
 			'enable_hierarchy_accordion' => '',
 			'all_items_label'            => '',
-			'use_chosen'                 => '',
+			'use_combobox'               => '',
 			'no_results_message'         => '',
 			'enable_multiple_filter'     => '',
 			'show_count'                 => '',
@@ -1019,9 +1019,9 @@ class WCAPF_Walker {
 			$input_multiple = ' multiple="multiple"';
 		}
 
-		$use_chosen = $this->use_chosen;
+		$use_combobox = $this->use_combobox;
 
-		if ( $use_chosen ) {
+		if ( $use_combobox ) {
 			$input_classes = 'wcapf-chosen';
 		} else {
 			$input_classes = 'wcapf-select';
@@ -1037,23 +1037,23 @@ class WCAPF_Walker {
 
 		$all_items_label = $this->all_items_label;
 
-		if ( 'multiselect' === $display_type && $use_chosen ) {
+		if ( 'multiselect' === $display_type && $use_combobox ) {
 			$input_classes .= ' default-primary-style';
 		}
 
 		if ( 'multiselect' === $display_type ) {
 			$input_attrs .= ' data-placeholder="' . esc_attr( $all_items_label ) . '"';
 
-			if ( $use_chosen && $this->hierarchical ) {
+			if ( $use_combobox && $this->hierarchical ) {
 				$input_classes .= ' has-hierarchy';
 			}
 		}
 
-		if ( 'select' === $display_type && $use_chosen && $this->enable_search_field ) {
+		if ( 'select' === $display_type && $use_combobox && $this->enable_search_field ) {
 			$input_attrs .= ' data-enable-search="1"';
 		}
 
-		if ( $use_chosen && $this->show_count && $this->count_allowed() ) {
+		if ( $use_combobox && $this->show_count && $this->count_allowed() ) {
 			$input_classes .= ' with-count';
 		}
 
@@ -1087,13 +1087,13 @@ class WCAPF_Walker {
 	 */
 	private function dropdown_item( $item ) {
 		$count_allowed = $this->count_allowed();
-		$use_chosen    = $this->use_chosen;
+		$use_combobox  = $this->use_combobox;
 
 		$attrs = $this->get_dropdown_item_attributes( $item );
 
 		$option = '<option' . $attrs . '>';
 
-		if ( $this->hierarchical && ! $use_chosen ) {
+		if ( $this->hierarchical && ! $use_combobox ) {
 			$option .= $this->dropdown_item_indent( $item );
 		}
 
@@ -1102,7 +1102,7 @@ class WCAPF_Walker {
 		$count      = $item['count'];
 		$item_count = ' (' . $count . ')';
 
-		if ( ! $use_chosen && $this->show_count && '-1' !== $count && $count_allowed ) {
+		if ( ! $use_combobox && $this->show_count && '-1' !== $count && $count_allowed ) {
 			$option .= $item_count;
 		}
 
@@ -1172,11 +1172,11 @@ class WCAPF_Walker {
 
 		$count = $item['count'];
 
-		$use_chosen = $this->use_chosen;
+		$use_combobox = $this->use_combobox;
 
 		$item_count = ' (' . $count . ')';
 
-		if ( $use_chosen && $this->show_count && $count_allowed ) {
+		if ( $use_combobox && $this->show_count && $count_allowed ) {
 			// Add the empty attribute to avoid the undefined issue in js.
 			if ( '-1' === $count ) {
 				$item_count = '';
