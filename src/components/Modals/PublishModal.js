@@ -28,7 +28,7 @@ const PublishModal = ({ isOpen, closeModal }) => {
 		let code;
 
 		const shortcode = `[wcapf_form]`;
-		const widgetName = 'WCAPF - WooCommerce Ajax Product Filter — Form';
+		const widgetName = 'WCAPF - Product Filter Form';
 
 		const widgetsPageLink = wcapf_admin_params.widgets_page_link;
 
@@ -47,7 +47,7 @@ const PublishModal = ({ isOpen, closeModal }) => {
 		} else {
 			description = sprintf(
 				__(
-					'Add <b>%s</b> widget to the desired area.',
+					'Go to the widgets page, add <b>%s</b> widget to the desired area.',
 					'wc-ajax-product-filter'
 				),
 				widgetName
