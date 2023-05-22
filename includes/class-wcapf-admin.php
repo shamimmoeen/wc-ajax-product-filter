@@ -43,15 +43,18 @@ class WCAPF_Admin {
 			__( 'Add Filters', 'wc-ajax-product-filter' )
 		);
 
-		$settings_page_action_link = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			esc_url( WCAPF_Helper::settings_page_url() ),
-			__( 'Settings', 'wc-ajax-product-filter' )
-		);
+		$pre_links   = array( $forms_page_action_link );
+		$pro_version = WCAPF_Helper::found_pro_version();
 
-		$pre_links = array( $forms_page_action_link, $settings_page_action_link );
+		if ( $pro_version ) {
+			$pre_links[] = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( WCAPF_Helper::settings_page_url() ),
+				__( 'Settings', 'wc-ajax-product-filter' )
+			);
+		}
 
-		if ( ! WCAPF_Helper::found_pro_version() ) {
+		if ( ! $pro_version ) {
 			$plugin_page_link = add_query_arg(
 				array(
 					'utm_source'   => 'WCAPF+Free',
