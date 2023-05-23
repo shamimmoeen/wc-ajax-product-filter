@@ -306,8 +306,17 @@ const AvailableOn = () => {
 
 								<TippyTooltip
 									content={__(
-										'Upgrade to Pro to select taxonomies and pages.',
-										'wc-ajax-product-filter'
+										<>
+											For example, you may want to use a
+											different form of filters on{' '}
+											<b>Women's clothing</b> or{' '}
+											<b>Men's clothing</b>. Or you may
+											want to show the products on
+											singular pages and want to integrate
+											the filters there. In the Pro
+											version, you will be able to do
+											that.
+										</>
 									)}
 								/>
 							</>
