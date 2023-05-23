@@ -22,7 +22,6 @@ const wcapf_params = wcapf_params || {
 	'enable_animation_for_hierarchy_accordion': '',
 	'hierarchy_accordion_animation_speed': '',
 	'hierarchy_accordion_animation_easing': '',
-	'restore_focus_after_filtering': '',
 	'scroll_to_top_speed': '',
 	'scroll_to_top_easing': '',
 	'is_mobile': '',
@@ -71,8 +70,6 @@ const wcapf_params = wcapf_params || {
 
 		instanceIds.push( id );
 	} );
-
-	let focusedElm;
 
 	window.tippyInstances = [];
 
@@ -327,9 +324,6 @@ const wcapf_params = wcapf_params || {
 		},
 		// Things are done before fetching the products like showing the loading indicator.
 		beforeFetchingProducts: function( triggeredBy ) {
-			// Track the current element focus.
-			focusedElm = document.activeElement;
-
 			$body.find( '.wcapf-loader' ).addClass( 'is-active' );
 
 			if ( ! isPro && 'immediately' === wcapf_params.scroll_window_when ) {
@@ -358,15 +352,6 @@ const wcapf_params = wcapf_params || {
 		},
 		afterUpdatingProducts: function( $response, triggeredBy ) {
 			WCAPF.updateProductsCountResult( $response );
-
-			// Restore the focus (Maybe restoring the focus in mobile device isn't good).
-			if ( wcapf_params.restore_focus_after_filtering && ! wcapf_params.is_mobile ) {
-				if ( document.body !== focusedElm ) {
-					if ( focusedElm.id ) {
-						$( `#${ focusedElm.id }` ).focus();
-					}
-				}
-			}
 
 			// Reinitialize wcapf.
 			WCAPF.init();

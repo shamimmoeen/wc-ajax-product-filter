@@ -228,7 +228,6 @@ class WCAPF_Frontend_Scripts {
 			'enable_animation_for_hierarchy_accordion' => false,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
-			'restore_focus_after_filtering'            => true,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),
