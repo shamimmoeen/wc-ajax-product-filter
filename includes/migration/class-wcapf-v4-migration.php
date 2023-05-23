@@ -96,6 +96,10 @@ class WCAPF_V4_Migration {
 				$mapped_key = 'show_sorting_data_in_active_filters';
 			}
 
+			if ( 'attach_combobox_on_sorting' === $key ) {
+				$mapped_key = 'attach_chosen_on_sorting';
+			}
+
 			if ( isset( $v3_settings[ $mapped_key ] ) ) {
 				$value = $v3_settings[ $mapped_key ];
 			} else {
