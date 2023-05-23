@@ -36,24 +36,68 @@ class WCAPF_Filter_Form_Shortcode {
 	}
 
 	public function register_shortcode() {
-		$form = new WCAPF_Form();
-
-		// TODO: Show message
-		// if no form is created and shortcode placed in product-archive pages
-
-		// if ( ! $wcapf_form ) {
-		// 	return '<p>' . __( 'No form is set for this page. Please set a form for this page.', 'wc-ajax-product-filter' ) . '</p>';
-		// }
-		//
-		// if ( isset( $wcapf_form['rendered'] ) ) {
-		// 	return '';
-		// }
-
 		ob_start();
 
+		$this->render_debug_messages();
+
+		$form = new WCAPF_Form();
 		$form->render_form();
 
 		return ob_get_clean();
+	}
+
+	public function render_debug_messages() {
+		if ( ! WCAPF_Helper::is_debug_mode_enabled() ) {
+			return;
+		}
+
+		global $wcapf_form;
+
+		if ( is_shop() || is_product_taxonomy() ) {
+			if ( ! $wcapf_form ) {
+				/** @noinspection HtmlUnknownTarget */
+				echo WCAPF_Helper::get_debug_message(
+					sprintf(
+						__( 'No forms found. <a href="%s">Create a form here</a>.', 'wc-ajax-product-filter' ),
+						esc_url( admin_url( 'admin.php?page=wcapf' ) )
+					)
+				);
+			} elseif ( isset( $wcapf_form['rendered'] ) ) {
+				$upgrade_link = add_query_arg(
+					array(
+						'utm_source'   => 'WCAPF+Free',
+						'utm_medium'   => 'frontend+multiple+form',
+						'utm_campaign' => 'WCAPF+Pro+Upgrade',
+					),
+					'https://wptools.io/wc-ajax-product-filter/'
+				);
+
+				/** @noinspection HtmlUnknownTarget */
+				echo WCAPF_Helper::get_debug_message(
+					sprintf(
+						__( 'The form has already been displayed and cannot be shown again. Upgrade to the <a href="%s" target="_blank">Pro version</a> for the ability to use multiple forms on a page.', 'wc-ajax-product-filter' ),
+						esc_url( $upgrade_link )
+					)
+				);
+			}
+		} else {
+			$upgrade_link = add_query_arg(
+				array(
+					'utm_source'   => 'WCAPF+Free',
+					'utm_medium'   => 'frontend+singular+page',
+					'utm_campaign' => 'WCAPF+Pro+Upgrade',
+				),
+				'https://wptools.io/wc-ajax-product-filter/'
+			);
+
+			/** @noinspection HtmlUnknownTarget */
+			echo WCAPF_Helper::get_debug_message(
+				sprintf(
+					__( 'The free version of the plugin does not support filtering products on singular pages. Upgrade to the <a href="%s" target="_blank">Pro version</a> to unlock this feature.', 'wc-ajax-product-filter' ),
+					esc_url( $upgrade_link )
+				)
+			);
+		}
 	}
 
 }

@@ -20,12 +20,8 @@ class WCAPF_Form {
 	 */
 	protected $form;
 
-	public function __construct( $form = array() ) {
-		if ( $form ) {
-			$this->form = $form;
-		} else {
-			$this->form = $this->retrieve_form();
-		}
+	public function __construct() {
+		$this->form = $this->retrieve_form();
 	}
 
 	protected function retrieve_form() {
@@ -70,17 +66,28 @@ class WCAPF_Form {
 			}
 		}
 
-		if ( WCAPF_Helper::is_debugging() ) {
-			if ( ! $filters ) {
-				echo '<p>' . esc_html__( 'The form is empty.', 'wc-ajax-product-filter' ) . '</p>';
-			}
+		if ( $this->is_debugging() ) {
+			$edit_url = WCAPF_Helper::form_edit_url( $form_id );
 
-			/** @noinspection HtmlUnknownTarget */
-			echo sprintf(
-				'<p><a href="%s">%s</a></p>',
-				esc_url( WCAPF_Helper::form_edit_url( $form_id ) ),
-				__( 'Edit form', 'wc-ajax-product-filter' )
-			);
+			if ( ! $filters ) {
+				/** @noinspection HtmlUnknownTarget */
+				echo WCAPF_Helper::get_debug_message(
+					sprintf(
+						__(
+							'The form is empty. Please add some filters by editing the form <a href="%s">here</a>.',
+							'wc-ajax-product-filter'
+						),
+						esc_url( $edit_url )
+					)
+				);
+			} else {
+				/** @noinspection HtmlUnknownTarget */
+				echo sprintf(
+					'<p><a href="%s">%s</a></p>',
+					esc_url( $edit_url ),
+					__( 'Edit form', 'wc-ajax-product-filter' )
+				);
+			}
 		}
 
 		do_action( 'wcapf_after_form_filters', $form_id );
@@ -95,7 +102,7 @@ class WCAPF_Form {
 			return false;
 		}
 
-		if ( isset( $this->form['found'] ) ) {
+		if ( isset( $this->form['rendered'] ) ) {
 			return false;
 		}
 
@@ -417,10 +424,18 @@ class WCAPF_Form {
 		$this->after_filter();
 	}
 
+	private function is_debugging() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
+		return ! empty( WCAPF_Helper::wcapf_option( 'debug_mode' ) );
+	}
+
 	protected function set_done() {
 		global $wcapf_form;
 
-		$wcapf_form['found'] = true;
+		$wcapf_form['rendered'] = true;
 	}
 
 }

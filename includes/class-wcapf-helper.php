@@ -856,12 +856,29 @@ class WCAPF_Helper {
 	 *
 	 * @return bool
 	 */
-	public static function is_debugging() {
+	public static function is_debug_mode_enabled() {
 		if ( ! current_user_can( 'administrator' ) ) {
 			return false;
 		}
 
-		return ! empty( self::wcapf_option( 'debug_mode' ) );
+		$options = get_option( self::settings_option_key() );
+
+		return ! empty( $options['debug_mode'] );
+	}
+
+	/**
+	 * Get the debug message with html markup.
+	 *
+	 * @param string $message The debug message.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function get_debug_message( $message ) {
+		$styles = 'border: 1px dashed #b9b9b9;font-size: 14px;padding: 10px;margin: 0 0 15px;';
+
+		return '<div class="wcapf-debug-message" style="' . $styles . '">' . $message . '</div>';
 	}
 
 }

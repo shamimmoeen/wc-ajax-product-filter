@@ -10,7 +10,7 @@ import { defaultFormSettings } from '../utilsForForm';
 import ProFeaturesNotice from '../ProFeaturesNotice';
 
 const proMessage = __(
-	'Upgrade to Pro to create multiple forms to show on different archives and pages.',
+	'The free version supports one form only.',
 	'wc-ajax-product-filter'
 );
 
