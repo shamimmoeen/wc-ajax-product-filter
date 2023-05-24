@@ -861,9 +861,9 @@ class WCAPF_Helper {
 			return false;
 		}
 
-		$options = get_option( self::settings_option_key() );
+		$settings = self::get_settings();
 
-		return ! empty( $options['debug_mode'] );
+		return ! empty( $settings['debug_mode'] );
 	}
 
 	/**
