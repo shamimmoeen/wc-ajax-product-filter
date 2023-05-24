@@ -41,8 +41,7 @@ class WCAPF_Activator {
 				require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-default-data.php';
 				require_once WCAPF_PLUGIN_DIR . '/includes/migration/class-wcapf-v4-migration.php';
 
-				$migration = WCAPF_V4_Migration::instance();
-				$migration->try_to_run_v4_migration();
+				WCAPF_V4_Migration()->try_to_run_v4_migration();
 
 				return;
 			}
