@@ -288,15 +288,17 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function get_layout() {
+		$native_layouts = apply_filters( 'wcapf_native_layouts', array( 'list', 'inline' ) );
+		$custom_layouts = apply_filters( 'wcapf_custom_layouts', array( 'inline' ) );
+
 		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) ) {
 			$value = $this->get_sub_field_value( 'native_display_type_layout' );
 
-			return ! empty( $value ) ? $value : 'list';
+			return in_array( $value, $native_layouts ) ? $value : 'list';
 		} else {
 			$value = $this->get_sub_field_value( 'custom_display_type_layout' );
 
-			// Disable list layout for custom list types.
-			return ! empty( $value ) && 'list' !== $value ? $value : 'inline';
+			return in_array( $value, $custom_layouts ) ? $value : 'list';
 		}
 	}
 
