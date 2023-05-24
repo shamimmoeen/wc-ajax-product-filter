@@ -550,7 +550,7 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 		classes += ' __clipboard-api-found';
 	}
 
-	const code = '[wcapf_products]';
+	const code = '[wcapf_product_loop]';
 
 	const expandBtnLabel = expanded
 		? __('Collapse', 'wc-ajax-product-filter')
