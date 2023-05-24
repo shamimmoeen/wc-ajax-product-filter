@@ -53,7 +53,7 @@ class WCAPF_Default_Data {
 			'improve_native_select'            => '1',
 			'improve_scrollbar'                => '1',
 			'improve_input_type_text_number'   => '1',
-			'hierarchy_toggle_at_end'          => '1',
+			'hierarchy_toggle_at_end'          => '',
 			'number_range_slider_style'        => 'style-1',
 			'star_icon_color'                  => '#fda256',
 			'rating_star_use_fontawesome'      => '',
