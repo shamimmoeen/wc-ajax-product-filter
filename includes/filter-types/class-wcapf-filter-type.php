@@ -81,12 +81,7 @@ abstract class WCAPF_Filter_Type {
 	 * @return array
 	 */
 	public function get_items() {
-		/**
-		 * Register a hook to modify the filter items array.
-		 *
-		 * @since 4.0.0
-		 */
-		return apply_filters( 'wcapf_filter_items', $this->prepare_items(), $this->field );
+		return $this->prepare_items();
 	}
 
 	/**
