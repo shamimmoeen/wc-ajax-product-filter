@@ -1,7 +1,26 @@
 import { merge } from 'lodash';
 import { defaultSettings } from './utils';
 
-const initialSettings = merge(defaultSettings(), wcapf_admin_params.settings);
+const _initialSettings = merge(defaultSettings(), wcapf_admin_params.settings);
+
+const _authorRoles = _initialSettings['author_roles'];
+let authorRoles = [];
+
+if (_authorRoles) {
+	for (let index = 0; index < _authorRoles.length; index++) {
+		const authorRole = _authorRoles[index];
+
+		if (
+			authorRole.hasOwnProperty('label') &&
+			authorRole.hasOwnProperty('value')
+		) {
+			authorRoles.push(authorRole);
+		}
+	}
+}
+
+const initialSettings = { ..._initialSettings, author_roles: authorRoles };
+
 const globalFilterKeys = wcapf_admin_params.global_filter_keys;
 
 export const initialState = {
