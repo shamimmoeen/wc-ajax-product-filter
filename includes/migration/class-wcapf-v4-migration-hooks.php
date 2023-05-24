@@ -43,6 +43,9 @@ class WCAPF_V4_Migration_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
+		// Run the v4 migration if required.
+		add_action( 'admin_init', array( $this, 'run_v4_migration_from_admin_area' ) );
+
 		add_filter( 'wcapf_admin_js_params', array( $this, 'set_v4_migration_js_params' ) );
 
 		// V4 migration notice.
@@ -57,6 +60,15 @@ class WCAPF_V4_Migration_Hooks {
 
 		// Notice to upgrade the pro version to v2.
 		add_action( 'admin_notices', array( $this, 'show_v2_pro_version_upgrade_notice' ) );
+	}
+
+	/**
+	 * Run the v4 migration if required.
+	 *
+	 * @return void
+	 */
+	public function run_v4_migration_from_admin_area() {
+		WCAPF_V4_Migration()->try_to_run_v4_migration();
 	}
 
 	public function set_v4_migration_js_params( $params ) {

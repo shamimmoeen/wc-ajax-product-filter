@@ -394,3 +394,16 @@ class WCAPF_V4_Migration {
 	}
 
 }
+
+if ( ! function_exists( 'WCAPF_V4_Migration' ) ) {
+	/**
+	 * Return single instance for WCAPF_V4_Migration class.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return WCAPF_V4_Migration
+	 */
+	function WCAPF_V4_Migration() {
+		return WCAPF_V4_Migration::instance();
+	}
+}
