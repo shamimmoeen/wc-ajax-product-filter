@@ -6,7 +6,7 @@ import useFields from './useFields';
 import {
 	hierarchicalDisplayTypes,
 	sortByDisplayTypes,
-	swatchDisplayTypes,
+	swatchCanBeEnabled,
 	taxonomyDisplayTypes,
 	textDisplayTypes,
 } from '../../utils';
@@ -154,7 +154,7 @@ const ValueTypeText = ({ index }) => {
 	};
 
 	const swatchFields = () => {
-		if (!swatchDisplayTypes().includes(display_type)) {
+		if (!swatchCanBeEnabled(filter)) {
 			return;
 		}
 
