@@ -904,15 +904,27 @@ export function swatchDisplayTypes() {
 }
 
 export function swatchCanBeEnabled(filter) {
-	const { type, display_type, enable_swatch } = filter;
+	const { type, display_type } = filter;
 
 	if ('taxonomy' === type) {
 		if (swatchDisplayTypes().includes(display_type)) {
-			if ('1' === enable_swatch) {
-				return true;
-			}
+			return true;
 		}
 	}
 
 	return false;
+}
+
+export function swatchEnabled(filter) {
+	if (!swatchCanBeEnabled(filter)) {
+		return false;
+	}
+
+	const { enable_swatch } = filter;
+
+	if (!enable_swatch) {
+		return false;
+	}
+
+	return true;
 }
