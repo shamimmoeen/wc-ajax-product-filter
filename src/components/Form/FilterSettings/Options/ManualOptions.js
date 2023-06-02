@@ -13,7 +13,7 @@ import classnames from 'classnames';
 import {
 	getTableData,
 	orderDirectionOptions,
-	swatchCanBeEnabled,
+	swatchEnabled,
 	tooltipCanBeEnabled,
 } from '../../utils';
 import Select from '../../../Field/Select';
@@ -52,7 +52,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 	const rows = filter[optionsKey];
 
 	const hasTooltip = tooltipCanBeEnabled(filter) && '1' === enable_tooltip;
-	const hasSwatch = swatchCanBeEnabled(filter);
+	const hasSwatch = swatchEnabled(filter);
 
 	const emptyRow = () => {
 		let row;
