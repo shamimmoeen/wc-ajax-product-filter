@@ -81,7 +81,7 @@ Set the filter key used in the URL to identify the type of filter applied.
 For example, in the URL **../?category=sneakers&material=mesh**, **category**, and **material** are the filer keys.
 
 ## Multi-Vendor Plugin Support ##
-When enabled, the filter plugin supports multi-vendor setups by showing the store name as the filter option label. This allows customers to easily filter products from specific vendors or stores. Supported plugins like **WC Vendors** and **WCFM Marketplace**.
+When enabled, the filter plugin supports multi-vendor setups by showing the store name as the filter option label. This allows customers to easily filter products from specific vendors or stores.
 
 ## Customization ##
 Easily customize the appearance of the filters to match the design and style of your theme. The plugin provides a variety of settings on the plugin settings page, **including CSS variables**, which allow developers to quickly transform the global style of a filter to a unique style.
@@ -98,14 +98,14 @@ Exclude empty filters from display to declutter the user interface. Empty filter
 ## Option to Disable Ajax Filtering ##
 Provide flexibility to disable AJAX filtering if needed. While AJAX filtering is generally recommended for seamless browsing, users can choose to disable it to troubleshoot any potential JavaScript conflicts that may arise after updating the product loop.
 
-## Compatible with Popular Themes ##
-The plugin is compatible with a wide range of popular themes, including **Astra**, **Avada**, **Blocksy**, **Divi**, **Flatsome**, **GeneratePress**, **Hestia**, **Kadence**, **Neve**, **OceanWP**, **OnePress**, **Shapely**, **Storefront**, **Sydney**, **The7**, **Woostify**, and **Zakra**.
+## Theme Compatibility ##
+The plugin is designed to be highly compatible with a wide range of themes that follow the standard guidelines set by WooCommerce. This means it is likely to work effectively with almost any theme you choose.
 
 ## Drag and Drop Filter Creation ##
-The plugin provides a user-friendly interface for managing filters. You can easily create, customize, and organize filters using an intuitive drag-and-drop interface.
+The plugin allows users to add filters in just a few clicks. By clicking the “Add Filter” button, a new filter is added with automatically configured settings. Users can easily customize the filter settings, reorder filters, and delete them as needed.
 
 ## Different Filters for Different Archive Pages ##
-Tailor the filter options to specific product categories by displaying different filters on various archive pages. With this feature, you can create custom filter sets that cater to the unique requirements of different product categories.
+Customize the filter options based on specific product categories by displaying unique filters on various archive pages. This feature allows you to create specialized filter sets that address the specific needs of each product category.
 
 For example, clothing filters may include options for *size* and *color*, while laptop filters may include options for *processor*, *motherboard*, *RAM*, and *hard disk*. By using different filters for different archive pages, you can enhance the filtering experience for your customers.
 
@@ -124,8 +124,8 @@ The `[wcapf_product_loop]` shortcode leverages the popular **WooCommerce product
 - Exclude specific products
 - Define a custom message when no products match the applied filters
 
-## Useful Hooks and Filters ##
-Take advantage of the provided hooks and filters for easy customization and extensibility. The plugin leverages the power of WordPress hooks and filters, making it easy for developers to customize and extend the functionality of the filters according to their specific requirements.
+## Developer Friendly ##
+It includes essential hooks, filters and supports template overriding, allowing developers to alter the filter data, change the appearance of filters, and easily modify the plugin's behavior using hooks.
 
 ## Frequently Asked Questions ##
 
