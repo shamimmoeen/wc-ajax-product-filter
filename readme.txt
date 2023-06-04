@@ -84,7 +84,7 @@ For example, in the URL **../?category=sneakers&material=mesh**, **category**, a
 When enabled, the filter plugin supports multi-vendor setups by showing the store name as the filter option label. This allows customers to easily filter products from specific vendors or stores. Supported plugins like **WC Vendors** and **WCFM Marketplace**.
 
 == Customization ==
-Easily customize the appearance of the filters to match the design and style of your WooCommerce theme. The plugin provides a variety of settings on the plugin settings page, **including CSS variables**, which allow developers to quickly transform the global style of a filter to a unique style.
+Easily customize the appearance of the filters to match the design and style of your theme. The plugin provides a variety of settings on the plugin settings page, **including CSS variables**, which allow developers to quickly transform the global style of a filter to a unique style.
 
 == Dynamic Product Count ==
 Update the product count dynamically based on the applied filters, providing accurate and real-time information to customers, allowing customers to filter products with confidence and avoiding "no results found" messages.
