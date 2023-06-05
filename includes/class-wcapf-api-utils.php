@@ -496,14 +496,13 @@ class WCAPF_API_Utils {
 			'post_type'   => 'wcapf-form',
 			'nopaging'    => true,
 			'post_status' => 'publish',
-			'fields'      => 'ids',
 		);
 
 		$posts = get_posts( $args );
 		$forms = array();
 
-		foreach ( $posts as $post_id ) {
-			$forms[] = self::get_form_data( $post_id );
+		foreach ( $posts as $post ) {
+			$forms[] = self::get_form_data( $post );
 		}
 
 		return $forms;
@@ -512,14 +511,22 @@ class WCAPF_API_Utils {
 	/**
 	 * Gets the form data for given id.
 	 *
-	 * @param int $id The form id.
+	 * @param int|WP_Post $post Post ID or post object.
 	 *
 	 * @return array
 	 */
-	public static function get_form_data( $id ) {
+	public static function get_form_data( $post ) {
+		if ( $post instanceof WP_Post ) {
+			$_post = $post;
+		} else {
+			$_post = get_post( $post );
+		}
+
+		$id = $_post->ID;
+
 		$data = array(
 			'id'    => $id,
-			'title' => get_the_title( $id ),
+			'title' => $_post->post_title,
 		);
 
 		/**
