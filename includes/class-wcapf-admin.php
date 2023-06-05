@@ -318,10 +318,11 @@ class WCAPF_Admin {
 					? $settings['multiple_form_locations'] : '';
 
 				$post_id = $_GET['id'];
+				$post    = get_post( $post_id );
 
 				$params['form_data'] = array(
 					'post_id'    => $post_id,
-					'post_title' => get_the_title( $post_id ),
+					'post_title' => $post->post_title,
 				);
 			}
 		}
