@@ -550,7 +550,7 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 		classes += ' __clipboard-api-found';
 	}
 
-	const code = '[wcapf_product_loop]';
+	const code = '[wcapf_products]';
 
 	const expandBtnLabel = expanded
 		? __('Collapse', 'wc-ajax-product-filter')
@@ -590,7 +590,7 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 
 						<p className='description'>
 							{__(
-								'Place the shortcode on the selected page to show the product loop.',
+								'Place the shortcode on the selected page to display the products.',
 								'wc-ajax-product-filter'
 							)}
 						</p>
