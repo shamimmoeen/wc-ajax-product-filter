@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WCAPF - WooCommerce Ajax Product Filter 4.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/wc-ajax-product-filter-dev\n"
-"POT-Creation-Date: 2023-05-18 18:01:39+00:00\n"
+"POT-Creation-Date: 2023-06-11 14:43:18+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,19 +29,19 @@ msgstr ""
 msgid "Add Filters"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:49 includes/class-wcapf-admin.php:107
+#: includes/class-wcapf-admin.php:53 includes/class-wcapf-admin.php:110
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:67
+#: includes/class-wcapf-admin.php:70
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:106
+#: includes/class-wcapf-admin.php:109
 msgid "WCAPF - WooCommerce Ajax Product Filter - Settings"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:163
+#: includes/class-wcapf-admin.php:153
 msgid "Forms"
 msgstr ""
 
@@ -50,7 +50,7 @@ msgid "Taxonomy"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:150
-#: includes/class-wcapf-default-data.php:122
+#: includes/class-wcapf-default-data.php:124
 msgid "Price"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgid "Per Page"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:190
-#: includes/class-wcapf-form-filters-utils.php:147
+#: includes/class-wcapf-form-filters-utils.php:150
 #: includes/shortcodes/class-wcapf-active-filters-shortcode.php:26
 msgid "Active Filters"
 msgstr ""
@@ -93,12 +93,12 @@ msgid "Results Count"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:296
-#: includes/class-wcapf-default-data.php:225
+#: includes/class-wcapf-default-data.php:227
 msgid "Featured"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:300
-#: includes/class-wcapf-default-data.php:229
+#: includes/class-wcapf-default-data.php:231
 msgid "On Sale"
 msgstr ""
 
@@ -179,19 +179,19 @@ msgstr ""
 msgid "Decimal"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:112
+#: includes/class-wcapf-default-data.php:114
 msgid "Category"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:158
+#: includes/class-wcapf-default-data.php:160
 msgid "Any"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:209
+#: includes/class-wcapf-default-data.php:211
 msgid "Tag"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:219
+#: includes/class-wcapf-default-data.php:221
 msgid "Status"
 msgstr ""
 
@@ -203,23 +203,25 @@ msgstr ""
 msgid "All Items"
 msgstr ""
 
-#: includes/class-wcapf-form-filters-utils.php:315
+#: includes/class-wcapf-form-filters-utils.php:336
 msgid "Post type name can't be used as a filter key, it'll create conflict."
 msgstr ""
 
-#: includes/class-wcapf-form-filters-utils.php:320
+#: includes/class-wcapf-form-filters-utils.php:341
 msgid "Taxonomy name can't be used as a filter key, it'll create conflict."
 msgstr ""
 
-#: includes/class-wcapf-form-filters-utils.php:325
+#: includes/class-wcapf-form-filters-utils.php:346
 msgid "Please make it unique by adding an underscore."
 msgstr ""
 
-#: includes/class-wcapf-form.php:75
-msgid "The form is empty."
+#: includes/class-wcapf-form.php:76
+msgid ""
+"The form is empty. Please add some filters by editing the form <a "
+"href=\"%s\">here</a>."
 msgstr ""
 
-#: includes/class-wcapf-form.php:82
+#: includes/class-wcapf-form.php:88
 msgid "Edit form"
 msgstr ""
 
@@ -271,35 +273,35 @@ msgstr ""
 msgid "Last year"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:749
+#: includes/class-wcapf-helper.php:751
 msgid "No results for:"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:759
+#: includes/class-wcapf-helper.php:761
 msgid "N/A"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:768
+#: includes/class-wcapf-helper.php:770
 msgid "Sort by:"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:778 includes/class-wcapf-helper.php:816
+#: includes/class-wcapf-helper.php:780 includes/class-wcapf-helper.php:818
 msgid "Filters"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:822
+#: includes/class-wcapf-helper.php:824
 msgid "Clear All"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:827
+#: includes/class-wcapf-helper.php:829
 msgid "Reset"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:837
+#: includes/class-wcapf-helper.php:839
 msgid "Submit"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:847
+#: includes/class-wcapf-helper.php:849
 msgid "Apply"
 msgstr ""
 
@@ -359,8 +361,26 @@ msgid_plural "%d stars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/migration/class-wcapf-v4-migration.php:366
+#: includes/migration/class-wcapf-v4-migration.php:370
 msgid "Default form"
+msgstr ""
+
+#: includes/shortcodes/class-wcapf-filter-form-shortcode.php:61
+msgid "No forms found. <a href=\"%s\">Create a form here</a>."
+msgstr ""
+
+#: includes/shortcodes/class-wcapf-filter-form-shortcode.php:78
+msgid ""
+"The form has already been displayed and cannot be shown again. Upgrade to "
+"the <a href=\"%s\" target=\"_blank\">Pro version</a> for the ability to use "
+"multiple forms on a page."
+msgstr ""
+
+#: includes/shortcodes/class-wcapf-filter-form-shortcode.php:96
+msgid ""
+"The free version of the plugin does not support filtering products on "
+"singular pages. Upgrade to the <a href=\"%s\" target=\"_blank\">Pro "
+"version</a> to unlock this feature."
 msgstr ""
 
 #: includes/widgets/class-wcapf-filter-widget.php:23
@@ -384,7 +404,9 @@ msgid "WCAPF - WooCommerce Ajax Product Filter"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://wptools.io/wc-ajax-product-filter"
+msgid ""
+"https://wptools.io/wc-ajax-product-filter/?utm_source=plugins+listing&utm_"
+"medium=wcapf+free&utm_campaign=WCAPF+Pro+Details"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -396,7 +418,9 @@ msgid "wptools.io"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "https://wptools.io"
+msgid ""
+"https://wptools.io?utm_source=plugins+listing&utm_medium=wcapf+free&utm_"
+"campaign=Business+Website"
 msgstr ""
 
 #: includes/class-wcapf-post-type.php:54
