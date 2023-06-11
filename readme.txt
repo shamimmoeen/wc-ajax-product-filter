@@ -83,9 +83,9 @@ Customize the filter options based on specific product categories by [displaying
 For example, clothing filters may include options for *size* and *color*, while laptop filters may include options for *processor*, *motherboard*, *RAM*, and *hard disk*. By using different filters for different archive pages, you can enhance the filtering experience for your customers.
 
 == Integration on Singular Pages ==
-[Integrate filters on singular pages](https://wptools.io/docs/wc-ajax-product-filter/common/filters-on-custom-pages/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Documentation) by utilizing the `[wcapf_product_loop]` shortcode in conjunction with the form shortcode `[wcapf_form]`. This integration allows you to display products similarly to the shop page and effectively combines them with the filters.
+[Integrate filters on singular pages](https://wptools.io/docs/wc-ajax-product-filter/common/filters-on-custom-pages/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Documentation) by utilizing the `[wcapf_products]` shortcode in conjunction with the form shortcode `[wcapf_form]`. This integration allows you to display products similarly to the shop page and effectively combines them with the filters.
 
-The `[wcapf_product_loop]` shortcode leverages the popular **WooCommerce products shortcode**, providing extensive customization options. With the product loop, you can:
+The `[wcapf_products]` shortcode leverages the popular **WooCommerce products shortcode**, providing extensive customization options. With the product loop, you can:
 
 - Specify the layout (such as standard shop loop, products with pagination, or only products)
 - Select the type of products to display (on sale, best selling, top rated)
@@ -163,22 +163,11 @@ If the issue persists, please open a support ticket, and our dedicated support t
 
 == Screenshots ==
 
-1. Demo (Free Version)
-2. Demo (Pro Version)
-3. Filters list (admin view)
-4. Active filters settings
-5. Category filter settings
-6. Tag filter settings
-7. Attribute filter settings
-8. Price filter settings
-9. Rating filter settings
-10. Product status filter settings
-11. Reset filters button settings
-12. Plugin settings
+1. Filters Demo 1
 
 == Changelog ==
 
-= 4.0.0 =
+= 4.0.0 (11 June 2023) =
 
 * **Redesigned Admin UI:** We have revamped the plugin's admin interface to provide a more intuitive and user-friendly experience. You'll find it easier than ever to configure and manage your product filters.
 * **Codebase Refactoring:** We have refactored the codebase to optimize performance and lay a solid foundation for future enhancements.
