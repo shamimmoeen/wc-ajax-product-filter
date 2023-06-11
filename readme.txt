@@ -164,6 +164,7 @@ If the issue persists, please open a support ticket, and our dedicated support t
 == Screenshots ==
 
 1. Filters Demo 1
+2. Filters Demo 2
 
 == Changelog ==
 
