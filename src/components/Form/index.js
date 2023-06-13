@@ -14,6 +14,7 @@ import {
 	proFilterTypes,
 } from './utils';
 import { foundProVersion } from '../utils';
+import ReviewNotices from './ReviewNotices';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -112,6 +113,9 @@ const Form = () => {
 		<>
 			<div className='__wcapf_admin'>
 				<TopBar view={'form'} />
+
+				{/* This is customized only for the 'form' view */}
+				<ReviewNotices />
 
 				<div className='__edit_filter'>
 					<div className='__edit_filter_from'>

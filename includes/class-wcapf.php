@@ -81,7 +81,7 @@ class WCAPF {
 			$message = 'Please activate the <b>WooCommerce</b> plugin to use the <b>WCAPF - WooCommerce Ajax Product Filter</b>.';
 		} elseif ( version_compare( $current_wc_version, $required_wc_version, '<' ) ) {
 			$message = sprintf(
-				'Please update your <strong>WooCommerce</strong> to %s or higher to use <strong>WCAPF - WooCommerce Ajax Product Filter</strong> plugin (you are currently using %s).',
+				'Please update your <b>WooCommerce</b> to %s or higher to use <b>WCAPF - WooCommerce Ajax Product Filter</b> plugin (you are currently using %s).',
 				$required_wc_version,
 				$current_wc_version
 			);

@@ -8,7 +8,9 @@ const showProUpgradeNotice = showProV2UpgradeNotice();
 
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {
-		removeWCAPFMigrationNotice();
+		if (typeof removeWCAPFMigrationNotice === 'function') {
+			removeWCAPFMigrationNotice();
+		}
 	};
 
 	return (
@@ -25,16 +27,15 @@ const V4MigrationNotice = () => {
 						</strong>
 					</p>
 					<p>
-						The <i>WC Ajax Product Filter</i> plugin has been
-						upgraded to v4.0.0 and is now named{' '}
-						<i>WCAPF - WooCommerce Ajax Product Filter</i>. We have
-						redesigned the admin UI to provide a more intuitive user
-						experience and refactored the codebase for improved
-						performance and easier future enhancements. As part of
-						the migration process, a form has been automatically
-						created with all the existing filters from your shop. We
-						kindly request that you visit the form and review the
-						order of the filters.
+						The WC Ajax Product Filter plugin has been upgraded to
+						v4.0.0 and is now named WCAPF - WooCommerce Ajax Product
+						Filter. We have redesigned the admin UI to provide a
+						more intuitive user experience and refactored the
+						codebase for improved performance and easier future
+						enhancements. As part of the migration process, a form
+						has been automatically created with all the existing
+						filters from your shop. We kindly request that you visit
+						the form and review the order of the filters.
 					</p>
 					<p>
 						<Button variant='link' href={migrationFormEditUrl}>
@@ -66,11 +67,10 @@ const V4MigrationNotice = () => {
 					</p>
 					<p>
 						Thank you for using the Pro version. To ensure
-						compatibility with{' '}
-						<i>WCAPF - WooCommerce Ajax Product Filter</i> v4.0.0,
-						it is necessary to upgrade{' '}
-						<i>WCAPF - WooCommerce Ajax Product Filter Pro</i> to
-						v2.0.0. Please proceed with the upgrade.
+						compatibility with WCAPF - WooCommerce Ajax Product
+						Filter v4.0.0, it is necessary to upgrade WCAPF -
+						WooCommerce Ajax Product Filter Pro to v2.0.0. Please
+						proceed with the upgrade.
 					</p>
 				</div>
 			)}

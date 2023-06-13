@@ -26,6 +26,12 @@ class WCAPF_Admin {
 		add_action( 'admin_menu', array( $this, 'modify_admin_menu_label' ) );
 		add_action( 'in_admin_header', array( $this, 'disable_admin_notices' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
+
+		// For review notices.
+		add_action( 'admin_notices', array( $this, 'display_review_notices' ) );
+		add_action( 'admin_head', array( $this, 'enqueue_review_notices_styles' ) );
+		add_action( 'admin_footer', array( $this, 'enqueue_review_notices_scripts' ) );
+		add_action( 'wp_ajax_wcapf_dismiss_review_notices', array( $this, 'dismiss_review_notices' ) );
 	}
 
 	/**
@@ -338,6 +344,10 @@ class WCAPF_Admin {
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
+		// For review notices.
+		$params['show_review_notice_for_milestone_achieved'] = WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown();
+		$params['show_review_notice_for_time_since']         = WCAPF_Helper::review_notice_for_time_since_can_be_shown();
+
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}
 
@@ -383,6 +393,144 @@ class WCAPF_Admin {
 			array(),
 			$asset_file['version']
 		);
+	}
+
+	/**
+	 * Display the admin notices asking for writing a review.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function display_review_notices() {
+		$time_since = WCAPF_Helper::review_notice_for_time_since_can_be_shown();
+		$review_url = 'https://wordpress.org/support/plugin/wc-ajax-product-filter/reviews/?filter=5';
+
+		if ( WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown() ) {
+			?>
+			<div class="notice notice-info is-dismissible" id="wcapf-review-notice-for-milestone-achieved">
+				<p>
+					<span class="dashicons dashicons-smiley wcapf-dashicon-smiley"></span>
+					Congratulations! You have reached a milestone in using WCAPF - WooCommerce Ajax Product Filter by
+					updating the filters five times. Help us improve by sharing your experience. Please consider <a
+						href="<?php echo esc_url( $review_url ); ?>" target="_blank">writing a review on WordPress</a>.
+				</p>
+				<button type="button" class="notice-dismiss" onclick="wcapfDismissNotice('milestone-achieved')">
+					<span class="screen-reader-text">Dismiss this notice</span>
+				</button>
+			</div>
+			<?php
+		} elseif ( $time_since ) {
+			?>
+			<div class="notice notice-info" id="wcapf-review-notice-for-time-since">
+				<p>
+					Awesome! You've been using WCAPF - WooCommerce Ajax Product Filter for more
+					than <?php echo esc_html( $time_since ); ?>. Would you mind taking a few seconds to give it a 5-star
+					rating on WordPress? Thank you in advance :)
+					<a href="<?php echo esc_url( $review_url ); ?>" target="_blank">Ok, you deserved it</a>
+					|
+					<a href="#" onclick="wcapfDismissNotice('permanently-dismiss-time-since')">I already did</a>
+					|
+					<a href="#" onclick="wcapfDismissNotice('postpone-time-since')">No, not good enough</a>
+				</p>
+			</div>
+			<?php
+		}
+	}
+
+	/**
+	 * Enqueue the styles for the review notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_review_notices_styles() {
+		?>
+		<style>
+			.wcapf-dashicon-smiley {
+				margin-right: 5px;
+			}
+		</style>
+		<?php
+	}
+
+	/**
+	 * Enqueue the scripts for the review notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_review_notices_scripts() {
+		$nonce = wp_create_nonce( 'wcapf-dismiss-review-notices-nonce' );
+		?>
+		<!--suppress ES6ConvertVarToLetConst, JSValidateTypes -->
+		<script>
+			function wcapfDismissNotice( type ) {
+				var $notice;
+
+				if ( 'milestone-achieved' === type ) {
+					$notice = jQuery( '#wcapf-review-notice-for-milestone-achieved' );
+				} else {
+					$notice = jQuery( '#wcapf-review-notice-for-time-since' );
+				}
+
+				$notice.fadeOut( 300, function() {
+					$notice.remove();
+				} );
+
+				var data = {
+					action: 'wcapf_dismiss_review_notices',
+					nonce: '<?php echo $nonce; ?>',
+					type,
+				};
+
+				jQuery.post( ajaxurl, data, function( response ) {
+					console.log( response );
+				} );
+			}
+		</script>
+		<?php
+	}
+
+	/**
+	 * The ajax function to dismiss the review notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function dismiss_review_notices() {
+		// Verify the AJAX request nonce.
+		check_ajax_referer( 'wcapf-dismiss-review-notices-nonce', 'nonce' );
+
+		// Get the type parameter from the request.
+		$type = ! empty( $_REQUEST['type'] ) ? sanitize_text_field( $_REQUEST['type'] ) : '';
+
+		// If the type parameter is missing, send an error response.
+		if ( ! $type ) {
+			wp_send_json_error( 'Invalid type for dismissing the review notices' );
+		}
+
+		// Get the current user ID.
+		$user_id = get_current_user_id();
+
+		// Process dismissal based on the type.
+		if ( 'milestone-achieved' === $type ) {
+			// Dismiss the milestone achieved notice and store the dismissal time.
+			update_user_meta( $user_id, 'wcapf_review_notice_for_milestone_achieved_dismissed', '1' );
+			update_user_meta( $user_id, 'wcapf_review_notice_for_milestone_achieved_dismissed_at', time() );
+		} elseif ( 'permanently-dismiss-time-since' === $type ) {
+			// Permanently hide the time since notice for the user.
+			update_user_meta( $user_id, 'wcapf_review_notice_time_since_hide_permanently', '1' );
+		} elseif ( 'postpone-time-since' === $type ) {
+			// Store the dismissal time.
+			update_user_meta( $user_id, 'wcapf_review_notice_time_since_dismissed_at', time() );
+		}
+
+		// Send a success response.
+		wp_send_json_success( 'WCAPF review notice dismissed' );
 	}
 
 }

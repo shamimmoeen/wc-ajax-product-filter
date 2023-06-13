@@ -3,14 +3,11 @@ import Notifications from '../Notifications';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
 import Table from './Table';
-import V4MigrationNotice from '../V4MigrationNotice';
 
 const SEORules = () => {
 	return (
 		<div className='__wcapf_admin'>
 			<TopBar view={'seo-rules'} />
-
-			<V4MigrationNotice />
 
 			<div className='__wcapf_layout'>
 				<div className='__main'>

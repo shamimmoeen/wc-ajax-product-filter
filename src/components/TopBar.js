@@ -10,6 +10,7 @@ import {
 	upgradeToProLink,
 } from './utils';
 import V4MigrationNotice from './V4MigrationNotice';
+import ReviewNotices from './ReviewNotices';
 
 const navMenus = [
 	{
@@ -86,6 +87,8 @@ const TopBar = ({ view }) => {
 			</div>
 
 			<V4MigrationNotice />
+
+			{'form' !== view && <ReviewNotices />}
 		</>
 	);
 };

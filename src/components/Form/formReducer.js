@@ -1,5 +1,7 @@
 const title = wcapf_admin_params.form_data['post_title'];
 const formId = wcapf_admin_params.form_data['post_id'];
+const showReviewNotice =
+	wcapf_admin_params.show_review_notice_for_milestone_achieved;
 
 export const initialState = {
 	isLoading: true,
@@ -13,6 +15,7 @@ export const initialState = {
 	formFilters: [],
 	formSettings: {},
 	saveError: '',
+	showReviewNotice,
 };
 
 const formReducer = (state, action) => {
@@ -49,6 +52,9 @@ const formReducer = (state, action) => {
 
 		case 'SET_ERROR':
 			return { ...state, saveError: action.payload };
+
+		case 'SET_SHOW_REVIEW_NOTICE':
+			return { ...state, showReviewNotice: action.payload };
 
 		default:
 			return state;
