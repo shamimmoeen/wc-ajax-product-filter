@@ -686,14 +686,17 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Checks if marketplace plugin found.
+	 * Checks if vendor plugin found.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */
-	public static function is_marketplace_plugin_found() {
-		return class_exists( 'WCFMmp' ) || class_exists( 'WC_Vendors' );
+	public static function is_vendor_plugin_found() {
+		return apply_filters(
+			'wcapf_vendor_plugin_found',
+			class_exists( 'WCFMmp' ) || class_exists( 'WC_Vendors' )
+		);
 	}
 
 	/**
