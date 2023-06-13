@@ -33,6 +33,8 @@ const wcapf_params = wcapf_params || {
 	'shop_loop_container': '',
 	'not_found_container': '',
 	'pagination_container': '',
+	'orderby_form': '',
+	'orderby_element': '',
 	'disable_ajax': '',
 	'enable_pagination_via_ajax': '',
 	'sorting_control': '',
@@ -60,6 +62,8 @@ const wcapf_params = wcapf_params || {
 	const $document = $( document );
 
 	const instanceIds = [];
+
+	const defaultOrderByElement = wcapf_params.orderby_form + ' ' + wcapf_params.orderby_element;
 
 	$( '.wcapf-filter' ).each( function() {
 		const id = $( this ).data( 'id' );
@@ -699,7 +703,7 @@ const wcapf_params = wcapf_params || {
 		handleDefaultOrderby: function() {
 			if ( ! wcapf_params.sorting_control ) {
 				// Submit the orderby form when value is changed.
-				$body.on( 'change', '.woocommerce-ordering select.orderby', function() {
+				$body.on( 'change', defaultOrderByElement, function() {
 					$( this ).closest( 'form' ).trigger( 'submit' );
 				} );
 
@@ -707,12 +711,12 @@ const wcapf_params = wcapf_params || {
 			}
 
 			// Prevent the auto submission of the orderby form.
-			$body.on( 'submit', '.woocommerce-ordering', function() {
+			$body.on( 'submit', wcapf_params.orderby_form, function() {
 				return false;
 			} );
 
 			// Handle the filter request via ajax when the orderby value is changed.
-			$body.on( 'change', '.woocommerce-ordering select.orderby', function() {
+			$body.on( 'change', defaultOrderByElement, function() {
 				const order = $( this ).val();
 
 				const url = new URL( window.location );
@@ -818,7 +822,7 @@ const wcapf_params = wcapf_params || {
 
 				options[ 'disable_search' ] = disableSearch;
 
-				$body.find( '.woocommerce-ordering select.orderby' ).chosenWCAPF( options );
+				$body.find( defaultOrderByElement ).chosenWCAPF( options );
 			}
 		},
 		initRangeSlider: function() {
