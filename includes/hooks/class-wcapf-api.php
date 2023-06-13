@@ -62,6 +62,9 @@ class WCAPF_API {
 
 		// Save settings.
 		add_action( 'wp_ajax_wcapf_save_settings', array( $this, 'save_settings' ) );
+
+		// Track the form updates count to show the review notice.
+		add_action( 'wcapf_form_saved', array( $this, 'track_form_updates_count' ) );
 	}
 
 	/**
@@ -376,6 +379,11 @@ class WCAPF_API {
 			wp_send_json_error( array( 'errors' => $errors ) );
 		}
 
+		/**
+		 * Register a hook that is triggerred after a form is saved.
+		 */
+		do_action( 'wcapf_form_saved', $new_form_id );
+
 		$filters_for_ui = array();
 
 		foreach ( $filters as $filter ) {
@@ -389,6 +397,8 @@ class WCAPF_API {
 			'form_filters'  => $filters_for_ui,
 			'form_settings' => $form_settings,
 		);
+
+		$response['show_review_notice'] = WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown();
 
 		wp_send_json_success( $response );
 	}
@@ -904,6 +914,26 @@ class WCAPF_API {
 		}
 
 		return $sanitized;
+	}
+
+	/**
+	 * Track the form updates count to show the review notice.
+	 *
+	 * @return void
+	 */
+	public function track_form_updates_count() {
+		$user_id  = get_current_user_id();
+		$meta_key = 'wcapf_form_updates_count';
+
+		$form_updates_count = intval( get_user_meta( $user_id, $meta_key, true ) );
+
+		if ( $form_updates_count ) {
+			$form_updates_count ++;
+		} else {
+			$form_updates_count = 1;
+		}
+
+		update_user_meta( $user_id, $meta_key, $form_updates_count );
 	}
 
 }

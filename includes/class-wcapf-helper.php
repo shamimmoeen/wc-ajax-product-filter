@@ -881,4 +881,230 @@ class WCAPF_Helper {
 		return '<div class="wcapf-debug-message" style="' . $styles . '">' . $message . '</div>';
 	}
 
+	/**
+	 * Determines if the review notice for milestone achieved should be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function review_notice_for_milestone_achieved_can_be_shown() {
+		if ( ! self::review_notices_can_be_shown() ) {
+			return false;
+		}
+
+		$user_id  = get_current_user_id();
+		$meta_key = 'wcapf_review_notice_for_milestone_achieved_dismissed';
+
+		if ( get_user_meta( $user_id, $meta_key, true ) ) {
+			return false;
+		}
+
+		$form_updates_count = get_user_meta( $user_id, 'wcapf_form_updates_count', true );
+		$form_updates_count = intval( $form_updates_count );
+
+		// Check if the form updates count is at least 5
+		if ( $form_updates_count >= 5 ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determines if the review notices can be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function review_notices_can_be_shown() {
+		// Check if the user has the capability to manage options
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		// Check if we are showing the v4 migration notice.
+		if ( self::v4_migration_notice_can_be_shown() ) {
+			return false;
+		}
+
+		// Check if we are showing the v4 review filters notice.
+		if ( self::v4_review_filters_notice_can_be_shown() ) {
+			return false;
+		}
+
+		// Check if we are showing the pro version upgrade required notice.
+		if ( self::pro_v2_upgrade_notice_can_be_shown() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if the v4 migration notice should be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function v4_migration_notice_can_be_shown() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		if ( '1' !== get_option( 'wcapf_v4_migration_notice_status' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if the v4 migration notice should be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function v4_review_filters_notice_can_be_shown() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		if ( '1' !== get_option( 'wcapf_v4_review_filters_notice_status' ) ) {
+			return false;
+		}
+
+		global $current_screen;
+
+		$screen_id = isset( $current_screen->id ) ? $current_screen->id : '';
+
+		if ( 'toplevel_page_wcapf' !== $screen_id ) {
+			return false;
+		}
+
+		$form_id = ! empty( $_GET['id'] ) ? $_GET['id'] : '';
+
+		if ( ! $form_id ) {
+			return false;
+		}
+
+		if ( get_option( 'wcapf_migrated_filters_form_id' ) != $form_id ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if the pro v2 upgrade notice should be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool
+	 */
+	public static function pro_v2_upgrade_notice_can_be_shown() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		if ( ! is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ) {
+			return false;
+		}
+
+		if (
+			defined( 'WCAPF_PRO_VERSION' )
+			&& ! version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' )
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Determines if the review notice for time since should be shown.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool|string Return false when the review notice should not be shown otherwise return the time since.
+	 */
+	public static function review_notice_for_time_since_can_be_shown() {
+		if ( ! WCAPF_Helper::review_notices_can_be_shown() ) {
+			return false;
+		}
+
+		$user_id      = get_current_user_id();
+		$current_time = time();
+
+		// Check if the milestone achieved notice is dismissed within the past 24 hours.
+		$meta_key       = 'wcapf_review_notice_for_milestone_achieved_dismissed_at';
+		$dismissal_time = get_user_meta( $user_id, $meta_key, true );
+
+		// if ( $dismissal_time && ( $current_time - $dismissal_time ) < 24 * 60 * 60 ) {
+		if ( $dismissal_time && ( $current_time - $dismissal_time ) < 2 * 60 ) { // 2 minutes
+			return false;
+		}
+
+		// Check if the time since notice is permanently disabled for this user.
+		$meta_key = 'wcapf_review_notice_time_since_hide_permanently';
+
+		if ( get_user_meta( $user_id, $meta_key, true ) ) {
+			return false;
+		}
+
+		$activation_time = get_option( 'wcapf_activation_time' );
+
+		if ( ! $activation_time ) {
+			return false;
+		}
+
+		// Intervals to show the review notice (in seconds) with corresponding human-readable strings.
+		$intervals = array(
+			31536000 => '1 year',
+			15552000 => '6 months',
+			7776000  => '3 months',
+			2592000  => '1 month',
+			1209600  => '2 weeks',
+			604800   => '1 week',
+		);
+
+		$dismissal_key      = 'wcapf_review_notice_time_since_dismissed_at';
+		$dismissal_time     = get_user_meta( $user_id, $dismissal_key, true );
+		$dismissed_interval = null;
+
+		if ( $dismissal_time ) {
+			$elapsed_time = $dismissal_time - $activation_time;
+
+			// Find the dismissed interval.
+			foreach ( array_keys( $intervals ) as $interval ) {
+				if ( $interval >= $elapsed_time ) {
+					$dismissed_interval = $interval;
+				}
+			}
+		}
+
+		$timestamp    = null;
+		$show         = null;
+		$elapsed_time = $current_time - $activation_time;
+
+		// Find the current interval based on elapsed time.
+		foreach ( $intervals as $interval => $human_readable_interval ) {
+			if ( $elapsed_time >= $interval ) {
+				$timestamp = $interval;
+				$show      = $human_readable_interval;
+
+				break;
+			}
+		}
+
+		if ( $dismissed_interval && $timestamp < $dismissed_interval ) {
+			return false;
+		}
+
+		return $show;
+	}
+
 }

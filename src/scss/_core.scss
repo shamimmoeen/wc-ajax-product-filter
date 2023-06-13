@@ -68,8 +68,9 @@ body {
 	font-size: 13px;
 }
 
-// v4 Migration Notice.
-.v4-upgrade-notice {
+// Admin Notices.
+.v4-upgrade-notice,
+.review-notice {
 	margin: 20px var(--large-gap) 0;
 	background: rgba(114, 174, 230, 0.1);
 

@@ -73,11 +73,11 @@ class WCAPF_V4_Migration_Hooks {
 
 	public function set_v4_migration_js_params( $params ) {
 		// v4 migration related data.
-		$params['show_v4_migration_notice']      = $this->v4_migration_notice_can_be_shown();
-		$params['show_v4_review_filters_notice'] = $this->v4_review_filters_notice_can_be_shown();
+		$params['show_v4_migration_notice']      = WCAPF_Helper::v4_migration_notice_can_be_shown();
+		$params['show_v4_review_filters_notice'] = WCAPF_Helper::v4_review_filters_notice_can_be_shown();
 		$params['v4_migrated_form_url']          = $this->get_v4_migrated_form_url();
 		$params['v4_migration_doc_url']          = $this->get_v4_migration_doc_url();
-		$params['show_pro_v2_upgrade_notice']    = $this->pro_v2_upgrade_notice_can_be_shown();
+		$params['show_pro_v2_upgrade_notice']    = WCAPF_Helper::pro_v2_upgrade_notice_can_be_shown();
 
 		return $params;
 	}
@@ -99,47 +99,6 @@ class WCAPF_V4_Migration_Hooks {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Determines if the v4 migration notice should be shown.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	private function v4_review_filters_notice_can_be_shown() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
-		}
-
-		if ( '1' !== get_option( 'wcapf_v4_review_filters_notice_status' ) ) {
-			return false;
-		}
-
-		$screen_id = $this->current_screen_id();
-
-		if ( 'toplevel_page_wcapf' !== $screen_id ) {
-			return false;
-		}
-
-		$form_id = ! empty( $_GET['id'] ) ? $_GET['id'] : '';
-
-		if ( ! $form_id ) {
-			return false;
-		}
-
-		if ( get_option( 'wcapf_migrated_filters_form_id' ) != $form_id ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	private function current_screen_id() {
-		global $current_screen;
-
-		return isset( $current_screen->id ) ? $current_screen->id : '';
 	}
 
 	/**
@@ -176,29 +135,6 @@ class WCAPF_V4_Migration_Hooks {
 	}
 
 	/**
-	 * Determines if the pro v2 upgrade notice should be shown.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	private function pro_v2_upgrade_notice_can_be_shown() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
-		}
-
-		if ( ! is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ) {
-			return false;
-		}
-
-		if ( defined( 'WCAPF_PRO_VERSION' ) && ! version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Show the v4 migration notice.
 	 *
 	 * @since 4.0.0
@@ -206,7 +142,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function show_v4_migration_notice() {
-		if ( ! $this->v4_migration_notice_can_be_shown() ) {
+		if ( ! WCAPF_Helper::v4_migration_notice_can_be_shown() ) {
 			return;
 		}
 
@@ -218,11 +154,11 @@ class WCAPF_V4_Migration_Hooks {
 				<strong>WCAPF - WooCommerce Ajax Product Filter (v4.0.0 Migration Notice)</strong>
 			</p>
 			<p>
-				The <i>WC Ajax Product Filter</i> plugin has been upgraded to v4.0.0 and is now named <i>WCAPF -
-					WooCommerce Ajax Product Filter</i>. We have redesigned the admin UI to provide a more intuitive
-				user experience and refactored the codebase for improved performance and easier future enhancements. As
-				part of the migration process, a form has been automatically created with all the existing filters from
-				your shop. We kindly request that you visit the form and review the order of the filters.
+				The WC Ajax Product Filter plugin has been upgraded to v4.0.0 and is now named WCAPF - WooCommerce Ajax
+				Product Filter. We have redesigned the admin UI to provide a more intuitive user experience and
+				refactored the codebase for improved performance and easier future enhancements. As part of the
+				migration process, a form has been automatically created with all the existing filters from your shop.
+				We kindly request that you visit the form and review the order of the filters.
 			</p>
 			<p>
 				<a href="<?php echo esc_url( $form_url ); ?>">Review the filters</a>
@@ -244,6 +180,10 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function dismiss_v4_migration_notice_scripts() {
+		if ( ! $this->v4_migration_notice_can_be_shown() ) {
+			return;
+		}
+
 		$nonce = wp_create_nonce( 'dismiss-v4-migration-notice-nonce' );
 		?>
 		<!--suppress ES6ConvertVarToLetConst, JSValidateTypes -->
@@ -276,7 +216,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function dismiss_v4_review_filters_notice_scripts() {
-		if ( ! $this->v4_review_filters_notice_can_be_shown() ) {
+		if ( ! WCAPF_Helper::v4_review_filters_notice_can_be_shown() ) {
 			return;
 		}
 
@@ -342,7 +282,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function show_v2_pro_version_upgrade_notice() {
-		if ( ! $this->pro_v2_upgrade_notice_can_be_shown() ) {
+		if ( ! WCAPF_Helper::pro_v2_upgrade_notice_can_be_shown() ) {
 			return;
 		}
 		?>
@@ -351,9 +291,9 @@ class WCAPF_V4_Migration_Hooks {
 				<strong>WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade Required)</strong>
 			</p>
 			<p>
-				Thank you for using the Pro version. To ensure compatibility with <i>WCAPF - WooCommerce Ajax Product
-					Filter</i> v4.0.0, it is necessary to upgrade <i>WCAPF - WooCommerce Ajax Product Filter Pro</i> to
-				v2.0.0. Please proceed with the upgrade.
+				Thank you for using the Pro version. To ensure compatibility with WCAPF - WooCommerce Ajax Product
+				Filter v4.0.0, it is necessary to upgrade WCAPF - WooCommerce Ajax Product Filter Pro to v2.0.0. Please
+				proceed with the upgrade.
 			</p>
 		</div>
 		<?php

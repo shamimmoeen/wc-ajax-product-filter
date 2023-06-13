@@ -388,6 +388,11 @@ const FormTitle = () => {
 						payload: data.form_settings,
 					});
 
+					dispatch({
+						type: 'SET_SHOW_REVIEW_NOTICE',
+						payload: data.show_review_notice,
+					});
+
 					dispatch({ type: 'SET_DIRTY', payload: false });
 
 					wcapf_admin_params.dirty = false;

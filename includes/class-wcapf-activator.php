@@ -43,6 +43,8 @@ class WCAPF_Activator {
 
 				WCAPF_V4_Migration()->try_to_run_v4_migration();
 
+				self::save_activation_time_in_db();
+
 				return;
 			}
 		}
@@ -58,6 +60,23 @@ class WCAPF_Activator {
 
 		// Update the db version.
 		update_option( $db_version_option_key, WCAPF_VERSION );
+
+		self::save_activation_time_in_db();
+	}
+
+	/**
+	 * Saves the plugin activation time in database to show the review notice for time since strategy.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public static function save_activation_time_in_db() {
+		$activation_time = get_option( 'wcapf_activation_time' );
+
+		if ( ! $activation_time ) {
+			update_option( 'wcapf_activation_time', time() );
+		}
 	}
 
 }

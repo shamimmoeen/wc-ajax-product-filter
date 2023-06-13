@@ -5,7 +5,9 @@ const showNotice = wcapf_admin_params.show_v4_review_filters_notice;
 
 const V4ReviewFiltersNotice = () => {
 	const handleDismissNotice = () => {
-		removeWCAPFReviewFiltersNotice();
+		if (typeof removeWCAPFReviewFiltersNotice === 'function') {
+			removeWCAPFReviewFiltersNotice();
+		}
 	};
 
 	return (

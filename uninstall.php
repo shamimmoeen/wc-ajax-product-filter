@@ -28,6 +28,9 @@ global $wpdb;
 delete_option( $option_key );
 delete_option( 'wcapf_filter_keys_order' );
 delete_option( 'wcapf_db_version' );
+delete_option( 'wcapf_activation_time' );
+
+// Delete v4 migration related records from the options table.
 delete_option( 'wcapf_v4_migration_notice_status' );
 delete_option( 'wcapf_migrated_filters_form_id' );
 
@@ -37,3 +40,18 @@ delete_transient( 'wcapf_v4_migration_status' );
 // Delete posts + data.
 $wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type IN ('wcapf-form', 'wcapf-filter');" );
 $wpdb->query( "DELETE meta FROM $wpdb->postmeta meta LEFT JOIN $wpdb->posts posts ON posts.ID = meta.post_id WHERE posts.ID IS NULL;" );
+
+// Delete review notice related records from the user meta table.
+$meta_keys = array(
+	'wcapf_form_updates_count',
+	'wcapf_review_notice_for_milestone_achieved_dismissed',
+	'wcapf_review_notice_for_milestone_achieved_dismissed_at',
+	'wcapf_review_notice_time_since_hide_permanently',
+	'wcapf_review_notice_time_since_dismissed_at',
+);
+
+$meta_keys_string = '(' . implode( ', ', array_map( function ( $key ) {
+		return "'$key'";
+	}, $meta_keys ) ) . ')';
+
+$wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key IN $meta_keys_string;" );

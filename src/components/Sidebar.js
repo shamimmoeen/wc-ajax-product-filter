@@ -2,17 +2,17 @@ import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
 const documentation = __(
-	'There you can find detailed information about how to use the plugin correctly.',
+	'Explore our comprehensive documentation and interactive demos.',
 	'wc-ajax-product-filter'
 );
 
 const support = __(
-	'Did you find any <b>bugs</b> or <b>compatibility issues</b>? Please do not hesitate to open a thread on the support forum.',
+	"Whether you require technical support, have questions about specific features, or need assistance with custom development, we're here to help.",
 	'wc-ajax-product-filter'
 );
 
-const question = __(
-	"Do you have any <b>questions</b> or <b>feature requests</b> or do you need help with <b>custom development</b>? We'll be able to answer any kind of query.",
+const review = __(
+	'Your 5-star review would mean the world to us! Help us spread the word and share your positive experience with others.',
 	'wc-ajax-product-filter'
 );
 
@@ -24,13 +24,20 @@ const wpSupportURL =
 	'https://wordpress.org/support/plugin/wc-ajax-product-filter/';
 const supportURL =
 	'https://wptools.io/support/?utm_source=WP+Admin&utm_medium=inside+plugin&utm_campaign=WCAPF+Support';
+const reviewUrl =
+	'https://wordpress.org/support/plugin/wc-ajax-product-filter/reviews/?filter=5';
 
 const Sidebar = () => {
 	return (
 		<div className='__sidebar'>
 			<Card>
 				<CardHeader>
-					<h2>{__('Documentation', 'wc-ajax-product-filter')}</h2>
+					<h2>
+						{__(
+							'Need Help Getting Started?',
+							'wc-ajax-product-filter'
+						)}
+					</h2>
 				</CardHeader>
 				<CardBody>
 					<p dangerouslySetInnerHTML={{ __html: documentation }} />
@@ -40,7 +47,7 @@ const Sidebar = () => {
 							href={documentationURL}
 							target='_blank'
 						>
-							{__('To Documentation', 'wc-ajax-product-filter')}
+							{__('Documentation', 'wc-ajax-product-filter')}
 						</Button>
 						<Button
 							variant='secondary'
@@ -55,7 +62,9 @@ const Sidebar = () => {
 
 			<Card>
 				<CardHeader>
-					<h2>{__('Support', 'wc-ajax-product-filter')}</h2>
+					<h2>
+						{__('Support & Questions', 'wc-ajax-product-filter')}
+					</h2>
 				</CardHeader>
 				<CardBody>
 					<p dangerouslySetInnerHTML={{ __html: support }} />
@@ -64,23 +73,30 @@ const Sidebar = () => {
 						href={wpSupportURL}
 						target='_blank'
 					>
-						{__('To Support', 'wc-ajax-product-filter')}
+						{__('Support Forum', 'wc-ajax-product-filter')}
+					</Button>
+					<Button
+						variant='secondary'
+						href={supportURL}
+						target='_blank'
+					>
+						{__('Contact Us', 'wc-ajax-product-filter')}
 					</Button>
 				</CardBody>
 			</Card>
 
 			<Card>
 				<CardHeader>
-					<h2>{__('Any Question?', 'wc-ajax-product-filter')}</h2>
+					<h2>{__('Like the Plugin?', 'wc-ajax-product-filter')}</h2>
 				</CardHeader>
 				<CardBody>
-					<p dangerouslySetInnerHTML={{ __html: question }} />
+					<p dangerouslySetInnerHTML={{ __html: review }} />
 					<Button
 						variant='secondary'
-						href={supportURL}
+						href={reviewUrl}
 						target='_blank'
 					>
-						{__('Ask Us', 'wc-ajax-product-filter')}
+						{__('Write a Review', 'wc-ajax-product-filter')}
 					</Button>
 				</CardBody>
 			</Card>
