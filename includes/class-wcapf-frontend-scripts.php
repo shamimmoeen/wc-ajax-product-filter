@@ -197,6 +197,8 @@ class WCAPF_Frontend_Scripts {
 			'shop_loop_container'  => $shop_loop_identifier,
 			'not_found_container'  => $shop_loop_identifier,
 			'pagination_container' => $pagination_container,
+			'orderby_form'         => '.woocommerce-ordering',
+			'orderby_element'      => 'select.orderby',
 		);
 
 		foreach ( $js_data as $key ) {
