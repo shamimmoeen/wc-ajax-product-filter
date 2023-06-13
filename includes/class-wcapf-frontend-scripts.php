@@ -190,12 +190,13 @@ class WCAPF_Frontend_Scripts {
 			'custom_scripts',
 		);
 
-		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
+		$shop_loop_identifier  = '.' . WCAPF_Helper::shop_loop_container_identifier();
+		$pagination_identifier = WCAPF_Helper::pagination_container_identifier();
 
 		$settings = array(
 			'shop_loop_container'  => $shop_loop_identifier,
 			'not_found_container'  => $shop_loop_identifier,
-			'pagination_container' => '.woocommerce-pagination',
+			'pagination_container' => $pagination_identifier,
 		);
 
 		foreach ( $js_data as $key ) {

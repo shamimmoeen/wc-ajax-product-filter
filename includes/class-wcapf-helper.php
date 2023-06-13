@@ -476,6 +476,17 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Pagination container class.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	public static function pagination_container_identifier() {
+		return apply_filters( 'wcapf_pagination_container_identifier', '.woocommerce-pagination' );
+	}
+
+	/**
 	 * Checks if the product attribute filtering via lookup table feature is enabled.
 	 *
 	 * @return bool
