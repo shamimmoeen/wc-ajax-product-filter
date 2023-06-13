@@ -94,6 +94,7 @@ class WCAPF_Default_Data {
 			'sort_by_prefix'                   => '',
 			'per_page_prefix'                  => '',
 			'input_delay'                      => '300',
+			'pagination_container'             => '.woocommerce-pagination',
 			'more_selectors'                   => '',
 			'custom_scripts'                   => '',
 			'author_roles'                     => array( 'administrator', 'shop_manager' ),

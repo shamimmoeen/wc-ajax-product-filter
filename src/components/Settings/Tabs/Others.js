@@ -40,6 +40,7 @@ const Others = () => {
 			sort_by_prefix,
 			per_page_prefix,
 			input_delay,
+			pagination_container,
 			more_selectors,
 			custom_scripts,
 			author_roles,
@@ -207,6 +208,17 @@ const Others = () => {
 				onChange={handleTextFieldChange}
 				type={'number'}
 				min={0}
+			/>
+
+			<Text
+				id={'pagination_container'}
+				label={__('Pagination container', 'wc-ajax-product-filter')}
+				description={__(
+					"The css class of the pagination element, supports multiple classes separated by commas. In most cases, you don't need to change this. Applicable when filtering via Ajax.",
+					'wc-ajax-product-filter'
+				)}
+				value={pagination_container}
+				onChange={handleTextFieldChange}
 			/>
 
 			{WCAPF_PRO && (
