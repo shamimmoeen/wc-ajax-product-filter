@@ -866,6 +866,10 @@ class WCAPF_Helper {
 
 		$settings = self::get_settings();
 
+		if ( ! empty( $settings['disable_wcapf'] ) ) {
+			return false;
+		}
+
 		return ! empty( $settings['debug_mode'] );
 	}
 
