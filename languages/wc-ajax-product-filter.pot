@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WCAPF - WooCommerce Ajax Product Filter 4.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/wc-ajax-product-filter-dev\n"
-"POT-Creation-Date: 2023-06-11 14:43:18+00:00\n"
+"POT-Creation-Date: 2023-06-14 19:36:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,23 +25,23 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: includes/class-wcapf-admin.php:43
+#: includes/class-wcapf-admin.php:49
 msgid "Add Filters"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:53 includes/class-wcapf-admin.php:110
+#: includes/class-wcapf-admin.php:59 includes/class-wcapf-admin.php:116
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:70
+#: includes/class-wcapf-admin.php:76
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:109
+#: includes/class-wcapf-admin.php:115
 msgid "WCAPF - WooCommerce Ajax Product Filter - Settings"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:153
+#: includes/class-wcapf-admin.php:159
 msgid "Forms"
 msgstr ""
 
@@ -50,7 +50,8 @@ msgid "Taxonomy"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:150
-#: includes/class-wcapf-default-data.php:124
+#: includes/class-wcapf-api-utils.php:380
+#: includes/class-wcapf-default-data.php:125
 msgid "Price"
 msgstr ""
 
@@ -93,12 +94,12 @@ msgid "Results Count"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:296
-#: includes/class-wcapf-default-data.php:227
+#: includes/class-wcapf-default-data.php:228
 msgid "Featured"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:300
-#: includes/class-wcapf-default-data.php:231
+#: includes/class-wcapf-default-data.php:232
 msgid "On Sale"
 msgstr ""
 
@@ -119,7 +120,7 @@ msgid "Name (Post Slug)"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:348
-#: includes/class-wcapf-api-utils.php:416
+#: includes/class-wcapf-api-utils.php:412
 msgid "Date"
 msgstr ""
 
@@ -151,47 +152,39 @@ msgstr ""
 msgid "Average Rating"
 msgstr ""
 
-#: includes/class-wcapf-api-utils.php:380
-msgid "Min Price"
-msgstr ""
-
 #: includes/class-wcapf-api-utils.php:384
-msgid "Max Price"
-msgstr ""
-
-#: includes/class-wcapf-api-utils.php:388
 msgid "Meta Value"
 msgstr ""
 
-#: includes/class-wcapf-api-utils.php:406
+#: includes/class-wcapf-api-utils.php:402
 msgid "Alphabetic"
 msgstr ""
 
-#: includes/class-wcapf-api-utils.php:411
+#: includes/class-wcapf-api-utils.php:407
 msgid "Numeric"
 msgstr ""
 
-#: includes/class-wcapf-api-utils.php:421
+#: includes/class-wcapf-api-utils.php:417
 msgid "DateTime"
 msgstr ""
 
-#: includes/class-wcapf-api-utils.php:426
+#: includes/class-wcapf-api-utils.php:422
 msgid "Decimal"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:114
+#: includes/class-wcapf-default-data.php:115
 msgid "Category"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:160
+#: includes/class-wcapf-default-data.php:161
 msgid "Any"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:211
+#: includes/class-wcapf-default-data.php:212
 msgid "Tag"
 msgstr ""
 
-#: includes/class-wcapf-default-data.php:221
+#: includes/class-wcapf-default-data.php:222
 msgid "Status"
 msgstr ""
 
@@ -225,7 +218,7 @@ msgstr ""
 msgid "Edit form"
 msgstr ""
 
-#: includes/class-wcapf-frontend-scripts.php:213
+#: includes/class-wcapf-frontend-scripts.php:216
 msgid "No options to choose"
 msgstr ""
 
@@ -273,35 +266,35 @@ msgstr ""
 msgid "Last year"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:751
+#: includes/class-wcapf-helper.php:754
 msgid "No results for:"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:761
+#: includes/class-wcapf-helper.php:764
 msgid "N/A"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:770
+#: includes/class-wcapf-helper.php:773
 msgid "Sort by:"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:780 includes/class-wcapf-helper.php:818
+#: includes/class-wcapf-helper.php:783 includes/class-wcapf-helper.php:821
 msgid "Filters"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:824
+#: includes/class-wcapf-helper.php:827
 msgid "Clear All"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:829
+#: includes/class-wcapf-helper.php:832
 msgid "Reset"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:839
+#: includes/class-wcapf-helper.php:842
 msgid "Submit"
 msgstr ""
 
-#: includes/class-wcapf-helper.php:849
+#: includes/class-wcapf-helper.php:852
 msgid "Apply"
 msgstr ""
 
@@ -325,33 +318,33 @@ msgstr ""
 msgid "Show/hide all options"
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:76
+#: includes/hooks/class-wcapf-api.php:79
 msgid "Sample form"
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:105
-#: includes/hooks/class-wcapf-api.php:346
-#: includes/hooks/class-wcapf-api.php:723
+#: includes/hooks/class-wcapf-api.php:108
+#: includes/hooks/class-wcapf-api.php:349
+#: includes/hooks/class-wcapf-api.php:733
 msgid "Invalid form id"
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:716
+#: includes/hooks/class-wcapf-api.php:726
 msgid "Form deleted successfully"
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:719
+#: includes/hooks/class-wcapf-api.php:729
 msgid "There was a problem deleting the form, please try again."
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:739
+#: includes/hooks/class-wcapf-api.php:749
 msgid "Filter deleted successfully"
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:742
+#: includes/hooks/class-wcapf-api.php:752
 msgid "There was a problem deleting the filter, please try again."
 msgstr ""
 
-#: includes/hooks/class-wcapf-api.php:746
+#: includes/hooks/class-wcapf-api.php:756
 msgid "Invalid filter id"
 msgstr ""
 

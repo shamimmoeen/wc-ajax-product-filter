@@ -165,10 +165,14 @@ If the issue persists, please open a support ticket, and our dedicated support t
 
 1. Filters Demo 1
 2. Filters Demo 2
+3. Filters Demo 3
+4. List of Forms
+5. Form Filters
+6. Plugin Settings
 
 ## Changelog ##
 
-### 4.0.0 (11 June 2023) ###
+### 4.0.0 (15 June 2023) ###
 
 * **Redesigned Admin UI:** We have revamped the plugin's admin interface to provide a more intuitive and user-friendly experience. You'll find it easier than ever to configure and manage your product filters.
 * **Codebase Refactoring:** We have refactored the codebase to optimize performance and lay a solid foundation for future enhancements.
