@@ -48,6 +48,7 @@ node_modules export-ignore
 .vscode export-ignore
 
 # Ignore source codes.
+public/lib/chosen/chosen.scss export-ignore
 public/lib/nouislider/less export-ignore
 public/src export-ignore
 src export-ignore
