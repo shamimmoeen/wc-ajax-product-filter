@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
 import useSettingsData from '../useSettingsData';
-import Select from '../../Field/Select';
 import Radio from '../../Field/Radio';
 
 const filterRelationshipOptions = [
@@ -26,7 +25,7 @@ const removeEmptyOptions = [
 		value: 'remove',
 	},
 	{
-		label: __('Show and disable selection', 'wc-ajax-product-filter'),
+		label: __('Show but disable selection', 'wc-ajax-product-filter'),
 		value: 'disable',
 		isPro: true,
 	},
@@ -34,8 +33,10 @@ const removeEmptyOptions = [
 
 const General = () => {
 	const { state, dispatch } = useSettings();
-	const { handleCheckboxChange, handleRadioChange, handleSelectChange } =
-		useSettingsData(state, dispatch);
+	const { handleCheckboxChange, handleRadioChange } = useSettingsData(
+		state,
+		dispatch
+	);
 
 	const {
 		settings: {
@@ -47,23 +48,18 @@ const General = () => {
 		},
 	} = state;
 
-	const filterRelationship = filterRelationshipOptions.find(
-		(option) => option.value === filter_relationships
-	);
-
 	return (
 		<>
-			<Select
+			<Radio
 				id={'filter_relationships'}
 				label={__('Filter Relationships', 'wc-ajax-product-filter')}
 				description={__(
-					'The relationship between filters. AND - products shown will match all filters, OR - products shown will match any of the filters.',
+					'The relationship between filters. AND - products shown will match all filters, OR - products shown will match any filters.',
 					'wc-ajax-product-filter'
 				)}
-				value={filterRelationship}
-				onChange={handleSelectChange}
+				value={filter_relationships}
+				onChange={handleRadioChange}
 				options={filterRelationshipOptions}
-				renderAsFormField
 			/>
 
 			<Checkbox
@@ -84,7 +80,7 @@ const General = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Determines what do we do with the options with zero products.',
+					'Determines what we do with the options with zero products.',
 					'wc-ajax-product-filter'
 				)}
 				options={removeEmptyOptions}
@@ -108,7 +104,7 @@ const General = () => {
 				id={'disable_ajax'}
 				label={__('Disable Ajax', 'wc-ajax-product-filter')}
 				description={__(
-					'Enable this if you want to disable filtering via ajax.',
+					'Enable this if you want to disable filtering via Ajax.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={disable_ajax}

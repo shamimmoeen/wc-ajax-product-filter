@@ -1,6 +1,6 @@
 <?php
 /**
- * WC Ajax Product Filter widget.
+ * WCAPF - WooCommerce Ajax Product Filter widget.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
@@ -26,7 +26,7 @@ class WCAPF_Filter_Widget extends WP_Widget {
 
 		parent::__construct(
 			false, // Base ID
-			'WC Ajax Product Filter — Form', // Name of Widget
+			'WCAPF - Product Filter Form', // Name of Widget
 			$widget_ops // args
 		);
 	}
@@ -57,7 +57,7 @@ class WCAPF_Filter_Widget extends WP_Widget {
 	public function form( $instance ) {
 		?>
 		<p>
-			<?php printf( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> settings.', 'wc-ajax-product-filter' ) ); ?>
+			<?php printf( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> setting.', 'wc-ajax-product-filter' ) ); ?>
 		</p>
 		<?php
 	}

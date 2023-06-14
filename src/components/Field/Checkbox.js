@@ -1,5 +1,6 @@
 import { CheckboxControl } from '@wordpress/components';
 import { getInputId, proTag } from '../utils';
+import TippyTooltip from '../TippyTooltip';
 
 const Checkbox = ({
 	id,
@@ -8,6 +9,7 @@ const Checkbox = ({
 	isChecked,
 	onChange,
 	description,
+	tooltip,
 	isPro,
 	isDisabled,
 }) => {
@@ -20,6 +22,7 @@ const Checkbox = ({
 					<label htmlFor={inputId}>
 						{label}
 						{proTag(isPro)}
+						{tooltip && <TippyTooltip content={tooltip} />}
 					</label>
 				</div>
 				<div className='__wrapper'>

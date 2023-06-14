@@ -65,7 +65,7 @@ const ValueTypeDate = ({ index }) => {
 				index={index}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines how the filter will be shown on the frontend.',
+					'Determines how the filter will be shown in the front end.',
 					'wc-ajax-product-filter'
 				)}
 				options={options}
@@ -87,7 +87,7 @@ const ValueTypeDate = ({ index }) => {
 					index={index}
 					label={__('Date Display Format', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines how the date will be displayed in the frontend.',
+						'Determines how the date will be displayed in the front end.',
 						'wc-ajax-product-filter'
 					)}
 					options={dateDisplayFormats}
@@ -131,7 +131,7 @@ const ValueTypeDate = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Whether to show the month dropdown in datepicker.',
+						'Whether to show the month dropdown in the date picker.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={date_picker_month_dropdown}
@@ -155,7 +155,7 @@ const ValueTypeDate = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Whether to show the year dropdown in datepicker.',
+						'Whether to show the year dropdown in the date picker.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={date_picker_year_dropdown}

@@ -85,7 +85,7 @@ const Text = ({
 	isFilterKey = false,
 	isDisabled = false,
 	tooltip,
-	customClass,
+	customClass = '',
 	isPro,
 	...rest
 }) => {
@@ -111,7 +111,7 @@ const Text = ({
 											are the filter keys.
 											{/* <br />
 											<br />
-											In the PRO version, the URL will be
+											In the Pro version, the URL will be
 											<br />
 											www.site.com/color-blue/size-large */}
 										</>
@@ -145,15 +145,15 @@ const Text = ({
 											view.
 											<br />
 											<br />
-											Default is "No results for:", for a
-											keyword "purple" the text will be
+											Default is "No results for:". For a
+											keyword "purple", the text will be
 											"No results for: <u>purple</u>"
 										</>
 									}
 								/>
 							)}
 
-							{'chosen_no_options_text' === id && (
+							{'combobox_no_options_text' === id && (
 								<TippyTooltip
 									content={
 										<>
@@ -172,7 +172,7 @@ const Text = ({
 								<TippyTooltip
 									content={
 										<>
-											Applicable when there is no options
+											Applicable when there are no options
 											to filter by or the filter is empty.
 											<br />
 											<br />
@@ -210,11 +210,9 @@ const Text = ({
 											value.
 											<br />
 											<br />
-											Default is "Sort by:", for a value
-											"Title" it becomes
-											<br />
-											"Sort by: Title" in the active
-											filters.
+											Default is "Sort by:". For a value
+											"Title", it becomes "Sort by: Title"
+											in the active filters.
 										</>
 									}
 								/>
@@ -229,11 +227,9 @@ const Text = ({
 											value.
 											<br />
 											<br />
-											Default is "Per page:", for a value
-											"15" it becomes
-											<br />
-											"Per page: 15" in the active
-											filters.
+											Default is "Per page:". For a value
+											of "15", it becomes "Per page: 15"
+											in the active filters.
 										</>
 									}
 								/>

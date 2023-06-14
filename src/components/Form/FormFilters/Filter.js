@@ -1,7 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { useRef, useState } from '@wordpress/element';
-import { Button, Dropdown, TabPanel } from '@wordpress/components';
+import { Button, Dropdown, Notice } from '@wordpress/components';
 import { Icon, dragHandle, chevronDown, chevronUp } from '@wordpress/icons';
+import classnames from 'classnames';
+import { omit } from 'lodash';
 import { useForm } from '../FormContext';
 import General from '../FilterSettings/General';
 import Appearance from '../FilterSettings/Appearance';
@@ -11,8 +13,9 @@ import {
 	getFilterKey,
 	getFilterTabs,
 	getFilterTitle,
-	getFilterType,
+	getFilterTypeData,
 	getGlobalFilterKey,
+	multipleFilterInstanceFound,
 } from '../utils';
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
@@ -22,6 +25,8 @@ import {
 	filterDeletedErrorNotice,
 	removeFilterDeletedNotices,
 } from '../../notices';
+import { wpVersion } from '../../utils';
+import CustomTabPanel from '../../CustomTabPanel';
 
 const onlyWithType = componentsWithTypeOnly();
 
@@ -32,16 +37,35 @@ const Filter = ({ index }) => {
 
 	const [deleteBtnBusy, setDeleteBtnBusy] = useState(false);
 
-	const { filterKeys, accordionStates, formFilters } = state;
+	const { filterKeys, filterStates, formFilters } = state;
 
 	const filter = formFilters[index];
 
-	const { id, type, meta_key, component } = filter;
+	const { id, uniqueIndex, type, meta_key, component } = filter;
 
-	const isExpanded = accordionStates[index];
+	let filterId;
+
+	if (filter.isNew) {
+		filterId = uniqueIndex;
+	} else {
+		filterId = id;
+	}
+
+	const filterState = filterStates[filterId] || {};
+	const isExpanded = filterState?.accordionStatus || false;
+	const currentTab = filterState?.currentTab || 'general';
 
 	const dragHandleRef = useRef('');
 	const toggleIconRef = useRef('');
+
+	const updateFilterStates = (key, value) => {
+		const newStates = {
+			...filterStates,
+			[filterId]: { ...filterStates[filterId], [key]: value },
+		};
+
+		dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
+	};
 
 	const toggleExpand = (e) => {
 		removeFilterDeletedNotices();
@@ -50,21 +74,19 @@ const Filter = ({ index }) => {
 			return;
 		}
 
-		const newStates = accordionStates.map((state, _index) => {
-			if (_index === index) {
-				return !isExpanded;
-			}
+		const accordionStatus = !isExpanded;
 
-			return state;
-		});
-
-		dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+		updateFilterStates('accordionStatus', accordionStatus);
 	};
 
 	const closeFilter = (e) => {
 		toggleExpand(e);
 
 		toggleIconRef.current.focus();
+	};
+
+	const handleFilterTabChange = (newTab) => {
+		updateFilterStates('currentTab', newTab);
 	};
 
 	const dispatchDeleteFilter = () => {
@@ -76,21 +98,14 @@ const Filter = ({ index }) => {
 			payload: _formFilters,
 		});
 
-		const _newAccordionStates = [...accordionStates];
-		_newAccordionStates.splice(index, 1);
+		const newStates = omit(filterStates, filterId);
 
-		dispatch({
-			type: 'SET_ACCORDION_STATES',
-			payload: _newAccordionStates,
-		});
+		dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 
 		if (id) {
 			const _filterKeys = filterKeys.filter((data) => data.id !== id);
 
-			dispatch({
-				type: 'SET_FILTER_KEYS',
-				payload: _filterKeys,
-			});
+			dispatch({ type: 'SET_FILTER_KEYS', payload: _filterKeys });
 		}
 
 		setDirty();
@@ -134,10 +149,24 @@ const Filter = ({ index }) => {
 		}
 	};
 
-	const toggleIcon = isExpanded ? chevronUp : chevronDown;
-	const topClass = isExpanded ? '__top open' : '__top';
+	const multipleFilterInstance = multipleFilterInstanceFound(
+		formFilters,
+		index
+	);
 
-	const filterType = getFilterType(filter);
+	const multipleFilterInstanceMessage = __(
+		'There are multiple filters found in the form for the same entity. Please remove the other ones then save the form.',
+		'wc-ajax-product-filter'
+	);
+
+	const toggleIcon = isExpanded ? chevronUp : chevronDown;
+	const topClass = classnames(
+		'__top',
+		{ open: isExpanded },
+		{ multiple_filter_instance_found: multipleFilterInstance }
+	);
+
+	const filterType = getFilterTypeData(filter);
 	const filterTitle = getFilterTitle(filter, filterType);
 
 	const globalFilterKey = getGlobalFilterKey(filterKeys, filter);
@@ -151,6 +180,31 @@ const Filter = ({ index }) => {
 	const activeFilters = 'active-filters' === component;
 
 	const filterTabs = getFilterTabs(filter);
+
+	const filterInner = (name) => {
+		if ('general' === name) {
+			return <General index={index} />;
+		} else if ('appearance' === name) {
+			return <Appearance index={index} />;
+		} else if ('options' === name) {
+			return <Options index={index} />;
+		} else if ('advanced' === name) {
+			return <Advanced index={index} />;
+		}
+	};
+
+	let dropdownProps;
+
+	if (6.2 <= wpVersion()) {
+		dropdownProps = {
+			popoverProps: { noArrow: false, position: 'top center' },
+		};
+	} else {
+		dropdownProps = {
+			popoverProps: { noArrow: false },
+			position: 'top center',
+		};
+	}
 
 	return (
 		<div className='__item'>
@@ -205,24 +259,28 @@ const Filter = ({ index }) => {
 			</div>
 			{isExpanded && (
 				<div className='__accordion_body'>
-					<TabPanel
+					<CustomTabPanel
 						className='__tab_panel'
 						activeClass='active-tab'
-						initialTabName='general'
 						tabs={filterTabs}
+						currentTab={currentTab}
+						onChangeTab={handleFilterTabChange}
 					>
-						{({ name }) => {
-							if ('general' === name) {
-								return <General index={index} />;
-							} else if ('appearance' === name) {
-								return <Appearance index={index} />;
-							} else if ('options' === name) {
-								return <Options index={index} />;
-							} else if ('advanced' === name) {
-								return <Advanced index={index} />;
-							}
-						}}
-					</TabPanel>
+						{({ name }) => (
+							<>
+								{multipleFilterInstance && (
+									<Notice
+										status='error'
+										isDismissible={false}
+										className='multiple_filter_instance_notice'
+									>
+										{multipleFilterInstanceMessage}
+									</Notice>
+								)}
+								{filterInner(name)}
+							</>
+						)}
+					</CustomTabPanel>
 
 					<div className='__action_buttons'>
 						<Button variant='link' onClick={closeFilter}>
@@ -230,9 +288,8 @@ const Filter = ({ index }) => {
 						</Button>
 						{` | `}
 						<Dropdown
-							popoverProps={{ noArrow: false }}
+							{...dropdownProps}
 							contentClassName='__remove_popover'
-							position='top center'
 							focusOnMount={true}
 							renderToggle={({ isOpen, onToggle }) => (
 								<Button

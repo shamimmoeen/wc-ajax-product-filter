@@ -67,3 +67,18 @@ body {
 .tippy-box.__tippy_tooltip {
 	font-size: 13px;
 }
+
+// Admin Notices.
+.v4-upgrade-notice,
+.review-notice {
+	margin: 20px var(--large-gap) 0;
+	background: rgba(114, 174, 230, 0.1);
+
+	@include ltr {
+		border-width: 0 0 0 4px;
+	}
+
+	@include rtl {
+		border-width: 0 4px 0 0;
+	}
+}

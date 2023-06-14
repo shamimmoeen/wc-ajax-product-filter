@@ -26,13 +26,16 @@ class WCAPF_Admin {
 		add_action( 'admin_menu', array( $this, 'modify_admin_menu_label' ) );
 		add_action( 'in_admin_header', array( $this, 'disable_admin_notices' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
-		add_action( 'admin_footer-widgets.php', array( $this, 'js_scripts_for_legacy_widget' ) );
+
+		// For review notices.
+		add_action( 'admin_notices', array( $this, 'display_review_notices' ) );
+		add_action( 'admin_head', array( $this, 'enqueue_review_notices_styles' ) );
+		add_action( 'admin_footer', array( $this, 'enqueue_review_notices_scripts' ) );
+		add_action( 'wp_ajax_wcapf_dismiss_review_notices', array( $this, 'dismiss_review_notices' ) );
 	}
 
 	/**
 	 * Adds plugin's action links.
-	 *
-	 * TODO: Show the upgrade to pro and filters list instead of settings links.
 	 *
 	 * @param array $links The default links.
 	 *
@@ -46,15 +49,18 @@ class WCAPF_Admin {
 			__( 'Add Filters', 'wc-ajax-product-filter' )
 		);
 
-		$settings_page_action_link = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			esc_url( WCAPF_Helper::settings_page_url() ),
-			__( 'Settings', 'wc-ajax-product-filter' )
-		);
+		$pre_links   = array( $forms_page_action_link );
+		$pro_version = WCAPF_Helper::found_pro_version();
 
-		$pre_links = array( $forms_page_action_link, $settings_page_action_link );
+		if ( $pro_version ) {
+			$pre_links[] = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( WCAPF_Helper::settings_page_url() ),
+				__( 'Settings', 'wc-ajax-product-filter' )
+			);
+		}
 
-		if ( ! WCAPF_Helper::found_pro_version() ) {
+		if ( ! $pro_version ) {
 			$plugin_page_link = add_query_arg(
 				array(
 					'utm_source'   => 'WCAPF+Free',
@@ -67,7 +73,7 @@ class WCAPF_Admin {
 			$upgrade_page_action_link = sprintf(
 				'<a href="%1$s" style="color: #00a32a; font-weight: bold;" target="_blank" aria-label="%2$s">%2$s</a>',
 				$plugin_page_link,
-				__( 'Upgrade to PRO', 'wc-ajax-product-filter' )
+				__( 'Upgrade to Pro', 'wc-ajax-product-filter' )
 			);
 
 			$new_links = array_merge( $pre_links, $links, array( $upgrade_page_action_link ) );
@@ -87,7 +93,7 @@ class WCAPF_Admin {
 	 */
 	public function register_admin_pages() {
 		add_menu_page(
-			'WC Ajax Product Filter',
+			'WCAPF - WooCommerce Ajax Product Filter',
 			'WCAPF',
 			'manage_options',
 			'wcapf',
@@ -97,7 +103,7 @@ class WCAPF_Admin {
 
 		// add_submenu_page(
 		// 	'wcapf',
-		// 	__( 'WC Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
+		// 	__( 'WCAPF - WooCommerce Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
 		// 	__( 'SEO Rules', 'wc-ajax-product-filter' ),
 		// 	'manage_options',
 		// 	'wcapf-seo-rules',
@@ -106,25 +112,12 @@ class WCAPF_Admin {
 
 		add_submenu_page(
 			'wcapf',
-			__( 'WC Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
+			__( 'WCAPF - WooCommerce Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
 			__( 'Settings', 'wc-ajax-product-filter' ),
 			'manage_options',
 			'wcapf-settings',
 			array( $this, 'render_settings' )
 		);
-
-		if ( ! WCAPF_Helper::found_pro_version() ) {
-			$label = __( 'Upgrade to PRO', 'wc-ajax-product-filter' );
-
-			add_submenu_page(
-				'wcapf',
-				__( 'WC Ajax Product Filter - Upgrade to PRO', 'wc-ajax-product-filter' ),
-				'<span style="color: limegreen; font-weight: bold">' . $label . '</span>',
-				'manage_options',
-				'wcapf-upgrade',
-				array( $this, 'render_upgrade_page' )
-			);
-		}
 	}
 
 	public function render_form() {
@@ -137,17 +130,17 @@ class WCAPF_Admin {
 		echo $element;
 	}
 
-	public function render_seo_rules() {
-		echo '<div id="wcapf-seo-rules-admin-ui"></div>';
-	}
+	// public function render_seo_rules() {
+	// 	echo '<div id="wcapf-seo-rules-admin-ui"></div>';
+	// }
 
 	public function render_settings() {
 		echo '<div id="wcapf-settings-admin-ui"></div>';
 	}
 
-	public function render_upgrade_page() {
-		WCAPF_Template_Loader::get_instance()->load( 'admin/upgrade-to-pro' );
-	}
+	// public function render_upgrade_page() {
+	// 	WCAPF_Template_Loader::get_instance()->load( 'admin/upgrade-to-pro' );
+	// }
 
 	/**
 	 * Modify the label of custom admin menu.
@@ -171,7 +164,7 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * Disable admin notices without ours.
+	 * Disable admin notices on our pages.
 	 *
 	 * @source https://wordpress.stackexchange.com/a/316152
 	 *
@@ -180,11 +173,22 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function disable_admin_notices() {
-		global $current_screen;
-
-		if ( isset( $current_screen->id ) && in_array( $current_screen->id, $this->slugs_of_custom_admin_pages() ) ) {
+		if ( in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages() ) ) {
 			remove_all_actions( 'admin_notices' );
 		}
+	}
+
+	/**
+	 * Gets the current screen id.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function current_screen_id() {
+		global $current_screen;
+
+		return isset( $current_screen->id ) ? $current_screen->id : '';
 	}
 
 	/**
@@ -219,6 +223,14 @@ class WCAPF_Admin {
 			);
 
 			wp_enqueue_script( 'wcapf-admin-scripts' );
+
+			wp_enqueue_script(
+				'wc-ajax-product-filter-admin-scripts',
+				WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts.js',
+				array(),
+				filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts.js' ),
+				true
+			);
 		}
 
 		if ( 'toplevel_page_wcapf' === $hook ) {
@@ -272,6 +284,8 @@ class WCAPF_Admin {
 		$params = array(
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			'version' => WCAPF_VERSION,
+			'wp'      => get_bloginfo( 'version' ),
+			'dirty'   => false,
 		);
 
 		$helper = new WCAPF_Helper();
@@ -286,10 +300,14 @@ class WCAPF_Admin {
 		$user_roles = $utils::user_role_options();
 
 		if ( 'toplevel_page_wcapf' === $screen_id ) {
+			$params['form_default_data'] = WCAPF_Default_Data::form_default_data();
+
 			if ( ! isset( $_GET['id'] ) ) {
 				$params['forms'] = $utils::get_forms();
 			} else {
 				$settings = $helper::get_settings();
+
+				$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
 
 				$params['filter_types']    = $utils::get_filter_types();
 				$params['meta_keys']       = $helper::get_available_meta_keys();
@@ -306,15 +324,18 @@ class WCAPF_Admin {
 					? $settings['multiple_form_locations'] : '';
 
 				$post_id = $_GET['id'];
+				$post    = get_post( $post_id );
 
 				$params['form_data'] = array(
 					'post_id'    => $post_id,
-					'post_title' => get_the_title( $post_id ),
+					'post_title' => $post->post_title,
 				);
 			}
 		}
 
 		if ( 'wcapf_page_wcapf-settings' === $screen_id ) {
+			$params['default_settings'] = WCAPF_Default_Data::default_settings();
+
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = $utils::get_settings();
 
@@ -323,20 +344,11 @@ class WCAPF_Admin {
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
+		// For review notices.
+		$params['show_review_notice_for_milestone_achieved'] = WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown();
+		$params['show_review_notice_for_time_since']         = WCAPF_Helper::review_notice_for_time_since_can_be_shown();
+
 		return apply_filters( 'wcapf_admin_js_params', $params );
-	}
-
-	/**
-	 * Gets the current screen id.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return string
-	 */
-	private function current_screen_id() {
-		global $current_screen;
-
-		return isset( $current_screen->id ) ? $current_screen->id : '';
 	}
 
 	/**
@@ -384,37 +396,141 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * Run the js scripts when the 'widget-added' event is triggered.
+	 * Display the admin notices asking for writing a review.
 	 *
-	 * @since 3.1.0
+	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
-	public function js_scripts_for_legacy_widget() {
+	public function display_review_notices() {
+		$time_since = WCAPF_Helper::review_notice_for_time_since_can_be_shown();
+		$review_url = 'https://wordpress.org/support/plugin/wc-ajax-product-filter/reviews/?filter=5';
+
+		if ( WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown() ) {
+			?>
+			<div class="notice notice-info is-dismissible" id="wcapf-review-notice-for-milestone-achieved">
+				<p>
+					<span class="dashicons dashicons-smiley wcapf-dashicon-smiley"></span>
+					Congratulations! You have reached a milestone in using WCAPF - WooCommerce Ajax Product Filter by
+					updating the filters five times. Help us improve by sharing your experience. Please consider <a
+						href="<?php echo esc_url( $review_url ); ?>" target="_blank">writing a review on WordPress</a>.
+				</p>
+				<button type="button" class="notice-dismiss" onclick="wcapfDismissNotice('milestone-achieved')">
+					<span class="screen-reader-text">Dismiss this notice</span>
+				</button>
+			</div>
+			<?php
+		} elseif ( $time_since ) {
+			?>
+			<div class="notice notice-info" id="wcapf-review-notice-for-time-since">
+				<p>
+					Awesome! You've been using WCAPF - WooCommerce Ajax Product Filter for more
+					than <?php echo esc_html( $time_since ); ?>. Would you mind taking a few seconds to give it a 5-star
+					rating on WordPress? Thank you in advance :)
+					<a href="<?php echo esc_url( $review_url ); ?>" target="_blank">Ok, you deserved it</a>
+					|
+					<a href="#" onclick="wcapfDismissNotice('permanently-dismiss-time-since')">I already did</a>
+					|
+					<a href="#" onclick="wcapfDismissNotice('postpone-time-since')">No, not good enough</a>
+				</p>
+			</div>
+			<?php
+		}
+	}
+
+	/**
+	 * Enqueue the styles for the review notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_review_notices_styles() {
 		?>
-		<!--suppress ES6ConvertVarToLetConst -->
+		<style>
+			.wcapf-dashicon-smiley {
+				margin-right: 5px;
+			}
+		</style>
+		<?php
+	}
+
+	/**
+	 * Enqueue the scripts for the review notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_review_notices_scripts() {
+		$nonce = wp_create_nonce( 'wcapf-dismiss-review-notices-nonce' );
+		?>
+		<!--suppress ES6ConvertVarToLetConst, JSValidateTypes -->
 		<script>
-			( function( $ ) {
-				$( document ).on( 'widget-added', function( e, $control ) {
-					$control.find( '.wcapf-widget-dropdown-field' ).on( 'change', function() {
-						var $dropdown        = $( this );
-						var $selectedOption  = $( this ).find( 'option:selected' );
-						var editLink         = $selectedOption.attr( 'data-edit-link' );
-						var $editLink        = $dropdown.closest( '.widget-content' ).find( '.edit-link' );
-						var $editLinkWrapper = $editLink.parent();
+			function wcapfDismissNotice( type ) {
+				var $notice;
 
-						$( $editLink.attr( 'href', editLink ) );
+				if ( 'milestone-achieved' === type ) {
+					$notice = jQuery( '#wcapf-review-notice-for-milestone-achieved' );
+				} else {
+					$notice = jQuery( '#wcapf-review-notice-for-time-since' );
+				}
 
-						if ( ! editLink.length ) {
-							$editLinkWrapper.hide();
-						} else {
-							$editLinkWrapper.show();
-						}
-					} );
+				$notice.fadeOut( 300, function() {
+					$notice.remove();
 				} );
-			} )( jQuery );
+
+				var data = {
+					action: 'wcapf_dismiss_review_notices',
+					nonce: '<?php echo $nonce; ?>',
+					type,
+				};
+
+				jQuery.post( ajaxurl, data, function( response ) {
+					console.log( response );
+				} );
+			}
 		</script>
 		<?php
+	}
+
+	/**
+	 * The ajax function to dismiss the review notices.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	public function dismiss_review_notices() {
+		// Verify the AJAX request nonce.
+		check_ajax_referer( 'wcapf-dismiss-review-notices-nonce', 'nonce' );
+
+		// Get the type parameter from the request.
+		$type = ! empty( $_REQUEST['type'] ) ? sanitize_text_field( $_REQUEST['type'] ) : '';
+
+		// If the type parameter is missing, send an error response.
+		if ( ! $type ) {
+			wp_send_json_error( 'Invalid type for dismissing the review notices' );
+		}
+
+		// Get the current user ID.
+		$user_id = get_current_user_id();
+
+		// Process dismissal based on the type.
+		if ( 'milestone-achieved' === $type ) {
+			// Dismiss the milestone achieved notice and store the dismissal time.
+			update_user_meta( $user_id, 'wcapf_review_notice_for_milestone_achieved_dismissed', '1' );
+			update_user_meta( $user_id, 'wcapf_review_notice_for_milestone_achieved_dismissed_at', time() );
+		} elseif ( 'permanently-dismiss-time-since' === $type ) {
+			// Permanently hide the time since notice for the user.
+			update_user_meta( $user_id, 'wcapf_review_notice_time_since_hide_permanently', '1' );
+		} elseif ( 'postpone-time-since' === $type ) {
+			// Store the dismissal time.
+			update_user_meta( $user_id, 'wcapf_review_notice_time_since_dismissed_at', time() );
+		}
+
+		// Send a success response.
+		wp_send_json_success( 'WCAPF review notice dismissed' );
 	}
 
 }

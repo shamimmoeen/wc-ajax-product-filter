@@ -76,7 +76,7 @@ class WCAPF_API_Utils {
 		foreach ( $filters as $filter ) {
 			$filter_id    = $filter->ID;
 			$filter_key   = $filter->post_name;
-			$post_excerpt = $filter->post_excerpt;
+			$post_excerpt = html_entity_decode( $filter->post_excerpt );
 			$filter_data  = explode( '>', $post_excerpt );
 			$type         = isset( $filter_data[0] ) ? $filter_data[0] : '';
 			$filter_type  = $type;
@@ -246,8 +246,6 @@ class WCAPF_API_Utils {
 
 		$final_array = array_merge( $main_taxonomies, $attributes, $others, $optional_taxonomies );
 
-		$found_pro = WCAPF_Helper::found_pro_version();
-
 		foreach ( $final_array as $name ) {
 			if ( $only_with_archive && ( ! is_taxonomy_viewable( $name ) || 'product_shipping_class' === $name ) ) {
 				continue;
@@ -258,11 +256,8 @@ class WCAPF_API_Utils {
 			} elseif ( in_array( $name, $attributes ) ) {
 				$default_filter_key = str_replace( 'pa_', '', $name );
 			} else {
-				if ( ! $found_pro ) {
-					$default_filter_key = '_' . $name;
-				} else {
-					$default_filter_key = $name;
-				}
+				// Check if pro version found and pretty url is enabled then don't add the underscore.
+				$default_filter_key = '_' . $name;
 			}
 
 			$taxonomies[] = array(
@@ -382,12 +377,8 @@ class WCAPF_API_Utils {
 					'value' => 'average_rating',
 				),
 				array(
-					'label' => __( 'Min Price', 'wc-ajax-product-filter' ),
-					'value' => 'min_price',
-				),
-				array(
-					'label' => __( 'Max Price', 'wc-ajax-product-filter' ),
-					'value' => 'max_price',
+					'label' => __( 'Price', 'wc-ajax-product-filter' ),
+					'value' => 'price',
 				),
 				array(
 					'label' => __( 'Meta Value', 'wc-ajax-product-filter' ),
@@ -474,7 +465,7 @@ class WCAPF_API_Utils {
 		$settings = WCAPF_Helper::get_settings();
 
 		// Send the author roles with labels.
-		if ( $settings['author_roles'] ) {
+		if ( ! empty ( $settings['author_roles'] ) ) {
 			$array       = WCAPF_Product_Filter_Utils::get_user_roles();
 			$with_labels = array();
 
@@ -501,14 +492,13 @@ class WCAPF_API_Utils {
 			'post_type'   => 'wcapf-form',
 			'nopaging'    => true,
 			'post_status' => 'publish',
-			'fields'      => 'ids',
 		);
 
 		$posts = get_posts( $args );
 		$forms = array();
 
-		foreach ( $posts as $post_id ) {
-			$forms[] = self::get_form_data( $post_id );
+		foreach ( $posts as $post ) {
+			$forms[] = self::get_form_data( $post );
 		}
 
 		return $forms;
@@ -517,14 +507,22 @@ class WCAPF_API_Utils {
 	/**
 	 * Gets the form data for given id.
 	 *
-	 * @param int $id The form id.
+	 * @param int|WP_Post $post Post ID or post object.
 	 *
 	 * @return array
 	 */
-	public static function get_form_data( $id ) {
+	public static function get_form_data( $post ) {
+		if ( $post instanceof WP_Post ) {
+			$_post = $post;
+		} else {
+			$_post = get_post( $post );
+		}
+
+		$id = $_post->ID;
+
 		$data = array(
 			'id'    => $id,
-			'title' => get_the_title( $id ),
+			'title' => $_post->post_title,
 		);
 
 		/**

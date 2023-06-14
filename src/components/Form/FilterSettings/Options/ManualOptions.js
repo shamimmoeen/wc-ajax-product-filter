@@ -13,7 +13,7 @@ import classnames from 'classnames';
 import {
 	getTableData,
 	orderDirectionOptions,
-	swatchCanBeEnabled,
+	swatchEnabled,
 	tooltipCanBeEnabled,
 } from '../../utils';
 import Select from '../../../Field/Select';
@@ -45,14 +45,14 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 
 	const { type: filterType } = filter;
 
-	const { display_type, enable_tooltip } = filter;
+	const { swatch_type, enable_tooltip } = filter;
 
 	const { type, optionsKey } = getTableData(filterType, filter);
 
 	const rows = filter[optionsKey];
 
 	const hasTooltip = tooltipCanBeEnabled(filter) && '1' === enable_tooltip;
-	const hasSwatch = swatchCanBeEnabled(filter);
+	const hasSwatch = swatchEnabled(filter);
 
 	const emptyRow = () => {
 		let row;
@@ -400,7 +400,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 			image_url,
 		} = row;
 
-		const currentSwatch = swatch ? swatch : display_type;
+		const currentSwatch = swatch ? swatch : swatch_type;
 
 		const swatchButtons = () => {
 			if ('color' === currentSwatch) {

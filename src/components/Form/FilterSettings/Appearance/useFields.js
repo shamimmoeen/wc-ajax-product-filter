@@ -30,7 +30,6 @@ const useFields = (type, index) => {
 		native_display_type_layout,
 		custom_display_type_layout,
 		grid_columns,
-		swatch_with_text,
 		enable_multiple_filter,
 		enable_tooltip,
 		tooltip_position,
@@ -61,8 +60,8 @@ const useFields = (type, index) => {
 
 			availableLayouts = [
 				{
-					label: __('List Item', 'wc-ajax-product-filter'),
-					value: 'list-item',
+					label: __('List', 'wc-ajax-product-filter'),
+					value: 'list',
 				},
 				{
 					label: __('Inline', 'wc-ajax-product-filter'),
@@ -75,13 +74,7 @@ const useFields = (type, index) => {
 				},
 			];
 		} else if (
-			[
-				'label',
-				'color',
-				'image',
-				'range_label',
-				'time_period_label',
-			].includes(displayType)
+			['label', 'range_label', 'time_period_label'].includes(displayType)
 		) {
 			_displayType = custom_display_type_layout;
 			id = 'custom_display_type_layout';
@@ -107,8 +100,6 @@ const useFields = (type, index) => {
 			(option) => _displayType === option.value
 		);
 
-		const swatchDisplayTypes = ['color', 'image'];
-
 		return (
 			<>
 				<Select
@@ -116,7 +107,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Layout', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines the layout of the filter options on the frontend.',
+						'Determines the arrangement of the filter options in the front end.',
 						'wc-ajax-product-filter'
 					)}
 					options={availableLayouts}
@@ -131,27 +122,13 @@ const useFields = (type, index) => {
 						index={index}
 						label={__('Columns', 'wc-ajax-product-filter')}
 						description={__(
-							'Determines the number of columns for the grid layout.',
+							'Specifies the number of columns to be displayed in the grid layout.',
 							'wc-ajax-product-filter'
 						)}
 						value={grid_columns}
 						onChange={handleTextFieldChange}
 						min={1}
-						max={16}
-					/>
-				)}
-
-				{swatchDisplayTypes.includes(displayType) && (
-					<Checkbox
-						id={'swatch_with_text'}
-						index={index}
-						label={__('Show text', 'wc-ajax-product-filter')}
-						description={__(
-							'Enable this to show the option text beside the swatch.',
-							'wc-ajax-product-filter'
-						)}
-						isChecked={swatch_with_text}
-						onChange={handleCheckboxChange}
+						max={12}
 					/>
 				)}
 			</>
@@ -179,7 +156,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Multiple Selection', 'wc-ajax-product-filter')}
 					description={__(
-						'Determines if the user can select multiple options when filtering products.',
+						'Controls whether users can select multiple options when filtering products.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={filter[id]}
@@ -239,7 +216,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Query Type', 'wc-ajax-product-filter')}
 					description={__(
-						'OR: products that matched any option, AND: products that have both options.',
+						'Choose "OR" to display products matching any selected option or "AND" to show products matching all selected options.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
@@ -345,7 +322,7 @@ const useFields = (type, index) => {
 					index={index}
 					label={__('Show count', 'wc-ajax-product-filter')}
 					description={__(
-						'Whether to show the product count in filter options.',
+						'Determines whether the product count is shown alongside the filter options.',
 						'wc-ajax-product-filter'
 					)}
 					isChecked={filter[id]}

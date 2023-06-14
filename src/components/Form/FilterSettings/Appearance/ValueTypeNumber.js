@@ -3,6 +3,7 @@ import { find } from 'lodash';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
+import Checkbox from '../../../Field/Checkbox';
 import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
@@ -12,8 +13,12 @@ import useFields from './useFields';
 const ValueTypeNumber = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleRadioChange, handleToggleGroupChange, handleSelectChange } =
-		useFormFilterData(state, dispatch);
+	const {
+		handleRadioChange,
+		handleToggleGroupChange,
+		handleSelectChange,
+		handleCheckboxChange,
+	} = useFormFilterData(state, dispatch);
 
 	const { formFilters } = state;
 
@@ -34,6 +39,7 @@ const ValueTypeNumber = ({ index }) => {
 		number_display_type,
 		number_range_slider_display_values_as,
 		alignment,
+		input_type_number,
 	} = filter;
 
 	const displayTypeField = () => {
@@ -61,7 +67,7 @@ const ValueTypeNumber = ({ index }) => {
 				index={index}
 				label={__('Display Type', 'wc-ajax-product-filter')}
 				description={__(
-					'Determines how the filter will be shown on the frontend.',
+					'Determines how the filter will be shown in the front end.',
 					'wc-ajax-product-filter'
 				)}
 				options={options}
@@ -83,7 +89,7 @@ const ValueTypeNumber = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					description={__(
-						'Determines how the slider values will be shown on the frontend.',
+						'Determines how the slider values will be shown in the front end.',
 						'wc-ajax-product-filter'
 					)}
 					options={[
@@ -138,6 +144,28 @@ const ValueTypeNumber = ({ index }) => {
 		}
 	};
 
+	const numberField = () => {
+		if (
+			('range_slider' === number_display_type &&
+				'input_field' === number_range_slider_display_values_as) ||
+			'range_number' === number_display_type
+		) {
+			return (
+				<Checkbox
+					id={'input_type_number'}
+					index={index}
+					label={__('Input type number', 'wc-ajax-product-filter')}
+					description={__(
+						'Enable this to hide units and display them as spinbox with up and down arrows.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={input_type_number}
+					onChange={handleCheckboxChange}
+				/>
+			);
+		}
+	};
+
 	return (
 		<>
 			{displayTypeField()}
@@ -147,6 +175,8 @@ const ValueTypeNumber = ({ index }) => {
 			{layoutFields(number_display_type)}
 
 			{alignmentField()}
+
+			{numberField()}
 
 			{enableMultipleFilterField('number_range_enable_multiple_filter')}
 

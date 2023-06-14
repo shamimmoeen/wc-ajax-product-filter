@@ -48,15 +48,13 @@ node_modules export-ignore
 .vscode export-ignore
 
 # Ignore source codes.
-admin/src export-ignore
 public/lib/nouislider/less export-ignore
 public/src export-ignore
+src export-ignore
 
 yarn.lock -diff
 package-lock.json -diff
 composer.lock -diff
-admin/css/* -diff
-admin/js/* -diff
 public/css/* -diff
 public/js/* -diff
 build/* -diff

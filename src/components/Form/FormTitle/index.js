@@ -3,7 +3,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { useForm } from '../FormContext';
 import useFormData from '../useFormData';
 import axios from 'axios';
-import { find, pick, omit, isEmpty } from 'lodash';
+import { find, pick, omit, isEmpty, has } from 'lodash';
 import {
 	removeCopiedToClipboardNotice,
 	itemSavedSuccessNotice,
@@ -13,7 +13,11 @@ import {
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
-import { foundProVersion } from '../../utils';
+import {
+	GENERIC_ERROR_MESSAGE,
+	foundProVersion,
+	showProV2UpgradeNotice,
+} from '../../utils';
 import {
 	getFilterKeyError,
 	filterDefaultData,
@@ -25,19 +29,16 @@ import {
 	proFilterComponents,
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
+import ProV2UpgradeModal from '../../Modals/ProV2UpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
-
-const genericErrorMessage = __(
-	'Please fix the errors below.',
-	'wc-ajax-product-filter'
-);
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();
 	const { setDirty } = useFormData(state, dispatch);
 
 	const [publishModalOpen, setPublishModalOpen] = useState(false);
+	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const {
@@ -46,7 +47,7 @@ const FormTitle = () => {
 		formId,
 		filterKeys,
 		currentTab,
-		accordionStates,
+		filterStates,
 		formFilters,
 		formSettings,
 	} = state;
@@ -82,6 +83,14 @@ const FormTitle = () => {
 		setPublishModalOpen(false);
 	};
 
+	const handleOpenProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(true);
+	};
+
+	const handleCloseProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(false);
+	};
+
 	const formFiltersAreValid = () => {
 		dispatch({ type: 'SET_ERROR', payload: '' });
 
@@ -99,7 +108,7 @@ const FormTitle = () => {
 				proTypes.includes(formFilter['type']) ||
 				proComponents.includes(formFilter['component']);
 
-			if (!WCAPF_PRO && isPro) {
+			if (isPro && !WCAPF_PRO) {
 				continue;
 			}
 
@@ -135,7 +144,7 @@ const FormTitle = () => {
 
 			const filterKeyError = getFilterKeyError(
 				filterKeys,
-				_formFilter,
+				formFilter,
 				formFilters,
 				index
 			);
@@ -147,31 +156,44 @@ const FormTitle = () => {
 			}
 
 			if (dataRequired) {
-				invalidFormFilters.push(index);
+				if (has(_formFilter, 'isNew')) {
+					invalidFormFilters.push(_formFilter['uniqueIndex']);
+				} else {
+					invalidFormFilters.push(_formFilter['id']);
+				}
+
 				isValid = false;
 			}
 
 			validatedFormFilters.push(_formFilter);
 		}
 
-		const newStates = accordionStates.map((isExpanded, index) => {
-			if (invalidFormFilters.includes(index)) {
-				return true;
-			} else if (isExpanded) {
-				return false;
+		if (!isValid) {
+			const newStates = {};
+
+			for (const id in filterStates) {
+				if (invalidFormFilters.map(String).includes(id)) {
+					newStates[id] = {
+						accordionStatus: true,
+						currentTab: 'general',
+					};
+				} else {
+					newStates[id] = {
+						...filterStates[id],
+						accordionStatus: false,
+					};
+				}
 			}
 
-			return isExpanded;
-		});
-
-		dispatch({ type: 'SET_ACCORDION_STATES', payload: newStates });
+			dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
+		}
 
 		dispatch({ type: 'SET_FORM_FILTERS', payload: validatedFormFilters });
 
 		if (!isValid) {
 			dispatch({
 				type: 'SET_ERROR',
-				payload: genericErrorMessage,
+				payload: GENERIC_ERROR_MESSAGE,
 			});
 
 			if ('filters' !== currentTab) {
@@ -182,25 +204,19 @@ const FormTitle = () => {
 		return { isValid, validatedFormFilters };
 	};
 
-	const sanitizedFormFilters = (validatedFormFilters) => {
-		const filters = [];
-
-		validatedFormFilters.forEach((_filter) => {
-			const filter = omit(_filter, ['isNew', 'uniqueIndex']);
-
-			filters.push(filter);
-		});
-
+	const removeProDataFromFilters = (validatedFormFilters) => {
 		if (WCAPF_PRO) {
-			return filters;
+			return validatedFormFilters;
 		}
 
 		const sanitizedFilters = [];
 
-		filters.forEach((filter) => {
+		validatedFormFilters.forEach((filter) => {
 			const proData = [
 				'grid_columns',
-				'swatch_with_text',
+				'enable_swatch',
+				'swatch_type',
+				'swatch_with_label',
 				'get_options',
 				'manual_options',
 				'parent_term',
@@ -297,7 +313,7 @@ const FormTitle = () => {
 		return sanitizedFilters;
 	};
 
-	const sanitizedFormSettings = () => {
+	const removeProDataFromSettings = () => {
 		if (WCAPF_PRO) {
 			return formSettings;
 		}
@@ -334,8 +350,8 @@ const FormTitle = () => {
 			return;
 		}
 
-		const sanitizedFilters = sanitizedFormFilters(validatedFormFilters);
-		const sanitizedSettings = sanitizedFormSettings();
+		const sanitizedFilters = removeProDataFromFilters(validatedFormFilters);
+		const sanitizedSettings = removeProDataFromSettings();
 
 		setLoading(true);
 
@@ -372,7 +388,14 @@ const FormTitle = () => {
 						payload: data.form_settings,
 					});
 
+					dispatch({
+						type: 'SET_SHOW_REVIEW_NOTICE',
+						payload: data.show_review_notice,
+					});
+
 					dispatch({ type: 'SET_DIRTY', payload: false });
+
+					wcapf_admin_params.dirty = false;
 
 					itemSavedSuccessNotice(
 						__('Form saved successfully', 'wc-ajax-product-filter')
@@ -380,7 +403,7 @@ const FormTitle = () => {
 				} else if (data.errors) {
 					dispatch({
 						type: 'SET_ERROR',
-						payload: genericErrorMessage,
+						payload: GENERIC_ERROR_MESSAGE,
 					});
 
 					const errorsData = data['errors'];
@@ -413,24 +436,38 @@ const FormTitle = () => {
 						payload: formFiltersWithErrors,
 					});
 
-					const newStates = accordionStates.map(
-						(isExpanded, index) => {
-							const error = find(errorsData, { order: index });
+					const newStates = {};
 
-							if (error) {
-								return true;
-							} else if (isExpanded) {
-								return false;
-							}
+					for (
+						let index = 0;
+						index < formFiltersWithErrors.length;
+						index++
+					) {
+						const error = find(errorsData, { order: index });
+						const filter = formFiltersWithErrors[index];
 
-							return isExpanded;
+						let filterId;
+
+						if (has(filter, 'isNew')) {
+							filterId = filter['uniqueIndex'];
+						} else {
+							filterId = filter['id'];
 						}
-					);
 
-					dispatch({
-						type: 'SET_ACCORDION_STATES',
-						payload: newStates,
-					});
+						if (error) {
+							newStates[filterId] = {
+								accordionStatus: true,
+								currentTab: 'general',
+							};
+						} else {
+							newStates[filterId] = {
+								...filterStates[filterId],
+								accordionStatus: false,
+							};
+						}
+					}
+
+					dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
 
 					if ('filters' !== currentTab) {
 						dispatch({
@@ -453,7 +490,11 @@ const FormTitle = () => {
 
 	const handleSubmit = () => {
 		if (isDirty) {
-			handleSaveForm();
+			if (showProV2UpgradeNotice()) {
+				handleOpenProV2UpgradeModal();
+			} else {
+				handleSaveForm();
+			}
 		} else {
 			handleOpenPublishModal();
 		}
@@ -470,6 +511,11 @@ const FormTitle = () => {
 			<PublishModal
 				isOpen={publishModalOpen}
 				closeModal={handleClosePublishModal}
+			/>
+
+			<ProV2UpgradeModal
+				isOpen={proV2UpgradeModalOpen}
+				closeModal={handleCloseProV2UpgradeModal}
 			/>
 		</>
 	);

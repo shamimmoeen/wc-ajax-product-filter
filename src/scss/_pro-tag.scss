@@ -129,6 +129,7 @@ a.__upgrade_btn {
 	padding: 2px 4px;
 	border-radius: 4px;
 	font-size: 12px;
+	text-transform: uppercase;
 
 	@include horizontal-space-left(4px);
 }
@@ -137,7 +138,7 @@ a.__upgrade_btn {
 	display: inline-block;
 
 	&::before {
-		content: 'PRO';
+		content: 'Pro';
 		@include pro-tag;
 	}
 }

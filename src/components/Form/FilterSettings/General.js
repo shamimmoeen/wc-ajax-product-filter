@@ -10,7 +10,7 @@ import {
 	getGlobalFilterKey,
 	getFilterTypes,
 	getMetaKeys,
-	getFilterType,
+	getFilterTypeData,
 	getFilterTitle,
 	getFilterKey,
 	componentsWithTypeOnly,
@@ -44,7 +44,6 @@ const General = ({ index }) => {
 		meta_key,
 		component,
 		value_type,
-		// is_acf,
 		value_decimal,
 		value_decimal_places,
 		date_input_format,
@@ -52,6 +51,7 @@ const General = ({ index }) => {
 		field_key_error,
 		field_key_error_,
 		show_title,
+		active_filters_layout,
 		empty_filter_message,
 		show_if_empty,
 	} = filter;
@@ -61,12 +61,12 @@ const General = ({ index }) => {
 
 	if (id) {
 		typeDisabledInfo = __(
-			'Filter type can not be changed after it is saved. But you can permanently delete the filter and add a new one.',
+			'Filter type can not be changed once it is saved. But you can permanently delete the filter and add a new one.',
 			'wc-ajax-product-filter'
 		);
 
 		filterKeyDisabledInfo = __(
-			'Filter key can not be changed after it is saved. But you can change the filter keys globally from "Settings > Filter Keys" section.',
+			'Once a filter key is set, you can not change it from the filter. But you can change the filter keys globally from "Settings > Filter Keys" tab.',
 			'wc-ajax-product-filter'
 		);
 	}
@@ -90,13 +90,13 @@ const General = ({ index }) => {
 
 		if (globalFilterKey) {
 			filterKeyDisabledInfo = __(
-				'This key is already assigned for this filter type and can not be changed from here. But you can change the filter keys globally from "Settings > Filter Keys" section.',
+				'This key is already assigned for this entity and can not be changed from here. But you can change the filter keys globally from "Settings > Filter Keys" tab.',
 				'wc-ajax-product-filter'
 			);
 		}
 	}
 
-	const filterType = getFilterType(filter);
+	const filterType = getFilterTypeData(filter);
 	const filterTitle = getFilterTitle(filter, filterType);
 	const filterKey = getFilterKey(filter, filterType);
 
@@ -122,7 +122,7 @@ const General = ({ index }) => {
 					index={index}
 					label={__('Filter Title', 'wc-ajax-product-filter')}
 					description={__(
-						'Give a title to the filter which will appear before the filter options.',
+						'Give a title to the filter that will appear before the filter options.',
 						'wc-ajax-product-filter'
 					)}
 					value={title}
@@ -142,7 +142,7 @@ const General = ({ index }) => {
 				index={index}
 				label={__('Filter Type', 'wc-ajax-product-filter')}
 				description={__(
-					'Select the filter type by which you want to filter the products.',
+					'Determines the entity by which the products will be filtered.',
 					'wc-ajax-product-filter'
 				)}
 				options={filterTypes}
@@ -233,20 +233,6 @@ const General = ({ index }) => {
 					/>
 				</>
 			)}
-
-			{/* {'post-meta' === type && 'text' === value_type && (
-				<Checkbox
-					id={'is_acf'}
-					index={index}
-					label={__('Is ACF Field', 'wc-ajax-product-filter')}
-					description={__(
-						'Enable this if this is a field of <b>Advanced Custom Fields</b>. If enabled the labels and values will be synced directly.',
-						'wc-ajax-product-filter'
-					)}
-					isChecked={is_acf}
-					onChange={handleCheckboxChange}
-				/>
-			)} */}
 
 			{'post-meta' === type && 'number' === value_type && (
 				<>
@@ -346,6 +332,28 @@ const General = ({ index }) => {
 						onChange={handleCheckboxChange}
 					/>
 
+					<Radio
+						id={'active_filters_layout'}
+						index={index}
+						label={__('Layout', 'wc-ajax-product-filter')}
+						description={__(
+							'Simple: Show all the active items one by one, Extended: Group the active items by filter type and show them separately with filter title.',
+							'wc-ajax-product-filter'
+						)}
+						options={[
+							{
+								label: __('Simple', 'wc-ajax-product-filter'),
+								value: 'simple',
+							},
+							{
+								label: __('Extended', 'wc-ajax-product-filter'),
+								value: 'extended',
+							},
+						]}
+						value={active_filters_layout}
+						onChange={handleRadioChange}
+					/>
+
 					<Text
 						id={'empty_filter_message'}
 						index={index}
@@ -354,7 +362,7 @@ const General = ({ index }) => {
 							'wc-ajax-product-filter'
 						)}
 						description={__(
-							'Show a message when no filter is applied. Leave it empty to not show any message.',
+							'Show a message when no filter is applied. Leave it empty to not show the active filters when no filter is applied.',
 							'wc-ajax-product-filter'
 						)}
 						value={empty_filter_message}

@@ -1,6 +1,6 @@
 <?php
 /**
- * WC Ajax Product Filter hooks class.
+ * WCAPF - WooCommerce Ajax Product Filter hooks class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
@@ -43,7 +43,6 @@ class WCAPF_Hooks {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		// add_action( 'storefront_content_top', array( $this, 'content_top' ) );
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_action( 'wp_footer', array( $this, 'insert_loader' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
@@ -60,34 +59,6 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 *
-	 * TODO: Remove from production build.
-	 *
-	 * @return void
-	 */
-	public function content_top() {
-		global $wp_query, $wcapf_query;
-
-		$query = null;
-
-		if ( is_shop() || is_product_taxonomy() ) {
-			$query = $wp_query;
-		} else if ( $wcapf_query ) {
-			$query = $wcapf_query;
-		}
-
-		echo '<input type="checkbox" id="show_query"><label for="show_query">Show Query</label>';
-
-		echo '<div class="query">';
-		echo '<pre>';
-		print_r( $query );
-		echo '</pre>';
-		echo '</div>';
-
-		echo '<style>.query {display: none} #show_query:checked ~ .query {display: block;}</style>';
-	}
-
-	/**
 	 * Adds the classes into the body element.
 	 *
 	 * @param array $classes The classes.
@@ -101,13 +72,17 @@ class WCAPF_Hooks {
 			return $classes;
 		}
 
-		$improve_scrollbar  = WCAPF_Helper::wcapf_option( 'improve_scrollbar' );
-		$remove_focus_style = WCAPF_Helper::wcapf_option( 'remove_focus_style' );
-		$use_wait_cursor    = WCAPF_Helper::wcapf_option( 'wait_cursor' );
-		$label_size         = WCAPF_Helper::wcapf_option( 'label_size' );
+		$improve_scrollbar   = WCAPF_Helper::wcapf_option( 'improve_scrollbar' );
+		$improve_text_inputs = WCAPF_Helper::wcapf_option( 'improve_input_type_text_number' );
+		$remove_focus_style  = WCAPF_Helper::wcapf_option( 'remove_focus_style' );
+		$use_wait_cursor     = WCAPF_Helper::wcapf_option( 'wait_cursor' );
 
 		if ( $improve_scrollbar ) {
 			$classes[] = 'wcapf-pretty-scroll';
+		}
+
+		if ( $improve_text_inputs ) {
+			$classes[] = 'wcapf-pretty-text-inputs';
 		}
 
 		if ( ! $remove_focus_style ) {
@@ -116,10 +91,6 @@ class WCAPF_Hooks {
 
 		if ( $use_wait_cursor ) {
 			$classes[] = 'wcapf-use-wait-cursor';
-		}
-
-		if ( 'fixed' === $label_size ) {
-			$classes[] = 'wcapf-label-size-fixed';
 		}
 
 		return $classes;
@@ -153,18 +124,17 @@ class WCAPF_Hooks {
 		$loading_animation = WCAPF_Helper::wcapf_option( 'loading_animation', 'overlay-with-icon' );
 
 		if ( 'overlay-with-icon' === $loading_animation ) {
-			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Spinner' );
+			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Dual-Ring' );
 
 			$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_image . '.svg';
-			$image_src  = WCAPF_PLUGIN_URL . '/public/loaders/' . $loading_image . '.svg';
 
 			// Default image.
 			if ( ! file_exists( $image_file ) ) {
-				$image_src = WCAPF_PLUGIN_URL . '/public/loaders/Spinner.svg';
+				$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/Dual-Ring.svg';
 			}
 
 			$image_size = WCAPF_Helper::wcapf_option( 'loading_image_size', '60' ) . 'px';
-			$image      = file_get_contents( $image_src );
+			$image      = file_get_contents( $image_file );
 
 			$html .= '<div class="wcapf-loader-image" style="width: ' . $image_size . '">' . $image . '</div>';
 		}
@@ -313,13 +283,17 @@ class WCAPF_Hooks {
 	 */
 	private function render_active_filters() {
 		if ( ! empty( WCAPF_Helper::wcapf_option( 'active_filters_on_top' ) ) ) {
-			WCAPF_Template_Loader::get_instance()->load(
-				'active-filters',
+			$active_filters_on_top_args = apply_filters(
+				'wcapf_active_filters_on_top_args',
 				array(
-					'location'            => 'before-products',
-					'clear_all_btn_label' => WCAPF_Helper::clear_all_button_label(),
+					'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
+					'clear_all_btn_layout' => 'inline',
 				)
 			);
+
+			echo '<div class="wcapf-active-filters-before-shop-loop">';
+			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $active_filters_on_top_args );
+			echo '</div>';
 		}
 	}
 
@@ -361,7 +335,7 @@ class WCAPF_Hooks {
 			array(
 				'hide_empty'    => $remove_empty,
 				'update_count'  => ! empty( WCAPF_Helper::wcapf_option( 'update_count' ) ),
-				'use_chosen'    => ! empty( WCAPF_Helper::wcapf_option( 'use_chosen' ) ),
+				'use_combobox'  => ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ),
 				'use_term_slug' => ! empty( WCAPF_Helper::wcapf_option( 'use_term_slug' ) ),
 			),
 			$data
@@ -378,6 +352,8 @@ class WCAPF_Hooks {
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}
+
+		WCAPF_V4_Migration()->try_to_run_v4_migration();
 
 		$filter = new WCAPF_Product_Filter();
 

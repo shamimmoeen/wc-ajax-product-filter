@@ -1,5 +1,11 @@
 @import "../mixins";
 
+.wcapf-active-filters-before-shop-loop {
+	.wcapf-filter {
+		margin-bottom: var(--wcapf-active-filters-before-products-bottom-margin);
+	}
+}
+
 .wcapf-active-filters {
 	.wcapf-reset-filters-btn {
 		@include button;
@@ -13,41 +19,33 @@
 			color: var(--wcapf-primary-color);
 		}
 	}
-}
 
-.location-before-products {
-	.wcapf-filter {
-		margin-bottom: var(--wcapf-active-filters-before-products-bottom-margin);
-	}
+	&.clear-all-btn-layout-inline {
+		.wcapf-active-filter-items {
+			.wcapf-active-filter-item.last-item {
+				@include ltr {
+					margin-right: var(--wcapf-active-filters-before-products-clear-button-gap);
+				}
 
-	.wcapf-active-filter-items {
-		.wcapf-active-filter-item.last-item {
-			@include ltr {
-				margin-right: var(--wcapf-active-filters-before-products-clear-button-gap);
+				@include rtl {
+					margin-left: var(--wcapf-active-filters-before-products-clear-button-gap);
+				}
 			}
 
-			@include rtl {
-				margin-left: var(--wcapf-active-filters-before-products-clear-button-gap);
+			.wcapf-reset-filters-btn-wrapper {
+				display: inline-block;
+				margin-bottom: var(--wcapf-active-filter-item-margin);
+				padding: calc(var(--wcapf-active-filter-item-vr-padding) + var(--wcapf-active-filter-item-border-size)) 0;
 			}
 		}
 
-		.wcapf-reset-filters-btn-wrapper {
-			display: inline-block;
-			padding: calc(var(--wcapf-active-filter-item-vr-padding) + var(--wcapf-active-filter-item-border-size)) 0;
-			margin-bottom: var(--wcapf-active-filter-item-margin);
+		.wcapf-reset-filters-btn {
+			margin: 0;
 		}
-	}
-
-	.wcapf-reset-filters-btn {
-		margin: 0;
 	}
 }
 
 .wcapf-active-filter-items-wrapper {
-	> .wcapf-active-filter-items {
-		margin: 0 0 calc(var(--wcapf-active-filter-item-margin) * -1);
-	}
-
 	.wcapf-active-filter-item {
 		@include button;
 
@@ -57,10 +55,10 @@
 		}
 
 		@include active-filter-item-common-styles;
+		align-items: center;
 		border-radius: var(--wcapf-active-filter-item-border-radius);
 		display: inline-flex;
 		position: relative;
-		align-items: center;
 		white-space: nowrap;
 
 		&:hover,
@@ -80,8 +78,8 @@
 
 		.wcapf-cross-sign {
 			font-size: 1.2em;
-			position: absolute;
 			opacity: var(--wcapf-active-filter-item-cross-icon-opacity);
+			position: absolute;
 
 			@include ltr {
 				right: calc(var(--wcapf-active-filter-item-hr-padding) * var(--wcapf-active-filter-item-cross-icon-hr-position));
@@ -93,8 +91,23 @@
 		}
 
 		&:focus-visible {
-			outline-offset: 2px;
 			outline: 2px solid var(--wcapf-primary-color);
+			outline-offset: 2px;
+		}
+	}
+}
+
+.wcapf-active-filters.layout-extended {
+	.wcapf-active-filter-group {
+		&:not(:first-child) {
+			margin-top: var(--wcapf-active-filters-group-top-margin);
+		}
+
+		> h5 {
+			font-size: var(--wcapf-active-filters-group-heading-font-size);
+			font-weight: var(--wcapf-active-filters-group-heading-font-weight);
+			margin: 0 0 var(--wcapf-active-filters-group-heading-bottom-margin);
+			padding: 0;
 		}
 	}
 }

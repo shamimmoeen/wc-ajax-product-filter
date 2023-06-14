@@ -37,14 +37,6 @@
     }
 
     .__single_select {
-        &.filter_relationships {
-            min-width: 70px;
-        }
-
-        &.sort_by_form {
-            min-width: 220px;
-        }
-
         &.number_range_slider_style {
             min-width: 120px;
         }
@@ -62,7 +54,7 @@
         }
     }
 
-    .ajax-disabled-info.components-notice {
+    .components-notice.is-info {
         margin: 0 0 2em;
         background-color: rgba(0, 124, 186, .1);
 
@@ -123,7 +115,7 @@
         }
     }
 
-    .components-notice {
+    .components-notice.is-error {
         margin: 0 0 1.5em;
         border-color: $svgDeleteColor;
         color: $svgDeleteColor;

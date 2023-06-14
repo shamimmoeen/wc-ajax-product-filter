@@ -36,15 +36,13 @@ export default function CustomTabPanel({
 	orientation = 'horizontal',
 	activeClass = 'is-active',
 	onSelect = noop,
-	state,
-	dispatch,
+	currentTab,
+	onChangeTab,
 }) {
-	const { currentTab } = state;
-
 	const instanceId = useInstanceId(CustomTabPanel, 'tab-panel');
 
 	const handleClick = (tabKey) => {
-		dispatch({ type: 'SET_CURRENT_TAB', payload: tabKey });
+		onChangeTab(tabKey);
 		onSelect(tabKey);
 	};
 
@@ -61,7 +59,7 @@ export default function CustomTabPanel({
 			const _selected =
 				initialTabName || (tabs.length > 0 ? tabs[0].name : null);
 
-			dispatch({ type: 'SET_CURRENT_TAB', payload: _selected });
+			onChangeTab(_selected);
 		}
 	}, [tabs]);
 

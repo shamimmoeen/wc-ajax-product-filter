@@ -18,9 +18,10 @@
     h2 {
         display: inline-block;
         font-size: 14px;
+        letter-spacing: -0.3px;
         line-height: 2.5;
-        margin-top: 0;
         margin-bottom: 0;
+        margin-top: 0;
         padding: 5px 0;
 
         @include horizontal-space(10px);

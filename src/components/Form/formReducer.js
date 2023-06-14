@@ -1,5 +1,7 @@
 const title = wcapf_admin_params.form_data['post_title'];
 const formId = wcapf_admin_params.form_data['post_id'];
+const showReviewNotice =
+	wcapf_admin_params.show_review_notice_for_milestone_achieved;
 
 export const initialState = {
 	isLoading: true,
@@ -8,10 +10,12 @@ export const initialState = {
 	formId,
 	filterKeys: [],
 	currentTab: 'filters',
-	accordionStates: [],
+	addFilterIndex: 1,
+	filterStates: {},
 	formFilters: [],
 	formSettings: {},
 	saveError: '',
+	showReviewNotice,
 };
 
 const formReducer = (state, action) => {
@@ -34,8 +38,11 @@ const formReducer = (state, action) => {
 		case 'SET_CURRENT_TAB':
 			return { ...state, currentTab: action.payload };
 
-		case 'SET_ACCORDION_STATES':
-			return { ...state, accordionStates: action.payload };
+		case 'INCREMENT_ADD_FILTER_INDEX':
+			return { ...state, addFilterIndex: state.addFilterIndex + 1 };
+
+		case 'SET_FILTER_STATES':
+			return { ...state, filterStates: action.payload };
 
 		case 'SET_FORM_FILTERS':
 			return { ...state, formFilters: action.payload };
@@ -45,6 +52,9 @@ const formReducer = (state, action) => {
 
 		case 'SET_ERROR':
 			return { ...state, saveError: action.payload };
+
+		case 'SET_SHOW_REVIEW_NOTICE':
+			return { ...state, showReviewNotice: action.payload };
 
 		default:
 			return state;

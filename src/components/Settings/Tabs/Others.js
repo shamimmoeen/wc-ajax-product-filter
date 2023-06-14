@@ -7,6 +7,7 @@ import { foundProVersion } from '../../utils';
 import { useSettings } from '../SettingsContext';
 import useSettingsData from '../useSettingsData';
 import Textarea from '../../Field/Textarea';
+import Number from '../../Field/Number';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -24,20 +25,22 @@ const Others = () => {
 		settings: {
 			search_field_default_placeholder,
 			no_results_text,
-			chosen_no_options_text,
+			combobox_no_options_text,
 			empty_filter_text,
 			show_more_btn_label,
 			show_less_btn_label,
-			opening_btn_label,
-			slide_out_panel_label,
+			// opening_btn_label,
+			// slide_out_panel_label,
 			clear_button_label,
 			clear_all_button_label,
 			reset_button_label,
-			submit_btn_label,
-			apply_btn_label,
+			// submit_btn_label,
+			// apply_btn_label,
 			results_count_markup,
 			sort_by_prefix,
 			per_page_prefix,
+			input_delay,
+			pagination_container,
 			more_selectors,
 			custom_scripts,
 			author_roles,
@@ -49,7 +52,7 @@ const Others = () => {
 		<>
 			<ProFeaturesNotice
 				message={__(
-					'There are settings available only in the PRO version.',
+					'There are settings available only in the Pro version.',
 					'wc-ajax-product-filter'
 				)}
 			/>
@@ -60,7 +63,7 @@ const Others = () => {
 
 			<p className='__description'>
 				{__(
-					'Here you can change the phrases shown on the front-end. Leave empty to use the default.',
+					'Here you can change the phrases shown in the front end. Leave empty to use the default.',
 					'wc-ajax-product-filter'
 				)}
 			</p>
@@ -80,9 +83,9 @@ const Others = () => {
 			/>
 
 			<Text
-				id={'chosen_no_options_text'}
+				id={'combobox_no_options_text'}
 				label={__('No options text', 'wc-ajax-product-filter')}
-				value={chosen_no_options_text}
+				value={combobox_no_options_text}
 				onChange={handleTextFieldChange}
 			/>
 
@@ -107,7 +110,7 @@ const Others = () => {
 				onChange={handleTextFieldChange}
 			/>
 
-			<Text
+			{/* <Text
 				id={'opening_btn_label'}
 				label={__('Opening button label', 'wc-ajax-product-filter')}
 				value={opening_btn_label}
@@ -124,7 +127,7 @@ const Others = () => {
 					value={slide_out_panel_label}
 					onChange={handleTextFieldChange}
 				/>
-			)}
+			)} */}
 
 			{WCAPF_PRO && (
 				<Text
@@ -149,7 +152,7 @@ const Others = () => {
 				onChange={handleTextFieldChange}
 			/>
 
-			{WCAPF_PRO && (
+			{/* {WCAPF_PRO && (
 				<Text
 					id={'submit_btn_label'}
 					label={__('Submit button label', 'wc-ajax-product-filter')}
@@ -165,7 +168,7 @@ const Others = () => {
 					value={apply_btn_label}
 					onChange={handleTextFieldChange}
 				/>
-			)}
+			)} */}
 
 			{WCAPF_PRO && (
 				<Text
@@ -194,12 +197,36 @@ const Others = () => {
 
 			<div className='__form_fields_separator' />
 
+			<Number
+				id={'input_delay'}
+				label={__('Input Delay', 'wc-ajax-product-filter')}
+				description={__(
+					'Specify the delay (in milliseconds) before triggering the filter action when the user interacts with the input fields. Default is 300.',
+					'wc-ajax-product-filter'
+				)}
+				value={input_delay}
+				onChange={handleTextFieldChange}
+				type={'number'}
+				min={0}
+			/>
+
+			<Text
+				id={'pagination_container'}
+				label={__('Pagination container', 'wc-ajax-product-filter')}
+				description={__(
+					"The css class of the pagination element, supports multiple classes separated by commas. In most cases, you don't need to change this. Applicable when filtering via Ajax.",
+					'wc-ajax-product-filter'
+				)}
+				value={pagination_container}
+				onChange={handleTextFieldChange}
+			/>
+
 			{WCAPF_PRO && (
 				<Text
 					id={'more_selectors'}
 					label={__('Additional Selectors', 'wc-ajax-product-filter')}
 					description={__(
-						'If you want to update additional elements give the css classes separated by commas. Applicable when filtering via ajax.',
+						'If you want to update additional elements give the CSS classes separated by commas. Applicable when filtering via Ajax.',
 						'wc-ajax-product-filter'
 					)}
 					value={more_selectors}
@@ -211,11 +238,11 @@ const Others = () => {
 			<Textarea
 				id={'custom_scripts'}
 				label={__(
-					'JavaScript after ajax update',
+					'JavaScript after Ajax update',
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					"You may want to run javascript codes after updating the shop loop via ajax. Leave it empty if you don't understand.",
+					"You may want to run javascript codes after updating the shop loop via Ajax. Leave it empty if you don't understand.",
 					'wc-ajax-product-filter	'
 				)}
 				value={custom_scripts}
@@ -227,7 +254,7 @@ const Others = () => {
 				id={'author_roles'}
 				label={__('Author Roles', 'wc-ajax-product-filter')}
 				description={__(
-					'Users having any of these roles will be available(on Available Options modal) for post author filter.',
+					'Users having any of these roles will be available on the <b>Available Options</b> modal of the post-author filter.',
 					'wc-ajax-product-filter'
 				)}
 				isMultiple={true}

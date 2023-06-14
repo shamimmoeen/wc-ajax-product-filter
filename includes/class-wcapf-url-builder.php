@@ -144,6 +144,9 @@ class WCAPF_URL_Builder {
 
 		$vars = $this->query_vars;
 
+		// Sort values in ascending order.
+		sort( $values );
+
 		$vars[ $this->filter_key ] = implode( ',', $values );
 
 		return add_query_arg( $vars, $this->base_url );

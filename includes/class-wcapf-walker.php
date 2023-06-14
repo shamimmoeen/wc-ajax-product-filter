@@ -67,11 +67,11 @@ class WCAPF_Walker {
 	public $all_items_label;
 
 	/**
-	 * Use chosen.
+	 * Use combobox.
 	 *
 	 * @var string
 	 */
-	public $use_chosen;
+	public $use_combobox;
 
 	/**
 	 * Enable multiple filter.
@@ -277,7 +277,7 @@ class WCAPF_Walker {
 			'use_term_slug'              => '',
 			'enable_hierarchy_accordion' => '',
 			'all_items_label'            => '',
-			'use_chosen'                 => '',
+			'use_combobox'               => '',
 			'no_results_message'         => '',
 			'enable_multiple_filter'     => '',
 			'show_count'                 => '',
@@ -471,7 +471,11 @@ class WCAPF_Walker {
 
 				// Hierarchy List.
 				if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
-					$wrapper_classes[] = 'has-hierarchy-accordion';
+					$wrapper_classes[] = 'hierarchy-list';
+
+					if ( WCAPF_Helper::wcapf_option( 'hierarchy_toggle_at_end' ) ) {
+						$wrapper_classes[] = 'hierarchy-toggle-at-end';
+					}
 				}
 			} else {
 				$input_type = $this->enable_multiple_filter ? 'checkbox' : 'radio';
@@ -480,7 +484,7 @@ class WCAPF_Walker {
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				if ( 'label' === $display_type ) {
-					$wrapper_classes[] = 'style-' . WCAPF_Helper::wcapf_option( 'active_label_style' );
+					$wrapper_classes[] = 'default-primary-style';
 				}
 
 				if ( $show_count ) {
@@ -493,7 +497,9 @@ class WCAPF_Walker {
 
 		if ( in_array( $display_type, $native_list_types ) ) {
 			if ( $this->hierarchical ) {
-				$html = $this->build_hierarchical_menu( $items );
+				$html = $this->get_max_height_wrapper_start_markup();
+				$html .= $this->build_hierarchical_menu( $items );
+				$html .= $this->get_max_height_wrapper_end_markup();
 			} else {
 				$html = $this->build_non_hierarchical_menu( $items );
 			}
@@ -544,6 +550,21 @@ class WCAPF_Walker {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function get_max_height_wrapper_start_markup() {
+		$html = '';
+
+		if ( $this->enable_max_height ) {
+			$html .= '<div class="wcapf-enable-scrollbar" style="max-height: ' . $this->max_height . 'px;">';
+		}
+
+		return $html;
 	}
 
 	/**
@@ -843,6 +864,21 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * @since 4.0.0
+	 *
+	 * @return string
+	 */
+	private function get_max_height_wrapper_end_markup() {
+		$html = '';
+
+		if ( $this->enable_max_height ) {
+			$html .= '</div>';
+		}
+
+		return $html;
+	}
+
+	/**
 	 * Build non-hierarchical menu.
 	 *
 	 * @param array $items The array of items.
@@ -860,15 +896,9 @@ class WCAPF_Walker {
 		// Show the search field before the filter options.
 		$html .= $this->get_search_field();
 
-		$wrapper_classes = 'wcapf-filter-options';
-		$wrapper_styles  = '';
+		$html .= $this->get_max_height_wrapper_start_markup();
 
-		if ( $this->enable_max_height ) {
-			$wrapper_classes .= ' wcapf-enable-scrollbar';
-			$wrapper_styles  = ' style="max-height: ' . $this->max_height . 'px;"';
-		}
-
-		$html .= '<ul class="' . $wrapper_classes . '"' . $wrapper_styles . '>';
+		$html .= '<ul class="wcapf-filter-options">';
 
 		foreach ( $items as $item ) {
 			$index ++;
@@ -885,6 +915,8 @@ class WCAPF_Walker {
 		}
 
 		$html .= '</ul>';
+
+		$html .= $this->get_max_height_wrapper_end_markup();
 
 		if ( count( $items ) > $visible_items ) {
 			$html .= $this->get_soft_limit_toggle();
@@ -987,9 +1019,9 @@ class WCAPF_Walker {
 			$input_multiple = ' multiple="multiple"';
 		}
 
-		$use_chosen = $this->use_chosen;
+		$use_combobox = $this->use_combobox;
 
-		if ( $use_chosen ) {
+		if ( $use_combobox ) {
 			$input_classes = 'wcapf-chosen';
 		} else {
 			$input_classes = 'wcapf-select';
@@ -1005,23 +1037,23 @@ class WCAPF_Walker {
 
 		$all_items_label = $this->all_items_label;
 
-		if ( 'multiselect' === $display_type && $use_chosen ) {
-			$input_classes .= ' style-' . WCAPF_Helper::wcapf_option( 'active_label_style' );
+		if ( 'multiselect' === $display_type && $use_combobox ) {
+			$input_classes .= ' default-primary-style';
 		}
 
 		if ( 'multiselect' === $display_type ) {
 			$input_attrs .= ' data-placeholder="' . esc_attr( $all_items_label ) . '"';
 
-			if ( $use_chosen && $this->hierarchical ) {
+			if ( $use_combobox && $this->hierarchical ) {
 				$input_classes .= ' has-hierarchy';
 			}
 		}
 
-		if ( 'select' === $display_type && $use_chosen && $this->enable_search_field ) {
+		if ( 'select' === $display_type && $use_combobox && $this->enable_search_field ) {
 			$input_attrs .= ' data-enable-search="1"';
 		}
 
-		if ( $use_chosen && $this->show_count && $this->count_allowed() ) {
+		if ( $use_combobox && $this->show_count && $this->count_allowed() ) {
 			$input_classes .= ' with-count';
 		}
 
@@ -1054,13 +1086,52 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	private function dropdown_item( $item ) {
-		$item_id     = $item['id'];
-		$item_value  = $this->item_value( $item );
-		$item_active = $this->item_active( $item );
+		$count_allowed = $this->count_allowed();
+		$use_combobox  = $this->use_combobox;
 
+		$attrs = $this->get_dropdown_item_attributes( $item );
+
+		$option = '<option' . $attrs . '>';
+
+		if ( $this->hierarchical && ! $use_combobox ) {
+			$option .= $this->dropdown_item_indent( $item );
+		}
+
+		$option .= $item['name'];
+
+		$count      = $item['count'];
+		$item_count = ' (' . $count . ')';
+
+		if ( ! $use_combobox && $this->show_count && '-1' !== $count && $count_allowed ) {
+			$option .= $item_count;
+		}
+
+		$option .= '</option>';
+
+		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
+
+		$children = isset( $item['children'] ) ? $item['children'] : array();
+
+		if ( $children ) {
+			foreach ( $children as $child_item ) {
+				$inner .= $this->dropdown_item( $child_item );
+			}
+		}
+
+		return $inner;
+	}
+
+	/**
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	protected function get_dropdown_item_attributes( $item ) {
+		$item_id       = $item['id'];
+		$item_value    = $this->item_value( $item );
+		$item_active   = $this->item_active( $item );
 		$count_allowed = $this->count_allowed();
 
-		$option  = '';
 		$attrs   = '';
 		$classes = array();
 
@@ -1101,11 +1172,11 @@ class WCAPF_Walker {
 
 		$count = $item['count'];
 
-		$use_chosen = $this->use_chosen;
+		$use_combobox = $this->use_combobox;
 
 		$item_count = ' (' . $count . ')';
 
-		if ( $use_chosen && $this->show_count && $count_allowed ) {
+		if ( $use_combobox && $this->show_count && $count_allowed ) {
 			// Add the empty attribute to avoid the undefined issue in js.
 			if ( '-1' === $count ) {
 				$item_count = '';
@@ -1115,31 +1186,7 @@ class WCAPF_Walker {
 			$attrs .= ' data-count-markup="' . $item_count . '"';
 		}
 
-		$option .= '<option' . $attrs . '>';
-
-		if ( $this->hierarchical && ! $use_chosen ) {
-			$option .= $this->dropdown_item_indent( $item );
-		}
-
-		$option .= $item['name'];
-
-		if ( ! $use_chosen && $this->show_count && '-1' !== $count && $count_allowed ) {
-			$option .= $item_count;
-		}
-
-		$option .= '</option>';
-
-		$inner = apply_filters( 'wcapf_dropdown_item', $option, $item, $this );
-
-		$children = isset( $item['children'] ) ? $item['children'] : array();
-
-		if ( $children ) {
-			foreach ( $children as $child_item ) {
-				$inner .= $this->dropdown_item( $child_item );
-			}
-		}
-
-		return $inner;
+		return $attrs;
 	}
 
 	/**

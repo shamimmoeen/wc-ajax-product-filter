@@ -183,6 +183,7 @@ class WCAPF_Product_Filter {
 				'post_type'      => 'wcapf-form',
 				'post_status'    => 'publish',
 				'posts_per_page' => 1,
+				'orderby'        => 'ID',
 				'order'          => 'ASC',
 			)
 		);
@@ -452,6 +453,7 @@ class WCAPF_Product_Filter {
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => false,
 				'include'    => $term_ids,
+				'orderby'    => 'include',
 				'fields'     => 'id=>name',
 			)
 		);
@@ -561,6 +563,8 @@ class WCAPF_Product_Filter {
 	protected function set_filter_by_product_status_data( $filter_value, $field_instance ) {
 		$query_type = $field_instance->query_type;
 		$filter_id  = $field_instance->filter_id;
+
+		$active_filters = array();
 
 		$utils = new WCAPF_Product_Filter_Utils;
 

@@ -1,0 +1,22 @@
+@import "../mixins";
+
+.wcapf-pretty-text-inputs {
+	.wcapf-range-wrapper {
+		input[type="number"],
+		input[type="text"] {
+			@include input_text;
+		}
+	}
+
+	.wcapf-search-box {
+		input[type="text"] {
+			@include input_text;
+		}
+	}
+
+	.date-input-wrapper {
+		.date-input {
+			@include input_text;
+		}
+	}
+}

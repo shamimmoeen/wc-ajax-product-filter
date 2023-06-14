@@ -72,7 +72,7 @@ class WCAPF_Filter_Type_Price extends WCAPF_Filter_Type {
 		$where .= $hide_stock_out ? " AND price_table.stock_status = 'instock'" : '';
 
 		if ( $update_range ) {
-			$where .= $utils::get_where_clauses_by_other_filters( 'price' );
+			$where .= $utils::get_where_clauses_by_other_filters( $this->filter_key );
 		}
 
 		$query['where'] = $where;

@@ -13,6 +13,10 @@
  * @var string $show_always Whether to show the reset filters button if no filter is applied.
  */
 
+if ( ! WCAPF_Helper::found_wcapf() ) {
+	return;
+}
+
 $helper = new WCAPF_Helper;
 
 $all_filters = $helper::get_active_filters_data();
@@ -28,17 +32,11 @@ $continue = true;
 if ( ! $all_filters && ! $show_always ) {
 	$continue = false;
 }
-
-// TODO: Remove the commented lines.
 ?>
 
 <div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" data-id="<?php echo esc_attr( $unique_id ); ?>">
 	<?php if ( $continue ): ?>
 		<div class="wcapf-filter">
-<!--			<div class="wcapf-btn-group wcapf-align-end">-->
-<!--				<button class="wcapf-btn wcapf-btn-primary">Apply <span class="wcapf-product-count">18</span></button>-->
-<!--				--><?php //echo $helper::get_reset_button_markup( $btn_label ); ?>
-<!--			</div>-->
 			<?php echo $helper::get_reset_button_markup( $btn_label ); ?>
 		</div>
 	<?php endif; ?>

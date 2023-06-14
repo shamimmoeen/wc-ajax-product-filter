@@ -14,6 +14,7 @@ import {
 	proFilterTypes,
 } from './utils';
 import { foundProVersion } from '../utils';
+import ReviewNotices from './ReviewNotices';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -49,56 +50,52 @@ const Form = () => {
 				const proTypes = proFilterTypes();
 				const proComponents = proFilterComponents();
 
-				for (let index = 0; index < _formFilters.length; index++) {
-					const _formFilter = _formFilters[index];
+				if (_formFilters) {
+					for (let index = 0; index < _formFilters.length; index++) {
+						const _formFilter = _formFilters[index];
 
-					const isPro =
-						proTypes.includes(_formFilter['type']) ||
-						proComponents.includes(_formFilter['component']);
+						const isPro =
+							proTypes.includes(_formFilter['type']) ||
+							proComponents.includes(_formFilter['component']);
 
-					if (!WCAPF_PRO && isPro) {
-						continue;
+						if (!WCAPF_PRO && isPro) {
+							continue;
+						}
+
+						const formFilter = {
+							...filterDefaultData(),
+							..._formFilter,
+						};
+
+						formFilters.push(formFilter);
 					}
-
-					const formFilter = {
-						...filterDefaultData(),
-						..._formFilter,
-					};
-
-					formFilters.push(formFilter);
 				}
 
-				dispatch({
-					type: 'SET_FILTER_KEYS',
-					payload: filterKeys,
-				});
+				dispatch({ type: 'SET_FILTER_KEYS', payload: filterKeys });
 
-				// The accordion states of form filters.
-				const accordionStates = [];
+				// The accordion and tab states of form filters.
+				const filterStates = {};
 
-				// TODO: Remove commented codes.
 				for (let index = 0; index < formFilters.length; index++) {
+					const filterId = formFilters[index]['id'];
+					let accordionStatus = false; // False means collapsed.
+					let currentTab = 'general'; // The name of the first tab.
+
 					// if (index === 0) {
-					// 	accordionStates[index] = true;
-					// } else {
-					// 	accordionStates[index] = false;
+					// 	accordionStatus = true;
+					// 	currentTab = 'advanced';
 					// }
-					accordionStates[index] = false;
+
+					filterStates[filterId] = { accordionStatus, currentTab };
 				}
 
-				dispatch({
-					type: 'SET_ACCORDION_STATES',
-					payload: accordionStates,
-				});
+				dispatch({ type: 'SET_FILTER_STATES', payload: filterStates });
 
-				dispatch({
-					type: 'SET_FORM_FILTERS',
-					payload: formFilters,
-				});
+				dispatch({ type: 'SET_FORM_FILTERS', payload: formFilters });
 
 				dispatch({
 					type: 'SET_FORM_SETTINGS',
-					payload: merge(defaultFormSettings(), formSettings),
+					payload: merge({}, defaultFormSettings(), formSettings),
 				});
 
 				dispatch({ type: 'SET_LOADING', payload: false });
@@ -116,6 +113,9 @@ const Form = () => {
 		<>
 			<div className='__wcapf_admin'>
 				<TopBar view={'form'} />
+
+				{/* This is customized only for the 'form' view */}
+				<ReviewNotices />
 
 				<div className='__edit_filter'>
 					<div className='__edit_filter_from'>

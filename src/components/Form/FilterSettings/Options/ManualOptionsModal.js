@@ -63,7 +63,7 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 
 				setMessage(
 					__(
-						'Please select the author roles from the plugin settings page.',
+						'Please select the author roles from <strong>Settings > Others</strong> tab.',
 						'wc-ajax-product-filter'
 					)
 				);

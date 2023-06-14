@@ -8,7 +8,7 @@ const ProFeaturesCard = () => {
 				<h2>{__('Need more features?', 'wc-ajax-product-filter')}</h2>
 				<p>
 					{__(
-						'Upgrade to PRO to unlock all features.',
+						'Upgrade to Pro to unlock all features.',
 						'wc-ajax-product-filter'
 					)}
 					{` `}

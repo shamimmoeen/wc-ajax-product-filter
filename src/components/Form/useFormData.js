@@ -4,6 +4,8 @@ const useFormData = (state, dispatch) => {
 	const setDirty = () => {
 		if (!isDirty) {
 			dispatch({ type: 'SET_DIRTY', payload: true });
+
+			wcapf_admin_params.dirty = true;
 		}
 
 		if (saveError) {

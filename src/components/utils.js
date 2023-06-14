@@ -1,7 +1,26 @@
+import { __ } from '@wordpress/i18n';
 import { concat } from 'lodash';
+
+export const GENERIC_ERROR_MESSAGE = __(
+	'Please fix the errors below.',
+	'wc-ajax-product-filter'
+);
+
+export const FILTER_KEY_IN_USE_MESSAGE = __(
+	'Filter key is in use by another entity.',
+	'wc-ajax-product-filter'
+);
 
 export function foundProVersion() {
 	return wcapf_admin_params.found_pro || false;
+}
+
+export function showProV2UpgradeNotice() {
+	return wcapf_admin_params.show_pro_v2_upgrade_notice || false;
+}
+
+export function wpVersion() {
+	return parseFloat(wcapf_admin_params.wp);
 }
 
 export function getInputId(id, index = '', subIndex = '') {
@@ -64,7 +83,7 @@ export function getSettingsPageLink() {
 }
 
 export function upgradeToProLink() {
-	return wcapf_admin_params.upgrade_page_link;
+	return 'https://wptools.io/wc-ajax-product-filter/?utm_source=WCAPF+Free&utm_medium=inside+plugin&utm_campaign=WCAPF+Pro+Upgrade';
 }
 
 export function slugify(value) {
