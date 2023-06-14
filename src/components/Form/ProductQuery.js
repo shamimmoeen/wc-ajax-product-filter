@@ -590,7 +590,7 @@ const ProductQuery = ({ index, query, handleQueryChange }) => {
 
 						<p className='description'>
 							{__(
-								'Place the shortcode on the selected page to show the product loop.',
+								'Place the shortcode on the selected page to display the products.',
 								'wc-ajax-product-filter'
 							)}
 						</p>

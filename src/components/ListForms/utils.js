@@ -7,5 +7,5 @@ export function prepareFormData(raw) {
 	const shortcode = `[wcapf_form id="${id}"]`;
 	const editLink = getEditFormLink(id);
 
-	return merge(raw, { shortcode, editLink });
+	return merge({}, raw, { shortcode, editLink });
 }

@@ -99,7 +99,6 @@ class WCAPF_Product_Filter_Utils {
 	public static function get_where_clause( $query_type, $filter_key ) {
 		$main_query_type = WCAPF_Helper::get_field_relations();
 
-		// Maybe include post__in, post__not_in and other vars from the main products query.
 		$where = '';
 
 		if ( 'and' === $main_query_type ) {

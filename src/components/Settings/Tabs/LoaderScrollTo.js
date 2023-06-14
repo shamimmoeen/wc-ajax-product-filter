@@ -109,7 +109,6 @@ const LoaderScrollTo = () => {
 			scroll_window,
 			scroll_window_custom_element,
 			scroll_on,
-			scroll_window_delay,
 			disable_scroll_animation,
 		},
 	} = state;
@@ -160,7 +159,7 @@ const LoaderScrollTo = () => {
 		<>
 			<ProFeaturesNotice
 				message={__(
-					'There are settings available only in the PRO version.',
+					'There are settings available only in the Pro version.',
 					'wc-ajax-product-filter'
 				)}
 			/>
@@ -196,7 +195,7 @@ const LoaderScrollTo = () => {
 					id={'loading_icon'}
 					label={__('Loading Icon', 'wc-ajax-product-filter')}
 					description={__(
-						'Select the loading icon from available icons.',
+						'Select the loading icon from the available icons.',
 						'wc-ajax-product-filter'
 					)}
 					value={loadingIcon}
@@ -243,7 +242,7 @@ const LoaderScrollTo = () => {
 				<ColorInput
 					label={__('Overlay Color', 'wc-ajax-product-filter')}
 					description={__(
-						'Adjust the loading overlay color. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.',
+						'Adjust the loading overlay color. Default is #FFFFFFCC. <b>Note:</b> There is an alpha channel to control the transparency or opacity of the color.',
 						'wc-ajax-product-filter'
 					)}
 					value={loading_overlay_color}
@@ -293,7 +292,7 @@ const LoaderScrollTo = () => {
 							id={'scroll_on'}
 							label={__('Scroll on', 'wc-ajax-product-filter')}
 							description={__(
-								'Determines when to scroll on.',
+								'Specify the event for which you want to scroll the window.',
 								'wc-ajax-product-filter'
 							)}
 							value={scrollOn}
@@ -321,21 +320,6 @@ const LoaderScrollTo = () => {
 
 					{WCAPF_PRO && (
 						<>
-							<Number
-								id={'scroll_window_delay'}
-								label={__(
-									'Scroll window delay',
-									'wc-ajax-product-filter'
-								)}
-								description={__(
-									'Specify the time to delay in milliseconds before starting to scroll the window.',
-									'wc-ajax-product-filter'
-								)}
-								value={scroll_window_delay}
-								onChange={handleTextFieldChange}
-								type={'number'}
-							/>
-
 							<Checkbox
 								id={'disable_scroll_animation'}
 								label={__(

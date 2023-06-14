@@ -126,7 +126,7 @@ const Table = ({
 		<div style={{ margin: '16px 24px' }}>
 			<ProFeaturesNotice
 				message={__(
-					'SEO Rules are available only at the PRO version.',
+					'SEO Rules are available only at the Pro version.',
 					'wc-ajax-product-filter'
 				)}
 			/>

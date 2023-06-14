@@ -12,8 +12,8 @@ body.theme-onepress {
 
 // Astra theme
 body.theme-astra {
-	// Layout list-item
-	#secondary .wcapf-filter .wcapf-list-wrapper.layout-list-item ul.wcapf-filter-options li.wcapf-filter-option {
+	// Layout list
+	#secondary .wcapf-filter .wcapf-list-wrapper.layout-list ul.wcapf-filter-options li.wcapf-filter-option {
 		line-height: inherit;
 		margin-bottom: var(--wcapf-filter-item-vertical-spacing);
 	}
@@ -34,5 +34,16 @@ body.theme-astra {
 	// Combobox dropdown
 	#secondary .wcapf-chosen-container.chosen-container .chosen-results li {
 		margin: 0;
+	}
+}
+
+// Flatsome theme
+.theme-flatsome {
+	.wcapf-active-filters.clear-all-btn-layout-inline .wcapf-active-filter-items .wcapf-reset-filters-btn-wrapper {
+		vertical-align: middle;
+
+		.wcapf-reset-filters-btn {
+			vertical-align: unset;
+		}
 	}
 }

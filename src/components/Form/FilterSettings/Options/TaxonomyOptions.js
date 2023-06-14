@@ -1,14 +1,16 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { find } from 'lodash';
 import ManualOptions from './ManualOptions';
 import ManualOptionsModal from './ManualOptionsModal';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import useFields from './useFields';
-import { taxonomyLimitByOptions } from '../../utils';
+import { taxonomyLimitByOptions, taxonomyProLimitByOptions } from '../../utils';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import SelectMulti from '../../../Field/SelectMulti';
 import Select from '../../../Field/Select';
+import { foundProVersion } from '../../../utils';
 
 const TaxonomyOptions = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -48,9 +50,23 @@ const TaxonomyOptions = ({ index }) => {
 		if ('automatically' === get_options) {
 			if (taxHierarchical) {
 				const options = taxonomyLimitByOptions(taxHierarchical, true);
-				const value = options.find(
+				const proOptions = taxonomyProLimitByOptions();
+				let value;
+
+				value = options.find(
 					(option) => option.value === limit_options
 				);
+
+				if (!foundProVersion()) {
+					if (proOptions.includes(limit_options)) {
+						const _proOptions = find(options, { proGroup: true });
+						const proOptions = _proOptions.options;
+
+						value = proOptions.find(
+							(option) => option.value === limit_options
+						);
+					}
+				}
 
 				return (
 					<Select

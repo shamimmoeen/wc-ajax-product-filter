@@ -134,6 +134,25 @@
 		}
 	}
 
+	// Swatch Size
+	&.__swatch_size {
+		.__input_wrapper {
+			.components-text-control__input {
+				width: 80px;
+
+				&:not(:last-child) {
+					@include ltr {
+						margin-right: 5px;
+					}
+
+					@include rtl {
+						margin-left: 5px;
+					}
+				}
+			}
+		}
+	}
+
 	// Button Group
 	.components-button-group {
 		.components-button {

@@ -34,7 +34,11 @@ const DuplicateModal = ({ isOpen, closeModal, duplicateItem, postType }) => {
 						<Button variant='secondary' onClick={closeModal}>
 							{__('No', 'wc-ajax-product-filter')}
 						</Button>
-						<Button variant='primary' onClick={duplicateItem}>
+						<Button
+							variant='primary'
+							onClick={duplicateItem}
+							autoFocus
+						>
 							{__('Yes', 'wc-ajax-product-filter')}
 						</Button>
 					</div>

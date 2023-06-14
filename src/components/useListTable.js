@@ -6,6 +6,7 @@ import {
 	itemDuplicatedErrorNotice,
 	itemDuplicatedSuccessNotice,
 	removeCopiedToClipboardNotice,
+	removeItemCreateNotices,
 	removeItemDeletedNotices,
 	removeItemDuplicatedNotices,
 } from './notices';
@@ -27,6 +28,7 @@ const useListTable = (dispatch, items, postType) => {
 	}
 
 	const handleOpenAddNewModal = () => {
+		removeItemCreateNotices();
 		removeItemDeletedNotices();
 		removeItemDuplicatedNotices();
 
@@ -34,6 +36,7 @@ const useListTable = (dispatch, items, postType) => {
 	};
 
 	const handleOpenDeleteModal = (id) => {
+		removeItemCreateNotices();
 		removeItemDeletedNotices();
 		removeItemDuplicatedNotices();
 
@@ -83,6 +86,7 @@ const useListTable = (dispatch, items, postType) => {
 	};
 
 	const handleOpenDuplicateModal = (id) => {
+		removeItemCreateNotices();
 		removeItemDeletedNotices();
 		removeItemDuplicatedNotices();
 
@@ -134,6 +138,7 @@ const useListTable = (dispatch, items, postType) => {
 	};
 
 	const handleOpenPublishModal = () => {
+		removeItemCreateNotices();
 		removeItemDeletedNotices();
 		removeItemDuplicatedNotices();
 

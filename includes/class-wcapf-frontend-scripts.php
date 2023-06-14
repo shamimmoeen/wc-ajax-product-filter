@@ -180,7 +180,7 @@ class WCAPF_Frontend_Scripts {
 			'disable_ajax',
 			'enable_pagination_via_ajax',
 			'sorting_control',
-			'attach_chosen_on_sorting',
+			'attach_combobox_on_sorting',
 			'loading_animation',
 			'scroll_window',
 			'scroll_window_for',
@@ -191,11 +191,14 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
+		$pagination_container = WCAPF_Helper::wcapf_option( 'pagination_container', '.woocommerce-pagination' );
 
 		$settings = array(
 			'shop_loop_container'  => $shop_loop_identifier,
 			'not_found_container'  => $shop_loop_identifier,
-			'pagination_container' => '.woocommerce-pagination',
+			'pagination_container' => $pagination_container,
+			'orderby_form'         => '.woocommerce-ordering',
+			'orderby_element'      => 'select.orderby',
 		);
 
 		foreach ( $js_data as $key ) {
@@ -203,23 +206,23 @@ class WCAPF_Frontend_Scripts {
 		}
 
 		// Prevent attaching combobox on default orderby if combobox is disabled globally.
-		if ( empty( $settings['use_chosen'] ) ) {
-			$settings['attach_chosen_on_sorting'] = '';
+		if ( empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+			$settings['attach_combobox_on_sorting'] = '';
 		}
 
-		$chosen_no_results_text   = WCAPF_Helper::no_results_text();
-		$chosen_options_none_text = WCAPF_Helper::wcapf_option(
-			'chosen_no_options_text',
+		$combobox_no_results_text   = WCAPF_Helper::no_results_text();
+		$combobox_options_none_text = WCAPF_Helper::wcapf_option(
+			'combobox_no_options_text',
 			__( 'No options to choose', 'wc-ajax-product-filter' )
 		);
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
-			'filter_input_delay'                       => 800, // In milliseconds.
-			'chosen_display_selected_options'          => false,
-			'chosen_no_results_text'                   => $chosen_no_results_text,
-			'chosen_options_none_text'                 => $chosen_options_none_text,
-			'search_box_in_default_orderby'            => true,
+			'filter_input_delay'                       => WCAPF_Helper::wcapf_option( 'input_delay' ),
+			'combobox_display_selected_options'        => false,
+			'combobox_no_results_text'                 => $combobox_no_results_text,
+			'combobox_options_none_text'               => $combobox_options_none_text,
+			'search_box_in_default_orderby'            => false,
 			'preserve_hierarchy_accordion_state'       => true,
 			'preserve_soft_limit_state'                => true,
 			'enable_animation_for_filter_accordion'    => false,
@@ -228,7 +231,6 @@ class WCAPF_Frontend_Scripts {
 			'enable_animation_for_hierarchy_accordion' => false,
 			'hierarchy_accordion_animation_speed'      => 400,
 			'hierarchy_accordion_animation_easing'     => 'swing',
-			'restore_focus_after_filtering'            => true,
 			'scroll_to_top_speed'                      => 400,
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),

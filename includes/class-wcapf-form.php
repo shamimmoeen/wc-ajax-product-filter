@@ -20,12 +20,8 @@ class WCAPF_Form {
 	 */
 	protected $form;
 
-	public function __construct( $form = array() ) {
-		if ( $form ) {
-			$this->form = $form;
-		} else {
-			$this->form = $this->retrieve_form();
-		}
+	public function __construct() {
+		$this->form = $this->retrieve_form();
 	}
 
 	protected function retrieve_form() {
@@ -70,17 +66,28 @@ class WCAPF_Form {
 			}
 		}
 
-		if ( WCAPF_Helper::is_debugging() ) {
-			if ( ! $filters ) {
-				echo '<p>' . esc_html__( 'The form is empty.', 'wc-ajax-product-filter' ) . '</p>';
-			}
+		if ( $this->is_debugging() ) {
+			$edit_url = WCAPF_Helper::form_edit_url( $form_id );
 
-			/** @noinspection HtmlUnknownTarget */
-			echo sprintf(
-				'<p><a href="%s">%s</a></p>',
-				esc_url( WCAPF_Helper::form_edit_url( $form_id ) ),
-				__( 'Edit form', 'wc-ajax-product-filter' )
-			);
+			if ( ! $filters ) {
+				/** @noinspection HtmlUnknownTarget */
+				echo WCAPF_Helper::get_debug_message(
+					sprintf(
+						__(
+							'The form is empty. Please add some filters by editing the form <a href="%s">here</a>.',
+							'wc-ajax-product-filter'
+						),
+						esc_url( $edit_url )
+					)
+				);
+			} else {
+				/** @noinspection HtmlUnknownTarget */
+				echo sprintf(
+					'<p><a href="%s">%s</a></p>',
+					esc_url( $edit_url ),
+					__( 'Edit form', 'wc-ajax-product-filter' )
+				);
+			}
 		}
 
 		do_action( 'wcapf_after_form_filters', $form_id );
@@ -95,7 +102,7 @@ class WCAPF_Form {
 			return false;
 		}
 
-		if ( isset( $this->form['found'] ) ) {
+		if ( isset( $this->form['rendered'] ) ) {
 			return false;
 		}
 
@@ -123,21 +130,24 @@ class WCAPF_Form {
 	 * @return void
 	 */
 	private function render_active_filters( $field_instance ) {
-		$title           = $field_instance->get_sub_field_value( 'title' );
-		$show_title      = $field_instance->get_sub_field_value( 'show_title' );
-		$empty_message   = $field_instance->get_sub_field_value( 'empty_filter_message' );
-		$show_clear_btn  = $field_instance->get_sub_field_value( 'show_clear_btn' );
-		$clear_btn_label = WCAPF_Helper::clear_all_button_label();
+		$title            = $field_instance->get_sub_field_value( 'title' );
+		$show_title       = $field_instance->get_sub_field_value( 'show_title' );
+		$layout           = $field_instance->get_sub_field_value( 'active_filters_layout' );
+		$empty_message    = $field_instance->get_sub_field_value( 'empty_filter_message' );
+		$show_clear_btn   = $field_instance->get_sub_field_value( 'show_clear_btn' );
+		$clear_btn_label  = WCAPF_Helper::clear_all_button_label();
+		$clear_btn_layout = $field_instance->get_sub_field_value( 'clear_all_btn_layout' );
 
 		WCAPF_Template_Loader::get_instance()->load(
 			'active-filters',
 			array(
-				'location'            => 'inside-form',
-				'title'               => $title,
-				'show_title'          => $show_title,
-				'empty_message'       => $empty_message,
-				'show_clear_btn'      => $show_clear_btn,
-				'clear_all_btn_label' => $clear_btn_label,
+				'title'                => $title,
+				'show_title'           => $show_title,
+				'layout'               => $layout,
+				'empty_message'        => $empty_message,
+				'show_clear_btn'       => $show_clear_btn,
+				'clear_all_btn_label'  => $clear_btn_label,
+				'clear_all_btn_layout' => $clear_btn_layout,
 			)
 		);
 	}
@@ -250,7 +260,7 @@ class WCAPF_Form {
 	 *
 	 * @return array
 	 */
-	private function get_filter_classes( $field_instance ) {
+	protected function get_filter_classes( $field_instance ) {
 		$classes = array( 'wcapf-filter', 'wcapf-filter-' . $field_instance->filter_id );
 
 		$type = $field_instance->type;
@@ -271,7 +281,7 @@ class WCAPF_Form {
 			$classes[] = 'has-soft-limit';
 		}
 
-		return apply_filters( 'wcapf_filter_classes', $classes, $field_instance );
+		return $classes;
 	}
 
 	/**
@@ -284,6 +294,7 @@ class WCAPF_Form {
 		$display_type          = $field_instance->display_type;
 		$display_values_as     = $field_instance->get_sub_field_value( 'number_range_slider_display_values_as' );
 		$alignment             = $field_instance->get_sub_field_value( 'alignment' );
+		$input_type_number     = $field_instance->get_sub_field_value( 'input_type_number' );
 		$auto_detect           = $field_instance->get_sub_field_value( 'auto_detect_min_max' );
 		$range_min_value       = $field_instance->get_sub_field_value( 'min_value' );
 		$range_max_value       = $field_instance->get_sub_field_value( 'max_value' );
@@ -360,6 +371,7 @@ class WCAPF_Form {
 			'display_type'          => $display_type,
 			'display_values_as'     => $display_values_as,
 			'alignment'             => $alignment,
+			'input_type_number'     => $input_type_number,
 			'min_value'             => $min_value,
 			'max_value'             => $max_value,
 			'range_min_value'       => $range_min_value,
@@ -412,10 +424,18 @@ class WCAPF_Form {
 		$this->after_filter();
 	}
 
+	private function is_debugging() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			return false;
+		}
+
+		return ! empty( WCAPF_Helper::wcapf_option( 'debug_mode' ) );
+	}
+
 	protected function set_done() {
 		global $wcapf_form;
 
-		$wcapf_form['found'] = true;
+		$wcapf_form['rendered'] = true;
 	}
 
 }

@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { useEffect } from '@wordpress/element';
 import { Spinner } from '@wordpress/components';
 import { useForm } from './FormContext';
 import FormFilters from './FormFilters';
@@ -8,12 +9,32 @@ import CustomTabPanel from '../CustomTabPanel';
 const FormTabPanel = () => {
 	const { state, dispatch } = useForm();
 
-	const { isLoading } = state;
+	const { isLoading, currentTab, filterStates } = state;
+
+	const handleTabChange = (newTab) => {
+		dispatch({ type: 'SET_CURRENT_TAB', payload: newTab });
+	};
+
+	// Reset the accordion and tab states of form filters when moving to the 'settings' tab.
+	useEffect(() => {
+		if ('settings' === currentTab) {
+			const newStates = {};
+
+			for (const id in filterStates) {
+				newStates[id] = {
+					accordionStatus: false,
+					currentTab: 'general',
+				};
+			}
+
+			dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
+		}
+	}, [currentTab]);
 
 	return (
 		<CustomTabPanel
-			state={state}
-			dispatch={dispatch}
+			currentTab={currentTab}
+			onChangeTab={handleTabChange}
 			className='__tab_panel __form_tab_panel'
 			activeClass='active-tab'
 			tabs={[

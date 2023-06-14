@@ -5,24 +5,25 @@ import useFormFilterData from '../../useFormFilterData';
 import useFields from './useFields';
 import {
 	hierarchicalDisplayTypes,
-	postMetaDisplayTypes,
 	sortByDisplayTypes,
+	swatchCanBeEnabled,
 	taxonomyDisplayTypes,
 	textDisplayTypes,
 } from '../../utils';
 import Select from '../../../Field/Select';
 import Checkbox from '../../../Field/Checkbox';
 import { foundProVersion } from '../../../utils';
-
-const swatchDisplayTypes = ['color', 'image'];
+import Radio from '../../../Field/Radio';
 
 const ValueTypeText = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleCheckboxChange, handleSelectChange } = useFormFilterData(
-		state,
-		dispatch
-	);
+	const {
+		handleCheckboxChange,
+		handleSelectChange,
+		handleShowHierarchyChange,
+		handleRadioChange,
+	} = useFormFilterData(state, dispatch);
 
 	const {
 		layoutFields,
@@ -46,6 +47,9 @@ const ValueTypeText = ({ index }) => {
 		hierarchical,
 		enable_hierarchy_accordion,
 		value_type,
+		enable_swatch,
+		swatch_type,
+		swatch_with_label,
 	} = filter;
 
 	const displayTypeField = () => {
@@ -55,7 +59,7 @@ const ValueTypeText = ({ index }) => {
 		if ('taxonomy' === type) {
 			options = taxonomyDisplayTypes(true, taxHierarchical);
 		} else if ('post-meta' === type && 'text' === value_type) {
-			options = postMetaDisplayTypes(true);
+			options = textDisplayTypes();
 		} else if ('sort-by' === type || 'per-page' === type) {
 			options = sortByDisplayTypes();
 		} else {
@@ -83,26 +87,15 @@ const ValueTypeText = ({ index }) => {
 			}
 		}
 
-		let description;
-
-		if (swatchDisplayTypes.includes(display_type)) {
-			description = __(
-				'Determines the type of filter options on the frontend. <b>Note:</b> For color/image swatch, you need to manually enter the filter options and set the swatch data.',
-				'wc-ajax-product-filter'
-			);
-		} else {
-			description = __(
-				'Determines the type of filter options on the frontend.',
-				'wc-ajax-product-filter'
-			);
-		}
-
 		return (
 			<Select
 				id={'display_type'}
 				index={index}
 				label={__('Display', 'wc-ajax-product-filter')}
-				description={description}
+				description={__(
+					'Determines how the filter options are presented in the front end.',
+					'wc-ajax-product-filter'
+				)}
 				options={options}
 				value={value}
 				onChange={handleSelectChange}
@@ -115,7 +108,7 @@ const ValueTypeText = ({ index }) => {
 		if (
 			'1' === taxHierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
-			'list-item' === native_display_type_layout
+			'list' === native_display_type_layout
 		) {
 			return (
 				<Checkbox
@@ -127,7 +120,7 @@ const ValueTypeText = ({ index }) => {
 						'wc-ajax-product-filter'
 					)}
 					isChecked={hierarchical}
-					onChange={handleCheckboxChange}
+					onChange={handleShowHierarchyChange}
 				/>
 			);
 		}
@@ -138,7 +131,7 @@ const ValueTypeText = ({ index }) => {
 			'1' === taxHierarchical &&
 			'1' === hierarchical &&
 			hierarchicalDisplayTypes().includes(display_type) &&
-			'list-item' === native_display_type_layout &&
+			'list' === native_display_type_layout &&
 			!['select', 'multi-select'].includes(display_type)
 		) {
 			return (
@@ -158,6 +151,76 @@ const ValueTypeText = ({ index }) => {
 				/>
 			);
 		}
+	};
+
+	const swatchFields = () => {
+		if (!swatchCanBeEnabled(filter)) {
+			return;
+		}
+
+		return (
+			<>
+				<Checkbox
+					id={'enable_swatch'}
+					index={index}
+					label={__('Enable swatches', 'wc-ajax-product-filter')}
+					description={__(
+						'Should the filter options be displayed using color/image swatches?',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={enable_swatch}
+					onChange={handleCheckboxChange}
+					isPro
+				/>
+
+				{'1' === enable_swatch && (
+					<>
+						<Radio
+							id={'swatch_type'}
+							index={index}
+							label={__('Swatch type', 'wc-ajax-product-filter')}
+							description={__(
+								'Select the swatch type, color, or image.',
+								'wc-ajax-product-filter'
+							)}
+							options={[
+								{
+									label: __(
+										'Color',
+										'wc-ajax-product-filter'
+									),
+									value: 'color',
+								},
+								{
+									label: __(
+										'Image',
+										'wc-ajax-product-filter'
+									),
+									value: 'image',
+								},
+							]}
+							onChange={handleRadioChange}
+							value={swatch_type}
+						/>
+
+						<Checkbox
+							id={'swatch_with_label'}
+							index={index}
+							label={__(
+								'Swatch with label',
+								'wc-ajax-product-filter'
+							)}
+							description={__(
+								'Enable this to display the label beside the swatch.',
+								'wc-ajax-product-filter'
+							)}
+							isChecked={swatch_with_label}
+							onChange={handleCheckboxChange}
+						/>
+					</>
+				)}
+			</>
+		);
 	};
 
 	return (
@@ -183,6 +246,8 @@ const ValueTypeText = ({ index }) => {
 			{tooltipPositionField()}
 
 			{showCountInTooltipField()}
+
+			{swatchFields()}
 		</>
 	);
 };

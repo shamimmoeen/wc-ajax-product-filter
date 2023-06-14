@@ -39,9 +39,20 @@
 
 	.components-notice {
 		margin: 0 0 1.5em;
-		border-color: $svgDeleteColor;
-		color: $svgDeleteColor;
-		background-color: #ffe6e6;
+
+		&.is-error {
+			border-color: $svgDeleteColor;
+			color: $svgDeleteColor;
+			background-color: #ffe6e6;
+		}
+
+		&.is-info {
+			background-color: rgba(114, 174, 230, 0.1);
+		}
+
+		~.__filters_list_header {
+			margin-top: 2em;
+		}
 	}
 
 	.__filters_list_header {
@@ -103,6 +114,11 @@
 			background-color: #f0f6fc;
 			border-color: #D8EBF5;
 			border-radius: $blockBorderRadius $blockBorderRadius 0 0;
+		}
+
+		&.multiple_filter_instance_found {
+			background-color: #ffe6e6;
+			border-color: #f6c6c6;
 		}
 
 		.__drag_handle_wrapper {
@@ -179,8 +195,17 @@
 		@include inner-tab;
 
 		.components-notice {
-			border: none;
-			padding: 2px 10px;
+			&:not(.multiple_filter_instance_notice) {
+				border: none;
+				padding: 2px 10px;
+			}
+
+			&.multiple_filter_instance_notice {
+				margin: 0 0 1.5em;
+				border-color: #d93e3e;
+				color: #d93e3e;
+				background-color: #ffe6e6;
+			}
 		}
 
 		>.__action_buttons {

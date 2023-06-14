@@ -34,13 +34,23 @@ export function removeCopiedToClipboardNotice() {
 }
 
 // Item Create Notices.
+const itemCreateSuccessNoticeId = 'item-create-success';
 const itemCreateErrorNoticeId = 'item-create-error';
+
+export function itemCreateSuccessNotice() {
+	addSuccessNotice(
+		__('Sample form created successfully', 'wc-ajax-product-filter'),
+		itemCreateSuccessNoticeId,
+		'🙌'
+	);
+}
 
 export function itemCreateErrorNotice(message) {
 	addSuccessNotice(message, itemCreateErrorNoticeId, '😟');
 }
 
-export function removeItemCreateNotice() {
+export function removeItemCreateNotices() {
+	removeNotice(itemCreateSuccessNoticeId);
 	removeNotice(itemCreateErrorNoticeId);
 }
 

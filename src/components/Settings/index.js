@@ -21,20 +21,16 @@ import Integration from './Tabs/Integration';
 import CustomTabPanel from '../CustomTabPanel';
 import LoaderScrollTo from './Tabs/LoaderScrollTo';
 import Others from './Tabs/Others';
-import { foundProVersion } from '../utils';
+import {
+	FILTER_KEY_IN_USE_MESSAGE,
+	GENERIC_ERROR_MESSAGE,
+	foundProVersion,
+	showProV2UpgradeNotice,
+} from '../utils';
 import { defaultSettings } from './utils';
+import ProV2UpgradeModal from '../Modals/ProV2UpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
-
-const genericErrorMessage = __(
-	'Please fix the errors below.',
-	'wc-ajax-product-filter'
-);
-
-const filterKeyInUseMessage = __(
-	'Filter key is in use by another filter type.',
-	'wc-ajax-product-filter'
-);
 
 const tabs = [
 	{
@@ -79,6 +75,19 @@ const Settings = () => {
 	} = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
+	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
+
+	const handleOpenProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(true);
+	};
+
+	const handleCloseProV2UpgradeModal = () => {
+		setProV2UpgradeModalOpen(false);
+	};
+
+	const handleTabChange = (newTab) => {
+		dispatch({ type: 'SET_CURRENT_TAB', payload: newTab });
+	};
 
 	useEffect(() => {
 		if (!isDirty) {
@@ -112,14 +121,12 @@ const Settings = () => {
 
 		return omit(merged, [
 			'remove_empty_filters',
-			'replace_sorting_options',
 			'child_terms_only',
 			'slide_out_panel_position',
 			'loading_image',
 			'loading_image_src',
 			'loading_overlay_color',
 			'scroll_on',
-			'scroll_window_delay',
 			'disable_scroll_animation',
 			'more_selectors',
 			'multiple_form_locations',
@@ -133,33 +140,56 @@ const Settings = () => {
 		const validatedFilterKeys = [];
 		let isValid = true;
 
-		globalFilterKeys.forEach((filterKeyData, index) => {
+		globalFilterKeys.forEach((_filterKeyData, index) => {
 			const otherKeys = globalFilterKeys.filter(
 				(_data, _index) => index !== _index
 			);
 
+			const filterKeyData = omit(_filterKeyData, [
+				'field_key_error',
+				'field_key_error_',
+			]);
+
 			const { field_key: filterKey } = filterKeyData;
 
 			if (filterKey && find(otherKeys, { field_key: filterKey })) {
-				filterKeyData['field_key_error'] = filterKeyInUseMessage;
+				filterKeyData['field_key_error'] = FILTER_KEY_IN_USE_MESSAGE;
 				isValid = false;
 			}
 
 			validatedFilterKeys.push(filterKeyData);
 		});
 
+		dispatch({
+			type: 'UPDATE_GLOBAL_FILTER_KEYS',
+			payload: validatedFilterKeys,
+		});
+
 		if (!isValid) {
-			dispatch({ type: 'SET_ERROR', payload: genericErrorMessage });
+			dispatch({ type: 'SET_ERROR', payload: GENERIC_ERROR_MESSAGE });
+
+			if ('filter-keys' !== currentTab) {
+				dispatch({
+					type: 'SET_CURRENT_TAB',
+					payload: 'filter-keys',
+				});
+			}
 		}
 
-		return isValid;
+		return { isValid, validatedFilterKeys };
 	};
 
 	const handleSaveSettings = () => {
-		const filterKeysAreValid = validateFilterKeys();
+		if (showProV2UpgradeNotice()) {
+			handleOpenProV2UpgradeModal();
+
+			return;
+		}
+
+		const { isValid, validatedFilterKeys } = validateFilterKeys();
 		const updateFilterKeys = filterKeysChanged ? '1' : '';
 
-		if (!filterKeysAreValid) {
+		if (!isValid) {
 			return;
 		}
 
@@ -169,7 +199,7 @@ const Settings = () => {
 
 		formData.append('action', 'wcapf_save_settings');
 		formData.append('settings', JSON.stringify(sanitizedSettings()));
-		formData.append('filter_keys', JSON.stringify(globalFilterKeys));
+		formData.append('filter_keys', JSON.stringify(validatedFilterKeys));
 		formData.append('update_filter_keys', updateFilterKeys);
 
 		axios
@@ -194,6 +224,8 @@ const Settings = () => {
 
 					dispatch({ type: 'SET_DIRTY', payload: false });
 
+					wcapf_admin_params.dirty = false;
+
 					dispatch({
 						type: 'SET_FILTER_KEYS_CHANGED',
 						payload: false,
@@ -208,7 +240,7 @@ const Settings = () => {
 				} else if (data.errors) {
 					dispatch({
 						type: 'SET_ERROR',
-						payload: genericErrorMessage,
+						payload: GENERIC_ERROR_MESSAGE,
 					});
 
 					const errorsData = data['errors'];
@@ -225,10 +257,16 @@ const Settings = () => {
 								return {
 									...filterKey,
 									[key]: message,
+									// Reset client side errors.
+									field_key_error: '',
+								};
+							} else {
+								return {
+									...filterKey,
+									// Reset client side errors.
+									field_key_error: '',
 								};
 							}
-
-							return filterKey;
 						}
 					);
 
@@ -258,6 +296,11 @@ const Settings = () => {
 		<div className='__wcapf_admin'>
 			<TopBar view={'settings'} />
 
+			<ProV2UpgradeModal
+				isOpen={proV2UpgradeModalOpen}
+				closeModal={handleCloseProV2UpgradeModal}
+			/>
+
 			<div className='__wcapf_layout'>
 				<div className='__main'>
 					<div className='__content'>
@@ -278,8 +321,8 @@ const Settings = () => {
 							</div>
 
 							<CustomTabPanel
-								state={state}
-								dispatch={dispatch}
+								currentTab={currentTab}
+								onChangeTab={handleTabChange}
 								className='__tab_panel __settings_tab'
 								activeClass='active-tab'
 								tabs={tabs}

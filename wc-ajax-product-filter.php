@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: WC Ajax Product Filter
- * Plugin URI: https://wptools.io/wc-ajax-product-filter
+ * Plugin Name: WCAPF - WooCommerce Ajax Product Filter
+ * Plugin URI: https://wptools.io/wc-ajax-product-filter/?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=WCAPF+Pro+Details
  * Description: A plugin to filter WooCommerce products with AJAX request.
  * Version: 4.0.0
  * Requires at least: 4.0
  * Requires PHP: 5.5
  * Author: wptools.io
- * Author URI: https://wptools.io
+ * Author URI: https://wptools.io?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=Business+Website
  * Text Domain: wc-ajax-product-filter
  * Domain Path: /languages
  *
@@ -84,6 +84,19 @@ function wcapf_deactivate() {
 register_activation_hook( WCAPF_PLUGIN_FILE, 'wcapf_activate' );
 register_deactivation_hook( WCAPF_PLUGIN_FILE, 'wcapf_deactivate' );
 
+/**
+ * We are not loading the wcapf-pro-v1 as it is not compatible with wcapf-v4.
+ *
+ * @since 4.0.0
+ *
+ * @return void
+ */
+function wcapf_unload_pro_v1() {
+	remove_action( 'woocommerce_loaded', 'wcapf_pro_loads_dependencies', 99 );
+}
+
+add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
+
 // Include the WCAPF main class
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf.php';
 
@@ -97,23 +110,3 @@ function wcapf_setup() {
 }
 
 wcapf_setup();
-
-// TODO: Remove this
-
-add_action( 'wp_default_scripts', 'wcapf_pp_fix_jquery_migrate_issue' );
-
-/**
- * Remove jquery migrate related logs on console.
- *
- * @param array $scripts The default scripts.
- *
- * @return void
- */
-function wcapf_pp_fix_jquery_migrate_issue( $scripts ) {
-	if ( ! empty( $scripts->registered['jquery'] ) ) {
-		$scripts->registered['jquery']->deps = array_diff(
-			$scripts->registered['jquery']->deps,
-			array( 'jquery-migrate' )
-		);
-	}
-}

@@ -19,7 +19,7 @@ class WCAPF_Field_Instance {
 	public $layout;
 	public $query_type;
 	public $all_items_label;
-	public $use_chosen;
+	public $use_combobox;
 	public $enable_multiple_filter;
 	public $show_count;
 	public $hide_empty;
@@ -130,7 +130,7 @@ class WCAPF_Field_Instance {
 		$this->display_type    = $_display_type;
 		$this->layout          = $this->get_layout();
 		$this->all_items_label = $_all_items_label;
-		$this->use_chosen      = $this->get_sub_field_value( 'use_chosen' );
+		$this->use_combobox    = $this->get_sub_field_value( 'use_combobox' );
 		$this->show_count      = $show_count;
 		$this->hide_empty      = $this->get_sub_field_value( 'hide_empty' );
 
@@ -288,15 +288,17 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function get_layout() {
+		$native_layouts = apply_filters( 'wcapf_native_layouts', array( 'list', 'inline' ) );
+		$custom_layouts = apply_filters( 'wcapf_custom_layouts', array( 'inline' ) );
+
 		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) ) {
 			$value = $this->get_sub_field_value( 'native_display_type_layout' );
 
-			return ! empty( $value ) ? $value : 'list-item';
+			return in_array( $value, $native_layouts ) ? $value : 'list';
 		} else {
 			$value = $this->get_sub_field_value( 'custom_display_type_layout' );
 
-			// Disable list-item layout for custom list types.
-			return ! empty( $value ) && 'list-item' !== $value ? $value : 'inline';
+			return in_array( $value, $custom_layouts ) ? $value : 'list';
 		}
 	}
 
@@ -350,7 +352,7 @@ class WCAPF_Field_Instance {
 		}
 
 		// Disable hierarchy for inline and grid layout.
-		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list-item' !== $this->layout ) {
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list' !== $this->layout ) {
 			return false;
 		}
 
@@ -433,7 +435,7 @@ class WCAPF_Field_Instance {
 	 * @return string
 	 */
 	private function is_store_name_enabled() {
-		if ( ! WCAPF_Helper::is_marketplace_plugin_found() ) {
+		if ( ! WCAPF_Helper::is_vendor_plugin_found() ) {
 			return '';
 		}
 
@@ -476,7 +478,7 @@ class WCAPF_Field_Instance {
 	 * @return bool
 	 */
 	private function is_reduce_height_possible( $field = 'reduce-height' ) {
-		if ( $this->taxonomy_is_hierarchical() ) {
+		if ( $this->taxonomy_is_hierarchical() && 'search' === $field ) {
 			return false;
 		}
 

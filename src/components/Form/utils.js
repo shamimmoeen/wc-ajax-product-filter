@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { isEmpty, merge, find } from 'lodash';
-import { mergeSelectOptions } from '../utils';
+import { FILTER_KEY_IN_USE_MESSAGE, mergeSelectOptions } from '../utils';
 
 export function newFilterData(index, formFilters) {
 	let data = {};
@@ -56,7 +56,7 @@ export function newFilterData(index, formFilters) {
 		data = { type: 'post-meta' };
 	}
 
-	return merge(filterDefaultData(), data, {
+	return merge({}, filterDefaultData(), data, {
 		isNew: true,
 		uniqueIndex: index,
 	});
@@ -65,7 +65,7 @@ export function newFilterData(index, formFilters) {
 /**
  * Gets the filter type data for the current filter.
  */
-export function getFilterType(filter) {
+export function getFilterTypeData(filter) {
 	const { type, taxonomy, component } = filter;
 	const types = wcapf_admin_params.filter_types;
 
@@ -110,7 +110,7 @@ export function getFilterKey(filter, filterType) {
 	if (!filterKey) {
 		if ('post-meta' === type) {
 			if (meta_key) {
-				filterKey = meta_key;
+				filterKey = `_${meta_key}`;
 			}
 		} else if ('component' !== type) {
 			filterKey = filterType.key;
@@ -148,6 +148,45 @@ export function getDisplayTypeData(filter) {
 	);
 
 	return displayType;
+}
+
+function getFilterType(filter) {
+	const { type, taxonomy, meta_key } = filter;
+	let filterType;
+
+	if ('taxonomy' === type) {
+		filterType = `taxonomy>${taxonomy}`;
+	} else if ('post-meta' === type) {
+		filterType = `post-meta>${meta_key}`;
+	} else {
+		filterType = type;
+	}
+
+	return filterType;
+}
+
+export function multipleFilterInstanceFound(formFilters, currentFilterIndex) {
+	if (!formFilters) {
+		return false;
+	}
+
+	const filterTypes = [];
+	let filterType;
+	const excludedTypes = ['component'];
+
+	for (let index = 0; index < formFilters.length; index++) {
+		const filter = formFilters[index];
+
+		if (index === currentFilterIndex) {
+			filterType = getFilterType(filter);
+		} else {
+			if (!excludedTypes.includes(filter.type)) {
+				filterTypes.push(getFilterType(filter));
+			}
+		}
+	}
+
+	return filterTypes.includes(filterType);
 }
 
 export function getFilterTabs(filter) {
@@ -288,7 +327,7 @@ export function getFilterKeyError(
 			continue;
 		}
 
-		const formFilter = formFilters[index];
+		const formFilter = { ...formFilters[index] };
 
 		// We'll use the default key.
 		if (isEmpty(formFilter['field_key'])) {
@@ -308,144 +347,21 @@ export function getFilterKeyError(
 		otherFilters.push(formFilter);
 	}
 
-	const errorMessage = __(
-		'Filter key is in use by another filter type.',
-		'wc-ajax-product-filter'
-	);
-
 	if (find(otherFilters, { field_key })) {
 		console.log('found in this form', find(otherFilters, { field_key })); // TODO: Remove.
 
-		filterKeyError = errorMessage;
+		filterKeyError = FILTER_KEY_IN_USE_MESSAGE;
 	} else if (find(filterKeys, { field_key })) {
 		console.log('found in other forms', find(filterKeys, { field_key })); // TODO: Remove.
 
-		filterKeyError = errorMessage;
+		filterKeyError = FILTER_KEY_IN_USE_MESSAGE;
 	}
 
 	return filterKeyError;
 }
 
 export function filterDefaultData() {
-	return {
-		id: '',
-		title: '',
-		type: '',
-		taxonomy: '',
-		taxHierarchical: '',
-		meta_key: '',
-		component: '',
-		isACF: '',
-		value_type: 'text',
-		field_key: '',
-		// Taxonomy
-		display_type: 'checkbox',
-		native_display_type_layout: 'list-item',
-		custom_display_type_layout: 'inline',
-		grid_columns: '2',
-		swatch_with_text: '',
-		query_type: 'or',
-		all_items_label: '',
-		enable_multiple_filter: '1',
-		hierarchical: '',
-		enable_hierarchy_accordion: '',
-		show_count: '1',
-		enable_tooltip: '',
-		show_count_in_tooltip: '',
-		tooltip_position: 'top',
-		get_options: 'automatically',
-		manual_options: [],
-		order_terms_by: 'default',
-		order_terms_dir: 'asc',
-		limit_options: 'off',
-		include_terms: [],
-		include_child: '',
-		exclude_terms: [],
-		exclude_child: '',
-		parent_term: '',
-		direct_child_only: '',
-		// Price Filter
-		number_display_type: 'range_slider',
-		number_range_slider_display_values_as: 'input_field',
-		alignment: 'default',
-		number_range_enable_multiple_filter: '1',
-		number_range_query_type: 'or',
-		number_range_select_all_items_label: '',
-		number_range_show_count: '1',
-		number_get_options: 'automatically',
-		number_manual_options: [],
-		auto_detect_min_max: '1',
-		min_value: '0',
-		max_value: '100',
-		step: '1',
-		value_prefix: '',
-		value_postfix: '',
-		values_separator: '–',
-		text_before_min_value: '',
-		text_before_max_value: '',
-		format_numbers: '',
-		decimal_places: '2',
-		thousand_separator: '',
-		decimal_separator: '.',
-		// Product Status
-		product_status_options: [],
-		// Post Meta
-		is_acf: '',
-		value_decimal: '',
-		value_decimal_places: '2',
-		date_input_format: 'timestamp',
-		options_order_by: 'none',
-		options_order_dir: 'asc',
-		options_order_type: 'alphabetical',
-		// Post Meta - value type Date
-		date_display_type: 'input_date',
-		date_format: 'dd-mm-yy',
-		time_period_enable_multiple_filter: '1',
-		time_period_query_type: 'or',
-		time_period_select_all_items_label: '',
-		show_date_inputs_inline: '',
-		time_period_show_count: '1',
-		date_picker_month_dropdown: '',
-		date_picker_year_dropdown: '',
-		date_from_prefix: '',
-		date_from_postfix: '',
-		date_from_placeholder: '',
-		date_to_prefix: '',
-		date_to_postfix: '',
-		date_to_placeholder: '',
-		time_period_options: [],
-		// Post Author
-		post_author_order_by: 'default',
-		post_author_order_dir: 'asc',
-		include_authors: [],
-		exclude_authors: [],
-		include_user_roles: [],
-		// Sort By
-		sort_by_options: [],
-		// Per Page
-		per_page_options: [],
-		// Advanced Settings
-		show_title: '1',
-		enable_accordion: '',
-		accordion_default_state: 'expanded',
-		help_text: '',
-		enable_search_field: '',
-		search_field_placeholder: '',
-		enable_reduce_height: 'no',
-		soft_limit: '5',
-		max_height: '200',
-		show_in_active_filters: '1',
-		visibility_rules: [],
-		// Active filters
-		empty_filter_message: '',
-		// Reset Button
-		show_if_empty: '',
-		// Error
-		type_error: '',
-		meta_key_error: '',
-		field_key_error: '',
-		field_key_error_: '', // Comes from server side.
-	};
+	return wcapf_admin_params.filter_default_data;
 }
 
 // These data gets reset after filter type is changed.
@@ -455,12 +371,13 @@ export function filterTypeDependentFields() {
 		'taxHierarchical',
 		'meta_key',
 		'component',
-		'isACF',
 		'display_type',
 		'native_display_type_layout',
 		'custom_display_type_layout',
 		'grid_columns',
-		'swatch_with_text',
+		'enable_swatch',
+		'swatch_type',
+		'swatch_with_label',
 		// Taxonomy
 		'get_options',
 		'order_terms_by',
@@ -480,7 +397,6 @@ export function filterTypeDependentFields() {
 		'sort_by_options',
 		'per_page_options',
 		// Post Meta
-		'is_acf',
 		'value_type',
 		'value_decimal',
 		'value_decimal_places',
@@ -754,23 +670,14 @@ const textFreeDisplayTypes = [
 ];
 
 function textProDisplayTypes(taxHierarchical = false) {
-	const textProDisplayTypes = [
-		{
-			label: __('Color Swatch', 'wc-ajax-product-filter'),
-			value: 'color',
-		},
-		{
-			label: __('Image Swatch', 'wc-ajax-product-filter'),
-			value: 'image',
-		},
-	];
+	const textProDisplayTypes = [];
 
-	// if (taxHierarchical) {
-	// 	textProDisplayTypes.push({
-	// 		label: __('Hierarchy Select', 'wc-ajax-product-filter'),
-	// 		value: 'hierarchy-select',
-	// 	});
-	// }
+	if (taxHierarchical) {
+		// textProDisplayTypes.push({
+		// 	label: __('Hierarchy Select', 'wc-ajax-product-filter'),
+		// 	value: 'hierarchy-select',
+		// });
+	}
 
 	return textProDisplayTypes;
 }
@@ -779,14 +686,6 @@ export function taxonomyDisplayTypes(withPro = false, taxHierarchical = false) {
 	return mergeSelectOptions(
 		textFreeDisplayTypes,
 		textProDisplayTypes(taxHierarchical),
-		withPro
-	);
-}
-
-export function postMetaDisplayTypes(withPro = false) {
-	return mergeSelectOptions(
-		textFreeDisplayTypes,
-		textProDisplayTypes(),
 		withPro
 	);
 }
@@ -999,20 +898,33 @@ export function tooltipCanBeEnabled(filter) {
 	return enabled;
 }
 
+export function swatchDisplayTypes() {
+	// TODO: Enable swatches for 'select' and 'multi-select' display types.
+	return ['checkbox', 'radio', 'label'];
+}
+
 export function swatchCanBeEnabled(filter) {
-	const { type, value_type, display_type } = filter;
+	const { type, display_type } = filter;
 
 	if ('taxonomy' === type) {
-		if ('color' === display_type || 'image' === display_type) {
+		if (swatchDisplayTypes().includes(display_type)) {
 			return true;
-		}
-	} else if ('post-meta' === type) {
-		if ('text' === value_type) {
-			if ('color' === display_type || 'image' === display_type) {
-				return true;
-			}
 		}
 	}
 
 	return false;
+}
+
+export function swatchEnabled(filter) {
+	if (!swatchCanBeEnabled(filter)) {
+		return false;
+	}
+
+	const { enable_swatch } = filter;
+
+	if (!enable_swatch) {
+		return false;
+	}
+
+	return true;
 }
