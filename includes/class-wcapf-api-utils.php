@@ -377,12 +377,8 @@ class WCAPF_API_Utils {
 					'value' => 'average_rating',
 				),
 				array(
-					'label' => __( 'Min Price', 'wc-ajax-product-filter' ),
-					'value' => 'min_price',
-				),
-				array(
-					'label' => __( 'Max Price', 'wc-ajax-product-filter' ),
-					'value' => 'max_price',
+					'label' => __( 'Price', 'wc-ajax-product-filter' ),
+					'value' => 'price',
 				),
 				array(
 					'label' => __( 'Meta Value', 'wc-ajax-product-filter' ),
