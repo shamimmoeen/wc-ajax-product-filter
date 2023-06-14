@@ -48,6 +48,7 @@ node_modules
 .vscode
 
 # Ignore source codes.
+public/lib/chosen/chosen.scss
 public/lib/nouislider/less
 public/src
 src
