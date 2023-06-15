@@ -74,7 +74,7 @@ class WCAPF {
 	 */
 	private function wc_required_notice() {
 		$message             = '';
-		$required_wc_version = '3.6';
+		$required_wc_version = '7.3';
 		$current_wc_version  = defined( 'WC_VERSION' ) ? WC_VERSION : '';
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
