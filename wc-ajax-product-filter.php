@@ -4,8 +4,9 @@
  * Plugin URI: https://wptools.io/wc-ajax-product-filter/?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=WCAPF+Pro+Details
  * Description: A plugin to filter WooCommerce products with AJAX request.
  * Version: 4.0.0
- * Requires at least: 4.0
- * Requires PHP: 5.5
+ * Requires at least: 6.2
+ * Requires PHP: 7.2
+ * Requires WooCommerce: 7.3
  * Author: wptools.io
  * Author URI: https://wptools.io?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=Business+Website
  * Text Domain: wc-ajax-product-filter
