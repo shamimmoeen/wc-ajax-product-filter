@@ -1,5 +1,16 @@
 import { __ } from '@wordpress/i18n';
-import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardHeader,
+	Icon,
+} from '@wordpress/components';
+import {
+	DocumentationCardIcon,
+	ReviewCardIcon,
+	SupportCardIcon,
+} from './SVGIcons';
 
 const documentation = __(
 	'Explore our comprehensive documentation and interactive demos.',
@@ -12,7 +23,7 @@ const support = __(
 );
 
 const review = __(
-	'Your 5-star review would mean the world to us! Help us spread the word and share your positive experience with others.',
+	'Your 5-star review is a valuable reward for us. Please help us grow in the community by sharing your review.',
 	'wc-ajax-product-filter'
 );
 
@@ -33,6 +44,7 @@ const Sidebar = () => {
 			<Card>
 				<CardHeader>
 					<h2>
+						<Icon icon={DocumentationCardIcon} fill='#00B894' />
 						{__(
 							'Need Help Getting Started?',
 							'wc-ajax-product-filter'
@@ -63,6 +75,7 @@ const Sidebar = () => {
 			<Card>
 				<CardHeader>
 					<h2>
+						<Icon icon={SupportCardIcon} fill='#6C5CE7' />
 						{__('Support & Questions', 'wc-ajax-product-filter')}
 					</h2>
 				</CardHeader>
@@ -87,7 +100,10 @@ const Sidebar = () => {
 
 			<Card>
 				<CardHeader>
-					<h2>{__('Like the Plugin?', 'wc-ajax-product-filter')}</h2>
+					<h2>
+						<Icon icon={ReviewCardIcon} fill='#FD7E14' />
+						{__('Like the Plugin?', 'wc-ajax-product-filter')}
+					</h2>
 				</CardHeader>
 				<CardBody>
 					<p dangerouslySetInnerHTML={{ __html: review }} />
