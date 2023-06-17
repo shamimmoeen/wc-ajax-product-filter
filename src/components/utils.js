@@ -52,11 +52,11 @@ export function isProFeature(isProFeature) {
 
 export function proTag(isProFeature) {
 	if (foundProVersion()) {
-		return '';
+		return null;
 	}
 
 	if (!isProFeature) {
-		return '';
+		return null;
 	}
 
 	return <span className='__pro_tag' />;
