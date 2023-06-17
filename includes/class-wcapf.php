@@ -148,6 +148,9 @@ class WCAPF {
 		// Loads the widgets.
 		require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-filter-widget.php';
 
+		// Loads the compatibility fixes.
+		require_once WCAPF_PLUGIN_DIR . '/includes/wcapf-compatibility-fixes.php';
+
 		/**
 		 * Register a hook to load any other dependencies after the plugin files are loaded.
 		 *
