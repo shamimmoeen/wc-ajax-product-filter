@@ -1,13 +1,16 @@
 import { __ } from '@wordpress/i18n';
 import { Modal, Button } from '@wordpress/components';
+import { proUpgradeRequired } from '../utils';
 
-const ProV2UpgradeModal = ({ isOpen, closeModal }) => {
+const proUpgradeNotice = proUpgradeRequired();
+
+const ProUpgradeModal = ({ isOpen, closeModal }) => {
 	return (
 		isOpen && (
 			<Modal
 				onRequestClose={closeModal}
 				__experimentalHideHeader
-				className='__pro_v2_upgrade_modal'
+				className='__pro_upgrade_modal'
 			>
 				<h3>
 					WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade
@@ -16,13 +19,11 @@ const ProV2UpgradeModal = ({ isOpen, closeModal }) => {
 
 				<div className='__separator' />
 
-				<p>
-					Thank you for using the Pro version. To ensure compatibility
-					with <i>WCAPF - WooCommerce Ajax Product Filter</i> v4.0.0,
-					it is necessary to upgrade{' '}
-					<i>WCAPF - WooCommerce Ajax Product Filter Pro</i> to
-					v2.0.0. Please proceed with the upgrade.
-				</p>
+				<p
+					dangerouslySetInnerHTML={{
+						__html: proUpgradeNotice['message'],
+					}}
+				/>
 
 				<div className='__buttons'>
 					<Button variant='secondary' onClick={closeModal}>
@@ -34,4 +35,4 @@ const ProV2UpgradeModal = ({ isOpen, closeModal }) => {
 	);
 };
 
-export default ProV2UpgradeModal;
+export default ProUpgradeModal;

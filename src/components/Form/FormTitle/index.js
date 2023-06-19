@@ -16,7 +16,7 @@ import PublishModal from '../../Modals/PublishModal';
 import {
 	GENERIC_ERROR_MESSAGE,
 	foundProVersion,
-	showProV2UpgradeNotice,
+	proUpgradeRequired,
 } from '../../utils';
 import {
 	getFilterKeyError,
@@ -29,7 +29,7 @@ import {
 	proFilterComponents,
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
-import ProV2UpgradeModal from '../../Modals/ProV2UpgradeModal';
+import ProUpgradeModal from '../../Modals/ProUpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -38,7 +38,7 @@ const FormTitle = () => {
 	const { setDirty } = useFormData(state, dispatch);
 
 	const [publishModalOpen, setPublishModalOpen] = useState(false);
-	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
+	const [proUpgradeModalOpen, setProUpgradeModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const {
@@ -83,12 +83,12 @@ const FormTitle = () => {
 		setPublishModalOpen(false);
 	};
 
-	const handleOpenProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(true);
+	const handleOpenProUpgradeModal = () => {
+		setProUpgradeModalOpen(true);
 	};
 
-	const handleCloseProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(false);
+	const handleCloseProUpgradeModal = () => {
+		setProUpgradeModalOpen(false);
 	};
 
 	const formFiltersAreValid = () => {
@@ -490,8 +490,8 @@ const FormTitle = () => {
 
 	const handleSubmit = () => {
 		if (isDirty) {
-			if (showProV2UpgradeNotice()) {
-				handleOpenProV2UpgradeModal();
+			if (proUpgradeRequired()) {
+				handleOpenProUpgradeModal();
 			} else {
 				handleSaveForm();
 			}
@@ -513,9 +513,9 @@ const FormTitle = () => {
 				closeModal={handleClosePublishModal}
 			/>
 
-			<ProV2UpgradeModal
-				isOpen={proV2UpgradeModalOpen}
-				closeModal={handleCloseProV2UpgradeModal}
+			<ProUpgradeModal
+				isOpen={proUpgradeModalOpen}
+				closeModal={handleCloseProUpgradeModal}
 			/>
 		</>
 	);
