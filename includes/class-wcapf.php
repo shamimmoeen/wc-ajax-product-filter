@@ -17,6 +17,27 @@
 class WCAPF {
 
 	/**
+	 * Required WordPress version.
+	 *
+	 * @var string
+	 */
+	private $required_wp_version = '6.0';
+
+	/**
+	 * Required WooCommerce version.
+	 *
+	 * @var string
+	 */
+	private $required_wc_version = '6.6';
+
+	/**
+	 * Required PHP version.
+	 *
+	 * @var string
+	 */
+	private $required_php_version = '7.2';
+
+	/**
 	 * The constructor.
 	 */
 	private function __construct() {
@@ -57,51 +78,69 @@ class WCAPF {
 			return;
 		}
 
-		$notice = $this->wc_required_notice();
+		$notices = $this->check_requirements();
 
-		if ( ! $notice ) {
-			return;
+		if ( ! empty( $notices ) ) {
+			// Get the first notice.
+			$notice = array_shift( $notices );
+			echo '<div class="notice notice-error"><p>' . wp_kses_post( $notice ) . '</p></div>';
 		}
-
-		echo '<div class="notice notice-error"><p>' . wp_kses_post( $notice ) . '</p></div>';
 	}
 
 	/**
-	 * Checks if woocommerce plugin is activated and the version of the woocommerce plugin fulfil our required version.
+	 * Check if the requirements are met.
 	 *
-	 * @return string
-	 * @noinspection HtmlUnknownTarget
+	 * @return array Array of admin notices for failed requirements.
 	 */
-	private function wc_required_notice() {
-		$message             = '';
-		$required_wc_version = '7.3';
-		$current_wc_version  = defined( 'WC_VERSION' ) ? WC_VERSION : '';
+	private function check_requirements() {
+		$notices     = array();
+		$wc_version  = defined( 'WC_VERSION' ) ? WC_VERSION : '';
+		$wp_version  = get_bloginfo( 'version' );
+		$php_version = PHP_VERSION;
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
-			$message = 'Please activate the <b>WooCommerce</b> plugin to use the <b>WCAPF - WooCommerce Ajax Product Filter</b>.';
-		} elseif ( version_compare( $current_wc_version, $required_wc_version, '<' ) ) {
-			$message = sprintf(
-				'Please update your <b>WooCommerce</b> to %s or higher to use <b>WCAPF - WooCommerce Ajax Product Filter</b> plugin (you are currently using %s).',
-				$required_wc_version,
-				$current_wc_version
+			$notices[] = __( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' );
+		} elseif ( version_compare( $wc_version, $this->required_wc_version, '<' ) ) {
+			$notices[] = sprintf(
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %s or higher. The plugin is currently NOT RUNNING (you are currently using WooCommerce %s).', 'wc-ajax-product-filter' ),
+				$this->required_wc_version,
+				$wc_version
 			);
 		}
 
-		return $message;
+		if ( version_compare( $wp_version, $this->required_wp_version, '<' ) ) {
+			$notices[] = sprintf(
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires WordPress version %s or higher. The plugin is currently NOT RUNNING (you are currently using WordPress %s).', 'wc-ajax-product-filter' ),
+				$this->required_wp_version,
+				$wp_version
+			);
+		}
+
+		if ( version_compare( $php_version, $this->required_php_version, '<' ) ) {
+			$notices[] = sprintf(
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires PHP version %s or higher. The plugin is currently NOT RUNNING (you are currently using PHP %s).', 'wc-ajax-product-filter' ),
+				$this->required_php_version,
+				$php_version
+			);
+		}
+
+		return $notices;
 	}
 
 	/**
 	 * Loads the plugin's translated strings.
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( WCAPF_SLUG, false, WCAPF_PLUGIN_DIR . 'languages' );
+		load_plugin_textdomain( 'wc-ajax-product-filter', false, WCAPF_PLUGIN_DIR . 'languages' );
 	}
 
 	/**
-	 * Loads the required files.
+	 * Loads the required files if requirements are met.
 	 */
 	public function load_dependencies() {
-		if ( ! $this->wc_loaded() ) {
+		$met_requirements = empty( $this->check_requirements() );
+
+		if ( ! $met_requirements ) {
 			return;
 		}
 
@@ -157,15 +196,6 @@ class WCAPF {
 		 * @since 4.0.0
 		 */
 		do_action( 'wcapf_loaded' );
-	}
-
-	/**
-	 * Checks if woocommerce plugin is loaded.
-	 *
-	 * @return bool
-	 */
-	private function wc_loaded() {
-		return ! $this->wc_required_notice();
 	}
 
 }

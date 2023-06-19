@@ -25,10 +25,10 @@ import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
 	foundProVersion,
-	showProV2UpgradeNotice,
+	proUpgradeRequired,
 } from '../utils';
 import { defaultSettings } from './utils';
-import ProV2UpgradeModal from '../Modals/ProV2UpgradeModal';
+import ProUpgradeModal from '../Modals/ProUpgradeModal';
 
 const WCAPF_PRO = foundProVersion();
 
@@ -75,14 +75,14 @@ const Settings = () => {
 	} = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
-	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
+	const [proUpgradeModalOpen, setProUpgradeModalOpen] = useState(false);
 
-	const handleOpenProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(true);
+	const handleOpenProUpgradeModal = () => {
+		setProUpgradeModalOpen(true);
 	};
 
-	const handleCloseProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(false);
+	const handleCloseProUpgradeModal = () => {
+		setProUpgradeModalOpen(false);
 	};
 
 	const handleTabChange = (newTab) => {
@@ -180,8 +180,8 @@ const Settings = () => {
 	};
 
 	const handleSaveSettings = () => {
-		if (showProV2UpgradeNotice()) {
-			handleOpenProV2UpgradeModal();
+		if (proUpgradeRequired()) {
+			handleOpenProUpgradeModal();
 
 			return;
 		}
@@ -296,9 +296,9 @@ const Settings = () => {
 		<div className='__wcapf_admin'>
 			<TopBar view={'settings'} />
 
-			<ProV2UpgradeModal
-				isOpen={proV2UpgradeModalOpen}
-				closeModal={handleCloseProV2UpgradeModal}
+			<ProUpgradeModal
+				isOpen={proUpgradeModalOpen}
+				closeModal={handleCloseProUpgradeModal}
 			/>
 
 			<div className='__wcapf_layout'>

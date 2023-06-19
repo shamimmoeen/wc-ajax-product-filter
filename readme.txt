@@ -1,11 +1,10 @@
 === WCAPF - WooCommerce Ajax Product Filter ===
 Contributors: shamimmoeen
 Tags: product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter
-Requires at least: 6.2
+Requires at least: 6.0
 Tested up to: 6.2
-Stable tag: 4.0.0
+Stable tag: 4.1.0
 Requires PHP: 7.2
-Requires WooCommerce: 7.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

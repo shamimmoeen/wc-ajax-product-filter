@@ -1,10 +1,25 @@
 import { Button } from '@wordpress/components';
-import { showProV2UpgradeNotice } from './utils';
+import { proUpgradeRequired } from './utils';
 
 const showMigrationNotice = wcapf_admin_params.show_v4_migration_notice;
 const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
 const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
-const showProUpgradeNotice = showProV2UpgradeNotice();
+const proUpgradeNotice = proUpgradeRequired();
+
+let proUpgradeNoticeType;
+let proUpgradeMessage;
+let proUpgradeNoticeClass;
+
+if (proUpgradeNotice) {
+	proUpgradeNoticeType = proUpgradeNotice['type'];
+	proUpgradeMessage = proUpgradeNotice['message'];
+
+	if ('error' === proUpgradeNoticeType) {
+		proUpgradeNoticeClass = 'notice notice-error pro-upgrade-notice-error';
+	} else {
+		proUpgradeNoticeClass = 'notice notice-info pro-upgrade-notice-info';
+	}
+}
 
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {
@@ -22,13 +37,13 @@ const V4MigrationNotice = () => {
 				>
 					<p>
 						<strong>
-							WCAPF - WooCommerce Ajax Product Filter (v4.0.0
+							WCAPF - WooCommerce Ajax Product Filter (v4
 							Migration Notice)
 						</strong>
 					</p>
 					<p>
 						The WC Ajax Product Filter plugin has been upgraded to
-						v4.0.0 and is now named WCAPF - WooCommerce Ajax Product
+						v4 and is now named WCAPF - WooCommerce Ajax Product
 						Filter. We have redesigned the admin UI to provide a
 						more intuitive user experience and refactored the
 						codebase for improved performance and easier future
@@ -57,21 +72,11 @@ const V4MigrationNotice = () => {
 				</div>
 			)}
 
-			{showProUpgradeNotice && (
-				<div className='notice notice-info v4-upgrade-notice'>
-					<p>
-						<strong>
-							WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade
-							Required)
-						</strong>
-					</p>
-					<p>
-						Thank you for using the Pro version. To ensure
-						compatibility with WCAPF - WooCommerce Ajax Product
-						Filter v4.0.0, it is necessary to upgrade WCAPF -
-						WooCommerce Ajax Product Filter Pro to v2.0.0. Please
-						proceed with the upgrade.
-					</p>
+			{proUpgradeNotice && (
+				<div className={proUpgradeNoticeClass}>
+					<p
+						dangerouslySetInnerHTML={{ __html: proUpgradeMessage }}
+					/>
 				</div>
 			)}
 		</>

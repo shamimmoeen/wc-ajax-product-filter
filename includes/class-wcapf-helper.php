@@ -942,7 +942,7 @@ class WCAPF_Helper {
 		}
 
 		// Check if we are showing the pro version upgrade required notice.
-		if ( self::pro_v2_upgrade_notice_can_be_shown() ) {
+		if ( self::pro_upgrade_notice_can_be_shown() ) {
 			return false;
 		}
 
@@ -1006,29 +1006,85 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Determines if the pro v2 upgrade notice should be shown.
+	 * Checks if the upgrade notice for the Pro version can be shown.
 	 *
-	 * @since 4.0.0
+	 * @since        4.0.0
 	 *
-	 * @return bool
+	 * @return array An array of upgrade notices, if any, based on the version requirements.
+	 *               Each notice provides information on the required versions and a link to proceed with the upgrade.
+	 *               Returns an empty array if no upgrade notices need to be shown.
 	 */
-	public static function pro_v2_upgrade_notice_can_be_shown() {
+	public static function pro_upgrade_notice_can_be_shown() {
+		$notices = array();
+
+		// Check if the current user has the capability to manage options
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
+			return $notices;
 		}
 
+		// Check if the Pro version plugin is not active
 		if ( ! is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ) {
-			return false;
+			return $notices;
 		}
 
-		if (
-			defined( 'WCAPF_PRO_VERSION' )
-			&& ! version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' )
-		) {
-			return false;
+		// Check if the free version is 4.0.0 and pro version is less than 2.0.0
+		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.0.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
+			$notices[] = self::get_pro_upgrade_notice( 'error', '2.0.0' );
 		}
 
-		return true;
+		// Check if the free version is 4.1.0 and pro version is less than or equal to 2.0.0
+		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.1.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<=' ) ) {
+			$notices[] = self::get_pro_upgrade_notice( 'error', '2.1.0' );
+		}
+
+		return $notices;
+	}
+
+	/**
+	 * Get the pro upgrade notice.
+	 *
+	 * @noinspection HtmlUnknownTarget
+	 * @noinspection PhpSameParameterValueInspection
+	 *
+	 * @param string $type                 The notice type.
+	 * @param string $required_pro_version The required pro version.
+	 *
+	 * @since        4.1.0
+	 *
+	 * @return array
+	 */
+	private static function get_pro_upgrade_notice( $type, $required_pro_version ) {
+		$pro_upgrade_doc_url = add_query_arg(
+			array(
+				'utm_source'   => 'WP+Admin',
+				'utm_medium'   => 'upgrade_notice',
+				'utm_campaign' => 'WCAPF+Pro+Upgrade',
+			),
+			'https://wptools.io/docs/wc-ajax-product-filter/pro-upgrade/'
+		);
+
+		if ( 'error' === $type ) {
+			return array(
+				'type'    => 'error',
+				'message' => sprintf(
+					__( 'WCAPF - WooCommerce Ajax Product Filter %s requires WCAPF - WooCommerce Ajax Product Filter Pro version %s or higher (you are currently using %s). The Pro version is currently NOT RUNNING. <a href="%s" target="_blank">Please proceed with the upgrade</a>.', 'wc-ajax-product-filter-pro' ),
+					WCAPF_VERSION,
+					$required_pro_version,
+					WCAPF_PRO_VERSION,
+					$pro_upgrade_doc_url
+				),
+			);
+		} else {
+			return array(
+				'type'    => 'info',
+				'message' => sprintf(
+					__( 'Thank you for using the Pro version. To ensure compatibility with WCAPF - WooCommerce Ajax Product Filter %s, it is necessary to upgrade WCAPF - WooCommerce Ajax Product Filter Pro to %s. <a href="%s" target="_blank">Please proceed with the upgrade</a>.', 'wc-ajax-product-filter' ),
+					WCAPF_VERSION,
+					$required_pro_version,
+					$pro_upgrade_doc_url
+				),
+			);
+		}
 	}
 
 	/**
