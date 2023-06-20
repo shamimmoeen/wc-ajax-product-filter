@@ -3,7 +3,6 @@ import { find } from 'lodash';
 import Checkbox from '../../../Field/Checkbox';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
-import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import { dateDisplayTypes } from '../../utils';
@@ -46,7 +45,7 @@ const ValueTypeDate = ({ index }) => {
 
 		value = options.find((option) => option.value === date_display_type);
 
-		if (!foundProVersion()) {
+		if (!WCAPF_PRO) {
 			const freeDisplayTypes = ['input_date', 'input_date_range'];
 
 			if (!freeDisplayTypes.includes(date_display_type)) {

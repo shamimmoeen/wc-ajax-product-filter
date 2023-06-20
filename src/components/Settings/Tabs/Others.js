@@ -3,13 +3,10 @@ import Checkbox from '../../Field/Checkbox';
 import Text from '../../Field/Text';
 import SelectMulti from '../../Field/SelectMulti';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
-import { foundProVersion } from '../../utils';
 import { useSettings } from '../SettingsContext';
 import useSettingsData from '../useSettingsData';
 import Textarea from '../../Field/Textarea';
 import Number from '../../Field/Number';
-
-const WCAPF_PRO = foundProVersion();
 
 const userRoles = wcapf_admin_params.user_roles;
 

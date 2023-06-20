@@ -70,8 +70,7 @@ body {
 
 // Admin Notices.
 .v4-upgrade-notice,
-.pro-upgrade-notice-info,
-.pro-upgrade-notice-error,
+.pro-upgrade-notice,
 .review-notice {
 	margin: 20px var(--large-gap) 0;
 
@@ -85,11 +84,10 @@ body {
 }
 
 .v4-upgrade-notice,
-.pro-upgrade-notice-info,
 .review-notice {
 	background: rgba(114, 174, 230, 0.1);
 }
 
-.pro-upgrade-notice-error {
+.pro-upgrade-notice {
 	background-color: rgba(255, 230, 230, .4);
 }

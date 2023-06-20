@@ -8,12 +8,10 @@ import {
 	EditIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { foundProVersion, slugify } from '../utils';
+import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 import TippyTooltip from '../TippyTooltip';
-
-const WCAPF_PRO = foundProVersion();
 
 const filterOnTooltip = __(
 	'Determines where you want to show the form to filter the products.',

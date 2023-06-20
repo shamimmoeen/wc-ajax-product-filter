@@ -24,13 +24,10 @@ import Others from './Tabs/Others';
 import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
-	foundProVersion,
 	proUpgradeRequired,
 } from '../utils';
 import { defaultSettings } from './utils';
 import ProUpgradeModal from '../Modals/ProUpgradeModal';
-
-const WCAPF_PRO = foundProVersion();
 
 const tabs = [
 	{

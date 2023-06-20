@@ -2,10 +2,8 @@ import { Button, Icon } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import ProFeaturesNotice from '../ProFeaturesNotice';
 import { DeleteIcon, EditIcon, PlusIcon } from '../SVGIcons';
-import { foundProVersion, slugify } from '../utils';
+import { slugify } from '../utils';
 import { useSEORules } from './SEORulesContext';
-
-const WCAPF_PRO = foundProVersion();
 
 const headers = [
 	__('Title', 'wc-ajax-product-filter'),

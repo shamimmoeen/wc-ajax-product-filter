@@ -87,10 +87,10 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		wp_enqueue_style(
-			'wc-ajax-product-filter-public-styles',
-			WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-public-styles' . $ext,
+			'wc-ajax-product-filter-styles',
+			WCAPF_PLUGIN_URL . 'public/css/wc-ajax-product-filter-styles' . $ext,
 			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-public-styles' . $ext )
+			filemtime( WCAPF_PLUGIN_DIR . '/public/css/wc-ajax-product-filter-styles' . $ext )
 		);
 
 		// Add css variables.
@@ -107,7 +107,7 @@ class WCAPF_Frontend_Scripts {
 			--wcapf-star-icon-color: $star_icon_color;
 		}";
 
-		wp_add_inline_style( 'wc-ajax-product-filter-public-styles', $variables );
+		wp_add_inline_style( 'wc-ajax-product-filter-styles', $variables );
 
 		$ext = function_exists( 'wp_get_environment_type' ) && 'production' === wp_get_environment_type()
 			? '.min.js'
@@ -162,10 +162,10 @@ class WCAPF_Frontend_Scripts {
 		$deps[] = 'jquery-effects-core';
 
 		wp_enqueue_script(
-			'wc-ajax-product-filter-public-scripts',
-			WCAPF_PLUGIN_URL . 'public/js/wc-ajax-product-filter-public-scripts' . $ext,
+			'wc-ajax-product-filter-scripts',
+			WCAPF_PLUGIN_URL . 'public/js/wc-ajax-product-filter-scripts' . $ext,
 			$deps,
-			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-public-scripts' . $ext ),
+			filemtime( WCAPF_PLUGIN_DIR . '/public/js/wc-ajax-product-filter-scripts' . $ext ),
 			true
 		);
 	}

@@ -11,16 +11,12 @@ export const FILTER_KEY_IN_USE_MESSAGE = __(
 	'wc-ajax-product-filter'
 );
 
-export function foundProVersion() {
-	return wcapf_admin_params.found_pro || false;
-}
-
 export function proUpgradeRequired() {
 	return wcapf_admin_params.pro_upgrade_notice || null;
 }
 
 export function wpVersion() {
-	return parseFloat(wcapf_admin_params.wp);
+	return parseFloat(wcapf_admin_params.wp_version);
 }
 
 export function getInputId(id, index = '', subIndex = '') {
@@ -39,19 +35,15 @@ export function getInputId(id, index = '', subIndex = '') {
 
 // To disable the input element.
 export function isProFeature(isProFeature) {
-	if (foundProVersion()) {
+	if (WCAPF_PRO) {
 		return false;
 	}
 
-	if (!isProFeature) {
-		return false;
-	}
-
-	return true;
+	return isProFeature;
 }
 
 export function proTag(isProFeature) {
-	if (foundProVersion()) {
+	if (WCAPF_PRO) {
 		return null;
 	}
 
@@ -63,7 +55,11 @@ export function proTag(isProFeature) {
 }
 
 export function pluginVersion() {
-	return wcapf_admin_params.version;
+	if (WCAPF_PRO && wcapf_admin_params.pro_version && 2.1 <= parseFloat(wcapf_admin_params.pro_version)) {
+		return wcapf_admin_params.pro_version;
+	}
+
+	return wcapf_admin_params.free_version;
 }
 
 export function getFormsPageLink() {
@@ -93,7 +89,7 @@ export function slugify(value) {
 export function mergeSelectOptions(freeOptions, proOptions, withPro = false) {
 	let options;
 
-	if (withPro && !foundProVersion()) {
+	if (withPro && !WCAPF_PRO) {
 		const _proOptions = proOptions.map((option) => {
 			option.isPro = true;
 

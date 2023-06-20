@@ -26,6 +26,9 @@ global $wpdb;
 
 // Delete records from the options table.
 delete_option( $option_key );
+delete_option( 'wcapf_run_migrate' );
+delete_option( 'wcapf_set_default_settings' );
+delete_option( 'wcapf_update_default_settings' );
 delete_option( 'wcapf_filter_keys_order' );
 delete_option( 'wcapf_db_version' );
 delete_option( 'wcapf_activation_time' );
@@ -36,6 +39,9 @@ delete_option( 'wcapf_migrated_filters_form_id' );
 
 // Delete transients.
 delete_transient( 'wcapf_v4_migration_status' );
+
+// Clear the forms with locations transients.
+delete_transient( 'wcapf_forms_with_locations' );
 
 // Delete posts + data.
 $wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type IN ('wcapf-form', 'wcapf-filter');" );

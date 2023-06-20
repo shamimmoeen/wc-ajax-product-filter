@@ -10,9 +10,6 @@ import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
 import { Notice } from '@wordpress/components';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
-import { foundProVersion } from '../../utils';
-
-const WCAPF_PRO = foundProVersion();
 
 const animationOptions = [
 	{

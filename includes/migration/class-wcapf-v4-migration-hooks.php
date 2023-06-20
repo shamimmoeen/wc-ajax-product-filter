@@ -294,11 +294,9 @@ class WCAPF_V4_Migration_Hooks {
 
 		if ( ! empty( $notices ) ) {
 			// Get the first notice.
-			$notice  = array_shift( $notices );
-			$type    = $notice['type'];
-			$message = $notice['message'];
+			$notice = array_shift( $notices );
 
-			echo '<div class="notice notice-' . $type . '"><p>' . wp_kses_post( $message ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . wp_kses_post( $notice ) . '</p></div>';
 		}
 	}
 

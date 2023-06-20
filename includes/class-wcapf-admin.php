@@ -282,10 +282,11 @@ class WCAPF_Admin {
 	 */
 	private function admin_js_params() {
 		$params = array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			'version' => WCAPF_VERSION,
-			'wp'      => get_bloginfo( 'version' ),
-			'dirty'   => false,
+			'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+			'free_version' => defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION,
+			'pro_version'  => defined( 'WCAPF_PRO_VERSION' ) ? WCAPF_PRO_VERSION : false,
+			'wp_version'   => get_bloginfo( 'version' ),
+			'dirty'        => false,
 		);
 
 		$helper = new WCAPF_Helper();

@@ -1,5 +1,6 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 	...defaultConfig,
@@ -10,4 +11,10 @@ module.exports = {
 		settings: path.resolve(process.cwd(), 'src', 'settings.js'),
 		'seo-rules': path.resolve(process.cwd(), 'src', 'seo-rules.js'),
 	},
+	plugins: [
+		...defaultConfig.plugins,
+		new webpack.DefinePlugin({
+			WCAPF_PRO: false,
+		}),
+	],
 };
