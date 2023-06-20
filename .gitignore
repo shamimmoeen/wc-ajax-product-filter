@@ -1,6 +1,4 @@
 .DS_Store
-phpcs.xml
-phpunit.xml
 Thumbs.db
 wp-cli.local.yml
 node_modules/
@@ -8,4 +6,3 @@ vendor/
 *.sql
 *.tar.gz
 *.zip
-note.php

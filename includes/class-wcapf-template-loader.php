@@ -66,8 +66,7 @@ class WCAPF_Template_Loader {
 
 		$_c_theme_location = get_stylesheet_directory() . '/wcapf/';
 		$_p_theme_location = get_template_directory() . '/wcapf/';
-		$_pro_location     = defined( 'WCAPF_PRO_PLUGIN_DIR' ) ? WCAPF_PRO_PLUGIN_DIR . '/templates/' : '';
-		$_free_location    = WCAPF_PLUGIN_DIR . '/templates/';
+		$template_dir      = WCAPF_PLUGIN_DIR . '/templates/';
 
 		// No file found yet.
 		$located = false;
@@ -80,10 +79,8 @@ class WCAPF_Template_Loader {
 			$located = $_c_theme_location . $template;
 		} elseif ( file_exists( $_p_theme_location . $template ) ) {
 			$located = $_p_theme_location . $template;
-		} elseif ( file_exists( $_pro_location . $template ) ) {
-			$located = $_pro_location . $template;
-		} elseif ( file_exists( $_free_location . $template ) ) {
-			$located = $_free_location . $template;
+		} elseif ( file_exists( $template_dir . $template ) ) {
+			$located = $template_dir . $template;
 		}
 
 		$located = apply_filters( 'wcapf_get_template_location', $located, $template );

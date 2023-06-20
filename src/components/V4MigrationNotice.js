@@ -6,21 +6,6 @@ const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
 const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
 const proUpgradeNotice = proUpgradeRequired();
 
-let proUpgradeNoticeType;
-let proUpgradeMessage;
-let proUpgradeNoticeClass;
-
-if (proUpgradeNotice) {
-	proUpgradeNoticeType = proUpgradeNotice['type'];
-	proUpgradeMessage = proUpgradeNotice['message'];
-
-	if ('error' === proUpgradeNoticeType) {
-		proUpgradeNoticeClass = 'notice notice-error pro-upgrade-notice-error';
-	} else {
-		proUpgradeNoticeClass = 'notice notice-info pro-upgrade-notice-info';
-	}
-}
-
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {
 		if (typeof removeWCAPFMigrationNotice === 'function') {
@@ -73,10 +58,8 @@ const V4MigrationNotice = () => {
 			)}
 
 			{proUpgradeNotice && (
-				<div className={proUpgradeNoticeClass}>
-					<p
-						dangerouslySetInnerHTML={{ __html: proUpgradeMessage }}
-					/>
+				<div className='notice notice-error pro-upgrade-notice'>
+					<p dangerouslySetInnerHTML={{ __html: proUpgradeNotice }} />
 				</div>
 			)}
 		</>

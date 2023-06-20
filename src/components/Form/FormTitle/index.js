@@ -13,11 +13,7 @@ import {
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
-import {
-	GENERIC_ERROR_MESSAGE,
-	foundProVersion,
-	proUpgradeRequired,
-} from '../../utils';
+import { GENERIC_ERROR_MESSAGE, proUpgradeRequired } from '../../utils';
 import {
 	getFilterKeyError,
 	filterDefaultData,
@@ -30,8 +26,6 @@ import {
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
 import ProUpgradeModal from '../../Modals/ProUpgradeModal';
-
-const WCAPF_PRO = foundProVersion();
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();

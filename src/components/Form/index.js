@@ -13,10 +13,7 @@ import {
 	proFilterComponents,
 	proFilterTypes,
 } from './utils';
-import { foundProVersion } from '../utils';
 import ReviewNotices from './ReviewNotices';
-
-const WCAPF_PRO = foundProVersion();
 
 const Form = () => {
 	const { dispatch } = useForm();

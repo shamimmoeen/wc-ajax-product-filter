@@ -16,7 +16,7 @@ const browserSync = require( 'browser-sync' ).create();
 function frontendCss() {
 	const DEST = './public/css';
 
-	return src( './public/src/scss/wc-ajax-product-filter-public-styles.scss' )
+	return src( './public/src/scss/wc-ajax-product-filter-styles.scss' )
 		.pipe( sourcemaps.init() )
 		.pipe( sass.sync( { outputStyle: 'expanded' } ).on( 'error', sass.logError ) )
 		.pipe( autoPrefix() )
@@ -64,7 +64,7 @@ function frontendJs() {
 				}
 			)
 		)
-		.pipe( concat( 'wc-ajax-product-filter-public-scripts.js' ) )
+		.pipe( concat( 'wc-ajax-product-filter-scripts.js' ) )
 		.pipe( sourcemaps.write() )
 		.pipe( dest( DEST ) ) // Output non-minified js file
 

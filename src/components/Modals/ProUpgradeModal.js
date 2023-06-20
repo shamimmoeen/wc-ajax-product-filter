@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Modal, Button } from '@wordpress/components';
 import { proUpgradeRequired } from '../utils';
 
-const proUpgradeNotice = proUpgradeRequired();
+const message = proUpgradeRequired();
 
 const ProUpgradeModal = ({ isOpen, closeModal }) => {
 	return (
@@ -19,11 +19,7 @@ const ProUpgradeModal = ({ isOpen, closeModal }) => {
 
 				<div className='__separator' />
 
-				<p
-					dangerouslySetInnerHTML={{
-						__html: proUpgradeNotice['message'],
-					}}
-				/>
+				<p dangerouslySetInnerHTML={{ __html: message }} />
 
 				<div className='__buttons'>
 					<Button variant='secondary' onClick={closeModal}>

@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { find } from 'lodash';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
-import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import {
@@ -64,7 +63,7 @@ const useFields = (index) => {
 
 		value = options.find((option) => option.value === filter[id]);
 
-		if (!foundProVersion()) {
+		if (!WCAPF_PRO) {
 			if (proOptions.includes(filter[id])) {
 				const _proOptions = find(options, { proGroup: true });
 				const proOptions = _proOptions.options;
