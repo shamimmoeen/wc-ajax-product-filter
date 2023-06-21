@@ -1024,11 +1024,8 @@ class WCAPF_Helper {
 			return $notices;
 		}
 
-		$pro_version_active = is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ||
-		                      is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter.php' );
-
 		// Check if the Pro version plugin is not active
-		if ( ! $pro_version_active ) {
+		if ( ! is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ) {
 			return $notices;
 		}
 
