@@ -1,11 +1,11 @@
 # Copyright (C) 2023 wptools.io
-# This file is distributed under the same license as the WCAPF - WooCommerce Ajax Product Filter package.
+# This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WCAPF - WooCommerce Ajax Product Filter 4.0.0\n"
+"Project-Id-Version: WCAPF - WooCommerce Ajax Product Filter 4.1.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/wc-ajax-product-filter-dev\n"
-"POT-Creation-Date: 2023-06-14 19:36:09+00:00\n"
+"POT-Creation-Date: 2023-06-21 19:40:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -298,6 +298,14 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
+#: includes/class-wcapf-helper.php:1080
+msgid ""
+"WCAPF - WooCommerce Ajax Product Filter version %s requires WCAPF - "
+"WooCommerce Ajax Product Filter Pro version %s or higher, but you are using "
+"%s. The Pro version is currently NOT RUNNING. <a href=\"%s\" "
+"target=\"_blank\">Please proceed with the upgrade</a>."
+msgstr ""
+
 #: includes/class-wcapf-walker.php:850
 msgid "Expand/Collapse %s"
 msgstr ""
@@ -354,7 +362,7 @@ msgid_plural "%d stars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/migration/class-wcapf-v4-migration.php:370
+#: includes/migration/class-wcapf-v4-migration.php:407
 msgid "Default form"
 msgstr ""
 
@@ -391,6 +399,60 @@ msgid "%d product"
 msgid_plural "%d products"
 msgstr[0] ""
 msgstr[1] ""
+
+#: wc-ajax-product-filter.php:122
+msgid ""
+"WCAPF - WooCommerce Ajax Product Filter requires WooCommerce. The plugin is "
+"currently NOT RUNNING."
+msgstr ""
+
+#: wc-ajax-product-filter.php:125
+msgid ""
+"%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It "
+"requires WooCommerce plugin to be activated. Please activate the "
+"WooCommerce plugin first ✌️ %s Back %s"
+msgstr ""
+
+#: wc-ajax-product-filter.php:133
+msgid ""
+"WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %s or "
+"higher, but WooCommerce version %s is used on the site. The plugin is "
+"currently NOT RUNNING."
+msgstr ""
+
+#: wc-ajax-product-filter.php:139
+msgid ""
+"%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It "
+"requires WooCommerce version %s or higher, but WooCommerce version %s is "
+"used on the site. Please upgrade the WooCommerce version first ✌️ %s Back %s"
+msgstr ""
+
+#: wc-ajax-product-filter.php:151
+msgid ""
+"WCAPF - WooCommerce Ajax Product Filter requires WordPress version %s or "
+"higher, but WordPress version %s is used on the site. The plugin is "
+"currently NOT RUNNING."
+msgstr ""
+
+#: wc-ajax-product-filter.php:157
+msgid ""
+"%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It "
+"requires WordPress version %s or higher, but WordPress version %s is used "
+"on the site. Please upgrade the WordPress version first ✌️ %s Back %s"
+msgstr ""
+
+#: wc-ajax-product-filter.php:169
+msgid ""
+"WCAPF - WooCommerce Ajax Product Filter requires PHP version %s or higher, "
+"but PHP version %s is used on the site. The plugin is currently NOT RUNNING."
+msgstr ""
+
+#: wc-ajax-product-filter.php:175
+msgid ""
+"%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It "
+"requires PHP version %s or higher, but PHP version %s is used on the site. "
+"Please upgrade the PHP version first ✌️ %s Back %s"
+msgstr ""
 
 #. Plugin Name of the plugin/theme
 msgid "WCAPF - WooCommerce Ajax Product Filter"
