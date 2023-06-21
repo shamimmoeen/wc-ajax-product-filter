@@ -198,6 +198,10 @@ Next release
 * Swatch and label presets
 * Enable swatch for other filter types
 
+before release v4.1.0
+* create the documentation to upgrade the pro version
+* create 'Search field'
+
 Development site license
 sk_9IP_gQ02noIWP6mEKAz1ojZlHbzOh
 
