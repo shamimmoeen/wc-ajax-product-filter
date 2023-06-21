@@ -130,7 +130,7 @@ class WCAPF_Plugin {
 			);
 		} elseif ( version_compare( $wc_version, $required_wc_version, '<' ) ) {
 			$notices[] = sprintf(
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %s or higher. The plugin is currently NOT RUNNING (you are currently using WooCommerce %s).', 'wc-ajax-product-filter' ),
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %s or higher, but WooCommerce version %s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_wc_version,
 				$wc_version
 			);
@@ -148,7 +148,7 @@ class WCAPF_Plugin {
 
 		if ( version_compare( $wp_version, $required_wp_version, '<' ) ) {
 			$notices[] = sprintf(
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires WordPress version %s or higher. The plugin is currently NOT RUNNING (you are currently using WordPress %s).', 'wc-ajax-product-filter' ),
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires WordPress version %s or higher, but WordPress version %s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_wp_version,
 				$wp_version
 			);
@@ -166,7 +166,7 @@ class WCAPF_Plugin {
 
 		if ( version_compare( $php_version, $required_php_version, '<' ) ) {
 			$notices[] = sprintf(
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires PHP version %s or higher. The plugin is currently NOT RUNNING (you are currently using PHP %s).', 'wc-ajax-product-filter' ),
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires PHP version %s or higher, but PHP version %s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_php_version,
 				$php_version
 			);
