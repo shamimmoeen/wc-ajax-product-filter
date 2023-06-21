@@ -1029,6 +1029,13 @@ class WCAPF_Helper {
 			return $notices;
 		}
 
+		// Check if pro version found but the version number could not be obtained using the constant.
+		if ( ! defined( 'WCAPF_PRO_VERSION' ) ) {
+			$notices[] = self::get_pro_upgrade_notice( '2.1.0' );
+
+			return $notices;
+		}
+
 		// Check if the free version is 4.0.0 and pro version is less than 2.0.0
 		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.0.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
 			$notices[] = self::get_pro_upgrade_notice( '2.0.0' );
@@ -1061,12 +1068,19 @@ class WCAPF_Helper {
 			'https://wptools.io/docs/wc-ajax-product-filter/pro-upgrade/'
 		);
 
+		if ( defined( 'WCAPF_PRO_VERSION' ) ) {
+			$pro_version = WCAPF_PRO_VERSION;
+		} else {
+			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' );
+			$pro_version = $plugin_data['Version'];
+		}
+
 		/** @noinspection HtmlUnknownTarget */
 		return sprintf(
 			__( 'WCAPF - WooCommerce Ajax Product Filter %s requires WCAPF - WooCommerce Ajax Product Filter Pro version %s or higher (you are currently using %s). The Pro version is currently NOT RUNNING. <a href="%s" target="_blank">Please proceed with the upgrade</a>.', 'wc-ajax-product-filter-pro' ),
 			WCAPF_VERSION,
 			$required_pro_version,
-			WCAPF_PRO_VERSION,
+			$pro_version,
 			$pro_upgrade_doc_url
 		);
 	}
