@@ -6,7 +6,7 @@ import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
 import Notifications from '../Notifications';
 import { useSettings } from './SettingsContext';
-import { SaveIcon } from '../SVGIcons';
+import { SaveIcon, SettingsIcon } from '../SVGIcons';
 import axios from 'axios';
 import {
 	removeSettingsSavedNotices,
@@ -304,6 +304,7 @@ const Settings = () => {
 						<div className='__settings_wrapper'>
 							<div className='__settings_header'>
 								<h2>
+									<Icon icon={SettingsIcon} />
 									{__('Settings', 'wc-ajax-product-filter')}
 								</h2>
 								<Button

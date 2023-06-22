@@ -6,6 +6,7 @@ import {
 	DeleteIcon,
 	DuplicateIcon,
 	EditIcon,
+	ListIcon,
 	PlusIcon,
 } from '../SVGIcons';
 import { slugify } from '../utils';
@@ -160,7 +161,10 @@ const Table = ({
 		<div className='__content'>
 			<div className='__list_table_wrapper'>
 				<div className='__list_table_header'>
-					<h2>{__('List of Forms', 'wc-ajax-product-filter')}</h2>
+					<h2>
+						<Icon icon={ListIcon} />
+						{__('List of Forms', 'wc-ajax-product-filter')}
+					</h2>
 
 					<Button variant='primary' onClick={openAddNewModal}>
 						<Icon icon={PlusIcon} size={14} />
