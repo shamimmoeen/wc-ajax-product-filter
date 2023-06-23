@@ -13,17 +13,17 @@ import {
 } from './SVGIcons';
 
 const documentation = __(
-	'Explore our comprehensive documentation and interactive demos.',
+	'Explore the comprehensive documentation and interactive demos.',
 	'wc-ajax-product-filter'
 );
 
 const support = __(
-	"Whether you require technical support, have questions about specific features, or need assistance with custom development, we're here to help.",
+	"Whether you need technical support, have questions about specific features, or need assistance with custom development, I'm here to help.",
 	'wc-ajax-product-filter'
 );
 
 const review = __(
-	'Your 5-star review is a valuable reward for us. Please help us grow in the community by sharing your review.',
+	'Your 5-star review is a valuable reward 🏆 for me. Please help me grow in the community by sharing your review. Thank you in advance :)',
 	'wc-ajax-product-filter'
 );
 
@@ -86,14 +86,14 @@ const Sidebar = () => {
 						href={wpSupportURL}
 						target='_blank'
 					>
-						{__('Support Forum', 'wc-ajax-product-filter')}
+						{__('WP Support Forum', 'wc-ajax-product-filter')}
 					</Button>
 					<Button
 						variant='secondary'
 						href={supportURL}
 						target='_blank'
 					>
-						{__('Contact Us', 'wc-ajax-product-filter')}
+						{__('Contact me', 'wc-ajax-product-filter')}
 					</Button>
 				</CardBody>
 			</Card>
@@ -112,7 +112,7 @@ const Sidebar = () => {
 						href={reviewUrl}
 						target='_blank'
 					>
-						{__('Write a Review', 'wc-ajax-product-filter')}
+						{__('Write a review', 'wc-ajax-product-filter')}
 					</Button>
 				</CardBody>
 			</Card>

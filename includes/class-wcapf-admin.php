@@ -412,9 +412,9 @@ class WCAPF_Admin {
 			<div class="notice notice-info is-dismissible" id="wcapf-review-notice-for-milestone-achieved">
 				<p>
 					<span class="dashicons dashicons-smiley wcapf-dashicon-smiley"></span>
-					Congratulations! You have reached a milestone in using WCAPF - WooCommerce Ajax Product Filter by
-					updating the filters five times. Help us improve by sharing your experience. Please consider <a
-						href="<?php echo esc_url( $review_url ); ?>" target="_blank">writing a review on WordPress</a>.
+					Great job! You have updated the filters five times. Your feedback encourages me to improve the
+					plugin. Please consider <a href="<?php echo esc_url( $review_url ); ?>" target="_blank">writing a
+						review on WordPress</a>. Thank you in advance :)
 				</p>
 				<button type="button" class="notice-dismiss" onclick="wcapfDismissNotice('milestone-achieved')">
 					<span class="screen-reader-text">Dismiss this notice</span>
