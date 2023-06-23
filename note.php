@@ -201,6 +201,8 @@ Next release
 before release v4.1.0
 * create the documentation to upgrade the pro version
 * create 'Search field'
+* upgrade to pro plugin action links color #b443d7
+* thoroughly check the review notice system
 
 Development site license
 sk_9IP_gQ02noIWP6mEKAz1ojZlHbzOh

@@ -1104,8 +1104,9 @@ class WCAPF_Helper {
 		$meta_key       = 'wcapf_review_notice_for_milestone_achieved_dismissed_at';
 		$dismissal_time = get_user_meta( $user_id, $meta_key, true );
 
+		// TODO: Make it 24 hours minimum.
 		// if ( $dismissal_time && ( $current_time - $dismissal_time ) < 24 * 60 * 60 ) {
-		if ( $dismissal_time && ( $current_time - $dismissal_time ) < 2 * 60 ) { // 2 minutes
+		if ( $dismissal_time && ( $current_time - $dismissal_time ) < 1 * 60 ) { // 2 minutes
 			return false;
 		}
 
@@ -1130,6 +1131,7 @@ class WCAPF_Helper {
 			2592000  => '1 month',
 			1209600  => '2 weeks',
 			604800   => '1 week',
+			60       => '1 minute', // TODO: Remove showing message for one minute
 		);
 
 		$dismissal_key      = 'wcapf_review_notice_time_since_dismissed_at';

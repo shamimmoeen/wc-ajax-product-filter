@@ -24,11 +24,6 @@ const removeEmptyOptions = [
 		label: __('Never show', 'wc-ajax-product-filter'),
 		value: 'remove',
 	},
-	{
-		label: __('Show but disable selection', 'wc-ajax-product-filter'),
-		value: 'disable',
-		isPro: true,
-	},
 ];
 
 const General = () => {
@@ -80,13 +75,27 @@ const General = () => {
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Determines what we do with the options with zero products.',
+					'Choose "Always show" to gray out filter options or "Never show" to hide filter options that have no associated products.',
 					'wc-ajax-product-filter'
 				)}
 				options={removeEmptyOptions}
 				value={remove_empty}
 				onChange={handleRadioChange}
 			/>
+
+			{/* <Checkbox
+				id={'disable_empty_filter_selection'}
+				label={__(
+					'Hide range UI for single value',
+					'wc-ajax-product-filter'
+				)}
+				description={__(
+					'When enabled, hides the range input(s) and or slider when the minimum and maximum values of the range are equal.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={false}
+				onChange={handleCheckboxChange}
+			/> */}
 
 			<Checkbox
 				id={'remove_empty_filters'}
