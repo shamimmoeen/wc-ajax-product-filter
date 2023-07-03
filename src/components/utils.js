@@ -55,19 +55,28 @@ export function proTag(isProFeature) {
 }
 
 export function pluginVersion() {
-	if (WCAPF_PRO && wcapf_admin_params.pro_version && 2.1 <= parseFloat(wcapf_admin_params.pro_version)) {
+	if (
+		WCAPF_PRO &&
+		wcapf_admin_params.pro_version &&
+		2.1 <= parseFloat(wcapf_admin_params.pro_version)
+	) {
 		return wcapf_admin_params.pro_version;
 	}
 
 	return wcapf_admin_params.free_version;
 }
 
+export function getFormId() {
+	const url = window.location.href;
+	return url.substring(url.lastIndexOf('/') + 1);
+}
+
 export function getFormsPageLink() {
-	return wcapf_admin_params.forms_page_link;
+	return '#/';
 }
 
 export function getEditFormLink(formId) {
-	return getFormsPageLink() + '&id=' + formId;
+	return '#/form/' + formId;
 }
 
 export function getSeoRulesPageLink() {
@@ -75,7 +84,7 @@ export function getSeoRulesPageLink() {
 }
 
 export function getSettingsPageLink() {
-	return wcapf_admin_params.settings_page_link;
+	return '#/settings';
 }
 
 export function upgradeToProLink() {

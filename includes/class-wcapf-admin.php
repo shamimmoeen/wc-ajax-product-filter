@@ -16,9 +16,25 @@
 class WCAPF_Admin {
 
 	/**
+	 * @var array|array[]
+	 */
+	private $pages;
+
+	/**
 	 * The constructor.
 	 */
 	public function __construct() {
+		$this->pages = array(
+			array(
+				'title' => 'WCAPF - WooCommerce Ajax Product Filter',
+				'path'  => 'wcapf',
+			),
+			array(
+				'title' => 'Settings',
+				'path'  => 'wcapf#/settings',
+			),
+		);
+
 		$plugin_file = plugin_basename( WCAPF_PLUGIN_FILE );
 		add_filter( 'plugin_action_links_' . $plugin_file, array( $this, 'plugin_action_links' ) );
 
@@ -92,14 +108,37 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function register_admin_pages() {
-		add_menu_page(
-			'WCAPF - WooCommerce Ajax Product Filter',
-			'WCAPF',
-			'manage_options',
-			'wcapf',
-			array( $this, 'render_form' ),
-			'dashicons-filter'
-		);
+		foreach ( $this->pages as $index => $page ) {
+			if ( $index === 0 ) {
+				// Add the main admin page
+				add_menu_page(
+					$page['title'],     // Page title
+					'WCAPF',     // Menu title
+					'manage_options',           // Capability required to access the page
+					$page['path'],     // Page slug
+					array( $this, 'renderReactRoot' ), // Callback function to render the page
+					'dashicons-filter' // Icon
+				);
+			} else {
+				add_submenu_page(
+					'wcapf',     // Parent page slug
+					$page['title'],                    // Page title
+					$page['title'],                    // Menu title
+					'manage_options',           // Capability required to access the page
+					$page['path'],// Page slug
+					array( $this, 'renderReactRoot' ) // Callback function to render the page
+				);
+			}
+		}
+
+		// add_menu_page(
+		// 	'WCAPF - WooCommerce Ajax Product Filter',
+		// 	'WCAPF',
+		// 	'manage_options',
+		// 	'wcapf',
+		// 	array( $this, 'render_form' ),
+		// 	'dashicons-filter'
+		// );
 
 		// add_submenu_page(
 		// 	'wcapf',
@@ -110,14 +149,18 @@ class WCAPF_Admin {
 		// 	array( $this, 'render_seo_rules' )
 		// );
 
-		add_submenu_page(
-			'wcapf',
-			__( 'WCAPF - WooCommerce Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
-			__( 'Settings', 'wc-ajax-product-filter' ),
-			'manage_options',
-			'wcapf-settings',
-			array( $this, 'render_settings' )
-		);
+		// add_submenu_page(
+		// 	'wcapf',
+		// 	__( 'WCAPF - WooCommerce Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
+		// 	__( 'Settings', 'wc-ajax-product-filter' ),
+		// 	'manage_options',
+		// 	'wcapf-settings',
+		// 	array( $this, 'render_settings' )
+		// );
+	}
+
+	public function renderReactRoot() {
+		echo '<div id="root"></div>';
 	}
 
 	public function render_form() {
@@ -199,6 +242,7 @@ class WCAPF_Admin {
 			'toplevel_page_wcapf',
 			'wcapf_page_wcapf-seo-rules',
 			'wcapf_page_wcapf-settings',
+			'wcapf_page_wcapf-account',
 		);
 	}
 
@@ -216,10 +260,28 @@ class WCAPF_Admin {
 		if ( in_array( $hook, $this->slugs_of_custom_admin_pages() ) ) {
 			wp_register_script( 'wcapf-admin-scripts', false );
 
+			$params = $this->admin_js_params();
+
+			$params = array_merge( $params, array(
+				'pages' => array_map( function ( $page ) {
+					if ( 'wcapf' === $page['path'] ) {
+						return array(
+							'title' => $page['title'],
+							'path'  => '/',
+						);
+					}
+
+					return array(
+						'title' => $page['title'],
+						'path'  => str_replace( 'wcapf#', '', $page['path'] ),
+					);
+				}, $this->pages )
+			) );
+
 			wp_localize_script(
 				'wcapf-admin-scripts',
 				'wcapf_admin_params',
-				$this->admin_js_params()
+				$params
 			);
 
 			wp_enqueue_script( 'wcapf-admin-scripts' );
@@ -231,7 +293,47 @@ class WCAPF_Admin {
 				filemtime( WCAPF_PLUGIN_DIR . '/admin/js/wc-ajax-product-filter-admin-scripts.js' ),
 				true
 			);
+
+			// Load react scripts.
+			$asset_file_path = WCAPF_PLUGIN_DIR . '/build/index.asset.php';
+
+			if ( ! file_exists( $asset_file_path ) ) {
+				wp_die( 'Run npm build' );
+			}
+
+			$asset_file = include( $asset_file_path );
+
+			// Enqueue CSS dependencies.
+			foreach ( $asset_file['dependencies'] as $style ) {
+				wp_enqueue_style( $style );
+			}
+
+			wp_enqueue_script(
+				'react-router-example-script',
+				plugins_url( 'build/index.js', WCAPF_PLUGIN_FILE ),
+				$asset_file['dependencies'],
+				$asset_file['version'],
+				true
+			);
+
+			wp_enqueue_style(
+				'react-router-example-style',
+				plugins_url( 'build/index.css', WCAPF_PLUGIN_FILE ),
+				array(),
+				$asset_file['version']
+			);
+
+			// Loads the js script that converts our filter key into slug.
+			wp_enqueue_script(
+				'wcapf-sanitize-title',
+				WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js'
+			);
+
+			// TODO: Loads the media utils.
+			// wp_enqueue_media();
 		}
+
+		return;
 
 		if ( 'toplevel_page_wcapf' === $hook ) {
 			// Forms list admin ui scripts.
@@ -297,51 +399,44 @@ class WCAPF_Admin {
 		$params['settings_page_link']  = $helper::settings_page_url();
 		$params['upgrade_page_link']   = $helper::upgrade_page_url();
 
-		$screen_id  = $this->current_screen_id();
 		$user_roles = $utils::user_role_options();
 
-		if ( 'toplevel_page_wcapf' === $screen_id ) {
-			$params['form_default_data'] = WCAPF_Default_Data::form_default_data();
+		$params['form_default_data'] = WCAPF_Default_Data::form_default_data();
 
-			if ( ! isset( $_GET['id'] ) ) {
-				$params['forms'] = $utils::get_forms();
-			} else {
-				$settings = $helper::get_settings();
+		$params['user_roles'] = $user_roles;
 
-				$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
+		$params['forms'] = $utils::get_forms();
 
-				$params['filter_types']    = $utils::get_filter_types();
-				$params['meta_keys']       = $helper::get_available_meta_keys();
-				$params['date_formats']    = $utils::display_date_formats();
-				$params['status_options']  = $utils::product_status_options();
-				$params['time_periods']    = $utils::time_period_options();
-				$params['sort_by_options'] = $utils::sort_by_options();
-				$params['meta_types']      = $utils::meta_type_options();
-				$params['user_roles']      = $user_roles;
+		$settings = $helper::get_settings();
 
-				$params['author_roles']            = isset( $settings['author_roles'] )
-					? $settings['author_roles'] : array();
-				$params['multiple_form_locations'] = isset( $settings['multiple_form_locations'] )
-					? $settings['multiple_form_locations'] : '';
+		$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
 
-				$post_id = $_GET['id'];
-				$post    = get_post( $post_id );
+		$params['filter_types']    = $utils::get_filter_types();
+		$params['meta_keys']       = $helper::get_available_meta_keys();
+		$params['date_formats']    = $utils::display_date_formats();
+		$params['status_options']  = $utils::product_status_options();
+		$params['time_periods']    = $utils::time_period_options();
+		$params['sort_by_options'] = $utils::sort_by_options();
+		$params['meta_types']      = $utils::meta_type_options();
 
-				$params['form_data'] = array(
-					'post_id'    => $post_id,
-					'post_title' => $post->post_title,
-				);
-			}
-		}
+		$params['author_roles']            = isset( $settings['author_roles'] )
+			? $settings['author_roles'] : array();
+		$params['multiple_form_locations'] = isset( $settings['multiple_form_locations'] )
+			? $settings['multiple_form_locations'] : '';
 
-		if ( 'wcapf_page_wcapf-settings' === $screen_id ) {
-			$params['default_settings'] = WCAPF_Default_Data::default_settings();
+		$post_id = $_GET['id'];
+		$post    = get_post( $post_id );
 
-			$params['user_roles'] = $user_roles;
-			$params['settings']   = $utils::get_settings();
+		$params['form_data'] = array(
+			'post_id'    => $post_id,
+			'post_title' => $post->post_title,
+		);
 
-			$params['global_filter_keys'] = $utils::get_filter_keys( true );
-		}
+		$params['default_settings'] = WCAPF_Default_Data::default_settings();
+
+		$params['settings']   = $utils::get_settings();
+
+		$params['global_filter_keys'] = $utils::get_filter_keys( true );
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 

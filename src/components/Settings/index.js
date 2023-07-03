@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { Button, Icon } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { omit, pick, find } from 'lodash';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
@@ -28,6 +28,7 @@ import {
 } from '../utils';
 import { defaultSettings } from './utils';
 import ProUpgradeModal from '../Modals/ProUpgradeModal';
+import { Icon } from '@wordpress/icons';
 
 const tabs = [
 	{
@@ -308,7 +309,7 @@ const Settings = () => {
 									{__('Settings', 'wc-ajax-product-filter')}
 								</h2>
 								<Button
-									variant='primary'
+									variant={isDirty ? 'primary' : 'secondary'}
 									disabled={!isDirty || saveBtnBusy}
 									isBusy={saveBtnBusy}
 									onClick={handleSaveSettings}

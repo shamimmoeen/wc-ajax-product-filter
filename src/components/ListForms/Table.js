@@ -1,4 +1,4 @@
-import { Button, Icon } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import NoFormsFound from './NoFormsFound';
 import {
@@ -13,6 +13,7 @@ import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 import TippyTooltip from '../TippyTooltip';
+import { Icon } from '@wordpress/icons';
 
 const filterOnTooltip = __(
 	'Determines where you want to show the form to filter the products.',

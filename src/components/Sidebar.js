@@ -1,16 +1,11 @@
 import { __ } from '@wordpress/i18n';
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	Icon,
-} from '@wordpress/components';
+import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	DocumentationCardIcon,
 	ReviewCardIcon,
 	SupportCardIcon,
 } from './SVGIcons';
+import { Icon } from '@wordpress/icons';
 
 const documentation = __(
 	'Explore the comprehensive documentation and interactive demos.',
@@ -23,7 +18,7 @@ const support = __(
 );
 
 const review = __(
-	'Your 5-star review is a valuable reward 🏆 for me. Please help me grow in the community by sharing your review. Thank you in advance :)',
+	'Your feedback is incredibly valuable to me. If you enjoy using my plugin, I kindly ask for your support by leaving a review.',
 	'wc-ajax-product-filter'
 );
 
