@@ -15,7 +15,7 @@
     }
 }
 
-.__settings_tab {
+.__settings_wrapper .__settings_tab {
     @include inner-tab;
 
     .components-tab-panel__tabs {
