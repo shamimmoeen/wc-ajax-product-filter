@@ -28,7 +28,6 @@ class WCAPF_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_ui_scripts' ) );
 
 		// For review notices.
-		add_action( 'admin_notices', array( $this, 'display_review_notices' ) );
 		add_action( 'admin_head', array( $this, 'enqueue_review_notices_styles' ) );
 		add_action( 'admin_footer', array( $this, 'enqueue_review_notices_scripts' ) );
 		add_action( 'wp_ajax_wcapf_dismiss_review_notices', array( $this, 'dismiss_review_notices' ) );
@@ -398,49 +397,6 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * Display the admin notices asking for writing a review.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return void
-	 */
-	public function display_review_notices() {
-		$time_since = WCAPF_Helper::review_notice_for_time_since_can_be_shown();
-		$review_url = 'https://wordpress.org/support/plugin/wc-ajax-product-filter/reviews/?filter=5';
-
-		if ( WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown() ) {
-			?>
-			<div class="notice notice-info is-dismissible" id="wcapf-review-notice-for-milestone-achieved">
-				<p>
-					<span class="dashicons dashicons-smiley wcapf-dashicon-smiley"></span>
-					Great job! You have updated the filters five times. Your feedback encourages me to improve the
-					plugin. Please consider <a href="<?php echo esc_url( $review_url ); ?>" target="_blank">writing a
-						review on WordPress</a>. Thank you in advance :)
-				</p>
-				<button type="button" class="notice-dismiss" onclick="wcapfDismissNotice('milestone-achieved')">
-					<span class="screen-reader-text">Dismiss this notice</span>
-				</button>
-			</div>
-			<?php
-		} elseif ( $time_since ) {
-			?>
-			<div class="notice notice-info" id="wcapf-review-notice-for-time-since">
-				<p>
-					Awesome! You've been using WCAPF - WooCommerce Ajax Product Filter for more
-					than <?php echo esc_html( $time_since ); ?>. Would you mind taking a few seconds to give it a 5-star
-					rating on WordPress? Thank you in advance :)
-					<a href="<?php echo esc_url( $review_url ); ?>" target="_blank">Ok, you deserved it</a>
-					|
-					<a href="#" onclick="wcapfDismissNotice('permanently-dismiss-time-since')">I already did</a>
-					|
-					<a href="#" onclick="wcapfDismissNotice('postpone-time-since')">No, not good enough</a>
-				</p>
-			</div>
-			<?php
-		}
-	}
-
-	/**
 	 * Enqueue the styles for the review notices.
 	 *
 	 * @since 4.0.0
@@ -448,7 +404,11 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function enqueue_review_notices_styles() {
+		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages() ) ) {
+			return;
+		}
 		?>
+		<!--suppress CssUnusedSymbol -->
 		<style>
 			.wcapf-dashicon-smiley {
 				margin-right: 5px;
@@ -465,6 +425,10 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function enqueue_review_notices_scripts() {
+		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages() ) ) {
+			return;
+		}
+
 		$nonce = wp_create_nonce( 'wcapf-dismiss-review-notices-nonce' );
 		?>
 		<!--suppress ES6ConvertVarToLetConst, JSValidateTypes -->
