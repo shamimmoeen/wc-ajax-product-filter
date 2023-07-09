@@ -15,6 +15,11 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+// Don't proceed if pro version activated.
+if ( function_exists( 'wcapf_fs' ) ) {
+	return;
+}
+
 $option_key = 'wcapf_settings';
 $settings   = get_option( $option_key );
 
