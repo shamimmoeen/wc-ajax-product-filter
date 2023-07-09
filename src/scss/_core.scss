@@ -27,6 +27,37 @@ body {
 		display: grid;
 		grid-template-columns: 5fr 2fr;
 		gap: 40px;
+
+		// .__content {
+		// 	display: flex;
+		// 	flex-direction: column;
+
+		// 	.__list_table_wrapper {
+		// 		flex: 1;
+		// 		display: flex;
+		// 		flex-direction: column;
+
+		// 		.__list_table_header,
+		// 		.__list_table_summary {
+		// 			flex: 0 0 auto;
+		// 		}
+
+		// 		.__list_table_inner {
+		// 			flex: 1 0 auto;
+		// 		}
+
+		// 		.__list_table_summary {
+		// 			border-top: 1px solid #e2e4e7;
+		// 			text-align: center;
+		// 		}
+		// 	}
+
+		// 	.__settings_wrapper {
+		// 		flex: 1;
+		// 		display: flex;
+		// 		flex-direction: column;
+		// 	}
+		// }
 	}
 }
 

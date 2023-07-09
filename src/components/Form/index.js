@@ -14,15 +14,17 @@ import {
 	proFilterTypes,
 } from './utils';
 import ReviewNotices from './ReviewNotices';
-import { getFormId } from '../utils';
 
 const Form = () => {
 	const { dispatch } = useForm();
 
 	const getFormData = () => {
+		const query = new URL(window.location.href);
+		const id = query.searchParams.get('id');
+
 		const data = {
 			action: 'wcapf_get_form_data',
-			post_id: getFormId(),
+			post_id: id,
 		};
 
 		return axios.get(wcapf_admin_params.ajaxurl, {
