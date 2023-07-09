@@ -1,15 +1,35 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
-import { Link, NavLink } from 'react-router-dom';
 import { DiamondIcon } from './SVGIcons';
-import { pluginVersion, upgradeToProLink } from './utils';
+import {
+	getFormsPageLink,
+	// getSeoRulesPageLink,
+	getSettingsPageLink,
+	pluginVersion,
+	upgradeToProLink,
+} from './utils';
 import V4MigrationNotice from './V4MigrationNotice';
 import ReviewNotices from './ReviewNotices';
 
-const TopBar = ({ view }) => {
-	const url = window.location.hash;
-	console.log(url);
+const navMenus = [
+	{
+		label: __('Forms', 'wc-ajax-product-filter'),
+		id: 'forms',
+		href: getFormsPageLink(),
+	},
+	// {
+	// 	label: __('SEO Rules', 'wc-ajax-product-filter'),
+	// 	id: 'seo-rules',
+	// 	href: getSeoRulesPageLink(),
+	// },
+	{
+		label: __('Settings', 'wc-ajax-product-filter'),
+		id: 'settings',
+		href: getSettingsPageLink(),
+	},
+];
 
+const TopBar = ({ view }) => {
 	return (
 		<>
 			<div className='__top_bar'>
@@ -19,35 +39,19 @@ const TopBar = ({ view }) => {
 						WCAPF - WooCommerce Ajax Product Filter
 					</h2>
 
-					{wcapf_admin_params.pages.map(({ path, title }, index) => {
-						const isActive =
-							'#' + path === url ||
-							('/' === path && url.startsWith('#/form/')) ||
-							('' === url && '/' === path)
-								? 'is-active'
-								: '';
+					{navMenus.map((menu) => {
+						const _view = 'form' === view ? 'forms' : view;
+						const menuClass = _view === menu.id ? 'is-active' : '';
 
-						if (0 === index) {
-							return (
-								<NavLink
-									key={index}
-									to={path}
-									className={isActive}
-								>
-									{__('Forms', 'wc-ajax-product-filter')}
-								</NavLink>
-							);
-						} else {
-							return (
-								<Link
-									key={index}
-									to={path}
-									className={isActive}
-								>
-									{title}
-								</Link>
-							);
-						}
+						return (
+							<a
+								className={menuClass}
+								href={menu.href}
+								key={menu.id}
+							>
+								{menu.label}
+							</a>
+						);
 					})}
 				</div>
 

@@ -16,7 +16,6 @@ require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-post-type.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-rest-api.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-url-builder.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
