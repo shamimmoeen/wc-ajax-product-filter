@@ -71,6 +71,7 @@ class WCAPF_Product_Filter {
 		$statuses    = array();
 		$post_author = array();
 		$post_metas  = array();
+		$keyword     = array();
 
 		$filters_data = $this->filters_data( $query );
 
@@ -95,6 +96,8 @@ class WCAPF_Product_Filter {
 				$post_author[ $filter_key ] = $this->set_filter_by_post_author_data( $filter_values, $field_instance );
 			} elseif ( 'post-meta' === $filter_type ) {
 				$post_metas[ $filter_key ] = $this->set_filter_by_post_meta_data( $filter_values, $field_instance );
+			} elseif ( 'keyword' === $filter_type ) {
+				$keyword = $this->set_keyword_filter_data( $filter_values, $field_instance );
 			}
 		}
 
@@ -104,6 +107,10 @@ class WCAPF_Product_Filter {
 		$chosen['product-status'] = $statuses;
 		$chosen['post-author']    = $post_author;
 		$chosen['post-meta']      = $post_metas;
+
+		if ( $keyword ) {
+			$chosen['filters_data']['keyword'] = $keyword;
+		}
 
 		$chosen = $this->set_default_sorting_data( $chosen );
 
@@ -839,6 +846,40 @@ class WCAPF_Product_Filter {
 		}
 
 		return $join;
+	}
+
+	/**
+	 * Sets the keyword filter data.
+	 *
+	 * @param string               $filter_value
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @since 4.1.0
+	 *
+	 * @return array
+	 */
+	public function set_keyword_filter_data( $filter_value, $field_instance ) {
+		$filter_key     = $field_instance->filter_key;
+		$filter_id      = $field_instance->filter_id;
+		$active_filters = array();
+
+		$utils  = new WCAPF_Product_Filter_Utils;
+		$prefix = WCAPF_Helper::keyword_filter_prefix();
+
+		$filter_values = $utils::get_chosen_filter_values( $filter_value );
+
+		if ( $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
+			foreach ( $filter_values as $filter_value ) {
+				$active_filters[ $filter_value ] = $prefix . ' ' . $filter_value;
+			}
+		}
+
+		return array(
+			'values'         => $filter_values,
+			'filter_key'     => $filter_key,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
+		);
 	}
 
 	/**

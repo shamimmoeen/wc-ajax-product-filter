@@ -956,7 +956,9 @@ class WCAPF_Walker {
 			'search-box',
 			array(
 				'placeholder'   => $placeholder,
+				'value'         => '',
 				'icon_position' => 'right',
+				'with_cross'    => true,
 			),
 			false
 		);
@@ -1057,7 +1059,7 @@ class WCAPF_Walker {
 			$input_classes .= ' with-count';
 		}
 
-		$filter_url       = $this->url_builder->get_dropdown_url();
+		$filter_url       = $this->url_builder->get_filter_url_with_placeholder();
 		$clear_filter_url = $this->url_builder->get_clear_filter_url();
 
 		$input_attrs .= ' data-url="' . esc_url( $filter_url ) . '"';

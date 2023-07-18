@@ -140,7 +140,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const isApplicable = (field = 'reduce-height') => {
-		if (activeFilters) {
+		if (activeFilters || 'keyword' === type) {
 			return false;
 		}
 

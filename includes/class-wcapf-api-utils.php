@@ -171,6 +171,11 @@ class WCAPF_API_Utils {
 				'value' => 'post-meta',
 			),
 			array(
+				'label' => __( 'Keyword', 'wc-ajax-product-filter' ),
+				'value' => 'keyword',
+				'key'   => 'keyword',
+			),
+			array(
 				'label' => __( 'Sort By', 'wc-ajax-product-filter' ),
 				'value' => 'sort-by',
 				'key'   => 'sort-by',

@@ -20,6 +20,8 @@ const Others = () => {
 
 	const {
 		settings: {
+			keyword_filter_placeholder,
+			keyword_filter_prefix,
 			search_field_default_placeholder,
 			no_results_text,
 			combobox_no_options_text,
@@ -64,6 +66,26 @@ const Others = () => {
 					'wc-ajax-product-filter'
 				)}
 			</p>
+
+			<Text
+				id={'keyword_filter_placeholder'}
+				label={__(
+					'Keyword filter placeholder',
+					'wc-ajax-product-filter'
+				)}
+				value={keyword_filter_placeholder}
+				onChange={handleTextFieldChange}
+			/>
+
+			<Text
+				id={'keyword_filter_prefix'}
+				label={__(
+					'Keyword filter prefix',
+					'wc-ajax-product-filter'
+				)}
+				value={keyword_filter_prefix}
+				onChange={handleTextFieldChange}
+			/>
 
 			<Text
 				id={'search_field_default_placeholder'}
