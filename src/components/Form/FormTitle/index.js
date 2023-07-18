@@ -13,7 +13,7 @@ import {
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
-import { GENERIC_ERROR_MESSAGE, proUpgradeRequired } from '../../utils';
+import { GENERIC_ERROR_MESSAGE, proUpdateRequired } from '../../utils';
 import {
 	getFilterKeyError,
 	filterDefaultData,
@@ -25,14 +25,14 @@ import {
 	proFilterComponents,
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
-import ProUpgradeModal from '../../Modals/ProUpgradeModal';
+import ProUpdateModal from '../../Modals/ProUpdateModal';
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();
 	const { setDirty } = useFormData(state, dispatch);
 
 	const [publishModalOpen, setPublishModalOpen] = useState(false);
-	const [proUpgradeModalOpen, setProUpgradeModalOpen] = useState(false);
+	const [ProUpdateModalOpen, setProUpdateModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const {
@@ -77,12 +77,12 @@ const FormTitle = () => {
 		setPublishModalOpen(false);
 	};
 
-	const handleOpenProUpgradeModal = () => {
-		setProUpgradeModalOpen(true);
+	const handleOpenProUpdateModal = () => {
+		setProUpdateModalOpen(true);
 	};
 
-	const handleCloseProUpgradeModal = () => {
-		setProUpgradeModalOpen(false);
+	const handleCloseProUpdateModal = () => {
+		setProUpdateModalOpen(false);
 	};
 
 	const formFiltersAreValid = () => {
@@ -484,8 +484,8 @@ const FormTitle = () => {
 
 	const handleSubmit = () => {
 		if (isDirty) {
-			if (proUpgradeRequired()) {
-				handleOpenProUpgradeModal();
+			if (proUpdateRequired()) {
+				handleOpenProUpdateModal();
 			} else {
 				handleSaveForm();
 			}
@@ -507,9 +507,9 @@ const FormTitle = () => {
 				closeModal={handleClosePublishModal}
 			/>
 
-			<ProUpgradeModal
-				isOpen={proUpgradeModalOpen}
-				closeModal={handleCloseProUpgradeModal}
+			<ProUpdateModal
+				isOpen={ProUpdateModalOpen}
+				closeModal={handleCloseProUpdateModal}
 			/>
 		</>
 	);

@@ -58,8 +58,8 @@ class WCAPF_V4_Migration_Hooks {
 			'dismiss_v4_review_filters_notice'
 		) );
 
-		// Notice to upgrade the pro version.
-		add_action( 'admin_notices', array( $this, 'show_pro_version_upgrade_notice' ) );
+		// Notice to update the pro version.
+		add_action( 'admin_notices', array( $this, 'show_pro_version_update_notice' ) );
 	}
 
 	/**
@@ -78,13 +78,13 @@ class WCAPF_V4_Migration_Hooks {
 		$params['v4_migrated_form_url']          = $this->get_v4_migrated_form_url();
 		$params['v4_migration_doc_url']          = $this->get_v4_migration_doc_url();
 
-		$pro_upgrade_notices = WCAPF_Helper::pro_upgrade_notice_can_be_shown();
+		$pro_update_notices = WCAPF_Helper::pro_update_notice_can_be_shown();
 
-		if ( ! empty( $pro_upgrade_notices ) ) {
+		if ( ! empty( $pro_update_notices ) ) {
 			// Get the first notice.
-			$notice = array_shift( $pro_upgrade_notices );
+			$notice = array_shift( $pro_update_notices );
 
-			$params['pro_upgrade_notice'] = $notice;
+			$params['pro_update_notice'] = $notice;
 		}
 
 		return $params;
@@ -162,7 +162,7 @@ class WCAPF_V4_Migration_Hooks {
 				<strong>WCAPF - WooCommerce Ajax Product Filter (v4 Migration Notice)</strong>
 			</p>
 			<p>
-				The WC Ajax Product Filter plugin has been upgraded to v4 and is now named WCAPF - WooCommerce Ajax
+				The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF - WooCommerce Ajax
 				Product Filter. We have redesigned the admin UI to provide a more intuitive user experience and
 				refactored the codebase for improved performance and easier future enhancements. As part of the
 				migration process, a form has been automatically created with all the existing filters from your shop.
@@ -283,14 +283,14 @@ class WCAPF_V4_Migration_Hooks {
 	}
 
 	/**
-	 * Show notice to upgrade the pro version to v2.
+	 * Show notice to update the pro version to v2.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
-	public function show_pro_version_upgrade_notice() {
-		$notices = WCAPF_Helper::pro_upgrade_notice_can_be_shown();
+	public function show_pro_version_update_notice() {
+		$notices = WCAPF_Helper::pro_update_notice_can_be_shown();
 
 		if ( ! empty( $notices ) ) {
 			// Get the first notice.
