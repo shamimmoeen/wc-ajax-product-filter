@@ -174,9 +174,9 @@ If the issue persists, please open a support ticket, and our dedicated support t
 
 = 4.1.0 (18 July 2023) =
 
-* **New Feature:** Added keyword filter to enable product filtering using keywords
-* **Compatibility:** Ensured plugin compatibility with WordPress 6.0
-* **UI Enhancement:** Improved the admin user interface
+* New Feature – Added keyword filter to enable product filtering using keywords
+* Compatibility – Ensured plugin compatibility with WordPress 6.0
+* UI Enhancement – Improved the admin user interface
 
 = 4.0.0 (15 June 2023) =
 
