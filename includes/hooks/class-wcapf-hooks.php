@@ -346,9 +346,11 @@ class WCAPF_Hooks {
 	 * Query the products, applying sorting/ordering etc. This applies to the
 	 * main WordPress loop.
 	 *
+	 * @param WP_Query $q Query instance.
+	 *
 	 * @return void
 	 */
-	public function set_query() {
+	public function set_query( $q ) {
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}
@@ -367,6 +369,17 @@ class WCAPF_Hooks {
 		 * We must hook the filter early to avoid the sorting issues.
 		 */
 		add_filter( 'posts_clauses', array( $this, 'posts_clauses' ), 5, 2 );
+
+		/**
+		 * Apply the keyword filter.
+		 */
+		if ( $q->is_main_query() ) {
+			$keyword = WCAPF_Helper::get_applied_keyword();
+
+			if ( $keyword ) {
+				$q->set( 's', $keyword );
+			}
+		}
 	}
 
 	/**

@@ -10,6 +10,7 @@
 const wcapf_params = wcapf_params || {
 	'is_rtl': '',
 	'filter_input_delay': '',
+	'keyword_filter_delay': '',
 	'combobox_display_selected_options': '',
 	'combobox_no_results_text': '',
 	'combobox_options_none_text': '',
@@ -55,6 +56,9 @@ const wcapf_params = wcapf_params || {
 
 	const _delay = parseInt( wcapf_params.filter_input_delay );
 	const delay  = _delay >= 0 ? _delay : 300;
+
+	const _keywordFilterDelay = parseInt( wcapf_params.keyword_filter_delay );
+	const keywordFilterDelay  = _keywordFilterDelay >= 0 ? _keywordFilterDelay : 100;
 
 	const isPro = wcapf_params.wcapf_pro;
 
@@ -256,6 +260,44 @@ const wcapf_params = wcapf_params || {
 					noResults.children( 'span' ).text( '' );
 					noResults.hide();
 				}
+			} );
+
+			$body.on( 'click', '.wcapf-search-box .wcapf-clear-state', function() {
+				const $that      = $( this );
+				const $searchBox = $that.closest( '.wcapf-search-box' );
+				const $input     = $searchBox.find( 'input[type="text"]' );
+				const $filter    = $searchBox.closest( '.wcapf-filter' );
+
+				$input.val( '' );
+
+				if ( $filter.hasClass( 'wcapf-filter-keyword' ) ) {
+					$input.trigger( 'change' );
+				} else {
+					$input.trigger( 'input' );
+				}
+			} );
+
+			$body.on( 'change', '.wcapf-filter-keyword input[type="text"]', function() {
+				const $that    = $( this );
+				const $wrapper = $that.closest( '.wcapf-keyword-filter-wrapper' );
+				const keyword  = $that.val();
+
+				// Clear any previously set timer before setting a fresh one
+				clearTimeout( $that.data( 'timer' ) );
+
+				const filterURL      = $wrapper.data( 'filter-url' );
+				const clearFilterURL = $wrapper.data( 'clear-filter-url' );
+				let url;
+
+				if ( keyword.length ) {
+					url = filterURL.replace( '%s', keyword );
+				} else {
+					url = clearFilterURL;
+				}
+
+				$that.data( 'timer', setTimeout( function() {
+					WCAPF.requestFilter( url );
+				}, keywordFilterDelay ) );
 			} );
 		},
 		updateProductsCountResult: function( $response ) {

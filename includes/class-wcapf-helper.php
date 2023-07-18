@@ -689,6 +689,22 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Gets the applied keyword.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @return string
+	 */
+	public static function get_applied_keyword() {
+		$chosen = WCAPF_Helper::get_chosen_filters();
+
+		$filters_data = isset( $chosen['filters_data'] ) ? $chosen['filters_data'] : array();
+		$keyword_data = isset( $filters_data['keyword'] ) ? $filters_data['keyword'] : array();
+
+		return isset( $keyword_data['values'][0] ) ? $keyword_data['values'][0] : '';
+	}
+
+	/**
 	 * Gets the rgb array from hex color.
 	 *
 	 * @param string $hex The hex color code.
@@ -771,6 +787,15 @@ class WCAPF_Helper {
 	 */
 	public static function sort_by_prefix() {
 		return self::wcapf_option( 'sort_by_prefix', __( 'Sort by:', 'wc-ajax-product-filter' ) );
+	}
+
+	/**
+	 * @since 4.1.0
+	 *
+	 * @return string
+	 */
+	public static function keyword_filter_prefix() {
+		return self::wcapf_option( 'keyword_filter_prefix', __( 'Keyword:', 'wc-ajax-product-filter' ) );
 	}
 
 	public static function opening_btn_label() {

@@ -119,6 +119,36 @@ const Text = ({
 								/>
 							)}
 
+							{'keyword_filter_placeholder' === id && (
+								<TippyTooltip
+									content={
+										<>
+											Applicable for the input field of
+											the keyword filter.
+											<br />
+											<br />
+											Default is "Search products"
+										</>
+									}
+								/>
+							)}
+
+							{'keyword_filter_prefix' === id && (
+								<TippyTooltip
+									content={
+										<>
+											This prefix will be used in the
+											active filters, before the keyword.
+											<br />
+											<br />
+											Default is "Keyword:". For a value
+											"shirt", it becomes "Keyword: shirt"
+											in the active filters.
+										</>
+									}
+								/>
+							)}
+
 							{'search_field_default_placeholder' === id && (
 								<TippyTooltip
 									content={

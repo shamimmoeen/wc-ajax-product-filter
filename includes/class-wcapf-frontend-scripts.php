@@ -219,6 +219,7 @@ class WCAPF_Frontend_Scripts {
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
 			'filter_input_delay'                       => WCAPF_Helper::wcapf_option( 'input_delay' ),
+			'keyword_filter_delay'                     => 100,
 			'combobox_display_selected_options'        => false,
 			'combobox_no_results_text'                 => $combobox_no_results_text,
 			'combobox_options_none_text'               => $combobox_options_none_text,
