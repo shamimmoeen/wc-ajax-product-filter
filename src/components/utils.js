@@ -11,8 +11,8 @@ export const FILTER_KEY_IN_USE_MESSAGE = __(
 	'wc-ajax-product-filter'
 );
 
-export function proUpgradeRequired() {
-	return wcapf_admin_params.pro_upgrade_notice || null;
+export function proUpdateRequired() {
+	return wcapf_admin_params.pro_update_notice || null;
 }
 
 export function wpVersion() {

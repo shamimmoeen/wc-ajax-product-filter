@@ -966,8 +966,8 @@ class WCAPF_Helper {
 			return false;
 		}
 
-		// Check if we are showing the pro version upgrade required notice.
-		if ( self::pro_upgrade_notice_can_be_shown() ) {
+		// Check if we are showing the pro version update required notice.
+		if ( self::pro_update_notice_can_be_shown() ) {
 			return false;
 		}
 
@@ -1031,17 +1031,17 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Checks if the upgrade notice for the Pro version can be shown.
+	 * Checks if the update notice for the Pro version can be shown.
 	 *
 	 * TODO: Check this thoroughly.
 	 *
 	 * @since        4.0.0
 	 *
-	 * @return array An array of upgrade notices, if any, based on the version requirements.
-	 *               Each notice provides information on the required versions and a link to proceed with the upgrade.
-	 *               Returns an empty array if no upgrade notices need to be shown.
+	 * @return array An array of update notices, if any, based on the version requirements.
+	 *               Each notice provides information on the required versions and a link to proceed with the update.
+	 *               Returns an empty array if no update notices need to be shown.
 	 */
-	public static function pro_upgrade_notice_can_be_shown() {
+	public static function pro_update_notice_can_be_shown() {
 		$notices = array();
 
 		// Check if the current user has the capability to manage options
@@ -1056,26 +1056,26 @@ class WCAPF_Helper {
 
 		// Check if pro version found but the version number could not be obtained using the constant.
 		if ( ! defined( 'WCAPF_PRO_VERSION' ) ) {
-			$notices[] = self::get_pro_upgrade_notice( '2.1.0' );
+			$notices[] = self::get_pro_update_notice( '2.1.0' );
 
 			return $notices;
 		}
 
 		// Check if the free version is 4.0.0 and pro version is less than 2.0.0
 		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.0.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
-			$notices[] = self::get_pro_upgrade_notice( '2.0.0' );
+			$notices[] = self::get_pro_update_notice( '2.0.0' );
 		}
 
 		// Check if the free version is 4.1.0 and pro version is less than or equal to 2.0.0
 		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.1.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<=' ) ) {
-			$notices[] = self::get_pro_upgrade_notice( '2.1.0' );
+			$notices[] = self::get_pro_update_notice( '2.1.0' );
 		}
 
 		return $notices;
 	}
 
 	/**
-	 * Get the pro upgrade notice.
+	 * Get the pro updated notice.
 	 *
 	 * @param string $required_pro_version The required pro version.
 	 *
@@ -1083,14 +1083,14 @@ class WCAPF_Helper {
 	 *
 	 * @return string
 	 */
-	private static function get_pro_upgrade_notice( $required_pro_version ) {
-		$pro_upgrade_doc_url = add_query_arg(
+	private static function get_pro_update_notice( $required_pro_version ) {
+		$update_plugin_doc_url = add_query_arg(
 			array(
 				'utm_source'   => 'WP+Admin',
-				'utm_medium'   => 'upgrade_notice',
-				'utm_campaign' => 'WCAPF+Pro+Upgrade',
+				'utm_medium'   => 'update_pro_notice',
+				'utm_campaign' => 'WCAPF+Pro+Update',
 			),
-			'https://wptools.io/docs/wc-ajax-product-filter/pro-upgrade/'
+			'https://wptools.io/docs/wc-ajax-product-filter/getting-started/update/'
 		);
 
 		if ( defined( 'WCAPF_PRO_VERSION' ) ) {
@@ -1102,11 +1102,11 @@ class WCAPF_Helper {
 
 		/** @noinspection HtmlUnknownTarget */
 		return sprintf(
-			__( 'WCAPF - WooCommerce Ajax Product Filter version %s requires WCAPF - WooCommerce Ajax Product Filter Pro version %s or higher, but you are using %s. The Pro version is currently NOT RUNNING. <a href="%s" target="_blank">Please proceed with the upgrade</a>.', 'wc-ajax-product-filter' ),
+			__( 'WCAPF - WooCommerce Ajax Product Filter version %s requires WCAPF - WooCommerce Ajax Product Filter Pro version %s or higher, but you are using %s. The Pro version is currently NOT RUNNING. <a href="%s" target="_blank">Please proceed with the update</a>.', 'wc-ajax-product-filter' ),
 			WCAPF_VERSION,
 			$required_pro_version,
 			$pro_version,
-			$pro_upgrade_doc_url
+			$update_plugin_doc_url
 		);
 	}
 

@@ -1,10 +1,10 @@
 import { Button } from '@wordpress/components';
-import { proUpgradeRequired } from './utils';
+import { proUpdateRequired } from './utils';
 
 const showMigrationNotice = wcapf_admin_params.show_v4_migration_notice;
 const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
 const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
-const proUpgradeNotice = proUpgradeRequired();
+const proUpdateNotice = proUpdateRequired();
 
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {
@@ -17,7 +17,7 @@ const V4MigrationNotice = () => {
 		<>
 			{showMigrationNotice && (
 				<div
-					className='notice notice-info v4-upgrade-notice'
+					className='notice notice-info v4-update-notice'
 					id='wcapf-v4-migration-notice'
 				>
 					<p>
@@ -27,8 +27,8 @@ const V4MigrationNotice = () => {
 						</strong>
 					</p>
 					<p>
-						The WC Ajax Product Filter plugin has been upgraded to
-						v4 and is now named WCAPF - WooCommerce Ajax Product
+						The WC Ajax Product Filter plugin has been updated to v4
+						and is now named WCAPF - WooCommerce Ajax Product
 						Filter. We have redesigned the admin UI to provide a
 						more intuitive user experience and refactored the
 						codebase for improved performance and easier future
@@ -57,9 +57,9 @@ const V4MigrationNotice = () => {
 				</div>
 			)}
 
-			{proUpgradeNotice && (
-				<div className='notice notice-error pro-upgrade-notice'>
-					<p dangerouslySetInnerHTML={{ __html: proUpgradeNotice }} />
+			{proUpdateNotice && (
+				<div className='notice notice-error pro-update-notice'>
+					<p dangerouslySetInnerHTML={{ __html: proUpdateNotice }} />
 				</div>
 			)}
 		</>

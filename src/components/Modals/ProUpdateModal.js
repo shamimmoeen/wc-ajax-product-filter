@@ -1,19 +1,19 @@
 import { __ } from '@wordpress/i18n';
 import { Modal, Button } from '@wordpress/components';
-import { proUpgradeRequired } from '../utils';
+import { proUpdateRequired } from '../utils';
 
-const message = proUpgradeRequired();
+const message = proUpdateRequired();
 
-const ProUpgradeModal = ({ isOpen, closeModal }) => {
+const ProUpdateModal = ({ isOpen, closeModal }) => {
 	return (
 		isOpen && (
 			<Modal
 				onRequestClose={closeModal}
 				__experimentalHideHeader
-				className='__pro_upgrade_modal'
+				className='__pro_update_modal'
 			>
 				<h3>
-					WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade
+					WCAPF - WooCommerce Ajax Product Filter Pro (Update
 					Required)
 				</h3>
 
@@ -31,4 +31,4 @@ const ProUpgradeModal = ({ isOpen, closeModal }) => {
 	);
 };
 
-export default ProUpgradeModal;
+export default ProUpdateModal;

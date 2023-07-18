@@ -24,10 +24,10 @@ import Others from './Tabs/Others';
 import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
-	proUpgradeRequired,
+	proUpdateRequired,
 } from '../utils';
 import { defaultSettings } from './utils';
-import ProUpgradeModal from '../Modals/ProUpgradeModal';
+import ProUpdateModal from '../Modals/ProUpdateModal';
 import { Icon } from '@wordpress/icons';
 
 const tabs = [
@@ -73,14 +73,14 @@ const Settings = () => {
 	} = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
-	const [proUpgradeModalOpen, setProUpgradeModalOpen] = useState(false);
+	const [ProUpdateModalOpen, setProUpdateModalOpen] = useState(false);
 
-	const handleOpenProUpgradeModal = () => {
-		setProUpgradeModalOpen(true);
+	const handleOpenProUpdateModal = () => {
+		setProUpdateModalOpen(true);
 	};
 
-	const handleCloseProUpgradeModal = () => {
-		setProUpgradeModalOpen(false);
+	const handleCloseProUpdateModal = () => {
+		setProUpdateModalOpen(false);
 	};
 
 	const handleTabChange = (newTab) => {
@@ -178,8 +178,8 @@ const Settings = () => {
 	};
 
 	const handleSaveSettings = () => {
-		if (proUpgradeRequired()) {
-			handleOpenProUpgradeModal();
+		if (proUpdateRequired()) {
+			handleOpenProUpdateModal();
 
 			return;
 		}
@@ -294,9 +294,9 @@ const Settings = () => {
 		<div className='__wcapf_admin'>
 			<TopBar view={'settings'} />
 
-			<ProUpgradeModal
-				isOpen={proUpgradeModalOpen}
-				closeModal={handleCloseProUpgradeModal}
+			<ProUpdateModal
+				isOpen={ProUpdateModalOpen}
+				closeModal={handleCloseProUpdateModal}
 			/>
 
 			<div className='__wcapf_layout'>
