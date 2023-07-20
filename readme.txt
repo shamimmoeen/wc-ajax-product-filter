@@ -32,6 +32,8 @@ WCAPF - WooCommerce Ajax Product Filter is a powerful plugin that enhances the f
 
 - **Filter by Post-Meta:** Offer customers the ability to filter products based on custom post metadata, with support for different value types like text, number, or date.
 
+- **Filter by Keyword:** Enable customers to search for products using keywords to find specific items quickly.
+
 - **Sort by Filter:** Offer customers the option to sort products based on different criteria, enhancing their browsing experience.
 
 - **Per Page Filter:** Allow customers to select the number of products displayed per page.
@@ -172,7 +174,7 @@ If the issue persists, please open a support ticket, and our dedicated support t
 
 == Changelog ==
 
-= 4.1.0 (18 July 2023) =
+= 4.1.0 (20 July 2023) =
 
 * New Feature – Added keyword filter to enable product filtering using keywords
 * Compatibility – Ensured plugin compatibility with WordPress 6.0
@@ -181,9 +183,13 @@ If the issue persists, please open a support ticket, and our dedicated support t
 = 4.0.0 (15 June 2023) =
 
 * **Redesigned Admin UI:** We have revamped the plugin's admin interface to provide a more intuitive and user-friendly experience. You'll find it easier than ever to configure and manage your product filters.
+
 * **Codebase Refactoring:** We have refactored the codebase to optimize performance and lay a solid foundation for future enhancements.
+
 * **Filter-Form Association:** Filters are now linked to a form. This means that filters are contained within a specific form, simplifying management and organization. The form shortcode is now used to display all filters linked to that form on the frontend.
+
 * **Additional Settings:** We have introduced additional settings that offer you more control over your filters.
+
 * **Bug Fixes:** We have diligently addressed and fixed several bugs reported by our valued users. These fixes contribute to a more stable and reliable plugin performance.
 
 = 3.3.2 (04 January 2023) =
