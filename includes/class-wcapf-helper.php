@@ -1090,7 +1090,7 @@ class WCAPF_Helper {
 				'utm_medium'   => 'update_pro_notice',
 				'utm_campaign' => 'WCAPF+Pro+Update',
 			),
-			'https://wptools.io/docs/wc-ajax-product-filter/getting-started/update/'
+			'https://wptools.io/docs/wc-ajax-product-filter/getting-started/update-plugin/'
 		);
 
 		if ( defined( 'WCAPF_PRO_VERSION' ) ) {
