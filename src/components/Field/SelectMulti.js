@@ -4,7 +4,7 @@ import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
 import axios from 'axios';
 import { FormatSelectMultiLabel } from './utilsForReactSelect';
-import { getInputId } from '../utils';
+import { getInputId, getNonceToken } from '../utils';
 
 const SelectMulti = ({
 	label,
@@ -59,6 +59,8 @@ const SelectMulti = ({
 				page,
 			};
 		}
+
+		ajaxParams['nonce'] = getNonceToken();
 
 		// Fetch the options.
 		try {

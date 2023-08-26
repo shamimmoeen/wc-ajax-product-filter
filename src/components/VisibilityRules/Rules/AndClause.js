@@ -3,6 +3,7 @@ import { Button } from '@wordpress/components';
 import OrClause from './OrClause';
 
 const AndClause = ({
+	filterData,
 	clause,
 	andIndex,
 	handleChange,
@@ -14,6 +15,7 @@ const AndClause = ({
 			<div className='or-clauses'>
 				{clause.map((andClause, index) => (
 					<OrClause
+						filterData={filterData}
 						clause={andClause}
 						orIndex={index}
 						andIndex={andIndex}

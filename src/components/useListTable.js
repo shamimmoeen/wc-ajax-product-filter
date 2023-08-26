@@ -10,6 +10,7 @@ import {
 	removeItemDeletedNotices,
 	removeItemDuplicatedNotices,
 } from './notices';
+import { getNonceToken } from './utils';
 
 const useListTable = (dispatch, items, postType) => {
 	const [addNewModalOpen, setAddNewModalOpen] = useState(false);
@@ -57,6 +58,7 @@ const useListTable = (dispatch, items, postType) => {
 		const formData = new FormData();
 
 		formData.append('action', `wcapf_delete_${postType}`);
+		formData.append('nonce', getNonceToken());
 		formData.append('post_id', id);
 
 		axios
@@ -107,6 +109,7 @@ const useListTable = (dispatch, items, postType) => {
 		const formData = new FormData();
 
 		formData.append('action', `wcapf_duplicate_${postType}`);
+		formData.append('nonce', getNonceToken());
 		formData.append('post_id', id);
 
 		axios

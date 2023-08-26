@@ -343,8 +343,7 @@ class WCAPF_Hooks {
 	}
 
 	/**
-	 * Query the products, applying sorting/ordering etc. This applies to the
-	 * main WordPress loop.
+	 * Query the products, applying the filters. This applies to the main WordPress loop.
 	 *
 	 * @param WP_Query $q Query instance.
 	 *

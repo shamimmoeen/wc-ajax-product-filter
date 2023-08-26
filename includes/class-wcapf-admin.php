@@ -287,6 +287,7 @@ class WCAPF_Admin {
 			'pro_version'  => defined( 'WCAPF_PRO_VERSION' ) ? WCAPF_PRO_VERSION : false,
 			'wp_version'   => get_bloginfo( 'version' ),
 			'dirty'        => false,
+			'nonce'        => wp_create_nonce( 'wcapf-nonce' ),
 		);
 
 		$helper = new WCAPF_Helper();

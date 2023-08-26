@@ -2,8 +2,8 @@
 **Contributors:** [shamimmoeen](https://profiles.wordpress.org/shamimmoeen/)  
 **Tags:** product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter  
 **Requires at least:** 6.0  
-**Tested up to:** 6.2  
-**Stable tag:** 4.1.0  
+**Tested up to:** 6.3  
+**Stable tag:** 4.2.0  
 **Requires PHP:** 7.2  
 **License:** GPLv3  
 **License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
@@ -173,6 +173,11 @@ If the issue persists, please open a support ticket, and our dedicated support t
 6. Plugin Settings
 
 ## Changelog ##
+
+### 4.2.0 (27 August 2023) ###
+
+* Fix: Resolved issue with unwanted filter options on attribute filters using lookup tables
+* Security: Addressed vulnerabilities for enhanced plugin security
 
 ### 4.1.0 (20 July 2023) ###
 
