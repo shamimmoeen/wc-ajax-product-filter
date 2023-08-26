@@ -370,6 +370,7 @@ class WCAPF_Default_Data {
 			'soft_limit'                            => '5',
 			'max_height'                            => '200',
 			'show_in_active_filters'                => '1',
+			'enable_visibility_rules'               => '',
 			'visibility_rules'                      => array(),
 			// Active filters
 			'active_filters_layout'                 => 'simple',

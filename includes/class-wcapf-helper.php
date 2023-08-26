@@ -506,6 +506,7 @@ class WCAPF_Helper {
 	public static function get_active_filters_markup( $filter_data, $extra_class = '' ) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 		$filter_key     = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
+		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : '';
 
 		$classes = 'wcapf-filter-clear-btn wcapf-active-filter-item';
 		$classes .= $extra_class ? ' ' . $extra_class : '';
@@ -513,8 +514,14 @@ class WCAPF_Helper {
 		$html = '';
 
 		foreach ( $active_filters as $value => $label ) {
-			$url_builder      = new WCAPF_URL_Builder( $filter_key, true );
-			$clear_filter_url = $url_builder->get_filter_url( $value, true );
+			$url_builder = new WCAPF_URL_Builder( $filter_key, true );
+
+			if ( 'keyword' === $filter_type ) {
+				// Here, it is possible to apply multiple keywords, so clear all applied keywords at once.
+				$clear_filter_url = $url_builder->get_clear_filter_url();
+			} else {
+				$clear_filter_url = $url_builder->get_filter_url( $value, true );
+			}
 
 			$attrs = 'class="' . esc_attr( $classes ) . '"';
 			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';

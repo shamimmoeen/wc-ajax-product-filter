@@ -115,12 +115,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$term_ids      = wp_list_pluck( $terms, 'id' );
 		$updated_count = array();
-		$field_type    = $this->field->type;
 
-		if ( 'attribute' == $field_type && WCAPF_Helper::filtering_via_lookup_table_is_active() ) {
+		$attributes = wc_get_attribute_taxonomy_names();
+		$taxonomy   = $this->taxonomy;
+
+		if ( in_array( $taxonomy, $attributes ) && WCAPF_Helper::filtering_via_lookup_table_is_active() ) {
 			$filtered_count = $this->get_filtered_term_product_counts_using_lookup_table( $term_ids );
 		} else {
-			if ( is_taxonomy_hierarchical( $this->taxonomy ) ) {
+			if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 				$filtered_count = $this->get_hierarchical_term_product_counts( $term_ids );
 			} else {
 				$filtered_count = $this->get_non_hierarchical_term_product_counts( $term_ids );

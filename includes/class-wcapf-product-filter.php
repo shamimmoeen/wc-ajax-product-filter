@@ -78,7 +78,7 @@ class WCAPF_Product_Filter {
 		foreach ( $filters_data as $filter_key => $field ) {
 			$field_instance = new WCAPF_Field_Instance( $field );
 			$filter_type    = $field_instance->filter_type;
-			$filter_values  = $query[ $filter_key ];
+			$filter_values  = sanitize_text_field( $query[ $filter_key ] ); // Sanitize the value that comes from the url.
 
 			if ( 'taxonomy' === $filter_type ) {
 				$taxonomy = $field_instance->taxonomy;
@@ -863,16 +863,12 @@ class WCAPF_Product_Filter {
 		$filter_id      = $field_instance->filter_id;
 		$active_filters = array();
 
-		$utils  = new WCAPF_Product_Filter_Utils;
+		// Here, it is possible to apply multiple keywords separated by comma or space.
+		$filter_values = array( $filter_value );
+
 		$prefix = WCAPF_Helper::keyword_filter_prefix();
 
-		$filter_values = $utils::get_chosen_filter_values( $filter_value );
-
-		if ( $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
-			foreach ( $filter_values as $filter_value ) {
-				$active_filters[ $filter_value ] = $prefix . ' ' . $filter_value;
-			}
-		}
+		$active_filters[ $filter_value ] = $prefix . ' ' . $filter_value;
 
 		return array(
 			'values'         => $filter_values,

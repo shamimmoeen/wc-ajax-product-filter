@@ -14,6 +14,8 @@ import {
 	proFilterTypes,
 } from './utils';
 import ReviewNotices from './ReviewNotices';
+import { getNonceToken } from '../utils';
+import { getFormFiltersErrorNotice } from '../notices';
 
 const Form = () => {
 	const { dispatch } = useForm();
@@ -24,6 +26,7 @@ const Form = () => {
 
 		const data = {
 			action: 'wcapf_get_form_data',
+			nonce: getNonceToken(),
 			post_id: id,
 		};
 
@@ -36,8 +39,16 @@ const Form = () => {
 		getFormData()
 			.then((response) => {
 				const {
-					data: { data: formData },
+					data: { data: formData, success },
 				} = response;
+
+				if (!success) {
+					getFormFiltersErrorNotice(formData); // Here formData is the error message.
+
+					dispatch({ type: 'SET_LOADING', payload: false });
+
+					return;
+				}
 
 				const filterKeys = formData['filter_keys'];
 				const formFilters = [];
@@ -98,7 +109,7 @@ const Form = () => {
 				dispatch({ type: 'SET_LOADING', payload: false });
 			})
 			.catch((err) => {
-				// TODO: Maybe show a snackbar notice.
+				getFormFiltersErrorNotice(err.message);
 
 				console.log(err);
 

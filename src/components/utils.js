@@ -11,6 +11,10 @@ export const FILTER_KEY_IN_USE_MESSAGE = __(
 	'wc-ajax-product-filter'
 );
 
+export function getNonceToken() {
+	return wcapf_admin_params.nonce || '';
+}
+
 export function proUpdateRequired() {
 	return wcapf_admin_params.pro_update_notice || null;
 }

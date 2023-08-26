@@ -24,6 +24,7 @@ import Others from './Tabs/Others';
 import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
+	getNonceToken,
 	proUpdateRequired,
 } from '../utils';
 import { defaultSettings } from './utils';
@@ -196,6 +197,7 @@ const Settings = () => {
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_save_settings');
+		formData.append('nonce', getNonceToken());
 		formData.append('settings', JSON.stringify(sanitizedSettings()));
 		formData.append('filter_keys', JSON.stringify(validatedFilterKeys));
 		formData.append('update_filter_keys', updateFilterKeys);

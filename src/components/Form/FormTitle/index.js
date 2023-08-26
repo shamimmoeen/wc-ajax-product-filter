@@ -13,7 +13,11 @@ import {
 } from '../../notices';
 import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
-import { GENERIC_ERROR_MESSAGE, proUpdateRequired } from '../../utils';
+import {
+	GENERIC_ERROR_MESSAGE,
+	getNonceToken,
+	proUpdateRequired,
+} from '../../utils';
 import {
 	getFilterKeyError,
 	filterDefaultData,
@@ -232,6 +236,7 @@ const FormTitle = () => {
 				'time_period_options',
 				'options_order_type',
 				'search_field_placeholder',
+				'enable_visibility_rules',
 				'visibility_rules',
 			];
 
@@ -352,6 +357,7 @@ const FormTitle = () => {
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_save_form');
+		formData.append('nonce', getNonceToken());
 		formData.append('form_title', title);
 		formData.append('form_id', formId);
 		formData.append('form_filters', JSON.stringify(sanitizedFilters));

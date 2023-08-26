@@ -1,59 +1,34 @@
 import { __ } from '@wordpress/i18n';
-import Checkbox from '../Field/Checkbox';
-import { useFilter } from '../Filter/FilterContext';
-import useFilterData from '../Filter/useFilterData';
-import Rules from './Rules';
-import MediaScreenRules from './MediaScreenRules';
 import { isEmpty } from 'lodash';
+import { useForm } from '../Form/FormContext';
+import useFormFilterData from '../Form/useFormFilterData';
+import Rules from './Rules';
 import { placeholderRule } from './utils';
 
-const VisibilityRules = ({ rules, handleVisibilityRules }) => {
-	const { state, dispatch } = useFilter();
-	const { setDirty } = useFilterData(state, dispatch);
+const VisibilityRules = ({ index }) => {
+	const { state, dispatch } = useForm();
 
-	const { filterType, visibilityRules } = state;
-	const { media_screens, enable_rules, rules } = visibilityRules;
+	const { handleVisibilityRulesChange } = useFormFilterData(state, dispatch);
 
-	const updateVisibilityRules = (value) => {
-		dispatch({ type: 'SET_VISIBILITY_RULES', payload: value });
+	const { formFilters } = state;
 
-		setDirty();
-	};
+	const filter = formFilters[index];
 
-	const handleMediaScreenChange = (value) => {
-		let values = [...media_screens];
+	const { visibility_rules: rules, type, taxonomy, meta_key } = filter;
 
-		if (values.includes(value)) {
-			values = values.filter((_value) => _value !== value);
-		} else {
-			values.push(value);
-		}
-
-		const _visibilityRules = { ...visibilityRules, media_screens: values };
-
-		updateVisibilityRules(_visibilityRules);
-	};
-
-	const handleEnableRules = (value) => {
-		const _visibilityRules = {
-			...visibilityRules,
-			enable_rules: value ? '1' : '',
-		};
-
-		updateVisibilityRules(_visibilityRules);
-	};
+	const filterData = { type, taxonomy, meta_key };
 
 	const handleRuleChange = (column, andIndex, orIndex, value) => {
-		if ('rule' === column || 'operator' === column) {
+		if (value && ('term' === column || 'page' === column)) {
 			const oldValue = rules[andIndex][orIndex][column];
 
-			if (oldValue === value.value) {
+			if (oldValue && oldValue.value === value.value) {
 				return;
 			}
-		} else if ('compare' === column) {
+		} else {
 			const oldValue = rules[andIndex][orIndex][column];
 
-			if (oldValue.value === value.value) {
+			if (oldValue === value) {
 				return;
 			}
 		}
@@ -61,25 +36,15 @@ const VisibilityRules = ({ rules, handleVisibilityRules }) => {
 		const newRules = rules.map((andData, _andIndex) =>
 			andData.map((orData, _orIndex) => {
 				if (_andIndex === andIndex && _orIndex === orIndex) {
-					if ('rule' === column) {
-						const { group, value: newValue } = value;
-
+					// Reset the 'term' value when 'archive' is changed.
+					if ('archive' === column) {
 						return {
 							...orData,
-							group,
-							rule: newValue,
-							compare: '',
-							include_children: '',
+							[column]: value,
+							term: '',
 						};
-					} else if ('operator' === column) {
-						const { value: operator } = value;
-
-						return { ...orData, operator };
-					} else if ('compare' === column) {
-						return { ...orData, compare: value };
-					} else if ('include_children' === column) {
-						const checked = value ? '1' : '';
-						return { ...orData, include_children: checked };
+					} else {
+						return { ...orData, [column]: value };
 					}
 				}
 
@@ -87,22 +52,20 @@ const VisibilityRules = ({ rules, handleVisibilityRules }) => {
 			})
 		);
 
-		const _visibilityRules = { ...visibilityRules, rules: newRules };
-
-		updateVisibilityRules(_visibilityRules);
+		handleVisibilityRulesChange(newRules, 'visibility_rules', index);
 	};
 
 	const handleRemoveRule = (andIndex, orIndex) => {
 		const _orClauses = rules[andIndex];
 
 		const orClauses = _orClauses.filter(
-			(array, index) => index !== orIndex
+			(_array, index) => index !== orIndex
 		);
 
 		let newRules;
 
 		if (isEmpty(orClauses)) {
-			newRules = rules.filter((array, index) => index !== andIndex);
+			newRules = rules.filter((_array, index) => index !== andIndex);
 		} else {
 			newRules = rules.map((array, _orIndex) => {
 				if (_orIndex === andIndex) {
@@ -113,17 +76,13 @@ const VisibilityRules = ({ rules, handleVisibilityRules }) => {
 			});
 		}
 
-		const _visibilityRules = { ...visibilityRules, rules: newRules };
-
-		updateVisibilityRules(_visibilityRules);
+		handleVisibilityRulesChange(newRules, 'visibility_rules', index);
 	};
 
 	const handleAddingAndClause = () => {
 		const newRules = [...rules, [placeholderRule]];
 
-		const _visibilityRules = { ...visibilityRules, rules: newRules };
-
-		updateVisibilityRules(_visibilityRules);
+		handleVisibilityRulesChange(newRules, 'visibility_rules', index);
 	};
 
 	const handleAddingOrClause = (andIndex) => {
@@ -138,63 +97,23 @@ const VisibilityRules = ({ rules, handleVisibilityRules }) => {
 			return array;
 		});
 
-		const _visibilityRules = { ...visibilityRules, rules: newRules };
-
-		updateVisibilityRules(_visibilityRules);
+		handleVisibilityRulesChange(newRules, 'visibility_rules', index);
 	};
 
 	const handleRemoveAllRules = () => {
-		const _visibilityRules = { ...visibilityRules, rules: [] };
-
-		updateVisibilityRules(_visibilityRules);
+		handleVisibilityRulesChange([], 'visibility_rules', index);
 	};
 
 	return (
-		<>
-			<MediaScreenRules
-				label={__('Hide filter on', 'wc-ajax-product-filter')}
-				description={__(
-					'Select screen sizes where you want to hide the filter.',
-					'wc-ajax-product-filter'
-				)}
-				rules={media_screens}
-				onChange={handleMediaScreenChange}
-			/>
-
-			{'active-filters' !== filterType &&
-				'reset-button' !== filterType && (
-					<>
-						<Checkbox
-							id={'enable_rules'}
-							label={__(
-								'Enable visibility rules',
-								'wc-ajax-product-filter'
-							)}
-							description={__(
-								'Create a set of rules to determine when the filter will be displayed.',
-								'wc-ajax-product-filter'
-							)}
-							isChecked={enable_rules}
-							onChange={handleEnableRules}
-						/>
-
-						{enable_rules && (
-							<Rules
-								label={__(
-									'Show the filter if',
-									'wc-ajax-product-filter'
-								)}
-								rules={rules}
-								handleChange={handleRuleChange}
-								handleRemove={handleRemoveRule}
-								handleAddingAndClause={handleAddingAndClause}
-								handleAddingOrClause={handleAddingOrClause}
-								handleRemoveAllRules={handleRemoveAllRules}
-							/>
-						)}
-					</>
-				)}
-		</>
+		<Rules
+			filterData={filterData}
+			rules={rules}
+			handleChange={handleRuleChange}
+			handleRemove={handleRemoveRule}
+			handleAddingAndClause={handleAddingAndClause}
+			handleAddingOrClause={handleAddingOrClause}
+			handleRemoveAllRules={handleRemoveAllRules}
+		/>
 	);
 };
 

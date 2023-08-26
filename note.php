@@ -199,10 +199,15 @@ Next release
 * Enable swatch for other filter types
 
 before release v4.1.0
-* create the documentation to upgrade the pro version
-* create 'Search field'
-* upgrade to pro plugin action links color #b443d7
-* thoroughly check the review notice system
+* Create the documentation to upgrade to pro (done)
+* Add keyword filter 'Search field' (done)
+* Change the "Upgrade to Pro" plugin action links color to #b443d7 (done)
+* Thoroughly check the review notice system (done)
+* Update the 'update plugin' link in admin notice (done)
+* Update changelogs of readme files, add keyword filter in features list (done)
+* Update the plugin landing page for the new feature 'Filter by Keyword' (done)
+* Add keyword filter in the plugin demo website (done)
+* Capture the screenshots with the keyword filter and update plugin assets (done)
 
 Development site license
 sk_YQxu2*#;a.dW_hpqo0F7H61w=&mWn
@@ -318,3 +323,46 @@ How to ask to improve the writing?
 Can you help me to format the content appropriately for the documentation page to ensure readability and clarity for the users?
 
 Nothing was returned from render
+
+dilantin syrup
+
+1. craftplugin.com
+2. sharpplugin.com
+
+Could you please take a few seconds to give a good review for my plugin?
+
+Hi Jonathan,
+
+I hope this email finds you well. I wanted to thank you for reaching out to us about our plugin. We truly appreciate your interest and support!
+
+I would like to extend a special offer to you – a 50% discount on the pro version of the plugin. This will provide you with access to additional features and benefits. In return, if you find the pro version helpful, we kindly request you to consider leaving a review and rating on wp.org.
+
+If you're interested in the discount and agree to the review request, please let me know, and I will be more than happy to assist you with the next steps.
+
+Best regards,
+Mainul Hassan Main
+
+
+Dear Elliot Derhay,
+
+I hope this message finds you well. My name is Mainul Hassan Main, and I recently purchased the domain leanplugins.com with the intention of creating a WordPress profile and a Twitter account under the username "leanplugins."
+
+During my research, I discovered that the "leanplugins" username is currently associated with an inactive WordPress plugin and a dormant Twitter account. It appears that you have a history with this username, and I wanted to reach out to kindly request if you would consider transferring or relinquishing the username on both platforms.
+
+I am in the process of establishing a platform related to lean and efficient WordPress plugins, and having the username "leanplugins" would be incredibly valuable for maintaining a consistent brand identity across various online channels.
+
+If you would consider this request, I would greatly appreciate the chance to discuss it further. I understand your time is valuable, and I am more than willing to work out an arrangement that suits your preferences.
+
+Thank you for considering my request. I look forward to the possibility of collaborating with you and reaching an agreement that aligns with both of our interests.
+
+Best regards,
+Mainul Hassan Main
+
+For 'Easy Integration'
+storefront/style.css
+body {
+    overflow: hidden !important;
+}
+
+wp-includes/css/dist/widgets/style.css
+.widget-content p {font-size: small}

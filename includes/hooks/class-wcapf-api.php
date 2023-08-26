@@ -56,7 +56,6 @@ class WCAPF_API {
 		add_action( 'wp_ajax_wcapf_get_form_data', array( $this, 'get_form_data' ) );
 		add_action( 'wp_ajax_wcapf_add_form', array( $this, 'add_form' ) );
 		add_action( 'wp_ajax_wcapf_save_form', array( $this, 'save_form' ) );
-		add_action( 'wp_ajax_wcapf_get_form_preview', array( $this, 'get_form_preview' ) );
 		add_action( 'wp_ajax_wcapf_delete_form', array( $this, 'delete_form' ) );
 		add_action( 'wp_ajax_wcapf_delete_filter', array( $this, 'delete_filter' ) );
 
@@ -73,6 +72,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function create_sample_form() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$form_settings = WCAPF_Default_Data::form_default_data();
 
 		$post_arr = array(
@@ -96,11 +98,42 @@ class WCAPF_API {
 	}
 
 	/**
+	 * Handles the nonce verification.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @return void
+	 */
+	private function verify_nonce() {
+		$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( $_REQUEST['nonce'] ) : '';
+
+		if ( ! wp_verify_nonce( $nonce, 'wcapf-nonce' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
+	 * Handles the permission check.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @return void
+	 */
+	private function verify_permission() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Permission denied', 'wc-ajax-product-filter' ) );
+		}
+	}
+
+	/**
 	 * Gets the form data via ajax for the edit form UI.
 	 *
 	 * @return void
 	 */
 	public function get_form_data() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 		$form    = get_post( $post_id );
 
@@ -307,6 +340,9 @@ class WCAPF_API {
 	}
 
 	public function add_form() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$form_title     = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
 		$_form_settings = isset( $_POST['form_settings'] ) ? $_POST['form_settings'] : '';
 		$form_settings  = stripslashes( $_form_settings );
@@ -334,6 +370,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function save_form() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$form_id    = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0;
 		$form_title = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
 
@@ -422,24 +461,15 @@ class WCAPF_API {
 		return $sanitized;
 	}
 
-	public function get_form_preview() {
-		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
-
-		ob_start();
-
-		echo do_shortcode( '[wcapf_filter_form id=' . $post_id . ']' );
-
-		$preview = ob_get_clean();
-
-		wp_send_json_success( $preview );
-	}
-
 	/**
 	 * Gets the taxonomy terms for the manual options modal via ajax.
 	 *
 	 * @return void
 	 */
 	public function get_terms_for_modal() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 		$number   = apply_filters( 'wcapf_max_number_of_terms_for_browse_options_modal', 99 );
 
@@ -471,6 +501,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_terms_for_dropdown() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
 		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( $_GET['only_parent'] ) : '';
 		$keyword     = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
@@ -532,6 +565,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_authors_for_dropdown() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
 		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 
@@ -566,8 +602,12 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_pages_for_dropdown() {
-		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
-		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+		$this->verify_nonce();
+		$this->verify_permission();
+
+		$keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		$page     = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+		$show_all = ! empty( $_GET['show_all'] ) ? true : false;
 
 		$per_page = 20;
 		$offset   = ( $page - 1 ) * $per_page;
@@ -579,7 +619,12 @@ class WCAPF_API {
 			'offset'         => $offset,
 		);
 
-		$wc_pages = array( 'shop', 'cart', 'checkout', 'myaccount', 'terms' );
+		if ( $show_all ) {
+			$wc_pages = array( 'cart', 'checkout', 'myaccount', 'terms' );
+		} else {
+			$wc_pages = array( 'shop', 'cart', 'checkout', 'myaccount', 'terms' );
+		}
+
 		$page_ids = array();
 
 		foreach ( $wc_pages as $page ) {
@@ -618,6 +663,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_products_for_dropdown() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
 		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 
@@ -652,6 +700,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_meta_values_for_modal() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$meta_key = isset( $_GET['meta_key'] ) ? sanitize_text_field( $_GET['meta_key'] ) : '';
 
 		$values   = WCAPF_Helper::get_available_meta_values( $meta_key );
@@ -675,6 +726,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function get_post_authors_for_modal() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$roles = isset( $_GET['roles'] ) ? $_GET['roles'] : array();
 
 		$args = array(
@@ -703,6 +757,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function delete_form() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
@@ -740,6 +797,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function delete_filter() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
@@ -763,6 +823,9 @@ class WCAPF_API {
 	 * @return void
 	 */
 	public function save_settings() {
+		$this->verify_nonce();
+		$this->verify_permission();
+
 		$_settings          = isset( $_POST['settings'] ) ? $_POST['settings'] : array();
 		$_filter_keys       = isset( $_POST['filter_keys'] ) ? $_POST['filter_keys'] : array();
 		$update_filter_keys = isset( $_POST['update_filter_keys'] ) ? $_POST['update_filter_keys'] : '';
