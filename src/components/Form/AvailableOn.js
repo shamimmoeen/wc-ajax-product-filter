@@ -7,14 +7,12 @@ import Select from '../Field/Select';
 import SelectMulti from '../Field/SelectMulti';
 import { useForm } from './FormContext';
 import useFormSettings from './useFormSettings';
-import { foundProVersion, proTag } from '../utils';
+import { proTag } from '../utils';
 import { PlusIcon } from '../SVGIcons';
 import TippyTooltip from '../TippyTooltip';
 import ProductQuery from './ProductQuery';
 import { isEqual } from 'lodash';
 import { defaultLocation } from '../utilsForForm';
-
-const WCAPF_PRO = foundProVersion();
 
 const locations = wcapf_admin_params.form_places;
 

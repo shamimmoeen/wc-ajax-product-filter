@@ -215,6 +215,12 @@ export function getFilterTabs(filter) {
 		return availableTabs.filter(({ name }) => 'general' === name);
 	}
 
+	if ('keyword' === type) {
+		return availableTabs.filter(({ name }) =>
+			['general', 'advanced'].includes(name)
+		);
+	}
+
 	return availableTabs;
 }
 

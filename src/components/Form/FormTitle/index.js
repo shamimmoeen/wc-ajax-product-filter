@@ -15,8 +15,8 @@ import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
 import {
 	GENERIC_ERROR_MESSAGE,
-	foundProVersion,
-	showProV2UpgradeNotice,
+	getNonceToken,
+	proUpdateRequired,
 } from '../../utils';
 import {
 	getFilterKeyError,
@@ -29,16 +29,14 @@ import {
 	proFilterComponents,
 } from '../utils';
 import { defaultFormSettings, proVisibilityOptions } from '../../utilsForForm';
-import ProV2UpgradeModal from '../../Modals/ProV2UpgradeModal';
-
-const WCAPF_PRO = foundProVersion();
+import ProUpdateModal from '../../Modals/ProUpdateModal';
 
 const FormTitle = () => {
 	const { state, dispatch } = useForm();
 	const { setDirty } = useFormData(state, dispatch);
 
 	const [publishModalOpen, setPublishModalOpen] = useState(false);
-	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
+	const [ProUpdateModalOpen, setProUpdateModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const {
@@ -83,12 +81,12 @@ const FormTitle = () => {
 		setPublishModalOpen(false);
 	};
 
-	const handleOpenProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(true);
+	const handleOpenProUpdateModal = () => {
+		setProUpdateModalOpen(true);
 	};
 
-	const handleCloseProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(false);
+	const handleCloseProUpdateModal = () => {
+		setProUpdateModalOpen(false);
 	};
 
 	const formFiltersAreValid = () => {
@@ -238,6 +236,7 @@ const FormTitle = () => {
 				'time_period_options',
 				'options_order_type',
 				'search_field_placeholder',
+				'enable_visibility_rules',
 				'visibility_rules',
 			];
 
@@ -358,6 +357,7 @@ const FormTitle = () => {
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_save_form');
+		formData.append('nonce', getNonceToken());
 		formData.append('form_title', title);
 		formData.append('form_id', formId);
 		formData.append('form_filters', JSON.stringify(sanitizedFilters));
@@ -490,8 +490,8 @@ const FormTitle = () => {
 
 	const handleSubmit = () => {
 		if (isDirty) {
-			if (showProV2UpgradeNotice()) {
-				handleOpenProV2UpgradeModal();
+			if (proUpdateRequired()) {
+				handleOpenProUpdateModal();
 			} else {
 				handleSaveForm();
 			}
@@ -513,9 +513,9 @@ const FormTitle = () => {
 				closeModal={handleClosePublishModal}
 			/>
 
-			<ProV2UpgradeModal
-				isOpen={proV2UpgradeModalOpen}
-				closeModal={handleCloseProV2UpgradeModal}
+			<ProUpdateModal
+				isOpen={ProUpdateModalOpen}
+				closeModal={handleCloseProUpdateModal}
 			/>
 		</>
 	);

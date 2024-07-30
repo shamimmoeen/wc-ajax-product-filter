@@ -39,9 +39,18 @@ class WCAPF_V4_Migration {
 	}
 
 	public function try_to_run_v4_migration() {
-		$current_db_version = get_option( 'wcapf_db_version' );
+		$db_version_option_key  = 'wcapf_db_version';
+		$existing_wcapf_version = get_option( $db_version_option_key );
 
-		if ( version_compare( $current_db_version, '4.0.0', '<' ) ) {
+		$perform_v4_migration = false;
+
+		if ( version_compare( $existing_wcapf_version, '4.0.0', '<' ) ) {
+			$perform_v4_migration = true;
+		} elseif ( get_option( 'wcapf_run_migrate' ) ) {
+			$perform_v4_migration = true;
+		}
+
+		if ( $perform_v4_migration ) {
 			$this->do_migrate();
 
 			error_log( 'Ran the automatic wcapf v4 migration.' );
@@ -53,7 +62,35 @@ class WCAPF_V4_Migration {
 			update_option( 'wcapf_v4_review_filters_notice_status', '1' );
 
 			// Update the db version.
-			update_option( 'wcapf_db_version', WCAPF_VERSION );
+			$plugin_version = defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION;
+			update_option( $db_version_option_key, $plugin_version );
+
+			// We don't want to migrate again.
+			delete_option( 'wcapf_run_migrate' );
+
+			// Clear the forms with locations transients.
+			delete_transient( 'wcapf_forms_with_locations' );
+		}
+
+		$set_default_settings = false;
+
+		if ( get_option( 'wcapf_set_default_settings' ) ) {
+			$set_default_settings = true;
+		} elseif ( get_option( 'wcapf_update_default_settings' ) ) {
+			$set_default_settings = true;
+		}
+
+		$settings_option_key = 'wcapf_settings';
+
+		if ( $set_default_settings ) {
+			$default_settings  = WCAPF_Default_Data::default_settings();
+			$existing_settings = get_option( $settings_option_key, array() );
+
+			update_option( $settings_option_key, array_merge( $default_settings, $existing_settings ) );
+
+			// We don't want to set the settings again.
+			delete_option( 'wcapf_set_default_settings' );
+			delete_option( 'wcapf_update_default_settings' );
 		}
 	}
 

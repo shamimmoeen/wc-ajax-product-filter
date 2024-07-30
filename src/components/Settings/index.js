@@ -1,12 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { Button, Icon } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { omit, pick, find } from 'lodash';
 import Sidebar from '../Sidebar';
 import TopBar from '../TopBar';
 import Notifications from '../Notifications';
 import { useSettings } from './SettingsContext';
-import { SaveIcon } from '../SVGIcons';
+import { SaveIcon, SettingsIcon } from '../SVGIcons';
 import axios from 'axios';
 import {
 	removeSettingsSavedNotices,
@@ -24,13 +24,12 @@ import Others from './Tabs/Others';
 import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
-	foundProVersion,
-	showProV2UpgradeNotice,
+	getNonceToken,
+	proUpdateRequired,
 } from '../utils';
 import { defaultSettings } from './utils';
-import ProV2UpgradeModal from '../Modals/ProV2UpgradeModal';
-
-const WCAPF_PRO = foundProVersion();
+import ProUpdateModal from '../Modals/ProUpdateModal';
+import { Icon } from '@wordpress/icons';
 
 const tabs = [
 	{
@@ -75,14 +74,14 @@ const Settings = () => {
 	} = state;
 
 	const [saveBtnBusy, setSaveBtnBusy] = useState(false);
-	const [proV2UpgradeModalOpen, setProV2UpgradeModalOpen] = useState(false);
+	const [ProUpdateModalOpen, setProUpdateModalOpen] = useState(false);
 
-	const handleOpenProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(true);
+	const handleOpenProUpdateModal = () => {
+		setProUpdateModalOpen(true);
 	};
 
-	const handleCloseProV2UpgradeModal = () => {
-		setProV2UpgradeModalOpen(false);
+	const handleCloseProUpdateModal = () => {
+		setProUpdateModalOpen(false);
 	};
 
 	const handleTabChange = (newTab) => {
@@ -180,8 +179,8 @@ const Settings = () => {
 	};
 
 	const handleSaveSettings = () => {
-		if (showProV2UpgradeNotice()) {
-			handleOpenProV2UpgradeModal();
+		if (proUpdateRequired()) {
+			handleOpenProUpdateModal();
 
 			return;
 		}
@@ -198,6 +197,7 @@ const Settings = () => {
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_save_settings');
+		formData.append('nonce', getNonceToken());
 		formData.append('settings', JSON.stringify(sanitizedSettings()));
 		formData.append('filter_keys', JSON.stringify(validatedFilterKeys));
 		formData.append('update_filter_keys', updateFilterKeys);
@@ -296,9 +296,9 @@ const Settings = () => {
 		<div className='__wcapf_admin'>
 			<TopBar view={'settings'} />
 
-			<ProV2UpgradeModal
-				isOpen={proV2UpgradeModalOpen}
-				closeModal={handleCloseProV2UpgradeModal}
+			<ProUpdateModal
+				isOpen={ProUpdateModalOpen}
+				closeModal={handleCloseProUpdateModal}
 			/>
 
 			<div className='__wcapf_layout'>
@@ -307,10 +307,11 @@ const Settings = () => {
 						<div className='__settings_wrapper'>
 							<div className='__settings_header'>
 								<h2>
+									<Icon icon={SettingsIcon} />
 									{__('Settings', 'wc-ajax-product-filter')}
 								</h2>
 								<Button
-									variant='primary'
+									variant={isDirty ? 'primary' : 'secondary'}
 									disabled={!isDirty || saveBtnBusy}
 									isBusy={saveBtnBusy}
 									onClick={handleSaveSettings}

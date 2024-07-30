@@ -1,51 +1,88 @@
 import { __ } from '@wordpress/i18n';
-import { CheckboxControl, Icon } from '@wordpress/components';
+import { Icon } from '@wordpress/components';
 import { cancelCircleFilled } from '@wordpress/icons';
+import { isEmpty } from 'lodash';
 import Select from '../../Field/Select';
-import SelectArchive from './SelectArchive';
-import SelectRule from './SelectRule';
+import Text from '../../Field/Text';
+import SelectVisibilityRule from './SelectVisibilityRule';
 import {
-	getRules,
-	getOperators,
-	isTaxonomyHierarchical,
-	getRule,
+	getVRRules,
+	getVRUserOptions,
+	getVRTaxonomies,
+	getVRGlobalFilterKeys,
+	getVROperators,
+	getVRFilterOperators,
 } from '../utils';
 
+const rules = getVRRules();
+const operators = getVROperators();
+const filterOperators = getVRFilterOperators();
+const userOptions = getVRUserOptions();
+const archiveOptions = getVRTaxonomies();
+
 const OrClause = ({
+	filterData,
 	clause,
 	orIndex,
 	andIndex,
 	handleChange,
 	handleRemove,
 }) => {
+	const { type, taxonomy, meta_key } = filterData;
+
 	const {
-		group,
-		rule: _rule,
-		operator: _operator,
-		compare,
-		include_children,
+		rule: rule_,
+		operator: operator_,
+		page,
+		user: user_,
+		archive: archive_,
+		term,
+		filter: filter_,
+		filter_operator,
+		filter_contains,
 	} = clause;
 
-	const taxonomy = _rule;
-	const rules = getRules();
-	const rule = getRule(group, _rule);
-	const operator = getOperators().find(
-		(option) => option.value === _operator
+	const operator = operators.find((option) => option.value === operator_);
+
+	const filterOperator = filterOperators.find(
+		(option) => option.value === filter_operator
 	);
 
-	const renderCompareField = () => {
-		if ('page' === group) {
-			return __('Shop', 'wc-ajax-product-filter');
-		} else if ('filter' === group) {
-			return __('Active', 'wc-ajax-product-filter');
-		} else if ('archive' === group) {
+	const filterOptions = getVRGlobalFilterKeys(type, taxonomy, meta_key);
+
+	const rule = rules.find((option) => option.value === rule_);
+
+	const renderOperatorField = () => {
+		if ('filter' === rule_) {
 			return (
-				<div className='compare'>
-					<SelectArchive
-						taxonomy={taxonomy}
-						value={compare}
+				<div className='operator'>
+					<Select
+						options={filterOperators}
+						value={filterOperator}
 						onChange={(selected) =>
-							handleChange('compare', andIndex, orIndex, selected)
+							handleChange(
+								'filter_operator',
+								andIndex,
+								orIndex,
+								selected.value
+							)
+						}
+					/>
+				</div>
+			);
+		} else {
+			return (
+				<div className='operator'>
+					<Select
+						options={operators}
+						value={operator}
+						onChange={(selected) =>
+							handleChange(
+								'operator',
+								andIndex,
+								orIndex,
+								selected.value
+							)
 						}
 					/>
 				</div>
@@ -53,32 +90,140 @@ const OrClause = ({
 		}
 	};
 
-	const renderIncludeChildren = () => {
-		if ('archive' === group) {
-			if (
-				'product_cat' === taxonomy ||
-				isTaxonomyHierarchical(taxonomy)
-			) {
-				return (
-					<div className='include-children-checkbox'>
-						<CheckboxControl
-							label={__(
-								'Include children',
-								'wc-ajax-product-filter'
-							)}
-							checked={include_children}
-							onChange={(value) =>
-								handleChange(
-									'include_children',
-									andIndex,
-									orIndex,
-									value
-								)
-							}
-						/>
-					</div>
-				);
-			}
+	const renderCondition2Field = () => {
+		if ('page' === rule_) {
+			return (
+				<div className='condition_2 page_options_dropdown'>
+					<SelectVisibilityRule
+						uniqueId='vr_pages'
+						type='page'
+						value={page}
+						onChange={(selected) =>
+							handleChange('page', andIndex, orIndex, selected)
+						}
+					/>
+				</div>
+			);
+		} else if ('user' === rule_) {
+			const user = userOptions.find((option) => option.value === user_);
+
+			return (
+				<div className='condition_2 user_options_dropdown'>
+					<Select
+						placeholder={__(
+							'Select user role',
+							'wc-ajax-product-filter'
+						)}
+						inputKey={'user'}
+						options={userOptions}
+						value={user}
+						onChange={(selected) =>
+							handleChange(
+								'user',
+								andIndex,
+								orIndex,
+								selected.value
+							)
+						}
+					/>
+				</div>
+			);
+		} else if ('archive' === rule_) {
+			const archive = archiveOptions.find(
+				(option) => option.value === archive_
+			);
+
+			return (
+				<div className='condition_2 archive_options_dropdown'>
+					<Select
+						placeholder={__(
+							'Select taxonomy',
+							'wc-ajax-product-filter'
+						)}
+						inputKey={'archive'}
+						options={archiveOptions}
+						value={archive}
+						onChange={(selected) =>
+							handleChange(
+								'archive',
+								andIndex,
+								orIndex,
+								selected.value
+							)
+						}
+					/>
+				</div>
+			);
+		} else if ('filter' === rule_) {
+			const filterActive = filterOptions.find(
+				(option) => option.value === filter_
+			);
+
+			return (
+				<div className='condition_2 filter_options_dropdown'>
+					<Select
+						placeholder={__(
+							'Select filter',
+							'wc-ajax-product-filter'
+						)}
+						inputKey={'filter'}
+						options={filterOptions}
+						value={filterActive}
+						onChange={(selected) =>
+							handleChange(
+								'filter',
+								andIndex,
+								orIndex,
+								selected.value
+							)
+						}
+					/>
+				</div>
+			);
+		} else {
+			return '';
+		}
+	};
+
+	const renderCondition3Field = () => {
+		if ('archive' === rule_ && !isEmpty(archive_)) {
+			const uniqueId = `vr_terms_${archive_}`;
+
+			return (
+				<div className='condition_3 term_options_dropdown'>
+					<SelectVisibilityRule
+						uniqueId={uniqueId}
+						taxonomy={archive_}
+						value={term}
+						onChange={(selected) =>
+							handleChange('term', andIndex, orIndex, selected)
+						}
+					/>
+				</div>
+			);
+		} else if ('filter' === rule_ && !isEmpty(filter_)) {
+			return (
+				<div className='__form_control condition_3 filter_value_input'>
+					<Text
+						renderAsFormField={false}
+						placeholder={__(
+							'Leave empty to match any',
+							'wc-ajax-product-filter'
+						)}
+						onChange={(value) =>
+							handleChange(
+								'filter_contains',
+								andIndex,
+								orIndex,
+								value
+							)
+						}
+						value={filter_contains}
+					/>
+				</div>
+			);
+		} else {
+			return '';
 		}
 	};
 
@@ -86,33 +231,25 @@ const OrClause = ({
 		<div className='or-clause'>
 			<div className='cols'>
 				<div className='rule'>
-					<SelectRule
+					<Select
 						options={rules}
 						value={rule}
 						onChange={(selected) =>
-							handleChange('rule', andIndex, orIndex, selected)
-						}
-					/>
-				</div>
-
-				<div className='operator'>
-					<Select
-						options={getOperators()}
-						value={operator}
-						onChange={(selected) =>
 							handleChange(
-								'operator',
+								'rule',
 								andIndex,
 								orIndex,
-								selected
+								selected.value
 							)
 						}
 					/>
 				</div>
 
-				{renderCompareField()}
+				{renderOperatorField()}
 
-				{renderIncludeChildren()}
+				{renderCondition2Field()}
+
+				{renderCondition3Field()}
 			</div>
 
 			<button

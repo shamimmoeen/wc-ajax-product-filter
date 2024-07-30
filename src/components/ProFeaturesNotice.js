@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import { foundProVersion, upgradeToProLink } from './utils';
+import { upgradeToProLink } from './utils';
 
 const ProFeaturesNotice = ({ message }) => {
 	return (
 		<>
-			{!foundProVersion() && (
+			{!WCAPF_PRO && (
 				<div className='__pro_settings'>
 					<p>
 						{message}

@@ -12,7 +12,6 @@ import {
 } from '../../utils';
 import Select from '../../../Field/Select';
 import Checkbox from '../../../Field/Checkbox';
-import { foundProVersion } from '../../../utils';
 import Radio from '../../../Field/Radio';
 
 const ValueTypeText = ({ index }) => {
@@ -68,7 +67,7 @@ const ValueTypeText = ({ index }) => {
 
 		value = options.find((option) => display_type === option.value);
 
-		if (!foundProVersion()) {
+		if (!WCAPF_PRO) {
 			const freeDisplayTypes = [
 				'checkbox',
 				'radio',

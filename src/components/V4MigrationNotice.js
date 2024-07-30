@@ -1,10 +1,10 @@
 import { Button } from '@wordpress/components';
-import { showProV2UpgradeNotice } from './utils';
+import { proUpdateRequired } from './utils';
 
 const showMigrationNotice = wcapf_admin_params.show_v4_migration_notice;
 const migrationFormEditUrl = wcapf_admin_params.v4_migrated_form_url;
 const migrationDocUrl = wcapf_admin_params.v4_migration_doc_url;
-const showProUpgradeNotice = showProV2UpgradeNotice();
+const proUpdateNotice = proUpdateRequired();
 
 const V4MigrationNotice = () => {
 	const handleDismissNotice = () => {
@@ -17,18 +17,18 @@ const V4MigrationNotice = () => {
 		<>
 			{showMigrationNotice && (
 				<div
-					className='notice notice-info v4-upgrade-notice'
+					className='notice notice-info v4-update-notice'
 					id='wcapf-v4-migration-notice'
 				>
 					<p>
 						<strong>
-							WCAPF - WooCommerce Ajax Product Filter (v4.0.0
+							WCAPF - WooCommerce Ajax Product Filter (v4
 							Migration Notice)
 						</strong>
 					</p>
 					<p>
-						The WC Ajax Product Filter plugin has been upgraded to
-						v4.0.0 and is now named WCAPF - WooCommerce Ajax Product
+						The WC Ajax Product Filter plugin has been updated to v4
+						and is now named WCAPF - WooCommerce Ajax Product
 						Filter. We have redesigned the admin UI to provide a
 						more intuitive user experience and refactored the
 						codebase for improved performance and easier future
@@ -57,21 +57,9 @@ const V4MigrationNotice = () => {
 				</div>
 			)}
 
-			{showProUpgradeNotice && (
-				<div className='notice notice-info v4-upgrade-notice'>
-					<p>
-						<strong>
-							WCAPF - WooCommerce Ajax Product Filter Pro (Upgrade
-							Required)
-						</strong>
-					</p>
-					<p>
-						Thank you for using the Pro version. To ensure
-						compatibility with WCAPF - WooCommerce Ajax Product
-						Filter v4.0.0, it is necessary to upgrade WCAPF -
-						WooCommerce Ajax Product Filter Pro to v2.0.0. Please
-						proceed with the upgrade.
-					</p>
+			{proUpdateNotice && (
+				<div className='notice notice-error pro-update-notice'>
+					<p dangerouslySetInnerHTML={{ __html: proUpdateNotice }} />
 				</div>
 			)}
 		</>

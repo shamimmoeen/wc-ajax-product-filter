@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Number from '../Field/Number';
 // import Select from '../Field/Select';
-import { foundProVersion } from '../utils';
 // import {
 // 	filterModeOptions,
 // 	formLayoutOptions,
@@ -11,8 +10,6 @@ import { foundProVersion } from '../utils';
 import AvailableOn from './AvailableOn';
 import { useForm } from './FormContext';
 import useFormSettings from './useFormSettings';
-
-const WCAPF_PRO = foundProVersion();
 
 const FormSettings = () => {
 	const { state, dispatch } = useForm();

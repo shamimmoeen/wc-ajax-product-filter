@@ -7,6 +7,7 @@ import Textarea from '../../Field/Textarea';
 import { useForm } from '../FormContext';
 import useFormFilterData from '../useFormFilterData';
 import { accordionStates, hierarchicalDisplayTypes } from '../utils';
+import VisibilityRules from '../../VisibilityRules';
 
 const Advanced = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -38,8 +39,11 @@ const Advanced = ({ index }) => {
 		soft_limit,
 		max_height,
 		show_in_active_filters,
-		// visibility_rules,
+		enable_visibility_rules: _enableVisibilityRules,
 	} = filter;
+
+	const enableVisibilityRules = WCAPF_PRO ? _enableVisibilityRules : false;
+	const disableVisibilityRulesCheckbox = !WCAPF_PRO;
 
 	const activeFilters = 'active-filters' === component;
 
@@ -140,7 +144,7 @@ const Advanced = ({ index }) => {
 	};
 
 	const isApplicable = (field = 'reduce-height') => {
-		if (activeFilters) {
+		if (activeFilters || 'keyword' === type) {
 			return false;
 		}
 
@@ -363,22 +367,29 @@ const Advanced = ({ index }) => {
 		}
 	};
 
-	// const visibilityRulesField = () => {
-	// 	return (
-	// 		<Checkbox
-	// 			id={'visibility_rules'}
-	// 			index={index}
-	// 			label={__('Visibility Rules', 'wc-ajax-product-filter')}
-	// 			description={__(
-	// 				'Determines if we show the selected options in active filters.',
-	// 				'wc-ajax-product-filter'
-	// 			)}
-	// 			isChecked={visibility_rules}
-	// 			onChange={handleCheckboxChange}
-	// 			isPro
-	// 		/>
-	// 	);
-	// };
+	const enableVisibilityRulesField = () => {
+		return (
+			<Checkbox
+				id={'enable_visibility_rules'}
+				index={index}
+				label={__('Visibility Rules', 'wc-ajax-product-filter')}
+				description={__(
+					'Enable this to control filter display based on page, archive and user role.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={enableVisibilityRules}
+				onChange={handleCheckboxChange}
+				isDisabled={disableVisibilityRulesCheckbox}
+				isPro
+			/>
+		);
+	};
+
+	const visibilityRulesField = () => {
+		if (WCAPF_PRO && '1' === enableVisibilityRules) {
+			return <VisibilityRules index={index} />;
+		}
+	};
 
 	return (
 		<>
@@ -402,7 +413,9 @@ const Advanced = ({ index }) => {
 
 			{showInActiveFiltersField()}
 
-			{/* {visibilityRulesField()} */}
+			{enableVisibilityRulesField()}
+
+			{visibilityRulesField()}
 		</>
 	);
 };

@@ -174,7 +174,7 @@ class WCAPF_URL_Builder {
 	/**
 	 * @return string
 	 */
-	public function get_dropdown_url() {
+	public function get_filter_url_with_placeholder() {
 		$vars = $this->query_vars;
 
 		$vars[ $this->filter_key ] = '%s';

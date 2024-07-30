@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
 import { DiamondIcon } from './SVGIcons';
 import {
-	foundProVersion,
 	getFormsPageLink,
 	// getSeoRulesPageLink,
 	getSettingsPageLink,
@@ -57,7 +56,7 @@ const TopBar = ({ view }) => {
 				</div>
 
 				<div className='__cta'>
-					{!foundProVersion() && (
+					{!WCAPF_PRO && (
 						<a
 							target='_blank'
 							href={upgradeToProLink()}
@@ -73,9 +72,7 @@ const TopBar = ({ view }) => {
 							{__('You are on the', 'wc-ajax-product-filter')}
 						</div>
 						<div>
-							{foundProVersion()
-								? __('Pro Plan')
-								: __('Free Plan')}
+							{WCAPF_PRO ? __('Pro Plan') : __('Free Plan')}
 						</div>
 					</div>
 

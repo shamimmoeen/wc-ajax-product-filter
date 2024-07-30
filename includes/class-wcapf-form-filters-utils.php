@@ -318,6 +318,15 @@ class WCAPF_Form_Filters_Utils {
 				'order'     => $filter_order,
 				'field_key' => $post_name,
 			);
+		} elseif ( 's' === $post_name ) {
+			$message = __( 'This is a reserved key. Please use a different string.', 'wc-ajax-product-filter' );
+
+			$error_data = array(
+				'key'       => 'field_key_error_',
+				'message'   => $message,
+				'order'     => $filter_order,
+				'field_key' => $post_name,
+			);
 		}
 
 		// }

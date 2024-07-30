@@ -55,7 +55,7 @@ const Miscellaneous = () => {
 				id={'remove_data'}
 				label={__('Remove Data', 'wc-ajax-product-filter')}
 				description={__(
-					'Enable this to remove all data when uninstalling WCAPF - WooCommerce Ajax Product Filter via the <b>Plugins</b> page.',
+					'Enable this option to remove all data associated with WCAPF - WooCommerce Ajax Product Filter when you delete the plugin via the <b>Plugins</b> page.',
 					'wc-ajax-product-filter'
 				)}
 				isChecked={remove_data}

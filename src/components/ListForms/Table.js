@@ -1,4 +1,4 @@
-import { Button, Icon } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import NoFormsFound from './NoFormsFound';
 import {
@@ -6,14 +6,14 @@ import {
 	DeleteIcon,
 	DuplicateIcon,
 	EditIcon,
+	ListIcon,
 	PlusIcon,
 } from '../SVGIcons';
-import { foundProVersion, slugify } from '../utils';
+import { slugify } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 import TippyTooltip from '../TippyTooltip';
-
-const WCAPF_PRO = foundProVersion();
+import { Icon } from '@wordpress/icons';
 
 const filterOnTooltip = __(
 	'Determines where you want to show the form to filter the products.',
@@ -162,7 +162,10 @@ const Table = ({
 		<div className='__content'>
 			<div className='__list_table_wrapper'>
 				<div className='__list_table_header'>
-					<h2>{__('List of Forms', 'wc-ajax-product-filter')}</h2>
+					<h2>
+						<Icon icon={ListIcon} />
+						{__('List of Forms', 'wc-ajax-product-filter')}
+					</h2>
 
 					<Button variant='primary' onClick={openAddNewModal}>
 						<Icon icon={PlusIcon} size={14} />

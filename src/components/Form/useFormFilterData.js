@@ -237,6 +237,10 @@ const useFormFilterData = (state, dispatch) => {
 		updateFilterMany(index, [key], _value, many);
 	};
 
+	const handleVisibilityRulesChange = (rules, key, index) => {
+		updateFilter(index, key, rules);
+	};
+
 	return {
 		handleFilterTypeChange,
 		handleFilterKeyChange,
@@ -250,6 +254,7 @@ const useFormFilterData = (state, dispatch) => {
 		handleSelectTermChange,
 		handleManualOptionsChange,
 		handleShowHierarchyChange,
+		handleVisibilityRulesChange,
 	};
 };
 

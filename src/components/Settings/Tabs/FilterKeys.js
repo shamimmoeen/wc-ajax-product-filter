@@ -6,10 +6,7 @@ import { ReactSortable } from 'react-sortablejs';
 import useSettingsData from '../useSettingsData';
 import { useSettings } from '../SettingsContext';
 import ProFeaturesNotice from '../../ProFeaturesNotice';
-import { foundProVersion } from '../../utils';
 import Text from '../../Field/Text';
-
-const WCAPF_PRO = foundProVersion();
 
 const sectionDescription = __(
 	'Here you can edit the filter keys globally and change the order of those in the URL.',

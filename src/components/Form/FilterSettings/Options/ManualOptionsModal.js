@@ -12,6 +12,7 @@ import axios from 'axios';
 import classnames from 'classnames';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
+import { getNonceToken } from '../../../utils';
 
 const modalInitialClass = '__manual_options_modal';
 
@@ -91,6 +92,8 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 				meta_key,
 			};
 		}
+
+		ajaxParams['nonce'] = getNonceToken();
 
 		axios
 			.get(wcapf_admin_params.ajaxurl, {

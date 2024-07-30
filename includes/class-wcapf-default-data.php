@@ -77,6 +77,8 @@ class WCAPF_Default_Data {
 			'scroll_to_top_offset'             => '',
 			'disable_scroll_animation'         => '',
 			// Others
+			'keyword_filter_placeholder'       => '',
+			'keyword_filter_prefix'            => '',
 			'search_field_default_placeholder' => '',
 			'no_results_text'                  => '',
 			'combobox_no_options_text'         => '',
@@ -368,6 +370,7 @@ class WCAPF_Default_Data {
 			'soft_limit'                            => '5',
 			'max_height'                            => '200',
 			'show_in_active_filters'                => '1',
+			'enable_visibility_rules'               => '',
 			'visibility_rules'                      => array(),
 			// Active filters
 			'active_filters_layout'                 => 'simple',

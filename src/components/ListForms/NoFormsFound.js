@@ -11,6 +11,7 @@ import {
 	removeItemDeletedNotices,
 	removeItemDuplicatedNotices,
 } from '../notices';
+import { getNonceToken } from '../utils';
 
 const NoFormsFound = () => {
 	const {
@@ -30,6 +31,7 @@ const NoFormsFound = () => {
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_create_sample_form');
+		formData.append('nonce', getNonceToken());
 
 		axios
 			.post(wcapf_admin_params.ajaxurl, formData)

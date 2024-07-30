@@ -1,22 +1,28 @@
-@import './variables';
-@import './mixins';
+// @import './variables';
+// @import './mixins';
 
 .__visibility_rules {
+    margin-bottom: 2em;
+
     .__form_control {
         margin-bottom: 8px;
     }
 
-    .components-base-control__field {
-        margin: 0;
-
-        .components-checkbox-control__input-container {
-            @include horizontal-space(6px);
-        }
+    .__rules_heading {
+        cursor: auto;
     }
 
-    .components-checkbox-control__input {
-        border-color: $inputBorderColor;
-    }
+    // .components-base-control__field {
+    //     margin: 0;
+
+    //     .components-checkbox-control__input-container {
+    //         @include horizontal-space(6px);
+    //     }
+    // }
+
+    // .components-checkbox-control__input {
+    //     border-color: $inputBorderColor;
+    // }
 
     $border-radius: 1px;
     $gap: 8px;
@@ -43,32 +49,54 @@
             border-radius: $border-radius;
             padding: $gap;
 
-            @media (min-width: 600px) {
+            .filter_value_input {
+                margin: 0;
+            }
+
+            @media (min-width: 850px) {
                 .rule {
-                    width: 29%;
+                    width: 100px;
                 }
 
                 .operator {
-                    min-width: 100px;
+                    width: 105px;
                 }
 
-                .compare {
-                    width: 34%;
+                .condition_2 {
+                    width: 230px;
                 }
 
-                .include-children-checkbox {
-                    min-width: 130px;
+                // .page_options_dropdown {
+                //     width: 230px;
+                // }
+
+                // .filter_options_dropdown {
+                //     width: 170px;
+                // }
+
+                .condition_3 {
+                    width: 200px;
+                }
+
+                .filter_value_input {
+                    width: 180px;
                 }
             }
 
-            @media (max-width: 599px) {
+            @media (max-width: 849px) {
                 align-items: flex-start;
                 flex-direction: column;
 
                 .rule,
                 .operator,
-                .compare {
+                .condition_1,
+                .condition_2,
+                .condition_3 {
                     width: 100%;
+                }
+
+                .filter_value_input .components-text-control__input {
+                    max-width: unset;
                 }
             }
         }
@@ -80,8 +108,16 @@
         font-weight: 500;
     }
 
-    .__rule_select,
-    .__archive_select {
+    .__select_v_r {
+        .__react_select__clear-indicator {
+            padding-left: 4px;
+            padding-right: 4px;
+
+            svg {
+                width: 16px;
+            }
+        }
+
         .__react_select__option--is-selected {
             .__info {
                 color: rgba(0, 0, 0, 0.3);
