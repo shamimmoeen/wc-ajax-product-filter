@@ -1,6 +1,22 @@
 @import "../mixins";
 
 .wcapf-filter {
+	&.search-active .wcapf-search-box.with-cross .wcapf-search-icon {
+		> svg {
+			display: none;
+		}
+	}
+
+	&:not(.search-active) .wcapf-search-box.with-cross {
+		.wcapf-clear-state {
+			display: none;
+		}
+	}
+
+	.wcapf-search-box:not(.with-cross) .wcapf-clear-state {
+		display: none;
+	}
+
 	.wcapf-search-box {
 		margin-bottom: var(--wcapf-search-box-margin-bottom);
 
@@ -8,27 +24,48 @@
 			width: 100%;
 		}
 
+		.wcapf-clear-state {
+			@include button;
+
+			align-items: center;
+			border-radius: 2px;
+			display: inline-flex;
+			height: 100%;
+			justify-content: center;
+			width: 100%;
+
+			&:focus-visible {
+				background: transparent;
+				color: var(--wcapf-primary-color);
+				outline: solid var(--wcapf-primary-color);
+				outline-offset: 0;
+				outline-width: 2px;
+			}
+		}
+
 		&.with-icon {
 			position: relative;
 
 			.wcapf-search-icon {
-				position: absolute;
-				top: 50%;
-				margin-top: calc(1em / -2);
-				width: 1em;
-				height: 1em;
+				align-items: center;
+				bottom: 0;
 				color: #777;
 				display: inline-flex;
+				justify-content: center;
+				padding: .4em;
+				position: absolute;
+				top: 0;
+				width: 2.4em;
 
 				svg {
-					width: 1em;
 					height: 1em;
+					width: 1em;
 				}
 			}
 
 			@mixin icon-left {
 				.wcapf-search-icon {
-					left: 0.9em;
+					left: 0;
 				}
 
 				input[type="text"] {
@@ -38,7 +75,7 @@
 
 			@mixin icon-right {
 				.wcapf-search-icon {
-					right: 0.9em;
+					right: 0;
 				}
 
 				input[type="text"] {

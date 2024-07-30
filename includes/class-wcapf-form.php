@@ -61,6 +61,8 @@ class WCAPF_Form {
 				$this->render_components( $field_instance );
 			} elseif ( 'price' === $field_type && in_array( $field_instance->display_type, $number_input_types ) ) {
 				$this->render_price_filter( $field_instance );
+			} elseif ( 'keyword' === $field_type ) {
+				$this->render_keyword_filter( $field_instance );
 			} else {
 				$this->render_filter( $field_instance );
 			}
@@ -281,6 +283,10 @@ class WCAPF_Form {
 			$classes[] = 'has-soft-limit';
 		}
 
+		if ( 'keyword' === $type && WCAPF_Helper::get_applied_keyword() ) {
+			$classes[] = 'search-active';
+		}
+
 		return $classes;
 	}
 
@@ -403,6 +409,56 @@ class WCAPF_Form {
 	protected function after_filter() {
 		echo '</div>'; // Ends .wcapf-filter-inner
 		echo '</div>'; // Ends .wcapf-filter
+	}
+
+	/**
+	 * Render the keyword filter.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance
+	 *
+	 * @since 4.1.0
+	 *
+	 * @return void
+	 */
+	protected function render_keyword_filter( $field_instance ) {
+		$this->before_filter( $field_instance );
+
+		$filter_key  = $field_instance->filter_key;
+		$url_builder = new WCAPF_URL_Builder( $filter_key );
+
+		$attrs = ' data-filter-url="' . esc_url( $url_builder->get_filter_url_with_placeholder() ) . '"';
+		$attrs .= ' data-clear-filter-url="' . esc_url( $url_builder->get_clear_filter_url() ) . '"';
+
+		$placeholder = WCAPF_Helper::wcapf_option(
+			'keyword_filter_placeholder',
+			__( 'Search products', 'wc-ajax-product-filter' )
+		);
+		$value       = WCAPF_Helper::get_applied_keyword();
+		$with_cross  = true;
+
+		$show_title     = $field_instance->get_sub_field_value( 'show_title' );
+		$show_clear_btn = $field_instance->get_sub_field_value( 'show_clear_btn' );
+
+		// Don't show the cross icon to clear the input field when clear button is enabled in filter heading.
+		if ( $show_title && $show_clear_btn ) {
+			$with_cross = false;
+		}
+
+		echo '<div class="wcapf-keyword-filter-wrapper"' . $attrs . '>';
+
+		echo WCAPF_Template_Loader::get_instance()->load(
+			'search-box',
+			array(
+				'placeholder'   => $placeholder,
+				'value'         => $value,
+				'icon_position' => 'right',
+				'with_cross'    => $with_cross,
+			),
+			false
+		);
+
+		echo '</div>';
+		$this->after_filter();
 	}
 
 	/**

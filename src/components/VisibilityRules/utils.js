@@ -1,53 +1,107 @@
 import { __ } from '@wordpress/i18n';
-import { isEmpty } from 'lodash';
-
-const { taxonomy_hierarchical_data, visibility_rules_data } =
-	wcapf_admin_params;
-
-const { operators, page, taxonomies, filters } = visibility_rules_data;
-
-export function getOperators() {
-	return operators;
-}
 
 export const placeholderRule = {
-	group: 'page',
-	rule: 'page',
+	rule: 'archive',
 	operator: 'equal',
+	page: '',
+	user: '',
+	archive: '',
+	term: '',
+	filter: '',
+	filter_operator: 'active',
+	filter_contains: '',
 };
 
-export function getRules() {
-	const rules = [page];
-
-	if (!isEmpty(taxonomies)) {
-		rules.push({
+export function getVRRules() {
+	return [
+		{
 			label: __('Archive', 'wc-ajax-product-filter'),
-			group: 'archive',
-			options: taxonomies,
-		});
-	}
-
-	if (!isEmpty(filters)) {
-		rules.push({
-			label: __('Filter', 'wc-ajax-product-filter'),
-			group: 'filter',
-			options: filters,
-		});
-	}
-
-	return rules;
+			value: 'archive',
+		},
+		{
+			label: __('Page', 'wc-ajax-product-filter'),
+			value: 'page',
+		},
+		{
+			label: __('User', 'wc-ajax-product-filter'),
+			value: 'user',
+		},
+		// {
+		// 	label: __('Filter', 'wc-ajax-product-filter'),
+		// 	value: 'filter',
+		// },
+	];
 }
 
-export function getRule(group, rule) {
-	if ('archive' === group) {
-		return taxonomies.find((option) => option.value === rule);
-	} else if ('filter' === group) {
-		return filters.find((option) => option.value === rule);
-	} else {
-		return getRules().find((option) => option.value === rule);
-	}
+export function getVROperators() {
+	return [
+		{
+			label: __('Equal', 'wc-ajax-product-filter'),
+			value: 'equal',
+		},
+		{
+			label: __('Not equal', 'wc-ajax-product-filter'),
+			value: 'not-equal',
+		},
+	];
 }
 
-export function isTaxonomyHierarchical(tax) {
-	return taxonomy_hierarchical_data[tax];
+export function getVRFilterOperators() {
+	return [
+		{
+			label: __('Active', 'wc-ajax-product-filter'),
+			value: 'active',
+		},
+		{
+			label: __('Not active', 'wc-ajax-product-filter'),
+			value: 'not-active',
+		},
+	];
+}
+
+export function getVRTaxonomies() {
+	return wcapf_admin_params.taxonomies_with_archive;
+}
+
+export function getVRUserOptions() {
+	return [
+		{
+			label: __('Logged in', 'wc-ajax-product-filter'),
+			value: 'logged-in',
+		},
+		{
+			label: __('Logged out', 'wc-ajax-product-filter'),
+			value: 'logged-out',
+		},
+		...wcapf_admin_params.user_roles,
+	];
+}
+
+export function getVRGlobalFilterKeys(type, taxonomy, metaKey) {
+	const globalFilters = wcapf_admin_params.global_filter_keys;
+
+	const sanitized = globalFilters.filter((option) => {
+		let secondaryType;
+
+		if ('taxonomy' === type) {
+			secondaryType = `${type}>${taxonomy}`;
+		} else if ('post-meta' === type) {
+			secondaryType = `${type}>${metaKey}`;
+		}
+
+		if (secondaryType !== option.secondary_type) {
+			return option;
+		}
+	});
+
+	return sanitized.map((option) => {
+		const filterLabel = option.label;
+		const filterKey = option._field_key;
+
+		return {
+			// label: `${filterLabel} (${filterKey})`,
+			label: filterLabel,
+			value: filterKey,
+		};
+	});
 }

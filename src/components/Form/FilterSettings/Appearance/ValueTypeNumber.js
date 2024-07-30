@@ -4,7 +4,6 @@ import ToggleGroup from '../../../Field/ToggleGroup';
 import Radio from '../../../Field/Radio';
 import Select from '../../../Field/Select';
 import Checkbox from '../../../Field/Checkbox';
-import { foundProVersion } from '../../../utils';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
 import { numberDisplayTypes } from '../../utils';
@@ -48,7 +47,7 @@ const ValueTypeNumber = ({ index }) => {
 
 		value = options.find((option) => option.value === number_display_type);
 
-		if (!foundProVersion()) {
+		if (!WCAPF_PRO) {
 			const freeDisplayTypes = ['range_slider', 'range_number'];
 
 			if (!freeDisplayTypes.includes(number_display_type)) {

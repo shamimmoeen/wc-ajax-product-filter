@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Flex, Icon, Modal, Spinner } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { itemCreateErrorNotice, removeItemCreateNotices } from '../notices';
-import { foundProVersion, getEditFormLink } from '../utils';
+import { getEditFormLink, getNonceToken } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { CheckIcon } from '../SVGIcons';
 import axios from 'axios';
@@ -59,7 +59,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 	};
 
 	const formSubmissionDisabled = () => {
-		if (foundProVersion()) {
+		if (WCAPF_PRO) {
 			return false;
 		}
 
@@ -86,6 +86,7 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 		const formData = new FormData();
 
 		formData.append('action', 'wcapf_add_form');
+		formData.append('nonce', getNonceToken());
 		formData.append('form_title', title);
 		formData.append('form_settings', JSON.stringify(defaultFormSettings()));
 

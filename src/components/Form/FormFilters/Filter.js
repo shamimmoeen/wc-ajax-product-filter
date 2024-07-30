@@ -25,7 +25,7 @@ import {
 	filterDeletedErrorNotice,
 	removeFilterDeletedNotices,
 } from '../../notices';
-import { wpVersion } from '../../utils';
+import { getNonceToken, wpVersion } from '../../utils';
 import CustomTabPanel from '../../CustomTabPanel';
 
 const onlyWithType = componentsWithTypeOnly();
@@ -119,6 +119,7 @@ const Filter = ({ index }) => {
 
 			const data = {
 				action: 'wcapf_delete_filter',
+				nonce: getNonceToken(),
 				post_id: id,
 			};
 

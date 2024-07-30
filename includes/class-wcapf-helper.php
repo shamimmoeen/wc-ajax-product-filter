@@ -506,6 +506,7 @@ class WCAPF_Helper {
 	public static function get_active_filters_markup( $filter_data, $extra_class = '' ) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 		$filter_key     = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
+		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : '';
 
 		$classes = 'wcapf-filter-clear-btn wcapf-active-filter-item';
 		$classes .= $extra_class ? ' ' . $extra_class : '';
@@ -513,8 +514,14 @@ class WCAPF_Helper {
 		$html = '';
 
 		foreach ( $active_filters as $value => $label ) {
-			$url_builder      = new WCAPF_URL_Builder( $filter_key, true );
-			$clear_filter_url = $url_builder->get_filter_url( $value, true );
+			$url_builder = new WCAPF_URL_Builder( $filter_key, true );
+
+			if ( 'keyword' === $filter_type ) {
+				// Here, it is possible to apply multiple keywords, so clear all applied keywords at once.
+				$clear_filter_url = $url_builder->get_clear_filter_url();
+			} else {
+				$clear_filter_url = $url_builder->get_filter_url( $value, true );
+			}
 
 			$attrs = 'class="' . esc_attr( $classes ) . '"';
 			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
@@ -689,6 +696,22 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Gets the applied keyword.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @return string
+	 */
+	public static function get_applied_keyword() {
+		$chosen = WCAPF_Helper::get_chosen_filters();
+
+		$filters_data = isset( $chosen['filters_data'] ) ? $chosen['filters_data'] : array();
+		$keyword_data = isset( $filters_data['keyword'] ) ? $filters_data['keyword'] : array();
+
+		return isset( $keyword_data['values'][0] ) ? $keyword_data['values'][0] : '';
+	}
+
+	/**
 	 * Gets the rgb array from hex color.
 	 *
 	 * @param string $hex The hex color code.
@@ -771,6 +794,15 @@ class WCAPF_Helper {
 	 */
 	public static function sort_by_prefix() {
 		return self::wcapf_option( 'sort_by_prefix', __( 'Sort by:', 'wc-ajax-product-filter' ) );
+	}
+
+	/**
+	 * @since 4.1.0
+	 *
+	 * @return string
+	 */
+	public static function keyword_filter_prefix() {
+		return self::wcapf_option( 'keyword_filter_prefix', __( 'Keyword:', 'wc-ajax-product-filter' ) );
 	}
 
 	public static function opening_btn_label() {
@@ -941,8 +973,8 @@ class WCAPF_Helper {
 			return false;
 		}
 
-		// Check if we are showing the pro version upgrade required notice.
-		if ( self::pro_v2_upgrade_notice_can_be_shown() ) {
+		// Check if we are showing the pro version update required notice.
+		if ( self::pro_update_notice_can_be_shown() ) {
 			return false;
 		}
 
@@ -1006,29 +1038,83 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Determines if the pro v2 upgrade notice should be shown.
+	 * Checks if the update notice for the Pro version can be shown.
 	 *
-	 * @since 4.0.0
+	 * TODO: Check this thoroughly.
 	 *
-	 * @return bool
+	 * @since        4.0.0
+	 *
+	 * @return array An array of update notices, if any, based on the version requirements.
+	 *               Each notice provides information on the required versions and a link to proceed with the update.
+	 *               Returns an empty array if no update notices need to be shown.
 	 */
-	public static function pro_v2_upgrade_notice_can_be_shown() {
+	public static function pro_update_notice_can_be_shown() {
+		$notices = array();
+
+		// Check if the current user has the capability to manage options
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
+			return $notices;
 		}
 
+		// Check if the Pro version plugin is not active
 		if ( ! is_plugin_active( 'wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' ) ) {
-			return false;
+			return $notices;
 		}
 
-		if (
-			defined( 'WCAPF_PRO_VERSION' )
-			&& ! version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' )
-		) {
-			return false;
+		// Check if pro version found but the version number could not be obtained using the constant.
+		if ( ! defined( 'WCAPF_PRO_VERSION' ) ) {
+			$notices[] = self::get_pro_update_notice( '2.1.0' );
+
+			return $notices;
 		}
 
-		return true;
+		// Check if the free version is 4.0.0 and pro version is less than 2.0.0
+		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.0.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<' ) ) {
+			$notices[] = self::get_pro_update_notice( '2.0.0' );
+		}
+
+		// Check if the free version is 4.1.0 and pro version is less than or equal to 2.0.0
+		if ( defined( 'WCAPF_VERSION' ) && version_compare( WCAPF_VERSION, '4.1.0', '=' ) && version_compare( WCAPF_PRO_VERSION, '2.0.0', '<=' ) ) {
+			$notices[] = self::get_pro_update_notice( '2.1.0' );
+		}
+
+		return $notices;
+	}
+
+	/**
+	 * Get the pro updated notice.
+	 *
+	 * @param string $required_pro_version The required pro version.
+	 *
+	 * @since        4.1.0
+	 *
+	 * @return string
+	 */
+	private static function get_pro_update_notice( $required_pro_version ) {
+		$update_plugin_doc_url = add_query_arg(
+			array(
+				'utm_source'   => 'WP+Admin',
+				'utm_medium'   => 'update_pro_notice',
+				'utm_campaign' => 'WCAPF+Pro+Update',
+			),
+			'https://wptools.io/docs/wc-ajax-product-filter/getting-started/update-plugin/'
+		);
+
+		if ( defined( 'WCAPF_PRO_VERSION' ) ) {
+			$pro_version = WCAPF_PRO_VERSION;
+		} else {
+			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/wc-ajax-product-filter-pro/wc-ajax-product-filter-pro.php' );
+			$pro_version = $plugin_data['Version'];
+		}
+
+		/** @noinspection HtmlUnknownTarget */
+		return sprintf(
+			__( 'WCAPF - WooCommerce Ajax Product Filter version %s requires WCAPF - WooCommerce Ajax Product Filter Pro version %s or higher, but you are using %s. The Pro version is currently NOT RUNNING. <a href="%s" target="_blank">Please proceed with the update</a>.', 'wc-ajax-product-filter' ),
+			WCAPF_VERSION,
+			$required_pro_version,
+			$pro_version,
+			$update_plugin_doc_url
+		);
 	}
 
 	/**
@@ -1050,8 +1136,7 @@ class WCAPF_Helper {
 		$meta_key       = 'wcapf_review_notice_for_milestone_achieved_dismissed_at';
 		$dismissal_time = get_user_meta( $user_id, $meta_key, true );
 
-		// if ( $dismissal_time && ( $current_time - $dismissal_time ) < 24 * 60 * 60 ) {
-		if ( $dismissal_time && ( $current_time - $dismissal_time ) < 2 * 60 ) { // 2 minutes
+		if ( $dismissal_time && ( $current_time - $dismissal_time ) < 24 * 60 * 60 ) {
 			return false;
 		}
 

@@ -4,11 +4,8 @@ import Checkbox from '../../Field/Checkbox';
 import useSettingsData from '../useSettingsData';
 import ColorInput from '../../Field/ColorInput';
 import Select from '../../Field/Select';
-// import { foundProVersion } from '../../utils';
 // import Text from '../../Field/Text';
 // import ProFeaturesNotice from '../../ProFeaturesNotice';
-
-// const WCAPF_PRO = foundProVersion();
 
 const enablePrimaryTextColor = wcapf_admin_params.enable_primary_text_color;
 

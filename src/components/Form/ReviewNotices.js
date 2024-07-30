@@ -17,6 +17,8 @@ const ReviewNotices = () => {
 			return (
 				<ReviewNotice noticeType={'time-since'} timeSince={timeSince} />
 			);
+		} else {
+			return null;
 		}
 	};
 

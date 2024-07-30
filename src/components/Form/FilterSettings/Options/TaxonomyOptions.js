@@ -10,7 +10,6 @@ import { taxonomyLimitByOptions, taxonomyProLimitByOptions } from '../../utils';
 import ToggleGroup from '../../../Field/ToggleGroup';
 import SelectMulti from '../../../Field/SelectMulti';
 import Select from '../../../Field/Select';
-import { foundProVersion } from '../../../utils';
 
 const TaxonomyOptions = ({ index }) => {
 	const { state, dispatch } = useForm();
@@ -57,7 +56,7 @@ const TaxonomyOptions = ({ index }) => {
 					(option) => option.value === limit_options
 				);
 
-				if (!foundProVersion()) {
+				if (!WCAPF_PRO) {
 					if (proOptions.includes(limit_options)) {
 						const _proOptions = find(options, { proGroup: true });
 						const proOptions = _proOptions.options;

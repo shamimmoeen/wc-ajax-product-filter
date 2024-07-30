@@ -106,10 +106,10 @@ class WCAPF_API_Utils {
 					$taxonomy_data = $taxonomy_options[ $data_index ];
 					$data['label'] = $taxonomy_data['label'];
 				} else {
-					$data_index  = array_search( $type, array_column( $filter_types, 'value' ) );
-					$filter_data = $filter_types[ $data_index ];
+					$data_index   = array_search( $type, array_column( $filter_types, 'value' ) );
+					$_filter_data = $filter_types[ $data_index ];
 
-					$label = $filter_data['label'];
+					$label = $_filter_data['label'];
 
 					if ( 'post-meta' === $type ) {
 						$label .= '[' . $property . ']';
@@ -169,6 +169,11 @@ class WCAPF_API_Utils {
 			array(
 				'label' => __( 'Post Meta', 'wc-ajax-product-filter' ),
 				'value' => 'post-meta',
+			),
+			array(
+				'label' => __( 'Keyword', 'wc-ajax-product-filter' ),
+				'value' => 'keyword',
+				'key'   => 'keyword',
 			),
 			array(
 				'label' => __( 'Sort By', 'wc-ajax-product-filter' ),

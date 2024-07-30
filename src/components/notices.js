@@ -132,3 +132,10 @@ export function removeSettingsSavedNotices() {
 	removeNotice(settingsSaveSuccessNoticeId);
 	removeNotice(settingsSaveErrorNoticeId);
 }
+
+// Get form filters error notice.
+const getFormFiltersErrorNoticeId = 'get-form-filters-error';
+
+export function getFormFiltersErrorNotice(message) {
+	addErrorNotice(message, getFormFiltersErrorNoticeId, '😟');
+}

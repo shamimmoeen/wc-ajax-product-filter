@@ -19,14 +19,13 @@ const ReviewNotice = ({ noticeType, timeSince }) => {
 		noticeMessage = (
 			<>
 				<p>
-					<span className={smileyIcon}></span> Congratulations! You
-					have reached a milestone in using WCAPF - WooCommerce Ajax
-					Product Filter by updating the filters five times. Help us
-					improve by sharing your experience. Please consider{' '}
+					<span className={smileyIcon}></span> Great job! You have
+					updated the filters five times. Your feedback encourages me
+					to improve the plugin. Please consider{' '}
 					<a href={reviewUrl} target='_blank'>
 						writing a review on WordPress
 					</a>
-					.
+					. Thank you in advance :)
 				</p>
 				<button
 					type='button'
