@@ -1,9 +1,9 @@
 === WCAPF - WooCommerce Ajax Product Filter ===
 Contributors: shamimmoeen
-Tags: product filter, ajax product filter, ajax filter, woocommerce ajax product filter, woocommerce product filter, woocommerce ajax filter, woocommerce filter, products filter, ajax filter, advanced products filter, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, ajax product search, woocommerce product sorting, woocommerce, wc ajax product filter, wc product filter, wc ajax filter, wc filter
+Tags: woocommerce product filter, ajax product filter, price filter, product sorting, woocommerce layered nav
 Requires at least: 6.0
-Tested up to: 6.6
-Stable tag: 4.2.1
+Tested up to: 6.7
+Stable tag: 4.2.2
 Requires PHP: 7.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,13 @@ If the issue persists, please open a support ticket, and our dedicated support t
 6. Plugin Settings
 
 == Changelog ==
+
+= 4.2.2 (20 January 2025) =
+
+* Fix – Deprecated react render issue
+* Fix – Dynamic property creation issue
+* Fix – Translations loading issue
+* Enhancement – Add spacing to radio input
 
 = 4.2.1 (30 July 2024) =
 
