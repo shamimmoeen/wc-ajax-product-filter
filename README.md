@@ -1,12 +1,12 @@
 # WCAPF - WooCommerce Ajax Product Filter #
-**Contributors:** [shamimmoeen](https://profiles.wordpress.org/shamimmoeen/)  
-**Tags:** woocommerce product filter, ajax product filter, price filter, product sorting, woocommerce layered nav  
-**Requires at least:** 6.0  
-**Tested up to:** 6.7  
-**Stable tag:** 4.2.2  
-**Requires PHP:** 7.2  
-**License:** GPLv3  
-**License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
+**Contributors:** [shamimmoeen](https://profiles.wordpress.org/shamimmoeen/)
+**Tags:** woocommerce product filter, ajax product filter, price filter, product sorting, woocommerce layered nav
+**Requires at least:** 6.0
+**Tested up to:** 6.7
+**Stable tag:** 4.2.3
+**Requires PHP:** 7.2
+**License:** GPLv3
+**License URI:** https://www.gnu.org/licenses/gpl-3.0.html
 
 WCAPF - WooCommerce Ajax Product Filter is a powerful plugin that enhances the filtering functionality of your WooCommerce store.
 
@@ -173,6 +173,10 @@ If the issue persists, please open a support ticket, and our dedicated support t
 6. Plugin Settings
 
 ## Changelog ##
+
+### 4.2.3 (2 March 2025) ###
+
+* Fix – Prevent errors by skipping undefined taxonomies when they are unregistered
 
 ### 4.2.2 (20 January 2025) ###
 
