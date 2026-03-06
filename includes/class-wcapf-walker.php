@@ -74,6 +74,13 @@ class WCAPF_Walker {
 	public $use_combobox;
 
 	/**
+	 * No results message.
+	 *
+	 * @var string
+	 */
+	public $no_results_message;
+
+	/**
 	 * Enable multiple filter.
 	 *
 	 * @var string
@@ -128,6 +135,17 @@ class WCAPF_Walker {
 	 * @var string
 	 */
 	public $get_options;
+
+	/**
+	 * Custom appearance options.
+	 *
+	 * This variable is used to store an array of custom appearance options
+	 * that can be used to modify the appearance of the application.
+	 * Each element in the array represents a specific option and its value.
+	 *
+	 * @var array
+	 */
+	public $custom_appearance_options;
 
 	/**
 	 * Determines if filter option tooltip is enabled.
@@ -244,6 +262,10 @@ class WCAPF_Walker {
 	private $queried_object;
 
 	/**
+	 * URL Builder.
+	 *
+	 * Class responsible for building URLs based on given parameters.
+	 *
 	 * @var WCAPF_URL_Builder
 	 */
 	private $url_builder;

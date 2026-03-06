@@ -63,6 +63,16 @@
 		border-color: $inputBorderColor;
 	}
 
+	.components-radio-control__input {
+		@include ltr {
+			margin-right: 6px;
+		}
+
+		@include rtl {
+			margin-left: 6px;
+		}
+	}
+
 	// Textarea
 	.components-textarea-control__input {
 		font-size: 13px;

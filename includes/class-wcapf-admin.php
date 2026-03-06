@@ -388,6 +388,13 @@ class WCAPF_Admin {
 			$asset_file['version']
 		);
 
+		// Set up translations for the script.
+		wp_set_script_translations(
+			$handle,
+			'wc-ajax-product-filter',
+			plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'languages'
+		);
+
 		// Load the style file.
 		wp_enqueue_style(
 			$handle,
