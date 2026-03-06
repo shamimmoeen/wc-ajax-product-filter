@@ -252,6 +252,10 @@ class WCAPF_API_Utils {
 		$final_array = array_merge( $main_taxonomies, $attributes, $others, $optional_taxonomies );
 
 		foreach ( $final_array as $name ) {
+			if ( ! isset( $tax_data[ $name ] ) ) {
+				continue; // Skip undefined taxonomies to prevent errors caused by unregistered taxonomies.
+			}
+
 			if ( $only_with_archive && ( ! is_taxonomy_viewable( $name ) || 'product_shipping_class' === $name ) ) {
 				continue;
 			}

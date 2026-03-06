@@ -1,5 +1,6 @@
 import './list-forms.scss';
-import { render, StrictMode } from '@wordpress/element';
+import { createRoot } from 'react-dom/client';
+import { StrictMode } from '@wordpress/element';
 import { ListFormsProvider } from './components/ListForms/ListFormsContext';
 import ListForms from './components/ListForms';
 
@@ -11,17 +12,17 @@ const App = () => {
 	);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener( 'DOMContentLoaded', () => {
 	const renderElementInstance = document.getElementById(
 		'wcapf-forms-list-admin-ui'
 	);
 
-	if (renderElementInstance) {
-		render(
+	if ( renderElementInstance ) {
+		const root = createRoot( renderElementInstance );
+		root.render(
 			<StrictMode>
 				<App />
-			</StrictMode>,
-			renderElementInstance
+			</StrictMode>
 		);
 	}
-});
+} );
