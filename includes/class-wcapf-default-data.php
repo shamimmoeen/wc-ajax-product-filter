@@ -104,7 +104,6 @@ class WCAPF_Default_Data {
 			// Miscellaneous
 			'debug_mode'                       => '1',
 			'disable_wcapf'                    => '',
-			'send_anonymous_data'              => '',
 			'remove_data'                      => '',
 		);
 	}
