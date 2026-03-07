@@ -11,7 +11,6 @@ const Miscellaneous = () => {
 		settings: {
 			debug_mode,
 			disable_wcapf,
-			send_anonymous_data,
 			remove_data,
 		},
 	} = state;
@@ -37,17 +36,6 @@ const Miscellaneous = () => {
 					'wc-ajax-product-filter'
 				)}
 				isChecked={disable_wcapf}
-				onChange={handleCheckboxChange}
-			/>
-
-			<Checkbox
-				id={'send_anonymous_data'}
-				label={__('Send anonymous data', 'wc-ajax-product-filter')}
-				description={__(
-					'Enable this if you agree to send anonymous data to the developer to make the plugin better.',
-					'wc-ajax-product-filter'
-				)}
-				isChecked={send_anonymous_data}
 				onChange={handleCheckboxChange}
 			/>
 
