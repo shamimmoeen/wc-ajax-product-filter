@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Product_Filter class.
  *
@@ -15,6 +20,11 @@
  */
 class WCAPF_Product_Filter {
 
+	/**
+	 * Gets the full SQL JOIN clause for the chosen filters.
+	 *
+	 * @return string
+	 */
 	public function get_full_join_clause() {
 		$post_clauses = $this->get_full_join_n_where_clauses();
 		$joins        = $post_clauses['joins'];
@@ -61,7 +71,7 @@ class WCAPF_Product_Filter {
 	 * @see WCAPF_Helper::get_chosen_filters()
 	 */
 	public function get_chosen_filters() {
-		// parse url
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reads front-end filter state from the URL query string; no nonce is applicable here.
 		$url = $_SERVER['QUERY_STRING'];
 		parse_str( $url, $query );
 
@@ -78,12 +88,12 @@ class WCAPF_Product_Filter {
 		foreach ( $filters_data as $filter_key => $field ) {
 			$field_instance = new WCAPF_Field_Instance( $field );
 			$filter_type    = $field_instance->filter_type;
-			$filter_values  = sanitize_text_field( $query[ $filter_key ] ); // Sanitize the value that comes from the url.
+			$filter_values  = sanitize_text_field( $query[ $filter_key ] ); // Sanitize the value that comes from the URL.
 
 			if ( 'taxonomy' === $filter_type ) {
 				$taxonomy = $field_instance->taxonomy;
 
-				if ( in_array( $taxonomy, wc_get_attribute_taxonomy_names() ) ) {
+				if ( in_array( $taxonomy, wc_get_attribute_taxonomy_names(), true ) ) {
 					$taxonomies[ $filter_key ] = $this->set_attribute_filter_data( $filter_values, $field_instance );
 				} else {
 					$taxonomies[ $filter_key ] = $this->set_taxonomy_filter_data( $filter_values, $field_instance );
@@ -166,7 +176,7 @@ class WCAPF_Product_Filter {
 			foreach ( $form['filters'] as $filter ) {
 				$field_key = $filter['key'];
 
-				if ( in_array( $field_key, $filter_keys ) ) {
+				if ( in_array( $field_key, $filter_keys, true ) ) {
 					$filters_data[ $field_key ] = $filter['field'];
 				}
 			}
@@ -203,6 +213,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Sets attribute filter data.
+	 *
 	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -223,7 +235,7 @@ class WCAPF_Product_Filter {
 
 		$join = '';
 
-		$utils = new WCAPF_Product_Filter_Utils;
+		$utils = new WCAPF_Product_Filter_Utils();
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
@@ -300,6 +312,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Sets taxonomy filter data.
+	 *
 	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -313,7 +327,7 @@ class WCAPF_Product_Filter {
 		$taxonomy   = $field_instance->taxonomy;
 		$filter_id  = $field_instance->filter_id;
 
-		$utils = new WCAPF_Product_Filter_Utils;
+		$utils = new WCAPF_Product_Filter_Utils();
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
@@ -409,7 +423,12 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array                $filter_values  The filter values.
+	 * Gets the chosen term IDs for the given filter values.
+	 *
+	 * Allows filter values to be transformed before they are used in taxonomy
+	 * queries, such as converting custom values into term IDs.
+	 *
+	 * @param array                $filter_values  The selected filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -422,7 +441,9 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array                $term_ids       The term ids.
+	 * Gets the ancestor term IDs for the active terms.
+	 *
+	 * @param array                $term_ids       The active term IDs.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -441,7 +462,12 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array                $filter_values  The filter values.
+	 * Gets the active taxonomy filter data.
+	 *
+	 * Returns the selected term labels keyed by term ID for use in the active
+	 * filters UI.
+	 *
+	 * @param array                $filter_values  The selected filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -472,6 +498,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Sets price filter data.
+	 *
 	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -483,7 +511,7 @@ class WCAPF_Product_Filter {
 
 		$active_filters = array();
 
-		$utils = new WCAPF_Product_Filter_Utils;
+		$utils = new WCAPF_Product_Filter_Utils();
 
 		list( 'join' => $join, 'alias' => $alias ) = $utils::get_lookup_table_data();
 
@@ -526,6 +554,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Gets the label for a number range.
+	 *
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 * @param string               $value          The min, max range using separator.
 	 *
@@ -562,6 +592,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Sets product status filter data.
+	 *
 	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -573,7 +605,7 @@ class WCAPF_Product_Filter {
 
 		$active_filters = array();
 
-		$utils = new WCAPF_Product_Filter_Utils;
+		$utils = new WCAPF_Product_Filter_Utils();
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
@@ -633,6 +665,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Gets active product status filter data.
+	 *
 	 * @param array                $filter_values  The filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -651,6 +685,8 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
+	 * Sets post author filter data.
+	 *
 	 * @param string               $filter_value   The filter value.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -669,7 +705,7 @@ class WCAPF_Product_Filter {
 		$clauses          = array();
 		$or_filter_values = array();
 
-		$utils = new WCAPF_Product_Filter_Utils;
+		$utils = new WCAPF_Product_Filter_Utils();
 
 		$alias = $utils::get_table_join_alias( $property );
 
@@ -703,12 +739,14 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param string               $value
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Gets the label for a post author filter value.
+	 *
+	 * @param string               $value          The selected author value.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return string
 	 */
-	protected function get_label_for_post_author( $value, $field_instance ) {
+	protected function get_label_for_post_author( $value, $field_instance ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		$args = array(
 			'fields'  => array( 'ID', 'display_name' ),
 			'include' => array( $value ),
@@ -718,6 +756,8 @@ class WCAPF_Product_Filter {
 		$users = get_users( $args );
 
 		/**
+		 * The user object.
+		 *
 		 * @var WP_User $user
 		 */
 		$user = $users[0];
@@ -726,10 +766,12 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param string $query_type
-	 * @param array  $or_filter_values
-	 * @param string $value_alias
-	 * @param array  $clauses
+	 * Gets the WHERE clause for filter values.
+	 *
+	 * @param string $query_type       The query type.
+	 * @param array  $or_filter_values The OR filter values.
+	 * @param string $value_alias      The value alias.
+	 * @param array  $clauses          The individual clauses.
 	 *
 	 * @return string
 	 */
@@ -748,24 +790,24 @@ class WCAPF_Product_Filter {
 			} else {
 				$where = '1=0';
 			}
-		} else {
-			if ( $clauses ) {
-				if ( 1 < count( $clauses ) ) {
-					$where = '( ' . implode( ' AND ', $clauses ) . ' )';
-				} else {
-					$where = implode( ' AND ', $clauses );
-				}
+		} elseif ( $clauses ) {
+			if ( 1 < count( $clauses ) ) {
+				$where = '( ' . implode( ' AND ', $clauses ) . ' )';
 			} else {
-				$where = '1=0';
+				$where = implode( ' AND ', $clauses );
 			}
+		} else {
+			$where = '1=0';
 		}
 
 		return $where;
 	}
 
 	/**
-	 * @param string               $filter_value
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Sets post meta filter data.
+	 *
+	 * @param string               $filter_value   The filter value.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -776,7 +818,7 @@ class WCAPF_Product_Filter {
 
 		$active_filters = array();
 
-		$utils = new WCAPF_Product_Filter_Utils;
+		$utils = new WCAPF_Product_Filter_Utils();
 
 		$filter_values = $utils::get_chosen_filter_values( $filter_value );
 
@@ -817,8 +859,10 @@ class WCAPF_Product_Filter {
 	}
 
 	/**
-	 * @param array                $filter_values
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Gets the JOIN clause for post meta filters.
+	 *
+	 * @param array                $filter_values  The filter values.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return string
 	 */
@@ -833,7 +877,10 @@ class WCAPF_Product_Filter {
 
 		if ( 'and' === $query_type ) {
 			foreach ( $filter_values as $index => $meta_value ) {
-				$join_alias = WCAPF_Product_Filter_Utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
+				$join_alias = WCAPF_Product_Filter_Utils::get_table_join_alias_for_query_type_and(
+					$index,
+					$filter_key
+				);
 
 				$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
 				$join .= " AND $join_alias.meta_key = '$meta_key')";
@@ -851,8 +898,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets the keyword filter data.
 	 *
-	 * @param string               $filter_value
-	 * @param WCAPF_Field_Instance $field_instance
+	 * @param string               $filter_value   The filter value.
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @since 4.1.0
 	 *
@@ -890,28 +937,38 @@ class WCAPF_Product_Filter {
 			return $chosen;
 		}
 
-		if ( isset( $_GET['orderby'] ) ) {
-			$values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( sanitize_key( $_GET['orderby'] ) );
-			$prefix = WCAPF_Helper::sort_by_prefix();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reads front-end sorting state from the URL query args.
+		$orderby = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : '';
 
-			$active_filters = array();
-
-			foreach ( $values as $value ) {
-				$active_filters[ $value ] = $prefix . ' ' . $value;
-			}
-
-			$data = array(
-				'values'         => $values,
-				'filter_key'     => 'orderby',
-				'active_filters' => $active_filters,
-			);
-
-			$chosen['filters_data']['orderby'] = $data;
+		if ( ! $orderby ) {
+			return $chosen;
 		}
+
+		$values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $orderby );
+		$prefix = WCAPF_Helper::sort_by_prefix();
+
+		$active_filters = array();
+
+		foreach ( $values as $value ) {
+			$active_filters[ $value ] = $prefix . ' ' . $value;
+		}
+
+		$data = array(
+			'values'         => $values,
+			'filter_key'     => 'orderby',
+			'active_filters' => $active_filters,
+		);
+
+		$chosen['filters_data']['orderby'] = $data;
 
 		return $chosen;
 	}
 
+	/**
+	 * Gets the full SQL WHERE clause for the chosen filters.
+	 *
+	 * @return string
+	 */
 	public function get_full_where_clause() {
 		$post_clauses = $this->get_full_join_n_where_clauses();
 		$wheres       = $post_clauses['wheres'];
@@ -919,5 +976,4 @@ class WCAPF_Product_Filter {
 
 		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
 	}
-
 }

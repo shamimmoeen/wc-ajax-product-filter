@@ -3,7 +3,7 @@
  * Plugin Name:       WCAPF - WooCommerce Ajax Product Filter
  * Plugin URI:        https://wptools.io/wc-ajax-product-filter/?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=WCAPF+Pro+Details
  * Description:       A plugin to filter WooCommerce products with AJAX request.
- * Version:           4.2.3
+ * Version:           4.2.4
  * Requires at least: 6.0
  * Requires PHP:      7.2
  * Author:            wptools.io
@@ -28,37 +28,23 @@
  * @license   https://www.gnu.org/licenses/gpl-3.0.html
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Defines constant WCAPF_VERSION
+// Defines constant WCAPF_VERSION.
 if ( ! defined( 'WCAPF_VERSION' ) ) {
-	define( 'WCAPF_VERSION', '4.2.3' );
+	define( 'WCAPF_VERSION', '4.2.4' );
 }
 
 class WCAPF_Plugin {
 
 	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'show_admin_notice' ) );
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'woocommerce_loaded', array( $this, 'load_dependencies' ) );
 
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
-	}
-
-	public function load_plugin_textdomain() {
-		if ( ! $this->should_we_proceed() ) {
-			return;
-		}
-
-		// Load translated strings.
-		load_plugin_textdomain(
-			'wc-ajax-product-filter',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
 	}
 
 	/**
@@ -122,7 +108,8 @@ class WCAPF_Plugin {
 			$notices[] = __( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' );
 
 			$messages[] = sprintf(
-				__( '%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It requires WooCommerce plugin to be activated. Please activate the WooCommerce plugin first ✌️ %s Back %s', 'wc-ajax-product-filter' ),
+				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: opening link tag, 4: closing link tag */
+				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WooCommerce plugin to be activated. Please activate the WooCommerce plugin first ✌️ %3$s Back %4$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				'<br /><br /><a href="' . esc_url( $dashboard_url ) . '" class="button button-primary">',
@@ -130,13 +117,15 @@ class WCAPF_Plugin {
 			);
 		} elseif ( version_compare( $wc_version, $required_wc_version, '<' ) ) {
 			$notices[] = sprintf(
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %s or higher, but WooCommerce version %s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
+				/* translators: 1: required WooCommerce version, 2: current WooCommerce version */
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %1$s or higher, but WooCommerce version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_wc_version,
 				$wc_version
 			);
 
 			$messages[] = sprintf(
-				__( '%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It requires WooCommerce version %s or higher, but WooCommerce version %s is used on the site. Please upgrade the WooCommerce version first ✌️ %s Back %s', 'wc-ajax-product-filter' ),
+				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required WooCommerce version, 4: current WooCommerce version, 5: opening link tag, 6: closing link tag */
+				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WooCommerce version %3$s or higher, but WooCommerce version %4$s is used on the site. Please upgrade the WooCommerce version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				$required_wc_version,
@@ -148,13 +137,15 @@ class WCAPF_Plugin {
 
 		if ( version_compare( $wp_version, $required_wp_version, '<' ) ) {
 			$notices[] = sprintf(
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires WordPress version %s or higher, but WordPress version %s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
+				/* translators: 1: required WordPress version, 2: current WordPress version */
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires WordPress version %1$s or higher, but WordPress version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_wp_version,
 				$wp_version
 			);
 
 			$messages[] = sprintf(
-				__( '%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It requires WordPress version %s or higher, but WordPress version %s is used on the site. Please upgrade the WordPress version first ✌️ %s Back %s', 'wc-ajax-product-filter' ),
+				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required WordPress version, 4: current WordPress version, 5: opening link tag, 6: closing link tag */
+				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WordPress version %3$s or higher, but WordPress version %4$s is used on the site. Please upgrade the WordPress version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				$required_wp_version,
@@ -166,13 +157,15 @@ class WCAPF_Plugin {
 
 		if ( version_compare( $php_version, $required_php_version, '<' ) ) {
 			$notices[] = sprintf(
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires PHP version %s or higher, but PHP version %s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
+				/* translators: 1: required PHP version, 2: current PHP version */
+				__( 'WCAPF - WooCommerce Ajax Product Filter requires PHP version %1$s or higher, but PHP version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_php_version,
 				$php_version
 			);
 
 			$messages[] = sprintf(
-				__( '%sWCAPF - WooCommerce Ajax Product Filter can not be activated. %s It requires PHP version %s or higher, but PHP version %s is used on the site. Please upgrade the PHP version first ✌️ %s Back %s', 'wc-ajax-product-filter' ),
+				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required PHP version, 4: current PHP version, 5: opening link tag, 6: closing link tag */
+				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires PHP version %3$s or higher, but PHP version %4$s is used on the site. Please upgrade the PHP version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				$required_php_version,
@@ -198,7 +191,7 @@ class WCAPF_Plugin {
 
 			deactivate_plugins( basename( __FILE__ ) );
 
-			wp_die( $requirement );
+			wp_die( wp_kses_post( $requirement ) );
 		}
 
 		$db_version_option_key  = 'wcapf_db_version';
@@ -285,7 +278,6 @@ class WCAPF_Plugin {
 			define( 'WCAPF_CACHE_TIME', 60 * 60 * 12 );
 		}
 	}
-
 }
 
 new WCAPF_Plugin();
@@ -320,7 +312,7 @@ function wcapf_uninstall_cleanup() {
 	$option_key = 'wcapf_settings';
 	$settings   = get_option( $option_key );
 
-	if ( ! $settings['remove_data'] ) {
+	if ( ! is_array( $settings ) || empty( $settings['remove_data'] ) ) {
 		return;
 	}
 
@@ -346,7 +338,9 @@ function wcapf_uninstall_cleanup() {
 	delete_transient( 'wcapf_forms_with_locations' );
 
 	// Delete posts + data.
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$wpdb->query( "DELETE FROM $wpdb->posts WHERE post_type IN ('wcapf-form', 'wcapf-filter');" );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$wpdb->query( "DELETE meta FROM $wpdb->postmeta meta LEFT JOIN $wpdb->posts posts ON posts.ID = meta.post_id WHERE posts.ID IS NULL;" );
 
 	// Delete review notice related records from the user meta table.
@@ -358,11 +352,13 @@ function wcapf_uninstall_cleanup() {
 		'wcapf_review_notice_time_since_dismissed_at',
 	);
 
-	$meta_keys_string = '(' . implode( ', ', array_map( function ( $key ) {
-			return "'$key'";
-		}, $meta_keys ) ) . ')';
+	$placeholders = implode( ', ', array_fill( 0, count( $meta_keys ), '%s' ) );
 
-	$wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key IN $meta_keys_string;" );
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+	$query = $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE meta_key IN ($placeholders)", $meta_keys );
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$wpdb->query( $query );
 }
 
 register_uninstall_hook( __FILE__, 'wcapf_uninstall_cleanup' );

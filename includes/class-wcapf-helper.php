@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Helper class.
  *
@@ -16,7 +21,9 @@
 class WCAPF_Helper {
 
 	/**
-	 * @return bool
+	 * Determines whether the Pro version is active.
+	 *
+	 * @return bool True if the Pro version constant is defined, otherwise false.
 	 */
 	public static function found_pro_version() {
 		return defined( 'WCAPF_PRO_VERSION' );
@@ -92,21 +99,24 @@ class WCAPF_Helper {
 	public static function get_available_meta_keys() {
 		global $wpdb;
 
-		$post_type = 'product';
+		$cache_key = 'wcapf_available_meta_keys';
+		$cached    = get_transient( $cache_key );
 
-		$query = $wpdb->prepare(
-			"
-				SELECT DISTINCT($wpdb->postmeta.meta_key)
-		        FROM $wpdb->posts
-		        LEFT JOIN $wpdb->postmeta
-		        ON $wpdb->posts.ID = $wpdb->postmeta.post_id
-		        WHERE $wpdb->posts.post_type = %s
-				AND $wpdb->postmeta.meta_key IS NOT NULL
-				ORDER BY $wpdb->postmeta.meta_key
-				",
-			$post_type
-		);
+		if ( false !== $cached ) {
+			return $cached;
+		}
 
+		$query = "
+			SELECT DISTINCT $wpdb->postmeta.meta_key
+			FROM $wpdb->postmeta
+			INNER JOIN $wpdb->posts
+			ON $wpdb->posts.ID = $wpdb->postmeta.post_id
+			WHERE $wpdb->posts.post_type = 'product'
+			AND $wpdb->postmeta.meta_key IS NOT NULL
+			ORDER BY $wpdb->postmeta.meta_key
+		";
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Query does not contain user input and results are cached via transient.
 		$results   = $wpdb->get_col( $query );
 		$meta_keys = array();
 
@@ -116,6 +126,8 @@ class WCAPF_Helper {
 				'label' => $result,
 			);
 		}
+
+		set_transient( $cache_key, $meta_keys, 12 * HOUR_IN_SECONDS );
 
 		return $meta_keys;
 	}
@@ -128,13 +140,19 @@ class WCAPF_Helper {
 	 *
 	 * @source https://wordpress.stackexchange.com/q/9394
 	 *
+	 * @param string $meta_key The meta key.
+	 *
 	 * @return array
 	 */
 	public static function get_available_meta_values( $meta_key ) {
 		global $wpdb;
 
-		$post_type     = 'product';
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+		$cache_key = 'wcapf_available_meta_values_' . md5( $meta_key );
+		$cached    = get_transient( $cache_key );
+
+		if ( false !== $cached ) {
+			return $cached;
+		}
 
 		$query = $wpdb->prepare(
 			"
@@ -142,20 +160,18 @@ class WCAPF_Helper {
 				FROM $wpdb->postmeta
 				INNER JOIN $wpdb->posts
 				ON $wpdb->postmeta.post_id = $wpdb->posts.ID
-		        WHERE $wpdb->posts.post_type = %s
-		        AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')
+				WHERE $wpdb->posts.post_type = 'product'
 				AND $wpdb->postmeta.meta_key = %s
 				AND $wpdb->postmeta.meta_value <> ''
-				GROUP BY $wpdb->postmeta.meta_value
 				ORDER BY $wpdb->postmeta.meta_value
-				",
-			$post_type,
+			",
 			$meta_key
 		);
 
-		$query = apply_filters( 'wcapf_available_meta_values_sql_query', $query, $meta_key );
-
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above and results are cached using a transient.
 		$results = $wpdb->get_col( $query );
+
+		set_transient( $cache_key, $results, 12 * HOUR_IN_SECONDS );
 
 		return apply_filters( 'wcapf_product_meta_values', $results, $meta_key );
 	}
@@ -168,7 +184,8 @@ class WCAPF_Helper {
 	public static function filterable_post_statuses() {
 		$post_statuses = array( 'publish' );
 
-		// Shop managers can see the private products, the filtering should work there.
+		// Shop managers can see private products, so filtering should work there as well.
+		// phpcs:ignore WordPress.WP.Capabilities.Unknown -- "manage_woocommerce" is a valid custom capability added by WooCommerce.
 		if ( current_user_can( 'manage_woocommerce' ) ) {
 			$post_statuses[] = 'private';
 		}
@@ -178,6 +195,10 @@ class WCAPF_Helper {
 
 	/**
 	 * Gets the time period options.
+	 *
+	 * @param bool $with_ranges Whether to return full option data including date ranges.
+	 *
+	 * @throws Exception If date parsing fails.
 	 *
 	 * @return array
 	 */
@@ -198,104 +219,88 @@ class WCAPF_Helper {
 			'last-year'    => __( 'Last year', 'wc-ajax-product-filter' ),
 		);
 
-		$range_separator = WCAPF_Helper::range_values_separator();
-
-		$timestamp = current_time( 'timestamp' );
-		$format    = 'Y-m-d';
-		$today     = date( $format, $timestamp );
+		$range_separator = self::range_values_separator();
+		$timezone        = wp_timezone();
+		$today           = new DateTimeImmutable( 'now', $timezone );
+		$format          = 'Y-m-d';
 
 		foreach ( $ranges as $value => $label ) {
 			$range = '';
 
 			switch ( $value ) {
 				case 'today':
-					$start = date( $format, strtotime( $today ) );
+					$start = $today->format( $format );
 					$range = $start . $range_separator . $start;
 
 					break;
 
 				case 'yesterday':
-					$start = date( $format, strtotime( $today . ' -1 day' ) );
+					$start = $today->modify( '-1 day' )->format( $format );
 					$range = $start . $range_separator . $start;
 
 					break;
 
 				case 'this-week':
-					$date = new DateTime();
-
-					$current_year = date( 'Y' );
-					$current_week = $date->format( 'W' );
-
-					$dto = new DateTime();
-					$dto->setISODate( $current_year, $current_week );
-					$start = $dto->format( $format );
-					$dto->modify( '+6 days' );
-					$end = $dto->format( $format );
-
+					$start = $today->modify( 'monday this week' )->format( $format );
+					$end   = $today->modify( 'sunday this week' )->format( $format );
 					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'last-week':
-					$previous_week = strtotime( '-1 week +1 day' );
-
-					$start_week = strtotime( 'last sunday midnight', $previous_week );
-					$end_week   = strtotime( 'next saturday', $start_week );
-
-					$start_week = date( $format, $start_week );
-					$end_week   = date( $format, $end_week );
-
-					$range = $start_week . $range_separator . $end_week;
+					$start = $today->modify( 'monday last week' )->format( $format );
+					$end   = $today->modify( 'sunday last week' )->format( $format );
+					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'this-month':
-					$start = date( 'Y-m-01' );
-					$end   = date( 'Y-m-t' );
-
+					$start = $today->modify( 'first day of this month' )->format( $format );
+					$end   = $today->modify( 'last day of this month' )->format( $format );
 					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'last-month':
-					$start = date( $format, strtotime( 'first day of previous month' ) );
-					$end   = date( $format, strtotime( 'last day of previous month' ) );
-
+					$start = $today->modify( 'first day of last month' )->format( $format );
+					$end   = $today->modify( 'last day of last month' )->format( $format );
 					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'last-14-days':
-					$start = date( $format, strtotime( $today . ' -13 days' ) );
-					$range = $start . $range_separator . $today;
+					$start = $today->modify( '-13 days' )->format( $format );
+					$end   = $today->format( $format );
+					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'last-30-days':
-					$start = date( $format, strtotime( $today . ' -29 days' ) );
-					$range = $start . $range_separator . $today;
+					$start = $today->modify( '-29 days' )->format( $format );
+					$end   = $today->format( $format );
+					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'last-90-days':
-					$start = date( $format, strtotime( $today . ' -89 days' ) );
-					$range = $start . $range_separator . $today;
+					$start = $today->modify( '-89 days' )->format( $format );
+					$end   = $today->format( $format );
+					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'this-year':
-					$start = date( $format, strtotime( 'first day of January 1st' ) );
-					$end   = date( $format, strtotime( 'last day of December 31st' ) );
-
+					$start = $today->setDate( (int) $today->format( 'Y' ), 1, 1 )->format( $format );
+					$end   = $today->setDate( (int) $today->format( 'Y' ), 12, 31 )->format( $format );
 					$range = $start . $range_separator . $end;
 
 					break;
 
 				case 'last-year':
-					$start = date( $format, strtotime( 'last year January 1st' ) );
-					$end   = date( $format, strtotime( 'last year December 31st' ) );
-
-					$range = $start . $range_separator . $end;
+					$last_year = (int) $today->format( 'Y' ) - 1;
+					$start     = $today->setDate( $last_year, 1, 1 )->format( $format );
+					$end       = $today->setDate( $last_year, 12, 31 )->format( $format );
+					$range     = $start . $range_separator . $end;
 
 					break;
 			}
@@ -321,65 +326,73 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @return string
+	 * Gets the separator used for range values.
+	 *
+	 * @return string Range values separator.
 	 */
 	public static function range_values_separator() {
 		return '~';
 	}
 
 	/**
-	 * @return array
+	 * Gets the display types that use number-based range inputs.
+	 *
+	 * @return array Number input display types.
 	 */
 	public static function number_input_display_types() {
 		return array( 'range_slider', 'range_number' );
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $instance The field instance.
+	 * Determines whether range min and max values should be rounded.
 	 *
-	 * @return bool
+	 * @param WCAPF_Field_Instance $instance Field instance.
+	 *
+	 * @return bool True if range values should be rounded, otherwise false.
 	 */
 	public static function round_range_min_max_values( $instance ) {
 		return apply_filters( 'wcapf_round_range_min_max_values', true, $instance );
 	}
 
 	/**
-	 * Gets the field relations.
+	 * Gets the filter relationship setting.
 	 *
-	 * @return string
+	 * @return string Filter relationship.
 	 */
 	public static function get_field_relations() {
 		return self::wcapf_option( 'filter_relationships', 'and' );
 	}
 
 	/**
-	 * Gets the option.
+	 * Gets a plugin option value.
 	 *
-	 * @param string $key
-	 * @param mixed  $default
+	 * Returns the default value when the stored option is empty.
+	 *
+	 * @param string $key           Option key.
+	 * @param mixed  $default_value Default value.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return mixed
+	 * @return mixed Option value.
 	 */
-	public static function wcapf_option( $key, $default = '' ) {
+	public static function wcapf_option( $key, $default_value = '' ) {
 		global $wcapf;
 
 		$value = isset( $wcapf[ $key ] ) ? $wcapf[ $key ] : '';
 
-		if ( ! $value && $default ) {
-			return $default;
+		if ( '' === $value && '' !== $default_value ) {
+			return $default_value;
 		}
 
 		return $value;
 	}
 
 	/**
-	 * Determines if wcapf is configured for the page.
+	 * Determines whether filter data is available for the current request.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool
+	 * @return bool True if filter data is found, otherwise false.
 	 */
 	public static function found_wcapf() {
 		global $wcapf;
@@ -388,20 +401,22 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Determines if we load the js, css scripts conditionally(only when in the pages where filters found).
+	 * Determines whether frontend scripts should be loaded conditionally.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool
+	 * @return bool True if scripts should be loaded conditionally, otherwise false.
 	 */
 	public static function load_scripts_conditionally() {
 		return apply_filters( 'wcapf_load_scripts_conditionally', true );
 	}
 
 	/**
-	 * @param int $rating The rating.
+	 * Gets rating star entities markup.
 	 *
-	 * @return string
+	 * @param int $rating Rating value.
+	 *
+	 * @return string Rating entities markup.
 	 */
 	public static function get_rating_entities( $rating ) {
 		$rating_entities = '';
@@ -409,16 +424,18 @@ class WCAPF_Helper {
 		while ( $rating > 0 ) {
 			// @source https://www.htmlsymbols.xyz/unicode/U+2B50
 			$rating_entities .= '&#11088;';
-			$rating --;
+			--$rating;
 		}
 
 		return $rating_entities;
 	}
 
 	/**
-	 * @param int $rating The rating.
+	 * Gets rating star icon markup for the given rating.
 	 *
-	 * @return string
+	 * @param int $rating Rating value.
+	 *
+	 * @return string Rating icon markup.
 	 */
 	public static function get_rating_svg_icons( $rating ) {
 		$rating_html = '';
@@ -428,7 +445,7 @@ class WCAPF_Helper {
 
 		while ( $rating > 0 ) {
 			$rating_html .= $star_icons['star_full'];
-			$rating --;
+			--$rating;
 		}
 
 		$show_empty_stars = apply_filters( 'wcapf_show_empty_star_in_rating', false );
@@ -436,7 +453,7 @@ class WCAPF_Helper {
 		if ( $show_empty_stars ) {
 			while ( $remaining > 0 ) {
 				$rating_html .= $star_icons['star_empty'];
-				$remaining --;
+				--$remaining;
 			}
 		}
 
@@ -488,7 +505,9 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @return bool
+	 * Determines whether out-of-stock items should be hidden.
+	 *
+	 * @return bool True if out-of-stock items should be hidden, otherwise false.
 	 */
 	public static function hide_stock_out_items() {
 		return apply_filters(
@@ -498,17 +517,21 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @param array  $filter_data Active filter data.
-	 * @param string $extra_class Markup extra class.
+	 * Gets the active filters markup.
 	 *
-	 * @return string
+	 * Builds the markup for active filter items using the provided filter data.
+	 *
+	 * @param array  $filter_data Filter data.
+	 * @param string $extra_class Additional CSS class for the filter items.
+	 *
+	 * @return string Active filters markup.
 	 */
 	public static function get_active_filters_markup( $filter_data, $extra_class = '' ) {
 		$active_filters = isset( $filter_data['active_filters'] ) ? $filter_data['active_filters'] : array();
 		$filter_key     = isset( $filter_data['filter_key'] ) ? $filter_data['filter_key'] : '';
 		$filter_type    = isset( $filter_data['filter_type'] ) ? $filter_data['filter_type'] : '';
 
-		$classes = 'wcapf-filter-clear-btn wcapf-active-filter-item';
+		$classes  = 'wcapf-filter-clear-btn wcapf-active-filter-item';
 		$classes .= $extra_class ? ' ' . $extra_class : '';
 
 		$html = '';
@@ -523,7 +546,7 @@ class WCAPF_Helper {
 				$clear_filter_url = $url_builder->get_filter_url( $value, true );
 			}
 
-			$attrs = 'class="' . esc_attr( $classes ) . '"';
+			$attrs  = 'class="' . esc_attr( $classes ) . '"';
 			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
 			$html .= '<button ' . $attrs . '>';
@@ -538,11 +561,16 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @param string $button_label   The label for button.
-	 * @param string $override_class Whether to use custom style using a class.
-	 * @param string $style          Button style, primary or secondary.
+	 * Gets the reset button markup.
 	 *
-	 * @return string
+	 * Builds the reset button markup using the given label, optional custom class,
+	 * and button style.
+	 *
+	 * @param string $button_label   Button label.
+	 * @param string $override_class Custom CSS class.
+	 * @param string $style          Button style. Accepts `primary` or `secondary`.
+	 *
+	 * @return string Reset button markup.
 	 */
 	public static function get_reset_button_markup( $button_label, $override_class = '', $style = 'secondary' ) {
 		$active_filters = self::get_active_filters_data();
@@ -550,12 +578,10 @@ class WCAPF_Helper {
 
 		if ( $override_class ) {
 			$classes = 'wcapf-filter-clear-btn ' . $override_class;
+		} elseif ( 'primary' === $style ) {
+			$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-primary';
 		} else {
-			if ( 'primary' === $style ) {
-				$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-primary';
-			} else {
-				$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-secondary';
-			}
+			$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-secondary';
 		}
 
 		$url_builder = new WCAPF_URL_Builder();
@@ -564,21 +590,25 @@ class WCAPF_Helper {
 		$attrs = 'data-clear-filter-url="' . esc_url( $reset_url ) . '"';
 
 		if ( ! $filter_keys ) {
-			$attrs .= 'disabled="disabled"';
+			$attrs .= ' disabled="disabled"';
 		}
 
-		$html = '<button class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
-		$html .= $button_label;
+		$html  = '<button class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
+		$html .= esc_html( $button_label );
 		$html .= '</button>';
 
 		return $html;
 	}
 
 	/**
-	 * @return array
+	 * Gets the active filters data.
+	 *
+	 * Returns normalized active filter data prepared from the chosen filters.
+	 *
+	 * @return array Active filters data.
 	 */
 	public static function get_active_filters_data() {
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$chosen_filters = self::get_chosen_filters();
 		$active_filters = array();
 
 		foreach ( $chosen_filters as $filter_type_filters ) {
@@ -600,12 +630,14 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @return array
+	 * Gets the chosen filters data.
+	 *
+	 * @return array Chosen filters data.
 	 */
 	public static function get_chosen_filters() {
 		global $wcapf_chosen_filters;
 
-		return $wcapf_chosen_filters ?: array();
+		return $wcapf_chosen_filters ? $wcapf_chosen_filters : array();
 	}
 
 	/**
@@ -623,9 +655,12 @@ class WCAPF_Helper {
 		// Sort the data according to the order in $_GET variable.
 		$sorted = array();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading query parameters only to determine ordering of active filters in the UI.
 		foreach ( $_GET as $_key => $_value ) {
-			if ( array_key_exists( $_key, $active_filters ) ) {
-				$sorted[ $_key ] = $active_filters[ $_key ];
+			$key = (string) wp_unslash( $_key );
+
+			if ( array_key_exists( $key, $active_filters ) ) {
+				$sorted[ $key ] = $active_filters[ $key ];
 			}
 		}
 
@@ -703,7 +738,7 @@ class WCAPF_Helper {
 	 * @return string
 	 */
 	public static function get_applied_keyword() {
-		$chosen = WCAPF_Helper::get_chosen_filters();
+		$chosen = self::get_chosen_filters();
 
 		$filters_data = isset( $chosen['filters_data'] ) ? $chosen['filters_data'] : array();
 		$keyword_data = isset( $filters_data['keyword'] ) ? $filters_data['keyword'] : array();
@@ -721,16 +756,9 @@ class WCAPF_Helper {
 	 * @return array
 	 */
 	public static function get_rgb_from_hex( $hex ) {
-		list( $r, $g, $b ) = sscanf( $hex, "#%02x%02x%02x" );
+		list( $r, $g, $b ) = sscanf( $hex, '#%02x%02x%02x' );
 
 		return array( $r, $g, $b );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function animation_enabled_in_accordion() {
-		return apply_filters( 'wcapf_enable_animation_in_accordion', false );
 	}
 
 	/**
@@ -760,16 +788,20 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * @return bool
+	 * Determines whether Tippy.js should be used for tooltips.
+	 *
+	 * @return bool True if Tippy.js is enabled for tooltips, otherwise false.
 	 */
 	public static function use_tippyjs_for_tooltip() {
 		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', true );
 	}
 
 	/**
+	 * Gets the no-results text.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @return string
+	 * @return string No-results text.
 	 */
 	public static function no_results_text() {
 		return self::wcapf_option(
@@ -779,59 +811,52 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Gets the empty filter text.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @return string
+	 * @return string Empty filter text.
 	 */
 	public static function empty_filter_text() {
 		return self::wcapf_option( 'empty_filter_text', __( 'N/A', 'wc-ajax-product-filter' ) );
 	}
 
 	/**
+	 * Gets the sort-by prefix text.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @return string
+	 * @return string Sort-by prefix text.
 	 */
 	public static function sort_by_prefix() {
 		return self::wcapf_option( 'sort_by_prefix', __( 'Sort by:', 'wc-ajax-product-filter' ) );
 	}
 
 	/**
+	 * Gets the keyword filter prefix text.
+	 *
 	 * @since 4.1.0
 	 *
-	 * @return string
+	 * @return string Keyword filter prefix text.
 	 */
 	public static function keyword_filter_prefix() {
 		return self::wcapf_option( 'keyword_filter_prefix', __( 'Keyword:', 'wc-ajax-product-filter' ) );
 	}
 
-	public static function opening_btn_label() {
-		$settings = self::get_settings();
-
-		if ( ! empty( $settings['opening_btn_label'] ) ) {
-			return $settings['opening_btn_label'];
-		}
-
-		return __( 'Filters', 'wc-ajax-product-filter' );
-	}
-
 	/**
-	 * Gets the wcapf settings.
+	 * Gets the plugin settings.
 	 *
-	 * @return array
+	 * Retrieves the saved plugin settings from the database and allows developers
+	 * to modify them via the `wcapf_settings` filter before they are returned.
+	 *
+	 * @return array Plugin settings.
 	 */
 	public static function get_settings() {
 		$option_name = self::settings_option_key();
 		$db_options  = get_option( $option_name );
-		$db_options  = $db_options ?: array();
+		$db_options  = is_array( $db_options ) ? $db_options : array();
 
-		if ( has_filter( $option_name ) ) {
-			$settings = wp_parse_args( apply_filters( $option_name, $db_options ), $db_options );
-		} else {
-			$settings = $db_options;
-		}
-
-		return $settings;
+		return apply_filters( 'wcapf_settings', $db_options );
 	}
 
 	/**
@@ -843,16 +868,11 @@ class WCAPF_Helper {
 		return 'wcapf_settings';
 	}
 
-	public static function slide_out_panel_label() {
-		$settings = self::get_settings();
-
-		if ( ! empty( $settings['slide_out_panel_label'] ) ) {
-			return $settings['slide_out_panel_label'];
-		}
-
-		return __( 'Filters', 'wc-ajax-product-filter' );
-	}
-
+	/**
+	 * Gets the clear-all button label.
+	 *
+	 * @return string Clear-all button label.
+	 */
 	public static function clear_all_button_label() {
 		return self::wcapf_option(
 			'clear_all_button_label',
@@ -860,39 +880,24 @@ class WCAPF_Helper {
 		);
 	}
 
+	/**
+	 * Gets the reset button label.
+	 *
+	 * @return string Reset button label.
+	 */
 	public static function reset_button_label() {
 		return self::wcapf_option( 'reset_button_label', __( 'Reset', 'wc-ajax-product-filter' ) );
 	}
 
-	public static function submit_btn_label() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['submit_btn_label'] ) ) {
-			return $wcapf['submit_btn_label'];
-		}
-
-		return __( 'Submit', 'wc-ajax-product-filter' );
-	}
-
-	public static function apply_btn_label() {
-		global $wcapf;
-
-		if ( ! empty( $wcapf['apply_btn_label'] ) ) {
-			return $wcapf['apply_btn_label'];
-		}
-
-		return __( 'Apply', 'wc-ajax-product-filter' );
-	}
-
 	/**
-	 * Determines if debug mode is enabled or not.
+	 * Determines whether debug mode is enabled.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool
+	 * @return bool True if debug mode is enabled, otherwise false.
 	 */
 	public static function is_debug_mode_enabled() {
-		if ( ! current_user_can( 'administrator' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return false;
 		}
 
@@ -917,7 +922,11 @@ class WCAPF_Helper {
 	public static function get_debug_message( $message ) {
 		$styles = 'border: 1px dashed #b9b9b9;font-size: 14px;padding: 10px;margin: 0 0 15px;';
 
-		return '<div class="wcapf-debug-message" style="' . $styles . '">' . $message . '</div>';
+		return sprintf(
+			'<div class="wcapf-debug-message" style="%1$s">%2$s</div>',
+			esc_attr( $styles ),
+			wp_kses_post( $message )
+		);
 	}
 
 	/**
@@ -1024,13 +1033,14 @@ class WCAPF_Helper {
 			return false;
 		}
 
-		$form_id = ! empty( $_GET['id'] ) ? $_GET['id'] : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading query arg only to determine whether the admin notice should be shown.
+		$form_id = ! empty( $_GET['id'] ) ? absint( wp_unslash( $_GET['id'] ) ) : 0;
 
 		if ( ! $form_id ) {
 			return false;
 		}
 
-		if ( get_option( 'wcapf_migrated_filters_form_id' ) != $form_id ) {
+		if ( get_option( 'wcapf_migrated_filters_form_id' ) !== $form_id ) {
 			return false;
 		}
 
@@ -1038,15 +1048,13 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Checks if the update notice for the Pro version can be shown.
+	 * Determines whether the Pro update notice should be shown.
 	 *
 	 * TODO: Check this thoroughly.
 	 *
-	 * @since        4.0.0
+	 * @since 4.0.0
 	 *
-	 * @return array An array of update notices, if any, based on the version requirements.
-	 *               Each notice provides information on the required versions and a link to proceed with the update.
-	 *               Returns an empty array if no update notices need to be shown.
+	 * @return array Pro update notices. Returns an empty array when no notice should be shown.
 	 */
 	public static function pro_update_notice_can_be_shown() {
 		$notices = array();
@@ -1086,7 +1094,7 @@ class WCAPF_Helper {
 	 *
 	 * @param string $required_pro_version The required pro version.
 	 *
-	 * @since        4.1.0
+	 * @since 4.1.0
 	 *
 	 * @return string
 	 */
@@ -1107,13 +1115,13 @@ class WCAPF_Helper {
 			$pro_version = $plugin_data['Version'];
 		}
 
-		/** @noinspection HtmlUnknownTarget */
 		return sprintf(
-			__( 'WCAPF - WooCommerce Ajax Product Filter version %s requires WCAPF - WooCommerce Ajax Product Filter Pro version %s or higher, but you are using %s. The Pro version is currently NOT RUNNING. <a href="%s" target="_blank">Please proceed with the update</a>.', 'wc-ajax-product-filter' ),
+			/* translators: 1: free plugin version, 2: required Pro version, 3: installed Pro version, 4: update documentation URL. */
+			__( 'WCAPF - WooCommerce Ajax Product Filter version %1$s requires WCAPF - WooCommerce Ajax Product Filter Pro version %2$s or higher, but you are using %3$s. The Pro version is currently NOT RUNNING. <a href="%4$s" target="_blank">Please proceed with the update</a>.', 'wc-ajax-product-filter' ),
 			WCAPF_VERSION,
 			$required_pro_version,
 			$pro_version,
-			$update_plugin_doc_url
+			esc_url( $update_plugin_doc_url )
 		);
 	}
 
@@ -1125,7 +1133,7 @@ class WCAPF_Helper {
 	 * @return bool|string Return false when the review notice should not be shown otherwise return the time since.
 	 */
 	public static function review_notice_for_time_since_can_be_shown() {
-		if ( ! WCAPF_Helper::review_notices_can_be_shown() ) {
+		if ( ! self::review_notices_can_be_shown() ) {
 			return false;
 		}
 
@@ -1198,5 +1206,4 @@ class WCAPF_Helper {
 
 		return $show;
 	}
-
 }

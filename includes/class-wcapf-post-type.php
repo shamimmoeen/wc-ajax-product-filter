@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Post_Type class.
  *
@@ -74,7 +79,6 @@ class WCAPF_Post_Type {
 
 		register_post_type( 'wcapf-form', $args );
 	}
-
 }
 
 WCAPF_Post_Type::instance();

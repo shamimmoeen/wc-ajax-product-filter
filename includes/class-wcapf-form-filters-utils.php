@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Form_Filters_Utils class.
  *
@@ -16,9 +21,11 @@
 class WCAPF_Form_Filters_Utils {
 
 	/**
-	 * @param array $form_filters
-	 * @param int   $new_form_id
-	 * @param bool  $migrate
+	 * Saves form filters and returns sanitized filters with collected errors.
+	 *
+	 * @param array $form_filters Form filter data.
+	 * @param int   $new_form_id  Parent form post ID.
+	 * @param bool  $migrate      Whether the filters are being migrated.
 	 *
 	 * @return array
 	 */
@@ -30,7 +37,7 @@ class WCAPF_Form_Filters_Utils {
 		$errors         = array();
 
 		// Check for error coming for filter keys.
-		if ( $form_filters ) {
+		if ( ! empty( $form_filters ) && is_array( $form_filters ) ) {
 			foreach ( $form_filters as $filter_order => $filter ) {
 				list(
 					,
@@ -61,7 +68,7 @@ class WCAPF_Form_Filters_Utils {
 			wp_send_json_error( array( 'errors' => $errors ) );
 		}
 
-		if ( $form_filters ) {
+		if ( ! empty( $form_filters ) && is_array( $form_filters ) ) {
 			foreach ( $form_filters as $filter_order => $filter ) {
 				$is_new       = isset( $filter['isNew'] ) ? $filter['isNew'] : '';
 				$unique_index = isset( $filter['uniqueIndex'] ) ? $filter['uniqueIndex'] : '';
@@ -76,7 +83,7 @@ class WCAPF_Form_Filters_Utils {
 					$component
 					) = $this->get_filter_data( $filter );
 
-				if ( ! in_array( $type, $valid_types ) ) {
+				if ( ! in_array( $type, $valid_types, true ) ) {
 					continue;
 				}
 
@@ -121,7 +128,7 @@ class WCAPF_Form_Filters_Utils {
 				}
 
 				// Don't add same filter type in a form multiple times.
-				if ( in_array( $filter_type, $filter_types ) ) {
+				if ( in_array( $filter_type, $filter_types, true ) ) {
 					$post_status = 'draft';
 				} else {
 					$post_status = 'publish';
@@ -201,11 +208,13 @@ class WCAPF_Form_Filters_Utils {
 					'menu_order'   => $filter_order,
 				);
 
-				add_filter( 'pre_wp_unique_post_slug', function () use ( $post_name ) {
+				$unique_post_slug_callback = static function () use ( $post_name ) {
 					return $post_name;
-				} );
+				};
 
+				add_filter( 'pre_wp_unique_post_slug', $unique_post_slug_callback );
 				$new_filter_id = wp_update_post( $post_arr, true );
+				remove_filter( 'pre_wp_unique_post_slug', $unique_post_slug_callback );
 
 				if ( ! is_wp_error( $new_filter_id ) ) {
 					// Add 'isNew', 'uniqueIndex' when returning the filter data for React UI.
@@ -226,7 +235,9 @@ class WCAPF_Form_Filters_Utils {
 	}
 
 	/**
-	 * @param $filter
+	 * Retrieves normalized filter data.
+	 *
+	 * @param array $filter Raw filter data.
 	 *
 	 * @return array
 	 */
@@ -243,17 +254,26 @@ class WCAPF_Form_Filters_Utils {
 	}
 
 	/**
-	 * Tries to retrieve the filter key for the filter.
+	 * Retrieves and validates the filter key for a filter configuration.
 	 *
-	 * @param string $type
-	 * @param array  $possible_types
-	 * @param string $taxonomy
-	 * @param array  $filter_data
-	 * @param string $post_name
-	 * @param string $meta_key
-	 * @param int    $filter_order
+	 * Determines the correct field key (post_name) for a filter based on its
+	 * type, taxonomy, meta key, or global configuration. It also validates the
+	 * key to prevent conflicts with existing post types, taxonomies, or reserved
+	 * search keys.
 	 *
-	 * @return array
+	 * @param string $type           Filter type (taxonomy, post-meta, component, etc).
+	 * @param array  $possible_types List of available filter types from the API.
+	 * @param string $taxonomy       Selected taxonomy when the filter type is taxonomy.
+	 * @param array  $filter_data    Raw filter configuration data.
+	 * @param string $post_name      Proposed filter key (slug).
+	 * @param string $meta_key       Meta key when the filter type is post-meta.
+	 * @param int    $filter_order   Position of the filter in the form.
+	 *
+	 * @return array {
+	 *     @type string $post_name        Final filter key (slug).
+	 *     @type array  $error_data       Error information if the key conflicts.
+	 *     @type array  $filter_type_data Filter type metadata.
+	 * }
 	 */
 	public function retrieve_filter_key(
 		$type,
@@ -273,13 +293,13 @@ class WCAPF_Form_Filters_Utils {
 		}
 
 		if ( 'taxonomy' === $type ) {
-			$taxonomy_index    = array_search( 'taxonomy', array_column( $possible_types, 'value' ) );
+			$taxonomy_index    = array_search( 'taxonomy', array_column( $possible_types, 'value' ), true );
 			$taxonomy_options  = $possible_types[ $taxonomy_index ];
 			$taxonomy_types    = $taxonomy_options['options'];
-			$filter_type_index = array_search( $taxonomy, array_column( $taxonomy_types, 'value' ) );
+			$filter_type_index = array_search( $taxonomy, array_column( $taxonomy_types, 'value' ), true );
 			$filter_type_data  = $taxonomy_types[ $filter_type_index ];
 		} else {
-			$filter_type_index = array_search( $type, array_column( $possible_types, 'value' ) );
+			$filter_type_index = array_search( $type, array_column( $possible_types, 'value' ), true );
 			$filter_type_data  = $possible_types[ $filter_type_index ];
 		}
 
@@ -300,9 +320,6 @@ class WCAPF_Form_Filters_Utils {
 		}
 
 		$error_data = array();
-
-		// Check if pro version found and pretty url is enabled then don't generate the below errors.
-		// if ( ! WCAPF_Helper::found_pro_version() ) {
 
 		if ( post_type_exists( $post_name ) ) {
 			$error_data = array(
@@ -329,36 +346,33 @@ class WCAPF_Form_Filters_Utils {
 			);
 		}
 
-		// }
-
 		return array( $post_name, $error_data, $filter_type_data );
 	}
 
 	/**
-	 * Generates the filter key error message.
+	 * Generates a user-facing error message when a filter key conflicts with
+	 * an existing WordPress post type or taxonomy.
 	 *
-	 * @param string $type
+	 * @param string $type Conflict type. Expected values: 'post-type' or 'taxonomy'.
 	 *
-	 * @return string
+	 * @return string Localized error message explaining the conflict.
 	 */
 	private function generate_filter_key_error_message( $type ) {
-		$post_type_err = __(
-			"Post type name can't be used as a filter key, it'll create conflict.",
-			'wc-ajax-product-filter'
+		$messages = array(
+			'post-type' => __(
+				"Post type name can't be used as a filter key, it'll create conflict.",
+				'wc-ajax-product-filter'
+			),
+			'taxonomy'  => __(
+				"Taxonomy name can't be used as a filter key, it'll create conflict.",
+				'wc-ajax-product-filter'
+			),
 		);
 
-		$tax_type_err = __(
-			"Taxonomy name can't be used as a filter key, it'll create conflict.",
-			'wc-ajax-product-filter'
-		);
+		$common_message = __( 'Please make it unique by adding an underscore.', 'wc-ajax-product-filter' );
+		$type_message   = isset( $messages[ $type ] ) ? $messages[ $type ] : $messages['post-type'];
 
-		$common_err = __( 'Please make it unique by adding an underscore.', 'wc-ajax-product-filter' );
-
-		return sprintf(
-			'%s %s',
-			'taxonomy' === $type ? $tax_type_err : $post_type_err,
-			$common_err
-		);
+		return sprintf( '%s %s', $type_message, $common_message );
 	}
 
 	/**
@@ -396,7 +410,7 @@ class WCAPF_Form_Filters_Utils {
 		$sanitized_filter = array();
 
 		foreach ( $filter as $key => $value ) {
-			if ( in_array( $key, $float_fields ) ) {
+			if ( in_array( $key, $float_fields, true ) ) {
 				$value = floatval( $value );
 
 				if ( 'min_value' === $key && ! $value ) {
@@ -410,34 +424,32 @@ class WCAPF_Form_Filters_Utils {
 				if ( 'step' === $key && ! $value ) {
 					$value = 1;
 				}
-			} elseif ( in_array( $key, $absint_fields ) ) {
+			} elseif ( in_array( $key, $absint_fields, true ) ) {
 				$value = absint( $value );
-			} elseif ( in_array( $key, $limit_fields ) ) {
+			} elseif ( in_array( $key, $limit_fields, true ) ) {
 				if ( ! $migrate ) {
 					// Pick the ids only.
-					$value = wp_list_pluck( $value, 'value' );
+					$value = is_array( $value ) ? wp_list_pluck( $value, 'value' ) : array();
 					$value = array_map( 'sanitize_text_field', $value );
 				}
-			} elseif ( in_array( $key, $single_array_fields ) ) {
-				$value = isset( $value['value'] ) ? $value['value'] : '';
-			} elseif ( in_array( $key, $value_may_have_spaces ) ) {
+			} elseif ( in_array( $key, $single_array_fields, true ) ) {
+				$value = ( is_array( $value ) && isset( $value['value'] ) ) ? $value['value'] : '';
+			} elseif ( in_array( $key, $value_may_have_spaces, true ) ) {
 				$value = str_replace( ' ', '&nbsp;', $value );
 
 				$with_markup = array( 'values_separator', 'text_before_min_value', 'text_before_max_value' );
 
-				if ( in_array( $key, $with_markup ) ) {
+				if ( in_array( $key, $with_markup, true ) ) {
 					$value = wp_kses_data( $value );
 				} else {
 					$value = sanitize_text_field( $value );
 				}
-			} elseif ( in_array( $key, $markup_fields ) ) {
+			} elseif ( in_array( $key, $markup_fields, true ) ) {
 				$value = wp_kses_post( $value );
 			} elseif ( 'product_status_options' === $key ) {
 				$value = $this->sanitize_product_status_options( $value );
-			} else {
-				if ( ! $migrate ) {
-					$value = sanitize_text_field( $value );
-				}
+			} elseif ( ! $migrate ) {
+				$value = sanitize_text_field( $value );
 			}
 
 			$sanitized_filter[ $key ] = $value;
@@ -447,6 +459,8 @@ class WCAPF_Form_Filters_Utils {
 	}
 
 	/**
+	 * Sanitizes product status options.
+	 *
 	 * @param array $options The array of options.
 	 *
 	 * @return array
@@ -461,8 +475,8 @@ class WCAPF_Form_Filters_Utils {
 
 		foreach ( $options as $option ) {
 			$option = WCAPF_API_Utils::sanitize_manual_option_data( $option );
-			$value  = $option['value'];
-			$label  = $option['label'];
+			$value  = isset( $option['value'] ) ? $option['value'] : '';
+			$label  = isset( $option['label'] ) ? $option['label'] : '';
 
 			if ( ! strlen( $value ) ) {
 				continue;
@@ -477,5 +491,4 @@ class WCAPF_Form_Filters_Utils {
 
 		return $array;
 	}
-
 }
