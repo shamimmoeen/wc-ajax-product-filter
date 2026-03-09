@@ -722,7 +722,7 @@ class WCAPF_Product_Filter {
 			if ( 'or' === $query_type ) {
 				$or_filter_values[] = $value;
 			} else {
-				$clauses[] = $wpdb->prepare( "$value_alias = %s", $value );
+				$clauses[] = $wpdb->prepare( "$value_alias = %d", $value );
 			}
 		}
 

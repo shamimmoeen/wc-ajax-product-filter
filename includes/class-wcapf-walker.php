@@ -1121,10 +1121,10 @@ class WCAPF_Walker {
 			$option .= $this->dropdown_item_indent( $item );
 		}
 
-		$option .= $item['name'];
+		$option .= esc_html( $item['name'] );
 
 		$count      = $item['count'];
-		$item_count = ' (' . $count . ')';
+		$item_count = ' (' . esc_html( $count ) . ')';
 
 		if ( ! $use_combobox && $this->show_count && '-1' !== $count && $count_allowed ) {
 			$option .= $item_count;
@@ -1198,7 +1198,7 @@ class WCAPF_Walker {
 
 		$use_combobox = $this->use_combobox;
 
-		$item_count = ' (' . $count . ')';
+		$item_count = ' (' . esc_html( $count ) . ')';
 
 		if ( $use_combobox && $this->show_count && $count_allowed ) {
 			// Add the empty attribute to avoid the undefined issue in js.
@@ -1206,8 +1206,8 @@ class WCAPF_Walker {
 				$item_count = '';
 			}
 
-			$attrs .= ' data-count="' . $count . '"';
-			$attrs .= ' data-count-markup="' . $item_count . '"';
+			$attrs .= ' data-count="' . esc_attr( $count ) . '"';
+			$attrs .= ' data-count-markup="' . esc_attr( $item_count ) . '"';
 		}
 
 		return $attrs;
