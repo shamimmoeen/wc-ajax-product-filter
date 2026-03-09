@@ -185,7 +185,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+		$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -193,7 +195,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$term_ids_sql = $utils::get_ids_sql( $term_ids );
 
-		$where .= " AND $lookup_table_name.taxonomy = '$this->taxonomy'";
+		$where .= $wpdb->prepare( " AND $lookup_table_name.taxonomy = %s", $this->taxonomy );
 		$where .= " AND $lookup_table_name.term_id IN $term_ids_sql";
 
 		$where .= $hide_stock_out ? ' AND in_stock = 1' : '';
@@ -209,7 +211,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$query = apply_filters( 'wcapf_term_product_counts_query_using_lookup_table', $query, $this->field, $term_ids );
 		$query = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
@@ -287,7 +288,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+		$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -302,7 +305,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$query = apply_filters( 'wcapf_hierarchical_term_product_counts', $query, $this->field, $term_ids );
 		$query = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return $wpdb->get_row( $query, ARRAY_A );
 	}
 
@@ -355,8 +357,10 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$term_ids_sql = $utils::get_ids_sql( $term_ids );
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
-		$where .= " AND terms.term_id IN $term_ids_sql";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+		$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+		$where              .= " AND terms.term_id IN $term_ids_sql";
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -373,7 +377,6 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$query = apply_filters( 'wcapf_hierarchical_term_product_counts', $query, $this->field, $term_ids );
 		$query = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
