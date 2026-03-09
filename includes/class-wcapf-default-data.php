@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Default_Data class.
  *
@@ -15,19 +20,24 @@
  */
 class WCAPF_Default_Data {
 
+	/**
+	 * Returns an array containing the default data for the form.
+	 *
+	 * @return array An array containing the default data for the form.
+	 */
 	public static function form_default_data() {
 		return array(
 			'form_locations' => '',
 			'priority'       => '0',
-			// 'form_layout' => 'vertical',
-			// 'columns_per_row' => '4',
-			// 'show_form_on_top_of_products' => '1',
-			// 'filter_mode' => 'immediate',
-			// 'form_visibility' => 'always_display',
 			'show_clear_btn' => '',
 		);
 	}
 
+	/**
+	 * Returns an array containing the default settings for the plugin.
+	 *
+	 * @return array An array containing the default settings for the plugin.
+	 */
 	public static function default_settings() {
 		return array(
 			// General
@@ -108,6 +118,14 @@ class WCAPF_Default_Data {
 		);
 	}
 
+	/**
+	 * Returns sample filter data.
+	 *
+	 * Generates a sample set of filters for a form, including product category,
+	 * price, attributes, product tag, product status, rating, and reset button.
+	 *
+	 * @return array Sample filter data.
+	 */
 	public static function get_sample_filters() {
 		$filters_basic_data = array();
 
@@ -151,20 +169,22 @@ class WCAPF_Default_Data {
 				)
 			);
 
-			if ( $attribute_terms ) {
+			if ( ! is_wp_error( $attribute_terms ) && ! empty( $attribute_terms ) ) {
 				$taxonomy_data = get_taxonomy( $attribute );
 
-				$filters_basic_data[] = array(
-					'title'           => $taxonomy_data->labels->singular_name,
-					'type'            => 'taxonomy',
-					'taxonomy'        => $attribute,
-					'display_type'    => 'select',
-					'all_items_label' => __( 'Any', 'wc-ajax-product-filter' ),
-				);
+				if ( $taxonomy_data && isset( $taxonomy_data->labels->singular_name ) ) {
+					$filters_basic_data[] = array(
+						'title'           => $taxonomy_data->labels->singular_name,
+						'type'            => 'taxonomy',
+						'taxonomy'        => $attribute,
+						'display_type'    => 'select',
+						'all_items_label' => __( 'Any', 'wc-ajax-product-filter' ),
+					);
 
-				$used[] = $attribute;
+					$used[] = $attribute;
 
-				break;
+					break;
+				}
 			}
 		}
 
@@ -172,7 +192,7 @@ class WCAPF_Default_Data {
 		$found_second_attribute = false;
 
 		foreach ( $attributes as $attribute ) {
-			if ( in_array( $attribute, $used ) ) {
+			if ( in_array( $attribute, $used, true ) ) {
 				continue;
 			}
 
@@ -183,19 +203,21 @@ class WCAPF_Default_Data {
 				)
 			);
 
-			if ( $attribute_terms ) {
+			if ( ! is_wp_error( $attribute_terms ) && ! empty( $attribute_terms ) ) {
 				$taxonomy_data = get_taxonomy( $attribute );
 
-				$filters_basic_data[] = array(
-					'title'        => $taxonomy_data->labels->singular_name,
-					'type'         => 'taxonomy',
-					'taxonomy'     => $attribute,
-					'display_type' => 'multi-select',
-				);
+				if ( $taxonomy_data && isset( $taxonomy_data->labels->singular_name ) ) {
+					$filters_basic_data[] = array(
+						'title'        => $taxonomy_data->labels->singular_name,
+						'type'         => 'taxonomy',
+						'taxonomy'     => $attribute,
+						'display_type' => 'multi-select',
+					);
 
-				$found_second_attribute = true;
+					$found_second_attribute = true;
 
-				break;
+					break;
+				}
 			}
 		}
 
@@ -208,7 +230,7 @@ class WCAPF_Default_Data {
 				)
 			);
 
-			if ( $tags ) {
+			if ( ! is_wp_error( $tags ) && ! empty( $tags ) ) {
 				$filters_basic_data[] = array(
 					'title'    => __( 'Tag', 'wc-ajax-product-filter' ),
 					'type'     => 'taxonomy',
@@ -257,6 +279,15 @@ class WCAPF_Default_Data {
 		return $filters;
 	}
 
+	/**
+	 * Returns the default data for a product filter.
+	 *
+	 * Defines the initial values used for a filter, including general settings,
+	 * taxonomy settings, price settings, post meta settings, advanced settings,
+	 * active filters settings, reset button settings, and error fields.
+	 *
+	 * @return array Default filter data.
+	 */
 	public static function filter_default_data() {
 		return array(
 			'id'                                    => '',
@@ -264,7 +295,7 @@ class WCAPF_Default_Data {
 			'type'                                  => '',
 			'taxonomy'                              => '',
 			'taxHierarchical'                       => '',
-			'meta_key'                              => '',
+			'meta_key'                              => '', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Not a database query.
 			'component'                             => '',
 			'value_type'                            => 'text',
 			'field_key'                             => '',
@@ -383,5 +414,4 @@ class WCAPF_Default_Data {
 			'field_key_error_'                      => '', // Comes from server side.
 		);
 	}
-
 }

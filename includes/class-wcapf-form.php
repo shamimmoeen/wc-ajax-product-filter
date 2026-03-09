@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Form class.
  *
@@ -16,20 +21,46 @@
 class WCAPF_Form {
 
 	/**
-	 * @var $form array
+	 * The form array.
+	 *
+	 * @var array
 	 */
 	protected $form;
 
+	/**
+	 * Initializes the form instance.
+	 *
+	 * Retrieves the current form data and stores it for later use during
+	 * frontend rendering.
+	 *
+	 * @return void
+	 */
 	public function __construct() {
 		$this->form = $this->retrieve_form();
 	}
 
+	/**
+	 * Retrieves the current form data.
+	 *
+	 * Reads the active form data from the global form variable prepared by the
+	 * plugin before rendering.
+	 *
+	 * @return array Form data.
+	 */
 	protected function retrieve_form() {
 		global $wcapf_form;
 
 		return $wcapf_form;
 	}
 
+	/**
+	 * Renders the filter form on the frontend.
+	 *
+	 * Outputs the full form markup, including all configured filters and
+	 * components for the form instance.
+	 *
+	 * @return void
+	 */
 	public function render_form() {
 		if ( ! $this->should_we_proceed() ) {
 			return;
@@ -37,9 +68,13 @@ class WCAPF_Form {
 
 		$form_id = isset( $this->form['form_id'] ) ? $this->form['form_id'] : '';
 
-		$form_classes = 'wcapf-form wcapf-form-' . $form_id;
+		$form_classes = 'wcapf-form wcapf-form-' . sanitize_html_class( $form_id );
 
-		echo '<div class="' . esc_attr( $form_classes ) . '" data-id="' . esc_attr( $form_id ) . '">';
+		printf(
+			'<div class="%1$s" data-id="%2$s">',
+			esc_attr( $form_classes ),
+			esc_attr( $form_id )
+		);
 
 		do_action( 'wcapf_before_form_filters', $form_id );
 
@@ -49,7 +84,12 @@ class WCAPF_Form {
 		$number_input_types = WCAPF_Helper::number_input_display_types();
 
 		foreach ( $filters as $filter ) {
-			$field_data     = $filter['field'];
+			$field_data = isset( $filter['field'] ) ? $filter['field'] : array();
+
+			if ( empty( $field_data ) || ! is_array( $field_data ) ) {
+				continue;
+			}
+
 			$field_instance = new WCAPF_Field_Instance( $field_data );
 			$field_type     = $field_instance->type;
 
@@ -59,7 +99,10 @@ class WCAPF_Form {
 
 			if ( 'component' === $field_type ) {
 				$this->render_components( $field_instance );
-			} elseif ( 'price' === $field_type && in_array( $field_instance->display_type, $number_input_types ) ) {
+			} elseif (
+				'price' === $field_type &&
+				in_array( $field_instance->display_type, $number_input_types, true )
+			) {
 				$this->render_price_filter( $field_instance );
 			} elseif ( 'keyword' === $field_type ) {
 				$this->render_keyword_filter( $field_instance );
@@ -68,26 +111,26 @@ class WCAPF_Form {
 			}
 		}
 
-		if ( $this->is_debugging() ) {
+		if ( WCAPF_Helper::is_debug_mode_enabled() ) {
 			$edit_url = WCAPF_Helper::form_edit_url( $form_id );
 
 			if ( ! $filters ) {
-				/** @noinspection HtmlUnknownTarget */
-				echo WCAPF_Helper::get_debug_message(
-					sprintf(
-						__(
-							'The form is empty. Please add some filters by editing the form <a href="%s">here</a>.',
-							'wc-ajax-product-filter'
-						),
-						esc_url( $edit_url )
-					)
+				$message = sprintf(
+					/* translators: %s: Form edit URL. */
+					__(
+						'The form is empty. Please add some filters by editing the form <a href="%s">here</a>.',
+						'wc-ajax-product-filter'
+					),
+					esc_url( $edit_url )
 				);
+
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is escaped inside WCAPF_Helper::get_debug_message().
+				echo WCAPF_Helper::get_debug_message( $message );
 			} else {
-				/** @noinspection HtmlUnknownTarget */
-				echo sprintf(
-					'<p><a href="%s">%s</a></p>',
+				printf(
+					'<p><a href="%1$s">%2$s</a></p>',
 					esc_url( $edit_url ),
-					__( 'Edit form', 'wc-ajax-product-filter' )
+					esc_html__( 'Edit form', 'wc-ajax-product-filter' )
 				);
 			}
 		}
@@ -99,6 +142,14 @@ class WCAPF_Form {
 		$this->set_done();
 	}
 
+	/**
+	 * Determines whether the form can be rendered.
+	 *
+	 * Prevents rendering when the form data is missing or the form has already
+	 * been rendered.
+	 *
+	 * @return bool True if rendering should continue, otherwise false.
+	 */
 	private function should_we_proceed() {
 		if ( ! $this->form ) {
 			return false;
@@ -112,7 +163,9 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Render the form components.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -127,7 +180,9 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Renders the active filters.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -155,7 +210,9 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Renders the reset button.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -170,7 +227,9 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Renders the price filter.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -184,9 +243,11 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * Renders the filter's start markup.
+	 * Renders the opening markup for a filter.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * Outputs the wrapper and heading markup before the filter content is rendered.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance Field instance.
 	 *
 	 * @return void
 	 */
@@ -214,19 +275,22 @@ class WCAPF_Form {
 
 		$filter_classes = implode( ' ', $classes );
 
-		$filter_start_wrapper = '<div';
-		$filter_start_wrapper .= ' class="' . esc_attr( $filter_classes ) . '"';
-		$filter_start_wrapper .= ' data-id="' . esc_attr( $filter_id ) . '"';
-
 		if ( $field_instance->enable_soft_limit ) {
-			$filter_start_wrapper .= ' data-visible-options="' . $field_instance->soft_limit . '"';
+			printf(
+				'<div class="%1$s" data-id="%2$s" data-visible-options="%3$s">',
+				esc_attr( $filter_classes ),
+				esc_attr( $filter_id ),
+				esc_attr( $field_instance->soft_limit )
+			);
+		} else {
+			printf(
+				'<div class="%1$s" data-id="%2$s">',
+				esc_attr( $filter_classes ),
+				esc_attr( $filter_id )
+			);
 		}
 
-		$filter_start_wrapper .= '>';
-
-		echo $filter_start_wrapper;
-
-		echo WCAPF_Template_Loader::get_instance()->load(
+		WCAPF_Template_Loader::get_instance()->load(
 			'filter-title',
 			array(
 				'filter_key'          => $filter_key,
@@ -238,45 +302,48 @@ class WCAPF_Form {
 				'accordion_header_id' => $accordion_header_id,
 				'accordion_panel_id'  => $accordion_panel_id,
 				'show_clear_btn'      => $show_clear_btn,
-			),
-			false
+			)
 		);
 
-		$filter_inner_wrapper = '<div class="wcapf-filter-inner"';
-
 		if ( $enable_accordion ) {
-			$filter_inner_wrapper .= ' id="' . esc_attr( $accordion_panel_id ) . '"';
-			$filter_inner_wrapper .= ' aria-labelledby="' . esc_attr( $accordion_header_id ) . '"';
-			$filter_inner_wrapper .= 'false' === $is_expanded ? ' style="display: none;"' : '';
+			printf(
+				'<div class="wcapf-filter-inner" id="%1$s" aria-labelledby="%2$s"%3$s>',
+				esc_attr( $accordion_panel_id ),
+				esc_attr( $accordion_header_id ),
+				( 'false' === $is_expanded ) ? ' style="display: none;"' : ''
+			);
+		} else {
+			echo '<div class="wcapf-filter-inner">';
 		}
-
-		$filter_inner_wrapper .= '>';
-
-		echo $filter_inner_wrapper;
 	}
 
 	/**
-	 * Gets the filter wrapper classes.
+	 * Retrieves CSS classes for a filter wrapper.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * Builds the filter wrapper classes based on the field type and its settings.
 	 *
-	 * @return array
+	 * @param WCAPF_Field_Instance $field_instance Field instance.
+	 *
+	 * @return array Filter wrapper classes.
 	 */
 	protected function get_filter_classes( $field_instance ) {
-		$classes = array( 'wcapf-filter', 'wcapf-filter-' . $field_instance->filter_id );
+		$classes = array(
+			'wcapf-filter',
+			'wcapf-filter-' . sanitize_html_class( $field_instance->filter_id ),
+		);
 
 		$type = $field_instance->type;
 
 		if ( 'taxonomy' === $type ) {
-			$classes[] = 'wcapf-filter-taxonomy-' . $field_instance->taxonomy;
+			$classes[] = 'wcapf-filter-taxonomy-' . sanitize_html_class( $field_instance->taxonomy );
 
 			if ( $field_instance->enable_hierarchy_accordion ) {
 				$classes[] = 'has-hierarchy-accordion';
 			}
 		} elseif ( 'post-meta' === $type ) {
-			$classes[] = 'wcapf-filter-meta-' . $field_instance->meta_key;
+			$classes[] = 'wcapf-filter-meta-' . sanitize_html_class( $field_instance->meta_key );
 		} else {
-			$classes[] = 'wcapf-filter-' . $type;
+			$classes[] = 'wcapf-filter-' . sanitize_html_class( $type );
 		}
 
 		if ( $field_instance->enable_soft_limit ) {
@@ -291,8 +358,13 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                $range_min_max  The filter range min, max value.
+	 * Renders number-based filter inputs.
+	 *
+	 * Outputs the range slider or number input UI for the filter using the
+	 * provided min and max range values.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance Field instance.
+	 * @param array                $range_min_max  Range values containing min and max.
 	 *
 	 * @return void
 	 */
@@ -326,7 +398,10 @@ class WCAPF_Form {
 		);
 
 		if ( $range_min_value === $range_max_value && $auto_detect && $hide_inputs ) {
-			echo '<div>' . esc_html( WCAPF_Helper::empty_filter_text() ) . '</div>';
+			printf(
+				'<div>%s</div>',
+				esc_html( WCAPF_Helper::empty_filter_text() )
+			);
 
 			return;
 		}
@@ -412,22 +487,18 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * Render the keyword filter.
+	 * Renders the keyword filter.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Outputs the keyword search filter for the current form.
 	 *
 	 * @since 4.1.0
+	 *
+	 * @param WCAPF_Field_Instance $field_instance Field instance.
 	 *
 	 * @return void
 	 */
 	protected function render_keyword_filter( $field_instance ) {
 		$this->before_filter( $field_instance );
-
-		$filter_key  = $field_instance->filter_key;
-		$url_builder = new WCAPF_URL_Builder( $filter_key );
-
-		$attrs = ' data-filter-url="' . esc_url( $url_builder->get_filter_url_with_placeholder() ) . '"';
-		$attrs .= ' data-clear-filter-url="' . esc_url( $url_builder->get_clear_filter_url() ) . '"';
 
 		$placeholder = WCAPF_Helper::wcapf_option(
 			'keyword_filter_placeholder',
@@ -444,17 +515,23 @@ class WCAPF_Form {
 			$with_cross = false;
 		}
 
-		echo '<div class="wcapf-keyword-filter-wrapper"' . $attrs . '>';
+		$filter_key  = $field_instance->filter_key;
+		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
-		echo WCAPF_Template_Loader::get_instance()->load(
+		printf(
+			'<div class="wcapf-keyword-filter-wrapper" data-filter-url="%1$s" data-clear-filter-url="%2$s">',
+			esc_url( $url_builder->get_filter_url_with_placeholder() ),
+			esc_url( $url_builder->get_clear_filter_url() )
+		);
+
+		WCAPF_Template_Loader::get_instance()->load(
 			'search-box',
 			array(
 				'placeholder'   => $placeholder,
 				'value'         => $value,
 				'icon_position' => 'right',
 				'with_cross'    => $with_cross,
-			),
-			false
+			)
 		);
 
 		echo '</div>';
@@ -462,36 +539,39 @@ class WCAPF_Form {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Renders a standard filter.
+	 *
+	 * Supports taxonomy, rating, product status, post author, and post meta
+	 * filters through the walker output.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance Field instance.
 	 *
 	 * @return void
 	 */
 	protected function render_filter( $field_instance ) {
 		$valid_types = array( 'taxonomy', 'rating', 'product-status', 'post-author', 'post-meta' );
 
-		if ( ! in_array( $field_instance->filter_type, $valid_types ) ) {
+		if ( ! in_array( $field_instance->filter_type, $valid_types, true ) ) {
 			return;
 		}
 
 		$walker = new WCAPF_Walker( $field_instance );
 
 		$this->before_filter( $field_instance );
-		echo $walker->build_menu();
+		echo $walker->build_menu(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		$this->after_filter();
 	}
 
-	private function is_debugging() {
-		if ( ! current_user_can( 'administrator' ) ) {
-			return false;
-		}
-
-		return ! empty( WCAPF_Helper::wcapf_option( 'debug_mode' ) );
-	}
-
+	/**
+	 * Marks the current form as rendered.
+	 *
+	 * Updates the global form state to prevent duplicate rendering.
+	 *
+	 * @return void
+	 */
 	protected function set_done() {
 		global $wcapf_form;
 
 		$wcapf_form['rendered'] = true;
 	}
-
 }
