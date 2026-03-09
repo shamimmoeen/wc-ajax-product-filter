@@ -71,7 +71,6 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
@@ -109,9 +108,11 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
-		$where .= " AND metas.meta_key = '$this->meta_key'";
-		$where .= " AND metas.meta_value <> ''"; // TODO: Check for empty and null columns.
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+		$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+		$where              .= $wpdb->prepare( ' AND metas.meta_key = %s', $this->meta_key );
+		$where              .= " AND metas.meta_value <> ''"; // TODO: Check for empty and null columns.
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -121,15 +122,17 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 			$limit_options = $this->field->get_sub_field_value( 'limit_options' );
 
 			if ( 'include' === $limit_options ) {
-				$include_ids = $this->field->get_sub_field_value( 'limit_values_by_id' );
-				$include_ids = explode( ',', $include_ids );
+				$include_ids          = $this->field->get_sub_field_value( 'limit_values_by_id' );
+				$include_ids          = explode( ',', $include_ids );
+				$include_placeholders = implode( ',', array_fill( 0, count( $include_ids ), '%s' ) );
 
-				$where .= " AND metas.meta_value IN ('" . implode( "','", $include_ids ) . "')";
+				$where .= $wpdb->prepare( " AND metas.meta_value IN ($include_placeholders)", $include_ids );
 			} elseif ( 'exclude' === $limit_options ) {
-				$exclude_ids = $this->field->get_sub_field_value( 'exclude_values_id' );
-				$exclude_ids = explode( ',', $exclude_ids );
+				$exclude_ids          = $this->field->get_sub_field_value( 'exclude_values_id' );
+				$exclude_ids          = explode( ',', $exclude_ids );
+				$exclude_placeholders = implode( ',', array_fill( 0, count( $exclude_ids ), '%s' ) );
 
-				$where .= " AND metas.meta_value NOT IN ('" . implode( "','", $exclude_ids ) . "')";
+				$where .= $wpdb->prepare( " AND metas.meta_value NOT IN ($exclude_placeholders)", $exclude_ids );
 			}
 		}
 
@@ -179,7 +182,6 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return wp_list_pluck( $results, 'meta_count', 'meta_value' );

@@ -61,7 +61,9 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$query['join'] = $join;
 
 			$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-			$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+
+			$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+			$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
 
 			$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 			$where .= $search_query ? ' AND ' . $search_query : '';

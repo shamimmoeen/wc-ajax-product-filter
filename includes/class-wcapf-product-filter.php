@@ -722,7 +722,7 @@ class WCAPF_Product_Filter {
 			if ( 'or' === $query_type ) {
 				$or_filter_values[] = $value;
 			} else {
-				$clauses[] = "$value_alias = '$value'";
+				$clauses[] = $wpdb->prepare( "$value_alias = %s", $value );
 			}
 		}
 
@@ -776,11 +776,13 @@ class WCAPF_Product_Filter {
 	 * @return string
 	 */
 	protected function get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses ) {
+		global $wpdb;
+
 		if ( 'or' === $query_type ) {
 			if ( $or_filter_values ) {
-				$or_clauses = "('" . implode( "','", $or_filter_values ) . "')";
+				$placeholders = implode( ',', array_fill( 0, count( $or_filter_values ), '%s' ) );
 
-				$where = "$value_alias IN $or_clauses";
+				$where = $wpdb->prepare( "$value_alias IN ($placeholders)", $or_filter_values );
 			} elseif ( $clauses ) {
 				if ( 1 < count( $clauses ) ) {
 					$where = '( ' . implode( ' OR ', $clauses ) . ' )';
@@ -812,6 +814,8 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function set_filter_by_post_meta_data( $filter_value, $field_instance ) {
+		global $wpdb;
+
 		$filter_key = $field_instance->filter_key;
 		$query_type = $field_instance->query_type;
 		$filter_id  = $field_instance->filter_id;
@@ -842,7 +846,7 @@ class WCAPF_Product_Filter {
 
 				$value_alias = "$join_alias.meta_value";
 
-				$clauses[] = "$value_alias = '$meta_value'";
+				$clauses[] = $wpdb->prepare( "$value_alias = %s", $meta_value );
 			}
 		}
 
@@ -883,13 +887,13 @@ class WCAPF_Product_Filter {
 				);
 
 				$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
-				$join .= " AND $join_alias.meta_key = '$meta_key')";
+				$join .= $wpdb->prepare( " AND $join_alias.meta_key = %s)", $meta_key );
 			}
 		} else {
 			$join_alias = WCAPF_Product_Filter_Utils::get_table_join_alias( $filter_key );
 
-			$join .= "LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
-			$join .= " AND $join_alias.meta_key = '$meta_key')";
+			$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+			$join .= $wpdb->prepare( " AND $join_alias.meta_key = %s)", $meta_key );
 		}
 
 		return $join;
