@@ -195,8 +195,7 @@ class WCAPF_Form {
 		$clear_btn_label  = WCAPF_Helper::clear_all_button_label();
 		$clear_btn_layout = $field_instance->get_sub_field_value( 'clear_all_btn_layout' );
 
-		WCAPF_Template_Loader::get_instance()->load(
-			'active-filters',
+		$args = WCAPF_Helper::prepare_active_filters_args(
 			array(
 				'title'                => $title,
 				'show_title'           => $show_title,
@@ -207,6 +206,8 @@ class WCAPF_Form {
 				'clear_all_btn_layout' => $clear_btn_layout,
 			)
 		);
+
+		WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
 	}
 
 	/**
