@@ -309,8 +309,10 @@ class WCAPF_Hooks {
 				)
 			);
 
+			$args = WCAPF_Helper::prepare_active_filters_args( $active_filters_on_top_args );
+
 			echo '<div class="wcapf-active-filters-before-shop-loop">';
-			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $active_filters_on_top_args );
+			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
 			echo '</div>';
 		}
 	}

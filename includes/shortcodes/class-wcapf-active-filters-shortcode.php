@@ -45,7 +45,9 @@ class WCAPF_Active_Filters_Shortcode {
 			$attrs
 		);
 
-		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $a, false );
+		$args = WCAPF_Helper::prepare_active_filters_args( $a );
+
+		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args, false );
 	}
 
 	/**

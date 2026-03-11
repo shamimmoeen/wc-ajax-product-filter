@@ -650,13 +650,82 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Gets the active filter items for the active filters widget.
+	 * Prepares template arguments for the active filters template.
 	 *
-	 * @param string $layout Determines the active filters layout, possible values are simple, extended.
+	 * @param array $raw_args Raw template arguments.
+	 *
+	 * @since 4.2.4
+	 *
+	 * @return array Prepared template arguments.
+	 */
+	public static function prepare_active_filters_args( $raw_args ) {
+		$layout = ! empty( $raw_args['layout'] ) ? $raw_args['layout'] : 'simple';
+		$title  = ! empty( $raw_args['title'] ) ? $raw_args['title'] : '';
+
+		$all_filters = self::get_active_filter_items( $layout );
+
+		$clear_all_btn_label  = ! empty( $raw_args['clear_all_btn_label'] ) ? $raw_args['clear_all_btn_label'] : '';
+		$clear_all_btn_layout = ! empty( $raw_args['clear_all_btn_layout'] ) ? $raw_args['clear_all_btn_layout'] : 'block';
+		$show_clear_btn       = ! empty( $raw_args['show_clear_btn'] );
+		$empty_message        = ! empty( $raw_args['empty_message'] ) ? $raw_args['empty_message'] : '';
+
+		if ( 'extended' === $layout ) {
+			$clear_all_btn_layout = 'block';
+		}
+
+		$unique_id = wp_unique_id( 'af-' );
+		$classes   = array( 'wcapf-active-filters', 'wcapf-active-filters-' . $unique_id );
+		$classes[] = 'layout-' . $layout;
+		$classes[] = 'clear-all-btn-layout-' . $clear_all_btn_layout;
+
+		$show_title = true;
+
+		if ( ! $title ) {
+			$show_title = false;
+		}
+
+		if ( ! $show_title ) {
+			$show_clear_btn = false;
+		}
+
+		$inner_classes = array( 'wcapf-filter' );
+
+		if ( $show_clear_btn && $all_filters ) {
+			$inner_classes[] = 'filter-active';
+		}
+
+		$should_render = true;
+
+		if ( ! $all_filters && ! $empty_message ) {
+			$should_render = false;
+		}
+
+		return array(
+			'filter_title'         => $title,
+			'show_filter_title'    => $show_title,
+			'filter_layout'        => $layout,
+			'filter_empty_message' => $empty_message,
+			'clear_all_btn_label'  => $clear_all_btn_label,
+			'clear_all_btn_layout' => $clear_all_btn_layout,
+			'show_clear_btn'       => $show_clear_btn,
+			'all_filters'          => $all_filters,
+			'total_filters'        => count( $all_filters ),
+			'filter_unique_id'     => $unique_id,
+			'filter_classes'       => implode( ' ', $classes ),
+			'filter_inner_classes' => implode( ' ', $inner_classes ),
+			'reset_btn_class'      => 'wcapf-reset-filters-btn',
+			'filter_should_render' => $should_render,
+		);
+	}
+
+	/**
+	 * Gets the active filter items.
+	 *
+	 * @param string $layout Determines the active filters layout. Accepts `simple` or `extended`.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return array
+	 * @return array Active filter items.
 	 */
 	public static function get_active_filter_items( $layout = 'simple' ) {
 		$active_filters = self::get_active_filters_data();
