@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Filter_Widget class.
  *
@@ -57,11 +62,10 @@ class WCAPF_Filter_Widget extends WP_Widget {
 	public function form( $instance ) {
 		?>
 		<p>
-			<?php printf( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> setting.', 'wc-ajax-product-filter' ) ); ?>
+			<?php echo wp_kses_post( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> setting.', 'wc-ajax-product-filter' ) ); ?>
 		</p>
 		<?php
 	}
-
 }
 
 /**
