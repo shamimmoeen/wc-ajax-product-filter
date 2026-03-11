@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Filter_Type class.
  *
@@ -115,8 +120,14 @@ abstract class WCAPF_Filter_Type {
 			$primary_column = 'ID';
 		}
 
-		$meta_query_sql = array( 'join' => '', 'where' => '' );
-		$tax_query_sql  = array( 'join' => '', 'where' => '' );
+		$meta_query_sql = array(
+			'join'  => '',
+			'where' => '',
+		);
+		$tax_query_sql  = array(
+			'join'  => '',
+			'where' => '',
+		);
 		$search_query   = '';
 		$where_sql      = '';
 
@@ -130,10 +141,15 @@ abstract class WCAPF_Filter_Type {
 			$meta_query   = WC_Query::get_main_meta_query();
 			$search_query = WC_Query::get_main_search_query_sql();
 
-			$meta_query     = new WP_Meta_Query( $meta_query );
-			$tax_query      = new WP_Tax_Query( $tax_query );
-			$meta_query_sql = $meta_query->get_sql( 'post', $primary_table, $primary_column );
-			$tax_query_sql  = $tax_query->get_sql( $primary_table, $primary_column );
+			if ( ! empty( $tax_query ) ) {
+				$tax_query_obj = new WP_Tax_Query( $tax_query );
+				$tax_query_sql = $tax_query_obj->get_sql( $primary_table, $primary_column );
+			}
+
+			if ( ! empty( $meta_query ) ) {
+				$meta_query_obj = new WP_Meta_Query( $meta_query );
+				$meta_query_sql = $meta_query_obj->get_sql( 'post', $primary_table, $primary_column );
+			}
 
 			$main_query     = WC_Query::get_main_query();
 			$post__in       = $main_query->get( 'post__in' );
@@ -151,42 +167,40 @@ abstract class WCAPF_Filter_Type {
 			$author__in,
 			$author__not_in
 			) = apply_filters(
-			'wcapf_main_query_data',
-			array(
-				$meta_query_sql,
-				$tax_query_sql,
-				$search_query,
-				$post__in,
-				$post__not_in,
-				$author__in,
-				$author__not_in
-			),
-			$primary_table,
-			$primary_column
-		);
-
-		$utils = new WCAPF_Product_Filter_Utils;
+				'wcapf_main_query_data',
+				array(
+					$meta_query_sql,
+					$tax_query_sql,
+					$search_query,
+					$post__in,
+					$post__not_in,
+					$author__in,
+					$author__not_in,
+				),
+				$primary_table,
+				$primary_column
+			);
 
 		if ( $post__in ) {
-			$ids_in = $utils::get_ids_sql( $post__in );
+			$ids_in = WCAPF_Product_Filter_Utils::get_ids_sql( $post__in );
 
 			$where_sql .= " AND $wpdb->posts.ID IN $ids_in";
 		}
 
 		if ( $post__not_in ) {
-			$ids_in = $utils::get_ids_sql( $post__not_in );
+			$ids_in = WCAPF_Product_Filter_Utils::get_ids_sql( $post__not_in );
 
 			$where_sql .= " AND $wpdb->posts.ID NOT IN $ids_in";
 		}
 
 		if ( $author__in ) {
-			$ids_in = $utils::get_ids_sql( $author__in );
+			$ids_in = WCAPF_Product_Filter_Utils::get_ids_sql( $author__in );
 
 			$where_sql .= " AND $wpdb->posts.post_author IN $ids_in";
 		}
 
 		if ( $author__not_in ) {
-			$ids_in = $utils::get_ids_sql( $author__not_in );
+			$ids_in = WCAPF_Product_Filter_Utils::get_ids_sql( $author__not_in );
 
 			$where_sql .= " AND $wpdb->posts.post_author NOT IN $ids_in";
 		}
@@ -195,15 +209,17 @@ abstract class WCAPF_Filter_Type {
 	}
 
 	/**
-	 * @param array $items          The items array.
-	 * @param array $filtered_count The filtered count array to sync with.
+	 * Syncs item counts with the filtered count values.
 	 *
 	 * @since 4.0.0
+	 *
+	 * @param array $items          The items array.
+	 * @param array $filtered_count The filtered count array to sync with.
 	 *
 	 * @return array
 	 */
 	public function sync_items_count( $items, $filtered_count ) {
-		if ( ! $items ) {
+		if ( empty( $items ) ) {
 			return array();
 		}
 
@@ -245,6 +261,8 @@ abstract class WCAPF_Filter_Type {
 	}
 
 	/**
+	 * Checks whether auto count updates are enabled for the current field.
+	 *
 	 * @return bool
 	 */
 	protected function auto_count_enabled() {
@@ -294,5 +312,4 @@ abstract class WCAPF_Filter_Type {
 
 		return $options;
 	}
-
 }

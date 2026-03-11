@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Filter_Type_Post_Meta class.
  *
@@ -22,12 +27,20 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	 */
 	protected $meta_key;
 
+	/**
+	 * Sets the filter properties from the field instance.
+	 */
 	protected function set_properties() {
 		$field = $this->field;
 
 		$this->meta_key = $field->meta_key;
 	}
 
+	/**
+	 * Prepares the post meta filter items.
+	 *
+	 * @return array
+	 */
 	protected function prepare_items() {
 		$meta_values = $this->get_text_automatic_values();
 		$meta_values = $this->get_updated_meta_values_count( $meta_values );
@@ -37,6 +50,8 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	}
 
 	/**
+	 * Gets automatic text values for the post meta filter.
+	 *
 	 * @return array
 	 */
 	protected function get_text_automatic_values() {
@@ -71,10 +86,13 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
 		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
 	/**
+	 * Builds the SQL query for post meta counts.
+	 *
 	 * @param string $filter_type The filter type.
 	 *
 	 * @return string
@@ -82,10 +100,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	private function get_sql_query( $filter_type = 'non-filtered' ) {
 		global $wpdb;
 
-		$helper = new WCAPF_Helper();
-		$utils  = new WCAPF_Product_Filter_Utils();
-
-		$post_statuses = $helper::filterable_post_statuses();
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
@@ -94,15 +109,15 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$join  = '';
 		$where = '';
 
-		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS meta_count, metas.meta_value";;
-		$query['from'] = "FROM $wpdb->posts";
+		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS meta_count, metas.meta_value";
+		$query['from']   = "FROM $wpdb->posts";
 
 		$join .= "INNER JOIN $wpdb->postmeta AS metas ON $wpdb->posts.ID = metas.post_id";
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
 		if ( 'filtered' === $filter_type && $update_count ) {
-			$join .= $utils::get_join_clause();
+			$join .= WCAPF_Product_Filter_Utils::get_join_clause();
 		}
 
 		$query['join'] = $join;
@@ -110,9 +125,11 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
 
 		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
-		$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
-		$where              .= $wpdb->prepare( ' AND metas.meta_key = %s', $this->meta_key );
-		$where              .= " AND metas.meta_value <> ''"; // TODO: Check for empty and null columns.
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+		$where .= $wpdb->prepare( ' AND metas.meta_key = %s', $this->meta_key );
+		$where .= " AND metas.meta_value <> ''"; // TODO: Check for empty and null columns.
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -126,18 +143,20 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 				$include_ids          = explode( ',', $include_ids );
 				$include_placeholders = implode( ',', array_fill( 0, count( $include_ids ), '%s' ) );
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 				$where .= $wpdb->prepare( " AND metas.meta_value IN ($include_placeholders)", $include_ids );
 			} elseif ( 'exclude' === $limit_options ) {
 				$exclude_ids          = $this->field->get_sub_field_value( 'exclude_values_id' );
 				$exclude_ids          = explode( ',', $exclude_ids );
 				$exclude_placeholders = implode( ',', array_fill( 0, count( $exclude_ids ), '%s' ) );
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 				$where .= $wpdb->prepare( " AND metas.meta_value NOT IN ($exclude_placeholders)", $exclude_ids );
 			}
 		}
 
 		if ( 'filtered' === $filter_type && $update_count ) {
-			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
+			$where .= WCAPF_Product_Filter_Utils::get_where_clause( $this->query_type, $this->filter_key );
 		}
 
 		$query['where']    = $where;
@@ -156,7 +175,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 	 * @return array
 	 */
 	protected function get_updated_meta_values_count( $meta_values ) {
-		if ( ! $meta_values ) {
+		if ( empty( $meta_values ) ) {
 			return array();
 		}
 
@@ -182,9 +201,9 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return wp_list_pluck( $results, 'meta_count', 'meta_value' );
 	}
-
 }

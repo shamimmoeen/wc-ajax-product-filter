@@ -1191,8 +1191,7 @@ class WCAPF_Helper {
 			return false;
 		}
 
-		$form_updates_count = get_user_meta( $user_id, 'wcapf_form_updates_count', true );
-		$form_updates_count = intval( $form_updates_count );
+		$form_updates_count = (int) get_user_meta( $user_id, 'wcapf_form_updates_count', true );
 
 		// Check if the form updates count is at least 5
 		if ( $form_updates_count >= 5 ) {

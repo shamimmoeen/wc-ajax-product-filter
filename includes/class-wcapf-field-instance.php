@@ -787,7 +787,7 @@ class WCAPF_Field_Instance {
 	 * @return float
 	 */
 	private function filter_options_max_height() {
-		return floatval( $this->get_sub_field_value( 'max_height' ) );
+		return (float) $this->get_sub_field_value( 'max_height' );
 	}
 
 	/**

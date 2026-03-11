@@ -67,15 +67,15 @@ class WCAPF_Product_Filter_Utils {
 	 * @return array
 	 */
 	public static function get_min_max_price_according_to_tax( $min, $max ) {
-		$min = floatval( $min );
-		$max = floatval( $max );
+		$min = (float) $min;
+		$max = (float) $max;
 
 		/**
 		 * Adjust if the store taxes are not displayed how they are stored.
 		 * Kicks in when prices excluding tax are displayed including tax.
 		 */
 		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
-			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce core hook.
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
 			$tax_rates = WC_Tax::get_rates( $tax_class );
 
@@ -252,6 +252,10 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string The formatted list.
 	 */
 	public static function get_ids_sql( $ids ) {
+		if ( empty( $ids ) || ! is_array( $ids ) ) {
+			return '(0)';
+		}
+
 		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
 	}
 

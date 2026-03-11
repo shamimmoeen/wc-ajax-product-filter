@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Filter_Type_Product_Status class.
  *
@@ -15,9 +20,17 @@
  */
 class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 
+	/**
+	 * Sets the filter properties from the field instance.
+	 */
 	protected function set_properties() {
 	}
 
+	/**
+	 * Prepares the product status filter items.
+	 *
+	 * @return array
+	 */
 	protected function prepare_items() {
 		$manual_options = $this->field->manual_options;
 
@@ -28,13 +41,17 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 		return apply_filters( 'wcapf_product_status_items', $items, $this->field );
 	}
 
+	/**
+	 * Gets filtered product counts for each product status item.
+	 *
+	 * @param array $items The product status filter items.
+	 *
+	 * @return array
+	 */
 	protected function get_filtered_product_counts( $items ) {
 		global $wpdb;
 
-		$helper = new WCAPF_Helper();
-		$utils  = new WCAPF_Product_Filter_Utils();
-
-		$post_statuses = $helper::filterable_post_statuses();
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
@@ -55,7 +72,7 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$join .= $tax_query_sql['join'];
 
 			if ( $update_count ) {
-				$join .= $utils::get_join_clause();
+				$join .= WCAPF_Product_Filter_Utils::get_join_clause();
 			}
 
 			$query['join'] = $join;
@@ -63,7 +80,9 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$where .= "WHERE $wpdb->posts.post_type IN ('product')";
 
 			$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
-			$where              .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+			$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
 
 			$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 			$where .= $search_query ? ' AND ' . $search_query : '';
@@ -72,11 +91,11 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$condition = '';
 
 			if ( 'featured' === $id ) {
-				$featured_products = $utils::get_featured_product_ids_sql();
+				$featured_products = WCAPF_Product_Filter_Utils::get_featured_product_ids_sql();
 
 				$condition = " AND $wpdb->posts.ID IN $featured_products";
 			} elseif ( 'on_sale' === $id ) {
-				$on_sale_products = $utils::get_product_ids_on_sale_sql();
+				$on_sale_products = WCAPF_Product_Filter_Utils::get_product_ids_on_sale_sql();
 
 				$condition = " AND $wpdb->posts.ID IN $on_sale_products";
 			}
@@ -84,7 +103,7 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$where .= apply_filters( 'wcapf_product_counts_where_clause_for_status', $condition, $id, $this->field );
 
 			if ( $update_count ) {
-				$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
+				$where .= WCAPF_Product_Filter_Utils::get_where_clause( $this->query_type, $this->filter_key );
 			}
 
 			$query['where'] = $where;
@@ -93,6 +112,7 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 
 			$sql = implode( ' ', $query );
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
 			$count = $wpdb->get_var( $sql );
 
 			$items[ $id ]['count'] = $count;
@@ -100,5 +120,4 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 
 		return $items;
 	}
-
 }

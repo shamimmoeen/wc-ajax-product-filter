@@ -1035,7 +1035,7 @@ class WCAPF_API {
 		$user_id  = get_current_user_id();
 		$meta_key = 'wcapf_form_updates_count';
 
-		$form_updates_count = intval( get_user_meta( $user_id, $meta_key, true ) );
+		$form_updates_count = (int) get_user_meta( $user_id, $meta_key, true );
 
 		if ( $form_updates_count ) {
 			++$form_updates_count;
