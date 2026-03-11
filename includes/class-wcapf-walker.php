@@ -1031,13 +1031,16 @@ class WCAPF_Walker {
 			);
 		}
 
+		$classes = 'wcapf-search-box with-icon icon-right with-cross';
+
 		return WCAPF_Template_Loader::get_instance()->load(
 			'search-box',
 			array(
-				'placeholder'   => $placeholder,
-				'value'         => '',
-				'icon_position' => 'right',
-				'with_cross'    => true,
+				'placeholder'        => $placeholder,
+				'value'              => '',
+				'icon_position'      => 'right',
+				'with_cross'         => true,
+				'search_box_classes' => $classes,
 			),
 			false
 		);
