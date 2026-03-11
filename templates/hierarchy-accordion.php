@@ -1,6 +1,6 @@
 <?php
 /**
- * The template of expand/collapse for hierarchy accordion.
+ * The hierarchy accordion template.
  *
  * @since      4.0.0
  * @package    wc-ajax-product-filter
@@ -9,10 +9,17 @@
  */
 
 /**
- * @var string $is_active Determines if the accordion is expanded.
- * @var string $aria_label
- * @var string $unique_id
+ * Template variables passed from the template loader.
+ *
+ * @var string $is_active  Determines if the accordion is expanded.
+ * @var string $aria_label The ARIA label for screen readers.
+ * @var string $unique_id  The unique identifier for the accordion.
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 ?>
 

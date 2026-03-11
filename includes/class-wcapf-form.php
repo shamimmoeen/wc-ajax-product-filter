@@ -536,13 +536,20 @@ class WCAPF_Form {
 			esc_url( $url_builder->get_clear_filter_url() )
 		);
 
+		$search_box_classes = 'wcapf-search-box with-icon icon-right';
+
+		if ( $with_cross ) {
+			$search_box_classes .= ' with-cross';
+		}
+
 		WCAPF_Template_Loader::get_instance()->load(
 			'search-box',
 			array(
-				'placeholder'   => $placeholder,
-				'value'         => $value,
-				'icon_position' => 'right',
-				'with_cross'    => $with_cross,
+				'placeholder'        => $placeholder,
+				'value'              => $value,
+				'icon_position'      => 'right',
+				'with_cross'         => $with_cross,
+				'search_box_classes' => $search_box_classes,
 			)
 		);
 
