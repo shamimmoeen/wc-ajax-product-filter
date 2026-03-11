@@ -411,7 +411,7 @@ class WCAPF_Form_Filters_Utils {
 
 		foreach ( $filter as $key => $value ) {
 			if ( in_array( $key, $float_fields, true ) ) {
-				$value = floatval( $value );
+				$value = (float) $value;
 
 				if ( 'min_value' === $key && ! $value ) {
 					$value = 0;

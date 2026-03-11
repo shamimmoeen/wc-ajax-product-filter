@@ -442,8 +442,8 @@ class WCAPF_Form {
 			$max_value = $range_max_value;
 		}
 
-		$min_value = floatval( $min_value );
-		$max_value = floatval( $max_value );
+		$min_value = (float) $min_value;
+		$max_value = (float) $max_value;
 
 		if ( $min_value > $max_value ) {
 			$max_value = $min_value;
