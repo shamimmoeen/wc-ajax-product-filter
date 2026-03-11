@@ -878,10 +878,31 @@ class WCAPF_Walker {
 	 * @return string
 	 */
 	protected function menu_item_inner( $item ) {
-		$item['show_count']    = $this->show_count && '-1' !== $item['count'] && $this->count_allowed();
-		$item['enable_search'] = $this->enable_search_field;
+		$show_count = $this->show_count && '-1' !== $item['count'] && $this->count_allowed();
 
-		return WCAPF_Template_Loader::get_instance()->load( 'menu-item', array( 'item' => $item ), false );
+		$item_attr = '';
+		if ( $this->enable_search_field ) {
+			$item_attr = ' data-label="' . esc_attr( $item['name'] ) . '"';
+		}
+
+		$screen_reader_text = '';
+		if ( $show_count ) {
+			$screen_reader_text = sprintf(
+				/* translators: %d: number of products */
+				_n( '%d product', '%d products', (int) $item['count'], 'wc-ajax-product-filter' ),
+				number_format_i18n( (int) $item['count'] )
+			);
+		}
+
+		$args = array(
+			'item_name'          => $item['name'],
+			'item_count'         => $item['count'],
+			'show_count'         => $show_count,
+			'item_attr'          => $item_attr,
+			'screen_reader_text' => $screen_reader_text,
+		);
+
+		return WCAPF_Template_Loader::get_instance()->load( 'menu-item', $args, false );
 	}
 
 	/**
