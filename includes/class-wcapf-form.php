@@ -218,13 +218,14 @@ class WCAPF_Form {
 	 * @return void
 	 */
 	private function render_reset_button( $field_instance ) {
-		WCAPF_Template_Loader::get_instance()->load(
-			'reset-button',
+		$args = WCAPF_Helper::prepare_reset_button_args(
 			array(
 				'btn_label'   => WCAPF_Helper::reset_button_label(),
 				'show_always' => $field_instance->get_sub_field_value( 'show_if_empty' ),
 			)
 		);
+
+		WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args );
 	}
 
 	/**
