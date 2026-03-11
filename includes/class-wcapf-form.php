@@ -291,6 +291,12 @@ class WCAPF_Form {
 			);
 		}
 
+		$title_classes = 'wcapf-filter-title';
+
+		if ( $enable_accordion ) {
+			$title_classes .= ' has-accordion';
+		}
+
 		WCAPF_Template_Loader::get_instance()->load(
 			'filter-title',
 			array(
@@ -303,6 +309,8 @@ class WCAPF_Form {
 				'accordion_header_id' => $accordion_header_id,
 				'accordion_panel_id'  => $accordion_panel_id,
 				'show_clear_btn'      => $show_clear_btn,
+				'title_classes'       => $title_classes,
+				'title_for'           => '',
 			)
 		);
 
