@@ -45,10 +45,17 @@ if ( ! WCAPF_Helper::found_wcapf() ) {
 			WCAPF_Template_Loader::get_instance()->load(
 				'filter-title',
 				array(
-					'show_title'     => $show_filter_title,
-					'filter_title'   => $filter_title,
-					'title_for'      => 'active-filters',
-					'show_clear_btn' => $show_clear_btn,
+					'show_title'          => $show_filter_title,
+					'filter_title'        => $filter_title,
+					'title_for'           => 'active-filters',
+					'show_clear_btn'      => $show_clear_btn,
+					'title_classes'       => 'wcapf-filter-title',
+					'filter_key'          => '',
+					'help_text'           => '',
+					'enable_accordion'    => false,
+					'is_expanded'         => false,
+					'accordion_header_id' => '',
+					'accordion_panel_id'  => '',
 				)
 			);
 			?>
