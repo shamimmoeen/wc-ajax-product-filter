@@ -42,7 +42,9 @@ class WCAPF_Reset_Button_Shortcode {
 			$attrs
 		);
 
-		return WCAPF_Template_Loader::get_instance()->load( 'reset-button', $a, false );
+		$args = WCAPF_Helper::prepare_reset_button_args( $a );
+
+		return WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args, false );
 	}
 
 	/**

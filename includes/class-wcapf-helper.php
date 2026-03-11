@@ -719,6 +719,38 @@ class WCAPF_Helper {
 	}
 
 	/**
+	 * Prepares template arguments for the reset button template.
+	 *
+	 * @param array $args Raw template arguments.
+	 *
+	 * @since 4.2.4
+	 *
+	 * @return array Prepared template arguments.
+	 */
+	public static function prepare_reset_button_args( $args ) {
+		$btn_label   = ! empty( $args['btn_label'] ) ? $args['btn_label'] : '';
+		$show_always = ! empty( $args['show_always'] );
+
+		$active_filters = self::get_active_filters_data();
+
+		$unique_id = wp_unique_id( 'rf-' );
+		$classes   = array( 'wcapf-reset-filters', 'wcapf-reset-filters-' . $unique_id );
+
+		$should_render = true;
+
+		if ( ! $active_filters && ! $show_always ) {
+			$should_render = false;
+		}
+
+		return array(
+			'reset_btn_label'     => $btn_label,
+			'reset_unique_id'     => $unique_id,
+			'reset_classes'       => implode( ' ', $classes ),
+			'reset_should_render' => $should_render,
+		);
+	}
+
+	/**
 	 * Prepares template arguments for the range filter template.
 	 *
 	 * @since 4.2.4
