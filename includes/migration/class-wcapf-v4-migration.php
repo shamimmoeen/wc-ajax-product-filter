@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_V4_Migration class.
  *
@@ -27,10 +32,10 @@ class WCAPF_V4_Migration {
 	 * @return WCAPF_V4_Migration
 	 */
 	public static function instance() {
-		// Store the instance locally to avoid private static replication
+		// Store the instance locally to avoid private static replication.
 		static $instance = null;
 
-		// Only run these methods if they haven't been run previously
+		// Only run these methods if they haven't been run previously.
 		if ( null === $instance ) {
 			$instance = new WCAPF_V4_Migration();
 		}
@@ -38,6 +43,11 @@ class WCAPF_V4_Migration {
 		return $instance;
 	}
 
+	/**
+	 * Tries to run the version 4 migration and set default settings when needed.
+	 *
+	 * @return void
+	 */
 	public function try_to_run_v4_migration() {
 		$db_version_option_key  = 'wcapf_db_version';
 		$existing_wcapf_version = get_option( $db_version_option_key );
@@ -52,8 +62,6 @@ class WCAPF_V4_Migration {
 
 		if ( $perform_v4_migration ) {
 			$this->do_migrate();
-
-			error_log( 'Ran the automatic wcapf v4 migration.' );
 
 			// Show the v4 migration notice.
 			update_option( 'wcapf_v4_migration_notice_status', '1' );
@@ -95,6 +103,8 @@ class WCAPF_V4_Migration {
 	}
 
 	/**
+	 * Runs the version 4 migration process.
+	 *
 	 * @return void
 	 */
 	public function do_migrate() {
@@ -158,8 +168,6 @@ class WCAPF_V4_Migration {
 		}
 
 		update_option( $option_key, $v4_settings );
-
-		error_log( 'The wcapf settings migrated successfully!' );
 	}
 
 	/**
@@ -180,15 +188,18 @@ class WCAPF_V4_Migration {
 		);
 
 		// Custom sorting function to prioritize 'publish' status.
-		usort( $filters, function ( $a, $b ) {
-			if ( $a->post_status === 'publish' && $b->post_status !== 'publish' ) {
-				return - 1; // $a comes before $b
-			} elseif ( $a->post_status !== 'publish' && $b->post_status === 'publish' ) {
-				return 1; // $b comes before $a
-			} else {
-				return $a->ID - $b->ID; // Sort by ID in ascending order
+		usort(
+			$filters,
+			function ( $a, $b ) {
+				if ( 'publish' === $a->post_status && 'publish' !== $b->post_status ) {
+					return -1; // $a comes before $b.
+				} elseif ( 'publish' !== $a->post_status && 'publish' === $b->post_status ) {
+					return 1; // $b comes before $a.
+				}
+
+				return $a->ID - $b->ID; // Sort by ID in ascending order.
 			}
-		} );
+		);
 
 		$filter_default_data = WCAPF_Default_Data::filter_default_data();
 
@@ -230,12 +241,12 @@ class WCAPF_V4_Migration {
 				}
 
 				// Taxonomy type.
-				if ( 'type' === $key && in_array( $value, $taxonomy_types ) ) {
+				if ( 'type' === $key && in_array( $value, $taxonomy_types, true ) ) {
 					$value = 'taxonomy';
 				}
 
 				// Component type.
-				if ( 'type' === $key && in_array( $value, $component_types ) ) {
+				if ( 'type' === $key && in_array( $value, $component_types, true ) ) {
 					$v3_field_data['component'] = $value;
 
 					$value = 'component';
@@ -243,7 +254,10 @@ class WCAPF_V4_Migration {
 
 				// Post property.
 				if ( 'type' === $key && 'post-property' === $value ) {
-					if ( isset( $v3_field_data['post_property'] ) && 'post_author' === $v3_field_data['post_property'] ) {
+					if (
+						isset( $v3_field_data['post_property'] )
+						&& 'post_author' === $v3_field_data['post_property']
+					) {
 						$value = 'post-author';
 					}
 				}
@@ -285,10 +299,11 @@ class WCAPF_V4_Migration {
 				}
 
 				// Options data.
-				$include_terms = array();
-				$exclude_terms = array();
-				$parent_term   = 0;
-				$child_terms   = array();
+				$include_terms  = array();
+				$exclude_terms  = array();
+				$parent_term    = 0;
+				$child_terms    = array();
+				$child_term_ids = array();
 
 				if ( ! empty( $v3_field_data['limit_values_by_id'] ) ) {
 					$include_terms = explode( ',', $v3_field_data['limit_values_by_id'] );
@@ -310,9 +325,11 @@ class WCAPF_V4_Migration {
 
 						$children = get_term_children( $parent_term, $migrated_data['taxonomy'] );
 
-						if ( $children ) {
+						if ( $children && ! is_wp_error( $children ) ) {
 							$child_terms = $children;
 						}
+
+						$child_term_ids = array_map( 'intval', $child_terms );
 					}
 				}
 
@@ -339,21 +356,21 @@ class WCAPF_V4_Migration {
 
 						switch ( $limit_by ) {
 							case 'include':
-								if ( $include_terms && in_array( $id, $include_terms ) ) {
+								if ( $include_terms && in_array( (string) $id, $include_terms, true ) ) {
 									$manual_options[] = $data;
 								}
 
 								break;
 
 							case 'exclude':
-								if ( $exclude_terms && ! in_array( $id, $exclude_terms ) ) {
+								if ( $exclude_terms && ! in_array( (string) $id, $exclude_terms, true ) ) {
 									$manual_options[] = $data;
 								}
 
 								break;
 
 							case 'child':
-								if ( $parent_term && $child_terms && in_array( $id, $child_terms ) ) {
+								if ( $parent_term && $child_term_ids && in_array( (int) $id, $child_term_ids, true ) ) {
 									$manual_options[] = $data;
 								}
 
@@ -372,7 +389,7 @@ class WCAPF_V4_Migration {
 				$swatch_types    = array( 'image', 'color' );
 				$v3_display_type = $migrated_data['display_type'];
 
-				if ( in_array( $v3_display_type, $swatch_types ) ) {
+				if ( in_array( $v3_display_type, $swatch_types, true ) ) {
 					$migrated_data['get_options'] = 'manual_entry';
 
 					$migrated_data['display_type']               = 'label';
@@ -387,7 +404,7 @@ class WCAPF_V4_Migration {
 
 			// Hide Active filters.
 			if ( 'component' === $migrated_data['type'] && 'active-filters' === $migrated_data['component'] ) {
-				$show_if_empty = $v3_field_data['show_if_empty'];
+				$show_if_empty = isset( $v3_field_data['show_if_empty'] ) ? $v3_field_data['show_if_empty'] : '';
 
 				if ( ! $show_if_empty ) {
 					$migrated_data['empty_filter_message'] = '';
@@ -415,21 +432,10 @@ class WCAPF_V4_Migration {
 
 		$form_filters_utils = new WCAPF_Form_Filters_Utils();
 
-		list( , $errors ) = $form_filters_utils->save_form_filters( $migrated_filters, $new_form_id, true );
+		$form_filters_utils->save_form_filters( $migrated_filters, $new_form_id, true );
 
-		if ( $errors ) {
-			$message = 'The following error occurred when trying to migrate the filter data for v4:';
-			$message .= "\n";
-			$message .= print_r( $errors, true );
-
-			error_log( $message );
-		} else {
-			update_option( 'wcapf_migrated_filters_form_id', $new_form_id );
-
-			error_log( 'The wcapf filters data migrated successfully!' );
-		}
+		update_option( 'wcapf_migrated_filters_form_id', $new_form_id );
 	}
-
 }
 
 if ( ! function_exists( 'WCAPF_V4_Migration' ) ) {

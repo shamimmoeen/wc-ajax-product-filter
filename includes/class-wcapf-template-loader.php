@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Template loader class.
  *
@@ -73,8 +78,7 @@ class WCAPF_Template_Loader {
 
 		// First check inside the child theme.
 		// In second check inside the parent theme.
-		// In third check inside the pro version.
-		// On last check inside the free version.
+		// On last check inside the plugin.
 		if ( file_exists( $_c_theme_location . $template ) ) {
 			$located = $_c_theme_location . $template;
 		} elseif ( file_exists( $_p_theme_location . $template ) ) {
@@ -102,5 +106,4 @@ class WCAPF_Template_Loader {
 
 		return $html;
 	}
-
 }

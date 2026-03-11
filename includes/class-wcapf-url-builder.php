@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_URL_Builder class.
  *
@@ -57,6 +62,12 @@ class WCAPF_URL_Builder {
 	 */
 	private $query_vars;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param string $filter_key      The current filter key.
+	 * @param bool   $enable_multiple Whether the filter supports multiple values.
+	 */
 	public function __construct( $filter_key = '', $enable_multiple = false ) {
 		$_filter_keys = WCAPF_Helper::wcapf_option( 'filter_keys' );
 
@@ -79,6 +90,7 @@ class WCAPF_URL_Builder {
 	 * @return array
 	 */
 	private function set_query() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reads front-end filter state from query args; no nonce is applicable here.
 		$vars = $_GET;
 
 		if ( $this->excluded_keys ) {
@@ -107,10 +119,10 @@ class WCAPF_URL_Builder {
 	}
 
 	/**
-	 * Gets the filter url.
+	 * Gets the filter URL.
 	 *
-	 * @param $value
-	 * @param $is_active
+	 * @param string $value     The filter value.
+	 * @param bool   $is_active Whether the value is currently active.
 	 *
 	 * @return string
 	 */
@@ -153,6 +165,8 @@ class WCAPF_URL_Builder {
 	}
 
 	/**
+	 * Gets the URL without the current filter.
+	 *
 	 * @return string
 	 */
 	private function url_without_current_filter() {
@@ -165,13 +179,21 @@ class WCAPF_URL_Builder {
 		return add_query_arg( $vars, $this->base_url );
 	}
 
+	/**
+	 * Gets the active values for the current filter key.
+	 *
+	 * @return array
+	 */
 	private function active_values() {
-		$value = isset( $_GET[ $this->filter_key ] ) ? $_GET[ $this->filter_key ] : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$value = isset( $_GET[ $this->filter_key ] ) ? wp_unslash( $_GET[ $this->filter_key ] ) : '';
 
 		return strlen( $value ) ? explode( ',', $value ) : array();
 	}
 
 	/**
+	 * Gets the filter URL with a placeholder value.
+	 *
 	 * @return string
 	 */
 	public function get_filter_url_with_placeholder() {
@@ -183,6 +205,8 @@ class WCAPF_URL_Builder {
 	}
 
 	/**
+	 * Gets the range filter URL with placeholders.
+	 *
 	 * @return string
 	 */
 	public function get_range_url() {
@@ -224,5 +248,4 @@ class WCAPF_URL_Builder {
 
 		return add_query_arg( $vars, $this->base_url );
 	}
-
 }

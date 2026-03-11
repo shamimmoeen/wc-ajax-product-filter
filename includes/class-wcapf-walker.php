@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Walker class.
  *
@@ -286,6 +291,8 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * Sets the walker properties.
+	 *
 	 * @param WCAPF_Field_Instance $field The field instance.
 	 *
 	 * @return void
@@ -335,7 +342,9 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * @param WCAPF_Field_Instance $field_instance
+	 * Sets the filter items.
+	 *
+	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -477,12 +486,12 @@ class WCAPF_Walker {
 		$native_list_types = array( 'checkbox', 'radio' );
 		$wrapper_classes   = array();
 
-		if ( in_array( $display_type, $dropdown_types ) ) {
+		if ( in_array( $display_type, $dropdown_types, true ) ) {
 			$wrapper_classes[] = 'wcapf-dropdown-wrapper';
 		} else {
 			$wrapper_classes[] = 'wcapf-list-wrapper';
 
-			if ( in_array( $display_type, $native_list_types ) ) {
+			if ( in_array( $display_type, $native_list_types, true ) ) {
 				$wrapper_classes[] = 'list-type-native';
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
@@ -517,15 +526,15 @@ class WCAPF_Walker {
 			$wrapper_classes[] = 'layout-' . $this->layout;
 		}
 
-		if ( in_array( $display_type, $native_list_types ) ) {
+		if ( in_array( $display_type, $native_list_types, true ) ) {
 			if ( $this->hierarchical ) {
-				$html = $this->get_max_height_wrapper_start_markup();
+				$html  = $this->get_max_height_wrapper_start_markup();
 				$html .= $this->build_hierarchical_menu( $items );
 				$html .= $this->get_max_height_wrapper_end_markup();
 			} else {
 				$html = $this->build_non_hierarchical_menu( $items );
 			}
-		} elseif ( in_array( $display_type, $dropdown_types ) ) {
+		} elseif ( in_array( $display_type, $dropdown_types, true ) ) {
 			$html = $this->build_dropdown_menu( $items );
 		} else {
 			$html = $this->build_non_hierarchical_menu( $items );
@@ -542,13 +551,20 @@ class WCAPF_Walker {
 		$wrapper_classes = apply_filters( 'wcapf_walker_wrapper_class', $wrapper_classes, $this );
 		$wrapper_classes = implode( ' ', $wrapper_classes );
 
-		$menu = '<div class="' . esc_attr( $wrapper_classes ) . '">';
+		$menu  = '<div class="' . esc_attr( $wrapper_classes ) . '">';
 		$menu .= $html;
 		$menu .= '</div>';
 
 		return $menu;
 	}
 
+	/**
+	 * Gets the soft limit status for the filter options.
+	 *
+	 * @param array $items The array of items.
+	 *
+	 * @return string
+	 */
 	private function get_soft_limit_status( $items ) {
 		$status              = 'hidden';
 		$no_of_visible_items = $this->soft_limit;
@@ -561,8 +577,9 @@ class WCAPF_Walker {
 		$index = 0;
 
 		foreach ( $items as $item ) {
-			$index ++;
+			++$index;
 
+			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 			if ( in_array( $item['id'], $active_items ) ) {
 				if ( $index > $no_of_visible_items ) {
 					$status = 'visible';
@@ -575,6 +592,8 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * Gets the max height wrapper start markup.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
@@ -592,12 +611,12 @@ class WCAPF_Walker {
 	/**
 	 * Build the hierarchical menu.
 	 *
-	 * @param array $items  The array of items.
-	 * @param array $parent The parent item data.
+	 * @param array $items       The array of items.
+	 * @param array $parent_item The parent item data.
 	 *
 	 * @return string
 	 */
-	private function build_hierarchical_menu( $items, $parent = array() ) {
+	private function build_hierarchical_menu( $items, $parent_item = array() ) {
 		$html = '';
 
 		if ( $items ) {
@@ -605,10 +624,10 @@ class WCAPF_Walker {
 			$increment = 0;
 
 			foreach ( $items as $item ) {
-				$increment ++;
+				++$increment;
 
 				if ( 1 === $increment ) {
-					$html .= $this->hierarchical_menu_start_markup( $parent );
+					$html .= $this->hierarchical_menu_start_markup( $parent_item );
 				}
 
 				$has_children = isset( $item['children'] );
@@ -634,17 +653,17 @@ class WCAPF_Walker {
 	/**
 	 * Hierarchical menu's start markup.
 	 *
-	 * @param array $parent The parent item.
+	 * @param array $parent_item The parent item.
 	 *
 	 * @return string
 	 */
-	private function hierarchical_menu_start_markup( $parent ) {
+	private function hierarchical_menu_start_markup( $parent_item ) {
 		$classes = 'wcapf-filter-options';
 		$attrs   = '';
 
-		if ( $parent ) {
+		if ( $parent_item ) {
 			if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
-				if ( $this->item_active_as_ancestor( $parent ) ) {
+				if ( $this->item_active_as_ancestor( $parent_item ) ) {
 					$attrs .= ' style="display: block;"';
 				} else {
 					$attrs .= ' style="display: none;"';
@@ -665,10 +684,12 @@ class WCAPF_Walker {
 	private function item_active_as_ancestor( $item ) {
 		$item_value = $this->item_value( $item );
 
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		if ( in_array( $item_value, $this->active_ancestors ) ) {
 			return true;
 		}
 
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		if ( $this->queried_object && in_array( $item['id'], $this->queried_object['ancestors'] ) ) {
 			return true;
 		}
@@ -725,19 +746,21 @@ class WCAPF_Walker {
 
 		$count_allowed = $this->count_allowed();
 
-		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
+		$item_active_as_current_query = $this->queried_object &&
+			(int) $item_id === (int) $this->queried_object['term_id'];
 
 		if ( $item_active || $item_active_as_current_query ) {
 			$attrs .= ' checked="checked"';
 		}
 
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		$item_active_as_ancestors = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
 
 		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
 			$attrs .= ' disabled="disabled"';
 
 			$input_name .= '-disabled';
-		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] && $count_allowed ) {
+		} elseif ( 'disable' === $this->hide_empty && 0 === (int) $item['count'] && $count_allowed ) {
 			$attrs .= ' disabled="disabled"';
 		}
 
@@ -775,12 +798,16 @@ class WCAPF_Walker {
 				$tooltip_content .= ' (' . $item['count'] . ')';
 			}
 
-			$tooltip_data = ' data-wcapf-tooltip-' . $this->tooltip_position . '="' . esc_attr( $tooltip_content ) . '"';
+			$tooltip_data = sprintf(
+				' data-wcapf-tooltip-%s="%s"',
+				$this->tooltip_position,
+				esc_attr( $tooltip_content )
+			);
 		}
 
 		$item_classes = 'wcapf-filter-item';
 
-		if ( 0 == $item['count'] && $count_allowed ) {
+		if ( 0 === (int) $item['count'] && $count_allowed ) {
 			$item_classes .= ' empty-item';
 		}
 
@@ -823,20 +850,24 @@ class WCAPF_Walker {
 		$item_value   = $this->item_value( $item );
 
 		if ( $active_items ) {
+			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 			if ( in_array( $item_value, $active_items ) ) {
 				return true;
 			}
-		} else {
-			if ( '-1' === $item['count'] ) {
-				return true;
-			}
+		} elseif ( '-1' === (string) $item['count'] ) {
+			return true;
 		}
 
 		return false;
 	}
 
+	/**
+	 * Checks if count is allowed for this filter type.
+	 *
+	 * @return bool
+	 */
 	private function count_allowed() {
-		return ! in_array( $this->filter_type, array( 'sort-by', 'per-page' ) );
+		return ! in_array( $this->filter_type, array( 'sort-by', 'per-page' ), true );
 	}
 
 	/**
@@ -854,6 +885,8 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * Gets the hierarchy accordion HTML.
+	 *
 	 * @param array  $item      The item data.
 	 * @param string $unique_id The unique identifier.
 	 *
@@ -869,6 +902,7 @@ class WCAPF_Walker {
 				$is_active = 'true';
 			}
 
+			/* translators: %s: item name */
 			$aria_label = sprintf( __( 'Expand/Collapse %s', 'wc-ajax-product-filter' ), $item['name'] );
 
 			return WCAPF_Template_Loader::get_instance()->load(
@@ -886,6 +920,8 @@ class WCAPF_Walker {
 	}
 
 	/**
+	 * Gets the max height wrapper end markup.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return string
@@ -923,7 +959,7 @@ class WCAPF_Walker {
 		$html .= '<ul class="wcapf-filter-options">';
 
 		foreach ( $items as $item ) {
-			$index ++;
+			++$index;
 
 			$item_classes = 'wcapf-filter-option';
 
@@ -1087,7 +1123,7 @@ class WCAPF_Walker {
 		$input_attrs .= ' data-url="' . esc_url( $filter_url ) . '"';
 		$input_attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
-		$html = '<select class="' . $input_classes . '"';
+		$html  = '<select class="' . $input_classes . '"';
 		$html .= ' name="' . esc_attr( $input_name ) . '"';
 		$html .= $input_attrs;
 		$html .= $input_multiple;
@@ -1146,7 +1182,9 @@ class WCAPF_Walker {
 	}
 
 	/**
-	 * @param array $item
+	 * Gets the dropdown item attributes.
+	 *
+	 * @param array $item The item array.
 	 *
 	 * @return string
 	 */
@@ -1163,12 +1201,15 @@ class WCAPF_Walker {
 			$attrs .= ' selected="selected"';
 		}
 
-		$item_active_as_current_query = $this->queried_object && $item_id == $this->queried_object['term_id'];
-		$item_active_as_ancestors     = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
+		$item_active_as_current_query = $this->queried_object &&
+			(int) $item_id === (int) $this->queried_object['term_id'];
+
+		// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+		$item_active_as_ancestors = $this->queried_object && in_array( $item_id, $this->queried_object['ancestors'] );
 
 		if ( $item_active_as_current_query || $item_active_as_ancestors ) {
 			$attrs .= ' disabled="disabled"';
-		} elseif ( 'disable' === $this->hide_empty && 0 == $item['count'] && $count_allowed ) {
+		} elseif ( 'disable' === $this->hide_empty && 0 === (int) $item['count'] && $count_allowed ) {
 			$attrs .= ' disabled="disabled"';
 		}
 
@@ -1178,7 +1219,7 @@ class WCAPF_Walker {
 			$classes[] = 'depth-' . $item['depth'];
 		}
 
-		if ( 0 == $item['count'] && $count_allowed ) {
+		if ( 0 === (int) $item['count'] && $count_allowed ) {
 			$classes[] = 'empty-item';
 		}
 
@@ -1227,10 +1268,9 @@ class WCAPF_Walker {
 
 		while ( $depth > 1 ) {
 			$indent .= $_indent;
-			$depth --;
+			--$depth;
 		}
 
 		return $indent;
 	}
-
 }

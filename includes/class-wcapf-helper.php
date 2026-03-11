@@ -355,12 +355,21 @@ class WCAPF_Helper {
 	}
 
 	/**
-	 * Gets the filter relationship setting.
+	 * Gets the relationship used between filter conditions.
+	 *
+	 * Determines how multiple filters are combined in the query.
+	 * Possible values are 'and' or 'or'.
 	 *
 	 * @return string Filter relationship.
 	 */
 	public static function get_field_relations() {
-		return self::wcapf_option( 'filter_relationships', 'and' );
+		$relation = self::wcapf_option( 'filter_relationships' );
+
+		if ( ! in_array( $relation, array( 'and', 'or' ), true ) ) {
+			$relation = 'and';
+		}
+
+		return $relation;
 	}
 
 	/**

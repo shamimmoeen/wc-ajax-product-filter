@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_API class.
  *
@@ -105,7 +110,7 @@ class WCAPF_API {
 	 * @return void
 	 */
 	private function verify_nonce() {
-		$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( $_REQUEST['nonce'] ) : '';
+		$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
 
 		if ( ! wp_verify_nonce( $nonce, 'wcapf-nonce' ) ) {
 			wp_send_json_error( __( 'Nonce verification failed', 'wc-ajax-product-filter' ) );
@@ -134,6 +139,7 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 		$form    = get_post( $post_id );
 
@@ -210,10 +216,12 @@ class WCAPF_API {
 		if ( $parent_term ) {
 			$term = get_term( $parent_term );
 
-			$filter['parent_term'] = array(
-				'value' => $term->term_id,
-				'label' => $term->name,
-			);
+			if ( $term && ! is_wp_error( $term ) ) {
+				$filter['parent_term'] = array(
+					'value' => $term->term_id,
+					'label' => $term->name,
+				);
+			}
 		}
 
 		$array = array(
@@ -316,9 +324,11 @@ class WCAPF_API {
 				foreach ( $manual_options as $option ) {
 					$user = get_userdata( $option['value'] );
 
-					$option['name'] = $user->display_name;
+					if ( $user && ! is_wp_error( $user ) ) {
+						$option['name'] = $user->display_name;
 
-					$parsed[] = $option;
+						$parsed[] = $option;
+					}
 				}
 
 				$filter['manual_options'] = $parsed;
@@ -339,14 +349,23 @@ class WCAPF_API {
 		return apply_filters( 'wcapf_parse_form_settings', $sanitized );
 	}
 
+	/**
+	 * Adds the form via ajax.
+	 *
+	 * @return void
+	 */
 	public function add_form() {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$form_title     = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
-		$_form_settings = isset( $_POST['form_settings'] ) ? $_POST['form_settings'] : '';
-		$form_settings  = stripslashes( $_form_settings );
-		$form_settings  = json_decode( $form_settings, true );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_title = isset( $_POST['form_title'] ) ? sanitize_text_field( wp_unslash( $_POST['form_title'] ) ) : '';
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$_form_settings = isset( $_POST['form_settings'] ) ? wp_unslash( $_POST['form_settings'] ) : '';
+
+		$form_settings = json_decode( $_form_settings, true );
+		$form_settings = is_array( $form_settings ) ? $form_settings : array();
 
 		$post_arr = array(
 			'post_title'   => $form_title,
@@ -373,16 +392,23 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$form_id    = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0;
-		$form_title = isset( $_POST['form_title'] ) ? sanitize_text_field( $_POST['form_title'] ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_id = isset( $_POST['form_id'] ) ? absint( $_POST['form_id'] ) : 0;
 
-		$_form_filters = isset( $_POST['form_filters'] ) ? $_POST['form_filters'] : '';
-		$form_filters  = stripslashes( $_form_filters );
-		$form_filters  = json_decode( $form_filters, true );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_title = isset( $_POST['form_title'] ) ? sanitize_text_field( wp_unslash( $_POST['form_title'] ) ) : '';
 
-		$_form_settings = isset( $_POST['form_settings'] ) ? $_POST['form_settings'] : '';
-		$form_settings  = stripslashes( $_form_settings );
-		$form_settings  = json_decode( $form_settings, true );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$_form_filters = isset( $_POST['form_filters'] ) ? wp_unslash( $_POST['form_filters'] ) : '';
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$_form_settings = isset( $_POST['form_settings'] ) ? wp_unslash( $_POST['form_settings'] ) : '';
+
+		$form_filters = json_decode( $_form_filters, true );
+		$form_filters = is_array( $form_filters ) ? $form_filters : array();
+
+		$form_settings = json_decode( $_form_settings, true );
+		$form_settings = is_array( $form_settings ) ? $form_settings : array();
 
 		if ( ! $form_id || 'wcapf-form' !== get_post_type( $form_id ) ) {
 			wp_send_json_error( __( 'Invalid form id', 'wc-ajax-product-filter' ) );
@@ -470,7 +496,8 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : '';
 		$number   = apply_filters( 'wcapf_max_number_of_terms_for_browse_options_modal', 99 );
 
 		$args = array(
@@ -504,10 +531,12 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : '';
-		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( $_GET['only_parent'] ) : '';
-		$keyword     = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$taxonomy    = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : '';
+		$only_parent = isset( $_GET['only_parent'] ) ? sanitize_text_field( wp_unslash( $_GET['only_parent'] ) ) : '';
+		$keyword     = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : '';
 		$page        = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$per_page = 20;
 		$offset   = ( $page - 1 ) * $per_page;
@@ -568,8 +597,10 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : '';
 		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$per_page = 20;
 		$offset   = ( $page - 1 ) * $per_page;
@@ -605,9 +636,11 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : '';
 		$page     = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
-		$show_all = ! empty( $_GET['show_all'] ) ? true : false;
+		$show_all = ! empty( $_GET['show_all'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$per_page = 20;
 		$offset   = ( $page - 1 ) * $per_page;
@@ -636,6 +669,7 @@ class WCAPF_API {
 		}
 
 		if ( $page_ids ) {
+			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			$args['exclude'] = $page_ids;
 		}
 
@@ -666,8 +700,10 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( $_GET['keyword'] ) : '';
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		$keyword = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : '';
 		$page    = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$per_page = 20;
 		$offset   = ( $page - 1 ) * $per_page;
@@ -703,7 +739,8 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$meta_key = isset( $_GET['meta_key'] ) ? sanitize_text_field( $_GET['meta_key'] ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$meta_key = isset( $_GET['meta_key'] ) ? sanitize_text_field( wp_unslash( $_GET['meta_key'] ) ) : '';
 
 		$values   = WCAPF_Helper::get_available_meta_values( $meta_key );
 		$response = array();
@@ -729,7 +766,8 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$roles = isset( $_GET['roles'] ) ? $_GET['roles'] : array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$roles = isset( $_GET['roles'] ) ? wp_unslash( $_GET['roles'] ) : array();
 
 		$args = array(
 			'role__in' => $roles,
@@ -760,6 +798,7 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-form' === get_post_type( $post_id ) ) {
@@ -800,6 +839,7 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : '';
 
 		if ( $post_id && 'wcapf-filter' === get_post_type( $post_id ) ) {
@@ -826,12 +866,17 @@ class WCAPF_API {
 		$this->verify_nonce();
 		$this->verify_permission();
 
-		$_settings          = isset( $_POST['settings'] ) ? $_POST['settings'] : array();
-		$_filter_keys       = isset( $_POST['filter_keys'] ) ? $_POST['filter_keys'] : array();
-		$update_filter_keys = isset( $_POST['update_filter_keys'] ) ? $_POST['update_filter_keys'] : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$_settings = isset( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : array();
 
-		$settings = stripslashes( $_settings );
-		$settings = json_decode( $settings, true );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$_filter_keys = isset( $_POST['filter_keys'] ) ? wp_unslash( $_POST['filter_keys'] ) : array();
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$update_filter_keys = isset( $_POST['update_filter_keys'] ) ? sanitize_text_field( wp_unslash( $_POST['update_filter_keys'] ) ) : '';
+
+		$settings = json_decode( $_settings, true );
+		$settings = is_array( $settings ) ? $settings : array();
 
 		/**
 		 * The hooks for altering the form settings.
@@ -853,8 +898,8 @@ class WCAPF_API {
 			);
 		}
 
-		$filter_keys = stripslashes( $_filter_keys );
-		$filter_keys = json_decode( $filter_keys, true );
+		$filter_keys = json_decode( $_filter_keys, true );
+		$filter_keys = is_array( $filter_keys ) ? $filter_keys : array();
 
 		$possible_types  = WCAPF_API_Utils::get_filter_types();
 		$new_filter_keys = array();
@@ -924,11 +969,13 @@ class WCAPF_API {
 					'post_content' => maybe_serialize( $filter_settings ),
 				);
 
-				add_filter( 'pre_wp_unique_post_slug', function () use ( $post_name ) {
+				$unique_post_slug_callback = static function () use ( $post_name ) {
 					return $post_name;
-				} );
+				};
 
+				add_filter( 'pre_wp_unique_post_slug', $unique_post_slug_callback );
 				$updated_filter_id = wp_update_post( $post_arr, true );
+				remove_filter( 'pre_wp_unique_post_slug', $unique_post_slug_callback );
 
 				if ( is_wp_error( $updated_filter_id ) ) {
 					$update_filter_key_errors[] = $updated_filter_id->get_error_message();
@@ -991,14 +1038,13 @@ class WCAPF_API {
 		$form_updates_count = intval( get_user_meta( $user_id, $meta_key, true ) );
 
 		if ( $form_updates_count ) {
-			$form_updates_count ++;
+			++$form_updates_count;
 		} else {
 			$form_updates_count = 1;
 		}
 
 		update_user_meta( $user_id, $meta_key, $form_updates_count );
 	}
-
 }
 
 WCAPF_API::instance();

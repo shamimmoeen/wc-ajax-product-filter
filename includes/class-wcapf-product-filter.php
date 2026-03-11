@@ -71,8 +71,8 @@ class WCAPF_Product_Filter {
 	 * @see WCAPF_Helper::get_chosen_filters()
 	 */
 	public function get_chosen_filters() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reads front-end filter state from the URL query string; no nonce is applicable here.
-		$url = $_SERVER['QUERY_STRING'];
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$url = isset( $_SERVER['QUERY_STRING'] ) ? wp_unslash( $_SERVER['QUERY_STRING'] ) : '';
 		parse_str( $url, $query );
 
 		$chosen      = array();
@@ -722,6 +722,7 @@ class WCAPF_Product_Filter {
 			if ( 'or' === $query_type ) {
 				$or_filter_values[] = $value;
 			} else {
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$clauses[] = $wpdb->prepare( "$value_alias = %d", $value );
 			}
 		}
@@ -782,6 +783,7 @@ class WCAPF_Product_Filter {
 			if ( $or_filter_values ) {
 				$placeholders = implode( ',', array_fill( 0, count( $or_filter_values ), '%s' ) );
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
 				$where = $wpdb->prepare( "$value_alias IN ($placeholders)", $or_filter_values );
 			} elseif ( $clauses ) {
 				if ( 1 < count( $clauses ) ) {
@@ -846,6 +848,7 @@ class WCAPF_Product_Filter {
 
 				$value_alias = "$join_alias.meta_value";
 
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$clauses[] = $wpdb->prepare( "$value_alias = %s", $meta_value );
 			}
 		}
@@ -887,12 +890,14 @@ class WCAPF_Product_Filter {
 				);
 
 				$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$join .= $wpdb->prepare( " AND $join_alias.meta_key = %s)", $meta_key );
 			}
 		} else {
 			$join_alias = WCAPF_Product_Filter_Utils::get_table_join_alias( $filter_key );
 
 			$join .= " LEFT JOIN $wpdb->postmeta AS $join_alias ON ($wpdb->posts.ID = $join_alias.post_id";
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$join .= $wpdb->prepare( " AND $join_alias.meta_key = %s)", $meta_key );
 		}
 

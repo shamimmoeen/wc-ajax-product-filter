@@ -8,6 +8,11 @@
  * @author     wptools.io
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WCAPF_Filter_Form_Shortcode class.
  *
@@ -35,6 +40,11 @@ class WCAPF_Filter_Form_Shortcode {
 		return $instance;
 	}
 
+	/**
+	 * Renders the filter form shortcode output.
+	 *
+	 * @return string
+	 */
 	public function register_shortcode() {
 		ob_start();
 
@@ -46,6 +56,11 @@ class WCAPF_Filter_Form_Shortcode {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Renders debug messages for unsupported shortcode usage.
+	 *
+	 * @return void
+	 */
 	public function render_debug_messages() {
 		if ( ! WCAPF_Helper::is_debug_mode_enabled() ) {
 			return;
@@ -55,13 +70,14 @@ class WCAPF_Filter_Form_Shortcode {
 
 		if ( is_shop() || is_product_taxonomy() ) {
 			if ( ! $wcapf_form ) {
-				/** @noinspection HtmlUnknownTarget */
-				echo WCAPF_Helper::get_debug_message(
-					sprintf(
-						__( 'No forms found. <a href="%s">Create a form here</a>.', 'wc-ajax-product-filter' ),
-						esc_url( admin_url( 'admin.php?page=wcapf' ) )
-					)
+				$debug_message = sprintf(
+					/* translators: %s: admin form list URL. */
+					__( 'No forms found. <a href="%s">Create a form here</a>.', 'wc-ajax-product-filter' ),
+					esc_url( admin_url( 'admin.php?page=wcapf' ) )
 				);
+
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside helper.
+				echo WCAPF_Helper::get_debug_message( $debug_message );
 			} elseif ( isset( $wcapf_form['rendered'] ) ) {
 				$upgrade_link = add_query_arg(
 					array(
@@ -72,13 +88,17 @@ class WCAPF_Filter_Form_Shortcode {
 					'https://wptools.io/wc-ajax-product-filter/'
 				);
 
-				/** @noinspection HtmlUnknownTarget */
-				echo WCAPF_Helper::get_debug_message(
-					sprintf(
-						__( 'The form has already been displayed and cannot be shown again. Upgrade to the <a href="%s" target="_blank">Pro version</a> for the ability to use multiple forms on a page.', 'wc-ajax-product-filter' ),
-						esc_url( $upgrade_link )
-					)
+				$debug_message = sprintf(
+					/* translators: %s: Pro upgrade URL. */
+					__(
+						'The form has already been displayed and cannot be shown again. Upgrade to the <a href="%s" target="_blank">Pro version</a> for the ability to use multiple forms on a page.',
+						'wc-ajax-product-filter'
+					),
+					esc_url( $upgrade_link )
 				);
+
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside helper.
+				echo WCAPF_Helper::get_debug_message( $debug_message );
 			}
 		} else {
 			$upgrade_link = add_query_arg(
@@ -90,16 +110,19 @@ class WCAPF_Filter_Form_Shortcode {
 				'https://wptools.io/wc-ajax-product-filter/'
 			);
 
-			/** @noinspection HtmlUnknownTarget */
-			echo WCAPF_Helper::get_debug_message(
-				sprintf(
-					__( 'The free version of the plugin does not support filtering products on singular pages. Upgrade to the <a href="%s" target="_blank">Pro version</a> to unlock this feature.', 'wc-ajax-product-filter' ),
-					esc_url( $upgrade_link )
-				)
+			$debug_message = sprintf(
+				/* translators: %s: Pro upgrade URL. */
+				__(
+					'The free version of the plugin does not support filtering products on singular pages. Upgrade to the <a href="%s" target="_blank">Pro version</a> to unlock this feature.',
+					'wc-ajax-product-filter'
+				),
+				esc_url( $upgrade_link )
 			);
+
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside helper.
+			echo WCAPF_Helper::get_debug_message( $debug_message );
 		}
 	}
-
 }
 
 add_shortcode( 'wcapf_form', array( WCAPF_Filter_Form_Shortcode::get_instance(), 'register_shortcode' ) );
