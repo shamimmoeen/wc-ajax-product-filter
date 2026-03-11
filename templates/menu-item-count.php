@@ -9,13 +9,17 @@
  */
 
 /**
- * @var int $count
+ * Template variables passed from the template loader.
+ *
+ * @var string $count              The item count.
+ * @var string $screen_reader_text The translated screen reader text.
  */
 
-$for_screen_reader = sprintf(
-	_n( '%d product', '%d products', $count, 'wc-ajax-product-filter' ),
-	number_format_i18n( $count )
-);
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 
-<span class="wcapf-nav-item-count"><span aria-hidden="true"><?php echo esc_html( $count ); ?></span><span class="screen-reader-text"><?php echo esc_html( $for_screen_reader ); ?></span></span>
+<span class="wcapf-nav-item-count"><span aria-hidden="true"><?php echo esc_html( $count ); ?></span><span class="screen-reader-text"><?php echo esc_html( $screen_reader_text ); ?></span></span>
