@@ -70,6 +70,7 @@ class WCAPF_Post_Author_Filter {
 		if ( 'include' === $limit_options ) {
 			$args['include'] = $field_instance->get_sub_field_value( 'include_authors' );
 		} elseif ( 'exclude' === $limit_options ) {
+			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			$args['exclude'] = $field_instance->get_sub_field_value( 'exclude_authors' );
 		} elseif ( 'user_roles' === $limit_options ) {
 			$args['role__in'] = $field_instance->get_sub_field_value( 'include_user_roles' );
