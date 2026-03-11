@@ -447,34 +447,36 @@ class WCAPF_Form {
 
 		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
-		$data = array(
-			'filter_id'             => $filter_id,
-			'filter_key'            => $filter_key,
-			'display_type'          => $display_type,
-			'display_values_as'     => $display_values_as,
-			'alignment'             => $alignment,
-			'input_type_number'     => $input_type_number,
-			'min_value'             => $min_value,
-			'max_value'             => $max_value,
-			'range_min_value'       => $range_min_value,
-			'range_max_value'       => $range_max_value,
-			'step'                  => $step,
-			'value_prefix'          => $value_prefix,
-			'value_postfix'         => $value_postfix,
-			'values_separator'      => $values_separator,
-			'text_before_min_value' => $text_before_min_value,
-			'text_before_max_value' => $text_before_max_value,
-			'format_numbers'        => $format_numbers,
-			'decimal_places'        => $decimal_places,
-			'thousand_separator'    => $thousand_separator,
-			'decimal_separator'     => $decimal_separator,
-			'slider_id'             => $slider_id,
-			'slider_style'          => $slider_style,
-			'filter_url'            => $url_builder->get_range_url(),
-			'clear_filter_url'      => $url_builder->get_clear_filter_url(),
+		$args = WCAPF_Helper::prepare_range_filter_args(
+			array(
+				'filter_id'             => $filter_id,
+				'filter_key'            => $filter_key,
+				'display_type'          => $display_type,
+				'display_values_as'     => $display_values_as,
+				'alignment'             => $alignment,
+				'input_type_number'     => $input_type_number,
+				'min_value'             => $min_value,
+				'max_value'             => $max_value,
+				'range_min_value'       => $range_min_value,
+				'range_max_value'       => $range_max_value,
+				'step'                  => $step,
+				'value_prefix'          => $value_prefix,
+				'value_postfix'         => $value_postfix,
+				'values_separator'      => $values_separator,
+				'text_before_min_value' => $text_before_min_value,
+				'text_before_max_value' => $text_before_max_value,
+				'format_numbers'        => $format_numbers,
+				'decimal_places'        => $decimal_places,
+				'thousand_separator'    => $thousand_separator,
+				'decimal_separator'     => $decimal_separator,
+				'slider_id'             => $slider_id,
+				'slider_style'          => $slider_style,
+				'filter_url'            => $url_builder->get_range_url(),
+				'clear_filter_url'      => $url_builder->get_clear_filter_url(),
+			)
 		);
 
-		WCAPF_Template_Loader::get_instance()->load( 'range', $data );
+		WCAPF_Template_Loader::get_instance()->load( 'range', $args );
 	}
 
 	/**
