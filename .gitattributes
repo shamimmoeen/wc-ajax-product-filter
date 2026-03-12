@@ -24,6 +24,7 @@ dependencies.yml export-ignore
 Gruntfile.js export-ignore
 gulpfile.js export-ignore
 note.php export-ignore
+note.txt export-ignore
 package.json export-ignore
 package-lock.json export-ignore
 phpunit.xml export-ignore
@@ -47,6 +48,7 @@ node_modules export-ignore
 *.zip export-ignore
 .dist export-ignore
 .vscode export-ignore
+.geminiignore export-ignore
 
 # Ignore source codes.
 public/lib/chosen/chosen.scss export-ignore

@@ -5,7 +5,7 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/templates/public
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
 
 /**

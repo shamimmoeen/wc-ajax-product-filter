@@ -1,0 +1,51 @@
+
+==
+class-wcapf-admin.php
+- Add SEO Rules admin page
+
+class-wcapf-api-utils.php
+- get_filter_types - add 'Apply Mode' and 'Submit Mode' new components to the returned array
+
+class-wcapf-field-instance.php
+- Rename it to class-wcapf-filter-instance.php and related properties, methods, variable names and usages to reflect the new name
+
+class-wcapf-helper.php
+- add opening_btn_label method
+- add slide_out_panel_label method
+- add submit_btn_label method
+- add apply_btn_label method
+- add animation_enabled_in_accordion method
+
+pro_update_notice_can_be_shown check this todo
+
+==
+
+We are continuing work on the WCAPF - WooCommerce Ajax Product Filter plugin.
+We finished the form class, now we are fixing class-wcapf-helper.php according to Plugin Check results.
+
+“Don’t give code in apply mode, give it here so I copy manually.”
+
+We are fixing Plugin Check issues in class-wcapf-helper.php.
+
+
+===
+now you know a lots of things about my wcapf plugin. I am trying to release a new version by fixing sql injection issues and improving the code logics when ever possible without changing the behavior for improving performance and security. And trying to make the codes more readable by adding docblocs, following wordpress coding standards, so that the "Plugin Check" plugin don't return much errors. do you remember these? We have worked on this on two chats as I remember, can you look our chats named 'WCAPF Plugin Improvements' and 'SQL Injection Vulnerability Fix'.
+
+To make it quick, I want to use AI Agents and Skills with gemini-cli. Do you know if I can use Agents and Skills there. Do you think I have to use both or only Agents will be enough? Can you give me these appropriately and specifically? I am new writing these things so I want you to give me the best practices and examples for using Agents and Skills with gemini-cli for my WCAPF plugin improvements. I want to use these to reduce my time and the token usages.
+
+== For ChatGPT new chat ==
+Please continue improving my WCAPF plugin by addressing the security and performance concerns for our patch version we wish to release.
+
+Our requirement is to follow wordpress coding standards, improve performance and security without changing the behavior.
+
+We'll continue improving the php templates. These throws numerous numbers of errors and warnings.
+
+==
+> If you want, next I’ll turn this into a developer note / architecture note for WCAPF so you can keep it in the repo while doing the performance refactor.
+Yes.
+
+==
+
+using case when the sql query takes more than 12 seconds.
+
+using the fastest sql query where count is wrong if product has multiple categories, takes 0.0755 and applying the category filters takes around 658/639 ms and reverting the filter takes 429/423 ms.
