@@ -5,7 +5,7 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
 
 // Exit if accessed directly.
@@ -654,7 +654,7 @@ class WCAPF_Helper {
 	 *
 	 * @param array $raw_args Raw template arguments.
 	 *
-	 * @since 4.2.4
+	 * @since 4.3.0
 	 *
 	 * @return array Prepared template arguments.
 	 */
@@ -723,7 +723,7 @@ class WCAPF_Helper {
 	 *
 	 * @param array $args Raw template arguments.
 	 *
-	 * @since 4.2.4
+	 * @since 4.3.0
 	 *
 	 * @return array Prepared template arguments.
 	 */
@@ -753,7 +753,7 @@ class WCAPF_Helper {
 	/**
 	 * Prepares template arguments for the range filter template.
 	 *
-	 * @since 4.2.4
+	 * @since 4.3.0
 	 *
 	 * @param array $args Raw template arguments.
 	 *

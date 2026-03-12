@@ -1,18 +1,18 @@
 # WCAPF - WooCommerce Ajax Product Filter #
-**Contributors:** [shamimmoeen](https://profiles.wordpress.org/shamimmoeen/)
-**Tags:** woocommerce product filter, ajax product filter, price filter, product sorting, woocommerce layered nav
-**Requires at least:** 6.0
-**Tested up to:** 6.7
-**Stable tag:** 4.2.3
-**Requires PHP:** 7.2
-**License:** GPLv3
-**License URI:** https://www.gnu.org/licenses/gpl-3.0.html
+**Contributors:** [shamimmoeen](https://profiles.wordpress.org/shamimmoeen/)  
+**Tags:** woocommerce product filter, ajax product filter, price filter, product sorting, woocommerce layered nav  
+**Requires at least:** 6.0  
+**Tested up to:** 6.9  
+**Stable tag:** 4.3.0  
+**Requires PHP:** 7.2  
+**License:** GPLv3  
+**License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
 
-WCAPF - WooCommerce Ajax Product Filter is a powerful plugin that enhances the filtering functionality of your WooCommerce store.
+A plugin to filter WooCommerce products using AJAX.
 
 ## Description ##
 
-**WCAPF - WooCommerce Ajax Product Filter** is a powerful plugin that enhances the filtering functionality of your WooCommerce store. It allows your customers to easily find and narrow down their product search using a dynamic and interactive filter system. With Ajax-based filtering, the plugin provides instant results without page reloading, ensuring a smooth and seamless user experience.
+**WCAPF - WooCommerce Ajax Product Filter** helps customers filter WooCommerce products by category, attribute, price, rating, author, meta fields, and keyword using AJAX. It updates products instantly without page reload and helps customers narrow down results faster on shop and archive pages.
 
 [**View Demo**](https://demos.wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Demo) | [**Documentation**](https://wptools.io/docs/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Documentation) | [**💎 Upgrade to Pro**](https://wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Pro+Upgrade)
 
@@ -105,7 +105,7 @@ The plugin allows users to add filters in just a few clicks. By clicking the “
 ## Customizable Filter Keys in URL ##
 Set the filter key used in the URL to identify the type of filter applied.
 
-For example, in the URL **../?category=sneakers&material=mesh**, **category**, and **material** are the filer keys.
+For example, in the URL **../?category=shirts&color=white**, **category**, and **color** are the filter keys.
 
 ## Dynamic Product Count ##
 Update the product count dynamically based on the applied filters, providing accurate and real-time information to customers, allowing customers to filter products with confidence and avoiding "no results found" messages.
@@ -174,8 +174,13 @@ If the issue persists, please open a support ticket, and our dedicated support t
 
 ## Changelog ##
 
-### 4.2.3 (2 March 2025) ###
+### 4.3.0 (16 March 2026) ###
+* Security – Hardened dynamic filter queries and improved SQL safety
+* Performance – Improved hierarchical taxonomy term counting
+* Enhancement – Improved escaping and output handling across frontend templates
+* Enhancement – Improved overall code quality and WordPress coding standards compliance
 
+### 4.2.3 (2 March 2025) ###
 * Fix – Prevent errors by skipping undefined taxonomies when they are unregistered
 
 ### 4.2.2 (20 January 2025) ###

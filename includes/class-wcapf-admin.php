@@ -5,7 +5,7 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
 
 // Exit if accessed directly.
@@ -310,35 +310,32 @@ class WCAPF_Admin {
 			'nonce'        => wp_create_nonce( 'wcapf-nonce' ),
 		);
 
-		$helper = new WCAPF_Helper();
-		$utils  = new WCAPF_API_Utils();
-
-		$params['forms_page_link']     = $helper::forms_page_url();
-		$params['seo_rules_page_link'] = $helper::seo_rules_page_url();
-		$params['settings_page_link']  = $helper::settings_page_url();
-		$params['upgrade_page_link']   = $helper::upgrade_page_url();
+		$params['forms_page_link']     = WCAPF_Helper::forms_page_url();
+		$params['seo_rules_page_link'] = WCAPF_Helper::seo_rules_page_url();
+		$params['settings_page_link']  = WCAPF_Helper::settings_page_url();
+		$params['upgrade_page_link']   = WCAPF_Helper::upgrade_page_url();
 
 		$screen_id  = $this->current_screen_id();
-		$user_roles = $utils::user_role_options();
+		$user_roles = WCAPF_API_Utils::user_role_options();
 
 		if ( 'toplevel_page_wcapf' === $screen_id ) {
 			$params['form_default_data'] = WCAPF_Default_Data::form_default_data();
 
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to determine which admin screen to load.
 			if ( ! isset( $_GET['id'] ) ) {
-				$params['forms'] = $utils::get_forms();
+				$params['forms'] = WCAPF_API_Utils::get_forms();
 			} else {
-				$settings = $helper::get_settings();
+				$settings = WCAPF_Helper::get_settings();
 
 				$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
 
-				$params['filter_types']    = $utils::get_filter_types();
-				$params['meta_keys']       = $helper::get_available_meta_keys();
-				$params['date_formats']    = $utils::display_date_formats();
-				$params['status_options']  = $utils::product_status_options();
-				$params['time_periods']    = $utils::time_period_options();
-				$params['sort_by_options'] = $utils::sort_by_options();
-				$params['meta_types']      = $utils::meta_type_options();
+				$params['filter_types']    = WCAPF_API_Utils::get_filter_types();
+				$params['meta_keys']       = WCAPF_Helper::get_available_meta_keys();
+				$params['date_formats']    = WCAPF_API_Utils::display_date_formats();
+				$params['status_options']  = WCAPF_API_Utils::product_status_options();
+				$params['time_periods']    = WCAPF_API_Utils::time_period_options();
+				$params['sort_by_options'] = WCAPF_API_Utils::sort_by_options();
+				$params['meta_types']      = WCAPF_API_Utils::meta_type_options();
 				$params['user_roles']      = $user_roles;
 
 				$params['author_roles']            = isset( $settings['author_roles'] )
@@ -361,9 +358,9 @@ class WCAPF_Admin {
 			$params['default_settings'] = WCAPF_Default_Data::default_settings();
 
 			$params['user_roles'] = $user_roles;
-			$params['settings']   = $utils::get_settings();
+			$params['settings']   = WCAPF_API_Utils::get_settings();
 
-			$params['global_filter_keys'] = $utils::get_filter_keys( true );
+			$params['global_filter_keys'] = WCAPF_API_Utils::get_filter_keys( true );
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

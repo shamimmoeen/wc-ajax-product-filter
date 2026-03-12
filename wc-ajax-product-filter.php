@@ -1,17 +1,18 @@
 <?php
 /*
  * Plugin Name:       WCAPF - WooCommerce Ajax Product Filter
- * Plugin URI:        https://wptools.io/wc-ajax-product-filter/?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=WCAPF+Pro+Details
- * Description:       A plugin to filter WooCommerce products with AJAX request.
- * Version:           4.2.4
+ * Plugin URI:        https://wptools.io/wc-ajax-product-filter/
+ * Description:       A plugin to filter WooCommerce products using AJAX.
+ * Version:           4.3.0
  * Requires at least: 6.0
  * Requires PHP:      7.2
- * Author:            wptools.io
- * Author URI:        https://wptools.io?utm_source=plugins+listing&utm_medium=wcapf+free&utm_campaign=Business+Website
- * License:           GPL v3 or later
+ * Author:            Mainul Hassan
+ * Author URI:        https://wptools.io/
+ * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       wc-ajax-product-filter
  * Domain Path:       /languages
+ * Requires Plugins:  woocommerce
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU
  * General Public License as published by the Free Software Foundation, either version 3 of the License,
@@ -21,10 +22,10 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * @since     3.0.0
+ * @since     1.0.0
  * @package   wc-ajax-product-filter
- * @copyright Copyright (c) 2018, wptools.io
- * @author    wptools.io
+ * @copyright Copyright (c) 2015-2026, Mainul Hassan
+ * @author    Mainul Hassan
  * @license   https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -35,22 +36,59 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Defines constant WCAPF_VERSION.
 if ( ! defined( 'WCAPF_VERSION' ) ) {
-	define( 'WCAPF_VERSION', '4.2.4' );
+	define( 'WCAPF_VERSION', '4.3.0' );
 }
 
-class WCAPF_Plugin {
+/**
+ * Main plugin bootstrap class.
+ *
+ * Responsible for checking requirements, loading dependencies,
+ * and initializing the plugin.
+ *
+ * @since 4.1.0
+ */
+final class WCAPF_Plugin {
 
+	/**
+	 * Initialize the plugin bootstrap.
+	 *
+	 * Registers hooks required to verify requirements,
+	 * show admin notices, and load plugin dependencies.
+	 */
 	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'show_admin_notice' ) );
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'woocommerce_loaded', array( $this, 'load_dependencies' ) );
 
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 	}
 
 	/**
-	 * Used to check if wcapf-pro-v2.1 or greater than is found, if found we don't load the free version.
+	 * Load the plugin text domain.
 	 *
-	 * @return bool
+	 * Loads translated strings from the plugin languages directory.
+	 *
+	 * @return void
+	 */
+	public function load_textdomain() {
+		if ( ! $this->should_we_proceed() ) {
+			return;
+		}
+
+		load_plugin_textdomain(
+			'wc-ajax-product-filter',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
+	}
+
+	/**
+	 * Check whether WCAPF Pro 2.1 or later is active.
+	 *
+	 * If a compatible Pro version is detected, the free version should
+	 * not continue loading to avoid conflicts.
+	 *
+	 * @return bool True if the free version should proceed loading, false otherwise.
 	 */
 	private function should_we_proceed() {
 		if ( ! defined( 'WCAPF_PRO_VERSION' ) ) {
@@ -65,7 +103,9 @@ class WCAPF_Plugin {
 	}
 
 	/**
-	 * Check requirements, if requirements fail show notice.
+	 * Show an admin notice when plugin requirements are not met.
+	 *
+	 * @return void
 	 */
 	public function show_admin_notice() {
 		if ( ! $this->should_we_proceed() ) {
@@ -182,6 +222,14 @@ class WCAPF_Plugin {
 		return $messages;
 	}
 
+	/**
+	 * Handle plugin activation.
+	 *
+	 * Verifies requirements, performs migrations if needed,
+	 * updates database version, and initializes default settings.
+	 *
+	 * @return void
+	 */
 	public function activate() {
 		$failed_requirements = $this->check_requirements( 'messages' );
 
@@ -199,7 +247,13 @@ class WCAPF_Plugin {
 
 		// If any records for v3 exist, perform migration to v4.
 		if ( ! $existing_wcapf_version ) {
-			$filters = get_posts( array( 'post_type' => 'wcapf-filter', 'post_status' => 'any', 'fields' => 'ids' ) );
+			$filters = get_posts(
+				array(
+					'post_type'   => 'wcapf-filter',
+					'post_status' => 'any',
+					'fields'      => 'ids',
+				)
+			);
 
 			// Migrate from v3 to v4.
 			if ( $filters ) {
@@ -228,6 +282,13 @@ class WCAPF_Plugin {
 		$this->save_activation_time_in_db();
 	}
 
+	/**
+	 * Save the plugin activation timestamp if it does not already exist.
+	 *
+	 * Used for review notice timing and internal tracking.
+	 *
+	 * @return void
+	 */
 	private function save_activation_time_in_db() {
 		$activation_time = get_option( 'wcapf_activation_time' );
 
@@ -236,6 +297,14 @@ class WCAPF_Plugin {
 		}
 	}
 
+	/**
+	 * Load plugin dependencies after WooCommerce is initialized.
+	 *
+	 * Ensures requirements are met, defines constants, and loads
+	 * the main dependency bootstrap file.
+	 *
+	 * @return void
+	 */
 	public function load_dependencies() {
 		if ( ! $this->should_we_proceed() ) {
 			return;
@@ -257,6 +326,14 @@ class WCAPF_Plugin {
 		do_action( 'wcapf_loaded' );
 	}
 
+	/**
+	 * Define core plugin constants.
+	 *
+	 * Registers constants used throughout the plugin such as
+	 * plugin paths, URLs, and cache lifetime.
+	 *
+	 * @return void
+	 */
 	private function define_constants() {
 		// Defines constant WCAPF_PLUGIN_FILE
 		if ( ! defined( 'WCAPF_PLUGIN_FILE' ) ) {
@@ -280,10 +357,11 @@ class WCAPF_Plugin {
 	}
 }
 
+// Initialize the plugin.
 new WCAPF_Plugin();
 
 /**
- * We are not loading the wcapf-pro-v1 as it is not compatible with the new wcapf versions anymore.
+ * Prevent loading WCAPF Pro v1 as it is not compatible with newer WCAPF versions.
  *
  * @return void
  */
@@ -297,14 +375,14 @@ add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
  * Uninstalling WCAPF - WooCommerce Ajax Product Filter deletes the plugin settings, forms and filters.
  *
  * @since        4.1.0
- * @package      wc-ajax-product-filter-pro
- * @author       wptools.io
+ * @package      wc-ajax-product-filter
+ * @author       Mainul Hassan
  *
  * @noinspection SqlNoDataSourceInspection
  * @noinspection SqlDialectInspection
  */
 function wcapf_uninstall_cleanup() {
-	// Don't proceed if pro version activated.
+	// Do not proceed if the pro version is active.
 	if ( function_exists( 'wcapf_fs_uninstall_cleanup' ) ) {
 		return;
 	}
