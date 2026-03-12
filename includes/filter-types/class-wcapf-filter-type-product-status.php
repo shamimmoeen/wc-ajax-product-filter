@@ -100,19 +100,15 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 				$condition = " AND $wpdb->posts.ID IN $on_sale_products";
 			}
 
-			$where .= apply_filters( 'wcapf_product_counts_where_clause_for_status', $condition, $id, $this->field );
-
 			if ( $update_count ) {
 				$where .= WCAPF_Product_Filter_Utils::get_where_clause( $this->query_type, $this->filter_key );
 			}
 
 			$query['where'] = $where;
 
-			$query = apply_filters( 'wcapf_products_in_status_query_sql', $query, $this->field, $item );
-
 			$sql = implode( ' ', $query );
 
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom counting query.
 			$count = $wpdb->get_var( $sql );
 
 			$items[ $id ]['count'] = $count;

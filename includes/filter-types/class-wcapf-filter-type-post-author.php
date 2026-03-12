@@ -87,7 +87,7 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 
 		$query = $this->get_sql_query();
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom counting query.
 		$filtered_count = $wpdb->get_results( $query, ARRAY_A );
 		$filtered_count = wp_list_pluck( $filtered_count, 'count', 'author_id' );
 
@@ -143,8 +143,6 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 		$query['where'] = $where;
 
 		$query['group_by'] = 'GROUP BY author_id';
-
-		$query = apply_filters( 'wcapf_post_author_query_sql', $query, $this->field );
 
 		return implode( ' ', $query );
 	}

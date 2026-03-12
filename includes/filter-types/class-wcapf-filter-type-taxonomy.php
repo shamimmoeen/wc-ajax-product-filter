@@ -215,7 +215,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$query = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query assembled from prepared/internal fragments.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom counting query.
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
@@ -236,51 +236,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
 
-		$query = array();
-		$join  = '';
-		$where = '';
+		$query  = array();
+		$select = '';
+		$join   = '';
+		$where  = '';
 
-		// query all terms
-		$_all_terms = get_terms(
-			array(
-				'taxonomy'   => $this->taxonomy,
-				'hide_empty' => false,
-				'fields'     => 'ids',
-			)
-		);
+		$select .= "SELECT DISTINCT $wpdb->posts.ID AS product_id, terms.term_id AS term_id";
 
-		$_clauses = array();
-
-		foreach ( $_all_terms as $term_id ) {
-			$child_terms = get_term_children( $term_id, $this->taxonomy );
-			$term_ids_in = array();
-
-			if ( $child_terms ) {
-				$_child_terms = array();
-
-				foreach ( $child_terms as $child_term ) {
-					$_child_terms[] = $child_term;
-				}
-
-				$term_ids_in = array_merge( array( $term_id ), $_child_terms );
-			} else {
-				$term_ids_in[] = $term_id;
-			}
-
-			$ids_in = WCAPF_Product_Filter_Utils::get_ids_sql( $term_ids_in );
-
-			$clauses  = 'COUNT';
-			$clauses .= '(';
-			$clauses .= "DISTINCT CASE WHEN terms.term_id IN $ids_in";
-			$clauses .= " THEN $wpdb->posts.ID END";
-			$clauses .= ") AS `$term_id`";
-
-			$_clauses[] = $clauses;
-		}
-
-		$clauses = implode( ', ', $_clauses );
-
-		$query['select'] = "SELECT $clauses";
+		$query['select'] = $select;
 
 		$query['from'] = "FROM $wpdb->posts";
 
@@ -311,12 +274,83 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			$where .= WCAPF_Product_Filter_Utils::get_where_clause( $this->query_type, $this->filter_key );
 		}
 
+		// Restrict to the current taxonomy to prevent term_id collisions.
+		$where .= $wpdb->prepare( ' AND term_taxonomy.taxonomy = %s', $this->taxonomy );
+
 		$query['where'] = $where;
 
-		$query = implode( ' ', $query );
+		$sql = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query built from prepared fragments.
-		return $wpdb->get_row( $query, ARRAY_A );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom counting query.
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+
+		$term_products = array();
+
+		foreach ( $results as $row ) {
+			$term_id    = (int) $row['term_id'];
+			$product_id = (int) $row['product_id'];
+
+			if ( ! isset( $term_products[ $term_id ] ) ) {
+				$term_products[ $term_id ] = array();
+			}
+
+			// Store as array map for efficient de-duplication.
+			$term_products[ $term_id ][ $product_id ] = true;
+		}
+
+		// Query all terms for this taxonomy to ensure they are all in the final array.
+		$_all_terms = get_terms(
+			array(
+				'taxonomy'   => $this->taxonomy,
+				'hide_empty' => false,
+				'fields'     => 'ids',
+			)
+		);
+
+		$hierarchy           = _get_term_hierarchy( $this->taxonomy );
+		$aggregated_products = array();
+		$final_counts        = array();
+
+		foreach ( $_all_terms as $term_id ) {
+			$products = $this->aggregate_term_products( $term_id, $hierarchy, $term_products, $aggregated_products );
+
+			$final_counts[ $term_id ] = count( $products );
+		}
+
+		return $final_counts;
+	}
+
+	/**
+	 * Recursively aggregate term product IDs for exact distinct counting in hierarchical taxonomies.
+	 *
+	 * @param int   $term_id              The current term ID.
+	 * @param array $hierarchy            The taxonomy hierarchy map.
+	 * @param array $term_products        The direct term products map.
+	 * @param array &$aggregated_products The array storing the final aggregated products.
+	 *
+	 * @return array The aggregated products map for the term.
+	 */
+	private function aggregate_term_products( $term_id, $hierarchy, $term_products, &$aggregated_products ) {
+		if ( isset( $aggregated_products[ $term_id ] ) ) {
+			return $aggregated_products[ $term_id ];
+		}
+
+		$products = isset( $term_products[ $term_id ] ) ? $term_products[ $term_id ] : array();
+
+		if ( isset( $hierarchy[ $term_id ] ) ) {
+			foreach ( $hierarchy[ $term_id ] as $child_id ) {
+				$child_products = $this->aggregate_term_products( $child_id, $hierarchy, $term_products, $aggregated_products );
+
+				// Union the child products.
+				foreach ( $child_products as $product_id => $dummy ) {
+					$products[ $product_id ] = true;
+				}
+			}
+		}
+
+		$aggregated_products[ $term_id ] = $products;
+
+		return $products;
 	}
 
 	/**
@@ -371,6 +405,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 		$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
 		$where .= " AND terms.term_id IN $term_ids_sql";
+		$where .= $wpdb->prepare( ' AND term_taxonomy.taxonomy = %s', $this->taxonomy );
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
@@ -386,7 +421,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 
 		$query = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query assembled from prepared/internal fragments.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom counting query.
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );

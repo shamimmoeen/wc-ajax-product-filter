@@ -86,7 +86,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom counting query.
 		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
@@ -162,8 +162,6 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 		$query['where']    = $where;
 		$query['group_by'] = 'GROUP BY metas.meta_value';
 
-		$query = apply_filters( 'wcapf_meta_query_sql', $query, $this->field );
-
 		return implode( ' ', $query );
 	}
 
@@ -201,7 +199,7 @@ class WCAPF_Filter_Type_Post_Meta extends WCAPF_Filter_Type {
 
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom counting query.
 		$results = $wpdb->get_results( $query, ARRAY_A );
 
 		return wp_list_pluck( $results, 'meta_count', 'meta_value' );
