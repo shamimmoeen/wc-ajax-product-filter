@@ -92,10 +92,9 @@ class WCAPF_Filter_Type_Price extends WCAPF_Filter_Type {
 
 		$query['where'] = $where;
 
-		$query = apply_filters( 'wcapf_price_min_max_sql_query', $query, $this->field );
 		$query = implode( ' ', $query );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is assembled from internally generated SQL fragments and prepared values.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom counting query.
 		$results = $wpdb->get_row( $query, ARRAY_A );
 
 		$min = isset( $results['min_price'] ) ? (float) $results['min_price'] : 0;
