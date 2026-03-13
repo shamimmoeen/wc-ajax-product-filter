@@ -109,7 +109,7 @@ class WCAPF_Admin {
 	 */
 	public function register_admin_pages() {
 		add_menu_page(
-			'WCAPF - WooCommerce Ajax Product Filter',
+			'WCAPF – Ajax Product Filter for WooCommerce',
 			'WCAPF',
 			'manage_options',
 			'wcapf',
@@ -119,7 +119,7 @@ class WCAPF_Admin {
 
 		add_submenu_page(
 			'wcapf',
-			__( 'WCAPF - WooCommerce Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
+			__( 'WCAPF – Ajax Product Filter for WooCommerce - Settings', 'wc-ajax-product-filter' ),
 			__( 'Settings', 'wc-ajax-product-filter' ),
 			'manage_options',
 			'wcapf-settings',
@@ -417,11 +417,18 @@ class WCAPF_Admin {
 		);
 
 		// Set up translations for the script.
-		wp_set_script_translations(
-			$handle,
-			'wc-ajax-product-filter',
-			plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'languages'
-		);
+		if ( defined( 'WCAPF_PRO_VERSION' ) ) {
+			wp_set_script_translations(
+				$handle,
+				'wc-ajax-product-filter',
+				plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'languages'
+			);
+		} else {
+			wp_set_script_translations(
+				$handle,
+				'wc-ajax-product-filter'
+			);
+		}
 
 		// Load the style file.
 		wp_enqueue_style(

@@ -13,7 +13,7 @@ const ProUpdateModal = ({ isOpen, closeModal }) => {
 				className='__pro_update_modal'
 			>
 				<h3>
-					WCAPF - WooCommerce Ajax Product Filter Pro (Update
+					WCAPF – Ajax Product Filter for WooCommerce Pro (Update
 					Required)
 				</h3>
 

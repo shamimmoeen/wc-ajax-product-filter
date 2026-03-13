@@ -20,7 +20,7 @@ pro_update_notice_can_be_shown check this todo
 
 ==
 
-We are continuing work on the WCAPF - WooCommerce Ajax Product Filter plugin.
+We are continuing work on the WCAPF – Ajax Product Filter for WooCommerce plugin.
 We finished the form class, now we are fixing class-wcapf-helper.php according to Plugin Check results.
 
 “Don’t give code in apply mode, give it here so I copy manually.”

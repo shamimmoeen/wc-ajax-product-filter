@@ -213,7 +213,7 @@ Development site license
 sk_YQxu2*#;a.dW_hpqo0F7H61w=&mWn
 
 Short Description
-WCAPF - WooCommerce Ajax Product Filter is a powerful plugin that enhances the filtering functionality of your WooCommerce store.
+WCAPF – Ajax Product Filter for WooCommerce is a powerful plugin that enhances the filtering functionality of your WooCommerce store.
 
 Long Description
 
@@ -314,7 +314,7 @@ If you are using any of the supported plugins for the variation swatches, the sw
 Ask for a review
 Thank you for using our plugin! If you are satisfied, please reward it a full five-star ★★★★★ rating. rating color #ffb900
 
-WCAPF - WooCommerce Ajax Product Filter is a powerful plugin that enhances the filtering functionality of your WooCommerce store. It allows your customers to easily find and narrow down their product search using a dynamic and interactive filter system. With Ajax-based filtering, the plugin provides instant results without page reloading, ensuring a smooth and seamless user experience. Enhance your customers' shopping experience and boost conversions with WCAPF - WooCommerce Ajax Product Filter.
+WCAPF – Ajax Product Filter for WooCommerce is a powerful plugin that enhances the filtering functionality of your WooCommerce store. It allows your customers to easily find and narrow down their product search using a dynamic and interactive filter system. With Ajax-based filtering, the plugin provides instant results without page reloading, ensuring a smooth and seamless user experience. Enhance your customers' shopping experience and boost conversions with WCAPF – Ajax Product Filter for WooCommerce.
 
 Screenshots for different filters for different archive pages
 1528 x 813

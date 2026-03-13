@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name:       WCAPF - WooCommerce Ajax Product Filter
+ * Plugin Name:       WCAPF – Ajax Product Filter for WooCommerce
  * Plugin URI:        https://wptools.io/wc-ajax-product-filter/
  * Description:       A plugin to filter WooCommerce products using AJAX.
  * Version:           4.3.0
@@ -57,29 +57,9 @@ final class WCAPF_Plugin {
 	 */
 	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'show_admin_notice' ) );
-		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'woocommerce_loaded', array( $this, 'load_dependencies' ) );
 
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
-	}
-
-	/**
-	 * Load the plugin text domain.
-	 *
-	 * Loads translated strings from the plugin languages directory.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain() {
-		if ( ! $this->should_we_proceed() ) {
-			return;
-		}
-
-		load_plugin_textdomain(
-			'wc-ajax-product-filter',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
 	}
 
 	/**
@@ -145,11 +125,11 @@ final class WCAPF_Plugin {
 		$required_php_version = '7.2';
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
-			$notices[] = __( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' );
+			$notices[] = __( 'WCAPF – Ajax Product Filter for WooCommerce requires WooCommerce. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' );
 
 			$messages[] = sprintf(
 				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: opening link tag, 4: closing link tag */
-				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WooCommerce plugin to be activated. Please activate the WooCommerce plugin first ✌️ %3$s Back %4$s', 'wc-ajax-product-filter' ),
+				__( '%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires WooCommerce plugin to be activated. Please activate the WooCommerce plugin first ✌️ %3$s Back %4$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				'<br /><br /><a href="' . esc_url( $dashboard_url ) . '" class="button button-primary">',
@@ -158,14 +138,14 @@ final class WCAPF_Plugin {
 		} elseif ( version_compare( $wc_version, $required_wc_version, '<' ) ) {
 			$notices[] = sprintf(
 				/* translators: 1: required WooCommerce version, 2: current WooCommerce version */
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %1$s or higher, but WooCommerce version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
+				__( 'WCAPF – Ajax Product Filter for WooCommerce requires WooCommerce version %1$s or higher, but WooCommerce version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_wc_version,
 				$wc_version
 			);
 
 			$messages[] = sprintf(
 				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required WooCommerce version, 4: current WooCommerce version, 5: opening link tag, 6: closing link tag */
-				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WooCommerce version %3$s or higher, but WooCommerce version %4$s is used on the site. Please upgrade the WooCommerce version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
+				__( '%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires WooCommerce version %3$s or higher, but WooCommerce version %4$s is used on the site. Please upgrade the WooCommerce version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				$required_wc_version,
@@ -178,14 +158,14 @@ final class WCAPF_Plugin {
 		if ( version_compare( $wp_version, $required_wp_version, '<' ) ) {
 			$notices[] = sprintf(
 				/* translators: 1: required WordPress version, 2: current WordPress version */
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires WordPress version %1$s or higher, but WordPress version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
+				__( 'WCAPF – Ajax Product Filter for WooCommerce requires WordPress version %1$s or higher, but WordPress version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_wp_version,
 				$wp_version
 			);
 
 			$messages[] = sprintf(
 				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required WordPress version, 4: current WordPress version, 5: opening link tag, 6: closing link tag */
-				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WordPress version %3$s or higher, but WordPress version %4$s is used on the site. Please upgrade the WordPress version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
+				__( '%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires WordPress version %3$s or higher, but WordPress version %4$s is used on the site. Please upgrade the WordPress version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				$required_wp_version,
@@ -198,14 +178,14 @@ final class WCAPF_Plugin {
 		if ( version_compare( $php_version, $required_php_version, '<' ) ) {
 			$notices[] = sprintf(
 				/* translators: 1: required PHP version, 2: current PHP version */
-				__( 'WCAPF - WooCommerce Ajax Product Filter requires PHP version %1$s or higher, but PHP version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
+				__( 'WCAPF – Ajax Product Filter for WooCommerce requires PHP version %1$s or higher, but PHP version %2$s is used on the site. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' ),
 				$required_php_version,
 				$php_version
 			);
 
 			$messages[] = sprintf(
 				/* translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required PHP version, 4: current PHP version, 5: opening link tag, 6: closing link tag */
-				__( '%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires PHP version %3$s or higher, but PHP version %4$s is used on the site. Please upgrade the PHP version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
+				__( '%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires PHP version %3$s or higher, but PHP version %4$s is used on the site. Please upgrade the PHP version first ✌️ %5$s Back %6$s', 'wc-ajax-product-filter' ),
 				'<strong>',
 				'</strong><br><br>',
 				$required_php_version,
@@ -372,7 +352,7 @@ function wcapf_unload_pro_v1() {
 add_action( 'woocommerce_loaded', 'wcapf_unload_pro_v1' );
 
 /**
- * Uninstalling WCAPF - WooCommerce Ajax Product Filter deletes the plugin settings, forms and filters.
+ * Uninstalling WCAPF – Ajax Product Filter for WooCommerce deletes the plugin settings, forms and filters.
  *
  * @since        4.1.0
  * @package      wc-ajax-product-filter

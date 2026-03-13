@@ -2,21 +2,21 @@
 # This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WCAPF - WooCommerce Ajax Product Filter 4.3.0\n"
+"Project-Id-Version: WCAPF – Ajax Product Filter for WooCommerce 4.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-ajax-product-filter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-12T19:24:00+00:00\n"
+"POT-Creation-Date: 2026-03-13T15:10:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wc-ajax-product-filter\n"
 
 #. Plugin Name of the plugin
 #: wc-ajax-product-filter.php
-msgid "WCAPF - WooCommerce Ajax Product Filter"
+msgid "WCAPF – Ajax Product Filter for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -46,9 +46,11 @@ msgstr ""
 #: includes/class-wcapf-admin.php:75
 #: includes/class-wcapf-admin.php:123
 #: build/form.js:1
+#: build/form.js:12
 #: build/list-forms.js:1
 #: build/seo-rules.js:1
 #: build/settings.js:1
+#: build/settings.js:3
 msgid "Settings"
 msgstr ""
 
@@ -61,7 +63,7 @@ msgid "Upgrade to Pro"
 msgstr ""
 
 #: includes/class-wcapf-admin.php:122
-msgid "WCAPF - WooCommerce Ajax Product Filter - Settings"
+msgid "WCAPF – Ajax Product Filter for WooCommerce - Settings"
 msgstr ""
 
 #: includes/class-wcapf-admin.php:169
@@ -78,15 +80,15 @@ msgstr ""
 msgid "You need to run <code>npm start</code> or <code>npm run build</code> for the %s admin UI."
 msgstr ""
 
-#: includes/class-wcapf-admin.php:511
+#: includes/class-wcapf-admin.php:518
 msgid "Unauthorized request"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:519
+#: includes/class-wcapf-admin.php:526
 msgid "Invalid type for dismissing the review notices"
 msgstr ""
 
-#: includes/class-wcapf-admin.php:539
+#: includes/class-wcapf-admin.php:546
 msgid "WCAPF review notice dismissed"
 msgstr ""
 
@@ -97,12 +99,12 @@ msgstr ""
 #: includes/class-wcapf-api-utils.php:177
 #: includes/class-wcapf-api-utils.php:420
 #: includes/class-wcapf-default-data.php:144
-#: build/form.js:1
+#: build/form.js:12
 msgid "Price"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:182
-#: build/form.js:1
+#: build/form.js:12
 msgid "Rating"
 msgstr ""
 
@@ -146,13 +148,13 @@ msgstr ""
 
 #: includes/class-wcapf-api-utils.php:332
 #: includes/class-wcapf-default-data.php:251
-#: build/form.js:1
+#: build/form.js:12
 msgid "Featured"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:336
 #: includes/class-wcapf-default-data.php:255
-#: build/form.js:1
+#: build/form.js:12
 msgid "On Sale"
 msgstr ""
 
@@ -161,12 +163,12 @@ msgid "Post ID"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:376
-#: build/form.js:1
+#: build/form.js:3
 msgid "Author"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:380
-#: build/form.js:1
+#: build/form.js:12
 #: build/list-forms.js:1
 #: build/seo-rules.js:1
 msgid "Title"
@@ -178,7 +180,8 @@ msgstr ""
 
 #: includes/class-wcapf-api-utils.php:388
 #: includes/class-wcapf-api-utils.php:452
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:12
 msgid "Date"
 msgstr ""
 
@@ -199,7 +202,7 @@ msgid "Review Count"
 msgstr ""
 
 #: includes/class-wcapf-api-utils.php:408
-#: build/form.js:1
+#: build/form.js:12
 msgid "Menu Order"
 msgstr ""
 
@@ -244,12 +247,14 @@ msgid "Tag"
 msgstr ""
 
 #: includes/class-wcapf-default-data.php:245
-#: build/form.js:1
+#: build/form.js:3
 msgid "Status"
 msgstr ""
 
 #: includes/class-wcapf-field-instance.php:495
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:5
+#: build/form.js:12
 msgid "Default"
 msgstr ""
 
@@ -362,7 +367,7 @@ msgstr ""
 #. translators: 1: free plugin version, 2: required Pro version, 3: installed Pro version, 4: update documentation URL.
 #: includes/class-wcapf-helper.php:1362
 #, php-format
-msgid "WCAPF - WooCommerce Ajax Product Filter version %1$s requires WCAPF - WooCommerce Ajax Product Filter Pro version %2$s or higher, but you are using %3$s. The Pro version is currently NOT RUNNING. <a href=\"%4$s\" target=\"_blank\">Please proceed with the update</a>."
+msgid "WCAPF – Ajax Product Filter for WooCommerce version %1$s requires WCAPF – Ajax Product Filter for WooCommerce Pro version %2$s or higher, but you are using %3$s. The Pro version is currently NOT RUNNING. <a href=\"%4$s\" target=\"_blank\">Please proceed with the update</a>."
 msgstr ""
 
 #: includes/class-wcapf-post-type.php:59
@@ -400,7 +405,7 @@ msgid "Expand/Collapse %s"
 msgstr ""
 
 #: includes/class-wcapf-walker.php:1030
-#: build/form.js:1
+#: build/form.js:12
 msgid "Search"
 msgstr ""
 
@@ -463,11 +468,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: includes/migration/class-wcapf-v4-migration-hooks.php:157
-msgid "WCAPF - WooCommerce Ajax Product Filter (v4 Migration Notice)"
+msgid "WCAPF – Ajax Product Filter for WooCommerce (v4 Migration Notice)"
 msgstr ""
 
 #: includes/migration/class-wcapf-v4-migration-hooks.php:160
-msgid "The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF - WooCommerce Ajax Product Filter. We have redesigned the admin UI to provide a more intuitive user experience and refactored the codebase for improved performance and easier future enhancements. As part of the migration process, a form has been automatically created with all the existing filters from your shop. We kindly request that you visit the form and review the order of the filters."
+msgid "The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF – Ajax Product Filter for WooCommerce. We have redesigned the admin UI to provide a more intuitive user experience and refactored the codebase for improved performance and easier future enhancements. As part of the migration process, a form has been automatically created with all the existing filters from your shop. We kindly request that you visit the form and review the order of the filters."
 msgstr ""
 
 #: includes/migration/class-wcapf-v4-migration-hooks.php:163
@@ -512,50 +517,50 @@ msgstr ""
 msgid "No settings are required! The form will be displayed according to the <b>Available on</b> setting."
 msgstr ""
 
-#: wc-ajax-product-filter.php:148
-msgid "WCAPF - WooCommerce Ajax Product Filter requires WooCommerce. The plugin is currently NOT RUNNING."
+#: wc-ajax-product-filter.php:128
+msgid "WCAPF – Ajax Product Filter for WooCommerce requires WooCommerce. The plugin is currently NOT RUNNING."
 msgstr ""
 
 #. translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: opening link tag, 4: closing link tag
-#: wc-ajax-product-filter.php:152
+#: wc-ajax-product-filter.php:132
 #, php-format
-msgid "%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WooCommerce plugin to be activated. Please activate the WooCommerce plugin first ✌️ %3$s Back %4$s"
+msgid "%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires WooCommerce plugin to be activated. Please activate the WooCommerce plugin first ✌️ %3$s Back %4$s"
 msgstr ""
 
 #. translators: 1: required WooCommerce version, 2: current WooCommerce version
-#: wc-ajax-product-filter.php:161
+#: wc-ajax-product-filter.php:141
 #, php-format
-msgid "WCAPF - WooCommerce Ajax Product Filter requires WooCommerce version %1$s or higher, but WooCommerce version %2$s is used on the site. The plugin is currently NOT RUNNING."
+msgid "WCAPF – Ajax Product Filter for WooCommerce requires WooCommerce version %1$s or higher, but WooCommerce version %2$s is used on the site. The plugin is currently NOT RUNNING."
 msgstr ""
 
 #. translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required WooCommerce version, 4: current WooCommerce version, 5: opening link tag, 6: closing link tag
-#: wc-ajax-product-filter.php:168
+#: wc-ajax-product-filter.php:148
 #, php-format
-msgid "%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WooCommerce version %3$s or higher, but WooCommerce version %4$s is used on the site. Please upgrade the WooCommerce version first ✌️ %5$s Back %6$s"
+msgid "%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires WooCommerce version %3$s or higher, but WooCommerce version %4$s is used on the site. Please upgrade the WooCommerce version first ✌️ %5$s Back %6$s"
 msgstr ""
 
 #. translators: 1: required WordPress version, 2: current WordPress version
-#: wc-ajax-product-filter.php:181
+#: wc-ajax-product-filter.php:161
 #, php-format
-msgid "WCAPF - WooCommerce Ajax Product Filter requires WordPress version %1$s or higher, but WordPress version %2$s is used on the site. The plugin is currently NOT RUNNING."
+msgid "WCAPF – Ajax Product Filter for WooCommerce requires WordPress version %1$s or higher, but WordPress version %2$s is used on the site. The plugin is currently NOT RUNNING."
 msgstr ""
 
 #. translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required WordPress version, 4: current WordPress version, 5: opening link tag, 6: closing link tag
-#: wc-ajax-product-filter.php:188
+#: wc-ajax-product-filter.php:168
 #, php-format
-msgid "%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires WordPress version %3$s or higher, but WordPress version %4$s is used on the site. Please upgrade the WordPress version first ✌️ %5$s Back %6$s"
+msgid "%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires WordPress version %3$s or higher, but WordPress version %4$s is used on the site. Please upgrade the WordPress version first ✌️ %5$s Back %6$s"
 msgstr ""
 
 #. translators: 1: required PHP version, 2: current PHP version
-#: wc-ajax-product-filter.php:201
+#: wc-ajax-product-filter.php:181
 #, php-format
-msgid "WCAPF - WooCommerce Ajax Product Filter requires PHP version %1$s or higher, but PHP version %2$s is used on the site. The plugin is currently NOT RUNNING."
+msgid "WCAPF – Ajax Product Filter for WooCommerce requires PHP version %1$s or higher, but PHP version %2$s is used on the site. The plugin is currently NOT RUNNING."
 msgstr ""
 
 #. translators: 1: opening strong tag, 2: closing strong tag with line breaks, 3: required PHP version, 4: current PHP version, 5: opening link tag, 6: closing link tag
-#: wc-ajax-product-filter.php:208
+#: wc-ajax-product-filter.php:188
 #, php-format
-msgid "%1$sWCAPF - WooCommerce Ajax Product Filter can not be activated. %2$s It requires PHP version %3$s or higher, but PHP version %4$s is used on the site. Please upgrade the PHP version first ✌️ %5$s Back %6$s"
+msgid "%1$sWCAPF – Ajax Product Filter for WooCommerce can not be activated. %2$s It requires PHP version %3$s or higher, but PHP version %4$s is used on the site. Please upgrade the PHP version first ✌️ %5$s Back %6$s"
 msgstr ""
 
 #: build/form.js:1
@@ -587,7 +592,7 @@ msgid "Version"
 msgstr ""
 
 #: build/form.js:1
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Save"
 msgstr ""
 
@@ -625,1314 +630,1343 @@ msgstr ""
 msgid "If you want to publish using PHP code, just copy code below and use it."
 msgstr ""
 
-#: build/form.js:1
-#: build/list-forms.js:1
+#. translators: %s: widget name.
+#: build/form.js:2
+#: build/list-forms.js:2
 #, js-format
 msgid "Go to the widgets page, add <b>%s</b> widget to the desired area."
 msgstr ""
 
-#: build/form.js:1
-#: build/list-forms.js:1
+#: build/form.js:2
+#: build/list-forms.js:2
 msgid "Copied to clipboard"
 msgstr ""
 
-#: build/form.js:1
-#: build/list-forms.js:1
+#: build/form.js:2
+#: build/list-forms.js:2
 msgid "Go to Widgets"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:12
 #: build/list-forms.js:1
-#: build/settings.js:1
+#: build/list-forms.js:2
+#: build/settings.js:3
 msgid "Cancel"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:12
 msgid "Off"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:5
+#: build/form.js:12
 msgid "Include"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:12
 msgid "Exclude"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Child of"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Parent Only"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "ASC"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "DESC"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Checkbox"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:3
 msgid "Radio"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:3
 msgid "Select"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Multiselect"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
+#: build/form.js:3
+#: build/form.js:5
 msgid "Label"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Slider"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Number"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Checkbox"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Radio"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Select"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Multiselect"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Range - Label"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Input - Date"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Input - Date Range"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Time Period - Checkbox"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Time Period - Radio"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Time Period - Select"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Time Period - Multiselect"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Time Period - Label"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 #: build/list-forms.js:1
 msgid "Slide-out panel on desktop"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 #: build/list-forms.js:1
 msgid "Slide-out panel on mobile"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 #: build/list-forms.js:1
 msgid "Slide-out panel on both"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Filter type is required."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Meta key is required."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:2
 msgid "Form saved successfully"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#. translators: %s: item ID.
+#: build/form.js:3
+#: build/settings.js:2
 #, js-format
 msgid "ID: %s"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:3
+#: build/settings.js:2
 msgid "Pro"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:3
+#: build/settings.js:2
 msgid "Components"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:3
+#: build/settings.js:2
 msgid "No option found"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Filter type can not be changed once it is saved. But you can permanently delete the filter and add a new one."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Once a filter key is set, you can not change it from the filter. But you can change the filter keys globally from \"Settings > Filter Keys\" tab."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "This key is already assigned for this entity and can not be changed from here. But you can change the filter keys globally from \"Settings > Filter Keys\" tab."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Filter Title"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Give a title to the filter that will appear before the filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Filter Type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines the entity by which the products will be filtered."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Meta Key"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Select the meta key that values will be available as filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Value Type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines the meta value type."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Text"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Number"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Value is decimal"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this if the meta values have decimal places. It'll filter the products more accurately."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:5
 msgid "Decimal Places"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines the number of decimal places in meta values."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Date Format"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines the format of the date saved in the database."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Timestamp"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "YYYYMMDD"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Filter Key"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "The unique key that will be used in the URL. Only a-z, 0-9, \"_\" and \"-\" symbols are supported."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:12
 msgid "Show title"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this to show the title before the active filters."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Layout"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Simple: Show all the active items one by one, Extended: Group the active items by filter type and show them separately with filter title."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Simple"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Extended"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "No filter applied message"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Show a message when no filter is applied. Leave it empty to not show the active filters when no filter is applied."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 #: build/settings.js:1
 msgid "Always show"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this to show the reset button as disabled when no filter is applied."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Show conditionally"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this to show the results count only when a filter is applied."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "List"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Inline"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Grid"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines the arrangement of the filter options in the front end."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Columns"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Specifies the number of columns to be displayed in the grid layout."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Multiple Selection"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Controls whether users can select multiple options when filtering products."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Query Type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Choose \"OR\" to display products matching any selected option or \"AND\" to show products matching all selected options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 #: build/settings.js:1
 msgid "OR"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:12
 #: build/settings.js:1
 msgid "AND"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "All Items Label"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Change the default option label. Leave blank to use the default label."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Show count"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines whether the product count is shown alongside the filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable tooltip"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Display additional information in a tooltip when users hover over the option."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Tooltip position"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines on which side the tooltip will be placed."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Top"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Right"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Bottom"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Left"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Count in tooltip"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this to show the product count in the tooltip."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:12
 msgid "Display"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines how the filter options are presented in the front end."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Show hierarchy"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Whether to show the filter options as hierarchical."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable hierarchy accordion"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Whether to enable accordion for the hierarchy filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable swatches"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Should the filter options be displayed using color/image swatches?"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Swatch type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Select the swatch type, color, or image."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Color"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Image"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Swatch with label"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this to display the label beside the swatch."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Display Type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines how the filter will be shown in the front end."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Display slider values as"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines how the slider values will be shown in the front end."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Input Field"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Plain Text"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Alignment"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Whether to align the text in the center or justified by distributing space between them."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Centered"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Justified"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Input type number"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Enable this to hide units and display them as spinbox with up and down arrows."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Date Display Format"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Determines how the date will be displayed in the front end."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Inline Date Inputs"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Whether to show the date input fields in a single line."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Use dropdown for Month"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Whether to show the month dropdown in the date picker."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Use dropdown for Year"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Whether to show the year dropdown in the date picker."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:5
 msgid "Value"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:5
 msgid "Min Value"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
+#: build/form.js:5
 msgid "Max Value"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Secondary Label"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Period"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Sort by"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Direction"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Per page"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Term"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:3
 msgid "Meta Type"
 msgstr ""
 
-#: build/form.js:1
+#. translators: %d: item ID.
+#: build/form.js:4
+#: build/form.js:5
+#: build/form.js:12
 #, js-format
 msgid "ID: %d"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Add the options that will be available to the filter."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Add the options that will be available to the filter. To show stars in the label, put <code>[star]</code> for filled star, <code>[star-empty]</code> for empty star and <code>[star-half]</code> for half star."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Add the options that will be available to the filter. <b>Note:</b> Leave the label and tooltip fields empty if you do not want to override."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Filter Options"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Tooltip"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Color / Image Swatch"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Browse Options"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Add Option"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Remove All"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Get Options"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Automatically"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Manual Entry"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
+#: build/form.js:12
 msgid "ID"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Name"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Entry"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Slug"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Count"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:5
+#: build/settings.js:3
 msgid "None"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Order By"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Select the criteria by which you want the items to be ordered."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Order Direction"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Whether to order options in ascending or descending order."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Order Type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Whether to arrange the options in alphabetical or numerical order."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Alphabetical"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Numerical"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Auto-detect min and max"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Whether to detect the min and max values from the database."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "The minimum value that a user can select."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "The maximum value that a user can select."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Step"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Determines the size of the increment amount."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Gap"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Determines the gap between the ranges."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Value Prefix"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "This should be used for the unit, space(s) allowed. Example: $"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Value Postfix"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "This should be used for the unit, space(s) allowed. Example: €"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Values Separator"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Text to appear between the min and max values, space(s) allowed. Example: –"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Text before min value"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Text to appear before the min value."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Text before max value"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Text to appear before the max value."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Format Numbers"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Enable this if you want to format the numbers."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Thousand Separator"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Decimal Separator"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Please select a taxonomy."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Please select the author roles from <strong>Settings > Others</strong> tab."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "Please select a meta key."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:5
 msgid "There was an error fetching the options."
 msgstr ""
 
-#: build/form.js:1
+#. translators: 1: number of terms found, 2: taxonomy label.
+#: build/form.js:6
 #, js-format
-msgid "Found %d term for <strong>%s</strong>."
-msgid_plural "Found %d terms for <strong>%s</strong>."
+msgid "Found %1$d term for <strong>%2$s</strong>."
+msgid_plural "Found %1$d terms for <strong>%2$s</strong>."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/form.js:1
+#. translators: 1: number of meta values found, 2: meta key.
+#: build/form.js:7
 #, js-format
-msgid "Found %d meta value for <strong>%s</strong>."
-msgid_plural "Found %d meta values for <strong>%s</strong>."
+msgid "Found %1$d meta value for <strong>%2$s</strong>."
+msgid_plural "Found %1$d meta values for <strong>%2$s</strong>."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/form.js:1
+#. translators: 1: number of authors found, 2: user roles.
+#: build/form.js:8
 #, js-format
-msgid "Found %d author for roles of <strong>%s</strong>."
-msgid_plural "Found %d authors for roles of <strong>%s</strong>."
+msgid "Found %1$d author for roles of <strong>%2$s</strong>."
+msgid_plural "Found %1$d authors for roles of <strong>%2$s</strong>."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/form.js:1
+#: build/form.js:8
 msgid "Available Options"
 msgstr ""
 
-#: build/form.js:1
+#. translators: %s: taxonomy label.
+#: build/form.js:9
 #, js-format
 msgid "No terms found for <strong>%s</strong>."
 msgstr ""
 
-#: build/form.js:1
+#. translators: %s: meta key.
+#: build/form.js:10
 #, js-format
 msgid "No meta values found for <strong>%s</strong>."
 msgstr ""
 
-#: build/form.js:1
+#. translators: %s: user roles.
+#: build/form.js:11
 #, js-format
 msgid "No authors found in user roles <strong>%s</strong>."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select All"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Clear Selection"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Replace current options?"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Add Options"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Start typing to find the role"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "No roles found"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Start typing to find the author"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "No authors found"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Start typing to find the term"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "No terms found"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Loading..."
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Direct child only"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Include children"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Limit Options"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Limit the filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Terms to include"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select the terms that will be available to filter by."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Terms to exclude"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select the terms that will be excluded from the filter by options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Parent Term"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select the parent term for which child terms will be available as filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "From Prefix"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Text to appear before the From field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "From Postfix"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Text to appear after the From field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "From Placeholder"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "The placeholder text to appear for the From field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "To Prefix"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Text to appear before the To field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "To Postfix"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Text to appear after the To field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "To Placeholder"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "The placeholder text to appear for the To field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Role"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Authors to include"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select the authors that will be available to filter by."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Authors to exclude"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select the authors that will be excluded from the filter by options."
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Author Roles"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Select the roles; matched authors must have at least one of these roles."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Archive"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Page"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "User"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Equal"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Not equal"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Active"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Not active"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Logged in"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Logged out"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Whether to show the filter title before the filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Enable accordion"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Place more filters by collapsing the filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Accordion state"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Determines how the accordion should appear initially."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Expanded"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Collapsed"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Help Text"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Search Field"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Adds a search field to narrow down the filter options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Placeholder"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Change the default placeholder for the search input field."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 #: build/list-forms.js:1
 msgid "No"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Set max height"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Soft Limit"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Reduce height"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Enable this if you want to reduce the filter height."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Show in Active Filters"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Determines if we show the selected options in active filters."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Visibility Rules"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Enable this to control filter display based on page, archive and user role."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "There are multiple filters found in the form for the same entity. Please remove the other ones then save the form."
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "General"
 msgstr ""
 
-#: build/form.js:1
-#: build/settings.js:1
+#: build/form.js:12
+#: build/settings.js:3
 msgid "Appearance"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Options"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Advanced"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Close"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Delete"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Are you sure?"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "You don't have any filters yet."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Click on the button below to add your first filter."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Add Filter"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Type"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Key"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Standard shop loop"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Products + Pagination"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Products only"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Best Selling"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Top Rated"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Visible"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Catalog"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Hidden"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Popularity"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Random"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "IN"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "NOT IN"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "= (equals)"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "!= (not equals)"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "< (less than)"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "> (greater than)"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "<= (less than or equal)"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid ">= (greater than or equal)"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "like"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "not like"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "exists"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "not exists"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 #: build/list-forms.js:1
 msgid "Available on"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 #: build/list-forms.js:1
 msgid "Product archive pages"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 #: build/list-forms.js:1
 msgid "Determines where you want to show the form to filter the products."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Enable clear filter"
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Whether to show a button in each filter to clear the active options."
 msgstr ""
 
-#: build/form.js:1
+#: build/form.js:12
 msgid "Filters"
 msgstr ""
 
@@ -1971,8 +2005,9 @@ msgstr ""
 msgid "Add New"
 msgstr ""
 
+#. translators: %d: number of results found.
 #: build/list-forms.js:1
-#: build/seo-rules.js:1
+#: build/seo-rules.js:2
 #, js-format
 msgid "Showing <b>%d</b> result"
 msgid_plural "Showing <b>%d</b> results"
@@ -2200,7 +2235,7 @@ msgid "Disable WCAPF"
 msgstr ""
 
 #: build/settings.js:1
-msgid "Check this to disable WCAPF - WooCommerce Ajax Product Filter in the front end for testing purposes."
+msgid "Check this to disable WCAPF – Ajax Product Filter for WooCommerce in the front end for testing purposes."
 msgstr ""
 
 #: build/settings.js:1
@@ -2208,382 +2243,383 @@ msgid "Remove Data"
 msgstr ""
 
 #: build/settings.js:1
-msgid "Enable this option to remove all data associated with WCAPF - WooCommerce Ajax Product Filter when you delete the plugin via the <b>Plugins</b> page."
+msgid "Enable this option to remove all data associated with WCAPF – Ajax Product Filter for WooCommerce when you delete the plugin via the <b>Plugins</b> page."
 msgstr ""
 
-#: build/settings.js:1
+#. translators: %d: style number.
+#: build/settings.js:3
 #, js-format
 msgid "Style %d"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Primary Color"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Set a primary color according to your theme. Default is #1C5DA1."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Primary Text Color"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "This color will be used over the primary color for the font color."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Stylish checkbox & radio buttons"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this if you want stylish checkbox and radio buttons instead of native design."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable ComboBox"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Turns the native select element into a custom select box with improved design and behavior."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "ComboBox for sorting dropdown"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Attach ComboBox for the default sorting dropdown instead of the native select element."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Improve native select element"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Uncheck this if your theme already implements the design for the native select element."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Improve scrollbar"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this to improve the scrollbar that appears when max height is applied to a filter."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Improve input type text/number"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this if you want to use styles from your theme for input type text/number."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Hierarchy toggle at the end"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Uncheck this to show the hierarchy toggle just after the item label instead of at the end of the item."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Number range slider style"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Select the number range slider style from the available ones."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Star Icon Color"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Set the star icon color for the rating filter(not applicable for display type: select, multiselect). Default is #FDA256."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "FontAwesome for star icons"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this if your site loads the FontAwesome icons."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Remove focus style"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this to remove the focus style from input(text) and dropdown elements."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Active Filters on top of products"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this to show the active filters on top of the products loop, only works in the standard shop loop."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Pagination via Ajax"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Whether to enable Ajax to paginate the products. Only applicable when filtering via Ajax."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Product sorting via Ajax"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Whether to enable Ajax for the default product sorting dropdown. Only applicable when filtering via Ajax."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Sorting data in Active Filters"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this if you want to show the sort-by data that comes from the default product sorting dropdown in active filters."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Use term slug"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Whether to use term slug instead of id as the option value."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Child terms only"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Whether to show only the child terms when viewing a term archive page."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Vendor support"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this to show the store name as the option label in the post-author filter."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Results container"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Custom element"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Desktop only"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Mobile only"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Desktop and mobile"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "After updating the results"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Immediately"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Scroll window to"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Determines the scroll behavior."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Overlay only"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Overlay + Loading Icon"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "All"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Filter"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Paginate"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "There are settings available only in the Pro version."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "These settings are applicable when filtering via ajax."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Loading Animation"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Whether to show an animation while the results are fetching."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Loading Icon"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Select the loading icon from the available icons."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Icon Size"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Adjust the loading icon size in px. Default is 60."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Wait Cursor"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Enable this to show a wait cursor while the results are fetching."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Custom element identifier"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Give a valid id/class of the HTML element you want to scroll to."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Scroll to top offset"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "If you have a sticky header or some space that you want to include in the viewport then give the height of those in px."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Phrases"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Here you can change the phrases shown in the front end. Leave empty to use the default."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Keyword filter placeholder"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Keyword filter prefix"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Search field placeholder"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "No results text"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "No options text"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Empty filter text"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Show more button label"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Show less button label"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Clear All button label"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Reset button label"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Sort by prefix"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Input Delay"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Specify the delay (in milliseconds) before triggering the filter action when the user interacts with the input fields. Default is 300."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Pagination container"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "The css class of the pagination element, supports multiple classes separated by commas. In most cases, you don't need to change this. Applicable when filtering via Ajax."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "JavaScript after Ajax update"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Users having any of these roles will be available on the <b>Available Options</b> modal of the post-author filter."
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Integration"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Loader & Scroll To"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Filter Keys"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Others"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Miscellaneous"
 msgstr ""
 
-#: build/settings.js:1
+#: build/settings.js:3
 msgid "Settings saved successfully"
 msgstr ""

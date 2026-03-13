@@ -1,6 +1,6 @@
 <?php
 /**
- * WCAPF - WooCommerce Ajax Product Filter shortcode.
+ * WCAPF – Ajax Product Filter for WooCommerce shortcode.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
