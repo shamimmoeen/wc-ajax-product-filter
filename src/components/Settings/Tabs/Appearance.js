@@ -13,7 +13,11 @@ const numberRangeSliderStyles = [];
 
 for (let index = 1; index <= 11; index++) {
 	numberRangeSliderStyles.push({
-		label: sprintf(__('Style %d', 'wc-ajax-product-filter'), index),
+		label: sprintf(
+			/* translators: %d: style number. */
+			__( 'Style %d', 'wc-ajax-product-filter' ),
+			index
+		),
 		value: 'style-' + index,
 	});
 }

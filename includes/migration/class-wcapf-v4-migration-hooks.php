@@ -154,10 +154,10 @@ class WCAPF_V4_Migration_Hooks {
 		?>
 		<div class="notice notice-info" id="wcapf-v4-migration-notice">
 			<p>
-				<strong><?php esc_html_e( 'WCAPF - WooCommerce Ajax Product Filter (v4 Migration Notice)', 'wc-ajax-product-filter' ); ?></strong>
+				<strong><?php esc_html_e( 'WCAPF – Ajax Product Filter for WooCommerce (v4 Migration Notice)', 'wc-ajax-product-filter' ); ?></strong>
 			</p>
 			<p>
-				<?php esc_html_e( 'The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF - WooCommerce Ajax Product Filter. We have redesigned the admin UI to provide a more intuitive user experience and refactored the codebase for improved performance and easier future enhancements. As part of the migration process, a form has been automatically created with all the existing filters from your shop. We kindly request that you visit the form and review the order of the filters.', 'wc-ajax-product-filter' ); ?>
+				<?php esc_html_e( 'The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF – Ajax Product Filter for WooCommerce. We have redesigned the admin UI to provide a more intuitive user experience and refactored the codebase for improved performance and easier future enhancements. As part of the migration process, a form has been automatically created with all the existing filters from your shop. We kindly request that you visit the form and review the order of the filters.', 'wc-ajax-product-filter' ); ?>
 			</p>
 			<p>
 				<a href="<?php echo esc_url( $form_url ); ?>"><?php esc_html_e( 'Review the filters', 'wc-ajax-product-filter' ); ?></a>

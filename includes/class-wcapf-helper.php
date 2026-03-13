@@ -1359,7 +1359,7 @@ class WCAPF_Helper {
 
 		return sprintf(
 			/* translators: 1: free plugin version, 2: required Pro version, 3: installed Pro version, 4: update documentation URL. */
-			__( 'WCAPF - WooCommerce Ajax Product Filter version %1$s requires WCAPF - WooCommerce Ajax Product Filter Pro version %2$s or higher, but you are using %3$s. The Pro version is currently NOT RUNNING. <a href="%4$s" target="_blank">Please proceed with the update</a>.', 'wc-ajax-product-filter' ),
+			__( 'WCAPF – Ajax Product Filter for WooCommerce version %1$s requires WCAPF – Ajax Product Filter for WooCommerce Pro version %2$s or higher, but you are using %3$s. The Pro version is currently NOT RUNNING. <a href="%4$s" target="_blank">Please proceed with the update</a>.', 'wc-ajax-product-filter' ),
 			WCAPF_VERSION,
 			$required_pro_version,
 			$pro_version,

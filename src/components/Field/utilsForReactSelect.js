@@ -98,7 +98,13 @@ export const Option = (props) => {
 const Info = ({ value }) => {
 	return (
 		<span className='__info'>
-			[{sprintf(__('ID: %s', 'wc-ajax-product-filter'), value)}]
+			{
+				sprintf(
+					/* translators: %s: item ID. */
+					__('ID: %s', 'wc-ajax-product-filter'),
+					value
+				)
+			}
 		</span>
 	);
 };
