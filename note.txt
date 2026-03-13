@@ -49,3 +49,16 @@ Yes.
 using case when the sql query takes more than 12 seconds.
 
 using the fastest sql query where count is wrong if product has multiple categories, takes 0.0755 and applying the category filters takes around 658/639 ms and reverting the filter takes 429/423 ms.
+
+to generate the diff:
+
+{
+  echo "Changed files:"
+  git diff --name-only bedd34e -- . ':(exclude)languages' ':(exclude)README.md'
+  echo
+  echo "Diff stat:"
+  git diff --stat bedd34e -- . ':(exclude)languages' ':(exclude)README.md'
+  echo
+  echo "Full diff:"
+  git diff bedd34e -- . ':(exclude)languages' ':(exclude)README.md'
+} > changes-summary.txt

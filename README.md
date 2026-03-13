@@ -12,27 +12,27 @@ Filter WooCommerce products by category, tag, attribute, price, rating, author, 
 
 ## Description ##
 
-**WCAPF – Ajax Product Filter for WooCommerce** helps customers filter WooCommerce products by category, tag, attribute, price, rating, author, meta fields, and keyword using AJAX. The plugin updates results instantly without page reload, helping customers find products faster on shop and archive pages.
+**WCAPF – Ajax Product Filter for WooCommerce** helps customers filter WooCommerce products by category, tag, attribute, price, rating, author, meta fields, and keyword using AJAX. The plugin updates results instantly without reloading the page, helping customers find products faster on WooCommerce shop and archive pages.
 
 [**View Demo**](https://demos.wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Demo) | [**Documentation**](https://wptools.io/docs/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Documentation) | [**💎 Upgrade to Pro**](https://wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Pro+Upgrade)
 
 ## WooCommerce Product Filtering Options ##
 
-- **Taxonomy:** Enable customers to filter WooCommerce products by category, tag, and custom taxonomies.
+- **Taxonomy:** Let customers browse products by category, tag, or any custom taxonomy.
 
-- **Attribute:** Allow customers to refine their product search by attribute values like size, color, material, and more.
+- **Attribute:** Narrow down results using product attributes such as size, color, material, and more.
 
-- **Price:** Provide a price range filter to help customers find products within their desired price range.
+- **Price:** Help customers find items within their budget using a flexible price range filter.
 
-- **Rating:** Enable customers to filter products based on user ratings to find highly rated items.
+- **Rating:** Show products based on customer ratings.
 
 - **Product Status:** Allow customers to filter products by status such as Featured or In Stock.
 
-- **Post Author:** Filter products by their author. This is commonly used for vendor filtering in multi-vendor stores.
+- **Post Author:** Filter products by their author.
 
-- **Post Meta:** Filter products using custom post meta values (text value type and limited ordering supported in the free version).
+- **Post Meta:** Filter products using custom post meta values.
 
-- **Keyword:** Enable customers to search for products using keywords to find specific items quickly.
+- **Keyword:** Search for products using keywords.
 
 ## Flexible Filter Display Options ##
 
@@ -64,9 +64,13 @@ Filter WooCommerce products by category, tag, attribute, price, rating, author, 
 
 - **Smart Visibility:** Automatically hide or disable empty filters and irrelevant options that return zero products.
 
+## Easy Integration ##
+
+Create your filters and display them on WooCommerce shop and archive pages. Add the filters using the **WCAPF - Product Filter Form** widget or place the `[wcapf_form]` shortcode in a page, post, or theme template.
+
 ## Premium Features (Pro) ##
 
-The Pro version adds more advanced filtering capabilities and additional configuration options. Some of the enhanced features include:
+The Pro version adds more advanced filtering capabilities and extra configuration options for more complex stores. Some of the enhanced features include:
 
 * **Different Filters for Different Archives:** Show more relevant filters depending on the current product category or archive. [Documentation](https://wptools.io/docs/wc-ajax-product-filter/common/different-filters-for-different-archive-pages/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Documentation)
 
@@ -74,11 +78,7 @@ The Pro version adds more advanced filtering capabilities and additional configu
 
 * **Multi-Vendor Support:** Compatible with popular multi-vendor plugins, allowing customers to filter by store name or vendor. [Documentation](https://wptools.io/docs/wc-ajax-product-filter/common/filter-by-vendor/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Documentation)
 
-* **Advanced Controls:** Includes manual filter options, Sort by filter, Per page filter, custom price ranges, and additional configuration settings.
-
-## Easy Integration ##
-
-In the free version, you can create one filter form for the main shop page and product archive pages. Configure your filters in the admin interface and choose where they should appear using the "**Available on**" setting. The filters can then be displayed using the **WCAPF - Product Filter Form** widget or by placing the `[wcapf_form]` shortcode directly in a page, post, or theme template.
+* **Advanced Controls:** Includes manual filter options, sort by filter, per page filter, custom price ranges, and additional configuration settings.
 
 ## Drag and Drop Filter Creation ##
 
@@ -86,17 +86,17 @@ Create filters quickly using the intuitive admin interface. Add filters, configu
 
 ## Custom Filter Keys in URL ##
 
-Set the filter key used in the URL to identify the type of filter applied.
+Define the filter key used in the URL to identify the type of filter applied.
 
 For example, in the URL **../?category=shirts&color=white**, **category**, and **color** are the filter keys.
 
 ## Option to Disable Ajax Filtering ##
 
-Provide flexibility to disable AJAX filtering if needed. While AJAX filtering is generally recommended for seamless browsing, users can choose to disable it to troubleshoot any potential JavaScript conflicts that may arise after updating the product loop.
+Allow users to disable AJAX filtering if needed. While AJAX filtering is generally recommended for seamless browsing, users can choose to disable it to troubleshoot any potential JavaScript conflicts that may arise after updating the product loop.
 
 ## Customization ##
 
-Easily customize the appearance of the filters to match the design and style of your theme. The plugin provides a variety of settings on the plugin settings page, **including CSS variables for styling**, which allow developers to quickly transform the global style of a filter to a unique style.
+Easily customize the appearance of the filters to match the design and style of your theme. The plugin provides a variety of settings on the plugin settings page, **including CSS variables for styling**, allowing developers to quickly customize the global filter appearance.
 
 ## Theme Compatibility ##
 
@@ -114,7 +114,7 @@ If you have any questions or need support, free users can use the [WordPress.org
 
 ### How can I see the plugin in action? ###
 
-You can explore the plugin features on our [demo site](https://demos.wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Demo).
+You can explore the plugin features and filtering behavior on our [demo site](https://demos.wptools.io/wc-ajax-product-filter/?utm_source=wordpress.org&utm_medium=free+plugin+listing&utm_campaign=WCAPF+Demo).
 
 ### Is the plugin compatible with all WordPress themes? ###
 
@@ -150,10 +150,11 @@ If the issue persists, please open a support topic and we will help investigate 
 ## Changelog ##
 
 ### 4.3.0 (16 March 2026) ###
-* Security – Hardened dynamic filter queries and improved SQL safety
+* Security – Fixed SQL injection vulnerability and improved query safety
 * Performance – Improved hierarchical taxonomy term counting
 * Enhancement – Improved escaping and output handling across frontend templates
-* Enhancement – Improved overall code quality and WordPress coding standards compliance
+* Enhancement – Improved WordPress coding standards compliance and overall code quality
+* Enhancement – Updated plugin name to “WCAPF – Ajax Product Filter for WooCommerce”
 
 ### 4.2.3 (2 March 2025) ###
 * Fix – Prevent errors by skipping undefined taxonomies when they are unregistered
