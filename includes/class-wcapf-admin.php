@@ -257,15 +257,6 @@ class WCAPF_Admin {
 
 				// Single form admin ui scripts.
 				$this->load_scripts( 'form' );
-
-				// Loads the js script that converts our filter key into slug.
-				wp_enqueue_script(
-					'wcapf-sanitize-title',
-					WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js',
-					array(),
-					$this->core_version,
-					true
-				);
 			}
 		}
 
@@ -283,15 +274,6 @@ class WCAPF_Admin {
 			wp_enqueue_media();
 
 			$this->load_scripts( 'settings' );
-
-			// Loads the js script that converts our filter key into slug.
-			wp_enqueue_script(
-				'wcapf-sanitize-title',
-				WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js',
-				array(),
-				$this->core_version,
-				true
-			);
 		}
 	}
 
