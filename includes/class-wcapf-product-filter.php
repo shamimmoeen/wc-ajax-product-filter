@@ -171,7 +171,12 @@ class WCAPF_Product_Filter {
 
 		if ( $query ) {
 			$filter_keys = array_keys( $query );
-			$filter_keys = array_map( 'sanitize_title', $filter_keys );
+			$filter_keys = array_map(
+				function ( $key ) {
+					return urldecode( sanitize_title( $key ) );
+				},
+				$filter_keys
+			);
 
 			foreach ( $form['filters'] as $filter ) {
 				$field_key = $filter['key'];

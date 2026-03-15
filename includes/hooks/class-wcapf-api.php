@@ -908,7 +908,7 @@ class WCAPF_API {
 		$form_filter_utils = new WCAPF_Form_Filters_Utils();
 
 		foreach ( $filter_keys as $order => $filter ) {
-			$post_name = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
+			$post_name = isset( $filter['field_key'] ) ? urldecode( sanitize_title( $filter['field_key'] ) ) : '';
 			$type      = isset( $filter['type'] ) ? $filter['type'] : '';
 			$taxonomy  = isset( $filter['taxonomy'] ) ? $filter['taxonomy'] : '';
 			$meta_key  = isset( $filter['meta_key'] ) ? $filter['meta_key'] : '';
@@ -948,13 +948,35 @@ class WCAPF_API {
 		foreach ( $new_filter_keys as $filter ) {
 			$post_name = $filter['field_key'];
 
-			// Fetch the filters with old filter keys.
-			$filters = get_posts(
-				array(
-					'post_type' => 'wcapf-filter',
-					'name'      => $filter['_field_key'],
-				)
-			);
+			// Fetch the filters with old filter keys using an exact post_name match.
+			global $wpdb;
+
+			$old_filter_key = isset( $filter['_field_key'] ) ? $filter['_field_key'] : '';
+			$filters        = array();
+
+			if ( $old_filter_key ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Exact raw post_name match is required here because WP_Query/name sanitizes non-ASCII slugs and breaks filter key lookups.
+				$filter_ids = $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT ID
+						FROM {$wpdb->posts}
+						WHERE post_type = %s
+						AND post_name = %s",
+						'wcapf-filter',
+						$old_filter_key
+					)
+				);
+
+				if ( $filter_ids ) {
+					$filters = get_posts(
+						array(
+							'post_type' => 'wcapf-filter',
+							'post__in'  => $filter_ids,
+							'nopaging'  => true,
+						)
+					);
+				}
+			}
 
 			// Update the filter keys for each filter found.
 			foreach ( $filters as $filter_data ) {

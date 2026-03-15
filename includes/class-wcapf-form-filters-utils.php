@@ -244,7 +244,7 @@ class WCAPF_Form_Filters_Utils {
 	private function get_filter_data( $filter ) {
 		$filter_title = isset( $filter['title'] ) ? sanitize_text_field( $filter['title'] ) : '';
 		$filter_id    = isset( $filter['id'] ) ? absint( $filter['id'] ) : 0;
-		$post_name    = isset( $filter['field_key'] ) ? sanitize_title( $filter['field_key'] ) : '';
+		$post_name    = isset( $filter['field_key'] ) ? urldecode( sanitize_title( $filter['field_key'] ) ) : '';
 		$type         = isset( $filter['type'] ) ? sanitize_text_field( $filter['type'] ) : '';
 		$taxonomy     = isset( $filter['taxonomy'] ) ? sanitize_text_field( $filter['taxonomy'] ) : '';
 		$meta_key     = isset( $filter['meta_key'] ) ? sanitize_text_field( $filter['meta_key'] ) : '';

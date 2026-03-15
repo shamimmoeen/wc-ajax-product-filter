@@ -152,6 +152,7 @@ If the issue persists, please open a support topic and we will help investigate 
 = 4.3.0 (16 March 2026) =
 * Security – Fixed SQL injection vulnerability and improved query safety
 * Performance – Improved hierarchical taxonomy term counting
+* Fix – Resolved issues using non-ASCII characters in filter keys
 * Enhancement – Improved escaping and output handling across frontend templates
 * Enhancement – Improved WordPress coding standards compliance and overall code quality
 * Enhancement – Updated plugin name to “WCAPF – Ajax Product Filter for WooCommerce”

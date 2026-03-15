@@ -125,7 +125,7 @@ const useFormFilterData = (state, dispatch) => {
 	};
 
 	const handleFilterKeyChange = (value, key, index) => {
-		const filterKey = wpFeSanitizeTitle(value);
+		const filterKey = value;
 
 		// Remove both client and server side errors when changed.
 		const many = {
