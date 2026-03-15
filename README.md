@@ -5,8 +5,8 @@
 **Tested up to:** 6.9  
 **Stable tag:** 4.3.0  
 **Requires PHP:** 7.2  
-**License:** GPLv3  
-**License URI:** https://www.gnu.org/licenses/gpl-3.0.html  
+**License:** GPLv2 or later  
+**License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
 
 Filter WooCommerce products by category, tag, attribute, price, rating, author, meta fields, and keyword using AJAX.
 

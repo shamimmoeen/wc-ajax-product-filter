@@ -8,14 +8,14 @@
  * Requires PHP:      7.2
  * Author:            Mainul Hassan
  * Author URI:        https://wptools.io/
- * License:           GPL-3.0-or-later
- * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wc-ajax-product-filter
  * Domain Path:       /languages
  * Requires Plugins:  woocommerce
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU
- * General Public License as published by the Free Software Foundation, either version 3 of the License,
+ * General Public License as published by the Free Software Foundation, either version 2 of the License,
  * or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
@@ -26,7 +26,7 @@
  * @package   wc-ajax-product-filter
  * @copyright Copyright (c) 2015-2026, Mainul Hassan
  * @author    Mainul Hassan
- * @license   https://www.gnu.org/licenses/gpl-3.0.html
+ * @license   GPL-2.0-or-later
  */
 
 // Exit if accessed directly.
