@@ -278,6 +278,7 @@ class WCAPF_Product_Filter {
 			$clauses = array();
 
 			foreach ( $term_ids as $term_id ) {
+				$term_id   = absint( $term_id );
 				$clauses[] = "
 					$clause_root
 					SELECT product_or_parent_id
@@ -694,6 +695,10 @@ class WCAPF_Product_Filter {
 		$property   = $field_instance->post_property;
 		$filter_id  = $field_instance->filter_id;
 
+		$allowed_properties = array( 'post_author' );
+
+		$property = in_array( $property, $allowed_properties, true ) ? $property : 'post_author';
+
 		$active_filters = array();
 
 		global $wpdb;
@@ -718,7 +723,7 @@ class WCAPF_Product_Filter {
 				$or_filter_values[] = $value;
 			} else {
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				$clauses[] = $wpdb->prepare( "$value_alias = %d", $value );
+				$clauses[] = $wpdb->prepare( "$value_alias = %s", $value );
 			}
 		}
 
@@ -748,6 +753,10 @@ class WCAPF_Product_Filter {
 			'include' => array( $value ),
 			'number'  => 1,
 		);
+
+		if ( empty( $users ) ) {
+			return $value; // Fall back to raw value.
+		}
 
 		$users = get_users( $args );
 

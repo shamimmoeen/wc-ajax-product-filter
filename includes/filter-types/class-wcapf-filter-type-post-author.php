@@ -113,6 +113,10 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 
 		$property = $this->post_property;
 
+		$allowed_properties = array( 'post_author' );
+
+		$property = in_array( $property, $allowed_properties, true ) ? $property : 'post_author';
+
 		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS count, $wpdb->posts.$property AS author_id";
 		$query['from']   = "FROM $wpdb->posts";
 
