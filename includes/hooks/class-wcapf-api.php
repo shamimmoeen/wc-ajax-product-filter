@@ -767,7 +767,7 @@ class WCAPF_API {
 		$this->verify_permission();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$roles = isset( $_GET['roles'] ) ? wp_unslash( $_GET['roles'] ) : array();
+		$roles = isset( $_GET['roles'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_GET['roles'] ) ) : array();
 
 		$args = array(
 			'role__in' => $roles,
