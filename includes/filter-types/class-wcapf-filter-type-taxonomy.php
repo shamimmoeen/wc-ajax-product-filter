@@ -321,14 +321,14 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Recursively aggregate term product IDs for exact distinct counting in hierarchical taxonomies.
+	 * Gets all unique product IDs for a term, including products assigned to its child terms.
 	 *
-	 * @param int   $term_id              The current term ID.
-	 * @param array $hierarchy            The taxonomy hierarchy map.
-	 * @param array $term_products        The direct term products map.
-	 * @param array &$aggregated_products The array storing the final aggregated products.
+	 * @param int   $term_id              Current term ID.
+	 * @param array $hierarchy            Parent-to-children term map.
+	 * @param array $term_products        Direct product IDs grouped by term ID.
+	 * @param array &$aggregated_products Cached aggregated product IDs by term ID.
 	 *
-	 * @return array The aggregated products map for the term.
+	 * @return array Product ID map for the term and all its descendants.
 	 */
 	private function aggregate_term_products( $term_id, $hierarchy, $term_products, &$aggregated_products ) {
 		if ( isset( $aggregated_products[ $term_id ] ) ) {
@@ -341,7 +341,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 			foreach ( $hierarchy[ $term_id ] as $child_id ) {
 				$child_products = $this->aggregate_term_products( $child_id, $hierarchy, $term_products, $aggregated_products );
 
-				// Union the child products.
+				// Merge products from child terms into the current term product set.
 				foreach ( $child_products as $product_id => $dummy ) {
 					$products[ $product_id ] = true;
 				}

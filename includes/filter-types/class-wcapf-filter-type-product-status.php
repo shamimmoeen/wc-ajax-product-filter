@@ -88,16 +88,14 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 			$where .= $search_query ? ' AND ' . $search_query : '';
 			$where .= $where_sql;
 
-			$condition = '';
-
 			if ( 'featured' === $id ) {
 				$featured_products = WCAPF_Product_Filter_Utils::get_featured_product_ids_sql();
 
-				$condition = " AND $wpdb->posts.ID IN $featured_products";
+				$where .= " AND $wpdb->posts.ID IN $featured_products";
 			} elseif ( 'on_sale' === $id ) {
 				$on_sale_products = WCAPF_Product_Filter_Utils::get_product_ids_on_sale_sql();
 
-				$condition = " AND $wpdb->posts.ID IN $on_sale_products";
+				$where .= " AND $wpdb->posts.ID IN $on_sale_products";
 			}
 
 			if ( $update_count ) {

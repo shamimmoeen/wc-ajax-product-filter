@@ -62,3 +62,14 @@ to generate the diff:
   echo "Full diff:"
   git diff bedd34e -- . ':(exclude)languages' ':(exclude)README.md'
 } > changes-summary.txt
+
+{
+  echo "Changed files:"
+  git diff --name-only HEAD -- . ':(exclude)languages' ':(exclude)README.md'
+  echo
+  echo "Diff stat:"
+  git diff --stat HEAD -- . ':(exclude)languages' ':(exclude)README.md'
+  echo
+  echo "Full diff:"
+  git diff HEAD -- . ':(exclude)languages' ':(exclude)README.md'
+} > changes-summary.txt
