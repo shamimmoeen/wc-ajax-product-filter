@@ -212,12 +212,13 @@
 			background-color: #f8f9fa;
 			padding: 14px 24px;
 		}
+	}
+}
 
-		.__remove_popover {
-			.components-popover__content {
-				width: auto;
-			}
-		}
+// Delete filter popover.
+.__remove_popover {
+	.components-popover__content {
+		width: auto;
 	}
 }
 

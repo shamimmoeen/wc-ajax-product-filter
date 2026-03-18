@@ -46,6 +46,7 @@ const PublishModal = ({ isOpen, closeModal }) => {
 			code = `<?php echo do_shortcode( '${shortcode}' ); ?>`;
 		} else {
 			description = sprintf(
+				/* translators: %s: widget name. */
 				__(
 					'Go to the widgets page, add <b>%s</b> widget to the desired area.',
 					'wc-ajax-product-filter'

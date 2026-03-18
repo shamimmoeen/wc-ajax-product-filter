@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/filter-types
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Filter_Type_Post_Author class.
@@ -22,6 +27,9 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 	 */
 	protected $post_property;
 
+	/**
+	 * Sets the filter properties from the field instance.
+	 */
 	protected function set_properties() {
 		$field = $this->field;
 
@@ -29,7 +37,7 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 	}
 
 	/**
-	 * Prepare the post author filter items.
+	 * Prepares the post author filter items.
 	 *
 	 * @return array
 	 */
@@ -45,6 +53,8 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 
 		foreach ( $_users as $user ) {
 			/**
+			 * The user object.
+			 *
 			 * @var WP_User $user
 			 */
 			$user_id = $user->ID;
@@ -65,24 +75,34 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 		return apply_filters( 'wcapf_post_author_items', $items, $this->field );
 	}
 
+	/**
+	 * Gets the filtered product counts for the given items.
+	 *
+	 * @param array $items The filter items keyed by author ID.
+	 *
+	 * @return array
+	 */
 	private function get_filtered_product_counts( $items ) {
 		global $wpdb;
 
 		$query = $this->get_sql_query();
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom counting query.
 		$filtered_count = $wpdb->get_results( $query, ARRAY_A );
 		$filtered_count = wp_list_pluck( $filtered_count, 'count', 'author_id' );
 
 		return $this->sync_items_count( $items, $filtered_count );
 	}
 
+	/**
+	 * Builds the SQL query for post author counts.
+	 *
+	 * @return string
+	 */
 	private function get_sql_query() {
 		global $wpdb;
 
-		$helper = new WCAPF_Helper();
-		$utils  = new WCAPF_Product_Filter_Utils();
-
-		$post_statuses = $helper::filterable_post_statuses();
+		$post_statuses = WCAPF_Helper::filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
@@ -93,36 +113,41 @@ class WCAPF_Filter_Type_Post_Author extends WCAPF_Filter_Type {
 
 		$property = $this->post_property;
 
-		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS count, $wpdb->posts.$property AS author_id";;
-		$query['from'] = "FROM $wpdb->posts";
+		$allowed_properties = array( 'post_author' );
+
+		$property = in_array( $property, $allowed_properties, true ) ? $property : 'post_author';
+
+		$query['select'] = "SELECT COUNT(DISTINCT $wpdb->posts.ID) AS count, $wpdb->posts.$property AS author_id";
+		$query['from']   = "FROM $wpdb->posts";
 
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
 		if ( $update_count ) {
-			$join .= $utils::get_join_clause();
+			$join .= WCAPF_Product_Filter_Utils::get_join_clause();
 		}
 
 		$query['join'] = $join;
 
 		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
-		$where .= " AND $wpdb->posts.post_status IN ('" . implode( "','", $post_statuses ) . "')";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
 
 		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
 		$where .= $search_query ? ' AND ' . $search_query : '';
 		$where .= $where_sql;
 
 		if ( $update_count ) {
-			$where .= $utils::get_where_clause( $this->query_type, $this->filter_key );
+			$where .= WCAPF_Product_Filter_Utils::get_where_clause( $this->query_type, $this->filter_key );
 		}
 
 		$query['where'] = $where;
 
 		$query['group_by'] = 'GROUP BY author_id';
 
-		$query = apply_filters( 'wcapf_post_author_query_sql', $query, $this->field );
-
 		return implode( ' ', $query );
 	}
-
 }

@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_API_Utils class.
@@ -15,6 +20,16 @@
  */
 class WCAPF_API_Utils {
 
+	/**
+	 * Retrieves the global filter key for the given filter data.
+	 *
+	 * Matches the provided filter data against the registered filter keys and
+	 * returns the corresponding filter key when a match is found.
+	 *
+	 * @param array $filter_data Filter data.
+	 *
+	 * @return string Global filter key if found, otherwise an empty string.
+	 */
 	public static function get_global_filter_key( $filter_data ) {
 		$filter_keys     = self::get_filter_keys();
 		$filter_type     = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
@@ -53,11 +68,16 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * @param $global
+	 * Retrieves filter keys.
 	 *
-	 * @return array
+	 * Returns filter key data for all saved filters. When `$is_global` is true,
+	 * duplicate global filters are excluded and additional label data is added.
+	 *
+	 * @param bool $is_global Whether to return only unique global filter keys.
+	 *
+	 * @return array Filter keys.
 	 */
-	public static function get_filter_keys( $global = false ) {
+	public static function get_filter_keys( $is_global = false ) {
 		$filters = get_posts(
 			array(
 				'post_type'   => 'wcapf-filter',
@@ -73,11 +93,14 @@ class WCAPF_API_Utils {
 		$taxonomy_options   = self::get_available_taxonomies();
 		$global_filter_keys = array();
 
+		$taxonomy_lookup = array_column( $taxonomy_options, null, 'value' );
+		$type_lookup     = array_column( $filter_types, null, 'value' );
+
 		foreach ( $filters as $filter ) {
 			$filter_id    = $filter->ID;
 			$filter_key   = $filter->post_name;
 			$post_excerpt = html_entity_decode( $filter->post_excerpt );
-			$filter_data  = explode( '>', $post_excerpt );
+			$filter_data  = explode( '>', trim( $post_excerpt ) );
 			$type         = isset( $filter_data[0] ) ? $filter_data[0] : '';
 			$filter_type  = $type;
 			$property     = isset( $filter_data[1] ) ? $filter_data[1] : '';
@@ -94,34 +117,38 @@ class WCAPF_API_Utils {
 
 			if ( 'taxonomy' === $type ) {
 				$data['taxonomy'] = $property;
-			} else if ( 'post-meta' === $type ) {
+			} elseif ( 'post-meta' === $type ) {
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Not a database query.
 				$data['meta_key'] = $property;
 			}
 
-			if ( $global ) {
+			if ( $is_global ) {
 				unset( $data['id'] );
 
 				if ( 'taxonomy' === $type ) {
-					$data_index    = array_search( $property, array_column( $taxonomy_options, 'value' ) );
-					$taxonomy_data = $taxonomy_options[ $data_index ];
-					$data['label'] = $taxonomy_data['label'];
-				} else {
-					$data_index   = array_search( $type, array_column( $filter_types, 'value' ) );
-					$_filter_data = $filter_types[ $data_index ];
+					$taxonomy_data = isset( $taxonomy_lookup[ $property ] ) ? $taxonomy_lookup[ $property ] : null;
 
-					$label = $_filter_data['label'];
-
-					if ( 'post-meta' === $type ) {
-						$label .= '[' . $property . ']';
+					if ( $taxonomy_data ) {
+						$data['label'] = $taxonomy_data['label'];
 					}
+				} else {
+					$_filter_data = isset( $type_lookup[ $type ] ) ? $type_lookup[ $type ] : null;
 
-					$data['label'] = $label;
+					if ( $_filter_data ) {
+						$label = $_filter_data['label'];
+
+						if ( 'post-meta' === $type ) {
+							$label .= '[' . $property . ']';
+						}
+
+						$data['label'] = $label;
+					}
 				}
 
 				$data['secondary_type'] = $post_excerpt;
 				$data['_field_key']     = $filter_key; // Keep a backup for updating purposes.
 
-				if ( ! in_array( $post_excerpt, $global_filter_keys ) ) {
+				if ( ! in_array( $post_excerpt, $global_filter_keys, true ) ) {
 					$filter_keys[] = $data;
 
 					$global_filter_keys[] = $post_excerpt;
@@ -131,13 +158,13 @@ class WCAPF_API_Utils {
 			}
 		}
 
-		return apply_filters( 'wcapf_filter_keys', $filter_keys, $global );
+		return apply_filters( 'wcapf_filter_keys', $filter_keys, $is_global );
 	}
 
 	/**
-	 * Gets the filter types.
+	 * Retrieves available filter types.
 	 *
-	 * @return array[]
+	 * @return array Filter types.
 	 */
 	public static function get_filter_types() {
 		return array(
@@ -207,29 +234,19 @@ class WCAPF_API_Utils {
 						'type'  => 'component',
 						'isPro' => true,
 					),
-					// array(
-					// 	'label' => __( 'Apply Mode', 'wc-ajax-product-filter' ),
-					// 	'value' => 'apply-mode',
-					// 	'type'  => 'component',
-					// 	'isPro' => true,
-					// ),
-					// array(
-					// 	'label' => __( 'Submit Mode', 'wc-ajax-product-filter' ),
-					// 	'value' => 'submit-mode',
-					// 	'type'  => 'component',
-					// 	'isPro' => true,
-					// ),
 				),
 			),
 		);
 	}
 
 	/**
-	 * Gets the available taxonomies after sorting them.
+	 * Retrieves available product taxonomies.
 	 *
-	 * @param bool $only_with_archive Whether to return the taxonomies with archive enabled or not.
+	 * Returns taxonomy data formatted for use in the plugin UI.
 	 *
-	 * @return array
+	 * @param bool $only_with_archive Whether to return only viewable taxonomies with archive support.
+	 *
+	 * @return array Available taxonomies.
 	 */
 	public static function get_available_taxonomies( $only_with_archive = false ) {
 		$tax_data   = get_object_taxonomies( 'product', 'objects' );
@@ -244,7 +261,7 @@ class WCAPF_API_Utils {
 		foreach ( $tax_data as $taxonomy ) {
 			$name = $taxonomy->name;
 
-			if ( ! in_array( $name, $array ) ) {
+			if ( ! in_array( $name, $array, true ) ) {
 				$others[] = $name;
 			}
 		}
@@ -260,9 +277,9 @@ class WCAPF_API_Utils {
 				continue;
 			}
 
-			if ( in_array( $name, $main_taxonomies ) || in_array( $name, $optional_taxonomies ) ) {
+			if ( in_array( $name, $main_taxonomies, true ) || in_array( $name, $optional_taxonomies, true ) ) {
 				$default_filter_key = str_replace( '_', '-', $name );
-			} elseif ( in_array( $name, $attributes ) ) {
+			} elseif ( in_array( $name, $attributes, true ) ) {
 				$default_filter_key = str_replace( 'pa_', '', $name );
 			} else {
 				// Check if pro version found and pretty url is enabled then don't add the underscore.
@@ -281,6 +298,11 @@ class WCAPF_API_Utils {
 		return $taxonomies;
 	}
 
+	/**
+	 * Retrieves available display date formats.
+	 *
+	 * @return array Display date formats.
+	 */
 	public static function display_date_formats() {
 		return apply_filters(
 			'wcapf_display_date_formats',
@@ -297,6 +319,11 @@ class WCAPF_API_Utils {
 		);
 	}
 
+	/**
+	 * Retrieves product status options.
+	 *
+	 * @return array Product status options.
+	 */
 	public static function product_status_options() {
 		return apply_filters(
 			'wcapf_product_status_options',
@@ -314,7 +341,9 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * @return array
+	 * Retrieves time period options.
+	 *
+	 * @return array Time period options.
 	 */
 	public static function time_period_options() {
 		$_time_period_options = WCAPF_Helper::get_time_period_options();
@@ -331,7 +360,9 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * @return array
+	 * Retrieves sort-by options.
+	 *
+	 * @return array Sort-by options.
 	 */
 	public static function sort_by_options() {
 		return apply_filters(
@@ -398,9 +429,9 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Gets the meta types.
+	 * Retrieves meta type options.
 	 *
-	 * @return array
+	 * @return array Meta type options.
 	 */
 	public static function meta_type_options() {
 		return apply_filters(
@@ -435,6 +466,11 @@ class WCAPF_API_Utils {
 		);
 	}
 
+	/**
+	 * Retrieves user role options.
+	 *
+	 * @return array User role options.
+	 */
 	public static function user_role_options() {
 		$_user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
 		$user_roles  = array();
@@ -449,11 +485,21 @@ class WCAPF_API_Utils {
 		return $user_roles;
 	}
 
+	/**
+	 * Sanitizes manual option data.
+	 *
+	 * Allows limited HTML for label-related fields and sanitizes all other values
+	 * as plain text.
+	 *
+	 * @param array $data Manual option data.
+	 *
+	 * @return array Sanitized manual option data.
+	 */
 	public static function sanitize_manual_option_data( $data ) {
 		$sanitized = array();
 
 		foreach ( $data as $key => $_value ) {
-			if ( in_array( $key, array( 'label', 'secondary_label', 'tooltip' ) ) ) {
+			if ( in_array( $key, array( 'label', 'secondary_label', 'tooltip' ), true ) ) {
 				$value = wp_kses_post( $_value );
 			} else {
 				$value = sanitize_text_field( $_value );
@@ -466,21 +512,21 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Gets the plugin settings for our React UI.
+	 * Retrieves plugin settings for the admin UI.
 	 *
-	 * @return array
+	 * @return array Plugin settings.
 	 */
 	public static function get_settings() {
 		$settings = WCAPF_Helper::get_settings();
 
 		// Send the author roles with labels.
-		if ( ! empty ( $settings['author_roles'] ) ) {
+		if ( ! empty( $settings['author_roles'] ) ) {
 			$array       = WCAPF_Product_Filter_Utils::get_user_roles();
 			$with_labels = array();
 
 			foreach ( $settings['author_roles'] as $role_name ) {
 				$with_labels[] = array(
-					'label' => $array[ $role_name ],
+					'label' => isset( $array[ $role_name ] ) ? $array[ $role_name ] : $role_name,
 					'value' => $role_name,
 				);
 			}
@@ -488,13 +534,23 @@ class WCAPF_API_Utils {
 			$settings['author_roles'] = $with_labels;
 		}
 
+		/**
+		 * Filters the parsed plugin settings.
+		 *
+		 * Allows modification of the settings array before it is returned for use
+		 * in the admin UI or other plugin logic.
+		 *
+		 * @param array $settings Parsed plugin settings.
+		 *
+		 * @return array Filtered plugin settings.
+		 */
 		return apply_filters( 'wcapf_parse_settings', $settings );
 	}
 
 	/**
-	 * Gets the forms for our React UI.
+	 * Retrieves all forms for the admin forms list UI.
 	 *
-	 * @return array
+	 * @return array Forms data.
 	 */
 	public static function get_forms() {
 		$args = array(
@@ -507,24 +563,34 @@ class WCAPF_API_Utils {
 		$forms = array();
 
 		foreach ( $posts as $post ) {
-			$forms[] = self::get_form_data( $post );
+			$form_data = self::get_form_data( $post );
+
+			if ( ! empty( $form_data ) ) {
+				$forms[] = $form_data;
+			}
 		}
 
 		return $forms;
 	}
 
 	/**
-	 * Gets the form data for given id.
+	 * Retrieves form data for the admin forms list UI.
 	 *
-	 * @param int|WP_Post $post Post ID or post object.
+	 * Accepts a post object or post ID and returns the parsed form data.
 	 *
-	 * @return array
+	 * @param WP_Post|int $post Post object or post ID.
+	 *
+	 * @return array Form data.
 	 */
 	public static function get_form_data( $post ) {
 		if ( $post instanceof WP_Post ) {
 			$_post = $post;
 		} else {
 			$_post = get_post( $post );
+		}
+
+		if ( ! $_post instanceof WP_Post ) {
+			return array();
 		}
 
 		$id = $_post->ID;
@@ -539,5 +605,4 @@ class WCAPF_API_Utils {
 		 */
 		return apply_filters( 'wcapf_admin_form_data', $data, $id );
 	}
-
 }

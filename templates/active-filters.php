@@ -5,81 +5,57 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/templates/public
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
 
 /**
- * @var string $title                The title.
- * @var string $show_title           Determines if we show the title.
- * @var string $layout               Determines the active filters' layout, possible values are simple, extended.
- * @var string $empty_message        No filter applied message.
+ * Template variables passed from the template loader.
+ *
+ * @var string $filter_title         The title.
+ * @var bool   $show_filter_title    Determines if we show the title.
+ * @var string $filter_layout        Determines the active filters' layout, possible values are simple, extended.
+ * @var string $filter_empty_message No filter applied message.
  * @var string $clear_all_btn_label  The clear all button label.
- * @var string $clear_all_btn_layout The clear all button label.
- * @var string $show_clear_btn       Whether to show the clear filter button in heading or not.
+ * @var string $clear_all_btn_layout The clear all button layout.
+ * @var bool   $show_clear_btn       Whether to show the clear filter button in heading or not.
+ * @var array  $all_filters          The active filter items.
+ * @var int    $total_filters        The total number of active filters.
+ * @var string $filter_unique_id     The unique ID for the container.
+ * @var string $filter_classes       The CSS classes for the container.
+ * @var string $filter_inner_classes The CSS classes for the inner wrapper.
+ * @var string $reset_btn_class      The CSS class for the reset button.
+ * @var bool   $filter_should_render Whether the inner content should render.
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! WCAPF_Helper::found_wcapf() ) {
 	return;
 }
 
-$layout = ! empty( $layout ) ? $layout : 'simple';
-$title  = ! empty( $title ) ? $title : '';
-
-$helper = new WCAPF_Helper;
-
-$all_filters = $helper::get_active_filter_items( $layout );
-$total       = count( $all_filters );
-
-$clear_all_btn_label  = ! empty( $clear_all_btn_label ) ? $clear_all_btn_label : '';
-$clear_all_btn_layout = ! empty( $clear_all_btn_layout ) ? $clear_all_btn_layout : 'block';
-$show_clear_btn       = ! empty( $show_clear_btn );
-$empty_message        = ! empty( $empty_message ) ? $empty_message : '';
-
-if ( 'extended' === $layout ) {
-	$clear_all_btn_layout = 'block';
-}
-
-$unique_id = wp_unique_id( 'af-' );
-$classes   = array( 'wcapf-active-filters', 'wcapf-active-filters-' . $unique_id );
-$classes[] = 'layout-' . $layout;
-$classes[] = 'clear-all-btn-layout-' . $clear_all_btn_layout;
-
-$reset_btn_class = 'wcapf-reset-filters-btn';
-
-$continue = true;
-
-if ( ! $all_filters && ! $empty_message ) {
-	$continue = false;
-}
-
-$show_title = true;
-
-if ( ! $title ) {
-	$show_title = false;
-}
-
-if ( ! $show_title ) {
-	$show_clear_btn = false;
-}
-
-$inner_classes = array( 'wcapf-filter' );
-
-if ( $show_clear_btn && $all_filters ) {
-	$inner_classes[] = 'filter-active';
-}
 ?>
 
-<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>" data-id="<?php echo esc_attr( $unique_id ); ?>">
-	<?php if ( $continue ): ?>
-		<div class="<?php echo esc_attr( implode( ' ', $inner_classes ) ); ?>">
+<div class="<?php echo esc_attr( $filter_classes ); ?>" data-id="<?php echo esc_attr( $filter_unique_id ); ?>">
+	<?php if ( $filter_should_render ) : ?>
+		<div class="<?php echo esc_attr( $filter_inner_classes ); ?>">
 			<?php
 			WCAPF_Template_Loader::get_instance()->load(
 				'filter-title',
 				array(
-					'show_title'     => $show_title,
-					'filter_title'   => $title,
-					'title_for'      => 'active-filters',
-					'show_clear_btn' => $show_clear_btn,
+					'show_title'          => $show_filter_title,
+					'filter_title'        => $filter_title,
+					'title_for'           => 'active-filters',
+					'show_clear_btn'      => $show_clear_btn,
+					'title_classes'       => 'wcapf-filter-title',
+					'filter_key'          => '',
+					'help_text'           => '',
+					'enable_accordion'    => false,
+					'is_expanded'         => false,
+					'accordion_header_id' => '',
+					'accordion_panel_id'  => '',
 				)
 			);
 			?>
@@ -87,43 +63,43 @@ if ( $show_clear_btn && $all_filters ) {
 			<div class="wcapf-filter-inner">
 				<div class="wcapf-active-filter-items-wrapper">
 					<?php if ( $all_filters ) : ?>
-						<?php if ( 'simple' === $layout ) : ?>
+						<?php if ( 'simple' === $filter_layout ) : ?>
 							<div class="wcapf-active-filter-items">
 								<?php
-								$index = 0;
-								$class = '';
+								$wcapf_loop_index = 0;
 
-								foreach ( $all_filters as $filter_data ) {
-									$index ++;
+								foreach ( $all_filters as $wcapf_filter_data ) {
+									++$wcapf_loop_index;
+									$wcapf_loop_class = ( $wcapf_loop_index === $total_filters ) ? 'last-item' : '';
 
-									if ( $index === $total ) {
-										$class = 'last-item';
-									}
-
-									echo $helper::get_active_filters_markup( $filter_data, $class );
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo WCAPF_Helper::get_active_filters_markup( $wcapf_filter_data, $wcapf_loop_class );
 								}
 
 								if ( 'inline' === $clear_all_btn_layout ) {
 									echo '<div class="wcapf-reset-filters-btn-wrapper">';
-									echo $helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
+									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo WCAPF_Helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
 									echo '</div>';
 								}
 								?>
 							</div>
-						<?php else: ?>
+						<?php else : ?>
 							<?php
-							foreach ( $all_filters as $filter_key => $filter_data ) {
-								$filter_id = isset( $filter_data['filter_id'] ) ? $filter_data['filter_id'] : '';
+							foreach ( $all_filters as $wcapf_filter_data ) {
+								$wcapf_filter_id = isset( $wcapf_filter_data['filter_id'] ) ?
+									$wcapf_filter_data['filter_id'] : '';
 
 								echo '<div class="wcapf-active-filter-group">';
 
-								if ( $filter_id ) {
-									echo '<h5>' . get_the_title( $filter_id ) . '</h5>';
+								if ( $wcapf_filter_id ) {
+									echo '<h5>' . esc_html( get_the_title( $wcapf_filter_id ) ) . '</h5>';
 								}
 
 								echo '<div class="active-items">';
 
-								echo $helper::get_active_filters_markup( $filter_data );
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo WCAPF_Helper::get_active_filters_markup( $wcapf_filter_data );
 
 								echo '</div></div>';
 							}
@@ -131,14 +107,15 @@ if ( $show_clear_btn && $all_filters ) {
 						<?php endif; ?>
 					<?php endif; ?>
 
-					<?php if ( ! $all_filters && $empty_message ) : ?>
-						<div class="empty-filter-message"><?php echo esc_html( $empty_message ); ?></div>
+					<?php if ( ! $all_filters && $filter_empty_message ) : ?>
+						<div class="empty-filter-message"><?php echo esc_html( $filter_empty_message ); ?></div>
 					<?php endif; ?>
 
 					<?php
 					// 'Clear All' button.
 					if ( $all_filters && $clear_all_btn_label && 'inline' !== $clear_all_btn_layout && ! $show_clear_btn ) {
-						echo $helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo WCAPF_Helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
 					}
 					?>
 				</div>

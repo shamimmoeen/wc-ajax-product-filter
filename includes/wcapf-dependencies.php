@@ -1,9 +1,17 @@
 <?php
 /**
- * The file responsible for loading the dependencies for the WCAPF plugin.
+ * The file responsible for loading the plugin dependencies.
  *
- * @since 4.1.0
+ * @since      4.1.0
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';

@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/migration
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_V4_Migration_Hooks class.
@@ -53,10 +58,10 @@ class WCAPF_V4_Migration_Hooks {
 		add_action( 'admin_footer', array( $this, 'dismiss_v4_migration_notice_scripts' ) );
 		add_action( 'admin_footer', array( $this, 'dismiss_v4_review_filters_notice_scripts' ) );
 		add_action( 'wp_ajax_wcapf_dismiss_v4_migration_notice', array( $this, 'dismiss_v4_migration_notice' ) );
-		add_action( 'wp_ajax_wcapf_dismiss_v4_review_filters_notice', array(
-			$this,
-			'dismiss_v4_review_filters_notice'
-		) );
+		add_action(
+			'wp_ajax_wcapf_dismiss_v4_review_filters_notice',
+			array( $this, 'dismiss_v4_review_filters_notice' )
+		);
 
 		// Notice to update the pro version.
 		add_action( 'admin_notices', array( $this, 'show_pro_version_update_notice' ) );
@@ -71,6 +76,13 @@ class WCAPF_V4_Migration_Hooks {
 		WCAPF_V4_Migration()->try_to_run_v4_migration();
 	}
 
+	/**
+	 * Sets JavaScript parameters related to the version 4 migration notices.
+	 *
+	 * @param array $params Admin script parameters.
+	 *
+	 * @return array
+	 */
 	public function set_v4_migration_js_params( $params ) {
 		// v4 migration related data.
 		$params['show_v4_migration_notice']      = WCAPF_Helper::v4_migration_notice_can_be_shown();
@@ -88,25 +100,6 @@ class WCAPF_V4_Migration_Hooks {
 		}
 
 		return $params;
-	}
-
-	/**
-	 * Determines if the v4 migration notice should be shown.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
-	 */
-	private function v4_migration_notice_can_be_shown() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
-		}
-
-		if ( '1' !== get_option( 'wcapf_v4_migration_notice_status' ) ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -129,6 +122,8 @@ class WCAPF_V4_Migration_Hooks {
 	}
 
 	/**
+	 * Gets the migration documentation URL.
+	 *
 	 * @return string
 	 */
 	public function get_v4_migration_doc_url() {
@@ -159,22 +154,17 @@ class WCAPF_V4_Migration_Hooks {
 		?>
 		<div class="notice notice-info" id="wcapf-v4-migration-notice">
 			<p>
-				<strong>WCAPF - WooCommerce Ajax Product Filter (v4 Migration Notice)</strong>
+				<strong><?php esc_html_e( 'WCAPF – Ajax Product Filter for WooCommerce (v4 Migration Notice)', 'wc-ajax-product-filter' ); ?></strong>
 			</p>
 			<p>
-				The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF - WooCommerce Ajax
-				Product Filter. We have redesigned the admin UI to provide a more intuitive user experience and
-				refactored the codebase for improved performance and easier future enhancements. As part of the
-				migration process, a form has been automatically created with all the existing filters from your shop.
-				We kindly request that you visit the form and review the order of the filters.
+				<?php esc_html_e( 'The WC Ajax Product Filter plugin has been updated to v4 and is now named WCAPF – Ajax Product Filter for WooCommerce. We have redesigned the admin UI to provide a more intuitive user experience and refactored the codebase for improved performance and easier future enhancements. As part of the migration process, a form has been automatically created with all the existing filters from your shop. We kindly request that you visit the form and review the order of the filters.', 'wc-ajax-product-filter' ); ?>
 			</p>
 			<p>
-				<a href="<?php echo esc_url( $form_url ); ?>">Review the filters</a>
+				<a href="<?php echo esc_url( $form_url ); ?>"><?php esc_html_e( 'Review the filters', 'wc-ajax-product-filter' ); ?></a>
 				|
-				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank">Learn more about migration</a>
+				<a href="<?php echo esc_url( $migration_doc_url ); ?>" target="_blank"><?php esc_html_e( 'Learn more about migration', 'wc-ajax-product-filter' ); ?></a>
 				|
-				<a href="javascript:void(0)" onclick="removeWCAPFMigrationNotice()">I understand, remove
-					the notice</a>
+				<a href="javascript:void(0)" onclick="removeWCAPFMigrationNotice()"><?php esc_html_e( 'I understand, remove the notice', 'wc-ajax-product-filter' ); ?></a>
 			</p>
 		</div>
 		<?php
@@ -188,7 +178,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function dismiss_v4_migration_notice_scripts() {
-		if ( ! $this->v4_migration_notice_can_be_shown() ) {
+		if ( ! WCAPF_Helper::v4_migration_notice_can_be_shown() ) {
 			return;
 		}
 
@@ -205,7 +195,7 @@ class WCAPF_V4_Migration_Hooks {
 
 				var data = {
 					action: 'wcapf_dismiss_v4_migration_notice',
-					nonce: '<?php echo $nonce; ?>',
+					nonce: '<?php echo esc_js( $nonce ); ?>',
 				};
 
 				jQuery.post( ajaxurl, data, function( response ) {
@@ -241,7 +231,7 @@ class WCAPF_V4_Migration_Hooks {
 
 				var data = {
 					action: 'wcapf_dismiss_v4_review_filters_notice',
-					nonce: '<?php echo $nonce; ?>',
+					nonce: '<?php echo esc_js( $nonce ); ?>',
 				};
 
 				jQuery.post( ajaxurl, data, function( response ) {
@@ -299,7 +289,6 @@ class WCAPF_V4_Migration_Hooks {
 			echo '<div class="notice notice-error"><p>' . wp_kses_post( $notice ) . '</p></div>';
 		}
 	}
-
 }
 
 if ( is_admin() ) {

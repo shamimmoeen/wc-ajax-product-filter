@@ -5,8 +5,13 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/hooks
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Rating_Filter class.
@@ -76,6 +81,8 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
+	 * Sets rating filter values using product visibility term IDs.
+	 *
 	 * @param array                $values         The filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -139,6 +146,8 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
+	 * Gets the translated rating label.
+	 *
 	 * @param int $rating The rating.
 	 *
 	 * @since 4.0.0
@@ -147,13 +156,16 @@ class WCAPF_Rating_Filter {
 	 */
 	public function get_rating_label( $rating ) {
 		return sprintf(
+			/* translators: %d: rating value. */
 			_n( '%d star', '%d stars', $rating, 'wc-ajax-product-filter' ),
 			number_format_i18n( $rating )
 		);
 	}
 
 	/**
-	 * @param array                $args           The arguments of the get_terms function.
+	 * Sets the terms query arguments for rating filters.
+	 *
+	 * @param array                $args           The arguments of the get_terms() function.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -162,7 +174,7 @@ class WCAPF_Rating_Filter {
 		if ( 'rating' === $field_instance->type ) {
 			$names = array();
 
-			for ( $rating = 5; $rating >= 1; $rating -- ) {
+			for ( $rating = 5; $rating >= 1; $rating-- ) {
 				$names[] = 'rated-' . $rating;
 			}
 
@@ -174,6 +186,8 @@ class WCAPF_Rating_Filter {
 	}
 
 	/**
+	 * Normalizes rating term data for the filter output.
+	 *
 	 * @param array                $terms          The taxonomy terms.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -219,7 +233,7 @@ class WCAPF_Rating_Filter {
 
 		$display_type   = $walker->display_type;
 		$dropdown_types = array( 'select', 'multiselect' );
-		$is_dropdown    = in_array( $display_type, $dropdown_types );
+		$is_dropdown    = in_array( $display_type, $dropdown_types, true );
 
 		$parsed = array();
 
@@ -241,7 +255,6 @@ class WCAPF_Rating_Filter {
 
 		return $parsed;
 	}
-
 }
 
 WCAPF_Rating_Filter::instance();

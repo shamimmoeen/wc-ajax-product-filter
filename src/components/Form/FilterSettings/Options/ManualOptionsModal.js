@@ -288,9 +288,10 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 
 		if ('taxonomy' === type) {
 			description = sprintf(
+				/* translators: 1: number of terms found, 2: taxonomy label. */
 				_n(
-					'Found %d term for <strong>%s</strong>.',
-					'Found %d terms for <strong>%s</strong>.',
+					'Found %1$d term for <strong>%2$s</strong>.',
+					'Found %1$d terms for <strong>%2$s</strong>.',
 					foundOptions,
 					'wc-ajax-product-filter'
 				),
@@ -299,9 +300,10 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 			);
 		} else if ('post-meta' === type) {
 			description = sprintf(
+				/* translators: 1: number of meta values found, 2: meta key. */
 				_n(
-					'Found %d meta value for <strong>%s</strong>.',
-					'Found %d meta values for <strong>%s</strong>.',
+					'Found %1$d meta value for <strong>%2$s</strong>.',
+					'Found %1$d meta values for <strong>%2$s</strong>.',
 					foundOptions,
 					'wc-ajax-product-filter'
 				),
@@ -310,9 +312,10 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 			);
 		} else if ('post-author' === type) {
 			description = sprintf(
+				/* translators: 1: number of authors found, 2: user roles. */
 				_n(
-					'Found %d author for roles of <strong>%s</strong>.',
-					'Found %d authors for roles of <strong>%s</strong>.',
+					'Found %1$d author for roles of <strong>%2$s</strong>.',
+					'Found %1$d authors for roles of <strong>%2$s</strong>.',
 					foundOptions,
 					'wc-ajax-product-filter'
 				),
@@ -362,13 +365,13 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 
 								{'post-meta' !== type && (
 									<span className='__info'>
-										{sprintf(
-											__(
-												'ID: %d',
-												'wc-ajax-product-filter'
-											),
-											option.value
-										)}
+										{
+											sprintf(
+												/* translators: %d: item ID. */
+												__( 'ID: %d', 'wc-ajax-product-filter' ),
+												option.value
+											)
+										}
 									</span>
 								)}
 							</label>
@@ -432,6 +435,7 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 
 			if ('taxonomy' === type) {
 				description = sprintf(
+					/* translators: %s: taxonomy label. */
 					__(
 						'No terms found for <strong>%s</strong>.',
 						'wc-ajax-product-filter'
@@ -440,6 +444,7 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 				);
 			} else if ('post-meta' === type) {
 				description = sprintf(
+					/* translators: %s: meta key. */
 					__(
 						'No meta values found for <strong>%s</strong>.',
 						'wc-ajax-product-filter'
@@ -448,6 +453,7 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 				);
 			} else if ('post-author' === type) {
 				description = sprintf(
+					/* translators: %s: user roles. */
 					__(
 						'No authors found in user roles <strong>%s</strong>.',
 						'wc-ajax-product-filter'

@@ -5,8 +5,13 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Admin class.
@@ -16,9 +21,21 @@
 class WCAPF_Admin {
 
 	/**
+	 * Core plugin version.
+	 *
+	 * Uses the free/basic plugin version when available; otherwise falls back
+	 * to the main plugin version.
+	 *
+	 * @var string
+	 */
+	private $core_version;
+
+	/**
 	 * The constructor.
 	 */
 	public function __construct() {
+		$this->core_version = defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION;
+
 		$plugin_file = plugin_basename( WCAPF_PLUGIN_FILE );
 		add_filter( 'plugin_action_links_' . $plugin_file, array( $this, 'plugin_action_links' ) );
 
@@ -92,7 +109,7 @@ class WCAPF_Admin {
 	 */
 	public function register_admin_pages() {
 		add_menu_page(
-			'WCAPF - WooCommerce Ajax Product Filter',
+			'WCAPF – Ajax Product Filter for WooCommerce',
 			'WCAPF',
 			'manage_options',
 			'wcapf',
@@ -100,18 +117,9 @@ class WCAPF_Admin {
 			'dashicons-filter'
 		);
 
-		// add_submenu_page(
-		// 	'wcapf',
-		// 	__( 'WCAPF - WooCommerce Ajax Product Filter - SEO Rules', 'wc-ajax-product-filter' ),
-		// 	__( 'SEO Rules', 'wc-ajax-product-filter' ),
-		// 	'manage_options',
-		// 	'wcapf-seo-rules',
-		// 	array( $this, 'render_seo_rules' )
-		// );
-
 		add_submenu_page(
 			'wcapf',
-			__( 'WCAPF - WooCommerce Ajax Product Filter - Settings', 'wc-ajax-product-filter' ),
+			__( 'WCAPF – Ajax Product Filter for WooCommerce - Settings', 'wc-ajax-product-filter' ),
 			__( 'Settings', 'wc-ajax-product-filter' ),
 			'manage_options',
 			'wcapf-settings',
@@ -119,27 +127,30 @@ class WCAPF_Admin {
 		);
 	}
 
+	/**
+	 * Renders the root element for the React UI for forms' admin pages.
+	 *
+	 * @return void
+	 */
 	public function render_form() {
-		if ( isset( $_GET['id'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to determine which admin screen to load.
+		if ( isset( $_GET['id'] ) && absint( wp_unslash( $_GET['id'] ) ) ) {
 			$element = '<div id="wcapf-form-admin-ui"></div>';
 		} else {
 			$element = '<div id="wcapf-forms-list-admin-ui"></div>';
 		}
 
-		echo $element;
+		echo wp_kses_post( $element );
 	}
 
-	// public function render_seo_rules() {
-	// 	echo '<div id="wcapf-seo-rules-admin-ui"></div>';
-	// }
-
+	/**
+	 * Renders the root element for the React UI for plugin settings page.
+	 *
+	 * @return void
+	 */
 	public function render_settings() {
 		echo '<div id="wcapf-settings-admin-ui"></div>';
 	}
-
-	// public function render_upgrade_page() {
-	// 	WCAPF_Template_Loader::get_instance()->load( 'admin/upgrade-to-pro' );
-	// }
 
 	/**
 	 * Modify the label of custom admin menu.
@@ -158,6 +169,7 @@ class WCAPF_Admin {
 				$new_data[0][0] = __( 'Forms', 'wc-ajax-product-filter' );
 			}
 
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Intentionally modifying submenu label for this plugin menu.
 			$submenu['wcapf'] = $new_data;
 		}
 	}
@@ -172,7 +184,7 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function disable_admin_notices() {
-		if ( in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages() ) ) {
+		if ( in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages(), true ) ) {
 			remove_all_actions( 'admin_notices' );
 		}
 	}
@@ -191,6 +203,8 @@ class WCAPF_Admin {
 	}
 
 	/**
+	 * Returns the slugs of admin pages.
+	 *
 	 * @return string[]
 	 */
 	private function slugs_of_custom_admin_pages() {
@@ -213,8 +227,8 @@ class WCAPF_Admin {
 	 */
 	public function enqueue_admin_ui_scripts( $hook ) {
 		// Load the dependent js variables before loading other scripts.
-		if ( in_array( $hook, $this->slugs_of_custom_admin_pages() ) ) {
-			wp_register_script( 'wcapf-admin-scripts', false );
+		if ( in_array( $hook, $this->slugs_of_custom_admin_pages(), true ) ) {
+			wp_register_script( 'wcapf-admin-scripts', false, array(), $this->core_version, true );
 
 			wp_localize_script(
 				'wcapf-admin-scripts',
@@ -235,7 +249,7 @@ class WCAPF_Admin {
 
 		if ( 'toplevel_page_wcapf' === $hook ) {
 			// Forms list admin ui scripts.
-			if ( ! isset( $_GET['id'] ) ) {
+			if ( ! isset( $_GET['id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to determine which admin screen to load.
 				$this->load_scripts( 'list-forms' );
 			} else {
 				// Loads the media utils.
@@ -243,12 +257,6 @@ class WCAPF_Admin {
 
 				// Single form admin ui scripts.
 				$this->load_scripts( 'form' );
-
-				// Loads the js script that converts our filter key into slug.
-				wp_enqueue_script(
-					'wcapf-sanitize-title',
-					WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js'
-				);
 			}
 		}
 
@@ -266,12 +274,6 @@ class WCAPF_Admin {
 			wp_enqueue_media();
 
 			$this->load_scripts( 'settings' );
-
-			// Loads the js script that converts our filter key into slug.
-			wp_enqueue_script(
-				'wcapf-sanitize-title',
-				WCAPF_PLUGIN_URL . 'admin/lib/wp-fe-sanitize-title.js'
-			);
 		}
 	}
 
@@ -283,41 +285,39 @@ class WCAPF_Admin {
 	private function admin_js_params() {
 		$params = array(
 			'ajaxurl'      => admin_url( 'admin-ajax.php' ),
-			'free_version' => defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION,
+			'free_version' => $this->core_version,
 			'pro_version'  => defined( 'WCAPF_PRO_VERSION' ) ? WCAPF_PRO_VERSION : false,
 			'wp_version'   => get_bloginfo( 'version' ),
 			'dirty'        => false,
 			'nonce'        => wp_create_nonce( 'wcapf-nonce' ),
 		);
 
-		$helper = new WCAPF_Helper();
-		$utils  = new WCAPF_API_Utils();
-
-		$params['forms_page_link']     = $helper::forms_page_url();
-		$params['seo_rules_page_link'] = $helper::seo_rules_page_url();
-		$params['settings_page_link']  = $helper::settings_page_url();
-		$params['upgrade_page_link']   = $helper::upgrade_page_url();
+		$params['forms_page_link']     = WCAPF_Helper::forms_page_url();
+		$params['seo_rules_page_link'] = WCAPF_Helper::seo_rules_page_url();
+		$params['settings_page_link']  = WCAPF_Helper::settings_page_url();
+		$params['upgrade_page_link']   = WCAPF_Helper::upgrade_page_url();
 
 		$screen_id  = $this->current_screen_id();
-		$user_roles = $utils::user_role_options();
+		$user_roles = WCAPF_API_Utils::user_role_options();
 
 		if ( 'toplevel_page_wcapf' === $screen_id ) {
 			$params['form_default_data'] = WCAPF_Default_Data::form_default_data();
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to determine which admin screen to load.
 			if ( ! isset( $_GET['id'] ) ) {
-				$params['forms'] = $utils::get_forms();
+				$params['forms'] = WCAPF_API_Utils::get_forms();
 			} else {
-				$settings = $helper::get_settings();
+				$settings = WCAPF_Helper::get_settings();
 
 				$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
 
-				$params['filter_types']    = $utils::get_filter_types();
-				$params['meta_keys']       = $helper::get_available_meta_keys();
-				$params['date_formats']    = $utils::display_date_formats();
-				$params['status_options']  = $utils::product_status_options();
-				$params['time_periods']    = $utils::time_period_options();
-				$params['sort_by_options'] = $utils::sort_by_options();
-				$params['meta_types']      = $utils::meta_type_options();
+				$params['filter_types']    = WCAPF_API_Utils::get_filter_types();
+				$params['meta_keys']       = WCAPF_Helper::get_available_meta_keys();
+				$params['date_formats']    = WCAPF_API_Utils::display_date_formats();
+				$params['status_options']  = WCAPF_API_Utils::product_status_options();
+				$params['time_periods']    = WCAPF_API_Utils::time_period_options();
+				$params['sort_by_options'] = WCAPF_API_Utils::sort_by_options();
+				$params['meta_types']      = WCAPF_API_Utils::meta_type_options();
 				$params['user_roles']      = $user_roles;
 
 				$params['author_roles']            = isset( $settings['author_roles'] )
@@ -325,12 +325,13 @@ class WCAPF_Admin {
 				$params['multiple_form_locations'] = isset( $settings['multiple_form_locations'] )
 					? $settings['multiple_form_locations'] : '';
 
-				$post_id = $_GET['id'];
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to fetch the form ID for admin UI rendering.
+				$post_id = absint( wp_unslash( $_GET['id'] ) );
 				$post    = get_post( $post_id );
 
 				$params['form_data'] = array(
 					'post_id'    => $post_id,
-					'post_title' => $post->post_title,
+					'post_title' => $post ? sanitize_text_field( $post->post_title ) : '',
 				);
 			}
 		}
@@ -339,9 +340,9 @@ class WCAPF_Admin {
 			$params['default_settings'] = WCAPF_Default_Data::default_settings();
 
 			$params['user_roles'] = $user_roles;
-			$params['settings']   = $utils::get_settings();
+			$params['settings']   = WCAPF_API_Utils::get_settings();
 
-			$params['global_filter_keys'] = $utils::get_filter_keys( true );
+			$params['global_filter_keys'] = WCAPF_API_Utils::get_filter_keys( true );
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
@@ -354,9 +355,9 @@ class WCAPF_Admin {
 	}
 
 	/**
-	 * The helper function to load the js build scripts.
+	 * Loads the built admin scripts and styles for a given screen.
 	 *
-	 * @param string $file The file name.
+	 * @param string $file The build file name without extension.
 	 *
 	 * @return void
 	 */
@@ -364,13 +365,21 @@ class WCAPF_Admin {
 		$asset_path = WCAPF_PLUGIN_DIR . '/build/' . $file . '.asset.php';
 
 		if ( ! file_exists( $asset_path ) ) {
-			/** @noinspection PhpMultipleClassDeclarationsInspection */
-			throw new Error(
-				'You need to run `npm start` or `npm run build` for the ' . $file . ' admin ui'
+			wp_die(
+				wp_kses_post(
+					sprintf(
+						/* translators: %s: admin build file name. */
+						__(
+							'You need to run <code>npm start</code> or <code>npm run build</code> for the %s admin UI.',
+							'wc-ajax-product-filter'
+						),
+						esc_html( $file )
+					)
+				)
 			);
 		}
 
-		$asset_file = require( $asset_path );
+		$asset_file = require $asset_path;
 		$handle     = 'wcapf-' . $file . '-admin';
 		$js_file    = 'build/' . $file . '.js';
 		$css_file   = 'build/' . $file . '.css';
@@ -385,15 +394,23 @@ class WCAPF_Admin {
 			$handle,
 			plugins_url( $js_file, WCAPF_PLUGIN_FILE ),
 			$asset_file['dependencies'],
-			$asset_file['version']
+			$asset_file['version'],
+			true
 		);
 
 		// Set up translations for the script.
-		wp_set_script_translations(
-			$handle,
-			'wc-ajax-product-filter',
-			plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'languages'
-		);
+		if ( defined( 'WCAPF_PRO_VERSION' ) ) {
+			wp_set_script_translations(
+				$handle,
+				'wc-ajax-product-filter',
+				plugin_dir_path( WCAPF_PLUGIN_FILE ) . 'languages'
+			);
+		} else {
+			wp_set_script_translations(
+				$handle,
+				'wc-ajax-product-filter'
+			);
+		}
 
 		// Load the style file.
 		wp_enqueue_style(
@@ -412,7 +429,7 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function enqueue_review_notices_styles() {
-		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages() ) ) {
+		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages(), true ) ) {
 			return;
 		}
 		?>
@@ -433,7 +450,7 @@ class WCAPF_Admin {
 	 * @return void
 	 */
 	public function enqueue_review_notices_scripts() {
-		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages() ) ) {
+		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages(), true ) ) {
 			return;
 		}
 
@@ -456,7 +473,7 @@ class WCAPF_Admin {
 
 				var data = {
 					action: 'wcapf_dismiss_review_notices',
-					nonce: '<?php echo $nonce; ?>',
+					nonce: '<?php echo esc_js( $nonce ); ?>',
 					type,
 				};
 
@@ -479,12 +496,16 @@ class WCAPF_Admin {
 		// Verify the AJAX request nonce.
 		check_ajax_referer( 'wcapf-dismiss-review-notices-nonce', 'nonce' );
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'Unauthorized request', 'wc-ajax-product-filter' ) );
+		}
+
 		// Get the type parameter from the request.
-		$type = ! empty( $_REQUEST['type'] ) ? sanitize_text_field( $_REQUEST['type'] ) : '';
+		$type = ! empty( $_REQUEST['type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['type'] ) ) : '';
 
 		// If the type parameter is missing, send an error response.
 		if ( ! $type ) {
-			wp_send_json_error( 'Invalid type for dismissing the review notices' );
+			wp_send_json_error( __( 'Invalid type for dismissing the review notices', 'wc-ajax-product-filter' ) );
 		}
 
 		// Get the current user ID.
@@ -504,9 +525,8 @@ class WCAPF_Admin {
 		}
 
 		// Send a success response.
-		wp_send_json_success( 'WCAPF review notice dismissed' );
+		wp_send_json_success( __( 'WCAPF review notice dismissed', 'wc-ajax-product-filter' ) );
 	}
-
 }
 
 if ( is_admin() ) {

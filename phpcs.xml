@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<ruleset name="WCAPF - WooCommerce Ajax Product Filter">
+<ruleset name="WCAPF – Ajax Product Filter for WooCommerce">
 
-	<description>A custom set of rules to check for WCAPF - WooCommerce Ajax Product Filter plugin</description>
+	<description>A custom set of rules to check for WCAPF – Ajax Product Filter for WooCommerce plugin</description>
 
 	<!-- Exclude the Composer Vendor directory. -->
 	<exclude-pattern>/vendor/*</exclude-pattern>

@@ -1,12 +1,17 @@
 <?php
 /**
- * WCAPF - WooCommerce Ajax Product Filter widget.
+ * WCAPF – Ajax Product Filter for WooCommerce widget.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Filter_Widget class.
@@ -57,11 +62,10 @@ class WCAPF_Filter_Widget extends WP_Widget {
 	public function form( $instance ) {
 		?>
 		<p>
-			<?php printf( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> setting.', 'wc-ajax-product-filter' ) ); ?>
+			<?php echo wp_kses_post( __( 'No settings are required! The form will be displayed according to the <b>Available on</b> setting.', 'wc-ajax-product-filter' ) ); ?>
 		</p>
 		<?php
 	}
-
 }
 
 /**

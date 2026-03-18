@@ -31,7 +31,7 @@ const FilterKey = ({ data, index }) => {
 	const error = field_key_error ? field_key_error : field_key_error_;
 
 	const handleFilterKeyChange = (value, index) => {
-		const filterKey = wpFeSanitizeTitle(value);
+		const filterKey = value;
 
 		const prevData = globalFilterKeys[index];
 

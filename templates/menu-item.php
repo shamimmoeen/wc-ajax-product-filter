@@ -5,26 +5,43 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/templates
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
 
 /**
- * @var string[] $item The multidimensional array of item data.
+ * Template variables passed from the template loader.
+ *
+ * @var string $item_name          The item name.
+ * @var string $item_count         The item count.
+ * @var bool   $show_count         Whether to show the count.
+ * @var string $item_attr          The search data attribute string.
+ * @var string $screen_reader_text The translated screen reader text.
  */
 
-$item_attr = '';
-
-if ( $item['enable_search'] ) {
-	$item_attr = ' data-label="' . esc_attr( $item['name'] ) . '"';
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
+
 ?>
 
-<span class="wcapf-filter-item-label"<?php echo $item_attr; ?>>
-	<span class="wcapf-nav-item-text"><?php echo wp_kses_post( $item['name'] ); ?></span>
+<span class="wcapf-filter-item-label"
+	<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $item_attr;
+	?>
+>
+	<span class="wcapf-nav-item-text"><?php echo wp_kses_post( $item_name ); ?></span>
 
 	<?php
-	if ( $item['show_count'] ) {
-		WCAPF_Template_Loader::get_instance()->load( 'menu-item-count', array( 'count' => $item['count'] ) );
+	if ( $show_count ) {
+		WCAPF_Template_Loader::get_instance()->load(
+			'menu-item-count',
+			array(
+				'count'              => $item_count,
+				'screen_reader_text' => $screen_reader_text,
+			)
+		);
 	}
 	?>
 </span>

@@ -750,10 +750,13 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<td>
 						<span className='__term_name'>{name}</span>
 						<span className='__term_id'>
-							{sprintf(
-								__('ID: %d', 'wc-ajax-product-filter'),
-								value
-							)}
+							{
+								sprintf(
+									/* translators: %d: item ID. */
+									__( 'ID: %d', 'wc-ajax-product-filter' ),
+									value
+								)
+							}
 						</span>
 					</td>
 
@@ -768,10 +771,13 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<td>
 						<span className='__author_name'>{name}</span>
 						<span className='__author_id'>
-							{sprintf(
-								__('ID: %d', 'wc-ajax-product-filter'),
-								value
-							)}
+							{
+								sprintf(
+									/* translators: %d: item ID. */
+									__( 'ID: %d', 'wc-ajax-product-filter' ),
+									value
+								)
+							}
 						</span>
 					</td>
 
