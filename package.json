@@ -1,6 +1,6 @@
 {
   "name": "wc-ajax-product-filter",
-  "version": "4.0.0",
+  "version": "4.3.0",
   "main": "Gruntfile.js",
   "author": "wptools.io",
   "scripts": {

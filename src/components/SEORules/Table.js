@@ -95,6 +95,7 @@ const Table = ({
 	const listSummary = () => {
 		if (rulesFound) {
 			const countResults = sprintf(
+				/* translators: %d: number of results found. */
 				_n(
 					'Showing <b>%d</b> result',
 					'Showing <b>%d</b> results',

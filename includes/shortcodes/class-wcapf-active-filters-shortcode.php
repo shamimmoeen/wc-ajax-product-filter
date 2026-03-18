@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/shortcodes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Active_Filters_Shortcode class.
@@ -21,16 +26,28 @@ class WCAPF_Active_Filters_Shortcode {
 	private function __construct() {
 	}
 
+	/**
+	 * Renders the active filters shortcode output.
+	 *
+	 * @param array $attrs Shortcode attributes.
+	 *
+	 * @return string
+	 */
 	public function shortcode_output( $attrs = array() ) {
-		$a = shortcode_atts( array(
-			'title'                => __( 'Active Filters', 'wc-ajax-product-filter' ),
-			'layout'               => 'simple',
-			'empty_message'        => '',
-			'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
-			'clear_all_btn_layout' => 'block',
-		), $attrs );
+		$a = shortcode_atts(
+			array(
+				'title'                => __( 'Active Filters', 'wc-ajax-product-filter' ),
+				'layout'               => 'simple',
+				'empty_message'        => '',
+				'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
+				'clear_all_btn_layout' => 'block',
+			),
+			$attrs
+		);
 
-		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $a, false );
+		$args = WCAPF_Helper::prepare_active_filters_args( $a );
+
+		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args, false );
 	}
 
 	/**
@@ -46,7 +63,6 @@ class WCAPF_Active_Filters_Shortcode {
 
 		return $instance;
 	}
-
 }
 
 add_shortcode( 'wcapf_active_filters', array( WCAPF_Active_Filters_Shortcode::get_instance(), 'shortcode_output' ) );

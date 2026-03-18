@@ -5,8 +5,13 @@
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Field_Instance class.
@@ -15,39 +20,239 @@
  */
 class WCAPF_Field_Instance {
 
+	/**
+	 * Parsed display type.
+	 *
+	 * @var string
+	 */
 	public $display_type;
+
+	/**
+	 * Filter layout.
+	 *
+	 * @var string
+	 */
 	public $layout;
+
+	/**
+	 * Query type used for combining selected values.
+	 *
+	 * Determines the relation applied between multiple selected values,
+	 * such as `and` or `or`.
+	 *
+	 * @var string
+	 */
 	public $query_type;
+
+	/**
+	 * Label used for the "all items" option.
+	 *
+	 * @var string
+	 */
 	public $all_items_label;
+
+	/**
+	 * Whether the field should use combobox behavior.
+	 *
+	 * @var mixed
+	 */
 	public $use_combobox;
+
+	/**
+	 * Whether multiple filtering is enabled.
+	 *
+	 * @var mixed
+	 */
 	public $enable_multiple_filter;
+
+	/**
+	 * Whether option counts should be displayed.
+	 *
+	 * @var mixed
+	 */
 	public $show_count;
+
+	/**
+	 * Whether empty options should be hidden.
+	 *
+	 * @var mixed
+	 */
 	public $hide_empty;
+
+	/**
+	 * Filter options source mode.
+	 *
+	 * Supported values typically include `automatically` and `manual_entry`.
+	 *
+	 * @var string
+	 */
 	public $get_options;
+
+	/**
+	 * Manually configured options.
+	 *
+	 * @var array
+	 */
 	public $manual_options;
+
+	/**
+	 * Field type.
+	 *
+	 * @var string
+	 */
 	public $type;
+
+	/**
+	 * Filter post ID.
+	 *
+	 * @var mixed
+	 */
 	public $filter_id;
+
+	/**
+	 * Filter key used in request and query handling.
+	 *
+	 * Identifies the filter in frontend requests and internal query parsing.
+	 *
+	 * @var string
+	 */
 	public $filter_key;
+
+	/**
+	 * Normalized filter type.
+	 *
+	 * @var string
+	 */
 	public $filter_type;
+
+	/**
+	 * Associated taxonomy name.
+	 *
+	 * @var string
+	 */
 	public $taxonomy;
+
+	/**
+	 * Whether the taxonomy options are hierarchical.
+	 *
+	 * @var bool
+	 */
 	public $hierarchical;
+
+	/**
+	 * Whether hierarchy accordion mode is enabled.
+	 *
+	 * @var bool
+	 */
 	public $enable_hierarchy_accordion;
+
+	/**
+	 * Filter value type.
+	 *
+	 * Determines how the filter value is interpreted and compared, such as
+	 * text, number, or date.
+	 *
+	 * @var string
+	 */
 	public $value_type;
+
+	/**
+	 * Associated meta key.
+	 *
+	 * @var string
+	 */
 	public $meta_key;
+
+	/**
+	 * Associated post property.
+	 *
+	 * @var string
+	 */
 	public $post_property;
+
+	/**
+	 * Whether store name should be used for vendor-related fields.
+	 *
+	 * @var string
+	 */
 	public $use_store_name;
+
+	/**
+	 * Whether term slugs should be used instead of term IDs.
+	 *
+	 * @var mixed
+	 */
 	public $use_term_slug;
+
+	/**
+	 * SQL data type used for numeric comparisons.
+	 *
+	 * Defines the SQL type used when numeric values are compared in queries,
+	 * such as `SIGNED` or `DECIMAL`.
+	 *
+	 * @var string
+	 */
 	public $number_data_type;
+
+	/**
+	 * Parent form ID.
+	 *
+	 * Holds the ID of the form this filter belongs to.
+	 *
+	 * @var mixed
+	 */
 	public $form_id;
+
+	/**
+	 * Whether the search field is enabled.
+	 *
+	 * @var mixed
+	 */
 	public $enable_search_field;
+
+	/**
+	 * Reduce-height mode.
+	 *
+	 * Stores the configured mode used to limit the option list height, such as
+	 * soft limit or max height.
+	 *
+	 * @var false|string
+	 */
 	public $enable_reduce_height;
+
+	/**
+	 * Maximum height for option lists.
+	 *
+	 * @var float
+	 */
 	public $max_height;
+
+	/**
+	 * Number of initially visible options when soft limit is enabled.
+	 *
+	 * @var int
+	 */
 	public $soft_limit;
+
+	/**
+	 * Whether the soft limit feature is enabled.
+	 *
+	 * @var bool
+	 */
 	public $enable_soft_limit;
+
+	/**
+	 * Whether the max-height feature is enabled.
+	 *
+	 * @var bool
+	 */
 	public $enable_max_height;
 
 	/**
-	 * The raw field instance.
+	 * The raw field instance data.
+	 *
+	 * Holds the original filter configuration used to derive the parsed
+	 * field properties.
 	 *
 	 * @var array
 	 */
@@ -193,16 +398,22 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the raw field type.
+	 *
+	 * @return string Field type.
 	 */
 	private function get_field_type() {
 		return $this->get_sub_field_value( 'type' );
 	}
 
 	/**
-	 * @param string $name
+	 * Retrieves a raw sub-field value from the field instance.
 	 *
-	 * @return mixed
+	 * Returns an empty string when the requested key is not available.
+	 *
+	 * @param string $name Sub-field name.
+	 *
+	 * @return mixed Sub-field value or an empty string if not set.
 	 */
 	public function get_sub_field_value( $name ) {
 		if ( isset( $this->instance[ $name ] ) ) {
@@ -213,7 +424,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the default value type for the current field.
+	 *
+	 * @return string Default value type.
 	 */
 	private function field_default_value_type() {
 		$field_type = $this->get_field_type();
@@ -227,7 +440,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @param string $display_type
+	 * Parses and normalizes the configured display type.
+	 *
+	 * @param string $display_type Raw display type.
 	 *
 	 * @return string
 	 */
@@ -252,7 +467,7 @@ class WCAPF_Field_Instance {
 		}
 
 		foreach ( $available_display_types as $key => $display_types ) {
-			if ( in_array( $display_type, $display_types ) ) {
+			if ( in_array( $display_type, $display_types, true ) ) {
 				$_display_type = $key;
 				break;
 			}
@@ -262,9 +477,13 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @param string $all_items_label
+	 * Parses the all-items label for the filter.
 	 *
-	 * @return string
+	 * Applies context-aware defaults when no label is configured.
+	 *
+	 * @param string $all_items_label Raw all-items label.
+	 *
+	 * @return string Parsed all-items label.
 	 */
 	private function parse_all_items_label( $all_items_label ) {
 		$type = $this->get_sub_field_value( 'type' );
@@ -279,31 +498,42 @@ class WCAPF_Field_Instance {
 			}
 		}
 
-		return $all_items_label ?: __( 'All Items', 'wc-ajax-product-filter' );
+		if ( ! $all_items_label ) {
+			return __( 'All Items', 'wc-ajax-product-filter' );
+		}
+
+		return $all_items_label;
 	}
 
 	/**
+	 * Retrieves the layout for the filter.
+	 *
+	 * Returns the allowed layout based on the current display type and falls
+	 * back to `list` when the configured layout is invalid.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @return string
+	 * @return string Filter layout.
 	 */
 	private function get_layout() {
 		$native_layouts = apply_filters( 'wcapf_native_layouts', array( 'list', 'inline' ) );
 		$custom_layouts = apply_filters( 'wcapf_custom_layouts', array( 'inline' ) );
 
-		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) ) {
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ), true ) ) {
 			$value = $this->get_sub_field_value( 'native_display_type_layout' );
 
-			return in_array( $value, $native_layouts ) ? $value : 'list';
+			return in_array( $value, $native_layouts, true ) ? $value : 'list';
 		} else {
 			$value = $this->get_sub_field_value( 'custom_display_type_layout' );
 
-			return in_array( $value, $custom_layouts ) ? $value : 'list';
+			return in_array( $value, $custom_layouts, true ) ? $value : 'list';
 		}
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the normalized filter type.
+	 *
+	 * @return string Filter type.
 	 */
 	private function get_filter_type() {
 		$field_type  = $this->get_field_type();
@@ -319,12 +549,14 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the taxonomy assigned to the current field.
+	 *
+	 * @return string Taxonomy name.
 	 */
 	private function get_taxonomy() {
 		$taxonomy = $this->get_sub_field_value( 'taxonomy' );
 
-		if ( 'rating' === $this->type && 'automatically' == $this->get_options ) {
+		if ( 'rating' === $this->type && 'automatically' === $this->get_options ) {
 			$taxonomy = 'product_visibility';
 		}
 
@@ -332,7 +564,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return bool
+	 * Determines whether the current taxonomy field should behave hierarchically.
+	 *
+	 * @return bool True if the field is hierarchical, otherwise false.
 	 */
 	private function taxonomy_is_hierarchical() {
 		$taxonomy = $this->get_taxonomy();
@@ -347,12 +581,12 @@ class WCAPF_Field_Instance {
 
 		$non_hierarchical_display_types = array( 'label', 'color', 'image' );
 
-		if ( in_array( $this->display_type, $non_hierarchical_display_types ) ) {
+		if ( in_array( $this->display_type, $non_hierarchical_display_types, true ) ) {
 			return false;
 		}
 
 		// Disable hierarchy for inline and grid layout.
-		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ) ) && 'list' !== $this->layout ) {
+		if ( in_array( $this->display_type, array( 'checkbox', 'radio' ), true ) && 'list' !== $this->layout ) {
 			return false;
 		}
 
@@ -360,7 +594,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return bool
+	 * Determines whether hierarchy accordion mode is enabled.
+	 *
+	 * @return bool True if hierarchy accordion mode is enabled, otherwise false.
 	 */
 	private function is_hierarchy_accordion_enabled() {
 		if ( ! $this->taxonomy_is_hierarchical() ) {
@@ -369,7 +605,7 @@ class WCAPF_Field_Instance {
 
 		$non_hierarchy_accordion_display_types = array( 'select', 'multiselect' );
 
-		if ( in_array( $this->display_type, $non_hierarchy_accordion_display_types ) ) {
+		if ( in_array( $this->display_type, $non_hierarchy_accordion_display_types, true ) ) {
 			return false;
 		}
 
@@ -377,7 +613,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the meta key assigned to the current field.
+	 *
+	 * @return string Meta key.
 	 */
 	private function get_meta_key() {
 		$meta_key = $this->get_sub_field_value( 'meta_key' );
@@ -386,7 +624,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the value type for the current field.
+	 *
+	 * @return string Value type.
 	 */
 	private function get_value_type() {
 		$default_value_type = $this->field_default_value_type();
@@ -395,7 +635,9 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * @return string
+	 * Retrieves the SQL data type used for numeric filtering.
+	 *
+	 * @return string SQL data type.
 	 */
 	private function get_number_data_type() {
 		$data_type = 'SIGNED';
@@ -418,6 +660,11 @@ class WCAPF_Field_Instance {
 		return apply_filters( 'wcapf_number_data_type', $data_type, $this->instance );
 	}
 
+	/**
+	 * Retrieves the post property mapped to the current field type.
+	 *
+	 * @return string Post property.
+	 */
 	private function get_post_property() {
 		$type     = $this->get_field_type();
 		$property = '';
@@ -430,9 +677,13 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
+	 * Determines whether store name usage is enabled.
+	 *
+	 * Returns an empty string when no supported vendor plugin is active.
+	 *
 	 * @since 3.3.0
 	 *
-	 * @return string
+	 * @return string Store name setting value.
 	 */
 	private function is_store_name_enabled() {
 		if ( ! WCAPF_Helper::is_vendor_plugin_found() ) {
@@ -469,13 +720,15 @@ class WCAPF_Field_Instance {
 	}
 
 	/**
-	 * Determines if reduce height is possible according to the display type.
+	 * Determines whether reduce-height behavior is allowed for the current field.
 	 *
-	 * @param string $field
+	 * The result depends on the current display type and the requested context.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool
+	 * @param string $field Context for the check. Accepts `reduce-height` or `search`.
+	 *
+	 * @return bool True if reduce-height behavior is allowed, otherwise false.
 	 */
 	private function is_reduce_height_possible( $field = 'reduce-height' ) {
 		if ( $this->taxonomy_is_hierarchical() && 'search' === $field ) {
@@ -504,7 +757,7 @@ class WCAPF_Field_Instance {
 			);
 		}
 
-		if ( in_array( $this->display_type, $not_allowed_display_types ) ) {
+		if ( in_array( $this->display_type, $not_allowed_display_types, true ) ) {
 			return false;
 		}
 
@@ -534,7 +787,7 @@ class WCAPF_Field_Instance {
 	 * @return float
 	 */
 	private function filter_options_max_height() {
-		return floatval( $this->get_sub_field_value( 'max_height' ) );
+		return (float) $this->get_sub_field_value( 'max_height' );
 	}
 
 	/**
@@ -569,5 +822,4 @@ class WCAPF_Field_Instance {
 	private function is_max_height_enabled() {
 		return 'max_height' === $this->enable_reduce_height && 1 <= $this->max_height;
 	}
-
 }

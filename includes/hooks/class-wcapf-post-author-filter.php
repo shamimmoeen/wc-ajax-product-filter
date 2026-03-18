@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/hooks
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Post_Author_Filter class.
@@ -48,7 +53,9 @@ class WCAPF_Post_Author_Filter {
 	}
 
 	/**
-	 * @param array                $args           The arguments of the get_users function.
+	 * Limits the list of post authors based on filter settings.
+	 *
+	 * @param array                $args           The arguments of the get_users() function.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -63,6 +70,7 @@ class WCAPF_Post_Author_Filter {
 		if ( 'include' === $limit_options ) {
 			$args['include'] = $field_instance->get_sub_field_value( 'include_authors' );
 		} elseif ( 'exclude' === $limit_options ) {
+			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 			$args['exclude'] = $field_instance->get_sub_field_value( 'exclude_authors' );
 		} elseif ( 'user_roles' === $limit_options ) {
 			$args['role__in'] = $field_instance->get_sub_field_value( 'include_user_roles' );
@@ -72,7 +80,9 @@ class WCAPF_Post_Author_Filter {
 	}
 
 	/**
-	 * @param array                $args           The arguments of the get_users function.
+	 * Sorts the list of post authors based on filter settings.
+	 *
+	 * @param array                $args           The arguments of the get_users() function.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -82,7 +92,7 @@ class WCAPF_Post_Author_Filter {
 		$order_by  = $field_instance->get_sub_field_value( 'post_author_order_by' );
 		$order_dir = $field_instance->get_sub_field_value( 'post_author_order_dir' );
 
-		if ( in_array( $order_by, $allowed ) ) {
+		if ( in_array( $order_by, $allowed, true ) ) {
 			$args['orderby'] = $order_by;
 		}
 
@@ -94,7 +104,6 @@ class WCAPF_Post_Author_Filter {
 
 		return $args;
 	}
-
 }
 
 WCAPF_Post_Author_Filter::instance();

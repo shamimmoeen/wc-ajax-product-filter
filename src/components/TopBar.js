@@ -35,8 +35,7 @@ const TopBar = ({ view }) => {
 			<div className='__top_bar'>
 				<div className='__navbar'>
 					<h2>
-						<Icon icon={'filter'} className='__icon' />
-						WCAPF - WooCommerce Ajax Product Filter
+						WCAPF<span> – Ajax Product Filter for WooCommerce</span>
 					</h2>
 
 					{navMenus.map((menu) => {

@@ -24,6 +24,7 @@ dependencies.yml
 Gruntfile.js
 gulpfile.js
 note.php
+note.txt
 package.json
 package-lock.json
 phpunit.xml
@@ -47,6 +48,7 @@ node_modules
 *.zip
 .dist
 .vscode
+.geminiignore
 
 # Ignore source codes.
 public/lib/chosen/chosen.scss

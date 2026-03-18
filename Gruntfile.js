@@ -31,7 +31,7 @@ module.exports = function( grunt ) {
 			target: {
 				options: {
 					domainPath: '/languages',
-					exclude: [ '\.git/*', 'bin/*', 'node_modules/*', 'tests/*' ],
+					exclude: [ '\.git/*', 'bin/*', 'node_modules/*', 'tests/*', 'src/*' ],
 					mainFile: 'wc-ajax-product-filter.php',
 					potFilename: 'wc-ajax-product-filter.pot',
 					potHeaders: {

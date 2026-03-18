@@ -22,7 +22,7 @@ const V4MigrationNotice = () => {
 				>
 					<p>
 						<strong>
-							WCAPF - WooCommerce Ajax Product Filter (v4
+							WCAPF – Ajax Product Filter for WooCommerce (v4
 							Migration Notice)
 						</strong>
 					</p>

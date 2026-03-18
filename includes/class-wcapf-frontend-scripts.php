@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Frontend_Scripts class.
@@ -16,9 +21,20 @@
 class WCAPF_Frontend_Scripts {
 
 	/**
+	 * Core plugin version.
+	 *
+	 * Uses the free/basic plugin version when available; otherwise falls back
+	 * to the main plugin version.
+	 *
+	 * @var string
+	 */
+	private $core_version;
+
+	/**
 	 * Constructor.
 	 */
 	private function __construct() {
+		$this->core_version = defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION;
 	}
 
 	/**
@@ -98,7 +114,7 @@ class WCAPF_Frontend_Scripts {
 		$primary_text_color = WCAPF_Helper::wcapf_option( 'primary_text_color', '#ffffff' );
 		$star_icon_color    = WCAPF_Helper::wcapf_option( 'star_icon_color', 'rgb(240, 201, 48)' );
 
-		list( $r, $g, $b ) = WCAPF_Helper::get_rgb_from_hex( $primary_color );
+		list( $r, $g, $b )    = WCAPF_Helper::get_rgb_from_hex( $primary_color );
 		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
 
 		$variables = ":root {
@@ -134,7 +150,7 @@ class WCAPF_Frontend_Scripts {
 				'wcapf-popper',
 				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/popper.min.js',
 				array(),
-				false,
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/tippyjs/popper.min.js' ),
 				true
 			);
 
@@ -142,12 +158,12 @@ class WCAPF_Frontend_Scripts {
 				'wcapf-tippy',
 				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/tippy-bundle.umd.min.js',
 				array(),
-				false,
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/tippyjs/tippy-bundle.umd.min.js' ),
 				true
 			);
 		}
 
-		wp_register_script( 'wcapf-params', false, array(), false, true );
+		wp_register_script( 'wcapf-params', false, array(), $this->core_version, true );
 		wp_localize_script( 'wcapf-params', 'wcapf_params', $this->get_js_params() );
 
 		$deps = array( 'jquery', 'wcapf-params' );
@@ -246,7 +262,6 @@ class WCAPF_Frontend_Scripts {
 
 		return apply_filters( 'wcapf_js_params', $params );
 	}
-
 }
 
 WCAPF_Frontend_Scripts::instance();

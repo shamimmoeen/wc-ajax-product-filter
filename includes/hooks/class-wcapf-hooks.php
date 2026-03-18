@@ -1,12 +1,17 @@
 <?php
 /**
- * WCAPF - WooCommerce Ajax Product Filter hooks class.
+ * WCAPF – Ajax Product Filter for WooCommerce hooks class.
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/hooks
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Hooks class.
@@ -119,29 +124,40 @@ class WCAPF_Hooks {
 			return;
 		}
 
-		$html = '<div class="wcapf-loader">';
-
 		$loading_animation = WCAPF_Helper::wcapf_option( 'loading_animation', 'overlay-with-icon' );
 
+		echo '<div class="wcapf-loader">';
+
 		if ( 'overlay-with-icon' === $loading_animation ) {
+			$allowed_loaders = array(
+				'Dual-Ring',
+				'Eclipse',
+				'Gear',
+				'Reload',
+				'Ripple',
+				'Rolling',
+				'Spin',
+				'Spinner',
+			);
+
 			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Dual-Ring' );
 
-			$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_image . '.svg';
-
-			// Default image.
-			if ( ! file_exists( $image_file ) ) {
-				$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/Dual-Ring.svg';
+			if ( ! in_array( $loading_image, $allowed_loaders, true ) ) {
+				$loading_image = 'Dual-Ring';
 			}
 
+			$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_image . '.svg';
 			$image_size = WCAPF_Helper::wcapf_option( 'loading_image_size', '60' ) . 'px';
-			$image      = file_get_contents( $image_file );
 
-			$html .= '<div class="wcapf-loader-image" style="width: ' . $image_size . '">' . $image . '</div>';
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reading trusted local SVG bundled with the plugin.
+			$image = file_get_contents( $image_file );
+
+			echo '<div class="wcapf-loader-image" style="width: ' . esc_attr( $image_size ) . '">';
+			echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</div>';
 		}
 
-		$html .= '</div>';
-
-		echo $html;
+		echo '</div>';
 	}
 
 	/**
@@ -186,6 +202,8 @@ class WCAPF_Hooks {
 
 	/**
 	 * Prevent redirecting to the product page if a single result is found while filtering on the search page.
+	 *
+	 * @param bool $redirect Whether to redirect to the single search result.
 	 *
 	 * @since 3.3.2
 	 *
@@ -291,14 +309,18 @@ class WCAPF_Hooks {
 				)
 			);
 
+			$args = WCAPF_Helper::prepare_active_filters_args( $active_filters_on_top_args );
+
 			echo '<div class="wcapf-active-filters-before-shop-loop">';
-			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $active_filters_on_top_args );
+			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
 			echo '</div>';
 		}
 	}
 
 	/**
 	 * Renders the active filters before no products found template.
+	 *
+	 * @param string $template_name The template name.
 	 *
 	 * @since 4.0.0
 	 *
@@ -327,7 +349,7 @@ class WCAPF_Hooks {
 		$empty_options = array( 'show', 'remove' );
 		$remove_empty  = WCAPF_Helper::wcapf_option( 'remove_empty' );
 
-		if ( ! in_array( $remove_empty, $empty_options ) ) {
+		if ( ! in_array( $remove_empty, $empty_options, true ) ) {
 			$remove_empty = 'show';
 		}
 
@@ -382,6 +404,8 @@ class WCAPF_Hooks {
 	}
 
 	/**
+	 * Filters the main query SQL clauses for product filtering.
+	 *
 	 * @param array    $args     The query clauses.
 	 * @param WP_Query $wp_query Query instance.
 	 *
@@ -399,7 +423,6 @@ class WCAPF_Hooks {
 
 		return $args;
 	}
-
 }
 
 add_action( 'plugins_loaded', array( 'WCAPF_Hooks', 'instance' ) );

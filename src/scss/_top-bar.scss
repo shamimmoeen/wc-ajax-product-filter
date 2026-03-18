@@ -32,6 +32,12 @@
 
             @include horizontal-space(4px);
         }
+
+		span:not(.dashicon) {
+			@media (max-width: 1050px) {
+				display: none;
+			}
+		}
     }
 
     a:not(.__upgrade_btn) {
@@ -65,10 +71,6 @@
     .__cta {
         display: flex;
         gap: 16px;
-
-        @media (max-width: 767px) {
-            display: none;
-        }
 
         .__plan,
         .__version {

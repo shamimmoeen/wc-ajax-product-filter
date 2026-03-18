@@ -5,31 +5,30 @@
  * @since      4.1.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/templates
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
 
 /**
- * @var string $placeholder   The input field placeholder text.
- * @var string $value         The input field value.
- * @var string $icon_position Determines the icon position, left or right side.
- * @var string $with_cross    Determines if we show the cross icon to clear the input field.
+ * Template variables passed from the template loader.
+ *
+ * @var string $placeholder        The input field placeholder text.
+ * @var string $value              The input field value.
+ * @var string $icon_position      Determines the icon position, left or right side.
+ * @var bool   $with_cross         Determines if we show the cross icon to clear the input field.
+ * @var string $search_box_classes The CSS classes for the container.
  */
 
-$classes = 'wcapf-search-box';
-
-if ( 'left' === $icon_position || 'right' === $icon_position ) {
-	$classes .= ' with-icon icon-' . $icon_position;
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-if ( $with_cross ) {
-	$classes .= ' with-cross';
-}
 ?>
 
-<div class="<?php echo esc_attr( $classes ); ?>">
+<div class="<?php echo esc_attr( $search_box_classes ); ?>">
 	<input type="text" placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>">
 
-	<?php if ( 'left' === $icon_position || 'right' === $icon_position ): ?>
+	<?php if ( 'left' === $icon_position || 'right' === $icon_position ) : ?>
 		<span class="wcapf-search-icon">
 			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path

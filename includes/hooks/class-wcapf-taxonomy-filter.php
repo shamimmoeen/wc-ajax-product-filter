@@ -5,8 +5,13 @@
  * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes/hooks
- * @author     wptools.io
+ * @author     Mainul Hassan
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WCAPF_Taxonomy_Filter class.
@@ -54,7 +59,9 @@ class WCAPF_Taxonomy_Filter {
 	}
 
 	/**
-	 * @param array                $args           The arguments of the get_terms function.
+	 * Limits taxonomy terms based on field settings.
+	 *
+	 * @param array                $args           The arguments of the get_terms() function.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -104,7 +111,9 @@ class WCAPF_Taxonomy_Filter {
 	}
 
 	/**
-	 * @param array                $args           The arguments of the get_terms function.
+	 * Sorts taxonomy terms based on field settings.
+	 *
+	 * @param array                $args           The arguments of the get_terms() function.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
@@ -118,7 +127,7 @@ class WCAPF_Taxonomy_Filter {
 		$order_by  = $field_instance->get_sub_field_value( 'order_terms_by' );
 		$order_dir = $field_instance->get_sub_field_value( 'order_terms_dir' );
 
-		if ( in_array( $order_by, $allowed ) ) {
+		if ( in_array( $order_by, $allowed, true ) ) {
 			if ( 'id' === $order_by ) {
 				$order_by = 'term_id';
 			}
@@ -136,6 +145,8 @@ class WCAPF_Taxonomy_Filter {
 	}
 
 	/**
+	 * Adjusts parent term IDs for hierarchical taxonomy terms.
+	 *
 	 * @param array                $terms          The taxonomy terms.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -174,6 +185,8 @@ class WCAPF_Taxonomy_Filter {
 	}
 
 	/**
+	 * Converts term slugs to term IDs for taxonomy filters.
+	 *
 	 * @param array                $values         The filter values.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
@@ -205,7 +218,9 @@ class WCAPF_Taxonomy_Filter {
 	}
 
 	/**
-	 * @param array                $ancestor_ids   The ancestor term ids.
+	 * Converts active ancestor term IDs to term slugs.
+	 *
+	 * @param array                $ancestor_ids   The ancestor term IDs.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array The ancestor term slugs.
@@ -240,6 +255,8 @@ class WCAPF_Taxonomy_Filter {
 	}
 
 	/**
+	 * Builds active filter data from taxonomy term slugs.
+	 *
 	 * @param array                $filter_data    The filter data.
 	 * @param WCAPF_Field_Instance $field_instance The field instance.
 	 * @param array                $term_slugs     The term slugs.
@@ -277,7 +294,6 @@ class WCAPF_Taxonomy_Filter {
 
 		return $sorted;
 	}
-
 }
 
 WCAPF_Taxonomy_Filter::instance();
