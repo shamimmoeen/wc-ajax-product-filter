@@ -23,6 +23,8 @@ composer.lock
 dependencies.yml
 Gruntfile.js
 gulpfile.js
+gulpfile.mjs
+release.sh
 note.php
 note.txt
 package.json
@@ -34,8 +36,6 @@ multisite.xml.dist
 .phpcs.xml
 .prettierrc
 phpcs.xml
-.phpcs.xml.dist
-phpcs.xml.dist
 README.md
 webpack.config.js
 wp-cli.local.yml
