@@ -558,7 +558,7 @@ class WCAPF_Helper {
 			$attrs  = 'class="' . esc_attr( $classes ) . '"';
 			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
-			$html .= '<button ' . $attrs . '>';
+			$html .= '<button type="button" ' . $attrs . '>';
 			$html .= '<span class="wcapf-nav-item-text">'; // To avoid the flex wrap issue.
 			$html .= wp_kses_post( $label );
 			$html .= '</span>';
@@ -602,7 +602,7 @@ class WCAPF_Helper {
 			$attrs .= ' disabled="disabled"';
 		}
 
-		$html  = '<button class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
+		$html  = '<button type="button" class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
 		$html .= esc_html( $button_label );
 		$html .= '</button>';
 

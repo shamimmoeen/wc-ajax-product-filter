@@ -3,8 +3,8 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/public/src/js
- * @author     wptools.io
+ * @subpackage wc-ajax-product-filter/public/js
+ * @author     Mainul Hassan
  */
 
 const wcapf_params = wcapf_params || {
@@ -1048,6 +1048,11 @@ const wcapf_params = wcapf_params || {
 			WCAPF.initDatepicker();
 			WCAPF.initFilterOptionTooltip();
 		},
+		handleFormSubmit: function() {
+			$body.on( 'submit', '.wcapf-form', function( e ) {
+				e.preventDefault();
+			} );
+		},
 		initPopState: function() {
 			if ( wcapf_params.reload_on_back && wcapf_params.found_wcapf ) {
 				history.replaceState( { wcapf: true }, '', window.location );
@@ -1093,6 +1098,8 @@ const wcapf_params = wcapf_params || {
 	WCAPF.handleClearFilter();
 
 	WCAPF.handleFilterTooltip();
+
+	WCAPF.handleFormSubmit();
 
 	/**
 	 * Make it compatible with other plugins.

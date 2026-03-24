@@ -71,7 +71,7 @@ class WCAPF_Form {
 		$form_classes = 'wcapf-form wcapf-form-' . sanitize_html_class( $form_id );
 
 		printf(
-			'<div class="%1$s" data-id="%2$s">',
+			'<form class="%1$s" data-id="%2$s" novalidate>',
 			esc_attr( $form_classes ),
 			esc_attr( $form_id )
 		);
@@ -137,7 +137,7 @@ class WCAPF_Form {
 
 		do_action( 'wcapf_after_form_filters', $form_id );
 
-		echo '</div><!-- .wcapf-filter-form -->';
+		echo '</form><!-- .wcapf-filter-form -->';
 
 		$this->set_done();
 	}

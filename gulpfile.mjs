@@ -1,14 +1,19 @@
-const { src, dest, watch, series } = require( 'gulp' );
-const sass = require( 'gulp-sass' );
-const sourcemaps = require( 'gulp-sourcemaps' );
-const touch = require( 'gulp-touch-cmd' );
-const autoPrefix = require( 'gulp-autoprefixer' );
-const babel = require( 'gulp-babel' );
-const concat = require( 'gulp-concat' );
-const minCss = require( 'gulp-minify-css' );
-const rename = require( 'gulp-rename' );
-const uglify = require( 'gulp-uglify' );
-const browserSync = require( 'browser-sync' ).create();
+import gulp from 'gulp';
+import gulpSass from 'gulp-sass';
+import * as dartSass from 'sass';
+import sourcemaps from 'gulp-sourcemaps';
+import touch from 'gulp-touch-cmd';
+import autoPrefix from 'gulp-autoprefixer';
+import babel from 'gulp-babel';
+import concat from 'gulp-concat';
+import minCss from 'gulp-minify-css';
+import rename from 'gulp-rename';
+import uglify from 'gulp-uglify';
+import browserSync from 'browser-sync';
+
+const { src, dest, watch, series } = gulp;
+const sass = gulpSass( dartSass );
+const bs = browserSync.create();
 
 /**
  * @source https://stackoverflow.com/a/34028652
@@ -22,7 +27,7 @@ function frontendCss() {
 		.pipe( autoPrefix() )
 		.pipe( sourcemaps.write() )
 		.pipe( dest( DEST ) ) // Output non-minified css file
-		.pipe( browserSync.stream() )
+		.pipe( bs.stream() )
 
 		.pipe( minCss() )
 		.pipe( rename( { extname: '.min.css' } ) )
@@ -40,7 +45,7 @@ function chosenCss() {
 		.pipe( autoPrefix() )
 		.pipe( sourcemaps.write() )
 		.pipe( dest( DEST ) ) // Output non-minified css file
-		.pipe( browserSync.stream() )
+		.pipe( bs.stream() )
 
 		.pipe( minCss() )
 		.pipe( rename( { extname: '.min.css' } ) )
@@ -76,9 +81,9 @@ function frontendJs() {
 }
 
 function browser() {
-	browserSync.init(
+	bs.init(
 		{
-			open: false, // Stop the browser from automatically opening
+			open: false, // Stop the browser from automatically opening.
 			proxy: 'http://wcfilter-2.test/',
 			files: [
 				'./**/*.php',
@@ -88,7 +93,7 @@ function browser() {
 
 	watch( './public/src/scss/**/*.scss', frontendCss );
 	watch( './public/lib/chosen/chosen.scss', chosenCss );
-	watch( './public/src/js/**/*.js', frontendJs ).on( 'change', browserSync.reload );
+	watch( './public/src/js/**/*.js', frontendJs ).on( 'change', bs.reload );
 }
 
 function watchBuild() {
@@ -101,8 +106,5 @@ const build = series(
 	frontendJs,
 );
 
-module.exports.frontendCss = frontendCss;
-module.exports.frontendJs = frontendJs;
-module.exports.watchBuild = watchBuild;
-module.exports.build = build;
-module.exports.default = browser;
+export { frontendCss, frontendJs, watchBuild, build };
+export default browser;
