@@ -6,7 +6,6 @@ import ProFeaturesNotice from '../../ProFeaturesNotice';
 import { useSettings } from '../SettingsContext';
 import useSettingsData from '../useSettingsData';
 import Textarea from '../../Field/Textarea';
-import Number from '../../Field/Number';
 
 const userRoles = wcapf_admin_params.user_roles;
 
@@ -38,7 +37,6 @@ const Others = () => {
 			results_count_markup,
 			sort_by_prefix,
 			per_page_prefix,
-			input_delay,
 			pagination_container,
 			more_selectors,
 			custom_scripts,
@@ -215,19 +213,6 @@ const Others = () => {
 			)}
 
 			<div className='__form_fields_separator' />
-
-			<Number
-				id={'input_delay'}
-				label={__('Input Delay', 'wc-ajax-product-filter')}
-				description={__(
-					'Specify the delay (in milliseconds) before triggering the filter action when the user interacts with the input fields. Default is 300.',
-					'wc-ajax-product-filter'
-				)}
-				value={input_delay}
-				onChange={handleTextFieldChange}
-				type={'number'}
-				min={0}
-			/>
 
 			<Text
 				id={'pagination_container'}

@@ -234,7 +234,7 @@ class WCAPF_Frontend_Scripts {
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
-			'filter_input_delay'                       => WCAPF_Helper::wcapf_option( 'input_delay' ),
+			'filter_input_delay'                       => apply_filters( 'wcapf_slider_keyboard_delay', (int) WCAPF_Helper::wcapf_option( 'input_delay' ) ),
 			'keyword_filter_delay'                     => 100,
 			'combobox_display_selected_options'        => false,
 			'combobox_no_results_text'                 => $combobox_no_results_text,

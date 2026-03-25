@@ -105,7 +105,7 @@ class WCAPF_Default_Data {
 			'results_count_markup'             => '',
 			'sort_by_prefix'                   => '',
 			'per_page_prefix'                  => '',
-			'input_delay'                      => '300',
+			'input_delay'                      => '1000',
 			'pagination_container'             => '.woocommerce-pagination',
 			'more_selectors'                   => '',
 			'custom_scripts'                   => '',
