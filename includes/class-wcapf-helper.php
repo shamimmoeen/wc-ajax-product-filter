@@ -673,7 +673,7 @@ class WCAPF_Helper {
 			$clear_all_btn_layout = 'block';
 		}
 
-		$unique_id = wp_unique_id( 'af-' );
+		$unique_id = ! empty( $raw_args['unique_id'] ) ? $raw_args['unique_id'] : wp_unique_id( 'af-' );
 		$classes   = array( 'wcapf-active-filters', 'wcapf-active-filters-' . $unique_id );
 		$classes[] = 'layout-' . $layout;
 		$classes[] = 'clear-all-btn-layout-' . $clear_all_btn_layout;
@@ -733,7 +733,7 @@ class WCAPF_Helper {
 
 		$active_filters = self::get_active_filters_data();
 
-		$unique_id = wp_unique_id( 'rf-' );
+		$unique_id = ! empty( $args['unique_id'] ) ? $args['unique_id'] : wp_unique_id( 'rf-' );
 		$classes   = array( 'wcapf-reset-filters', 'wcapf-reset-filters-' . $unique_id );
 
 		$should_render = true;

@@ -36,6 +36,7 @@ class WCAPF_Active_Filters_Shortcode {
 	public function shortcode_output( $attrs = array() ) {
 		$a = shortcode_atts(
 			array(
+				'id'                   => '',
 				'title'                => __( 'Active Filters', 'wc-ajax-product-filter' ),
 				'layout'               => 'simple',
 				'empty_message'        => '',
@@ -44,6 +45,10 @@ class WCAPF_Active_Filters_Shortcode {
 			),
 			$attrs
 		);
+
+		if ( $a['id'] ) {
+			$a['unique_id'] = $a['id'];
+		}
 
 		$args = WCAPF_Helper::prepare_active_filters_args( $a );
 

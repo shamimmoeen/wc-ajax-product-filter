@@ -197,6 +197,7 @@ class WCAPF_Form {
 
 		$args = WCAPF_Helper::prepare_active_filters_args(
 			array(
+				'unique_id'            => $field_instance->filter_id,
 				'title'                => $title,
 				'show_title'           => $show_title,
 				'layout'               => $layout,
@@ -220,6 +221,7 @@ class WCAPF_Form {
 	private function render_reset_button( $field_instance ) {
 		$args = WCAPF_Helper::prepare_reset_button_args(
 			array(
+				'unique_id'   => $field_instance->filter_id,
 				'btn_label'   => WCAPF_Helper::reset_button_label(),
 				'show_always' => $field_instance->get_sub_field_value( 'show_if_empty' ),
 			)
