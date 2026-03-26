@@ -754,11 +754,11 @@ class WCAPF_Product_Filter {
 			'number'  => 1,
 		);
 
+		$users = get_users( $args );
+
 		if ( empty( $users ) ) {
 			return $value; // Fall back to raw value.
 		}
-
-		$users = get_users( $args );
 
 		/**
 		 * The user object.
