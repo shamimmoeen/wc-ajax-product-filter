@@ -1,11 +1,15 @@
 import { __ } from '@wordpress/i18n';
 import { useSettings } from '../SettingsContext';
 import Checkbox from '../../Field/Checkbox';
+import Text from '../../Field/Text';
+import SelectMulti from '../../Field/SelectMulti';
 import useSettingsData from '../useSettingsData';
+
+const userRoles = wcapf_admin_params.user_roles;
 
 const Integration = () => {
 	const { state, dispatch } = useSettings();
-	const { handleCheckboxChange } = useSettingsData(state, dispatch);
+	const { handleCheckboxChange, handleTextFieldChange, handleAuthorRolesChange } = useSettingsData(state, dispatch);
 
 	const {
 		settings: {
@@ -16,6 +20,10 @@ const Integration = () => {
 			use_term_slug,
 			child_terms_only,
 			vendor_support,
+			pagination_container,
+			more_selectors,
+			author_roles,
+			multiple_form_locations,
 		},
 	} = state;
 
@@ -105,6 +113,63 @@ const Integration = () => {
 				onChange={handleCheckboxChange}
 				isPro
 			/>
+
+			<Text
+				id={'pagination_container'}
+				label={__('Pagination container', 'wc-ajax-product-filter')}
+				description={__(
+					"CSS selector of the pagination element. Supports multiple selectors separated by commas. In most cases you don't need to change this. Only applicable when filtering via Ajax.",
+					'wc-ajax-product-filter'
+				)}
+				value={pagination_container}
+				onChange={handleTextFieldChange}
+			/>
+
+			{WCAPF_PRO && (
+				<Text
+					id={'more_selectors'}
+					label={__('Additional selectors', 'wc-ajax-product-filter')}
+					description={__(
+						'CSS selectors of additional elements to update after an Ajax filter. Separate multiple selectors with commas.',
+						'wc-ajax-product-filter'
+					)}
+					value={more_selectors}
+					onChange={handleTextFieldChange}
+					isPro
+				/>
+			)}
+
+			<SelectMulti
+				id={'author_roles'}
+				label={__('Post-Author Filter Roles', 'wc-ajax-product-filter')}
+				description={__(
+					'WordPress user roles whose members will appear in the <b>Available Options</b> picker when setting up a post-author filter.',
+					'wc-ajax-product-filter'
+				)}
+				isMultiple={true}
+				value={author_roles}
+				onChange={handleAuthorRolesChange}
+				type={'author'}
+				isUserRoles={true}
+				options={userRoles}
+				maxMenuHeight={WCAPF_PRO ? 200 : 100}
+			/>
+
+			{WCAPF_PRO && (
+				<Checkbox
+					id={'multiple_form_locations'}
+					label={__(
+						'Form multiple locations',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Enable this if you want to reuse the same form in multiple locations on a page.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={multiple_form_locations}
+					onChange={handleCheckboxChange}
+				/>
+			)}
 		</>
 	);
 };

@@ -20,7 +20,7 @@ import Appearance from './Tabs/Appearance';
 import Integration from './Tabs/Integration';
 import CustomTabPanel from '../CustomTabPanel';
 import LoaderScrollTo from './Tabs/LoaderScrollTo';
-import Others from './Tabs/Others';
+import Phrases from './Tabs/Phrases';
 import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
@@ -54,7 +54,7 @@ const tabs = [
 	},
 	{
 		name: 'others',
-		title: __('Others', 'wc-ajax-product-filter'),
+		title: __('Phrases', 'wc-ajax-product-filter'),
 	},
 	{
 		name: 'miscellaneous',
@@ -340,7 +340,7 @@ const Settings = () => {
 									} else if ('filter-keys' === name) {
 										return <FilterKeys />;
 									} else if ('others' === name) {
-										return <Others />;
+										return <Phrases />;
 									} else if ('miscellaneous' === name) {
 										return <Miscellaneous />;
 									}

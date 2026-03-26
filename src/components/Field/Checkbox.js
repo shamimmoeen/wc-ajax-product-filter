@@ -1,5 +1,5 @@
 import { CheckboxControl } from '@wordpress/components';
-import { getInputId, proTag } from '../utils';
+import { getInputId, isProFeature, proTag } from '../utils';
 import TippyTooltip from '../TippyTooltip';
 
 const Checkbox = ({
@@ -31,7 +31,7 @@ const Checkbox = ({
 							checked={isChecked}
 							id={inputId}
 							onChange={(value) => onChange(value, id, index)}
-							disabled={isDisabled}
+							disabled={isDisabled || isProFeature(isPro)}
 						/>
 					</div>
 				</div>
