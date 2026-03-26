@@ -402,6 +402,9 @@ class WCAPF_Hooks {
 
 			if ( $keyword ) {
 				$q->set( 's', $keyword );
+
+				// Prevent native WP/WooCommerce search form widgets from being pre-filled with the WCAPF keyword.
+				add_filter( 'get_search_query', '__return_empty_string' );
 			}
 		}
 	}
