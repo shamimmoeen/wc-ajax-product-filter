@@ -247,7 +247,7 @@ const AvailableOn = () => {
 						{WCAPF_PRO && (
 							<TippyTooltip
 								content={__(
-									'If you want to reuse a form in multiple locations enable it from "Settings > Others" tab.',
+									'If you want to reuse a form in multiple locations enable it from "Settings > Integration" tab.',
 									'wc-ajax-product-filter'
 								)}
 							/>
