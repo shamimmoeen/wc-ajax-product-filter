@@ -632,44 +632,6 @@ const wcapf_params = wcapf_params || {
 				}
 			} );
 		},
-		handleDateInputFilters: function() {
-			$body.on( 'change', '.wcapf-date-input .date-input', function() {
-				const $filter = $( this ).closest( '.wcapf-date-input' );
-				const isRange = $filter.data( 'is-range' );
-
-				let filterUrl = '';
-
-				// Clear any previously set timer before setting a fresh one
-				clearTimeout( $filter.data( 'timer' ) );
-
-				if ( isRange ) {
-					const from = $filter.find( '.date-from-input' ).val();
-					const to   = $filter.find( '.date-to-input' ).val();
-
-					if ( from && to ) {
-						filterUrl = $filter.data( 'url' ).replace( '%1s', from ).replace( '%2s', to );
-					} else if ( ! from && ! to ) {
-						filterUrl = $filter.data( 'clear-filter-url' );
-					}
-				} else {
-					const from = $filter.find( '.date-from-input' ).val();
-
-					if ( from ) {
-						filterUrl = $filter.data( 'url' ).replace( '%s', from );
-					} else {
-						filterUrl = $filter.data( 'clear-filter-url' );
-					}
-				}
-
-				if ( filterUrl ) {
-					$filter.data( 'timer', setTimeout( function() {
-						$filter.removeData( 'timer' );
-
-						WCAPF.requestFilter( filterUrl );
-					}, delay ) );
-				}
-			} );
-		},
 		handleListFilters: function() {
 			const nativeInputs = '.list-type-native [type="checkbox"],' +
 				'.list-type-native [type="radio"],' +
@@ -993,32 +955,6 @@ const wcapf_params = wcapf_params || {
 				} );
 			} );
 		},
-		initDatepicker: function() {
-			if ( ! jQuery().datepicker ) {
-				return;
-			}
-
-			const $wcapfDateFilter = $body.find( '.wcapf-date-input' );
-
-			const format        = $wcapfDateFilter.attr( 'data-date-format' );
-			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
-			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
-
-			const $from = $wcapfDateFilter.find( '.date-from-input' );
-			const $to   = $wcapfDateFilter.find( '.date-to-input' );
-
-			$from.datepicker( {
-				dateFormat: format,
-				changeYear: yearDropdown,
-				changeMonth: monthDropdown,
-			} );
-
-			$to.datepicker( {
-				dateFormat: format,
-				changeYear: yearDropdown,
-				changeMonth: monthDropdown,
-			} );
-		},
 		initFilterOptionTooltip: function() {
 			// noinspection JSUnresolvedReference
 			if ( 'function' !== typeof tippy ) {
@@ -1049,7 +985,6 @@ const wcapf_params = wcapf_params || {
 		init: function() {
 			WCAPF.initCombobox();
 			WCAPF.initRangeSlider();
-			WCAPF.initDatepicker();
 			WCAPF.initFilterOptionTooltip();
 		},
 		handleFormSubmit: function() {
@@ -1095,7 +1030,6 @@ const wcapf_params = wcapf_params || {
 	WCAPF.handleListFilters();
 	WCAPF.handleDropdownFilters();
 	WCAPF.handleNumberInputFilters();
-	WCAPF.handleDateInputFilters();
 	WCAPF.handlePagination();
 	WCAPF.handleDefaultOrderby();
 
