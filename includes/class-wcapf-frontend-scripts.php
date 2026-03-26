@@ -88,19 +88,23 @@ class WCAPF_Frontend_Scripts {
 			? '.min.css'
 			: '.css';
 
-		wp_enqueue_style(
-			'wcapf-chosen',
-			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
-		);
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+			wp_enqueue_style(
+				'wcapf-chosen',
+				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
+				array(),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
+			);
+		}
 
-		wp_enqueue_style(
-			'wcapf-nouislider',
-			WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext )
-		);
+		if ( empty( WCAPF_Helper::wcapf_option( 'disable_nouislider_js' ) ) ) {
+			wp_enqueue_style(
+				'wcapf-nouislider',
+				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
+				array(),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext )
+			);
+		}
 
 		wp_enqueue_style(
 			'wc-ajax-product-filter-styles',
@@ -129,23 +133,27 @@ class WCAPF_Frontend_Scripts {
 			? '.min.js'
 			: '.js';
 
-		wp_enqueue_script(
-			'wcapf-chosen',
-			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
-			true
-		);
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+			wp_enqueue_script(
+				'wcapf-chosen',
+				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
+				array( 'jquery' ),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
+				true
+			);
+		}
 
-		wp_enqueue_script(
-			'wcapf-nouislider',
-			WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext ),
-			true
-		);
+		if ( empty( WCAPF_Helper::wcapf_option( 'disable_nouislider_js' ) ) ) {
+			wp_enqueue_script(
+				'wcapf-nouislider',
+				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
+				array( 'jquery' ),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext ),
+				true
+			);
+		}
 
-		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
+		if ( empty( WCAPF_Helper::wcapf_option( 'disable_tippyjs' ) ) && WCAPF_Helper::use_tippyjs_for_tooltip() ) {
 			wp_enqueue_script(
 				'wcapf-popper',
 				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/popper.min.js',
