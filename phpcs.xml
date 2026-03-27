@@ -32,8 +32,16 @@
 		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
 		<exclude name="WordPress.Security.EscapeOutput"/>
 		-->
+	</rule>
 
+	<!-- Inline comments do not need to end with a full stop. -->
+	<rule ref="Squiz.Commenting.InlineComment">
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+	</rule>
+
+	<!-- Files may contain both a class and a companion helper function — common WordPress pattern. -->
+	<rule ref="Universal.Files.SeparateFunctionsFromOO">
+		<exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed"/>
 	</rule>
 
 	<!-- Let's also check that everything is properly documented. -->
@@ -83,11 +91,10 @@
 		</properties>
 	</rule>
 
+	<!-- Line length is not enforced; SQL strings and hook names routinely exceed any reasonable limit. -->
 	<rule ref="Generic.Files.LineLength">
-		<properties>
-			<property name="lineLimit" value="120"/>
-			<property name="absoluteLineLimit" value="0"/>
-		</properties>
+		<exclude name="Generic.Files.LineLength.TooLong"/>
+		<exclude name="Generic.Files.LineLength.MaxExceeded"/>
 	</rule>
 
 </ruleset>
