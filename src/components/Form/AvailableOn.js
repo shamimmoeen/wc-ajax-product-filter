@@ -32,14 +32,14 @@ const Location = ({
 		product_query,
 	} = locationData;
 
-	const firstRender = useRef(true);
+	const prevLocation = useRef(_location);
 
 	useLayoutEffect(() => {
-		if (firstRender.current) {
-			firstRender.current = false;
-
+		if (_location === prevLocation.current) {
 			return;
 		}
+
+		prevLocation.current = _location;
 
 		updateLocation('sub_location', '');
 	}, [_location]);
@@ -201,7 +201,7 @@ const AvailableOn = () => {
 
 	let formLocations = [];
 
-	if (formLocations) {
+	if (Array.isArray(form_locations)) {
 		if (!multipleFormLocations) {
 			formLocations = form_locations.slice(0, 1);
 		} else {
