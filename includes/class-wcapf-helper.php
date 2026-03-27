@@ -1098,8 +1098,9 @@ class WCAPF_Helper {
 		$option_name = self::settings_option_key();
 		$db_options  = get_option( $option_name );
 		$db_options  = is_array( $db_options ) ? $db_options : array();
+		$settings    = wp_parse_args( $db_options, WCAPF_Default_Data::default_settings() );
 
-		return apply_filters( 'wcapf_settings', $db_options );
+		return apply_filters( 'wcapf_settings', $settings );
 	}
 
 	/**
