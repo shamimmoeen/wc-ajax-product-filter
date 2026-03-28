@@ -3,36 +3,12 @@
 
 	<description>A custom set of rules to check for WCAPF – Ajax Product Filter for WooCommerce plugin</description>
 
-	<!-- Exclude the Composer Vendor directory. -->
 	<exclude-pattern>/vendor/*</exclude-pattern>
-
-	<!-- Exclude the Node Modules directory. -->
 	<exclude-pattern>/node_modules/*</exclude-pattern>
-
-	<!-- Exclude minified Javascript files. -->
 	<exclude-pattern>*.min.js</exclude-pattern>
-
-	<!-- Exclude minified CSS files. -->
 	<exclude-pattern>*.min.css</exclude-pattern>
 
-	<!-- Include the WordPress-Extra standard. -->
-	<rule ref="WordPress-Extra">
-		<!--
-		We may want a middle ground though. The best way to do this is add the
-		entire ruleset, then rule by rule, remove ones that don't suit a project.
-		We can do this by running `phpcs` with the '-s' flag, which allows us to
-		see the names of the sniffs reporting errors.
-		Once we know the sniff names, we can opt to exclude sniffs which don't
-		suit our project like so.
-		The below two examples just show how you can exclude rules.
-		They are not intended as advice about which sniffs to exclude.
-		-->
-
-		<!--
-		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
-		<exclude name="WordPress.Security.EscapeOutput"/>
-		-->
-	</rule>
+	<rule ref="WordPress-Extra"/>
 
 	<!-- Inline comments do not need to end with a full stop. -->
 	<rule ref="Squiz.Commenting.InlineComment">
@@ -44,36 +20,21 @@
 		<exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed"/>
 	</rule>
 
-	<!-- Let's also check that everything is properly documented. -->
 	<rule ref="WordPress-Docs"/>
 
-	<!-- Add in some extra rules from other standards. -->
 	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
-	<!-- <rule ref="Generic.Commenting.Todo"/> -->
 
-	<!-- Check for PHP cross-version compatibility. -->
-	<!--
-	To enable this, the PHPCompatibilityWP standard needs
-	to be installed.
-	See the readme for installation instructions:
-	https://github.com/PHPCompatibility/PHPCompatibilityWP
-	For more information, also see:
-	https://github.com/PHPCompatibility/PHPCompatibility
-	-->
-	<!--
-	<config name="testVersion" value="5.2-"/>
+	<!-- Line length is not enforced; SQL strings and hook names routinely exceed any reasonable limit. -->
+	<rule ref="Generic.Files.LineLength">
+		<exclude name="Generic.Files.LineLength.TooLong"/>
+		<exclude name="Generic.Files.LineLength.MaxExceeded"/>
+	</rule>
+
+	<!-- Check PHP cross-version compatibility -->
+	<config name="testVersion" value="7.2-"/>
 	<rule ref="PHPCompatibilityWP"/>
-	-->
 
-	<!--
-	To get the optimal benefits of using WPCS, we should add a couple of
-	custom properties.
-	Adjust the values of these properties to fit our needs.
-	For information on additional custom properties available, check out
-	the wiki:
-	https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
-	-->
-	<config name="minimum_supported_wp_version" value="4.9"/>
+	<config name="minimum_supported_wp_version" value="6.0"/>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -89,12 +50,6 @@
 				<element value="wcapf"/>
 			</property>
 		</properties>
-	</rule>
-
-	<!-- Line length is not enforced; SQL strings and hook names routinely exceed any reasonable limit. -->
-	<rule ref="Generic.Files.LineLength">
-		<exclude name="Generic.Files.LineLength.TooLong"/>
-		<exclude name="Generic.Files.LineLength.MaxExceeded"/>
 	</rule>
 
 </ruleset>
