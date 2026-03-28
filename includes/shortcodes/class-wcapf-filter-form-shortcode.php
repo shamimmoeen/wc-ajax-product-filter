@@ -72,7 +72,7 @@ class WCAPF_Filter_Form_Shortcode {
 			if ( ! $wcapf_form ) {
 				$debug_message = sprintf(
 					/* translators: %s: admin form list URL. */
-					__( 'No forms found. <a href="%s">Create a form here</a>.', 'wc-ajax-product-filter' ),
+					__( 'No forms are assigned to this page. <a href="%s">Create a form here</a>.', 'wc-ajax-product-filter' ),
 					esc_url( admin_url( 'admin.php?page=wcapf' ) )
 				);
 
