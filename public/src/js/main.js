@@ -54,7 +54,7 @@ const wcapf_params = wcapf_params || {
 ( function( $, window ) {
 
 	const _delay = parseInt( wcapf_params.filter_input_delay );
-	const delay  = _delay >= 0 ? _delay : 300;
+	const delay  = _delay >= 0 ? _delay : 1000;
 
 	const isPro = wcapf_params.wcapf_pro;
 
