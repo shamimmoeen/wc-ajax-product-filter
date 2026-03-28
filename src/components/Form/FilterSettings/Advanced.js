@@ -2,17 +2,18 @@ import { __ } from '@wordpress/i18n';
 import Checkbox from '../../Field/Checkbox';
 import Number from '../../Field/Number';
 import Radio from '../../Field/Radio';
+import Select from '../../Field/Select';
 import Text from '../../Field/Text';
 import Textarea from '../../Field/Textarea';
 import { useForm } from '../FormContext';
 import useFormFilterData from '../useFormFilterData';
-import { accordionStates, hierarchicalDisplayTypes } from '../utils';
+import { accordionOverrideOptions, accordionStates, hierarchicalDisplayTypes } from '../utils';
 import VisibilityRules from '../../VisibilityRules';
 
 const Advanced = ({ index }) => {
 	const { state, dispatch } = useForm();
 
-	const { handleRadioChange, handleCheckboxChange, handleTextFieldChange } =
+	const { handleRadioChange, handleCheckboxChange, handleSelectChange, handleTextFieldChange } =
 		useFormFilterData(state, dispatch);
 
 	const { formFilters } = state;
@@ -65,6 +66,27 @@ const Advanced = ({ index }) => {
 
 	const enableAccordionField = () => {
 		if ('1' === show_title) {
+			if (WCAPF_PRO) {
+				const options = accordionOverrideOptions();
+				const selected = options.find((o) => o.value === enable_accordion) || options[0];
+
+				return (
+					<Select
+						id={'enable_accordion'}
+						index={index}
+						label={__('Accordion', 'wc-ajax-product-filter')}
+						description={__(
+							'Collapse the filter options. Overrides the form-level accordion setting for this filter.',
+							'wc-ajax-product-filter'
+						)}
+						options={options}
+						value={selected}
+						onChange={handleSelectChange}
+						renderAsFormField
+					/>
+				);
+			}
+
 			return (
 				<Checkbox
 					id={'enable_accordion'}
