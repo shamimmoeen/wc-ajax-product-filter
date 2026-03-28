@@ -153,7 +153,7 @@ class WCAPF_Frontend_Scripts {
 			);
 		}
 
-		if ( empty( WCAPF_Helper::wcapf_option( 'disable_tippyjs' ) ) && WCAPF_Helper::use_tippyjs_for_tooltip() ) {
+		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
 			wp_enqueue_script(
 				'wcapf-popper',
 				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/popper.min.js',
@@ -174,16 +174,8 @@ class WCAPF_Frontend_Scripts {
 		wp_register_script( 'wcapf-params', false, array(), $this->core_version, true );
 		wp_localize_script( 'wcapf-params', 'wcapf_params', $this->get_js_params() );
 
-		$deps = array( 'jquery', 'wcapf-params' );
-
-		/**
-		 * Required for the scrollTo, slideToggle animations.
-		 *
-		 * TODO: Maybe use a filter or decision comes from the admin via plugin settings.
-		 *
-		 * @source https://stackoverflow.com/a/27598883
-		 */
-		$deps[] = 'jquery-effects-core';
+		// jquery-effects-core is required for slideToggle (accordion) and scrollTo animations.
+		$deps = array( 'jquery', 'wcapf-params', 'jquery-effects-core' );
 
 		wp_enqueue_script(
 			'wc-ajax-product-filter-scripts',

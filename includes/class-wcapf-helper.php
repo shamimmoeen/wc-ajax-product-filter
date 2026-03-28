@@ -1036,7 +1036,7 @@ class WCAPF_Helper {
 	 * @return bool True if Tippy.js is enabled for tooltips, otherwise false.
 	 */
 	public static function use_tippyjs_for_tooltip() {
-		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', true );
+		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', empty( self::wcapf_option( 'disable_tippyjs' ) ) );
 	}
 
 	/**
