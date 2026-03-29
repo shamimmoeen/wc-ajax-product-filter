@@ -99,13 +99,6 @@ class WCAPF_Helper {
 	public static function get_available_meta_keys() {
 		global $wpdb;
 
-		$cache_key = 'wcapf_available_meta_keys';
-		$cached    = get_transient( $cache_key );
-
-		if ( false !== $cached ) {
-			return $cached;
-		}
-
 		$query = "
 			SELECT DISTINCT $wpdb->postmeta.meta_key
 			FROM $wpdb->postmeta
@@ -116,7 +109,7 @@ class WCAPF_Helper {
 			ORDER BY $wpdb->postmeta.meta_key
 		";
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Query does not contain user input and results are cached via transient.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared -- Query has no user input; not cached because meta keys change when products are edited.
 		$results   = $wpdb->get_col( $query );
 		$meta_keys = array();
 
@@ -127,9 +120,7 @@ class WCAPF_Helper {
 			);
 		}
 
-		set_transient( $cache_key, $meta_keys, 12 * HOUR_IN_SECONDS );
-
-		return $meta_keys;
+		return apply_filters( 'wcapf_available_meta_keys', $meta_keys );
 	}
 
 	/**
@@ -147,13 +138,6 @@ class WCAPF_Helper {
 	public static function get_available_meta_values( $meta_key ) {
 		global $wpdb;
 
-		$cache_key = 'wcapf_available_meta_values_' . md5( $meta_key );
-		$cached    = get_transient( $cache_key );
-
-		if ( false !== $cached ) {
-			return $cached;
-		}
-
 		$query = $wpdb->prepare(
 			"
 				SELECT DISTINCT $wpdb->postmeta.meta_value
@@ -168,10 +152,8 @@ class WCAPF_Helper {
 			$meta_key
 		);
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above and results are cached using a transient.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above; not cached because meta values change when products are edited.
 		$results = $wpdb->get_col( $query );
-
-		set_transient( $cache_key, $results, 12 * HOUR_IN_SECONDS );
 
 		return apply_filters( 'wcapf_product_meta_values', $results, $meta_key );
 	}
