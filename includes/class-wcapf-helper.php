@@ -109,7 +109,7 @@ class WCAPF_Helper {
 			ORDER BY $wpdb->postmeta.meta_key
 		";
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared -- Query has no user input; not cached because meta keys change when products are edited.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query has no user input; not cached because meta keys change when products are edited.
 		$results   = $wpdb->get_col( $query );
 		$meta_keys = array();
 
@@ -152,7 +152,7 @@ class WCAPF_Helper {
 			$meta_key
 		);
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above; not cached because meta values change when products are edited.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above; not cached because meta values change when products are edited.
 		$results = $wpdb->get_col( $query );
 
 		return apply_filters( 'wcapf_product_meta_values', $results, $meta_key );
