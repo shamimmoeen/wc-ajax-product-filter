@@ -41,17 +41,17 @@ class WCAPF_Filter_Shortcode {
 	}
 
 	/**
-	 * Registers the legacy [wcapf_filter] shortcode output.
+	 * Renders the legacy [wcapf_filter] shortcode.
 	 *
-	 * This shortcode is kept for backward compatibility and simply
-	 * renders the new [wcapf_form] shortcode.
+	 * Deprecated in favour of [wcapf_form]. Kept for backward compatibility.
 	 *
-	 * @since 3.0.0
+	 * @since      3.0.0
+	 * @deprecated 4.4.0 Use [wcapf_form] instead.
 	 *
 	 * @return string
 	 */
 	public function register_shortcode() {
-		// No more wcapf_filter shortcode, renders the form [wcapf_form] instead.
+		_deprecated_function( '[wcapf_filter] shortcode', '4.4.0', '[wcapf_form]' );
 		return do_shortcode( '[wcapf_form]' );
 	}
 }
