@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import Text from '../../Field/Text';
 import { useSettings } from '../SettingsContext';
 import useSettingsData from '../useSettingsData';
@@ -6,6 +6,17 @@ import useSettingsData from '../useSettingsData';
 const Phrases = () => {
 	const { state, dispatch } = useSettings();
 	const { handleTextFieldChange } = useSettingsData(state, dispatch);
+
+	const resultsCountPlaceholder = '%d';
+
+	const resultsCountMarkupDescription = sprintf(
+		/* translators: %1$s is a literal placeholder character ("%d") shown as example text to the user. */
+		__(
+			'Custom markup for the results count. Use <code>%1$s</code> as the number placeholder. Separate singular and plural with <code>|</code>, e.g. <code>%1$s product found|%1$s products found</code>.',
+			'wc-ajax-product-filter'
+		),
+		resultsCountPlaceholder
+	);
 
 	const {
 		settings: {
@@ -153,10 +164,7 @@ const Phrases = () => {
 				<Text
 					id={'results_count_markup'}
 					label={__('Results count markup', 'wc-ajax-product-filter')}
-					description={__(
-						'Custom markup for the results count. Use <code>%d</code> as the number placeholder. Separate singular and plural with <code>|</code>, e.g. <code>%d product found|%d products found</code>.',
-						'wc-ajax-product-filter'
-					)}
+					description={resultsCountMarkupDescription}
 					value={results_count_markup}
 					onChange={handleTextFieldChange}
 				/>
