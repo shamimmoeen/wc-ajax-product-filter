@@ -89,7 +89,7 @@ class WCAPF_Template_Loader {
 
 		$located = apply_filters( 'wcapf_get_template_location', $located, $template );
 
-		$html = false;
+		$output = false;
 
 		// Loads the template.
 		if ( file_exists( $located ) ) {
@@ -100,10 +100,10 @@ class WCAPF_Template_Loader {
 			} else {
 				ob_start();
 				require $located;
-				$html = ob_get_clean();
+				$output = ob_get_clean();
 			}
 		}
 
-		return $html;
+		return $output;
 	}
 }
