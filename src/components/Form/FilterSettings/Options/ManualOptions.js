@@ -12,7 +12,6 @@ import { isEmpty } from 'lodash';
 import classnames from 'classnames';
 import {
 	getTableData,
-	orderDirectionOptions,
 	swatchEnabled,
 	tooltipCanBeEnabled,
 } from '../../utils';
@@ -23,13 +22,16 @@ import { PictureIcon } from '../../../SVGIcons';
 import { useForm } from '../../FormContext';
 import useFormData from '../../useFormData';
 import useFormFilterData from '../../useFormFilterData';
+import SortByOptionBlock from './SortByOptionBlock';
 
 const statusOptions = wcapf_admin_params.status_options;
 const timePeriods = wcapf_admin_params.time_periods;
 const sortByOptions = wcapf_admin_params.sort_by_options;
-const metaKeys = wcapf_admin_params.meta_keys;
-const metaTypes = wcapf_admin_params.meta_types;
-const sortDirections = orderDirectionOptions();
+
+// Monotonically increasing counter used to give each new sort-by row a stable
+// client-side key so React doesn't reuse component state when rows are deleted.
+let _sortByKeySeq = 0;
+const nextSortByKey = () => `wcapf-sb-${++_sortByKeySeq}`;
 
 const SLOT_NAME = 'popover-slot-for-options-table';
 
@@ -81,16 +83,24 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 
 			row = { value, label: '' };
 		} else if ('sort-by-options' === type) {
-			const firstSortByOption = sortByOptions[0];
-			const sortByValue = firstSortByOption.value;
+			const defaultSortBy =
+				sortByOptions.find((o) => 'date' === o.value) ||
+				sortByOptions[0];
+			const sortByValue = defaultSortBy.value;
 
-			const firstSortDirection = sortDirections[1];
-			const sortDirectionValue = firstSortDirection.value;
+			const sortDirectionValue = 'desc';
 
 			row = {
+				_clientKey: nextSortByKey(),
 				value: sortByValue,
 				direction: sortDirectionValue,
 				label: '',
+				meta_key: '',
+				meta_type: 'alphabetic',
+				secondary_sort: '',
+				secondary_direction: 'asc',
+				secondary_meta_key: '',
+				secondary_meta_type: 'alphabetic',
 			};
 		} else if ('per-page-options' === type) {
 			row = { value: '', label: '' };
@@ -286,20 +296,6 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 				<>
 					<th className='__time_period'>
 						{__('Period', 'wc-ajax-product-filter')}
-					</th>
-					<th className='__label'>
-						{__('Label', 'wc-ajax-product-filter')}
-					</th>
-				</>
-			);
-		} else if ('sort-by-options' === type) {
-			return (
-				<>
-					<th className='__sort_by'>
-						{__('Sort by', 'wc-ajax-product-filter')}
-					</th>
-					<th className='__direction'>
-						{__('Direction', 'wc-ajax-product-filter')}
 					</th>
 					<th className='__label'>
 						{__('Label', 'wc-ajax-product-filter')}
@@ -657,79 +653,6 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					<td>{inputField('__label', rowIndex, 'label', label)}</td>
 				</>
 			);
-		} else if ('sort-by-options' === type) {
-			const { value, direction, label, meta_key, meta_type } = row;
-
-			const sortByValue = sortByOptions.find(
-				(option) => value === option.value
-			);
-
-			const sortDirectionValue = sortDirections.find(
-				(option) => direction === option.value
-			);
-
-			const isDisabled = 'rand' === value;
-
-			const metaValue = metaKeys.find(
-				(option) => meta_key === option.value
-			);
-
-			const metaType = metaTypes.find(
-				(option) => meta_type === option.value
-			);
-
-			return (
-				<>
-					<td>
-						{selectField(
-							'__sort_by',
-							rowIndex,
-							'value',
-							sortByOptions,
-							sortByValue
-						)}
-
-						{'meta_value' === value && (
-							<div className='__meta_info'>
-								<div>
-									{__('Meta Key', 'wc-ajax-product-filter')}
-									{selectField(
-										'__meta_key',
-										rowIndex,
-										'meta_key',
-										metaKeys,
-										metaValue
-									)}
-								</div>
-
-								<div>
-									{__('Meta Type', 'wc-ajax-product-filter')}
-									{selectField(
-										'__meta_type',
-										rowIndex,
-										'meta_type',
-										metaTypes,
-										metaType
-									)}
-								</div>
-							</div>
-						)}
-					</td>
-
-					<td>
-						{!isDisabled &&
-							selectField(
-								'__direction',
-								rowIndex,
-								'direction',
-								sortDirections,
-								sortDirectionValue
-							)}
-					</td>
-
-					<td>{inputField('__label', rowIndex, 'label', label)}</td>
-				</>
-			);
 		} else if ('per-page-options' === type) {
 			const { value, label } = row;
 
@@ -855,6 +778,30 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 		);
 	};
 
+	const sortByCards = () => (
+		<div className='wcapf-sort-by-blocks'>
+			<ReactSortable
+				list={rows}
+				setList={setRows}
+				tag={'div'}
+				direction={'vertical'}
+				handle='.__drag_handler'
+				onSort={setDirty}
+			>
+				{rows.map((row, rowIndex) => (
+					<SortByOptionBlock
+						key={row._clientKey || row.id || rowIndex}
+						row={row}
+						rowIndex={rowIndex}
+						onSelectChange={handleSelectChange}
+						onInputChange={handleInputChange}
+						onRemove={handleRemove}
+					/>
+				))}
+			</ReactSortable>
+		</div>
+	);
+
 	const actionButtons = () => {
 		const browseOptionsBtnLabel = __(
 			'Browse Options',
@@ -926,7 +873,7 @@ const ManualOptions = ({ index: filterIndex, openModal }) => {
 					dangerouslySetInnerHTML={{ __html: description }}
 				/>
 			</div>
-			{!isEmpty(rows) && table()}
+			{!isEmpty(rows) && ('sort-by-options' === type ? sortByCards() : table())}
 			<div className='__action_buttons'>
 				{actionButtons()}
 				{!isEmpty(rows) && (

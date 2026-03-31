@@ -32,14 +32,14 @@ const Location = ({
 		product_query,
 	} = locationData;
 
-	const firstRender = useRef(true);
+	const prevLocation = useRef(_location);
 
 	useLayoutEffect(() => {
-		if (firstRender.current) {
-			firstRender.current = false;
-
+		if (_location === prevLocation.current) {
 			return;
 		}
+
+		prevLocation.current = _location;
 
 		updateLocation('sub_location', '');
 	}, [_location]);
@@ -201,7 +201,7 @@ const AvailableOn = () => {
 
 	let formLocations = [];
 
-	if (formLocations) {
+	if (Array.isArray(form_locations)) {
 		if (!multipleFormLocations) {
 			formLocations = form_locations.slice(0, 1);
 		} else {
@@ -247,7 +247,7 @@ const AvailableOn = () => {
 						{WCAPF_PRO && (
 							<TippyTooltip
 								content={__(
-									'If you want to reuse a form in multiple locations enable it from "Settings > Others" tab.',
+									'If you want to reuse a form in multiple locations enable it from "Settings > Integration" tab.',
 									'wc-ajax-product-filter'
 								)}
 							/>

@@ -3,7 +3,7 @@
 **Tags:** woocommerce product filter, woocommerce filter, ajax product filter, product filter, price filter  
 **Requires at least:** 6.0  
 **Tested up to:** 6.9  
-**Stable tag:** 4.3.0  
+**Stable tag:** 4.4.0  
 **Requires PHP:** 7.2  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
@@ -148,6 +148,15 @@ If the issue persists, please open a support topic and we will help investigate 
 6. Plugin Settings
 
 ## Changelog ##
+
+### 4.4.0 (1 April 2026) ###
+* New – Options to disable noUiSlider and Tippy.js from plugin settings
+* Changed – Settings tabs reorganised: "Others" renamed to "Phrases"
+* Deprecated – [wcapf_filter] shortcode; use [wcapf_form] instead
+* Fix – Active filter and reset button IDs are now stable across AJAX updates
+* Fix – Post-author active filter was showing user ID instead of display name
+* Fix – Native search forms were being pre-filled with the keyword filter value
+* Enhancement – Range slider and keyword filter interactions improved
 
 ### 4.3.0 (16 March 2026) ###
 * Security – Fixed SQL injection vulnerability and improved query safety

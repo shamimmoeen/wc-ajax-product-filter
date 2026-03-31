@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import Checkbox from '../Field/Checkbox';
 import Number from '../Field/Number';
+import Radio from '../Field/Radio';
 // import Select from '../Field/Select';
 // import {
 // 	filterModeOptions,
@@ -10,12 +11,14 @@ import Number from '../Field/Number';
 import AvailableOn from './AvailableOn';
 import { useForm } from './FormContext';
 import useFormSettings from './useFormSettings';
+import { accordionStates } from './utils';
 
 const FormSettings = () => {
 	const { state, dispatch } = useForm();
 	const {
 		handleTextFieldChange,
 		handleCheckboxChange,
+		handleRadioChange,
 		// handleSelectChange
 	} = useFormSettings(state, dispatch);
 
@@ -28,6 +31,8 @@ const FormSettings = () => {
 			// filter_mode,
 			// form_visibility,
 			show_clear_btn,
+			form_accordion,
+			form_accordion_state,
 		},
 	} = state;
 
@@ -144,6 +149,32 @@ const FormSettings = () => {
 				)}
 				isPro
 			/>
+
+			<Checkbox
+				id={'form_accordion'}
+				label={__('Enable accordion', 'wc-ajax-product-filter')}
+				isChecked={form_accordion}
+				onChange={handleCheckboxChange}
+				description={__(
+					'Collapse filter options by default for all filters. Individual filters can override this.',
+					'wc-ajax-product-filter'
+				)}
+				isPro
+			/>
+
+			{WCAPF_PRO && '1' === form_accordion && (
+				<Radio
+					id={'form_accordion_state'}
+					label={__('Accordion state', 'wc-ajax-product-filter')}
+					description={__(
+						'The default state for all filters using the form accordion setting.',
+						'wc-ajax-product-filter'
+					)}
+					options={accordionStates()}
+					value={form_accordion_state}
+					onChange={handleRadioChange}
+				/>
+			)}
 		</>
 	);
 };

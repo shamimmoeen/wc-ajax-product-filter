@@ -866,7 +866,7 @@ class WCAPF_Walker {
 	 *
 	 * @return bool
 	 */
-	private function count_allowed() {
+	protected function count_allowed() {
 		return ! in_array( $this->filter_type, array( 'sort-by', 'per-page' ), true );
 	}
 

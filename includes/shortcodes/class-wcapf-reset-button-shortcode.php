@@ -36,11 +36,16 @@ class WCAPF_Reset_Button_Shortcode {
 	public function shortcode_output( $attrs = array() ) {
 		$a = shortcode_atts(
 			array(
+				'id'          => '',
 				'btn_label'   => WCAPF_Helper::reset_button_label(),
 				'show_always' => '',
 			),
 			$attrs
 		);
+
+		if ( $a['id'] ) {
+			$a['unique_id'] = $a['id'];
+		}
 
 		$args = WCAPF_Helper::prepare_reset_button_args( $a );
 

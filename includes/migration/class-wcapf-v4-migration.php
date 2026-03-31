@@ -446,7 +446,7 @@ if ( ! function_exists( 'WCAPF_V4_Migration' ) ) {
 	 *
 	 * @return WCAPF_V4_Migration
 	 */
-	function WCAPF_V4_Migration() {
+	function WCAPF_V4_Migration() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- intentional; mirrors class name per WP convention (cf. WooCommerce()).
 		return WCAPF_V4_Migration::instance();
 	}
 }

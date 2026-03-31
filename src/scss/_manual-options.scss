@@ -1,6 +1,156 @@
 @import './variables';
 @import './mixins';
 
+.wcapf-sort-by-blocks {
+	margin-bottom: 4px;
+}
+
+.wcapf-sort-by-block {
+	display: grid;
+	grid-template-columns: 24px 1fr 32px;
+	align-items: start;
+	gap: 0 8px;
+	padding: 12px 10px;
+	background: #fff;
+	border: 1px solid $inputBorderColor;
+	border-top: none;
+
+	@media (max-width: 480px) {
+		grid-template-columns: 24px 1fr 32px;
+		padding: 10px 8px;
+	}
+
+	&:first-child {
+		border-top: 1px solid $inputBorderColor;
+		border-radius: 2px 2px 0 0;
+	}
+
+	&:last-child {
+		border-radius: 0 0 2px 2px;
+	}
+
+	&:only-child {
+		border-top: 1px solid $inputBorderColor;
+		border-radius: 2px;
+	}
+
+	&:hover {
+		background: #fafafa;
+	}
+
+	&__handle {
+		display: flex;
+		align-items: flex-start;
+		padding-top: 6px;
+
+		.__drag_handler {
+			cursor: grab;
+			color: #9aa0a6;
+
+			&:active {
+				cursor: grabbing;
+			}
+		}
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	&__row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 8px;
+
+		@media (max-width: 480px) {
+			gap: 6px;
+		}
+	}
+
+	&__field {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+		flex: 0 1 160px; // dropdowns: natural width, shrink on narrow screens
+
+		&--sort-by {
+			flex: 0 1 190px; // longest option is "Meta Value (Custom Field)"
+		}
+
+		&--direction {
+			flex: 0 1 130px; // "Descending" + chrome
+		}
+
+		&--label {
+			flex: 1 1 140px; // text input — only field that should grow
+		}
+
+		&--meta-key {
+			flex: 0 1 220px; // meta key names can be moderate length
+		}
+
+		&--meta-type {
+			flex: 0 1 140px; // 5 short options
+		}
+
+		.components-text-control__input {
+			border-color: $inputBorderColor;
+			min-height: 30px;
+
+			&:focus {
+				border-color: var(--wp-admin-theme-color);
+			}
+		}
+
+		// Full width on very small screens
+		@media (max-width: 480px) {
+			flex: 1 1 100% !important;
+		}
+	}
+
+	&__label {
+		font-size: 12px;
+		font-weight: 400;
+		color: #646970;
+		margin: 0;
+	}
+
+	&__tiebreaker {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 10px 12px;
+		background: #f6f7f7;
+		border: 1px solid $inputBorderColor;
+		border-radius: 2px;
+	}
+
+	&__add-tiebreaker {
+		align-self: flex-start;
+		font-size: 12px;
+		height: auto;
+		padding: 0;
+		color: var(--wp-admin-theme-color);
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		padding-top: 6px;
+
+		@include button-link-delete;
+	}
+}
+
 .__options_table {
 	.__form_control {
 		margin-bottom: 1.5em;

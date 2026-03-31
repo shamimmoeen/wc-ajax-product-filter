@@ -53,6 +53,9 @@ const Appearance = () => {
 			star_icon_color,
 			rating_star_use_fontawesome,
 			remove_focus_style,
+			disable_nouislider_js,
+			disable_tippyjs,
+			disable_date_filter_scripts,
 			// primary_btn_class,
 			// secondary_btn_class,
 			// slide_out_panel_position,
@@ -198,22 +201,38 @@ const Appearance = () => {
 				onChange={handleCheckboxChange}
 			/>
 
-			<Select
-				id={'number_range_slider_style'}
+			<Checkbox
+				id={'disable_nouislider_js'}
 				label={__(
-					'Number range slider style',
+					'Disable range slider scripts',
 					'wc-ajax-product-filter'
 				)}
 				description={__(
-					'Select the number range slider style from the available ones.',
+					'Disable loading the noUiSlider library. Enable this if your site does not use price range or number range filters.',
 					'wc-ajax-product-filter'
 				)}
-				value={numberRangeSliderStyle}
-				onChange={handleSelectChange}
-				options={numberRangeSliderStyles}
-				maxMenuHeight={180}
-				renderAsFormField
+				isChecked={disable_nouislider_js}
+				onChange={handleCheckboxChange}
 			/>
+
+			{'1' !== disable_nouislider_js && (
+				<Select
+					id={'number_range_slider_style'}
+					label={__(
+						'Number range slider style',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Select the number range slider style from the available ones.',
+						'wc-ajax-product-filter'
+					)}
+					value={numberRangeSliderStyle}
+					onChange={handleSelectChange}
+					options={numberRangeSliderStyles}
+					maxMenuHeight={180}
+					renderAsFormField
+				/>
+			)}
 
 			<ColorInput
 				label={__('Star Icon Color', 'wc-ajax-product-filter')}
@@ -252,6 +271,33 @@ const Appearance = () => {
 				isChecked={remove_focus_style}
 				onChange={handleCheckboxChange}
 			/>
+
+			<Checkbox
+				id={'disable_tippyjs'}
+				label={__('Disable tooltip scripts', 'wc-ajax-product-filter')}
+				description={__(
+					'Disable loading the Tippy.js tooltip library. Enable this if your site does not use tooltips in filters.',
+					'wc-ajax-product-filter'
+				)}
+				isChecked={disable_tippyjs}
+				onChange={handleCheckboxChange}
+			/>
+
+			{WCAPF_PRO && (
+				<Checkbox
+					id={'disable_date_filter_scripts'}
+					label={__(
+						'Disable date filter scripts',
+						'wc-ajax-product-filter'
+					)}
+					description={__(
+						'Disable loading the jQuery UI datepicker library. Enable this if your site does not use date input filters.',
+						'wc-ajax-product-filter'
+					)}
+					isChecked={disable_date_filter_scripts}
+					onChange={handleCheckboxChange}
+				/>
+			)}
 
 			{/* <Text
 				id={'primary_btn_class'}

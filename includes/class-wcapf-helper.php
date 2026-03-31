@@ -99,13 +99,6 @@ class WCAPF_Helper {
 	public static function get_available_meta_keys() {
 		global $wpdb;
 
-		$cache_key = 'wcapf_available_meta_keys';
-		$cached    = get_transient( $cache_key );
-
-		if ( false !== $cached ) {
-			return $cached;
-		}
-
 		$query = "
 			SELECT DISTINCT $wpdb->postmeta.meta_key
 			FROM $wpdb->postmeta
@@ -116,7 +109,7 @@ class WCAPF_Helper {
 			ORDER BY $wpdb->postmeta.meta_key
 		";
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Query does not contain user input and results are cached via transient.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query has no user input; not cached because meta keys change when products are edited.
 		$results   = $wpdb->get_col( $query );
 		$meta_keys = array();
 
@@ -127,9 +120,7 @@ class WCAPF_Helper {
 			);
 		}
 
-		set_transient( $cache_key, $meta_keys, 12 * HOUR_IN_SECONDS );
-
-		return $meta_keys;
+		return apply_filters( 'wcapf_available_meta_keys', $meta_keys );
 	}
 
 	/**
@@ -147,13 +138,6 @@ class WCAPF_Helper {
 	public static function get_available_meta_values( $meta_key ) {
 		global $wpdb;
 
-		$cache_key = 'wcapf_available_meta_values_' . md5( $meta_key );
-		$cached    = get_transient( $cache_key );
-
-		if ( false !== $cached ) {
-			return $cached;
-		}
-
 		$query = $wpdb->prepare(
 			"
 				SELECT DISTINCT $wpdb->postmeta.meta_value
@@ -168,10 +152,8 @@ class WCAPF_Helper {
 			$meta_key
 		);
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above and results are cached using a transient.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above; not cached because meta values change when products are edited.
 		$results = $wpdb->get_col( $query );
-
-		set_transient( $cache_key, $results, 12 * HOUR_IN_SECONDS );
 
 		return apply_filters( 'wcapf_product_meta_values', $results, $meta_key );
 	}
@@ -558,7 +540,7 @@ class WCAPF_Helper {
 			$attrs  = 'class="' . esc_attr( $classes ) . '"';
 			$attrs .= ' data-clear-filter-url="' . esc_url( $clear_filter_url ) . '"';
 
-			$html .= '<button ' . $attrs . '>';
+			$html .= '<button type="button" ' . $attrs . '>';
 			$html .= '<span class="wcapf-nav-item-text">'; // To avoid the flex wrap issue.
 			$html .= wp_kses_post( $label );
 			$html .= '</span>';
@@ -602,7 +584,7 @@ class WCAPF_Helper {
 			$attrs .= ' disabled="disabled"';
 		}
 
-		$html  = '<button class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
+		$html  = '<button type="button" class="' . esc_attr( $classes ) . '" ' . $attrs . '>';
 		$html .= esc_html( $button_label );
 		$html .= '</button>';
 
@@ -673,7 +655,7 @@ class WCAPF_Helper {
 			$clear_all_btn_layout = 'block';
 		}
 
-		$unique_id = wp_unique_id( 'af-' );
+		$unique_id = ! empty( $raw_args['unique_id'] ) ? $raw_args['unique_id'] : wp_unique_id( 'af-' );
 		$classes   = array( 'wcapf-active-filters', 'wcapf-active-filters-' . $unique_id );
 		$classes[] = 'layout-' . $layout;
 		$classes[] = 'clear-all-btn-layout-' . $clear_all_btn_layout;
@@ -733,7 +715,7 @@ class WCAPF_Helper {
 
 		$active_filters = self::get_active_filters_data();
 
-		$unique_id = wp_unique_id( 'rf-' );
+		$unique_id = ! empty( $args['unique_id'] ) ? $args['unique_id'] : wp_unique_id( 'rf-' );
 		$classes   = array( 'wcapf-reset-filters', 'wcapf-reset-filters-' . $unique_id );
 
 		$should_render = true;
@@ -1036,7 +1018,7 @@ class WCAPF_Helper {
 	 * @return bool True if Tippy.js is enabled for tooltips, otherwise false.
 	 */
 	public static function use_tippyjs_for_tooltip() {
-		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', true );
+		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', empty( self::wcapf_option( 'disable_tippyjs' ) ) );
 	}
 
 	/**
@@ -1098,8 +1080,9 @@ class WCAPF_Helper {
 		$option_name = self::settings_option_key();
 		$db_options  = get_option( $option_name );
 		$db_options  = is_array( $db_options ) ? $db_options : array();
+		$settings    = wp_parse_args( $db_options, WCAPF_Default_Data::default_settings() );
 
-		return apply_filters( 'wcapf_settings', $db_options );
+		return apply_filters( 'wcapf_settings', $settings );
 	}
 
 	/**

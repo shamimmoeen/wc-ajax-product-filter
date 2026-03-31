@@ -88,19 +88,23 @@ class WCAPF_Frontend_Scripts {
 			? '.min.css'
 			: '.css';
 
-		wp_enqueue_style(
-			'wcapf-chosen',
-			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
-		);
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+			wp_enqueue_style(
+				'wcapf-chosen',
+				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
+				array(),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen' . $ext )
+			);
+		}
 
-		wp_enqueue_style(
-			'wcapf-nouislider',
-			WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
-			array(),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext )
-		);
+		if ( empty( WCAPF_Helper::wcapf_option( 'disable_nouislider_js' ) ) ) {
+			wp_enqueue_style(
+				'wcapf-nouislider',
+				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
+				array(),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext )
+			);
+		}
 
 		wp_enqueue_style(
 			'wc-ajax-product-filter-styles',
@@ -129,21 +133,25 @@ class WCAPF_Frontend_Scripts {
 			? '.min.js'
 			: '.js';
 
-		wp_enqueue_script(
-			'wcapf-chosen',
-			WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
-			true
-		);
+		if ( ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+			wp_enqueue_script(
+				'wcapf-chosen',
+				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
+				array( 'jquery' ),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/chosen/chosen.jquery' . $ext ),
+				true
+			);
+		}
 
-		wp_enqueue_script(
-			'wcapf-nouislider',
-			WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
-			array( 'jquery' ),
-			filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext ),
-			true
-		);
+		if ( empty( WCAPF_Helper::wcapf_option( 'disable_nouislider_js' ) ) ) {
+			wp_enqueue_script(
+				'wcapf-nouislider',
+				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
+				array( 'jquery' ),
+				filemtime( WCAPF_PLUGIN_DIR . '/public/lib/nouislider/nouislider' . $ext ),
+				true
+			);
+		}
 
 		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
 			wp_enqueue_script(
@@ -166,16 +174,8 @@ class WCAPF_Frontend_Scripts {
 		wp_register_script( 'wcapf-params', false, array(), $this->core_version, true );
 		wp_localize_script( 'wcapf-params', 'wcapf_params', $this->get_js_params() );
 
-		$deps = array( 'jquery', 'wcapf-params' );
-
-		/**
-		 * Required for the scrollTo, slideToggle animations.
-		 *
-		 * TODO: Maybe use a filter or decision comes from the admin via plugin settings.
-		 *
-		 * @source https://stackoverflow.com/a/27598883
-		 */
-		$deps[] = 'jquery-effects-core';
+		// jquery-effects-core is required for slideToggle (accordion) and scrollTo animations.
+		$deps = array( 'jquery', 'wcapf-params', 'jquery-effects-core' );
 
 		wp_enqueue_script(
 			'wc-ajax-product-filter-scripts',
@@ -234,8 +234,7 @@ class WCAPF_Frontend_Scripts {
 
 		$params = array(
 			'is_rtl'                                   => is_rtl(),
-			'filter_input_delay'                       => WCAPF_Helper::wcapf_option( 'input_delay' ),
-			'keyword_filter_delay'                     => 100,
+			'filter_input_delay'                       => 1000,
 			'combobox_display_selected_options'        => false,
 			'combobox_no_results_text'                 => $combobox_no_results_text,
 			'combobox_options_none_text'               => $combobox_options_none_text,

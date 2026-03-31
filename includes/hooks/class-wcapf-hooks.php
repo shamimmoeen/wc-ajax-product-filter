@@ -309,6 +309,9 @@ class WCAPF_Hooks {
 				)
 			);
 
+			// Use a stable ID so the element can be reliably matched during AJAX updates.
+			$active_filters_on_top_args['unique_id'] = 'on-top';
+
 			$args = WCAPF_Helper::prepare_active_filters_args( $active_filters_on_top_args );
 
 			echo '<div class="wcapf-active-filters-before-shop-loop">';
@@ -399,6 +402,9 @@ class WCAPF_Hooks {
 
 			if ( $keyword ) {
 				$q->set( 's', $keyword );
+
+				// Prevent native WP/WooCommerce search form widgets from being pre-filled with the WCAPF keyword.
+				add_filter( 'get_search_query', '__return_empty_string' );
 			}
 		}
 	}

@@ -3,14 +3,13 @@
  *
  * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/public/src/js
- * @author     wptools.io
+ * @subpackage wc-ajax-product-filter/public/js
+ * @author     Mainul Hassan
  */
 
 const wcapf_params = wcapf_params || {
 	'is_rtl': '',
 	'filter_input_delay': '',
-	'keyword_filter_delay': '',
 	'combobox_display_selected_options': '',
 	'combobox_no_results_text': '',
 	'combobox_options_none_text': '',
@@ -55,10 +54,7 @@ const wcapf_params = wcapf_params || {
 ( function( $, window ) {
 
 	const _delay = parseInt( wcapf_params.filter_input_delay );
-	const delay  = _delay >= 0 ? _delay : 300;
-
-	const _keywordFilterDelay = parseInt( wcapf_params.keyword_filter_delay );
-	const keywordFilterDelay  = _keywordFilterDelay >= 0 ? _keywordFilterDelay : 100;
+	const delay  = _delay >= 0 ? _delay : 1000;
 
 	const isPro = wcapf_params.wcapf_pro;
 
@@ -269,11 +265,10 @@ const wcapf_params = wcapf_params || {
 				const $filter    = $searchBox.closest( '.wcapf-filter' );
 
 				$input.val( '' );
+				$input.trigger( 'input' );
 
 				if ( $filter.hasClass( 'wcapf-filter-keyword' ) ) {
 					$input.trigger( 'change' );
-				} else {
-					$input.trigger( 'input' );
 				}
 			} );
 
@@ -282,22 +277,18 @@ const wcapf_params = wcapf_params || {
 				const $wrapper = $that.closest( '.wcapf-keyword-filter-wrapper' );
 				const keyword  = $that.val();
 
-				// Clear any previously set timer before setting a fresh one
-				clearTimeout( $that.data( 'timer' ) );
-
 				const filterURL      = $wrapper.data( 'filter-url' );
 				const clearFilterURL = $wrapper.data( 'clear-filter-url' );
-				let url;
 
-				if ( keyword.length ) {
-					url = filterURL.replace( '%s', keyword );
-				} else {
-					url = clearFilterURL;
+				const url = keyword.length ? filterURL.replace( '%s', keyword ) : clearFilterURL;
+
+				WCAPF.requestFilter( url );
+			} );
+
+			$body.on( 'keydown', '.wcapf-filter-keyword input[type="text"]', function( e ) {
+				if ( 'Enter' === e.key ) {
+					$( this ).trigger( 'change' );
 				}
-
-				$that.data( 'timer', setTimeout( function() {
-					WCAPF.requestFilter( url );
-				}, keywordFilterDelay ) );
 			} );
 		},
 		updateProductsCountResult: function( $response ) {
@@ -489,6 +480,13 @@ const wcapf_params = wcapf_params || {
 						// Finally update the instance.
 						$inner.html( _html );
 
+						// Remove search-active from any search box whose input is now empty.
+						$instance.find( '.wcapf-search-box.with-cross input[type="text"]' ).each( function() {
+							if ( ! $( this ).val() ) {
+								$( this ).closest( '.wcapf-filter' ).removeClass( 'search-active' );
+							}
+						} );
+
 						$instance.trigger( 'wcapf-filter-updated', [ _instance ] );
 					}
 
@@ -542,7 +540,7 @@ const wcapf_params = wcapf_params || {
 		handleNumberInputFilters: function() {
 			const rangeNumberSelectors = '.wcapf-range-number .min-value, .wcapf-range-number .max-value';
 
-			$body.on( 'input', rangeNumberSelectors, function() {
+			$body.on( 'change', rangeNumberSelectors, function() {
 				const $item = $( this );
 
 				const $rangeNumber      = $item.closest( '.wcapf-range-number' );
@@ -555,9 +553,6 @@ const wcapf_params = wcapf_params || {
 				const thousandSeparator = $rangeNumber.attr( 'data-thousand-separator' );
 				const decimalSeparator  = $rangeNumber.attr( 'data-decimal-separator' );
 
-				// Clear any previously set timer before setting a fresh one
-				clearTimeout( $item.data( 'timer' ) );
-
 				const getValue = ( floatValue ) => {
 					if ( formatNumbers ) {
 						return numberFormat( floatValue, decimalPlaces, decimalSeparator, thousandSeparator );
@@ -566,109 +561,73 @@ const wcapf_params = wcapf_params || {
 					return floatValue;
 				};
 
-				$item.data( 'timer', setTimeout( function() {
-					$item.removeData( 'timer' );
+				let minValue = parseFloat( $rangeNumber.find( '.min-value' ).val() );
+				let maxValue = parseFloat( $rangeNumber.find( '.max-value' ).val() );
 
-					let minValue = parseFloat( $rangeNumber.find( '.min-value' ).val() );
-					let maxValue = parseFloat( $rangeNumber.find( '.max-value' ).val() );
+				// Force the minValue not to be empty.
+				if ( isNaN( minValue ) ) {
+					minValue = rangeMinValue;
 
-					// Force the minValue not to be empty.
-					if ( isNaN( minValue ) ) {
-						minValue = rangeMinValue;
-
-						$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
-					} else {
-						$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
-					}
-
-					// Force the maxValue not to be empty.
-					if ( isNaN( maxValue ) ) {
-						maxValue = rangeMaxValue;
-
-						$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
-					} else {
-						$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
-					}
-
-					// Force the minValue not to go below the rangeMinValue.
-					if ( minValue < rangeMinValue ) {
-						minValue = rangeMinValue;
-
-						$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
-					}
-
-					// Force the minValue not to go up the rangeMaxValue.
-					if ( minValue > rangeMaxValue ) {
-						minValue = rangeMaxValue;
-
-						$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
-					}
-
-					// Force the maxValue not to go up the rangeMaxValue.
-					if ( maxValue > rangeMaxValue ) {
-						maxValue = rangeMaxValue;
-
-						$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
-					}
-
-					// Force the maxValue not to go below the minValue.
-					if ( minValue > maxValue ) {
-						maxValue = minValue;
-
-						$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
-					}
-
-					// If value is not changed then don't proceed.
-					if ( minValue === oldMinValue && maxValue === oldMaxValue ) {
-						return;
-					}
-
-					if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
-						// Remove range filter.
-						WCAPF.requestFilter( $rangeNumber.data( 'clear-filter-url' ) );
-					} else {
-						// Add range filter.
-						const url = $rangeNumber.data( 'url' ).replace( '%1s', minValue ).replace( '%2s', maxValue );
-						WCAPF.requestFilter( url );
-					}
-				}, delay ) );
-			} );
-		},
-		handleDateInputFilters: function() {
-			$body.on( 'change', '.wcapf-date-input .date-input', function() {
-				const $filter = $( this ).closest( '.wcapf-date-input' );
-				const isRange = $filter.data( 'is-range' );
-
-				let filterUrl = '';
-
-				// Clear any previously set timer before setting a fresh one
-				clearTimeout( $filter.data( 'timer' ) );
-
-				if ( isRange ) {
-					const from = $filter.find( '.date-from-input' ).val();
-					const to   = $filter.find( '.date-to-input' ).val();
-
-					if ( from && to ) {
-						filterUrl = $filter.data( 'url' ).replace( '%1s', from ).replace( '%2s', to );
-					} else if ( ! from && ! to ) {
-						filterUrl = $filter.data( 'clear-filter-url' );
-					}
+					$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
 				} else {
-					const from = $filter.find( '.date-from-input' ).val();
-
-					if ( from ) {
-						filterUrl = $filter.data( 'url' ).replace( '%s', from );
-					} else {
-						filterUrl = $filter.data( 'clear-filter-url' );
-					}
+					$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
 				}
 
-				if ( filterUrl ) {
-					$filter.data( 'timer', setTimeout( function() {
-						$filter.removeData( 'timer' );
+				// Force the maxValue not to be empty.
+				if ( isNaN( maxValue ) ) {
+					maxValue = rangeMaxValue;
 
-						WCAPF.requestFilter( filterUrl );
-					}, delay ) );
+					$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
+				} else {
+					$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
+				}
+
+				// Force the minValue not to go below the rangeMinValue.
+				if ( minValue < rangeMinValue ) {
+					minValue = rangeMinValue;
+
+					$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
+				}
+
+				// Force the minValue not to go up the rangeMaxValue.
+				if ( minValue > rangeMaxValue ) {
+					minValue = rangeMaxValue;
+
+					$rangeNumber.find( '.min-value' ).val( getValue( minValue ) );
+				}
+
+				// Force the maxValue not to go up the rangeMaxValue.
+				if ( maxValue > rangeMaxValue ) {
+					maxValue = rangeMaxValue;
+
+					$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
+				}
+
+				// Force the maxValue not to go below the minValue.
+				if ( minValue > maxValue ) {
+					maxValue = minValue;
+
+					$rangeNumber.find( '.max-value' ).val( getValue( maxValue ) );
+				}
+
+				// If value is not changed then don't proceed.
+				if ( minValue === oldMinValue && maxValue === oldMaxValue ) {
+					return;
+				}
+
+				if ( minValue === rangeMinValue && maxValue === rangeMaxValue ) {
+					// Remove range filter.
+					WCAPF.requestFilter( $rangeNumber.data( 'clear-filter-url' ) );
+				} else {
+					// Add range filter.
+					const url = $rangeNumber.data( 'url' ).replace( '%1s', minValue ).replace( '%2s', maxValue );
+					WCAPF.requestFilter( url );
+				}
+			} );
+
+			$body.on( 'keydown', rangeNumberSelectors, function( e ) {
+				if ( 'Enter' === e.key ) {
+					$( this ).trigger( 'change' );
 				}
 			} );
 		},
@@ -892,14 +851,16 @@ const wcapf_params = wcapf_params || {
 
 				const slider = document.getElementById( sliderId );
 
+				const safeStep = isNaN( step ) || step <= 0 ? 1 : step;
+
 				noUiSlider.create( slider, {
 					start: [ minValue, maxValue ],
-					step,
+					step: safeStep,
 					connect: true,
 					cssPrefix: 'wcapf-noui-',
 					range: {
 						'min': rangeMinValue,
-						'max': rangeMaxValue,
+						'max': rangeMinValue === rangeMaxValue ? rangeMinValue + safeStep : rangeMaxValue,
 					}
 				} );
 
@@ -943,76 +904,54 @@ const wcapf_params = wcapf_params || {
 					}
 				}
 
+				let isDragging = false;
+
+				slider.noUiSlider.on( 'start', function() {
+					isDragging = true;
+				} );
+
+				slider.noUiSlider.on( 'end', function() {
+					isDragging = false;
+					filterProductsAccordingToSlider( slider.noUiSlider.get() );
+				} );
+
 				slider.noUiSlider.on( 'change', function( values ) {
-					// Clear any previously set timer before setting a fresh one
+					if ( isDragging ) {
+						return;
+					}
+
+					// Keyboard interaction — debounce to avoid a request on every key press.
 					clearTimeout( $item.data( 'timer' ) );
 
 					$item.data( 'timer', setTimeout( function() {
 						$item.removeData( 'timer' );
-
 						filterProductsAccordingToSlider( values );
 					}, delay ) );
 				} );
 
-				$minValue.on( 'input', function() {
-					const $input = $( this );
-
-					// Clear any previously set timer before setting a fresh one
-					clearTimeout( $input.data( 'timer' ) );
-
-					$input.data( 'timer', setTimeout( function() {
-						$input.removeData( 'timer' );
-
-						const minValue = $input.val();
-
-						slider.noUiSlider.set( [ minValue, null ] );
-
-						filterProductsAccordingToSlider( slider.noUiSlider.get() );
-					}, delay ) );
+				$minValue.on( 'change', function() {
+					const val = parseFloat( $( this ).val() );
+					slider.noUiSlider.set( [ isNaN( val ) ? rangeMinValue : val, null ] );
+					filterProductsAccordingToSlider( slider.noUiSlider.get() );
 				} );
 
-				$maxValue.on( 'input', function() {
-					const $input = $( this );
-
-					// Clear any previously set timer before setting a fresh one
-					clearTimeout( $input.data( 'timer' ) );
-
-					$input.data( 'timer', setTimeout( function() {
-						$input.removeData( 'timer' );
-
-						const maxValue = $input.val();
-
-						slider.noUiSlider.set( [ null, maxValue ] );
-
-						filterProductsAccordingToSlider( slider.noUiSlider.get() );
-					}, delay ) );
+				$minValue.on( 'keydown', function( e ) {
+					if ( 'Enter' === e.key ) {
+						$( this ).trigger( 'change' );
+					}
 				} );
-			} );
-		},
-		initDatepicker: function() {
-			if ( ! jQuery().datepicker ) {
-				return;
-			}
 
-			const $wcapfDateFilter = $body.find( '.wcapf-date-input' );
+				$maxValue.on( 'change', function() {
+					const val = parseFloat( $( this ).val() );
+					slider.noUiSlider.set( [ null, isNaN( val ) ? rangeMaxValue : val ] );
+					filterProductsAccordingToSlider( slider.noUiSlider.get() );
+				} );
 
-			const format        = $wcapfDateFilter.attr( 'data-date-format' );
-			const yearDropdown  = $wcapfDateFilter.attr( 'data-date-picker-year-dropdown' );
-			const monthDropdown = $wcapfDateFilter.attr( 'data-date-picker-month-dropdown' );
-
-			const $from = $wcapfDateFilter.find( '.date-from-input' );
-			const $to   = $wcapfDateFilter.find( '.date-to-input' );
-
-			$from.datepicker( {
-				dateFormat: format,
-				changeYear: yearDropdown,
-				changeMonth: monthDropdown,
-			} );
-
-			$to.datepicker( {
-				dateFormat: format,
-				changeYear: yearDropdown,
-				changeMonth: monthDropdown,
+				$maxValue.on( 'keydown', function( e ) {
+					if ( 'Enter' === e.key ) {
+						$( this ).trigger( 'change' );
+					}
+				} );
 			} );
 		},
 		initFilterOptionTooltip: function() {
@@ -1045,8 +984,12 @@ const wcapf_params = wcapf_params || {
 		init: function() {
 			WCAPF.initCombobox();
 			WCAPF.initRangeSlider();
-			WCAPF.initDatepicker();
 			WCAPF.initFilterOptionTooltip();
+		},
+		handleFormSubmit: function() {
+			$body.on( 'submit', '.wcapf-form', function( e ) {
+				e.preventDefault();
+			} );
 		},
 		initPopState: function() {
 			if ( wcapf_params.reload_on_back && wcapf_params.found_wcapf ) {
@@ -1086,13 +1029,14 @@ const wcapf_params = wcapf_params || {
 	WCAPF.handleListFilters();
 	WCAPF.handleDropdownFilters();
 	WCAPF.handleNumberInputFilters();
-	WCAPF.handleDateInputFilters();
 	WCAPF.handlePagination();
 	WCAPF.handleDefaultOrderby();
 
 	WCAPF.handleClearFilter();
 
 	WCAPF.handleFilterTooltip();
+
+	WCAPF.handleFormSubmit();
 
 	/**
 	 * Make it compatible with other plugins.

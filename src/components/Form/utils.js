@@ -806,6 +806,23 @@ export function accordionStates() {
 	];
 }
 
+export function accordionOverrideOptions() {
+	return [
+		{
+			label: __('Use form setting', 'wc-ajax-product-filter'),
+			value: '',
+		},
+		{
+			label: __('Enable', 'wc-ajax-product-filter'),
+			value: '1',
+		},
+		{
+			label: __('Disable', 'wc-ajax-product-filter'),
+			value: '0',
+		},
+	];
+}
+
 export function getTableData(filterType, filterData) {
 	let type;
 	let optionsKey;

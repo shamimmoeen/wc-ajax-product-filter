@@ -71,7 +71,7 @@ class WCAPF_Form {
 		$form_classes = 'wcapf-form wcapf-form-' . sanitize_html_class( $form_id );
 
 		printf(
-			'<div class="%1$s" data-id="%2$s">',
+			'<form class="%1$s" data-id="%2$s" novalidate>',
 			esc_attr( $form_classes ),
 			esc_attr( $form_id )
 		);
@@ -137,7 +137,7 @@ class WCAPF_Form {
 
 		do_action( 'wcapf_after_form_filters', $form_id );
 
-		echo '</div><!-- .wcapf-filter-form -->';
+		echo '</form><!-- .wcapf-filter-form -->';
 
 		$this->set_done();
 	}
@@ -197,6 +197,7 @@ class WCAPF_Form {
 
 		$args = WCAPF_Helper::prepare_active_filters_args(
 			array(
+				'unique_id'            => $field_instance->filter_id,
 				'title'                => $title,
 				'show_title'           => $show_title,
 				'layout'               => $layout,
@@ -220,6 +221,7 @@ class WCAPF_Form {
 	private function render_reset_button( $field_instance ) {
 		$args = WCAPF_Helper::prepare_reset_button_args(
 			array(
+				'unique_id'   => $field_instance->filter_id,
 				'btn_label'   => WCAPF_Helper::reset_button_label(),
 				'show_always' => $field_instance->get_sub_field_value( 'show_if_empty' ),
 			)
