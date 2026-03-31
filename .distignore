@@ -10,6 +10,8 @@
 .gitattributes
 .gitignore
 .github
+.husky
+.claude
 .wordpress-org
 .gitlab-ci.yml
 .travis.yml

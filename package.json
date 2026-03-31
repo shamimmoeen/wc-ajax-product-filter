@@ -10,6 +10,7 @@
     "packages-update": "wp-scripts packages-update",
     "plugin-zip": "wp dist-archive . ./wc-ajax-product-filter.zip",
     "dist-check": "wp dist-archive . ./wc-ajax-product-filter.zip && unzip -l ./wc-ajax-product-filter.zip && rm ./wc-ajax-product-filter.zip",
+    "plugin-check": "wp plugin check wc-ajax-product-filter --exclude-directories=src",
     "start": "wp-scripts start",
     "readme": "grunt readme",
     "i18n": "wp i18n make-pot . languages/wc-ajax-product-filter.pot --exclude=src,node_modules,vendor,tests,bin",
