@@ -149,7 +149,7 @@ If the issue persists, please open a support topic and we will help investigate 
 
 == Changelog ==
 
-= 4.4.0 (30 March 2026) =
+= 4.4.0 (1 April 2026) =
 * New – Options to disable noUiSlider and Tippy.js from plugin settings
 * Changed – Settings tabs reorganised: "Others" renamed to "Phrases"
 * Deprecated – [wcapf_filter] shortcode; use [wcapf_form] instead
