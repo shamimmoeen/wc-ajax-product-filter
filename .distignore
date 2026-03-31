@@ -10,6 +10,7 @@
 .gitattributes
 .gitignore
 .github
+.wordpress-org
 .gitlab-ci.yml
 .travis.yml
 .DS_Store
