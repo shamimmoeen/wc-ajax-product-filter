@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^@param array \$templates does not accept actual type of parameter\: non\-falsy\-string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: includes/class-wcapf-template-loader.php
+
+		-
+			message: '#^Action callback returns WCAPF_Hooks but should not return anything\.$#'
+			identifier: return.void
+			count: 1
+			path: includes/hooks/class-wcapf-hooks.php

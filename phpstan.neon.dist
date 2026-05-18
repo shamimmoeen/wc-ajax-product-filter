@@ -1,0 +1,13 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+	level: 1
+	paths:
+		- includes/
+		- wc-ajax-product-filter.php
+	scanFiles:
+		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+	bootstrapFiles:
+		- tests/phpstan-bootstrap.php
+	treatPhpDocTypesAsCertain: false
