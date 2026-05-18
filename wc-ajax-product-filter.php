@@ -37,6 +37,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 // Defines constant WCAPF_VERSION.
 if ( ! defined( 'WCAPF_VERSION' ) ) {
 	define( 'WCAPF_VERSION', '4.4.0' );
