@@ -1,11 +1,12 @@
 <?php
-/*
+/**
  * Plugin Name:       WCAPF – Ajax Product Filter for WooCommerce
  * Plugin URI:        https://wptools.io/wc-ajax-product-filter/
  * Description:       A plugin to filter WooCommerce products using AJAX.
  * Version:           4.4.0
- * Requires at least: 6.0
- * Requires PHP:      7.2
+ * Requires at least: 6.3
+ * Tested up to:      6.9
+ * Requires PHP:      7.4
  * Author:            Mainul Hassan
  * Author URI:        https://wptools.io/
  * License:           GPL-2.0-or-later
@@ -13,6 +14,8 @@
  * Text Domain:       wc-ajax-product-filter
  * Domain Path:       /languages
  * Requires Plugins:  woocommerce
+ * WC requires at least: 8.0
+ * WC tested up to:   10.7
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU
  * General Public License as published by the Free Software Foundation, either version 2 of the License,
@@ -120,9 +123,9 @@ final class WCAPF_Plugin {
 		$php_version   = PHP_VERSION;
 		$dashboard_url = get_dashboard_url( get_current_user_id(), 'plugins.php' );
 
-		$required_wp_version  = '6.0';
-		$required_wc_version  = '6.6';
-		$required_php_version = '7.2';
+		$required_wp_version  = '6.3';
+		$required_wc_version  = '8.0';
+		$required_php_version = '7.4';
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			$notices[] = __( 'WCAPF – Ajax Product Filter for WooCommerce requires WooCommerce. The plugin is currently NOT RUNNING.', 'wc-ajax-product-filter' );
