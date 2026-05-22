@@ -110,7 +110,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_where_clause( $query_type, $filter_key ) {
-		$main_query_type = WCAPF_Helper::get_field_relations();
+		$main_query_type = wcapf()->settings->field_relations();
 
 		$where = '';
 
@@ -150,7 +150,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_where_clauses_by_other_filters( $filter_key ) {
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$chosen_filters = wcapf()->active_filters->chosen();
 
 		$wheres = array();
 
@@ -168,7 +168,7 @@ class WCAPF_Product_Filter_Utils {
 			}
 		}
 
-		$query_type = WCAPF_Helper::get_field_relations();
+		$query_type = wcapf()->settings->field_relations();
 
 		return self::combine_where_clauses( $wheres, $query_type );
 	}
@@ -209,7 +209,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_self_where_clause( $filter_key ) {
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$chosen_filters = wcapf()->active_filters->chosen();
 
 		$wheres = array();
 
@@ -226,7 +226,7 @@ class WCAPF_Product_Filter_Utils {
 			}
 		}
 
-		$query_type = WCAPF_Helper::get_field_relations();
+		$query_type = wcapf()->settings->field_relations();
 
 		return self::combine_where_clauses( $wheres, $query_type );
 	}

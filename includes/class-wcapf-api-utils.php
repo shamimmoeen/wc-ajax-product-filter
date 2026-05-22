@@ -346,7 +346,7 @@ class WCAPF_API_Utils {
 	 * @return array Time period options.
 	 */
 	public static function time_period_options() {
-		$_time_period_options = WCAPF_Helper::get_time_period_options();
+		$_time_period_options = wcapf()->data->time_period_options();
 		$time_period_options  = array();
 
 		foreach ( $_time_period_options as $time_period_key => $time_period_label ) {
@@ -517,7 +517,7 @@ class WCAPF_API_Utils {
 	 * @return array Plugin settings.
 	 */
 	public static function get_settings() {
-		$settings = WCAPF_Helper::get_settings();
+		$settings = wcapf()->settings->all();
 
 		// Send the author roles with labels.
 		if ( ! empty( $settings['author_roles'] ) ) {

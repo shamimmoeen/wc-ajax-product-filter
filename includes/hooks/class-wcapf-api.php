@@ -463,7 +463,7 @@ class WCAPF_API {
 			'form_settings' => $form_settings,
 		);
 
-		$response['show_review_notice'] = WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown();
+		$response['show_review_notice'] = wcapf()->notices->is_milestone_review_visible();
 
 		wp_send_json_success( $response );
 	}
@@ -742,7 +742,7 @@ class WCAPF_API {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$meta_key = isset( $_GET['meta_key'] ) ? sanitize_text_field( wp_unslash( $_GET['meta_key'] ) ) : '';
 
-		$values   = WCAPF_Helper::get_available_meta_values( $meta_key );
+		$values   = wcapf()->data->available_meta_values( $meta_key );
 		$response = array();
 
 		if ( $values ) {
@@ -887,7 +887,7 @@ class WCAPF_API {
 			$settings
 		);
 
-		update_option( WCAPF_Helper::settings_option_key(), $sanitized_settings );
+		update_option( wcapf()->settings->option_key(), $sanitized_settings );
 
 		if ( ! $update_filter_keys ) {
 			wp_send_json_success(

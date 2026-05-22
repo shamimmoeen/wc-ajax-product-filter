@@ -10,6 +10,12 @@
 
 	<rule ref="WordPress-Extra"/>
 
+	<!-- PSR-4 namespaced files use PascalCase filenames; legacy files use class-foo.php. -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>/includes/Plugin.php</exclude-pattern>
+		<exclude-pattern>/includes/Helpers/*</exclude-pattern>
+	</rule>
+
 	<!-- Inline comments do not need to end with a full stop. -->
 	<rule ref="Squiz.Commenting.InlineComment">
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>

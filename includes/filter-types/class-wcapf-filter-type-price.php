@@ -43,8 +43,8 @@ class WCAPF_Filter_Type_Price extends WCAPF_Filter_Type {
 	protected function get_range() {
 		global $wpdb;
 
-		$post_statuses  = WCAPF_Helper::filterable_post_statuses();
-		$hide_stock_out = WCAPF_Helper::hide_stock_out_items();
+		$post_statuses  = wcapf()->data->filterable_post_statuses();
+		$hide_stock_out = wcapf()->settings->hide_stock_out_items();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
 
@@ -63,7 +63,7 @@ class WCAPF_Filter_Type_Price extends WCAPF_Filter_Type {
 		$join .= $meta_query_sql['join'];
 		$join .= $tax_query_sql['join'];
 
-		$update_range = 'and' === WCAPF_Helper::get_field_relations();
+		$update_range = 'and' === wcapf()->settings->field_relations();
 
 		$update_range = apply_filters( 'wcapf_update_range_min_max', $update_range, $this->field );
 

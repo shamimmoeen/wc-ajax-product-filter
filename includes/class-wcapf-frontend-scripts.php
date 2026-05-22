@@ -69,11 +69,11 @@ class WCAPF_Frontend_Scripts {
 	 * @return void
 	 */
 	public function load_frontend_scripts() {
-		if ( ! empty( WCAPF_Helper::wcapf_option( 'disable_wcapf' ) ) ) {
+		if ( ! empty( wcapf()->settings->get( 'disable_wcapf' ) ) ) {
 			return;
 		}
 
-		if ( WCAPF_Helper::load_scripts_conditionally() && ! WCAPF_Helper::found_wcapf() ) {
+		if ( wcapf()->settings->load_scripts_conditionally() && ! wcapf()->compat->found_wcapf() ) {
 			return;
 		}
 
@@ -88,7 +88,7 @@ class WCAPF_Frontend_Scripts {
 			? '.min.css'
 			: '.css';
 
-		if ( ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+		if ( ! empty( wcapf()->settings->get( 'use_combobox' ) ) ) {
 			wp_enqueue_style(
 				'wcapf-chosen',
 				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen' . $ext,
@@ -97,7 +97,7 @@ class WCAPF_Frontend_Scripts {
 			);
 		}
 
-		if ( empty( WCAPF_Helper::wcapf_option( 'disable_nouislider_js' ) ) ) {
+		if ( empty( wcapf()->settings->get( 'disable_nouislider_js' ) ) ) {
 			wp_enqueue_style(
 				'wcapf-nouislider',
 				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
@@ -114,9 +114,9 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		// Add css variables.
-		$primary_color      = WCAPF_Helper::wcapf_option( 'primary_color', '#345DBB' );
-		$primary_text_color = WCAPF_Helper::wcapf_option( 'primary_text_color', '#ffffff' );
-		$star_icon_color    = WCAPF_Helper::wcapf_option( 'star_icon_color', 'rgb(240, 201, 48)' );
+		$primary_color      = wcapf()->settings->get( 'primary_color', '#345DBB' );
+		$primary_text_color = wcapf()->settings->get( 'primary_text_color', '#ffffff' );
+		$star_icon_color    = wcapf()->settings->get( 'star_icon_color', 'rgb(240, 201, 48)' );
 
 		list( $r, $g, $b )    = WCAPF_Helper::get_rgb_from_hex( $primary_color );
 		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
@@ -133,7 +133,7 @@ class WCAPF_Frontend_Scripts {
 			? '.min.js'
 			: '.js';
 
-		if ( ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+		if ( ! empty( wcapf()->settings->get( 'use_combobox' ) ) ) {
 			wp_enqueue_script(
 				'wcapf-chosen',
 				WCAPF_PLUGIN_URL . 'public/lib/chosen/chosen.jquery' . $ext,
@@ -143,7 +143,7 @@ class WCAPF_Frontend_Scripts {
 			);
 		}
 
-		if ( empty( WCAPF_Helper::wcapf_option( 'disable_nouislider_js' ) ) ) {
+		if ( empty( wcapf()->settings->get( 'disable_nouislider_js' ) ) ) {
 			wp_enqueue_script(
 				'wcapf-nouislider',
 				WCAPF_PLUGIN_URL . 'public/lib/nouislider/nouislider' . $ext,
@@ -153,7 +153,7 @@ class WCAPF_Frontend_Scripts {
 			);
 		}
 
-		if ( WCAPF_Helper::use_tippyjs_for_tooltip() ) {
+		if ( wcapf()->settings->use_tippyjs_for_tooltip() ) {
 			wp_enqueue_script(
 				'wcapf-popper',
 				WCAPF_PLUGIN_URL . 'public/lib/tippyjs/popper.min.js',
@@ -207,7 +207,7 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
-		$pagination_container = WCAPF_Helper::wcapf_option( 'pagination_container', '.woocommerce-pagination' );
+		$pagination_container = wcapf()->settings->get( 'pagination_container', '.woocommerce-pagination' );
 
 		$settings = array(
 			'shop_loop_container'  => $shop_loop_identifier,
@@ -218,16 +218,16 @@ class WCAPF_Frontend_Scripts {
 		);
 
 		foreach ( $js_data as $key ) {
-			$settings[ $key ] = WCAPF_Helper::wcapf_option( $key );
+			$settings[ $key ] = wcapf()->settings->get( $key );
 		}
 
 		// Prevent attaching combobox on default orderby if combobox is disabled globally.
-		if ( empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ) ) {
+		if ( empty( wcapf()->settings->get( 'use_combobox' ) ) ) {
 			$settings['attach_combobox_on_sorting'] = '';
 		}
 
-		$combobox_no_results_text   = WCAPF_Helper::no_results_text();
-		$combobox_options_none_text = WCAPF_Helper::wcapf_option(
+		$combobox_no_results_text   = wcapf()->settings->no_results_text();
+		$combobox_options_none_text = wcapf()->settings->get(
 			'combobox_no_options_text',
 			__( 'No options to choose', 'wc-ajax-product-filter' )
 		);
@@ -251,10 +251,10 @@ class WCAPF_Frontend_Scripts {
 			'scroll_to_top_easing'                     => 'easeOutQuad',
 			'is_mobile'                                => wp_is_mobile(),
 			'reload_on_back'                           => true,
-			'found_wcapf'                              => WCAPF_Helper::found_wcapf(),
-			'wcapf_pro'                                => WCAPF_Helper::found_pro_version(),
+			'found_wcapf'                              => wcapf()->compat->found_wcapf(),
+			'wcapf_pro'                                => wcapf()->compat->found_pro_version(),
 			'update_document_title'                    => true,
-			'use_tippyjs'                              => WCAPF_Helper::use_tippyjs_for_tooltip(),
+			'use_tippyjs'                              => wcapf()->settings->use_tippyjs_for_tooltip(),
 		);
 
 		$params = array_merge( $params, $settings );

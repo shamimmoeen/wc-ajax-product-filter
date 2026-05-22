@@ -126,7 +126,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 		$attributes = wc_get_attribute_taxonomy_names();
 		$taxonomy   = $this->taxonomy;
 
-		if ( in_array( $taxonomy, $attributes, true ) && WCAPF_Helper::filtering_via_lookup_table_is_active() ) {
+		if ( in_array( $taxonomy, $attributes, true ) && wcapf()->settings->filtering_via_lookup_table_is_active() ) {
 			$filtered_count = $this->get_filtered_term_product_counts_using_lookup_table( $term_ids );
 		} elseif ( is_taxonomy_hierarchical( $taxonomy ) ) {
 			$filtered_count = $this->get_hierarchical_term_product_counts( $term_ids );
@@ -157,9 +157,9 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function get_filtered_term_product_counts_using_lookup_table( $term_ids ) {
 		global $wpdb;
 
-		$post_statuses  = WCAPF_Helper::filterable_post_statuses();
+		$post_statuses  = wcapf()->data->filterable_post_statuses();
 		$update_count   = $this->auto_count_enabled();
-		$hide_stock_out = WCAPF_Helper::hide_stock_out_items();
+		$hide_stock_out = wcapf()->settings->hide_stock_out_items();
 
 		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
 
@@ -231,7 +231,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function get_hierarchical_term_product_counts( $term_ids ) {
 		global $wpdb;
 
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+		$post_statuses = wcapf()->data->filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
@@ -367,7 +367,7 @@ class WCAPF_Filter_Type_Taxonomy extends WCAPF_Filter_Type {
 	private function get_non_hierarchical_term_product_counts( $term_ids ) {
 		global $wpdb;
 
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+		$post_statuses = wcapf()->data->filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();

@@ -136,7 +136,7 @@ class WCAPF_Rating_Filter {
 			$rating = absint( $rating );
 
 			if ( $use_star_icons ) {
-				$rating_data[ $rating ] = WCAPF_Helper::get_rating_svg_icons( $rating );
+				$rating_data[ $rating ] = wcapf()->rating->icons( $rating );
 			} else {
 				$rating_data[ $rating ] = $this->get_rating_label( $rating );
 			}
@@ -242,9 +242,9 @@ class WCAPF_Rating_Filter {
 
 			if ( $rating ) {
 				if ( $is_dropdown ) {
-					$item['name'] = WCAPF_Helper::get_rating_entities( $rating );
+					$item['name'] = wcapf()->rating->entities( $rating );
 				} else {
-					$item['name'] = WCAPF_Helper::get_rating_svg_icons( $rating );
+					$item['name'] = wcapf()->rating->icons( $rating );
 				}
 			}
 

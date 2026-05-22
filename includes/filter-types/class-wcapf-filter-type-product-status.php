@@ -51,7 +51,7 @@ class WCAPF_Filter_Type_Product_Status extends WCAPF_Filter_Type {
 	protected function get_filtered_product_counts( $items ) {
 		global $wpdb;
 
-		$post_statuses = WCAPF_Helper::filterable_post_statuses();
+		$post_statuses = wcapf()->data->filterable_post_statuses();
 		$update_count  = $this->auto_count_enabled();
 
 		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();

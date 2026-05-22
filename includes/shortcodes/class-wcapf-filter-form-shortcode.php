@@ -62,7 +62,7 @@ class WCAPF_Filter_Form_Shortcode {
 	 * @return void
 	 */
 	public function render_debug_messages() {
-		if ( ! WCAPF_Helper::is_debug_mode_enabled() ) {
+		if ( ! wcapf()->settings->is_debug_mode_enabled() ) {
 			return;
 		}
 
@@ -77,7 +77,7 @@ class WCAPF_Filter_Form_Shortcode {
 				);
 
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside helper.
-				echo WCAPF_Helper::get_debug_message( $debug_message );
+				echo wcapf()->settings->debug_message( $debug_message );
 			} elseif ( isset( $wcapf_form['rendered'] ) ) {
 				$upgrade_link = add_query_arg(
 					array(
@@ -98,7 +98,7 @@ class WCAPF_Filter_Form_Shortcode {
 				);
 
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside helper.
-				echo WCAPF_Helper::get_debug_message( $debug_message );
+				echo wcapf()->settings->debug_message( $debug_message );
 			}
 		} else {
 			$upgrade_link = add_query_arg(
@@ -120,7 +120,7 @@ class WCAPF_Filter_Form_Shortcode {
 			);
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside helper.
-			echo WCAPF_Helper::get_debug_message( $debug_message );
+			echo wcapf()->settings->debug_message( $debug_message );
 		}
 	}
 }

@@ -6,7 +6,7 @@ import touch from 'gulp-touch-cmd';
 import autoPrefix from 'gulp-autoprefixer';
 import babel from 'gulp-babel';
 import concat from 'gulp-concat';
-import minCss from 'gulp-minify-css';
+import minCss from 'gulp-clean-css';
 import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
 import browserSync from 'browser-sync';

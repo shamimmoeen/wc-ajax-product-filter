@@ -61,17 +61,17 @@ class WCAPF_Admin {
 	public function plugin_action_links( $links ) {
 		$forms_page_action_link = sprintf(
 			'<a href="%1$s">%2$s</a>',
-			esc_url( WCAPF_Helper::forms_page_url() ),
+			esc_url( wcapf()->admin_url->forms_page() ),
 			__( 'Add Filters', 'wc-ajax-product-filter' )
 		);
 
 		$pre_links   = array( $forms_page_action_link );
-		$pro_version = WCAPF_Helper::found_pro_version();
+		$pro_version = wcapf()->compat->found_pro_version();
 
 		if ( $pro_version ) {
 			$pre_links[] = sprintf(
 				'<a href="%1$s">%2$s</a>',
-				esc_url( WCAPF_Helper::settings_page_url() ),
+				esc_url( wcapf()->admin_url->settings_page() ),
 				__( 'Settings', 'wc-ajax-product-filter' )
 			);
 		}
@@ -292,10 +292,10 @@ class WCAPF_Admin {
 			'nonce'        => wp_create_nonce( 'wcapf-nonce' ),
 		);
 
-		$params['forms_page_link']     = WCAPF_Helper::forms_page_url();
-		$params['seo_rules_page_link'] = WCAPF_Helper::seo_rules_page_url();
-		$params['settings_page_link']  = WCAPF_Helper::settings_page_url();
-		$params['upgrade_page_link']   = WCAPF_Helper::upgrade_page_url();
+		$params['forms_page_link']     = wcapf()->admin_url->forms_page();
+		$params['seo_rules_page_link'] = wcapf()->admin_url->seo_rules_page();
+		$params['settings_page_link']  = wcapf()->admin_url->settings_page();
+		$params['upgrade_page_link']   = wcapf()->admin_url->upgrade_page();
 
 		$screen_id  = $this->current_screen_id();
 		$user_roles = WCAPF_API_Utils::user_role_options();
@@ -307,12 +307,12 @@ class WCAPF_Admin {
 			if ( ! isset( $_GET['id'] ) ) {
 				$params['forms'] = WCAPF_API_Utils::get_forms();
 			} else {
-				$settings = WCAPF_Helper::get_settings();
+				$settings = wcapf()->settings->all();
 
 				$params['filter_default_data'] = WCAPF_Default_Data::filter_default_data();
 
 				$params['filter_types']    = WCAPF_API_Utils::get_filter_types();
-				$params['meta_keys']       = WCAPF_Helper::get_available_meta_keys();
+				$params['meta_keys']       = wcapf()->data->available_meta_keys();
 				$params['date_formats']    = WCAPF_API_Utils::display_date_formats();
 				$params['status_options']  = WCAPF_API_Utils::product_status_options();
 				$params['time_periods']    = WCAPF_API_Utils::time_period_options();
@@ -348,8 +348,8 @@ class WCAPF_Admin {
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );
 
 		// For review notices.
-		$params['show_review_notice_for_milestone_achieved'] = WCAPF_Helper::review_notice_for_milestone_achieved_can_be_shown();
-		$params['show_review_notice_for_time_since']         = WCAPF_Helper::review_notice_for_time_since_can_be_shown();
+		$params['show_review_notice_for_milestone_achieved'] = wcapf()->notices->is_milestone_review_visible();
+		$params['show_review_notice_for_time_since']         = wcapf()->notices->time_since_review_label();
 
 		return apply_filters( 'wcapf_admin_js_params', $params );
 	}

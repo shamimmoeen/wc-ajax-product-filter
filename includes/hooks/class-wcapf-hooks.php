@@ -77,10 +77,10 @@ class WCAPF_Hooks {
 			return $classes;
 		}
 
-		$improve_scrollbar   = WCAPF_Helper::wcapf_option( 'improve_scrollbar' );
-		$improve_text_inputs = WCAPF_Helper::wcapf_option( 'improve_input_type_text_number' );
-		$remove_focus_style  = WCAPF_Helper::wcapf_option( 'remove_focus_style' );
-		$use_wait_cursor     = WCAPF_Helper::wcapf_option( 'wait_cursor' );
+		$improve_scrollbar   = wcapf()->settings->get( 'improve_scrollbar' );
+		$improve_text_inputs = wcapf()->settings->get( 'improve_input_type_text_number' );
+		$remove_focus_style  = wcapf()->settings->get( 'remove_focus_style' );
+		$use_wait_cursor     = wcapf()->settings->get( 'wait_cursor' );
 
 		if ( $improve_scrollbar ) {
 			$classes[] = 'wcapf-pretty-scroll';
@@ -109,7 +109,7 @@ class WCAPF_Hooks {
 	 * @return bool
 	 */
 	private function should_we_proceed() {
-		return WCAPF_Helper::found_wcapf();
+		return wcapf()->compat->found_wcapf();
 	}
 
 	/**
@@ -124,7 +124,7 @@ class WCAPF_Hooks {
 			return;
 		}
 
-		$loading_animation = WCAPF_Helper::wcapf_option( 'loading_animation', 'overlay-with-icon' );
+		$loading_animation = wcapf()->settings->get( 'loading_animation', 'overlay-with-icon' );
 
 		echo '<div class="wcapf-loader">';
 
@@ -140,14 +140,14 @@ class WCAPF_Hooks {
 				'Spinner',
 			);
 
-			$loading_image = WCAPF_Helper::wcapf_option( 'loading_icon', 'Dual-Ring' );
+			$loading_image = wcapf()->settings->get( 'loading_icon', 'Dual-Ring' );
 
 			if ( ! in_array( $loading_image, $allowed_loaders, true ) ) {
 				$loading_image = 'Dual-Ring';
 			}
 
 			$image_file = WCAPF_PLUGIN_DIR . '/public/loaders/' . $loading_image . '.svg';
-			$image_size = WCAPF_Helper::wcapf_option( 'loading_image_size', '60' ) . 'px';
+			$image_size = wcapf()->settings->get( 'loading_image_size', '60' ) . 'px';
 
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Reading trusted local SVG bundled with the plugin.
 			$image = file_get_contents( $image_file );
@@ -300,11 +300,11 @@ class WCAPF_Hooks {
 	 * @return void
 	 */
 	private function render_active_filters() {
-		if ( ! empty( WCAPF_Helper::wcapf_option( 'active_filters_on_top' ) ) ) {
+		if ( ! empty( wcapf()->settings->get( 'active_filters_on_top' ) ) ) {
 			$active_filters_on_top_args = apply_filters(
 				'wcapf_active_filters_on_top_args',
 				array(
-					'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
+					'clear_all_btn_label'  => wcapf()->settings->clear_all_button_label(),
 					'clear_all_btn_layout' => 'inline',
 				)
 			);
@@ -312,7 +312,7 @@ class WCAPF_Hooks {
 			// Use a stable ID so the element can be reliably matched during AJAX updates.
 			$active_filters_on_top_args['unique_id'] = 'on-top';
 
-			$args = WCAPF_Helper::prepare_active_filters_args( $active_filters_on_top_args );
+			$args = wcapf()->active_filters->prepare_args( $active_filters_on_top_args );
 
 			echo '<div class="wcapf-active-filters-before-shop-loop">';
 			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
@@ -350,7 +350,7 @@ class WCAPF_Hooks {
 	 */
 	public function set_form_filter_data( $data ) {
 		$empty_options = array( 'show', 'remove' );
-		$remove_empty  = WCAPF_Helper::wcapf_option( 'remove_empty' );
+		$remove_empty  = wcapf()->settings->get( 'remove_empty' );
 
 		if ( ! in_array( $remove_empty, $empty_options, true ) ) {
 			$remove_empty = 'show';
@@ -359,9 +359,9 @@ class WCAPF_Hooks {
 		return wp_parse_args(
 			array(
 				'hide_empty'    => $remove_empty,
-				'update_count'  => ! empty( WCAPF_Helper::wcapf_option( 'update_count' ) ),
-				'use_combobox'  => ! empty( WCAPF_Helper::wcapf_option( 'use_combobox' ) ),
-				'use_term_slug' => ! empty( WCAPF_Helper::wcapf_option( 'use_term_slug' ) ),
+				'update_count'  => ! empty( wcapf()->settings->get( 'update_count' ) ),
+				'use_combobox'  => ! empty( wcapf()->settings->get( 'use_combobox' ) ),
+				'use_term_slug' => ! empty( wcapf()->settings->get( 'use_term_slug' ) ),
 			),
 			$data
 		);
@@ -398,7 +398,7 @@ class WCAPF_Hooks {
 		 * Apply the keyword filter.
 		 */
 		if ( $q->is_main_query() ) {
-			$keyword = WCAPF_Helper::get_applied_keyword();
+			$keyword = wcapf()->active_filters->applied_keyword();
 
 			if ( $keyword ) {
 				$q->set( 's', $keyword );

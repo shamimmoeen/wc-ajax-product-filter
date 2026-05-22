@@ -69,7 +69,7 @@ class WCAPF_URL_Builder {
 	 * @param bool   $enable_multiple Whether the filter supports multiple values.
 	 */
 	public function __construct( $filter_key = '', $enable_multiple = false ) {
-		$_filter_keys = WCAPF_Helper::wcapf_option( 'filter_keys' );
+		$_filter_keys = wcapf()->settings->get( 'filter_keys' );
 
 		if ( ! is_array( $_filter_keys ) ) {
 			$_filter_keys = array();
@@ -78,7 +78,7 @@ class WCAPF_URL_Builder {
 		$this->filter_keys     = $_filter_keys;
 		$this->filter_key      = $filter_key;
 		$this->enable_multiple = $enable_multiple;
-		$this->base_url        = WCAPF_Helper::wcapf_option( 'base_url' );
+		$this->base_url        = wcapf()->settings->get( 'base_url' );
 		$this->excluded_keys   = apply_filters( 'wcapf_url_vars_to_exclude', array( 'product-page' ) );
 
 		$this->query_vars = $this->set_query();
@@ -238,7 +238,7 @@ class WCAPF_URL_Builder {
 	public function get_reset_url() {
 		$vars = $this->query_vars;
 
-		$filter_keys = array_keys( WCAPF_Helper::get_active_filters_data() );
+		$filter_keys = array_keys( wcapf()->active_filters->data() );
 
 		foreach ( $filter_keys as $filter_key ) {
 			if ( array_key_exists( $filter_key, $vars ) ) {

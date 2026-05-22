@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! WCAPF_Helper::found_wcapf() ) {
+if ( ! wcapf()->compat->found_wcapf() ) {
 	return;
 }
 
@@ -33,7 +33,7 @@ if ( ! WCAPF_Helper::found_wcapf() ) {
 		<div class="wcapf-filter">
 			<?php
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo WCAPF_Helper::get_reset_button_markup( $reset_btn_label );
+			echo wcapf()->active_filters->reset_button_markup( $reset_btn_label );
 			?>
 		</div>
 	<?php endif; ?>

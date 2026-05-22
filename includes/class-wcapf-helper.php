@@ -345,7 +345,7 @@ class WCAPF_Helper {
 	 * @return string Filter relationship.
 	 */
 	public static function get_field_relations() {
-		$relation = self::wcapf_option( 'filter_relationships' );
+		$relation = wcapf()->settings->get( 'filter_relationships' );
 
 		if ( ! in_array( $relation, array( 'and', 'or' ), true ) ) {
 			$relation = 'and';
@@ -459,7 +459,7 @@ class WCAPF_Helper {
 	 * @return array
 	 */
 	public static function get_rating_star_icons() {
-		if ( self::wcapf_option( 'rating_star_use_fontawesome' ) ) {
+		if ( wcapf()->settings->get( 'rating_star_use_fontawesome' ) ) {
 			$star_full  = '<i class="fa-solid fa-star wcapf-star-icon"></i>';
 			$star_empty = '<i class="fa-regular fa-star wcapf-star-icon"></i>';
 			$star_half  = '<i class="fa-solid fa-star-half-stroke wcapf-star-icon"></i>';
@@ -1018,7 +1018,7 @@ class WCAPF_Helper {
 	 * @return bool True if Tippy.js is enabled for tooltips, otherwise false.
 	 */
 	public static function use_tippyjs_for_tooltip() {
-		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', empty( self::wcapf_option( 'disable_tippyjs' ) ) );
+		return apply_filters( 'wcapf_use_tippyjs_for_tooltip', empty( wcapf()->settings->get( 'disable_tippyjs' ) ) );
 	}
 
 	/**
@@ -1029,7 +1029,7 @@ class WCAPF_Helper {
 	 * @return string No-results text.
 	 */
 	public static function no_results_text() {
-		return self::wcapf_option(
+		return wcapf()->settings->get(
 			'no_results_text',
 			__( 'No results for:', 'wc-ajax-product-filter' )
 		);
@@ -1043,7 +1043,7 @@ class WCAPF_Helper {
 	 * @return string Empty filter text.
 	 */
 	public static function empty_filter_text() {
-		return self::wcapf_option( 'empty_filter_text', __( 'N/A', 'wc-ajax-product-filter' ) );
+		return wcapf()->settings->get( 'empty_filter_text', __( 'N/A', 'wc-ajax-product-filter' ) );
 	}
 
 	/**
@@ -1054,7 +1054,7 @@ class WCAPF_Helper {
 	 * @return string Sort-by prefix text.
 	 */
 	public static function sort_by_prefix() {
-		return self::wcapf_option( 'sort_by_prefix', __( 'Sort by:', 'wc-ajax-product-filter' ) );
+		return wcapf()->settings->get( 'sort_by_prefix', __( 'Sort by:', 'wc-ajax-product-filter' ) );
 	}
 
 	/**
@@ -1065,7 +1065,7 @@ class WCAPF_Helper {
 	 * @return string Keyword filter prefix text.
 	 */
 	public static function keyword_filter_prefix() {
-		return self::wcapf_option( 'keyword_filter_prefix', __( 'Keyword:', 'wc-ajax-product-filter' ) );
+		return wcapf()->settings->get( 'keyword_filter_prefix', __( 'Keyword:', 'wc-ajax-product-filter' ) );
 	}
 
 	/**
@@ -1100,7 +1100,7 @@ class WCAPF_Helper {
 	 * @return string Clear-all button label.
 	 */
 	public static function clear_all_button_label() {
-		return self::wcapf_option(
+		return wcapf()->settings->get(
 			'clear_all_button_label',
 			__( 'Clear All', 'wc-ajax-product-filter' )
 		);
@@ -1112,7 +1112,7 @@ class WCAPF_Helper {
 	 * @return string Reset button label.
 	 */
 	public static function reset_button_label() {
-		return self::wcapf_option( 'reset_button_label', __( 'Reset', 'wc-ajax-product-filter' ) );
+		return wcapf()->settings->get( 'reset_button_label', __( 'Reset', 'wc-ajax-product-filter' ) );
 	}
 
 	/**

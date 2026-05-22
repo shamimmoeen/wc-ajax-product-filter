@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! WCAPF_Helper::found_wcapf() ) {
+if ( ! wcapf()->compat->found_wcapf() ) {
 	return;
 }
 
@@ -73,13 +73,13 @@ if ( ! WCAPF_Helper::found_wcapf() ) {
 									$wcapf_loop_class = ( $wcapf_loop_index === $total_filters ) ? 'last-item' : '';
 
 									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-									echo WCAPF_Helper::get_active_filters_markup( $wcapf_filter_data, $wcapf_loop_class );
+									echo wcapf()->active_filters->markup( $wcapf_filter_data, $wcapf_loop_class );
 								}
 
 								if ( 'inline' === $clear_all_btn_layout ) {
 									echo '<div class="wcapf-reset-filters-btn-wrapper">';
 									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-									echo WCAPF_Helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
+									echo wcapf()->active_filters->reset_button_markup( $clear_all_btn_label, $reset_btn_class );
 									echo '</div>';
 								}
 								?>
@@ -99,7 +99,7 @@ if ( ! WCAPF_Helper::found_wcapf() ) {
 								echo '<div class="active-items">';
 
 								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-								echo WCAPF_Helper::get_active_filters_markup( $wcapf_filter_data );
+								echo wcapf()->active_filters->markup( $wcapf_filter_data );
 
 								echo '</div></div>';
 							}
@@ -115,7 +115,7 @@ if ( ! WCAPF_Helper::found_wcapf() ) {
 					// 'Clear All' button.
 					if ( $all_filters && $clear_all_btn_label && 'inline' !== $clear_all_btn_layout && ! $show_clear_btn ) {
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						echo WCAPF_Helper::get_reset_button_markup( $clear_all_btn_label, $reset_btn_class );
+						echo wcapf()->active_filters->reset_button_markup( $clear_all_btn_label, $reset_btn_class );
 					}
 					?>
 				</div>

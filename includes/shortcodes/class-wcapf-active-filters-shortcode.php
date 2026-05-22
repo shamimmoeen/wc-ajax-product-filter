@@ -40,7 +40,7 @@ class WCAPF_Active_Filters_Shortcode {
 				'title'                => __( 'Active Filters', 'wc-ajax-product-filter' ),
 				'layout'               => 'simple',
 				'empty_message'        => '',
-				'clear_all_btn_label'  => WCAPF_Helper::clear_all_button_label(),
+				'clear_all_btn_label'  => wcapf()->settings->clear_all_button_label(),
 				'clear_all_btn_layout' => 'block',
 			),
 			$attrs
@@ -50,7 +50,7 @@ class WCAPF_Active_Filters_Shortcode {
 			$a['unique_id'] = $a['id'];
 		}
 
-		$args = WCAPF_Helper::prepare_active_filters_args( $a );
+		$args = wcapf()->active_filters->prepare_args( $a );
 
 		return WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args, false );
 	}

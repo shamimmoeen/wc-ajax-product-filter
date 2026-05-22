@@ -43,7 +43,7 @@ class WCAPF_Product_Filter {
 		$joins  = array();
 		$wheres = array();
 
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$chosen_filters = wcapf()->active_filters->chosen();
 
 		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
 			if ( 'filters_data' === $filter_type ) {
@@ -68,7 +68,7 @@ class WCAPF_Product_Filter {
 	 *
 	 * @return array
 	 *
-	 * @see WCAPF_Helper::get_chosen_filters()
+	 * @see \WCAPF\Helpers\ActiveFilters::chosen()
 	 */
 	public function get_chosen_filters() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -144,7 +144,7 @@ class WCAPF_Product_Filter {
 			return array();
 		}
 
-		$settings = WCAPF_Helper::get_settings();
+		$settings = wcapf()->settings->all();
 
 		if ( ! empty( $settings['disable_wcapf'] ) ) {
 			return array();
@@ -226,7 +226,7 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	protected function set_attribute_filter_data( $filter_value, $field_instance ) {
-		$use_attribute_table = WCAPF_Helper::filtering_via_lookup_table_is_active();
+		$use_attribute_table = wcapf()->settings->filtering_via_lookup_table_is_active();
 
 		if ( ! $use_attribute_table ) {
 			return $this->set_taxonomy_filter_data( $filter_value, $field_instance );
@@ -251,7 +251,7 @@ class WCAPF_Product_Filter {
 		$clause_root = "$wpdb->posts.ID IN ( SELECT product_or_parent_id FROM (";
 		$clause_end  = ') AS temp)';
 
-		$hide_stock_out_items = WCAPF_Helper::hide_stock_out_items();
+		$hide_stock_out_items = wcapf()->settings->hide_stock_out_items();
 
 		if ( $hide_stock_out_items ) {
 			$in_stock_clause = ' AND in_stock = 1';
@@ -518,7 +518,7 @@ class WCAPF_Product_Filter {
 		$_filter_values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
 		$_filter_values = $_filter_values ? $_filter_values[0] : array(); // Pick the first range only.
 
-		$separator = WCAPF_Helper::range_values_separator();
+		$separator = wcapf()->data->range_values_separator();
 
 		$filter_values = explode( $separator, $_filter_values );
 
@@ -562,7 +562,7 @@ class WCAPF_Product_Filter {
 	 * @return string
 	 */
 	protected function get_label_for_number_range( $field_instance, $value ) {
-		$separator = WCAPF_Helper::range_values_separator();
+		$separator = wcapf()->data->range_values_separator();
 		$range     = explode( $separator, $value );
 
 		$range_min = isset( $range[0] ) ? $range[0] : '';
@@ -924,7 +924,7 @@ class WCAPF_Product_Filter {
 		// Here, it is possible to apply multiple keywords separated by comma or space.
 		$filter_values = array( $filter_value );
 
-		$prefix = WCAPF_Helper::keyword_filter_prefix();
+		$prefix = wcapf()->settings->keyword_filter_prefix();
 
 		$active_filters[ $filter_value ] = $prefix . ' ' . $filter_value;
 
@@ -944,7 +944,7 @@ class WCAPF_Product_Filter {
 	 * @return array
 	 */
 	private function set_default_sorting_data( $chosen ) {
-		if ( empty( WCAPF_Helper::wcapf_option( 'sorting_data_in_active_filters' ) ) ) {
+		if ( empty( wcapf()->settings->get( 'sorting_data_in_active_filters' ) ) ) {
 			return $chosen;
 		}
 
@@ -956,7 +956,7 @@ class WCAPF_Product_Filter {
 		}
 
 		$values = WCAPF_Product_Filter_Utils::get_chosen_filter_values( $orderby );
-		$prefix = WCAPF_Helper::sort_by_prefix();
+		$prefix = wcapf()->settings->sort_by_prefix();
 
 		$active_filters = array();
 
@@ -983,7 +983,7 @@ class WCAPF_Product_Filter {
 	public function get_full_where_clause() {
 		$post_clauses = $this->get_full_join_n_where_clauses();
 		$wheres       = $post_clauses['wheres'];
-		$query_type   = WCAPF_Helper::get_field_relations();
+		$query_type   = wcapf()->settings->field_relations();
 
 		return WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
 	}

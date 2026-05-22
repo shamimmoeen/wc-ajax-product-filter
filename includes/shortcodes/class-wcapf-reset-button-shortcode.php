@@ -37,7 +37,7 @@ class WCAPF_Reset_Button_Shortcode {
 		$a = shortcode_atts(
 			array(
 				'id'          => '',
-				'btn_label'   => WCAPF_Helper::reset_button_label(),
+				'btn_label'   => wcapf()->settings->reset_button_label(),
 				'show_always' => '',
 			),
 			$attrs
@@ -47,7 +47,7 @@ class WCAPF_Reset_Button_Shortcode {
 			$a['unique_id'] = $a['id'];
 		}
 
-		$args = WCAPF_Helper::prepare_reset_button_args( $a );
+		$args = wcapf()->active_filters->prepare_reset_button_args( $a );
 
 		return WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args, false );
 	}

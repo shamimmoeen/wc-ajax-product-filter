@@ -342,6 +342,29 @@ final class WCAPF_Plugin {
 	}
 }
 
+if ( ! function_exists( 'wcapf' ) ) {
+	/**
+	 * Returns the main plugin instance.
+	 *
+	 * Guarded so activating free and pro together does not redeclare the function.
+	 * When both are active, free yields its includes via should_we_proceed(); the
+	 * wcapf() declared by whichever main file loaded first is what's used either way,
+	 * and Composer's autoloader resolves \WCAPF\Plugin from whichever plugin's
+	 * autoloader was registered first.
+	 *
+	 * @return \WCAPF\Plugin
+	 */
+	function wcapf() {
+		static $instance = null;
+
+		if ( null === $instance ) {
+			$instance = new \WCAPF\Plugin();
+		}
+
+		return $instance;
+	}
+}
+
 // Initialize the plugin.
 new WCAPF_Plugin();
 

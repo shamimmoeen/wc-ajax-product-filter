@@ -85,12 +85,12 @@ class WCAPF_V4_Migration_Hooks {
 	 */
 	public function set_v4_migration_js_params( $params ) {
 		// v4 migration related data.
-		$params['show_v4_migration_notice']      = WCAPF_Helper::v4_migration_notice_can_be_shown();
-		$params['show_v4_review_filters_notice'] = WCAPF_Helper::v4_review_filters_notice_can_be_shown();
+		$params['show_v4_migration_notice']      = wcapf()->notices->is_v4_migration_visible();
+		$params['show_v4_review_filters_notice'] = wcapf()->notices->is_v4_review_filters_visible();
 		$params['v4_migrated_form_url']          = $this->get_v4_migrated_form_url();
 		$params['v4_migration_doc_url']          = $this->get_v4_migration_doc_url();
 
-		$pro_update_notices = WCAPF_Helper::pro_update_notice_can_be_shown();
+		$pro_update_notices = wcapf()->notices->pro_update_messages();
 
 		if ( ! empty( $pro_update_notices ) ) {
 			// Get the first notice.
@@ -113,9 +113,9 @@ class WCAPF_V4_Migration_Hooks {
 		$form_id = get_option( 'wcapf_migrated_filters_form_id' );
 
 		if ( $form_id ) {
-			$form_edit_url = WCAPF_Helper::form_edit_url( $form_id );
+			$form_edit_url = wcapf()->admin_url->form_edit( $form_id );
 		} else {
-			$form_edit_url = WCAPF_Helper::forms_page_url();
+			$form_edit_url = wcapf()->admin_url->forms_page();
 		}
 
 		return $form_edit_url;
@@ -145,7 +145,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function show_v4_migration_notice() {
-		if ( ! WCAPF_Helper::v4_migration_notice_can_be_shown() ) {
+		if ( ! wcapf()->notices->is_v4_migration_visible() ) {
 			return;
 		}
 
@@ -178,7 +178,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function dismiss_v4_migration_notice_scripts() {
-		if ( ! WCAPF_Helper::v4_migration_notice_can_be_shown() ) {
+		if ( ! wcapf()->notices->is_v4_migration_visible() ) {
 			return;
 		}
 
@@ -214,7 +214,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function dismiss_v4_review_filters_notice_scripts() {
-		if ( ! WCAPF_Helper::v4_review_filters_notice_can_be_shown() ) {
+		if ( ! wcapf()->notices->is_v4_review_filters_visible() ) {
 			return;
 		}
 
@@ -280,7 +280,7 @@ class WCAPF_V4_Migration_Hooks {
 	 * @return void
 	 */
 	public function show_pro_version_update_notice() {
-		$notices = WCAPF_Helper::pro_update_notice_can_be_shown();
+		$notices = wcapf()->notices->pro_update_messages();
 
 		if ( ! empty( $notices ) ) {
 			// Get the first notice.

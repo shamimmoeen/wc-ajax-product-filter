@@ -390,7 +390,7 @@ class WCAPF_Walker {
 		$filter_key  = $this->filter_key;
 		$filter_type = $this->filter_type;
 
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$chosen_filters = wcapf()->active_filters->chosen();
 
 		// We have grouped the filters based on filter types.
 		$filters = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
@@ -460,7 +460,7 @@ class WCAPF_Walker {
 		$show_count   = $this->show_count;
 
 		if ( ! $items ) {
-			return '<div>' . esc_html( WCAPF_Helper::empty_filter_text() ) . '</div>';
+			return '<div>' . esc_html( wcapf()->settings->empty_filter_text() ) . '</div>';
 		}
 
 		if ( 'radio' === $display_type || 'select' === $display_type ) {
@@ -496,7 +496,7 @@ class WCAPF_Walker {
 				$wrapper_classes[] = 'display-type-' . $display_type;
 
 				// Stylish checkbox and radio.
-				if ( ! empty( WCAPF_Helper::wcapf_option( 'stylish_checkbox_radio' ) ) ) {
+				if ( ! empty( wcapf()->settings->get( 'stylish_checkbox_radio' ) ) ) {
 					$wrapper_classes[] = 'stylish-checkbox-radio';
 				}
 
@@ -504,7 +504,7 @@ class WCAPF_Walker {
 				if ( $this->hierarchical && $this->enable_hierarchy_accordion ) {
 					$wrapper_classes[] = 'hierarchy-list';
 
-					if ( WCAPF_Helper::wcapf_option( 'hierarchy_toggle_at_end' ) ) {
+					if ( wcapf()->settings->get( 'hierarchy_toggle_at_end' ) ) {
 						$wrapper_classes[] = 'hierarchy-toggle-at-end';
 					}
 				}
@@ -1003,7 +1003,7 @@ class WCAPF_Walker {
 
 		if ( $this->enable_search_field ) {
 			$html .= '<div class="wcapf-no-results-text" style="display: none;">';
-			$html .= esc_html( WCAPF_Helper::no_results_text() ) . ' <span></span>';
+			$html .= esc_html( wcapf()->settings->no_results_text() ) . ' <span></span>';
 			$html .= '</div>';
 		}
 
@@ -1025,7 +1025,7 @@ class WCAPF_Walker {
 		if ( $this->search_field_placeholder ) {
 			$placeholder = $this->search_field_placeholder;
 		} else {
-			$placeholder = WCAPF_Helper::wcapf_option(
+			$placeholder = wcapf()->settings->get(
 				'search_field_default_placeholder',
 				__( 'Search', 'wc-ajax-product-filter' )
 			);
@@ -1063,12 +1063,12 @@ class WCAPF_Walker {
 				$is_active = 'true';
 			}
 
-			$show_more = WCAPF_Helper::wcapf_option(
+			$show_more = wcapf()->settings->get(
 				'show_more_btn_label',
 				__( '+ Show more', 'wc-ajax-product-filter' )
 			);
 
-			$show_less = WCAPF_Helper::wcapf_option(
+			$show_less = wcapf()->settings->get(
 				'show_less_btn_label',
 				__( '− Show less', 'wc-ajax-product-filter' )
 			);
@@ -1110,7 +1110,7 @@ class WCAPF_Walker {
 		} else {
 			$input_classes = 'wcapf-select';
 
-			if ( ! empty( WCAPF_Helper::wcapf_option( 'improve_native_select' ) ) ) {
+			if ( ! empty( wcapf()->settings->get( 'improve_native_select' ) ) ) {
 				$input_classes .= ' wcapf-select-improved';
 
 				if ( 'multiselect' === $display_type ) {

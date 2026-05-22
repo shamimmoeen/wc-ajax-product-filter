@@ -81,7 +81,7 @@ class WCAPF_Form {
 		$filters = isset( $this->form['filters'] ) ? $this->form['filters'] : array();
 		$filters = apply_filters( 'wcapf_form_filters', $filters, $this->form );
 
-		$number_input_types = WCAPF_Helper::number_input_display_types();
+		$number_input_types = wcapf()->data->number_input_display_types();
 
 		foreach ( $filters as $filter ) {
 			$field_data = isset( $filter['field'] ) ? $filter['field'] : array();
@@ -111,8 +111,8 @@ class WCAPF_Form {
 			}
 		}
 
-		if ( WCAPF_Helper::is_debug_mode_enabled() ) {
-			$edit_url = WCAPF_Helper::form_edit_url( $form_id );
+		if ( wcapf()->settings->is_debug_mode_enabled() ) {
+			$edit_url = wcapf()->admin_url->form_edit( $form_id );
 
 			if ( ! $filters ) {
 				$message = sprintf(
@@ -124,8 +124,8 @@ class WCAPF_Form {
 					esc_url( $edit_url )
 				);
 
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is escaped inside WCAPF_Helper::get_debug_message().
-				echo WCAPF_Helper::get_debug_message( $message );
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is escaped inside wcapf()->settings->debug_message().
+				echo wcapf()->settings->debug_message( $message );
 			} else {
 				printf(
 					'<p><a href="%1$s">%2$s</a></p>',
@@ -192,10 +192,10 @@ class WCAPF_Form {
 		$layout           = $field_instance->get_sub_field_value( 'active_filters_layout' );
 		$empty_message    = $field_instance->get_sub_field_value( 'empty_filter_message' );
 		$show_clear_btn   = $field_instance->get_sub_field_value( 'show_clear_btn' );
-		$clear_btn_label  = WCAPF_Helper::clear_all_button_label();
+		$clear_btn_label  = wcapf()->settings->clear_all_button_label();
 		$clear_btn_layout = $field_instance->get_sub_field_value( 'clear_all_btn_layout' );
 
-		$args = WCAPF_Helper::prepare_active_filters_args(
+		$args = wcapf()->active_filters->prepare_args(
 			array(
 				'unique_id'            => $field_instance->filter_id,
 				'title'                => $title,
@@ -219,10 +219,10 @@ class WCAPF_Form {
 	 * @return void
 	 */
 	private function render_reset_button( $field_instance ) {
-		$args = WCAPF_Helper::prepare_reset_button_args(
+		$args = wcapf()->active_filters->prepare_reset_button_args(
 			array(
 				'unique_id'   => $field_instance->filter_id,
-				'btn_label'   => WCAPF_Helper::reset_button_label(),
+				'btn_label'   => wcapf()->settings->reset_button_label(),
 				'show_always' => $field_instance->get_sub_field_value( 'show_if_empty' ),
 			)
 		);
@@ -267,9 +267,9 @@ class WCAPF_Form {
 		$accordion_state  = $field_instance->get_sub_field_value( 'accordion_default_state' );
 		$show_clear_btn   = $field_instance->get_sub_field_value( 'show_clear_btn' );
 
-		$filter_active = WCAPF_Helper::is_filter_active( $filter_key );
+		$filter_active = wcapf()->active_filters->is_filter_active( $filter_key );
 
-		if ( $filter_active && WCAPF_Helper::keep_accordion_opened_when_filter_active() ) {
+		if ( $filter_active && wcapf()->settings->keep_accordion_opened_when_filter_active() ) {
 			$accordion_state = 'expanded';
 		}
 
@@ -362,7 +362,7 @@ class WCAPF_Form {
 			$classes[] = 'has-soft-limit';
 		}
 
-		if ( 'keyword' === $type && WCAPF_Helper::get_applied_keyword() ) {
+		if ( 'keyword' === $type && wcapf()->active_filters->applied_keyword() ) {
 			$classes[] = 'search-active';
 		}
 
@@ -412,7 +412,7 @@ class WCAPF_Form {
 		if ( $range_min_value === $range_max_value && $auto_detect && $hide_inputs ) {
 			printf(
 				'<div>%s</div>',
-				esc_html( WCAPF_Helper::empty_filter_text() )
+				esc_html( wcapf()->settings->empty_filter_text() )
 			);
 
 			return;
@@ -422,7 +422,7 @@ class WCAPF_Form {
 		$filter_type = $field_instance->filter_type;
 		$filter_id   = $field_instance->filter_id;
 
-		$chosen_filters = WCAPF_Helper::get_chosen_filters();
+		$chosen_filters = wcapf()->active_filters->chosen();
 		$filters        = isset( $chosen_filters[ $filter_type ] ) ? $chosen_filters[ $filter_type ] : array();
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
@@ -454,7 +454,7 @@ class WCAPF_Form {
 		$step = apply_filters( 'wcapf_filter_range_step', $step, $min_value, $max_value, $field_instance );
 
 		$slider_id    = $filter_key . '-slider-' . $filter_id;
-		$slider_style = WCAPF_Helper::wcapf_option( 'number_range_slider_style' );
+		$slider_style = wcapf()->settings->get( 'number_range_slider_style' );
 
 		$url_builder = new WCAPF_URL_Builder( $filter_key );
 
@@ -514,11 +514,11 @@ class WCAPF_Form {
 	protected function render_keyword_filter( $field_instance ) {
 		$this->before_filter( $field_instance );
 
-		$placeholder = WCAPF_Helper::wcapf_option(
+		$placeholder = wcapf()->settings->get(
 			'keyword_filter_placeholder',
 			__( 'Search products', 'wc-ajax-product-filter' )
 		);
-		$value       = WCAPF_Helper::get_applied_keyword();
+		$value       = wcapf()->active_filters->applied_keyword();
 		$with_cross  = true;
 
 		$show_title     = $field_instance->get_sub_field_value( 'show_title' );
