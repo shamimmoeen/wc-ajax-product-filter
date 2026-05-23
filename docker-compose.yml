@@ -1,0 +1,102 @@
+name: wcapf-free
+
+services:
+  server:
+    image: nginx:alpine
+    platform: linux/amd64
+    container_name: wcapf-free-server
+    restart: unless-stopped
+    ports:
+      - "${WCAPF_HTTP_PORT:-8081}:80"
+    depends_on:
+      - php
+    volumes:
+      - ./docker:/var/www:rw
+      - ./docker/nginx-conf.d:/etc/nginx/conf.d:ro
+      - ./vendor/wordpress/wordpress:/var/www/html/:rw
+      - ./:/var/www/html/wp-content/plugins/wc-ajax-product-filter:rw
+      - ./vendor/wpackagist-plugin/woocommerce:/var/www/html/wp-content/plugins/woocommerce:rw
+      - ./vendor/wpackagist-plugin/query-monitor:/var/www/html/wp-content/plugins/query-monitor:rw
+      - ./vendor/wpackagist-plugin/plugin-check:/var/www/html/wp-content/plugins/plugin-check:rw
+      - ./vendor/wpackagist-theme/twentytwentyfive:/var/www/html/wp-content/themes/twentytwentyfive:rw
+      - ./vendor/wpackagist-theme/storefront:/var/www/html/wp-content/themes/storefront:rw
+
+  php:
+    image: wordpressdevelop/php:${PHP_VERSION:-8.2}-fpm
+    platform: linux/amd64
+    container_name: wcapf-free-php
+    restart: unless-stopped
+    environment:
+      PHP_FPM_UID: ${PHP_FPM_UID:-1000}
+      PHP_FPM_GID: ${PHP_FPM_GID:-1000}
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_USER: wcapf
+      WORDPRESS_DB_PASSWORD: wcapf
+      WORDPRESS_DB_NAME: wcapf
+      WORDPRESS_DEBUG: ${WP_DEBUG:-1}
+    depends_on:
+      database:
+        condition: service_healthy
+    init: true
+    volumes:
+      - ./docker:/var/www:rw
+      - ./vendor/wordpress/wordpress:/var/www/html/:rw
+      - ./:/var/www/html/wp-content/plugins/wc-ajax-product-filter:rw
+      - ./vendor/wpackagist-plugin/woocommerce:/var/www/html/wp-content/plugins/woocommerce:rw
+      - ./vendor/wpackagist-plugin/query-monitor:/var/www/html/wp-content/plugins/query-monitor:rw
+      - ./vendor/wpackagist-plugin/plugin-check:/var/www/html/wp-content/plugins/plugin-check:rw
+      - ./vendor/wpackagist-theme/twentytwentyfive:/var/www/html/wp-content/themes/twentytwentyfive:rw
+      - ./vendor/wpackagist-theme/storefront:/var/www/html/wp-content/themes/storefront:rw
+
+  database:
+    image: mariadb:11.8
+    platform: linux/amd64
+    container_name: wcapf-free-database
+    restart: unless-stopped
+    ports:
+      - "${WCAPF_DB_PORT:-3308}:3306"
+    environment:
+      MYSQL_DATABASE: wcapf
+      MYSQL_USER: wcapf
+      MYSQL_PASSWORD: wcapf
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - database:/var/lib/mysql:rw
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  wpcli:
+    image: wordpressdevelop/cli:${PHP_VERSION:-8.2}-fpm
+    platform: linux/amd64
+    container_name: wcapf-free-wpcli
+    working_dir: /var/www/html
+    environment:
+      PHP_FPM_UID: ${PHP_FPM_UID:-1000}
+      PHP_FPM_GID: ${PHP_FPM_GID:-1000}
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_USER: wcapf
+      WORDPRESS_DB_PASSWORD: wcapf
+      WORDPRESS_DB_NAME: wcapf
+    depends_on:
+      database:
+        condition: service_healthy
+      php:
+        condition: service_started
+    init: true
+    volumes:
+      - ./docker:/var/www:rw
+      - ./vendor/wordpress/wordpress:/var/www/html/:rw
+      - ./:/var/www/html/wp-content/plugins/wc-ajax-product-filter:rw
+      - ./vendor/wpackagist-plugin/woocommerce:/var/www/html/wp-content/plugins/woocommerce:rw
+      - ./vendor/wpackagist-plugin/query-monitor:/var/www/html/wp-content/plugins/query-monitor:rw
+      - ./vendor/wpackagist-plugin/plugin-check:/var/www/html/wp-content/plugins/plugin-check:rw
+      - ./vendor/wpackagist-theme/twentytwentyfive:/var/www/html/wp-content/themes/twentytwentyfive:rw
+      - ./vendor/wpackagist-theme/storefront:/var/www/html/wp-content/themes/storefront:rw
+    command: 'sleep infinity'
+
+volumes:
+  database:

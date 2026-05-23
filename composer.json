@@ -9,11 +9,26 @@
 			"email": "shamim.moeen@gmail.com"
 		}
 	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org",
+			"only": ["wpackagist-plugin/*", "wpackagist-theme/*"]
+		}
+	],
 	"require-dev": {
-    "squizlabs/php_codesniffer": "*",
-    "wp-coding-standards/wpcs": "^3.0",
-    "phpcompatibility/phpcompatibility-wp": "*",
-    "phpcompatibility/php-compatibility": "^9.3",
+		"composer/installers": "^2.0",
+		"roots/wordpress": "^7.0",
+		"roots/wordpress-core-installer": "^4.0",
+		"wpackagist-plugin/woocommerce": "^10.7",
+		"wpackagist-plugin/query-monitor": "^4.0",
+		"wpackagist-plugin/plugin-check": "^1.0",
+		"wpackagist-theme/twentytwentyfive": "^1.0",
+		"wpackagist-theme/storefront": "^4.0",
+		"squizlabs/php_codesniffer": "*",
+		"wp-coding-standards/wpcs": "^3.0",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"phpcompatibility/php-compatibility": "^9.3",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
 		"phpstan/phpstan": "^2.1",
 		"phpstan/extension-installer": "^1.4",
@@ -21,16 +36,25 @@
 		"php-stubs/woocommerce-stubs": "^10.7",
 		"phpstan/phpstan-deprecation-rules": "^2.0",
 		"johnbillion/wp-compat": "^1.4"
-  },
+	},
 	"autoload": {
 		"psr-4": {
 			"WCAPF\\": "includes/"
 		}
 	},
+	"extra": {
+		"wordpress-install-dir": "vendor/wordpress/wordpress",
+		"installer-paths": {
+			"vendor/wpackagist-plugin/{$name}/": ["type:wordpress-plugin"],
+			"vendor/wpackagist-theme/{$name}/": ["type:wordpress-theme"]
+		}
+	},
 	"config": {
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"phpstan/extension-installer": true
+			"phpstan/extension-installer": true,
+			"composer/installers": true,
+			"roots/wordpress-core-installer": true
 		}
 	},
 	"scripts": {

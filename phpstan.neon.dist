@@ -6,6 +6,7 @@ parameters:
 	paths:
 		- includes/
 		- wc-ajax-product-filter.php
+		- docker/
 	scanFiles:
 		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
 	bootstrapFiles:
