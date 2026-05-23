@@ -14,6 +14,7 @@
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>/includes/Plugin.php</exclude-pattern>
 		<exclude-pattern>/includes/Helpers/*</exclude-pattern>
+		<exclude-pattern>/includes/Hooks/*</exclude-pattern>
 	</rule>
 
 	<!-- Inline comments do not need to end with a full stop. -->

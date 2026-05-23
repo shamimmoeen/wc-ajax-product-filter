@@ -18,6 +18,7 @@ use WCAPF\Helpers\Data;
 use WCAPF\Helpers\Notices;
 use WCAPF\Helpers\Rating;
 use WCAPF\Helpers\Settings;
+use WCAPF\Hooks\PostType;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -79,6 +80,13 @@ class Plugin {
 	public ActiveFilters $active_filters;
 
 	/**
+	 * Filter and form post-type registration hooks.
+	 *
+	 * @var PostType
+	 */
+	public PostType $post_type;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -89,5 +97,7 @@ class Plugin {
 		$this->notices        = new Notices();
 		$this->data           = new Data();
 		$this->active_filters = new ActiveFilters();
+
+		$this->post_type = new PostType();
 	}
 }

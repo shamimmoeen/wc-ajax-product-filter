@@ -10,4 +10,4 @@ parameters:
 			message: '#^Action callback returns WCAPF_Hooks but should not return anything\.$#'
 			identifier: return.void
 			count: 1
-			path: includes/hooks/class-wcapf-hooks.php
+			path: includes/Hooks/class-wcapf-hooks.php

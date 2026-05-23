@@ -305,6 +305,9 @@ final class WCAPF_Plugin {
 
 		require_once WCAPF_PLUGIN_DIR . '/includes/wcapf-dependencies.php';
 
+		// Construct the plugin registry so helpers and hook classes are wired up.
+		wcapf();
+
 		/**
 		 * Register a hook to load any other dependencies after the plugin files are loaded.
 		 */
