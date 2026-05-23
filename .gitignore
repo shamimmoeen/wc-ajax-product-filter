@@ -6,8 +6,10 @@ wp-cli.local.yml
 node_modules/
 vendor/
 *.sql
+!docker/db-init/*.sql
 *.tar.gz
 *.zip
 public/js/
 public/css/
 build/
+tests/cache/

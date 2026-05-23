@@ -7,8 +7,11 @@ parameters:
 		- includes/
 		- wc-ajax-product-filter.php
 		- docker/
+		- tests/
 	scanFiles:
 		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+	scanDirectories:
+		- vendor/wp-phpunit/wp-phpunit/includes/
 	bootstrapFiles:
 		- tests/phpstan-bootstrap.php
 	treatPhpDocTypesAsCertain: false

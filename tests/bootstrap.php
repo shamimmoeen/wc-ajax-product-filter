@@ -1,37 +1,35 @@
 <?php
 /**
- * PHPUnit bootstrap file.
+ * PHPUnit bootstrap.
  *
- * @package Wc_Ajax_Product_Filter_Pro
+ * Loads the WP test suite (via composer wp-phpunit) and manually loads WooCommerce
+ * and WCAPF on muplugins_loaded so they're available in tests.
+ *
+ * @package WC_Ajax_Product_Filter
  */
 
-if ( PHP_MAJOR_VERSION >= 8 ) {
-	echo "The scaffolded tests cannot currently be run on PHP 8.0+. See https://github.com/wp-cli/scaffold-command/issues/285" . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	exit( 1 );
-}
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
-
-if ( ! $_tests_dir ) {
-	$_tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
-}
+$_tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
 
 if ( ! file_exists( "{$_tests_dir}/includes/functions.php" ) ) {
-	echo "Could not find {$_tests_dir}/includes/functions.php, have you run bin/install-wp-tests.sh ?" . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	fwrite( STDERR, "Could not find {$_tests_dir}/includes/functions.php. Have you run composer install?\n" );
 	exit( 1 );
 }
 
-// Give access to tests_add_filter() function.
+// Tell wp-phpunit where to find our test config.
+define( 'WP_TESTS_CONFIG_FILE_PATH', __DIR__ . '/wp-tests-config.php' );
+
 require_once "{$_tests_dir}/includes/functions.php";
 
 /**
- * Manually load the plugin being tested.
+ * Loads WooCommerce, then WCAPF, before WP is fully booted.
  */
-function _manually_load_plugin() {
-	require dirname( dirname( __FILE__ ) ) . '/wc-ajax-product-filter-pro.php';
+function _wcapf_manually_load_plugins() {
+	require_once dirname( __DIR__ ) . '/vendor/wpackagist-plugin/woocommerce/woocommerce.php';
+	require_once dirname( __DIR__ ) . '/wc-ajax-product-filter.php';
 }
 
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter( 'muplugins_loaded', '_wcapf_manually_load_plugins' );
 
-// Start up the WP testing environment.
 require "{$_tests_dir}/includes/bootstrap.php";

@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS wcapf_test;
+GRANT ALL PRIVILEGES ON wcapf_test.* TO 'wcapf'@'%';
+FLUSH PRIVILEGES;
