@@ -19,6 +19,7 @@ use WCAPF\Helpers\Notices;
 use WCAPF\Helpers\Rating;
 use WCAPF\Helpers\Settings;
 use WCAPF\Hooks\PostType;
+use WCAPF\Migration\V4Migration;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -87,6 +88,13 @@ class Plugin {
 	public PostType $post_type;
 
 	/**
+	 * V3 → v4 data migration and review-filters notice.
+	 *
+	 * @var V4Migration
+	 */
+	public V4Migration $v4_migration;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -98,6 +106,7 @@ class Plugin {
 		$this->data           = new Data();
 		$this->active_filters = new ActiveFilters();
 
-		$this->post_type = new PostType();
+		$this->post_type    = new PostType();
+		$this->v4_migration = new V4Migration();
 	}
 }

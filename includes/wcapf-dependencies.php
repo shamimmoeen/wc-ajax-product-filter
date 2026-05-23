@@ -42,10 +42,6 @@ require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-post-author-filter.
 require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-rating-filter.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-taxonomy-filter.php';
 
-// Migration dependencies.
-require_once WCAPF_PLUGIN_DIR . '/includes/migration/class-wcapf-v4-migration.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/migration/class-wcapf-v4-migration-hooks.php';
-
 // Loads the shortcodes.
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-active-filters-shortcode.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-shortcode.php';

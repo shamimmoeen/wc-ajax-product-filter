@@ -57,10 +57,6 @@ class Notices {
 			return false;
 		}
 
-		if ( $this->is_v4_migration_visible() ) {
-			return false;
-		}
-
 		if ( $this->is_v4_review_filters_visible() ) {
 			return false;
 		}
@@ -73,29 +69,12 @@ class Notices {
 	}
 
 	/**
-	 * Whether the v4 migration notice should be shown.
-	 *
-	 * @return bool
-	 */
-	public function is_v4_migration_visible(): bool {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
-		}
-
-		return '1' === get_option( 'wcapf_v4_migration_notice_status' );
-	}
-
-	/**
 	 * Whether the v4 "review your migrated filters" notice should be shown.
 	 *
 	 * @return bool
 	 */
 	public function is_v4_review_filters_visible(): bool {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return false;
-		}
-
-		if ( '1' !== get_option( 'wcapf_v4_review_filters_notice_status' ) ) {
 			return false;
 		}
 
@@ -114,7 +93,7 @@ class Notices {
 			return false;
 		}
 
-		return get_option( 'wcapf_migrated_filters_form_id' ) === $form_id;
+		return '1' === get_post_meta( $form_id, '_wcapf_v4_needs_review', true );
 	}
 
 	/**

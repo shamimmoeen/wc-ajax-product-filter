@@ -1,12 +1,18 @@
 <?php
 /**
- * WCAPF_V4_Migration class.
+ * V4 migration.
  *
- * @since      4.0.0
+ * Runs the v3 → v4 data transformation when needed, plus the form-edit-page
+ * "review filters" notice that follows a successful migration. The trigger is
+ * a single `init` priority 20 hook so the migration runs on any request
+ * (frontend, admin, REST, CLI/cron) — not just admin pages.
+ *
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/migration
+ * @subpackage wc-ajax-product-filter/includes/Migration
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Migration;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,41 +20,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_V4_Migration class.
- *
- * @since 4.0.0
+ * V4 migration entry point and review-filters notice plumbing.
  */
-class WCAPF_V4_Migration {
+class V4Migration {
 
 	/**
-	 * The constructor.
+	 * Constructor.
 	 */
-	private function __construct() {
+	public function __construct() {
+		add_action( 'init', array( $this, 'maybe_run' ), 20 );
+
+		add_action( 'wp_ajax_wcapf_dismiss_v4_review_filters_notice', array( $this, 'dismiss_review_filters_notice' ) );
+		add_filter( 'wcapf_admin_js_params', array( $this, 'inject_js_params' ) );
 	}
 
 	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_V4_Migration
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication.
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously.
-		if ( null === $instance ) {
-			$instance = new WCAPF_V4_Migration();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Tries to run the version 4 migration and set default settings when needed.
+	 * Idempotent migration entry point — runs the v3 → v4 transformation when
+	 * needed, then applies the "set default settings" path on fresh/updated installs.
 	 *
 	 * @return void
 	 */
-	public function try_to_run_v4_migration() {
+	public function maybe_run(): void {
 		$db_version_option_key  = 'wcapf_db_version';
 		$existing_wcapf_version = get_option( $db_version_option_key );
 
@@ -63,20 +55,11 @@ class WCAPF_V4_Migration {
 		if ( $perform_v4_migration ) {
 			$this->do_migrate();
 
-			// Show the v4 migration notice.
-			update_option( 'wcapf_v4_migration_notice_status', '1' );
-
-			// Show the review filters notice after v4 migration.
-			update_option( 'wcapf_v4_review_filters_notice_status', '1' );
-
-			// Update the db version.
 			$plugin_version = defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION;
 			update_option( $db_version_option_key, $plugin_version );
 
-			// We don't want to migrate again.
 			delete_option( 'wcapf_run_migrate' );
 
-			// Clear the forms with locations transients.
 			delete_transient( 'wcapf_forms_with_locations' );
 		}
 
@@ -91,26 +74,25 @@ class WCAPF_V4_Migration {
 		$settings_option_key = 'wcapf_settings';
 
 		if ( $set_default_settings ) {
-			$default_settings  = WCAPF_Default_Data::default_settings();
+			$default_settings  = \WCAPF_Default_Data::default_settings();
 			$existing_settings = get_option( $settings_option_key, array() );
 
 			update_option( $settings_option_key, array_merge( $default_settings, $existing_settings ) );
 
-			// We don't want to set the settings again.
 			delete_option( 'wcapf_set_default_settings' );
 			delete_option( 'wcapf_update_default_settings' );
 		}
 	}
 
 	/**
-	 * Runs the version 4 migration process.
+	 * Performs the v3 → v4 data transformation. Soft-locked via transient to
+	 * avoid concurrent migrations.
 	 *
 	 * @return void
 	 */
-	public function do_migrate() {
+	private function do_migrate(): void {
 		$transient_name = 'wcapf_v4_migration_status';
 
-		// Don't run the migration if already running.
 		if ( get_transient( $transient_name ) ) {
 			return;
 		}
@@ -124,21 +106,20 @@ class WCAPF_V4_Migration {
 	}
 
 	/**
-	 * Migrate the plugin settings.
+	 * Migrates the plugin settings from v3 to v4 schema.
 	 *
 	 * @return void
 	 */
-	public function migrate_settings() {
+	private function migrate_settings(): void {
 		$option_key  = 'wcapf_settings';
 		$v3_settings = get_option( $option_key );
 		$v4_settings = array();
 
-		$default_settings = WCAPF_Default_Data::default_settings();
+		$default_settings = \WCAPF_Default_Data::default_settings();
 
 		foreach ( $default_settings as $key => $_value ) {
 			$mapped_key = $key;
 
-			// Map key.
 			if ( 'sorting_data_in_active_filters' === $key ) {
 				$mapped_key = 'show_sorting_data_in_active_filters';
 			}
@@ -150,16 +131,13 @@ class WCAPF_V4_Migration {
 			if ( isset( $v3_settings[ $mapped_key ] ) ) {
 				$value = $v3_settings[ $mapped_key ];
 			} else {
-				// Default data.
 				$value = $_value;
 			}
 
-			// Loading animation.
 			if ( 'loading_animation' === $key ) {
 				$value = 'overlay-with-icon';
 			}
 
-			// Initially we disable the scroll to element.
 			if ( 'scroll_window' === $key ) {
 				$value = 'none';
 			}
@@ -171,37 +149,35 @@ class WCAPF_V4_Migration {
 	}
 
 	/**
-	 * Migrate the filters.
+	 * Migrates v3 filter posts into a single v4 form post.
 	 *
 	 * @return void
 	 */
-	public function migrate_filters() {
-		// Retrieve all filters.
+	private function migrate_filters(): void {
 		$filters = get_posts(
 			array(
 				'post_type'   => 'wcapf-filter',
 				'post_status' => 'any',
 				'nopaging'    => true,
-				'orderby'     => 'ID', // Sort by ID
-				'order'       => 'ASC', // Ascending order
+				'orderby'     => 'ID',
+				'order'       => 'ASC',
 			)
 		);
 
-		// Custom sorting function to prioritize 'publish' status.
 		usort(
 			$filters,
 			function ( $a, $b ) {
 				if ( 'publish' === $a->post_status && 'publish' !== $b->post_status ) {
-					return -1; // $a comes before $b.
+					return -1;
 				} elseif ( 'publish' !== $a->post_status && 'publish' === $b->post_status ) {
-					return 1; // $b comes before $a.
+					return 1;
 				}
 
-				return $a->ID - $b->ID; // Sort by ID in ascending order.
+				return $a->ID - $b->ID;
 			}
 		);
 
-		$filter_default_data = WCAPF_Default_Data::filter_default_data();
+		$filter_default_data = \WCAPF_Default_Data::filter_default_data();
 
 		$taxonomy_types  = array( 'custom-taxonomy', 'attribute', 'category', 'tag' );
 		$component_types = array( 'reset-button', 'active-filters' );
@@ -217,13 +193,11 @@ class WCAPF_V4_Migration {
 
 			$migrated_data = array();
 
-			// Set the post_status.
 			$migrated_data['post_status'] = $filter->post_status;
 
 			foreach ( $filter_default_data as $key => $_value ) {
 				$mapped_key = $key;
 
-				// Map key.
 				if ( 'id' === $key ) {
 					$mapped_key = 'field_id';
 				}
@@ -231,28 +205,23 @@ class WCAPF_V4_Migration {
 				if ( isset( $v3_field_data[ $mapped_key ] ) ) {
 					$value = $v3_field_data[ $mapped_key ];
 				} else {
-					// Default data.
 					$value = $_value;
 				}
 
-				// Title.
 				if ( 'title' === $key ) {
 					$value = $filter->post_title;
 				}
 
-				// Taxonomy type.
 				if ( 'type' === $key && in_array( $value, $taxonomy_types, true ) ) {
 					$value = 'taxonomy';
 				}
 
-				// Component type.
 				if ( 'type' === $key && in_array( $value, $component_types, true ) ) {
 					$v3_field_data['component'] = $value;
 
 					$value = 'component';
 				}
 
-				// Post property.
 				if ( 'type' === $key && 'post-property' === $value ) {
 					if (
 						isset( $v3_field_data['post_property'] )
@@ -262,7 +231,6 @@ class WCAPF_V4_Migration {
 					}
 				}
 
-				// Soft limit.
 				if ( 'enable_reduce_height' === $key && ! empty( $v3_field_data['enable_soft_limit'] ) ) {
 					$value = 'soft_limit';
 				}
@@ -271,14 +239,12 @@ class WCAPF_V4_Migration {
 			}
 
 			if ( 'taxonomy' === $migrated_data['type'] ) {
-				// Set taxonomy.
 				if ( 'category' === $v3_field_data['type'] ) {
 					$migrated_data['taxonomy'] = 'product_cat';
 				} elseif ( 'tag' === $v3_field_data['type'] ) {
 					$migrated_data['taxonomy'] = 'product_tag';
 				}
 
-				// Tax hierarchical data.
 				if ( ! empty( $migrated_data['taxonomy'] ) ) {
 					$hierarchical = '';
 
@@ -289,7 +255,6 @@ class WCAPF_V4_Migration {
 					$migrated_data['taxHierarchical'] = $hierarchical;
 				}
 
-				// Order data.
 				if ( empty( $migrated_data['order_terms_by'] ) ) {
 					$migrated_data['order_terms_by'] = 'default';
 				}
@@ -298,7 +263,6 @@ class WCAPF_V4_Migration {
 					$migrated_data['order_terms_dir'] = 'asc';
 				}
 
-				// Options data.
 				$include_terms  = array();
 				$exclude_terms  = array();
 				$parent_term    = 0;
@@ -395,14 +359,12 @@ class WCAPF_V4_Migration {
 					$migrated_data['display_type']               = 'label';
 					$migrated_data['custom_display_type_layout'] = 'inline';
 
-					// Enable swatches.
 					$migrated_data['enable_swatch']     = '1';
 					$migrated_data['swatch_type']       = $v3_display_type;
 					$migrated_data['swatch_with_label'] = '';
 				}
 			}
 
-			// Hide Active filters.
 			if ( 'component' === $migrated_data['type'] && 'active-filters' === $migrated_data['component'] ) {
 				$show_if_empty = isset( $v3_field_data['show_if_empty'] ) ? $v3_field_data['show_if_empty'] : '';
 
@@ -418,7 +380,7 @@ class WCAPF_V4_Migration {
 			return;
 		}
 
-		$form_settings = WCAPF_Default_Data::form_default_data();
+		$form_settings = \WCAPF_Default_Data::form_default_data();
 
 		$post_arr = array(
 			'post_title'   => __( 'Default form', 'wc-ajax-product-filter' ),
@@ -430,23 +392,44 @@ class WCAPF_V4_Migration {
 
 		$new_form_id = wp_insert_post( $post_arr, true );
 
-		$form_filters_utils = new WCAPF_Form_Filters_Utils();
+		$form_filters_utils = new \WCAPF_Form_Filters_Utils();
 
 		$form_filters_utils->save_form_filters( $migrated_filters, $new_form_id, true );
 
-		update_option( 'wcapf_migrated_filters_form_id', $new_form_id );
+		update_post_meta( $new_form_id, '_wcapf_v4_needs_review', '1' );
 	}
-}
 
-if ( ! function_exists( 'WCAPF_V4_Migration' ) ) {
 	/**
-	 * Return single instance for WCAPF_V4_Migration class.
+	 * AJAX handler that clears the "needs review" flag on the migrated form.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @return WCAPF_V4_Migration
+	 * @return void
 	 */
-	function WCAPF_V4_Migration() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- intentional; mirrors class name per WP convention (cf. WooCommerce()).
-		return WCAPF_V4_Migration::instance();
+	public function dismiss_review_filters_notice(): void {
+		check_ajax_referer( 'dismiss-v4-review-filters-notice-nonce', 'nonce' );
+
+		$form_id = ! empty( $_POST['form_id'] ) ? absint( wp_unslash( $_POST['form_id'] ) ) : 0;
+
+		if ( $form_id ) {
+			delete_post_meta( $form_id, '_wcapf_v4_needs_review' );
+		}
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Injects the dismiss nonce when the review-filters notice should show.
+	 * The nonce's presence is what tells the React component to render — no
+	 * separate visibility flag is needed.
+	 *
+	 * @param array $params Admin script parameters.
+	 *
+	 * @return array
+	 */
+	public function inject_js_params( $params ): array {
+		if ( wcapf()->notices->is_v4_review_filters_visible() ) {
+			$params['v4_review_filters_dismiss_nonce'] = wp_create_nonce( 'dismiss-v4-review-filters-notice-nonce' );
+		}
+
+		return $params;
 	}
 }

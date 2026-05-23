@@ -416,8 +416,9 @@ function wcapf_uninstall_cleanup() {
 	delete_option( 'wcapf_db_version' );
 	delete_option( 'wcapf_activation_time' );
 
-	// Delete v4 migration related records from the options table.
+	// Delete v4 migration legacy options (notice state moved to post meta).
 	delete_option( 'wcapf_v4_migration_notice_status' );
+	delete_option( 'wcapf_v4_review_filters_notice_status' );
 	delete_option( 'wcapf_migrated_filters_form_id' );
 
 	// Delete transients.
