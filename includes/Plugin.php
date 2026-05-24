@@ -18,7 +18,10 @@ use WCAPF\Helpers\Data;
 use WCAPF\Helpers\Notices;
 use WCAPF\Helpers\Rating;
 use WCAPF\Helpers\Settings;
+use WCAPF\Hooks\PostAuthorFilter;
 use WCAPF\Hooks\PostType;
+use WCAPF\Hooks\RatingFilter;
+use WCAPF\Hooks\TaxonomyFilter;
 use WCAPF\Migration\V4Migration;
 
 // Exit if accessed directly.
@@ -88,6 +91,27 @@ class Plugin {
 	public PostType $post_type;
 
 	/**
+	 * Post-author filter behavior hooks.
+	 *
+	 * @var PostAuthorFilter
+	 */
+	public PostAuthorFilter $post_author_filter;
+
+	/**
+	 * Rating filter behavior hooks.
+	 *
+	 * @var RatingFilter
+	 */
+	public RatingFilter $rating_filter;
+
+	/**
+	 * Taxonomy filter behavior hooks.
+	 *
+	 * @var TaxonomyFilter
+	 */
+	public TaxonomyFilter $taxonomy_filter;
+
+	/**
 	 * V3 → v4 data migration and review-filters notice.
 	 *
 	 * @var V4Migration
@@ -106,7 +130,10 @@ class Plugin {
 		$this->data           = new Data();
 		$this->active_filters = new ActiveFilters();
 
-		$this->post_type    = new PostType();
-		$this->v4_migration = new V4Migration();
+		$this->post_type          = new PostType();
+		$this->post_author_filter = new PostAuthorFilter();
+		$this->rating_filter      = new RatingFilter();
+		$this->taxonomy_filter    = new TaxonomyFilter();
+		$this->v4_migration       = new V4Migration();
 	}
 }

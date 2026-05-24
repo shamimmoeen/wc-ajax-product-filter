@@ -38,9 +38,6 @@ require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-
 // Loads the hooks.
 require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-api.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-hooks.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-post-author-filter.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-rating-filter.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-taxonomy-filter.php';
 
 // Loads the shortcodes.
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-active-filters-shortcode.php';

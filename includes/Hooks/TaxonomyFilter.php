@@ -1,12 +1,13 @@
 <?php
 /**
- * The taxonomy filter class.
+ * Taxonomy filter behavior hooks.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/hooks
+ * @subpackage wc-ajax-product-filter/includes/Hooks
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Hooks;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,40 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Taxonomy_Filter class.
- *
- * @since 4.0.0
+ * Adjusts the taxonomy filter's term query and active-filter data based on field settings.
  */
-class WCAPF_Taxonomy_Filter {
+class TaxonomyFilter {
 
 	/**
 	 * Constructor.
 	 */
-	private function __construct() {
-	}
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_Taxonomy_Filter
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Taxonomy_Filter();
-			$instance->init_hooks();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	private function init_hooks() {
+	public function __construct() {
 		add_filter( 'wcapf_get_terms_args', array( $this, 'limit_taxonomy_terms' ), 15, 2 );
 		add_filter( 'wcapf_get_terms_args', array( $this, 'sort_taxonomy_terms' ), 20, 2 );
 
@@ -61,12 +36,12 @@ class WCAPF_Taxonomy_Filter {
 	/**
 	 * Limits taxonomy terms based on field settings.
 	 *
-	 * @param array                $args           The arguments of the get_terms() function.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $args           The arguments of the get_terms() function.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function limit_taxonomy_terms( $args, $field_instance ) {
+	public function limit_taxonomy_terms( array $args, $field_instance ): array {
 		if ( 'rating' === $field_instance->type ) {
 			return $args;
 		}
@@ -113,12 +88,12 @@ class WCAPF_Taxonomy_Filter {
 	/**
 	 * Sorts taxonomy terms based on field settings.
 	 *
-	 * @param array                $args           The arguments of the get_terms() function.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $args           The arguments of the get_terms() function.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function sort_taxonomy_terms( $args, $field_instance ) {
+	public function sort_taxonomy_terms( array $args, $field_instance ): array {
 		if ( 'rating' === $field_instance->type ) {
 			return $args;
 		}
@@ -147,12 +122,12 @@ class WCAPF_Taxonomy_Filter {
 	/**
 	 * Adjusts parent term IDs for hierarchical taxonomy terms.
 	 *
-	 * @param array                $terms          The taxonomy terms.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $terms          The taxonomy terms.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function adjust_parent_term_id( $terms, $field_instance ) {
+	public function adjust_parent_term_id( array $terms, $field_instance ): array {
 		if ( 'rating' === $field_instance->type ) {
 			return $terms;
 		}
@@ -178,7 +153,7 @@ class WCAPF_Taxonomy_Filter {
 				return $terms;
 			}
 
-			return WCAPF_Product_Filter_Utils::adjust_parent_id_for_hierarchy_terms( $field_instance, $terms );
+			return \WCAPF_Product_Filter_Utils::adjust_parent_id_for_hierarchy_terms( $field_instance, $terms );
 		}
 
 		return $terms;
@@ -187,12 +162,12 @@ class WCAPF_Taxonomy_Filter {
 	/**
 	 * Converts term slugs to term IDs for taxonomy filters.
 	 *
-	 * @param array                $values         The filter values.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $values         The filter values.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function term_ids_from_term_slugs( $values, $field_instance ) {
+	public function term_ids_from_term_slugs( array $values, $field_instance ): array {
 		if ( 'rating' === $field_instance->type ) {
 			return $values;
 		}
@@ -220,12 +195,12 @@ class WCAPF_Taxonomy_Filter {
 	/**
 	 * Converts active ancestor term IDs to term slugs.
 	 *
-	 * @param array                $ancestor_ids   The ancestor term IDs.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $ancestor_ids   The ancestor term IDs.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array The ancestor term slugs.
 	 */
-	public function set_ancestors_of_active_terms( $ancestor_ids, $field_instance ) {
+	public function set_ancestors_of_active_terms( array $ancestor_ids, $field_instance ): array {
 		if ( 'rating' === $field_instance->type ) {
 			return $ancestor_ids;
 		}
@@ -257,13 +232,13 @@ class WCAPF_Taxonomy_Filter {
 	/**
 	 * Builds active filter data from taxonomy term slugs.
 	 *
-	 * @param array                $filter_data    The filter data.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                $term_slugs     The term slugs.
+	 * @param array                 $filter_data    The filter data.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $term_slugs     The term slugs.
 	 *
 	 * @return array
 	 */
-	public function filter_data_from_term_slugs( $filter_data, $field_instance, $term_slugs ) {
+	public function filter_data_from_term_slugs( array $filter_data, $field_instance, array $term_slugs ): array {
 		if ( 'rating' === $field_instance->type ) {
 			return $filter_data;
 		}
@@ -295,5 +270,3 @@ class WCAPF_Taxonomy_Filter {
 		return $sorted;
 	}
 }
-
-WCAPF_Taxonomy_Filter::instance();

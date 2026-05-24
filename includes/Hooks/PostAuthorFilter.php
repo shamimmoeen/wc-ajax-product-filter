@@ -1,12 +1,13 @@
 <?php
 /**
- * The post author filter class.
+ * Post-author filter behavior hooks.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/hooks
+ * @subpackage wc-ajax-product-filter/includes/Hooks
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Hooks;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,40 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Post_Author_Filter class.
- *
- * @since 4.0.0
+ * Adjusts the post-author filter's user query based on field settings.
  */
-class WCAPF_Post_Author_Filter {
+class PostAuthorFilter {
 
 	/**
 	 * Constructor.
 	 */
-	private function __construct() {
-	}
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_Post_Author_Filter
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Post_Author_Filter();
-			$instance->init_hooks();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	private function init_hooks() {
+	public function __construct() {
 		add_filter( 'wcapf_get_post_author_args', array( $this, 'limit_post_authors' ), 10, 2 );
 		add_filter( 'wcapf_get_post_author_args', array( $this, 'sort_post_authors' ), 15, 2 );
 	}
@@ -55,12 +30,12 @@ class WCAPF_Post_Author_Filter {
 	/**
 	 * Limits the list of post authors based on filter settings.
 	 *
-	 * @param array                $args           The arguments of the get_users() function.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $args           The arguments of the get_users() function.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function limit_post_authors( $args, $field_instance ) {
+	public function limit_post_authors( array $args, $field_instance ): array {
 		$limit_options = $field_instance->get_sub_field_value( 'limit_options' );
 
 		if ( 'manual_entry' === $field_instance->get_options ) {
@@ -82,12 +57,12 @@ class WCAPF_Post_Author_Filter {
 	/**
 	 * Sorts the list of post authors based on filter settings.
 	 *
-	 * @param array                $args           The arguments of the get_users() function.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $args           The arguments of the get_users() function.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function sort_post_authors( $args, $field_instance ) {
+	public function sort_post_authors( array $args, $field_instance ): array {
 		$allowed   = array( 'id', 'name' );
 		$order_by  = $field_instance->get_sub_field_value( 'post_author_order_by' );
 		$order_dir = $field_instance->get_sub_field_value( 'post_author_order_dir' );
@@ -105,5 +80,3 @@ class WCAPF_Post_Author_Filter {
 		return $args;
 	}
 }
-
-WCAPF_Post_Author_Filter::instance();

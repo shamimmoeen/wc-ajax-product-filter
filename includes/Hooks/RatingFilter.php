@@ -1,12 +1,13 @@
 <?php
 /**
- * The rating filter class.
+ * Rating filter behavior hooks.
  *
- * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/hooks
+ * @subpackage wc-ajax-product-filter/includes/Hooks
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Hooks;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,40 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Rating_Filter class.
+ * Renders the rating filter on top of the taxonomy filter pipeline.
  *
- * @since 3.0.0
+ * Rating is not a distinct filter type; it reuses the taxonomy type against
+ * the product_visibility `rated-N` terms, with these hooks adjusting the
+ * term query, values, labels and star-icon output.
  */
-class WCAPF_Rating_Filter {
+class RatingFilter {
 
 	/**
 	 * Constructor.
 	 */
-	private function __construct() {
-	}
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_Rating_Filter
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Rating_Filter();
-			$instance->init_hooks();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	private function init_hooks() {
+	public function __construct() {
 		add_filter( 'wcapf_field_filter_type', array( $this, 'set_rating_filter_type' ), 10, 3 );
 
 		add_filter( 'wcapf_get_terms_args', array( $this, 'set_rating_terms_query_args' ), 10, 2 );
@@ -68,7 +47,7 @@ class WCAPF_Rating_Filter {
 	 *
 	 * @return string
 	 */
-	public function set_rating_filter_type( $filter_type, $field_type, $get_options ) {
+	public function set_rating_filter_type( $filter_type, $field_type, $get_options ): string {
 		if ( 'rating' !== $field_type ) {
 			return $filter_type;
 		}
@@ -83,12 +62,12 @@ class WCAPF_Rating_Filter {
 	/**
 	 * Sets rating filter values using product visibility term IDs.
 	 *
-	 * @param array                $values         The filter values.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $values         The filter values.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function set_rating_filter_values( $values, $field_instance ) {
+	public function set_rating_filter_values( array $values, $field_instance ): array {
 		if ( 'rating' !== $field_instance->type ) {
 			return $values;
 		}
@@ -118,13 +97,13 @@ class WCAPF_Rating_Filter {
 	/**
 	 * Set the rating filter data for active filters.
 	 *
-	 * @param array                $filter_data    The filter data.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                $ratings        The rating values.
+	 * @param array                 $filter_data    The filter data.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $ratings        The rating values.
 	 *
 	 * @return array
 	 */
-	public function rating_filter_star_icons( $filter_data, $field_instance, $ratings ) {
+	public function rating_filter_star_icons( array $filter_data, $field_instance, array $ratings ): array {
 		if ( 'rating' !== $field_instance->type ) {
 			return $filter_data;
 		}
@@ -150,11 +129,9 @@ class WCAPF_Rating_Filter {
 	 *
 	 * @param int $rating The rating.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return string
 	 */
-	public function get_rating_label( $rating ) {
+	public function get_rating_label( int $rating ): string {
 		return sprintf(
 			/* translators: %d: rating value. */
 			_n( '%d star', '%d stars', $rating, 'wc-ajax-product-filter' ),
@@ -165,12 +142,12 @@ class WCAPF_Rating_Filter {
 	/**
 	 * Sets the terms query arguments for rating filters.
 	 *
-	 * @param array                $args           The arguments of the get_terms() function.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $args           The arguments of the get_terms() function.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function set_rating_terms_query_args( $args, $field_instance ) {
+	public function set_rating_terms_query_args( array $args, $field_instance ): array {
 		if ( 'rating' === $field_instance->type ) {
 			$names = array();
 
@@ -188,12 +165,12 @@ class WCAPF_Rating_Filter {
 	/**
 	 * Normalizes rating term data for the filter output.
 	 *
-	 * @param array                $terms          The taxonomy terms.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array                 $terms          The taxonomy terms.
+	 * @param \WCAPF_Field_Instance $field_instance The field instance.
 	 *
 	 * @return array
 	 */
-	public function set_rating_terms_data( $terms, $field_instance ) {
+	public function set_rating_terms_data( array $terms, $field_instance ): array {
 		if ( 'rating' !== $field_instance->type ) {
 			return $terms;
 		}
@@ -215,14 +192,12 @@ class WCAPF_Rating_Filter {
 	/**
 	 * Fill the rating items with star icons.
 	 *
-	 * @param array        $items  The walker items.
-	 * @param WCAPF_Walker $walker The walker class instance.
-	 *
-	 * @since 4.0.0
+	 * @param array         $items  The walker items.
+	 * @param \WCAPF_Walker $walker The walker class instance.
 	 *
 	 * @return array
 	 */
-	public function set_rating_items( $items, $walker ) {
+	public function set_rating_items( array $items, $walker ): array {
 		if ( 'rating' !== $walker->type ) {
 			return $items;
 		}
@@ -256,5 +231,3 @@ class WCAPF_Rating_Filter {
 		return $parsed;
 	}
 }
-
-WCAPF_Rating_Filter::instance();
