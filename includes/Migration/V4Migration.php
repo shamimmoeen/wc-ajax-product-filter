@@ -99,8 +99,19 @@ class V4Migration {
 
 		set_transient( $transient_name, 1 );
 
-		$this->migrate_settings();
-		$this->migrate_filters();
+		// post_excerpt carries the filter_type signature ('taxonomy>product_cat',
+		// etc.) and would be HTML-escaped to '&gt;' when the migration runs
+		// outside an admin context (auto-updater, WP-CLI install, logged-out
+		// visitor's first request). Drop just the excerpt_save_pre filter for
+		// the duration of the migration; kses_init() restores it to match the
+		// current user's caps.
+		remove_filter( 'excerpt_save_pre', 'wp_filter_post_kses' );
+		try {
+			$this->migrate_settings();
+			$this->migrate_filters();
+		} finally {
+			kses_init();
+		}
 
 		delete_transient( $transient_name );
 	}

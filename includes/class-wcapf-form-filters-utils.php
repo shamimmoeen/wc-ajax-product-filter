@@ -433,7 +433,9 @@ class WCAPF_Form_Filters_Utils {
 					$value = array_map( 'sanitize_text_field', $value );
 				}
 			} elseif ( in_array( $key, $single_array_fields, true ) ) {
-				$value = ( is_array( $value ) && isset( $value['value'] ) ) ? $value['value'] : '';
+				if ( ! $migrate ) {
+					$value = ( is_array( $value ) && isset( $value['value'] ) ) ? $value['value'] : '';
+				}
 			} elseif ( in_array( $key, $value_may_have_spaces, true ) ) {
 				$value = str_replace( ' ', '&nbsp;', $value );
 
