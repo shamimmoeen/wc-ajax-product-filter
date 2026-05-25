@@ -119,6 +119,13 @@ class Plugin {
 	public V4Migration $v4_migration;
 
 	/**
+	 * Frontend script and style enqueuing.
+	 *
+	 * @var FrontendScripts
+	 */
+	public FrontendScripts $frontend_scripts;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -135,5 +142,7 @@ class Plugin {
 		$this->rating_filter      = new RatingFilter();
 		$this->taxonomy_filter    = new TaxonomyFilter();
 		$this->v4_migration       = new V4Migration();
+
+		$this->frontend_scripts = new FrontendScripts();
 	}
 }

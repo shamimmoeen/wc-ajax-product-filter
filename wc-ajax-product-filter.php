@@ -44,6 +44,11 @@ if ( ! defined( 'WCAPF_VERSION' ) ) {
 	define( 'WCAPF_VERSION', '4.4.0' );
 }
 
+// Stable name for the core plugin version, used by the shared includes/ code.
+if ( ! defined( 'WCAPF_CORE_VERSION' ) ) {
+	define( 'WCAPF_CORE_VERSION', WCAPF_VERSION );
+}
+
 /**
  * Main plugin bootstrap class.
  *

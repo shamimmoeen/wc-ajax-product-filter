@@ -1,12 +1,13 @@
 <?php
 /**
- * Frontend scripts class.
+ * Frontend script and style enqueuing.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,53 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Frontend_Scripts class.
- *
- * @since 4.0.0
+ * Enqueues the frontend styles and scripts and localises their params.
  */
-class WCAPF_Frontend_Scripts {
-
-	/**
-	 * Core plugin version.
-	 *
-	 * Uses the free/basic plugin version when available; otherwise falls back
-	 * to the main plugin version.
-	 *
-	 * @var string
-	 */
-	private $core_version;
+class FrontendScripts {
 
 	/**
 	 * Constructor.
 	 */
-	private function __construct() {
-		$this->core_version = defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION;
-	}
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_Frontend_Scripts
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Frontend_Scripts();
-			$instance->init_hooks();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	private function init_hooks() {
-		// Loads after the pro version scripts are loaded.
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ), 99 );
+	public function __construct() {
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_frontend_scripts' ) );
 	}
 
 	/**
@@ -68,7 +31,7 @@ class WCAPF_Frontend_Scripts {
 	 *
 	 * @return void
 	 */
-	public function load_frontend_scripts() {
+	public function load_frontend_scripts(): void {
 		if ( ! empty( wcapf()->settings->get( 'disable_wcapf' ) ) ) {
 			return;
 		}
@@ -118,8 +81,8 @@ class WCAPF_Frontend_Scripts {
 		$primary_text_color = wcapf()->settings->get( 'primary_text_color', '#ffffff' );
 		$star_icon_color    = wcapf()->settings->get( 'star_icon_color', 'rgb(240, 201, 48)' );
 
-		list( $r, $g, $b )    = WCAPF_Helper::get_rgb_from_hex( $primary_color );
-		list( $r2, $g2, $b2 ) = WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
+		list( $r, $g, $b )    = \WCAPF_Helper::get_rgb_from_hex( $primary_color );
+		list( $r2, $g2, $b2 ) = \WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
 
 		$variables = ":root {
 			--wcapf-primary-color-rgb: $r, $g, $b;
@@ -171,11 +134,20 @@ class WCAPF_Frontend_Scripts {
 			);
 		}
 
-		wp_register_script( 'wcapf-params', false, array(), $this->core_version, true );
+		wp_register_script( 'wcapf-params', false, array(), WCAPF_CORE_VERSION, true );
 		wp_localize_script( 'wcapf-params', 'wcapf_params', $this->get_js_params() );
 
 		// jquery-effects-core is required for slideToggle (accordion) and scrollTo animations.
 		$deps = array( 'jquery', 'wcapf-params', 'jquery-effects-core' );
+
+		/**
+		 * Filters the dependency handles of the main frontend script bundle.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param string[] $deps Registered script handles the bundle depends on.
+		 */
+		$deps = apply_filters( 'wcapf_frontend_script_deps', $deps );
 
 		wp_enqueue_script(
 			'wc-ajax-product-filter-scripts',
@@ -191,7 +163,7 @@ class WCAPF_Frontend_Scripts {
 	 *
 	 * @return array
 	 */
-	private function get_js_params() {
+	private function get_js_params(): array {
 		$js_data = array(
 			'disable_ajax',
 			'enable_pagination_via_ajax',
@@ -206,7 +178,7 @@ class WCAPF_Frontend_Scripts {
 			'custom_scripts',
 		);
 
-		$shop_loop_identifier = '.' . WCAPF_Helper::shop_loop_container_identifier();
+		$shop_loop_identifier = '.' . \WCAPF_Helper::shop_loop_container_identifier();
 		$pagination_container = wcapf()->settings->get( 'pagination_container', '.woocommerce-pagination' );
 
 		$settings = array(
@@ -262,5 +234,3 @@ class WCAPF_Frontend_Scripts {
 		return apply_filters( 'wcapf_js_params', $params );
 	}
 }
-
-WCAPF_Frontend_Scripts::instance();

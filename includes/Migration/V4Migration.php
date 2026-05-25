@@ -55,7 +55,7 @@ class V4Migration {
 		if ( $perform_v4_migration ) {
 			$this->do_migrate();
 
-			$plugin_version = defined( 'WCAPF_BASIC_VERSION' ) ? WCAPF_BASIC_VERSION : WCAPF_VERSION;
+			$plugin_version = WCAPF_CORE_VERSION;
 			update_option( $db_version_option_key, $plugin_version );
 
 			delete_option( 'wcapf_run_migrate' );
