@@ -60,6 +60,12 @@ else
 	wpc import \
 		wp-content/plugins/woocommerce/sample-data/sample_products.xml \
 		--authors=create
+
+	# The WXR importer uses wp_insert_post, bypassing WC CRUD, so the product
+	# lookup tables (which back the price filter's min/max range) start empty.
+	echo "==> Regenerating WC product lookup tables..."
+	wpc wc tool run regenerate_product_lookup_tables --user=1
+	wpc action-scheduler run --user=1 >/dev/null 2>&1 || true
 fi
 
 echo ""
