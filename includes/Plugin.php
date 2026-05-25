@@ -21,6 +21,7 @@ use WCAPF\Helpers\Settings;
 use WCAPF\Hooks\PostAuthorFilter;
 use WCAPF\Hooks\PostType;
 use WCAPF\Hooks\RatingFilter;
+use WCAPF\Hooks\Shop;
 use WCAPF\Hooks\TaxonomyFilter;
 use WCAPF\Migration\V4Migration;
 
@@ -112,6 +113,13 @@ class Plugin {
 	public TaxonomyFilter $taxonomy_filter;
 
 	/**
+	 * WooCommerce shop-loop integration hooks.
+	 *
+	 * @var Shop
+	 */
+	public Shop $shop;
+
+	/**
 	 * V3 → v4 data migration and review-filters notice.
 	 *
 	 * @var V4Migration
@@ -124,6 +132,20 @@ class Plugin {
 	 * @var FrontendScripts
 	 */
 	public FrontendScripts $frontend_scripts;
+
+	/**
+	 * Admin-ajax endpoints backing the React admin UI.
+	 *
+	 * @var Ajax
+	 */
+	public Ajax $ajax;
+
+	/**
+	 * Admin pages, assets, and review notices. Null on non-admin requests.
+	 *
+	 * @var Admin|null
+	 */
+	public ?Admin $admin = null;
 
 	/**
 	 * Constructor.
@@ -141,8 +163,14 @@ class Plugin {
 		$this->post_author_filter = new PostAuthorFilter();
 		$this->rating_filter      = new RatingFilter();
 		$this->taxonomy_filter    = new TaxonomyFilter();
+		$this->shop               = new Shop();
 		$this->v4_migration       = new V4Migration();
 
 		$this->frontend_scripts = new FrontendScripts();
+		$this->ajax             = new Ajax();
+
+		if ( is_admin() ) {
+			$this->admin = new Admin();
+		}
 	}
 }

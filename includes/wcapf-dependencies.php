@@ -13,7 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-admin.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-default-data.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-field-instance.php';
@@ -33,10 +32,6 @@ require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-
 require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-price.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-product-status.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
-
-// Loads the hooks.
-require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-api.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/Hooks/class-wcapf-hooks.php';
 
 // Loads the shortcodes.
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-active-filters-shortcode.php';

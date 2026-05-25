@@ -1,12 +1,13 @@
 <?php
 /**
- * WCAPF – Ajax Product Filter for WooCommerce hooks class.
+ * Shop-loop integration hooks.
  *
- * @since      3.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/hooks
+ * @subpackage wc-ajax-product-filter/includes/Hooks
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Hooks;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,40 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Hooks class.
- *
- * @since 3.0.0
+ * Wires WCAPF into the WooCommerce shop loop: the product query, loop markup wrappers,
+ * the AJAX loader, body classes, and canonical/pagination tweaks.
  */
-class WCAPF_Hooks {
+class Shop {
 
 	/**
 	 * Constructor.
 	 */
-	private function __construct() {
-	}
-
-	/**
-	 * Returns an instance of this class.
-	 *
-	 * @return WCAPF_Hooks
-	 */
-	public static function instance() {
-		// Store the instance locally to avoid private static replication
-		static $instance = null;
-
-		// Only run these methods if they haven't been run previously
-		if ( null === $instance ) {
-			$instance = new WCAPF_Hooks();
-			$instance->init_hooks();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Hook into actions and filters.
-	 */
-	private function init_hooks() {
+	public function __construct() {
 		add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 		add_action( 'wp_footer', array( $this, 'insert_loader' ) );
 		add_filter( 'redirect_canonical', array( $this, 'suppress_canonical_redirect' ) );
@@ -57,8 +33,8 @@ class WCAPF_Hooks {
 		add_action( 'woocommerce_after_shop_loop', array( $this, 'insert_after_shop_loop' ), 200 );
 		add_action( 'woocommerce_before_template_part', array( $this, 'insert_before_no_products' ), 0 );
 		add_action( 'woocommerce_after_template_part', array( $this, 'insert_after_no_products' ), 200 );
-		add_action( 'woocommerce_before_shop_loop', array( $this, 'active_filters_before_shop_loop' ), - 10 );
-		add_action( 'woocommerce_before_template_part', array( $this, 'active_filters_before_no_products' ), - 10 );
+		add_action( 'woocommerce_before_shop_loop', array( $this, 'active_filters_before_shop_loop' ), -10 );
+		add_action( 'woocommerce_before_template_part', array( $this, 'active_filters_before_no_products' ), -10 );
 		add_filter( 'wcapf_form_filter_data', array( $this, 'set_form_filter_data' ) );
 		add_action( 'woocommerce_product_query', array( $this, 'set_query' ) );
 	}
@@ -68,11 +44,9 @@ class WCAPF_Hooks {
 	 *
 	 * @param array $classes The classes.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return array
 	 */
-	public function add_body_classes( $classes ) {
+	public function add_body_classes( array $classes ): array {
 		if ( ! $this->should_we_proceed() ) {
 			return $classes;
 		}
@@ -104,22 +78,18 @@ class WCAPF_Hooks {
 	/**
 	 * Determines if we proceed or not.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return bool
 	 */
-	private function should_we_proceed() {
+	private function should_we_proceed(): bool {
 		return wcapf()->compat->found_wcapf();
 	}
 
 	/**
 	 * Insert the loader.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return void
 	 */
-	public function insert_loader() {
+	public function insert_loader(): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
@@ -165,9 +135,7 @@ class WCAPF_Hooks {
 	 *
 	 * @param string $redirect The redirect url.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @return bool
+	 * @return string|bool
 	 */
 	public function suppress_canonical_redirect( $redirect ) {
 		if ( ! $this->should_we_proceed() ) {
@@ -184,11 +152,9 @@ class WCAPF_Hooks {
 	 *
 	 * @source https://weusewp.com/tutorial/pagination-remove-page-1/
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return string
 	 */
-	public function modify_paginated_link( $link ) {
+	public function modify_paginated_link( string $link ): string {
 		if ( ! $this->should_we_proceed() ) {
 			return $link;
 		}
@@ -205,8 +171,6 @@ class WCAPF_Hooks {
 	 *
 	 * @param bool $redirect Whether to redirect to the single search result.
 	 *
-	 * @since 3.3.2
-	 *
 	 * @return bool
 	 */
 	public function single_search_redirect( $redirect ) {
@@ -222,12 +186,12 @@ class WCAPF_Hooks {
 	 *
 	 * @return void
 	 */
-	public function insert_before_shop_loop() {
+	public function insert_before_shop_loop(): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
 
-		echo '<div class="' . esc_attr( WCAPF_Helper::shop_loop_container_identifier() ) . '">';
+		echo '<div class="' . esc_attr( \WCAPF_Helper::shop_loop_container_identifier() ) . '">';
 	}
 
 	/**
@@ -235,7 +199,7 @@ class WCAPF_Hooks {
 	 *
 	 * @return void
 	 */
-	public function insert_after_shop_loop() {
+	public function insert_after_shop_loop(): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
@@ -250,13 +214,13 @@ class WCAPF_Hooks {
 	 *
 	 * @return void
 	 */
-	public function insert_before_no_products( $template_name ) {
+	public function insert_before_no_products( string $template_name ): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
 
 		if ( 'loop/no-products-found.php' === $template_name ) {
-			echo '<div class="' . esc_attr( WCAPF_Helper::shop_loop_container_identifier() ) . '">';
+			echo '<div class="' . esc_attr( \WCAPF_Helper::shop_loop_container_identifier() ) . '">';
 		}
 	}
 
@@ -267,7 +231,7 @@ class WCAPF_Hooks {
 	 *
 	 * @return void
 	 */
-	public function insert_after_no_products( $template_name ) {
+	public function insert_after_no_products( string $template_name ): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
@@ -280,11 +244,9 @@ class WCAPF_Hooks {
 	/**
 	 * Renders the active filters before shop loop.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return void
 	 */
-	public function active_filters_before_shop_loop() {
+	public function active_filters_before_shop_loop(): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
@@ -295,11 +257,9 @@ class WCAPF_Hooks {
 	/**
 	 * Renders the active filters before shop loop.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return void
 	 */
-	private function render_active_filters() {
+	private function render_active_filters(): void {
 		if ( ! empty( wcapf()->settings->get( 'active_filters_on_top' ) ) ) {
 			$active_filters_on_top_args = apply_filters(
 				'wcapf_active_filters_on_top_args',
@@ -315,7 +275,7 @@ class WCAPF_Hooks {
 			$args = wcapf()->active_filters->prepare_args( $active_filters_on_top_args );
 
 			echo '<div class="wcapf-active-filters-before-shop-loop">';
-			WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
+			\WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
 			echo '</div>';
 		}
 	}
@@ -325,11 +285,9 @@ class WCAPF_Hooks {
 	 *
 	 * @param string $template_name The template name.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return void
 	 */
-	public function active_filters_before_no_products( $template_name ) {
+	public function active_filters_before_no_products( string $template_name ): void {
 		if ( ! $this->should_we_proceed() ) {
 			return;
 		}
@@ -344,11 +302,9 @@ class WCAPF_Hooks {
 	 *
 	 * @param array $data The filter data.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return array The filter data that will be merged with filter settings.
 	 */
-	public function set_form_filter_data( $data ) {
+	public function set_form_filter_data( array $data ): array {
 		$empty_options = array( 'show', 'remove' );
 		$remove_empty  = wcapf()->settings->get( 'remove_empty' );
 
@@ -370,16 +326,16 @@ class WCAPF_Hooks {
 	/**
 	 * Query the products, applying the filters. This applies to the main WordPress loop.
 	 *
-	 * @param WP_Query $q Query instance.
+	 * @param \WP_Query $q Query instance.
 	 *
 	 * @return void
 	 */
-	public function set_query( $q ) {
+	public function set_query( \WP_Query $q ): void {
 		if ( ! is_shop() && ! is_product_taxonomy() ) {
 			return;
 		}
 
-		$filter = new WCAPF_Product_Filter();
+		$filter = new \WCAPF_Product_Filter();
 
 		global $wcapf_chosen_filters;
 
@@ -410,17 +366,17 @@ class WCAPF_Hooks {
 	/**
 	 * Filters the main query SQL clauses for product filtering.
 	 *
-	 * @param array    $args     The query clauses.
-	 * @param WP_Query $wp_query Query instance.
+	 * @param array     $args     The query clauses.
+	 * @param \WP_Query $wp_query Query instance.
 	 *
 	 * @return array The modified query clauses.
 	 */
-	public function posts_clauses( $args, $wp_query ) {
+	public function posts_clauses( array $args, \WP_Query $wp_query ): array {
 		if ( ! $wp_query->is_main_query() ) {
 			return $args;
 		}
 
-		$filter = new WCAPF_Product_Filter();
+		$filter = new \WCAPF_Product_Filter();
 
 		$args['join']  .= $filter->get_full_join_clause();
 		$args['where'] .= $filter->get_full_where_clause();
@@ -428,5 +384,3 @@ class WCAPF_Hooks {
 		return $args;
 	}
 }
-
-add_action( 'plugins_loaded', array( 'WCAPF_Hooks', 'instance' ) );

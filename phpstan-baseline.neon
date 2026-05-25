@@ -5,9 +5,3 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: includes/class-wcapf-template-loader.php
-
-		-
-			message: '#^Action callback returns WCAPF_Hooks but should not return anything\.$#'
-			identifier: return.void
-			count: 1
-			path: includes/Hooks/class-wcapf-hooks.php
