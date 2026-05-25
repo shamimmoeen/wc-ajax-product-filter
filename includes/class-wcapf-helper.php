@@ -328,7 +328,7 @@ class WCAPF_Helper {
 	/**
 	 * Determines whether range min and max values should be rounded.
 	 *
-	 * @param WCAPF_Field_Instance $instance Field instance.
+	 * @param \WCAPF\FormFilter $instance Field instance.
 	 *
 	 * @return bool True if range values should be rounded, otherwise false.
 	 */
@@ -1080,7 +1080,7 @@ class WCAPF_Helper {
 		$option_name = self::settings_option_key();
 		$db_options  = get_option( $option_name );
 		$db_options  = is_array( $db_options ) ? $db_options : array();
-		$settings    = wp_parse_args( $db_options, WCAPF_Default_Data::default_settings() );
+		$settings    = wp_parse_args( $db_options, \WCAPF\Defaults::default_settings() );
 
 		return apply_filters( 'wcapf_settings', $settings );
 	}

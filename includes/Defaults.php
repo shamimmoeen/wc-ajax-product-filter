@@ -1,12 +1,13 @@
 <?php
 /**
- * The default data class.
+ * Default form, settings, and filter configuration values.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,11 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Default_Data class.
- *
- * @since 4.0.0
+ * Default form, settings, and filter configuration values.
  */
-class WCAPF_Default_Data {
+class Defaults {
 
 	/**
 	 * Returns an array containing the default data for the form.

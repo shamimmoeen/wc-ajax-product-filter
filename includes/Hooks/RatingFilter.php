@@ -62,8 +62,8 @@ class RatingFilter {
 	/**
 	 * Sets rating filter values using product visibility term IDs.
 	 *
-	 * @param array                 $values         The filter values.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $values         The filter values.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -97,9 +97,9 @@ class RatingFilter {
 	/**
 	 * Set the rating filter data for active filters.
 	 *
-	 * @param array                 $filter_data    The filter data.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                 $ratings        The rating values.
+	 * @param array             $filter_data    The filter data.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
+	 * @param array             $ratings        The rating values.
 	 *
 	 * @return array
 	 */
@@ -142,8 +142,8 @@ class RatingFilter {
 	/**
 	 * Sets the terms query arguments for rating filters.
 	 *
-	 * @param array                 $args           The arguments of the get_terms() function.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $args           The arguments of the get_terms() function.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -165,8 +165,8 @@ class RatingFilter {
 	/**
 	 * Normalizes rating term data for the filter output.
 	 *
-	 * @param array                 $terms          The taxonomy terms.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $terms          The taxonomy terms.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */

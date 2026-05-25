@@ -8,8 +8,7 @@
  * consumers or is later moved into the filter-type classes.
  *
  * This base is the single place that names the not-yet-namespaced
- * WCAPF_Field_Instance / WCAPF_Filter_Type_* classes, so a future rename of
- * those touches one file.
+ * \WCAPF_Filter_Type_* classes, so a future rename of those touches one file.
  *
  * @package wc-ajax-product-filter
  */
@@ -29,31 +28,31 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 	 *
 	 * @param array $config Field data (type, taxonomy, get_options, limit_options, include_terms, ...).
 	 *
-	 * @return \WCAPF_Field_Instance
+	 * @return \WCAPF\FormFilter
 	 */
-	protected function make_field( array $config ): \WCAPF_Field_Instance {
-		return new \WCAPF_Field_Instance( $config );
+	protected function make_field( array $config ): \WCAPF\FormFilter {
+		return new \WCAPF\FormFilter( $config );
 	}
 
 	/**
 	 * Prepared items for a taxonomy field (also used for rating, which reuses the taxonomy type).
 	 *
-	 * @param \WCAPF_Field_Instance $field The field instance.
+	 * @param \WCAPF\FormFilter $field The field instance.
 	 *
 	 * @return array
 	 */
-	protected function taxonomy_items( \WCAPF_Field_Instance $field ): array {
+	protected function taxonomy_items( \WCAPF\FormFilter $field ): array {
 		return ( new \WCAPF_Filter_Type_Taxonomy( $field ) )->get_items();
 	}
 
 	/**
 	 * Prepared items for a post-author field.
 	 *
-	 * @param \WCAPF_Field_Instance $field The field instance.
+	 * @param \WCAPF\FormFilter $field The field instance.
 	 *
 	 * @return array
 	 */
-	protected function post_author_items( \WCAPF_Field_Instance $field ): array {
+	protected function post_author_items( \WCAPF\FormFilter $field ): array {
 		return ( new \WCAPF_Filter_Type_Post_Author( $field ) )->get_items();
 	}
 

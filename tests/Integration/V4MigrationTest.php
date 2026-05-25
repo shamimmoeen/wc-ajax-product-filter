@@ -43,7 +43,7 @@ class V4MigrationTest extends WP_UnitTestCase {
 			'Form should be flagged for the post-migration review notice.'
 		);
 		$this->assertSame(
-			WCAPF_Default_Data::form_default_data(),
+			\WCAPF\Defaults::form_default_data(),
 			maybe_unserialize( $form->post_content )
 		);
 

@@ -88,9 +88,9 @@ class TaxonomyFilterTest extends FilterBehaviorTestCase {
 	 *
 	 * @param array $overrides Field-data overrides.
 	 *
-	 * @return \WCAPF_Field_Instance
+	 * @return \WCAPF\FormFilter
 	 */
-	private function tax_field( array $overrides = array() ): \WCAPF_Field_Instance {
+	private function tax_field( array $overrides = array() ): \WCAPF\FormFilter {
 		return $this->make_field(
 			array_merge(
 				array(

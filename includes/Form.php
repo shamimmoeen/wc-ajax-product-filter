@@ -1,12 +1,13 @@
 <?php
 /**
- * The filter form class.
+ * Frontend filter form renderer.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,11 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Form class.
- *
- * @since 4.0.0
+ * Renders the configured filter form on the frontend.
  */
-class WCAPF_Form {
+class Form {
 
 	/**
 	 * The form array.
@@ -90,7 +89,7 @@ class WCAPF_Form {
 				continue;
 			}
 
-			$field_instance = new WCAPF_Field_Instance( $field_data );
+			$field_instance = new FormFilter( $field_data );
 			$field_type     = $field_instance->type;
 
 			if ( ! $field_type ) {
@@ -165,7 +164,7 @@ class WCAPF_Form {
 	/**
 	 * Render the form components.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param FormFilter $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -182,7 +181,7 @@ class WCAPF_Form {
 	/**
 	 * Renders the active filters.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param FormFilter $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -208,13 +207,13 @@ class WCAPF_Form {
 			)
 		);
 
-		WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
+		\WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
 	}
 
 	/**
 	 * Renders the reset button.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param FormFilter $field_instance The field instance.
 	 *
 	 * @return void
 	 */
@@ -227,18 +226,18 @@ class WCAPF_Form {
 			)
 		);
 
-		WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args );
+		\WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args );
 	}
 
 	/**
 	 * Renders the price filter.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param FormFilter $field_instance The field instance.
 	 *
 	 * @return void
 	 */
 	protected function render_price_filter( $field_instance ) {
-		$filter_type = new WCAPF_Filter_Type_Price( $field_instance );
+		$filter_type = new \WCAPF_Filter_Type_Price( $field_instance );
 		$range       = $filter_type->get_items();
 
 		$this->before_filter( $field_instance );
@@ -251,7 +250,7 @@ class WCAPF_Form {
 	 *
 	 * Outputs the wrapper and heading markup before the filter content is rendered.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance Field instance.
+	 * @param FormFilter $field_instance Field instance.
 	 *
 	 * @return void
 	 */
@@ -300,7 +299,7 @@ class WCAPF_Form {
 			$title_classes .= ' has-accordion';
 		}
 
-		WCAPF_Template_Loader::get_instance()->load(
+		\WCAPF_Template_Loader::get_instance()->load(
 			'filter-title',
 			array(
 				'filter_key'          => $filter_key,
@@ -334,7 +333,7 @@ class WCAPF_Form {
 	 *
 	 * Builds the filter wrapper classes based on the field type and its settings.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance Field instance.
+	 * @param FormFilter $field_instance Field instance.
 	 *
 	 * @return array Filter wrapper classes.
 	 */
@@ -375,8 +374,8 @@ class WCAPF_Form {
 	 * Outputs the range slider or number input UI for the filter using the
 	 * provided min and max range values.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance Field instance.
-	 * @param array                $range_min_max  Range values containing min and max.
+	 * @param FormFilter $field_instance Field instance.
+	 * @param array      $range_min_max  Range values containing min and max.
 	 *
 	 * @return void
 	 */
@@ -427,7 +426,7 @@ class WCAPF_Form {
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
 
-		if ( WCAPF_Helper::round_range_min_max_values( $field_instance ) ) {
+		if ( \WCAPF_Helper::round_range_min_max_values( $field_instance ) ) {
 			$range_min_value = floor( $range_min_value );
 			$range_max_value = ceil( $range_max_value );
 		}
@@ -456,9 +455,9 @@ class WCAPF_Form {
 		$slider_id    = $filter_key . '-slider-' . $filter_id;
 		$slider_style = wcapf()->settings->get( 'number_range_slider_style' );
 
-		$url_builder = new WCAPF_URL_Builder( $filter_key );
+		$url_builder = new \WCAPF_URL_Builder( $filter_key );
 
-		$args = WCAPF_Helper::prepare_range_filter_args(
+		$args = \WCAPF_Helper::prepare_range_filter_args(
 			array(
 				'filter_id'             => $filter_id,
 				'filter_key'            => $filter_key,
@@ -487,7 +486,7 @@ class WCAPF_Form {
 			)
 		);
 
-		WCAPF_Template_Loader::get_instance()->load( 'range', $args );
+		\WCAPF_Template_Loader::get_instance()->load( 'range', $args );
 	}
 
 	/**
@@ -505,9 +504,7 @@ class WCAPF_Form {
 	 *
 	 * Outputs the keyword search filter for the current form.
 	 *
-	 * @since 4.1.0
-	 *
-	 * @param WCAPF_Field_Instance $field_instance Field instance.
+	 * @param FormFilter $field_instance Field instance.
 	 *
 	 * @return void
 	 */
@@ -530,7 +527,7 @@ class WCAPF_Form {
 		}
 
 		$filter_key  = $field_instance->filter_key;
-		$url_builder = new WCAPF_URL_Builder( $filter_key );
+		$url_builder = new \WCAPF_URL_Builder( $filter_key );
 
 		printf(
 			'<div class="wcapf-keyword-filter-wrapper" data-filter-url="%1$s" data-clear-filter-url="%2$s">',
@@ -544,7 +541,7 @@ class WCAPF_Form {
 			$search_box_classes .= ' with-cross';
 		}
 
-		WCAPF_Template_Loader::get_instance()->load(
+		\WCAPF_Template_Loader::get_instance()->load(
 			'search-box',
 			array(
 				'placeholder'        => $placeholder,
@@ -565,7 +562,7 @@ class WCAPF_Form {
 	 * Supports taxonomy, rating, product status, post author, and post meta
 	 * filters through the walker output.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance Field instance.
+	 * @param FormFilter $field_instance Field instance.
 	 *
 	 * @return void
 	 */
@@ -576,7 +573,7 @@ class WCAPF_Form {
 			return;
 		}
 
-		$walker = new WCAPF_Walker( $field_instance );
+		$walker = new \WCAPF_Walker( $field_instance );
 
 		$this->before_filter( $field_instance );
 		echo $walker->build_menu(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

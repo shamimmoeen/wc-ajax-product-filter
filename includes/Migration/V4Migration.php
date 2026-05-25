@@ -55,8 +55,7 @@ class V4Migration {
 		if ( $perform_v4_migration ) {
 			$this->do_migrate();
 
-			$plugin_version = WCAPF_CORE_VERSION;
-			update_option( $db_version_option_key, $plugin_version );
+			update_option( $db_version_option_key, WCAPF_CORE_VERSION );
 
 			delete_option( 'wcapf_run_migrate' );
 
@@ -74,7 +73,7 @@ class V4Migration {
 		$settings_option_key = 'wcapf_settings';
 
 		if ( $set_default_settings ) {
-			$default_settings  = \WCAPF_Default_Data::default_settings();
+			$default_settings  = \WCAPF\Defaults::default_settings();
 			$existing_settings = get_option( $settings_option_key, array() );
 
 			update_option( $settings_option_key, array_merge( $default_settings, $existing_settings ) );
@@ -126,7 +125,7 @@ class V4Migration {
 		$v3_settings = get_option( $option_key );
 		$v4_settings = array();
 
-		$default_settings = \WCAPF_Default_Data::default_settings();
+		$default_settings = \WCAPF\Defaults::default_settings();
 
 		foreach ( $default_settings as $key => $_value ) {
 			$mapped_key = $key;
@@ -188,7 +187,7 @@ class V4Migration {
 			}
 		);
 
-		$filter_default_data = \WCAPF_Default_Data::filter_default_data();
+		$filter_default_data = \WCAPF\Defaults::filter_default_data();
 
 		$taxonomy_types  = array( 'custom-taxonomy', 'attribute', 'category', 'tag' );
 		$component_types = array( 'reset-button', 'active-filters' );
@@ -391,7 +390,7 @@ class V4Migration {
 			return;
 		}
 
-		$form_settings = \WCAPF_Default_Data::form_default_data();
+		$form_settings = \WCAPF\Defaults::form_default_data();
 
 		$post_arr = array(
 			'post_title'   => __( 'Default form', 'wc-ajax-product-filter' ),

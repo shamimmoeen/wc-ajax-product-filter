@@ -86,7 +86,7 @@ class WCAPF_Product_Filter {
 		$filters_data = $this->filters_data( $query );
 
 		foreach ( $filters_data as $filter_key => $field ) {
-			$field_instance = new WCAPF_Field_Instance( $field );
+			$field_instance = new \WCAPF\FormFilter( $field );
 			$filter_type    = $field_instance->filter_type;
 			$filter_values  = sanitize_text_field( $query[ $filter_key ] ); // Sanitize the value that comes from the URL.
 
@@ -220,8 +220,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets attribute filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -318,8 +318,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets taxonomy filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -430,8 +430,8 @@ class WCAPF_Product_Filter {
 	 * Allows filter values to be transformed before they are used in taxonomy
 	 * queries, such as converting custom values into term IDs.
 	 *
-	 * @param array                $filter_values  The selected filter values.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $filter_values  The selected filter values.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -445,8 +445,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Gets the ancestor term IDs for the active terms.
 	 *
-	 * @param array                $term_ids       The active term IDs.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $term_ids       The active term IDs.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -469,8 +469,8 @@ class WCAPF_Product_Filter {
 	 * Returns the selected term labels keyed by term ID for use in the active
 	 * filters UI.
 	 *
-	 * @param array                $filter_values  The selected filter values.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $filter_values  The selected filter values.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -502,8 +502,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets price filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -556,8 +556,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Gets the label for a number range.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param string               $value          The min, max range using separator.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
+	 * @param string            $value          The min, max range using separator.
 	 *
 	 * @return string
 	 */
@@ -594,8 +594,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets product status filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -665,8 +665,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Gets active product status filter data.
 	 *
-	 * @param array                $filter_values  The filter values.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $filter_values  The filter values.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -685,8 +685,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets post author filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -742,8 +742,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Gets the label for a post author filter value.
 	 *
-	 * @param string               $value          The selected author value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $value          The selected author value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return string
 	 */
@@ -814,8 +814,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets post meta filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -870,8 +870,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Gets the JOIN clause for post meta filters.
 	 *
-	 * @param array                $filter_values  The filter values.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $filter_values  The filter values.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return string
 	 */
@@ -909,8 +909,8 @@ class WCAPF_Product_Filter {
 	/**
 	 * Sets the keyword filter data.
 	 *
-	 * @param string               $filter_value   The filter value.
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param string            $filter_value   The filter value.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @since 4.1.0
 	 *

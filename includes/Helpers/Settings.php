@@ -51,7 +51,7 @@ class Settings {
 	public function all(): array {
 		$db_options = get_option( $this->option_key() );
 		$db_options = is_array( $db_options ) ? $db_options : array();
-		$settings   = wp_parse_args( $db_options, \WCAPF_Default_Data::default_settings() );
+		$settings   = wp_parse_args( $db_options, \WCAPF\Defaults::default_settings() );
 
 		return apply_filters( 'wcapf_settings', $settings );
 	}

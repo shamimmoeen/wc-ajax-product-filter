@@ -36,8 +36,8 @@ class TaxonomyFilter {
 	/**
 	 * Limits taxonomy terms based on field settings.
 	 *
-	 * @param array                 $args           The arguments of the get_terms() function.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $args           The arguments of the get_terms() function.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -88,8 +88,8 @@ class TaxonomyFilter {
 	/**
 	 * Sorts taxonomy terms based on field settings.
 	 *
-	 * @param array                 $args           The arguments of the get_terms() function.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $args           The arguments of the get_terms() function.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -122,8 +122,8 @@ class TaxonomyFilter {
 	/**
 	 * Adjusts parent term IDs for hierarchical taxonomy terms.
 	 *
-	 * @param array                 $terms          The taxonomy terms.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $terms          The taxonomy terms.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -162,8 +162,8 @@ class TaxonomyFilter {
 	/**
 	 * Converts term slugs to term IDs for taxonomy filters.
 	 *
-	 * @param array                 $values         The filter values.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $values         The filter values.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -195,8 +195,8 @@ class TaxonomyFilter {
 	/**
 	 * Converts active ancestor term IDs to term slugs.
 	 *
-	 * @param array                 $ancestor_ids   The ancestor term IDs.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $ancestor_ids   The ancestor term IDs.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array The ancestor term slugs.
 	 */
@@ -232,9 +232,9 @@ class TaxonomyFilter {
 	/**
 	 * Builds active filter data from taxonomy term slugs.
 	 *
-	 * @param array                 $filter_data    The filter data.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                 $term_slugs     The term slugs.
+	 * @param array             $filter_data    The filter data.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
+	 * @param array             $term_slugs     The term slugs.
 	 *
 	 * @return array
 	 */

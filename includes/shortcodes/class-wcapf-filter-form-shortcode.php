@@ -50,7 +50,7 @@ class WCAPF_Filter_Form_Shortcode {
 
 		$this->render_debug_messages();
 
-		$form = new WCAPF_Form();
+		$form = new \WCAPF\Form();
 		$form->render_form();
 
 		return ob_get_clean();

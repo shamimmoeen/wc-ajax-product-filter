@@ -19,6 +19,9 @@
 		<exclude-pattern>/includes/Admin.php</exclude-pattern>
 		<exclude-pattern>/includes/Ajax.php</exclude-pattern>
 		<exclude-pattern>/includes/FrontendScripts.php</exclude-pattern>
+		<exclude-pattern>/includes/Defaults.php</exclude-pattern>
+		<exclude-pattern>/includes/Form.php</exclude-pattern>
+		<exclude-pattern>/includes/FormFilter.php</exclude-pattern>
 		<exclude-pattern>/includes/Helpers/*</exclude-pattern>
 		<exclude-pattern>/includes/Hooks/*</exclude-pattern>
 		<exclude-pattern>/includes/Migration/*</exclude-pattern>

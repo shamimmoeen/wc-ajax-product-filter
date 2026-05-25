@@ -44,14 +44,14 @@ abstract class WCAPF_Filter_Type {
 	/**
 	 * The field instance.
 	 *
-	 * @var WCAPF_Field_Instance
+	 * @var \WCAPF\FormFilter
 	 */
 	protected $field;
 
 	/**
 	 * The constructor.
 	 *
-	 * @param WCAPF_Field_Instance $field The field instance.
+	 * @param \WCAPF\FormFilter $field The field instance.
 	 */
 	public function __construct( $field ) {
 		$this->field = $field;

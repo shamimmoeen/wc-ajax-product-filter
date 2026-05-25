@@ -347,8 +347,8 @@ class WCAPF_Product_Filter_Utils {
 	/**
 	 * Adjust the parent term id for hierarchy terms.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
-	 * @param array                $terms          The terms array.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
+	 * @param array             $terms          The terms array.
 	 *
 	 * @since 4.0.0
 	 *

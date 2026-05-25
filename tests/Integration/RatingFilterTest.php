@@ -53,9 +53,9 @@ class RatingFilterTest extends FilterBehaviorTestCase {
 	/**
 	 * Builds a rating field in automatic mode.
 	 *
-	 * @return \WCAPF_Field_Instance
+	 * @return \WCAPF\FormFilter
 	 */
-	private function rating_field(): \WCAPF_Field_Instance {
+	private function rating_field(): \WCAPF\FormFilter {
 		return $this->make_field(
 			array(
 				'type'         => 'rating',

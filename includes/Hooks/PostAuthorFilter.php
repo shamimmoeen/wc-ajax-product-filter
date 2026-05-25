@@ -30,8 +30,8 @@ class PostAuthorFilter {
 	/**
 	 * Limits the list of post authors based on filter settings.
 	 *
-	 * @param array                 $args           The arguments of the get_users() function.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $args           The arguments of the get_users() function.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
@@ -57,8 +57,8 @@ class PostAuthorFilter {
 	/**
 	 * Sorts the list of post authors based on filter settings.
 	 *
-	 * @param array                 $args           The arguments of the get_users() function.
-	 * @param \WCAPF_Field_Instance $field_instance The field instance.
+	 * @param array             $args           The arguments of the get_users() function.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */

@@ -278,7 +278,7 @@ class WCAPF_Walker {
 	/**
 	 * The constructor.
 	 *
-	 * @param WCAPF_Field_Instance $field The field instance.
+	 * @param \WCAPF\FormFilter $field The field instance.
 	 */
 	public function __construct( $field ) {
 		$this->set_properties( $field );
@@ -293,7 +293,7 @@ class WCAPF_Walker {
 	/**
 	 * Sets the walker properties.
 	 *
-	 * @param WCAPF_Field_Instance $field The field instance.
+	 * @param \WCAPF\FormFilter $field The field instance.
 	 *
 	 * @return void
 	 */
@@ -344,7 +344,7 @@ class WCAPF_Walker {
 	/**
 	 * Sets the filter items.
 	 *
-	 * @param WCAPF_Field_Instance $field_instance The field instance.
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */

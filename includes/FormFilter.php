@@ -1,12 +1,13 @@
 <?php
 /**
- * WCAPF_Field_Instance class.
+ * Parsed, read-only view of a single configured filter field.
  *
- * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,11 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Field_Instance class.
- *
- * @since 3.0.0
+ * Parsed, read-only view of a single configured filter field.
  */
-class WCAPF_Field_Instance {
+class FormFilter {
 
 	/**
 	 * Parsed display type.
@@ -511,8 +510,6 @@ class WCAPF_Field_Instance {
 	 * Returns the allowed layout based on the current display type and falls
 	 * back to `list` when the configured layout is invalid.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return string Filter layout.
 	 */
 	private function get_layout() {
@@ -681,8 +678,6 @@ class WCAPF_Field_Instance {
 	 *
 	 * Returns an empty string when no supported vendor plugin is active.
 	 *
-	 * @since 3.3.0
-	 *
 	 * @return string Store name setting value.
 	 */
 	private function is_store_name_enabled() {
@@ -695,8 +690,6 @@ class WCAPF_Field_Instance {
 
 	/**
 	 * Determines if search field is enabled.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -711,8 +704,6 @@ class WCAPF_Field_Instance {
 	/**
 	 * Determines if search options is possible according to the display type.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return bool
 	 */
 	private function is_search_options_possible() {
@@ -723,8 +714,6 @@ class WCAPF_Field_Instance {
 	 * Determines whether reduce-height behavior is allowed for the current field.
 	 *
 	 * The result depends on the current display type and the requested context.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @param string $field Context for the check. Accepts `reduce-height` or `search`.
 	 *
@@ -767,8 +756,6 @@ class WCAPF_Field_Instance {
 	/**
 	 * Determines if reduce height enabled.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return string
 	 */
 	private function is_reduce_height_enabled() {
@@ -782,8 +769,6 @@ class WCAPF_Field_Instance {
 	/**
 	 * Filter options max height to appear the scrollbar.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return float
 	 */
 	private function filter_options_max_height() {
@@ -792,8 +777,6 @@ class WCAPF_Field_Instance {
 
 	/**
 	 * No of visible options for soft limit.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return int
 	 */
@@ -804,8 +787,6 @@ class WCAPF_Field_Instance {
 	/**
 	 * Determines if soft limit is enabled.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @return bool
 	 */
 	private function is_soft_limit_enabled() {
@@ -814,8 +795,6 @@ class WCAPF_Field_Instance {
 
 	/**
 	 * Determines if max height is enabled.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return bool
 	 */

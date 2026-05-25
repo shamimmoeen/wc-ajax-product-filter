@@ -280,7 +280,7 @@ class Admin {
 		$user_roles = \WCAPF_API_Utils::user_role_options();
 
 		if ( 'toplevel_page_wcapf' === $screen_id ) {
-			$params['form_default_data'] = \WCAPF_Default_Data::form_default_data();
+			$params['form_default_data'] = Defaults::form_default_data();
 
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to determine which admin screen to load.
 			if ( ! isset( $_GET['id'] ) ) {
@@ -288,7 +288,7 @@ class Admin {
 			} else {
 				$settings = wcapf()->settings->all();
 
-				$params['filter_default_data'] = \WCAPF_Default_Data::filter_default_data();
+				$params['filter_default_data'] = Defaults::filter_default_data();
 
 				$params['filter_types']    = \WCAPF_API_Utils::get_filter_types();
 				$params['meta_keys']       = wcapf()->data->available_meta_keys();
@@ -314,7 +314,7 @@ class Admin {
 		}
 
 		if ( 'wcapf_page_wcapf-settings' === $screen_id ) {
-			$params['default_settings'] = \WCAPF_Default_Data::default_settings();
+			$params['default_settings'] = Defaults::default_settings();
 
 			$params['user_roles'] = $user_roles;
 			$params['settings']   = \WCAPF_API_Utils::get_settings();
