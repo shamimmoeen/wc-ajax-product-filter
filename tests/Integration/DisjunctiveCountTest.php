@@ -103,7 +103,7 @@ class DisjunctiveCountTest extends FilterBehaviorTestCase {
 	private function activate( array $params ): void {
 		$this->set_selection( $params );
 
-		$GLOBALS['wcapf_chosen_filters'] = ( new \WCAPF_Product_Filter() )->get_chosen_filters();
+		$GLOBALS['wcapf_chosen_filters'] = ( new \WCAPF\ProductFilter() )->get_chosen_filters();
 	}
 
 	public function test_tag_counts_are_global_when_no_other_filter_is_active() {

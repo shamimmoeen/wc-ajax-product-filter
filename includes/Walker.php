@@ -1,12 +1,13 @@
 <?php
 /**
- * WCAPF_Walker class.
+ * The filter options walker.
  *
- * @since      3.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,11 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Walker class.
- *
- * @since 3.0.0
+ * Renders the filter option list/dropdown markup from filter items.
  */
-class WCAPF_Walker {
+class Walker {
 
 	/**
 	 * Display type.
@@ -271,7 +270,7 @@ class WCAPF_Walker {
 	 *
 	 * Class responsible for building URLs based on given parameters.
 	 *
-	 * @var WCAPF_URL_Builder
+	 * @var UrlBuilder
 	 */
 	private $url_builder;
 
@@ -287,7 +286,7 @@ class WCAPF_Walker {
 		$this->active_items     = $this->active_items();
 		$this->active_ancestors = $this->active_ancestors();
 		$this->queried_object   = $this->set_queried_object();
-		$this->url_builder      = new WCAPF_URL_Builder( $this->filter_key, $this->enable_multiple_filter );
+		$this->url_builder      = new UrlBuilder( $this->filter_key, $this->enable_multiple_filter );
 	}
 
 	/**
@@ -354,25 +353,25 @@ class WCAPF_Walker {
 
 		switch ( $type ) {
 			case 'taxonomy':
-				$field = new WCAPF_Filter_Type_Taxonomy( $field_instance );
+				$field = new \WCAPF_Filter_Type_Taxonomy( $field_instance );
 				$items = $field->get_items();
 
 				break;
 
 			case 'product-status':
-				$filter = new WCAPF_Filter_Type_Product_Status( $field_instance );
+				$filter = new \WCAPF_Filter_Type_Product_Status( $field_instance );
 				$items  = $filter->get_items();
 
 				break;
 
 			case 'post-author':
-				$filter = new WCAPF_Filter_Type_Post_Author( $field_instance );
+				$filter = new \WCAPF_Filter_Type_Post_Author( $field_instance );
 				$items  = $filter->get_items();
 
 				break;
 
 			case 'post-meta':
-				$filter = new WCAPF_Filter_Type_Post_Meta( $field_instance );
+				$filter = new \WCAPF_Filter_Type_Post_Meta( $field_instance );
 				$items  = $filter->get_items();
 
 				break;
@@ -902,7 +901,7 @@ class WCAPF_Walker {
 			'screen_reader_text' => $screen_reader_text,
 		);
 
-		return WCAPF_Template_Loader::get_instance()->load( 'menu-item', $args, false );
+		return \WCAPF_Template_Loader::get_instance()->load( 'menu-item', $args, false );
 	}
 
 	/**
@@ -926,7 +925,7 @@ class WCAPF_Walker {
 			/* translators: %s: item name */
 			$aria_label = sprintf( __( 'Expand/Collapse %s', 'wc-ajax-product-filter' ), $item['name'] );
 
-			return WCAPF_Template_Loader::get_instance()->load(
+			return \WCAPF_Template_Loader::get_instance()->load(
 				'hierarchy-accordion',
 				array(
 					'is_active'  => $is_active,
@@ -1033,7 +1032,7 @@ class WCAPF_Walker {
 
 		$classes = 'wcapf-search-box with-icon icon-right with-cross';
 
-		return WCAPF_Template_Loader::get_instance()->load(
+		return \WCAPF_Template_Loader::get_instance()->load(
 			'search-box',
 			array(
 				'placeholder'        => $placeholder,

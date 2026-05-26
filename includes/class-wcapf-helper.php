@@ -528,7 +528,7 @@ class WCAPF_Helper {
 		$html = '';
 
 		foreach ( $active_filters as $value => $label ) {
-			$url_builder = new WCAPF_URL_Builder( $filter_key, true );
+			$url_builder = new \WCAPF\UrlBuilder( $filter_key, true );
 
 			if ( 'keyword' === $filter_type ) {
 				// Here, it is possible to apply multiple keywords, so clear all applied keywords at once.
@@ -575,7 +575,7 @@ class WCAPF_Helper {
 			$classes = 'wcapf-filter-clear-btn wcapf-btn wcapf-btn-secondary';
 		}
 
-		$url_builder = new WCAPF_URL_Builder();
+		$url_builder = new \WCAPF\UrlBuilder();
 		$reset_url   = $url_builder->get_reset_url();
 
 		$attrs = 'data-clear-filter-url="' . esc_url( $reset_url ) . '"';

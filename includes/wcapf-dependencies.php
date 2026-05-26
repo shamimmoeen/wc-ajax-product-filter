@@ -16,11 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-url-builder.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-walker.php';
 
 // Loads the filter types.
 require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';

@@ -190,7 +190,7 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 	 * @return int[] Sorted, de-duplicated product IDs.
 	 */
 	protected function matching_product_ids(): array {
-		$filter = new \WCAPF_Product_Filter();
+		$filter = new \WCAPF\ProductFilter();
 
 		$GLOBALS['wcapf_chosen_filters'] = $filter->get_chosen_filters();
 

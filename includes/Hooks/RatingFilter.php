@@ -193,7 +193,7 @@ class RatingFilter {
 	 * Fill the rating items with star icons.
 	 *
 	 * @param array         $items  The walker items.
-	 * @param \WCAPF_Walker $walker The walker class instance.
+	 * @param \WCAPF\Walker $walker The walker class instance.
 	 *
 	 * @return array
 	 */

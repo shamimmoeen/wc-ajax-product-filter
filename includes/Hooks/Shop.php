@@ -335,7 +335,7 @@ class Shop {
 			return;
 		}
 
-		$filter = new \WCAPF_Product_Filter();
+		$filter = new \WCAPF\ProductFilter();
 
 		global $wcapf_chosen_filters;
 
@@ -376,7 +376,7 @@ class Shop {
 			return $args;
 		}
 
-		$filter = new \WCAPF_Product_Filter();
+		$filter = new \WCAPF\ProductFilter();
 
 		$args['join']  .= $filter->get_full_join_clause();
 		$args['where'] .= $filter->get_full_where_clause();

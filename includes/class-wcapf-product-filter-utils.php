@@ -94,7 +94,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_join_clause() {
-		$filter = new WCAPF_Product_Filter();
+		$filter = new \WCAPF\ProductFilter();
 
 		$join = ' ' . $filter->get_full_join_clause();
 
@@ -137,7 +137,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_full_where_clause() {
-		$filter = new WCAPF_Product_Filter();
+		$filter = new \WCAPF\ProductFilter();
 
 		return $filter->get_full_where_clause();
 	}

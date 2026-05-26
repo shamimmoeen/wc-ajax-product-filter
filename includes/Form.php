@@ -455,7 +455,7 @@ class Form {
 		$slider_id    = $filter_key . '-slider-' . $filter_id;
 		$slider_style = wcapf()->settings->get( 'number_range_slider_style' );
 
-		$url_builder = new \WCAPF_URL_Builder( $filter_key );
+		$url_builder = new UrlBuilder( $filter_key );
 
 		$args = \WCAPF_Helper::prepare_range_filter_args(
 			array(
@@ -527,7 +527,7 @@ class Form {
 		}
 
 		$filter_key  = $field_instance->filter_key;
-		$url_builder = new \WCAPF_URL_Builder( $filter_key );
+		$url_builder = new UrlBuilder( $filter_key );
 
 		printf(
 			'<div class="wcapf-keyword-filter-wrapper" data-filter-url="%1$s" data-clear-filter-url="%2$s">',
@@ -573,7 +573,7 @@ class Form {
 			return;
 		}
 
-		$walker = new \WCAPF_Walker( $field_instance );
+		$walker = new Walker( $field_instance );
 
 		$this->before_filter( $field_instance );
 		echo $walker->build_menu(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

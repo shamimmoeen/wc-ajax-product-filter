@@ -2,11 +2,12 @@
 /**
  * The filter url builder class.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
  * @subpackage wc-ajax-product-filter/includes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,11 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_URL_Builder class.
- *
- * @since 4.0.0
+ * Builds filter URLs from the current query string.
  */
-class WCAPF_URL_Builder {
+class UrlBuilder {
 
 	/**
 	 * Registered filter keys.
