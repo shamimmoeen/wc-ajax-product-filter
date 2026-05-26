@@ -42,10 +42,19 @@ function _wcapf_manually_load_plugins() {
 
 tests_add_filter( 'muplugins_loaded', '_wcapf_manually_load_plugins' );
 
-require "{$_tests_dir}/includes/bootstrap.php";
-
-// Create WooCommerce's custom tables (e.g. wc_product_meta_lookup) and default
-// data in the test database so price, stock, and visibility queries work.
-if ( class_exists( 'WC_Install' ) ) {
+/**
+ * Creates WooCommerce's custom tables (e.g. wc_product_meta_lookup) and default
+ * data in the test database so price, stock, and visibility queries work.
+ *
+ * Hooked to `setup_theme`, which fires before `init`, so WooCommerce's own init
+ * callbacks (webhook lookup, attribute taxonomies) don't query these tables
+ * before they exist on a freshly created test database. Mirrors WooCommerce
+ * core's test bootstrap, which installs WC on the same hook.
+ */
+function _wcapf_install_woocommerce() {
 	WC_Install::install();
 }
+
+tests_add_filter( 'setup_theme', '_wcapf_install_woocommerce' );
+
+require "{$_tests_dir}/includes/bootstrap.php";
