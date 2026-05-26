@@ -16,9 +16,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WCAPF_Product_Filter_Utils class.
  *
+ * The SQL-building helpers now live in \WCAPF\QueryBuilder; the methods below
+ * forward to it while the remaining callers are migrated.
+ *
  * @since 3.0.0
  */
 class WCAPF_Product_Filter_Utils {
+
+	/**
+	 * Gets the shared query builder instance.
+	 *
+	 * @return \WCAPF\QueryBuilder
+	 */
+	private static function query_builder() {
+		static $query_builder = null;
+
+		if ( null === $query_builder ) {
+			$query_builder = new \WCAPF\QueryBuilder();
+		}
+
+		return $query_builder;
+	}
 
 	/**
 	 * Gets the chosen filter values.
@@ -28,34 +46,16 @@ class WCAPF_Product_Filter_Utils {
 	 * @return array
 	 */
 	public static function get_chosen_filter_values( $values ) {
-		$value_separator = ',';
-
-		// Check if we have any string(including 0) in the url.
-		if ( ! strlen( $values ) ) {
-			return array();
-		}
-
-		$values_array = explode( $value_separator, $values );
-
-		return is_array( $values_array ) ? $values_array : array();
+		return self::query_builder()->get_chosen_filter_values( $values );
 	}
 
 	/**
 	 * We are using the same join to avoid the sorting issues.
 	 *
 	 * @return array
-	 *
-	 * @see WC_Query::append_product_sorting_table_join()
 	 */
 	public static function get_lookup_table_data() {
-		global $wpdb;
-
-		$table = $wpdb->prefix . 'wc_product_meta_lookup';
-		$alias = 'wc_product_meta_lookup';
-
-		$join = "LEFT JOIN $table AS $alias ON $wpdb->posts.ID = $alias.product_id";
-
-		return compact( 'join', 'alias' );
+		return self::query_builder()->get_lookup_table_data();
 	}
 
 	/**
@@ -67,25 +67,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return array
 	 */
 	public static function get_min_max_price_according_to_tax( $min, $max ) {
-		$min = (float) $min;
-		$max = (float) $max;
-
-		/**
-		 * Adjust if the store taxes are not displayed how they are stored.
-		 * Kicks in when prices excluding tax are displayed including tax.
-		 */
-		if ( wc_tax_enabled() && 'incl' === get_option( 'woocommerce_tax_display_shop' ) && ! wc_prices_include_tax() ) {
-			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-			$tax_class = apply_filters( 'woocommerce_price_filter_widget_tax_class', '' ); // Uses standard tax class.
-			$tax_rates = WC_Tax::get_rates( $tax_class );
-
-			if ( $tax_rates ) {
-				$min -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $min, $tax_rates ) );
-				$max -= WC_Tax::get_tax_total( WC_Tax::calc_inclusive_tax( $max, $tax_rates ) );
-			}
-		}
-
-		return compact( 'min', 'max' );
+		return self::query_builder()->get_min_max_price_according_to_tax( $min, $max );
 	}
 
 	/**
@@ -94,11 +76,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_join_clause() {
-		$filter = new \WCAPF\ProductFilter();
-
-		$join = ' ' . $filter->get_full_join_clause();
-
-		return apply_filters( 'wcapf_filter_join_clause', $join );
+		return self::query_builder()->get_join_clause();
 	}
 
 	/**
@@ -110,25 +88,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_where_clause( $query_type, $filter_key ) {
-		$main_query_type = wcapf()->settings->field_relations();
-
-		$where = '';
-
-		if ( 'and' === $main_query_type ) {
-			if ( 'and' === $query_type ) {
-				$where = self::get_full_where_clause();
-			} elseif ( 'or' === $query_type ) {
-				$where = self::get_where_clauses_by_other_filters( $filter_key );
-			}
-		} elseif ( 'or' === $main_query_type ) {
-			if ( 'and' === $query_type ) {
-				$where = self::get_self_where_clause( $filter_key );
-			} elseif ( 'or' === $query_type ) {
-				$where = ' AND 1=1';
-			}
-		}
-
-		return apply_filters( 'wcapf_filter_where_clause', $where, $query_type, $filter_key );
+		return self::query_builder()->get_where_clause( $query_type, $filter_key );
 	}
 
 	/**
@@ -137,9 +97,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_full_where_clause() {
-		$filter = new \WCAPF\ProductFilter();
-
-		return $filter->get_full_where_clause();
+		return self::query_builder()->get_full_where_clause();
 	}
 
 	/**
@@ -150,27 +108,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_where_clauses_by_other_filters( $filter_key ) {
-		$chosen_filters = wcapf()->active_filters->chosen();
-
-		$wheres = array();
-
-		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
-			if ( 'filters_data' === $filter_type ) {
-				continue;
-			}
-
-			foreach ( $filter_type_filters as $_filter_key => $filter ) {
-				if ( $filter_key === $_filter_key ) {
-					continue;
-				}
-
-				$wheres[] = $filter['where'];
-			}
-		}
-
-		$query_type = wcapf()->settings->field_relations();
-
-		return self::combine_where_clauses( $wheres, $query_type );
+		return self::query_builder()->get_where_clauses_by_other_filters( $filter_key );
 	}
 
 	/**
@@ -182,23 +120,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function combine_where_clauses( $wheres, $query_type ) {
-		if ( 'or' === $query_type ) {
-			$separator = ' OR ';
-		} else {
-			$separator = ' AND ';
-		}
-
-		if ( $wheres ) {
-			if ( 1 < count( $wheres ) ) {
-				$sql = ' AND ( ' . implode( $separator, $wheres ) . ' )';
-			} else {
-				$sql = ' AND ' . implode( $separator, $wheres );
-			}
-		} else {
-			$sql = '';
-		}
-
-		return $sql;
+		return self::query_builder()->combine_where_clauses( $wheres, $query_type );
 	}
 
 	/**
@@ -209,26 +131,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_self_where_clause( $filter_key ) {
-		$chosen_filters = wcapf()->active_filters->chosen();
-
-		$wheres = array();
-
-		foreach ( $chosen_filters as $filter_type => $filter_type_filters ) {
-			if ( 'filters_data' === $filter_type ) {
-				continue;
-			}
-
-			foreach ( $filter_type_filters as $_filter_key => $filter ) {
-				if ( $filter_key === $_filter_key ) {
-					$wheres[] = $filter['where'];
-					break;
-				}
-			}
-		}
-
-		$query_type = wcapf()->settings->field_relations();
-
-		return self::combine_where_clauses( $wheres, $query_type );
+		return self::query_builder()->get_self_where_clause( $filter_key );
 	}
 
 	/**
@@ -237,11 +140,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_featured_product_ids_sql() {
-		$ids = wc_get_featured_product_ids();
-
-		$ids = $ids ? $ids : array( 0 );
-
-		return self::get_ids_sql( $ids );
+		return self::query_builder()->get_featured_product_ids_sql();
 	}
 
 	/**
@@ -252,41 +151,19 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string The formatted list.
 	 */
 	public static function get_ids_sql( $ids ) {
-		if ( empty( $ids ) || ! is_array( $ids ) ) {
-			return '(0)';
-		}
-
-		return '(' . implode( ',', array_map( 'absint', $ids ) ) . ')';
+		return self::query_builder()->get_ids_sql( $ids );
 	}
 
 	/**
 	 * Formats a list of term_taxonomy_ids as "(id,id,id)" from term ids.
 	 *
-	 * Fix - https://wordpress.org/support/topic/selection-does-not-show/
-	 *
 	 * @param int[]  $term_ids The array of term ids.
 	 * @param string $taxonomy The taxonomy name.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
 	public static function get_tt_ids_sql( $term_ids, $taxonomy ) {
-		$terms = get_terms(
-			array(
-				'taxonomy'   => $taxonomy,
-				'hide_empty' => false,
-				'include'    => $term_ids,
-			)
-		);
-
-		if ( $terms ) {
-			$tt_ids = wp_list_pluck( $terms, 'term_taxonomy_id' );
-		} else {
-			$tt_ids = array( 0 );
-		}
-
-		return self::get_ids_sql( $tt_ids );
+		return self::query_builder()->get_tt_ids_sql( $term_ids, $taxonomy );
 	}
 
 	/**
@@ -295,11 +172,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_product_ids_on_sale_sql() {
-		$ids = wc_get_product_ids_on_sale();
-
-		$ids = $ids ? $ids : array( 0 );
-
-		return self::get_ids_sql( $ids );
+		return self::query_builder()->get_product_ids_on_sale_sql();
 	}
 
 	/**
@@ -310,7 +183,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_table_join_alias( $filter_key ) {
-		return '`' . $filter_key . '`';
+		return self::query_builder()->get_table_join_alias( $filter_key );
 	}
 
 	/**
@@ -322,9 +195,7 @@ class WCAPF_Product_Filter_Utils {
 	 * @return string
 	 */
 	public static function get_table_join_alias_for_query_type_and( $index, $filter_key ) {
-		$postfix = $index + 1;
-
-		return '`' . $filter_key . $postfix . '`';
+		return self::query_builder()->get_table_join_alias_for_query_type_and( $index, $filter_key );
 	}
 
 	/**

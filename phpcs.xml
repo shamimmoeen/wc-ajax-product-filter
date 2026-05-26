@@ -23,6 +23,7 @@
 		<exclude-pattern>/includes/Form.php</exclude-pattern>
 		<exclude-pattern>/includes/FormFilter.php</exclude-pattern>
 		<exclude-pattern>/includes/ProductFilter.php</exclude-pattern>
+		<exclude-pattern>/includes/QueryBuilder.php</exclude-pattern>
 		<exclude-pattern>/includes/UrlBuilder.php</exclude-pattern>
 		<exclude-pattern>/includes/Walker.php</exclude-pattern>
 		<exclude-pattern>/includes/Helpers/*</exclude-pattern>
