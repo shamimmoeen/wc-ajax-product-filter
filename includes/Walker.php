@@ -353,8 +353,8 @@ class Walker {
 
 		switch ( $type ) {
 			case 'taxonomy':
-				$field = new \WCAPF_Filter_Type_Taxonomy( $field_instance );
-				$items = $field->get_items();
+				$type  = FilterType\Factory::make( $field_instance, new QueryBuilder() );
+				$items = $type->get_items();
 
 				break;
 

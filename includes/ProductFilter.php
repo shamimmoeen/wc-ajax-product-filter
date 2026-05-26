@@ -20,6 +20,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ProductFilter {
 
 	/**
+	 * The query builder used to assemble SQL fragments.
+	 *
+	 * @var QueryBuilder
+	 */
+	protected $query_builder;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param QueryBuilder $query_builder The query builder.
+	 */
+	public function __construct( QueryBuilder $query_builder = null ) {
+		$this->query_builder = $query_builder ? $query_builder : new QueryBuilder();
+	}
+
+	/**
 	 * Gets the full SQL JOIN clause for the chosen filters.
 	 *
 	 * @return string
@@ -90,13 +106,9 @@ class ProductFilter {
 			$filter_values  = sanitize_text_field( $query[ $filter_key ] ); // Sanitize the value that comes from the URL.
 
 			if ( 'taxonomy' === $filter_type ) {
-				$taxonomy = $field_instance->taxonomy;
+				$type = FilterType\Factory::make( $field_instance, $this->query_builder );
 
-				if ( in_array( $taxonomy, wc_get_attribute_taxonomy_names(), true ) ) {
-					$taxonomies[ $filter_key ] = $this->set_attribute_filter_data( $filter_values, $field_instance );
-				} else {
-					$taxonomies[ $filter_key ] = $this->set_taxonomy_filter_data( $filter_values, $field_instance );
-				}
+				$taxonomies[ $filter_key ] = $type->build_clauses( $filter_values );
 			} elseif ( 'price' === $filter_type ) {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
 			} elseif ( 'product-status' === $filter_type ) {
@@ -214,288 +226,6 @@ class ProductFilter {
 		}
 
 		return $forms[0];
-	}
-
-	/**
-	 * Sets attribute filter data.
-	 *
-	 * @param string            $filter_value   The filter value.
-	 * @param \WCAPF\FormFilter $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	protected function set_attribute_filter_data( $filter_value, $field_instance ) {
-		$use_attribute_table = wcapf()->settings->filtering_via_lookup_table_is_active();
-
-		if ( ! $use_attribute_table ) {
-			return $this->set_taxonomy_filter_data( $filter_value, $field_instance );
-		}
-
-		global $wpdb;
-
-		$query_type = $field_instance->query_type;
-		$taxonomy   = $field_instance->taxonomy;
-		$filter_id  = $field_instance->filter_id;
-
-		$join = '';
-
-		$filter_values = \WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
-
-		$term_ids = $this->get_chosen_term_ids( $filter_values, $field_instance );
-
-		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
-
-		// The extra derived table ("SELECT product_or_parent_id FROM") is needed for performance
-		// (causes the filtering subquery to be executed only once).
-		$clause_root = "$wpdb->posts.ID IN ( SELECT product_or_parent_id FROM (";
-		$clause_end  = ') AS temp)';
-
-		$hide_stock_out_items = wcapf()->settings->hide_stock_out_items();
-
-		if ( $hide_stock_out_items ) {
-			$in_stock_clause = ' AND in_stock = 1';
-		} else {
-			$in_stock_clause = '';
-		}
-
-		if ( 'or' === $query_type ) {
-			if ( $term_ids ) {
-				$ids = \WCAPF_Product_Filter_Utils::get_ids_sql( $term_ids );
-
-				$where = "
-					$clause_root
-					SELECT product_or_parent_id
-					FROM $lookup_table_name lt
-					WHERE term_id IN $ids
-					$in_stock_clause
-					$clause_end
-				";
-			} else {
-				$where = '1=0';
-			}
-		} else {
-			$clauses = array();
-
-			foreach ( $term_ids as $term_id ) {
-				$term_id   = absint( $term_id );
-				$clauses[] = "
-					$clause_root
-					SELECT product_or_parent_id
-					FROM $lookup_table_name lt
-					WHERE term_id = $term_id
-					$in_stock_clause
-					$clause_end
-				";
-			}
-
-			if ( $clauses ) {
-				$sql = implode( ' AND ', $clauses );
-
-				if ( 1 < count( $clauses ) ) {
-					$where = '( ' . $sql . ' )';
-				} else {
-					$where = $sql;
-				}
-			} else {
-				$where = '1=0';
-			}
-		}
-
-		$active_filters = $this->active_terms_filter_data( $filter_values, $field_instance );
-
-		return array(
-			'taxonomy'       => $taxonomy,
-			'query_type'     => $query_type,
-			'values'         => $filter_values,
-			'join'           => $join,
-			'where'          => $where,
-			'filter_id'      => $filter_id,
-			'active_filters' => $active_filters,
-		);
-	}
-
-	/**
-	 * Sets taxonomy filter data.
-	 *
-	 * @param string            $filter_value   The filter value.
-	 * @param \WCAPF\FormFilter $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	protected function set_taxonomy_filter_data( $filter_value, $field_instance ) {
-		global $wpdb;
-
-		$filter_key = $field_instance->filter_key;
-		$query_type = $field_instance->query_type;
-		$taxonomy   = $field_instance->taxonomy;
-		$filter_id  = $field_instance->filter_id;
-
-		$filter_values = \WCAPF_Product_Filter_Utils::get_chosen_filter_values( $filter_value );
-
-		$term_ids   = $this->get_chosen_term_ids( $filter_values, $field_instance );
-		$_terms_ids = $term_ids;
-
-		$is_hierarchical = is_taxonomy_hierarchical( $taxonomy );
-
-		$join = '';
-
-		if ( 'or' === $query_type ) {
-			$join_alias = \WCAPF_Product_Filter_Utils::get_table_join_alias( $filter_key );
-
-			$join .= "LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
-		} else {
-			foreach ( $term_ids as $index => $value ) {
-				$join_alias = \WCAPF_Product_Filter_Utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
-
-				$join .= " LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
-			}
-		}
-
-		if ( 'or' === $query_type ) {
-			if ( $is_hierarchical ) {
-				$with_children = array();
-
-				foreach ( $term_ids as $term_id ) {
-					$term_children = get_term_children( $term_id, $taxonomy );
-					$with_children = array_merge( $with_children, $term_children );
-				}
-
-				$term_ids = array_merge( $term_ids, $with_children );
-			}
-
-			if ( $term_ids ) {
-				$join_alias = \WCAPF_Product_Filter_Utils::get_table_join_alias( $filter_key );
-
-				$ids   = \WCAPF_Product_Filter_Utils::get_tt_ids_sql( $term_ids, $taxonomy );
-				$where = "$join_alias.term_taxonomy_id IN $ids";
-			} else {
-				$where = '1=0';
-			}
-		} else {
-			$clauses = array();
-
-			foreach ( $term_ids as $index => $term_id ) {
-				if ( $is_hierarchical ) {
-					$with_children = get_term_children( $term_id, $taxonomy );
-
-					$and_term_id = array_merge( array( $term_id ), $with_children );
-				} else {
-					$and_term_id = array( $term_id );
-				}
-
-				$id_sql = \WCAPF_Product_Filter_Utils::get_tt_ids_sql( $and_term_id, $taxonomy );
-
-				$join_alias = \WCAPF_Product_Filter_Utils::get_table_join_alias_for_query_type_and( $index, $filter_key );
-
-				$clauses[] = "$join_alias.term_taxonomy_id IN $id_sql";
-			}
-
-			if ( $clauses ) {
-				$sql = implode( ' AND ', $clauses );
-
-				if ( 1 < count( $clauses ) ) {
-					$where = '( ' . $sql . ' )';
-				} else {
-					$where = $sql;
-				}
-			} else {
-				$where = '1=0';
-			}
-		}
-
-		$active_ancestors = array();
-
-		if ( $is_hierarchical ) {
-			$active_ancestors = $this->get_ancestors_of_active_terms( $_terms_ids, $field_instance );
-		}
-
-		$active_filters = $this->active_terms_filter_data( $filter_values, $field_instance );
-
-		return array(
-			'taxonomy'         => $taxonomy,
-			'query_type'       => $query_type,
-			'values'           => $filter_values,
-			'active_ancestors' => $active_ancestors,
-			'join'             => $join,
-			'where'            => $where,
-			'filter_id'        => $filter_id,
-			'active_filters'   => $active_filters,
-		);
-	}
-
-	/**
-	 * Gets the chosen term IDs for the given filter values.
-	 *
-	 * Allows filter values to be transformed before they are used in taxonomy
-	 * queries, such as converting custom values into term IDs.
-	 *
-	 * @param array             $filter_values  The selected filter values.
-	 * @param \WCAPF\FormFilter $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	private function get_chosen_term_ids( $filter_values, $field_instance ) {
-		/**
-		 * The hook to change the values for the rating filter and get the values from term slugs.
-		 */
-		return apply_filters( 'wcapf_taxonomy_filter_values', $filter_values, $field_instance );
-	}
-
-	/**
-	 * Gets the ancestor term IDs for the active terms.
-	 *
-	 * @param array             $term_ids       The active term IDs.
-	 * @param \WCAPF\FormFilter $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	private function get_ancestors_of_active_terms( $term_ids, $field_instance ) {
-		$taxonomy = $field_instance->taxonomy;
-
-		$active_ancestors = array();
-
-		foreach ( $term_ids as $term_id ) {
-			$ancestors        = get_ancestors( $term_id, $taxonomy );
-			$active_ancestors = array_merge( $ancestors, $active_ancestors );
-		}
-
-		return apply_filters( 'wcapf_ancestors_of_active_terms', $active_ancestors, $field_instance );
-	}
-
-	/**
-	 * Gets the active taxonomy filter data.
-	 *
-	 * Returns the selected term labels keyed by term ID for use in the active
-	 * filters UI.
-	 *
-	 * @param array             $filter_values  The selected filter values.
-	 * @param \WCAPF\FormFilter $field_instance The field instance.
-	 *
-	 * @return array
-	 */
-	protected function active_terms_filter_data( $filter_values, $field_instance ) {
-		if ( ! $field_instance->get_sub_field_value( 'show_in_active_filters' ) ) {
-			return array();
-		}
-
-		$taxonomy = $field_instance->taxonomy;
-
-		$term_ids = array_map( 'absint', $filter_values );
-
-		$filter_data = get_terms(
-			array(
-				'taxonomy'   => $taxonomy,
-				'hide_empty' => false,
-				'include'    => $term_ids,
-				'orderby'    => 'include',
-				'fields'     => 'id=>name',
-			)
-		);
-
-		/**
-		 * The hook to change the filter data for the rating filter.
-		 */
-		return apply_filters( 'wcapf_active_taxonomy_filter_data', $filter_data, $field_instance, $filter_values );
 	}
 
 	/**

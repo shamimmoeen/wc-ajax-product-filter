@@ -42,7 +42,7 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 	 * @return array
 	 */
 	protected function taxonomy_items( \WCAPF\FormFilter $field ): array {
-		return ( new \WCAPF_Filter_Type_Taxonomy( $field ) )->get_items();
+		return \WCAPF\FilterType\Factory::make( $field, new \WCAPF\QueryBuilder() )->get_items();
 	}
 
 	/**

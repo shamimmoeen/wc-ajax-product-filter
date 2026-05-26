@@ -1,0 +1,747 @@
+<?php
+/**
+ * The taxonomy filter type.
+ *
+ * @package    wc-ajax-product-filter
+ * @subpackage wc-ajax-product-filter/includes/FilterType
+ * @author     Mainul Hassan
+ */
+
+namespace WCAPF\FilterType;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Filters products by taxonomy terms (categories, tags, attributes), builds the
+ * term option list with counts, and resolves the active-filter labels.
+ */
+class Taxonomy extends AbstractFilterType {
+
+	/**
+	 * The taxonomy name.
+	 *
+	 * @var string
+	 */
+	protected $taxonomy;
+
+	/**
+	 * Whether the option list is rendered as a hierarchical tree.
+	 *
+	 * @var bool
+	 */
+	protected $hierarchical;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param \WCAPF\FormFilter   $field         The field instance.
+	 * @param \WCAPF\QueryBuilder $query_builder The query builder.
+	 */
+	public function __construct( \WCAPF\FormFilter $field, \WCAPF\QueryBuilder $query_builder ) {
+		parent::__construct( $field, $query_builder );
+
+		$this->taxonomy     = $field->taxonomy;
+		$this->hierarchical = $field->hierarchical;
+	}
+
+	/**
+	 * Builds the chosen-filter data for the active selection. Attribute
+	 * taxonomies take the lookup-table path; everything else the term path.
+	 *
+	 * @param string $selected_value The raw selected value from the URL.
+	 *
+	 * @return array
+	 */
+	public function build_clauses( $selected_value ) {
+		if ( in_array( $this->taxonomy, wc_get_attribute_taxonomy_names(), true ) ) {
+			return $this->attribute_filter_data( $selected_value );
+		}
+
+		return $this->taxonomy_filter_data( $selected_value );
+	}
+
+	/**
+	 * Builds the filter data using the attribute lookup table, falling back to
+	 * the term path when lookup-table filtering is disabled.
+	 *
+	 * @param string $filter_value The filter value.
+	 *
+	 * @return array
+	 */
+	protected function attribute_filter_data( $filter_value ) {
+		$use_attribute_table = wcapf()->settings->filtering_via_lookup_table_is_active();
+
+		if ( ! $use_attribute_table ) {
+			return $this->taxonomy_filter_data( $filter_value );
+		}
+
+		global $wpdb;
+
+		$query_type = $this->query_type;
+		$taxonomy   = $this->taxonomy;
+		$filter_id  = $this->field->filter_id;
+
+		$join = '';
+
+		$filter_values = $this->query_builder->get_chosen_filter_values( $filter_value );
+
+		$term_ids = $this->get_chosen_term_ids( $filter_values );
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+
+		// The extra derived table ("SELECT product_or_parent_id FROM") is needed for performance
+		// (causes the filtering subquery to be executed only once).
+		$clause_root = "$wpdb->posts.ID IN ( SELECT product_or_parent_id FROM (";
+		$clause_end  = ') AS temp)';
+
+		$hide_stock_out_items = wcapf()->settings->hide_stock_out_items();
+
+		if ( $hide_stock_out_items ) {
+			$in_stock_clause = ' AND in_stock = 1';
+		} else {
+			$in_stock_clause = '';
+		}
+
+		if ( 'or' === $query_type ) {
+			if ( $term_ids ) {
+				$ids = $this->query_builder->get_ids_sql( $term_ids );
+
+				$where = "
+					$clause_root
+					SELECT product_or_parent_id
+					FROM $lookup_table_name lt
+					WHERE term_id IN $ids
+					$in_stock_clause
+					$clause_end
+				";
+			} else {
+				$where = '1=0';
+			}
+		} else {
+			$clauses = array();
+
+			foreach ( $term_ids as $term_id ) {
+				$term_id   = absint( $term_id );
+				$clauses[] = "
+					$clause_root
+					SELECT product_or_parent_id
+					FROM $lookup_table_name lt
+					WHERE term_id = $term_id
+					$in_stock_clause
+					$clause_end
+				";
+			}
+
+			if ( $clauses ) {
+				$sql = implode( ' AND ', $clauses );
+
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . $sql . ' )';
+				} else {
+					$where = $sql;
+				}
+			} else {
+				$where = '1=0';
+			}
+		}
+
+		$active_filters = $this->active_term_labels( $filter_values );
+
+		return array(
+			'taxonomy'       => $taxonomy,
+			'query_type'     => $query_type,
+			'values'         => $filter_values,
+			'join'           => $join,
+			'where'          => $where,
+			'filter_id'      => $filter_id,
+			'active_filters' => $active_filters,
+		);
+	}
+
+	/**
+	 * Builds the filter data using term_relationships joins.
+	 *
+	 * @param string $filter_value The filter value.
+	 *
+	 * @return array
+	 */
+	protected function taxonomy_filter_data( $filter_value ) {
+		global $wpdb;
+
+		$filter_key = $this->filter_key;
+		$query_type = $this->query_type;
+		$taxonomy   = $this->taxonomy;
+		$filter_id  = $this->field->filter_id;
+
+		$filter_values = $this->query_builder->get_chosen_filter_values( $filter_value );
+
+		$term_ids   = $this->get_chosen_term_ids( $filter_values );
+		$_terms_ids = $term_ids;
+
+		$is_hierarchical = is_taxonomy_hierarchical( $taxonomy );
+
+		$join = '';
+
+		if ( 'or' === $query_type ) {
+			$join_alias = $this->query_builder->get_table_join_alias( $filter_key );
+
+			$join .= "LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
+		} else {
+			foreach ( $term_ids as $index => $value ) {
+				$join_alias = $this->query_builder->get_table_join_alias_for_query_type_and( $index, $filter_key );
+
+				$join .= " LEFT JOIN $wpdb->term_relationships AS $join_alias ON $wpdb->posts.ID = $join_alias.object_id";
+			}
+		}
+
+		if ( 'or' === $query_type ) {
+			if ( $is_hierarchical ) {
+				$with_children = array();
+
+				foreach ( $term_ids as $term_id ) {
+					$term_children = get_term_children( $term_id, $taxonomy );
+					$with_children = array_merge( $with_children, $term_children );
+				}
+
+				$term_ids = array_merge( $term_ids, $with_children );
+			}
+
+			if ( $term_ids ) {
+				$join_alias = $this->query_builder->get_table_join_alias( $filter_key );
+
+				$ids   = $this->query_builder->get_tt_ids_sql( $term_ids, $taxonomy );
+				$where = "$join_alias.term_taxonomy_id IN $ids";
+			} else {
+				$where = '1=0';
+			}
+		} else {
+			$clauses = array();
+
+			foreach ( $term_ids as $index => $term_id ) {
+				if ( $is_hierarchical ) {
+					$with_children = get_term_children( $term_id, $taxonomy );
+
+					$and_term_id = array_merge( array( $term_id ), $with_children );
+				} else {
+					$and_term_id = array( $term_id );
+				}
+
+				$id_sql = $this->query_builder->get_tt_ids_sql( $and_term_id, $taxonomy );
+
+				$join_alias = $this->query_builder->get_table_join_alias_for_query_type_and( $index, $filter_key );
+
+				$clauses[] = "$join_alias.term_taxonomy_id IN $id_sql";
+			}
+
+			if ( $clauses ) {
+				$sql = implode( ' AND ', $clauses );
+
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . $sql . ' )';
+				} else {
+					$where = $sql;
+				}
+			} else {
+				$where = '1=0';
+			}
+		}
+
+		$active_ancestors = array();
+
+		if ( $is_hierarchical ) {
+			$active_ancestors = $this->get_ancestors_of_active_terms( $_terms_ids );
+		}
+
+		$active_filters = $this->active_term_labels( $filter_values );
+
+		return array(
+			'taxonomy'         => $taxonomy,
+			'query_type'       => $query_type,
+			'values'           => $filter_values,
+			'active_ancestors' => $active_ancestors,
+			'join'             => $join,
+			'where'            => $where,
+			'filter_id'        => $filter_id,
+			'active_filters'   => $active_filters,
+		);
+	}
+
+	/**
+	 * Resolves the selected filter values into term IDs.
+	 *
+	 * Allows filter values to be transformed before they are used in taxonomy
+	 * queries, such as converting term slugs (or rating values) into term IDs.
+	 *
+	 * @param array $filter_values The selected filter values.
+	 *
+	 * @return array
+	 */
+	protected function get_chosen_term_ids( $filter_values ) {
+		return apply_filters( 'wcapf_taxonomy_filter_values', $filter_values, $this->field );
+	}
+
+	/**
+	 * Gets the ancestor term IDs for the active terms.
+	 *
+	 * @param array $term_ids The active term IDs.
+	 *
+	 * @return array
+	 */
+	protected function get_ancestors_of_active_terms( $term_ids ) {
+		$taxonomy = $this->taxonomy;
+
+		$active_ancestors = array();
+
+		foreach ( $term_ids as $term_id ) {
+			$ancestors        = get_ancestors( $term_id, $taxonomy );
+			$active_ancestors = array_merge( $ancestors, $active_ancestors );
+		}
+
+		return apply_filters( 'wcapf_ancestors_of_active_terms', $active_ancestors, $this->field );
+	}
+
+	/**
+	 * Builds the active-filter labels (term ID => term name) for the selection.
+	 *
+	 * @param array $filter_values The selected filter values.
+	 *
+	 * @return array
+	 */
+	protected function active_term_labels( $filter_values ) {
+		if ( ! $this->field->get_sub_field_value( 'show_in_active_filters' ) ) {
+			return array();
+		}
+
+		$taxonomy = $this->taxonomy;
+
+		$term_ids = array_map( 'absint', $filter_values );
+
+		$filter_data = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'include'    => $term_ids,
+				'orderby'    => 'include',
+				'fields'     => 'id=>name',
+			)
+		);
+
+		return apply_filters( 'wcapf_active_taxonomy_filter_data', $filter_data, $this->field, $filter_values );
+	}
+
+	/**
+	 * Prepares the term option list (with counts, optionally as a tree).
+	 *
+	 * @return array
+	 */
+	protected function prepare_items() {
+		$default = array(
+			'taxonomy'               => $this->taxonomy,
+			'hide_empty'             => false,
+			'count'                  => true,
+			'update_term_meta_cache' => false,
+		);
+
+		$args   = apply_filters( 'wcapf_get_terms_args', $default, $this->field );
+		$_terms = get_terms( $args );
+		$terms  = array();
+
+		// If there was an error fetching the terms, return empty array.
+		if ( is_wp_error( $_terms ) ) {
+			return $terms;
+		}
+
+		foreach ( $_terms as $_term ) {
+			/**
+			 * The term object.
+			 *
+			 * @var \WP_Term $_term
+			 */
+			$term_id   = $_term->term_id;
+			$count     = $_term->count;
+			$parent_id = $_term->parent;
+			$name      = $_term->name;
+			$slug      = rawurldecode( $_term->slug );
+
+			$_term = array(
+				'id'        => $term_id,
+				'name'      => $name,
+				'slug'      => $slug,
+				'count'     => $count,
+				'parent_id' => $parent_id,
+			);
+
+			$terms[ $term_id ] = $_term;
+		}
+
+		$terms = $this->get_updated_terms_count( $terms );
+		$terms = $this->filter_by_hide_empty( $terms );
+		$terms = apply_filters( 'wcapf_taxonomy_terms', $terms, $this->field );
+
+		// If taxonomy is non-hierarchical then don't need to build the tree.
+		if ( ! is_taxonomy_hierarchical( $this->taxonomy ) ) {
+			return $terms;
+		}
+
+		// If hierarchical display is disabled then don't need to build the tree.
+		if ( ! $this->hierarchical ) {
+			return $terms;
+		}
+
+		return $this->build_tree( $terms );
+	}
+
+	/**
+	 * Updates the taxonomy term counts based on the current filter.
+	 *
+	 * @param array $terms List of all terms.
+	 *
+	 * @return array
+	 */
+	private function get_updated_terms_count( $terms ) {
+		if ( ! $terms ) {
+			return array();
+		}
+
+		$term_ids      = wp_list_pluck( $terms, 'id' );
+		$updated_count = array();
+
+		$attributes = wc_get_attribute_taxonomy_names();
+		$taxonomy   = $this->taxonomy;
+
+		if ( in_array( $taxonomy, $attributes, true ) && wcapf()->settings->filtering_via_lookup_table_is_active() ) {
+			$filtered_count = $this->get_filtered_term_product_counts_using_lookup_table( $term_ids );
+		} elseif ( is_taxonomy_hierarchical( $taxonomy ) ) {
+			$filtered_count = $this->get_hierarchical_term_product_counts( $term_ids );
+		} else {
+			$filtered_count = $this->get_non_hierarchical_term_product_counts( $term_ids );
+		}
+
+		foreach ( $terms as $term_id => $term ) {
+			$term['count'] = isset( $filtered_count[ $term_id ] ) ? $filtered_count[ $term_id ] : 0;
+
+			$updated_count[ $term_id ] = $term;
+		}
+
+		return $updated_count;
+	}
+
+	/**
+	 * Count products within certain terms via the attribute lookup table, taking
+	 * the main WP query into consideration.
+	 *
+	 * @param array $term_ids List of all term ids.
+	 *
+	 * @return array The filtered term product counts.
+	 */
+	private function get_filtered_term_product_counts_using_lookup_table( $term_ids ) {
+		global $wpdb;
+
+		$post_statuses  = wcapf()->data->filterable_post_statuses();
+		$update_count   = $this->auto_count_enabled();
+		$hide_stock_out = wcapf()->settings->hide_stock_out_items();
+
+		$lookup_table_name = $wpdb->prefix . 'wc_product_attributes_lookup';
+
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data(
+			$lookup_table_name,
+			'product_or_parent_id'
+		);
+
+		$query = array();
+		$join  = '';
+		$where = '';
+
+		$query['select'] = 'SELECT COUNT(DISTINCT product_or_parent_id) as term_count, term_id as term_count_id';
+
+		$query['from'] = "FROM $lookup_table_name";
+
+		$join .= "INNER JOIN $wpdb->posts ON $wpdb->posts.ID = $lookup_table_name.product_or_parent_id";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		if ( $update_count ) {
+			$join .= $this->query_builder->get_join_clause();
+		}
+
+		$query['join'] = $join;
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
+
+		$term_ids_sql = $this->query_builder->get_ids_sql( $term_ids );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is internal.
+		$where .= $wpdb->prepare( " AND $lookup_table_name.taxonomy = %s", $this->taxonomy );
+		$where .= " AND $lookup_table_name.term_id IN $term_ids_sql";
+
+		$where .= $hide_stock_out ? ' AND in_stock = 1' : '';
+
+		if ( $update_count ) {
+			$where .= $this->query_builder->get_where_clause( $this->query_type, $this->filter_key );
+		}
+
+		$query['where'] = $where;
+
+		$query['group_by'] = "GROUP BY $lookup_table_name.term_id";
+
+		$query = implode( ' ', $query );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom counting query.
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
+	}
+
+	/**
+	 * Gets hierarchical term product counts.
+	 *
+	 * @param array $term_ids List of term IDs.
+	 *
+	 * @return array
+	 */
+	private function get_hierarchical_term_product_counts( $term_ids ) {
+		global $wpdb;
+
+		$post_statuses = wcapf()->data->filterable_post_statuses();
+		$update_count  = $this->auto_count_enabled();
+
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
+
+		$query  = array();
+		$select = '';
+		$join   = '';
+		$where  = '';
+
+		$select .= "SELECT DISTINCT $wpdb->posts.ID AS product_id, terms.term_id AS term_id";
+
+		$query['select'] = $select;
+
+		$query['from'] = "FROM $wpdb->posts";
+
+		$join .= "INNER JOIN $wpdb->term_relationships AS term_relationships ON $wpdb->posts.ID = term_relationships.object_id";
+		$join .= " INNER JOIN $wpdb->term_taxonomy AS term_taxonomy USING(term_taxonomy_id)";
+		$join .= " INNER JOIN $wpdb->terms AS terms USING(term_id)";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		if ( $update_count ) {
+			$join .= $this->query_builder->get_join_clause();
+		}
+
+		$query['join'] = $join;
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
+
+		if ( $update_count ) {
+			$where .= $this->query_builder->get_where_clause( $this->query_type, $this->filter_key );
+		}
+
+		// Restrict to the current taxonomy to prevent term_id collisions.
+		$where .= $wpdb->prepare( ' AND term_taxonomy.taxonomy = %s', $this->taxonomy );
+
+		$query['where'] = $where;
+
+		$sql = implode( ' ', $query );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom counting query.
+		$results = $wpdb->get_results( $sql, ARRAY_A );
+
+		$term_products = array();
+
+		foreach ( $results as $row ) {
+			$term_id    = (int) $row['term_id'];
+			$product_id = (int) $row['product_id'];
+
+			if ( ! isset( $term_products[ $term_id ] ) ) {
+				$term_products[ $term_id ] = array();
+			}
+
+			// Store as array map for efficient de-duplication.
+			$term_products[ $term_id ][ $product_id ] = true;
+		}
+
+		// Query all terms for this taxonomy to ensure they are all in the final array.
+		$_all_terms = get_terms(
+			array(
+				'taxonomy'   => $this->taxonomy,
+				'hide_empty' => false,
+				'fields'     => 'ids',
+			)
+		);
+
+		$hierarchy           = _get_term_hierarchy( $this->taxonomy );
+		$aggregated_products = array();
+		$final_counts        = array();
+
+		foreach ( $_all_terms as $term_id ) {
+			$products = $this->aggregate_term_products( $term_id, $hierarchy, $term_products, $aggregated_products );
+
+			$final_counts[ $term_id ] = count( $products );
+		}
+
+		return $final_counts;
+	}
+
+	/**
+	 * Gets all unique product IDs for a term, including products assigned to its child terms.
+	 *
+	 * @param int   $term_id              Current term ID.
+	 * @param array $hierarchy            Parent-to-children term map.
+	 * @param array $term_products        Direct product IDs grouped by term ID.
+	 * @param array &$aggregated_products Cached aggregated product IDs by term ID.
+	 *
+	 * @return array Product ID map for the term and all its descendants.
+	 */
+	private function aggregate_term_products( $term_id, $hierarchy, $term_products, &$aggregated_products ) {
+		if ( isset( $aggregated_products[ $term_id ] ) ) {
+			return $aggregated_products[ $term_id ];
+		}
+
+		$products = isset( $term_products[ $term_id ] ) ? $term_products[ $term_id ] : array();
+
+		if ( isset( $hierarchy[ $term_id ] ) ) {
+			foreach ( $hierarchy[ $term_id ] as $child_id ) {
+				$child_products = $this->aggregate_term_products( $child_id, $hierarchy, $term_products, $aggregated_products );
+
+				// Merge products from child terms into the current term product set.
+				foreach ( $child_products as $product_id => $dummy ) {
+					$products[ $product_id ] = true;
+				}
+			}
+		}
+
+		$aggregated_products[ $term_id ] = $products;
+
+		return $products;
+	}
+
+	/**
+	 * Count products within certain terms, taking the main WP query into
+	 * consideration.
+	 *
+	 * @param array $term_ids List of all term ids.
+	 *
+	 * @return array The filtered term product counts.
+	 */
+	private function get_non_hierarchical_term_product_counts( $term_ids ) {
+		global $wpdb;
+
+		$post_statuses = wcapf()->data->filterable_post_statuses();
+		$update_count  = $this->auto_count_enabled();
+
+		list( $meta_query_sql, $tax_query_sql, $search_query, $where_sql ) = $this->get_main_query_data();
+
+		$query  = array();
+		$select = '';
+		$join   = '';
+		$where  = '';
+
+		$select .= "SELECT COUNT(DISTINCT $wpdb->posts.ID) ";
+		$select .= 'AS term_count, terms.term_id AS term_count_id';
+
+		$query['select'] = $select;
+
+		$query['from'] = "FROM $wpdb->posts";
+
+		$join .= "INNER JOIN $wpdb->term_relationships AS term_relationships ON $wpdb->posts.ID = term_relationships.object_id";
+		$join .= " INNER JOIN $wpdb->term_taxonomy AS term_taxonomy USING(term_taxonomy_id)";
+		$join .= " INNER JOIN $wpdb->terms AS terms USING(term_id)";
+		$join .= $meta_query_sql['join'];
+		$join .= $tax_query_sql['join'];
+
+		if ( $update_count ) {
+			$join .= $this->query_builder->get_join_clause();
+		}
+
+		$query['join'] = $join;
+
+		$term_ids_sql = $this->query_builder->get_ids_sql( $term_ids );
+
+		$where .= "WHERE $wpdb->posts.post_type IN ('product')";
+
+		$status_placeholders = implode( ',', array_fill( 0, count( $post_statuses ), '%s' ) );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		$where .= $wpdb->prepare( " AND $wpdb->posts.post_status IN ($status_placeholders)", $post_statuses );
+		$where .= " AND terms.term_id IN $term_ids_sql";
+		$where .= $wpdb->prepare( ' AND term_taxonomy.taxonomy = %s', $this->taxonomy );
+
+		$where .= $tax_query_sql['where'] . $meta_query_sql['where'];
+		$where .= $search_query ? ' AND ' . $search_query : '';
+		$where .= $where_sql;
+
+		if ( $update_count ) {
+			$where .= $this->query_builder->get_where_clause( $this->query_type, $this->filter_key );
+		}
+
+		$query['where'] = $where;
+
+		$query['group_by'] = 'GROUP BY terms.term_id';
+
+		$query = implode( ' ', $query );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom counting query.
+		$results = $wpdb->get_results( $query, ARRAY_A );
+
+		return array_map( 'absint', wp_list_pluck( $results, 'term_count', 'term_count_id' ) );
+	}
+
+	/**
+	 * Builds the taxonomy tree.
+	 *
+	 * @source https://stackoverflow.com/a/8587437
+	 *
+	 * @param array   $terms     The terms.
+	 * @param integer $parent_id The parent identifier.
+	 * @param int     $depth     The current depth.
+	 *
+	 * @return array The taxonomy tree.
+	 */
+	private function build_tree( $terms, $parent_id = 0, $depth = 0 ) {
+		$tree      = array();
+		$increment = 0;
+
+		foreach ( $terms as $term_id => $term ) {
+			if ( 0 === $increment ) {
+				++$depth;
+			}
+
+			if ( $term['parent_id'] === $parent_id ) {
+				$children = $this->build_tree( $terms, $term_id, $depth );
+
+				if ( $children ) {
+					$term['children'] = $children;
+				}
+
+				$term['depth'] = $depth;
+
+				$tree[ $term_id ] = $term;
+			}
+
+			++$increment;
+		}
+
+		return $tree;
+	}
+}
