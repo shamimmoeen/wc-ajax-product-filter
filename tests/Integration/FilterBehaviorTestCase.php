@@ -230,6 +230,19 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Returns the chosen-filters structure the engine derives from the current
+	 * request, grouped by filter type (e.g. ['taxonomy']['product_cat']). Used to
+	 * assert per-filter output such as active-filter labels and active ancestors.
+	 *
+	 * Single place that names the base engine, so a rewrite touches one method.
+	 *
+	 * @return array
+	 */
+	protected function chosen_filters(): array {
+		return ( new \WCAPF\ProductFilter() )->get_chosen_filters();
+	}
+
+	/**
 	 * Resets request state and the chosen-filters cache between tests.
 	 */
 	public function tear_down() {
