@@ -50,6 +50,10 @@ class Registry {
 			case 'post-author':
 				$element = new Filter\PostAuthor( $entry );
 				break;
+
+			case 'keyword':
+				$element = new Filter\Keyword( $entry );
+				break;
 		}
 
 		/**
