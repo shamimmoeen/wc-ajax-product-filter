@@ -127,6 +127,13 @@ class Plugin {
 	public V4Migration $v4_migration;
 
 	/**
+	 * Default-settings seeding on activation and update.
+	 *
+	 * @var Setup
+	 */
+	public Setup $setup;
+
+	/**
 	 * Frontend script and style enqueuing.
 	 *
 	 * @var FrontendScripts
@@ -165,6 +172,7 @@ class Plugin {
 		$this->taxonomy_filter    = new TaxonomyFilter();
 		$this->shop               = new Shop();
 		$this->v4_migration       = new V4Migration();
+		$this->setup              = new Setup();
 
 		$this->frontend_scripts = new FrontendScripts();
 		$this->ajax             = new Ajax();

@@ -35,8 +35,7 @@ class V4Migration {
 	}
 
 	/**
-	 * Idempotent migration entry point — runs the v3 → v4 transformation when
-	 * needed, then applies the "set default settings" path on fresh/updated installs.
+	 * Idempotent migration entry point — runs the v3 → v4 transformation when needed.
 	 *
 	 * @return void
 	 */
@@ -60,26 +59,6 @@ class V4Migration {
 			delete_option( 'wcapf_run_migrate' );
 
 			delete_transient( 'wcapf_forms_with_locations' );
-		}
-
-		$set_default_settings = false;
-
-		if ( get_option( 'wcapf_set_default_settings' ) ) {
-			$set_default_settings = true;
-		} elseif ( get_option( 'wcapf_update_default_settings' ) ) {
-			$set_default_settings = true;
-		}
-
-		$settings_option_key = 'wcapf_settings';
-
-		if ( $set_default_settings ) {
-			$default_settings  = \WCAPF\Defaults::default_settings();
-			$existing_settings = get_option( $settings_option_key, array() );
-
-			update_option( $settings_option_key, array_merge( $default_settings, $existing_settings ) );
-
-			delete_option( 'wcapf_set_default_settings' );
-			delete_option( 'wcapf_update_default_settings' );
 		}
 	}
 

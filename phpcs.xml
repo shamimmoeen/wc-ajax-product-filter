@@ -20,6 +20,7 @@
 		<exclude-pattern>/includes/Ajax.php</exclude-pattern>
 		<exclude-pattern>/includes/FrontendScripts.php</exclude-pattern>
 		<exclude-pattern>/includes/Defaults.php</exclude-pattern>
+		<exclude-pattern>/includes/Setup.php</exclude-pattern>
 		<exclude-pattern>/includes/Form.php</exclude-pattern>
 		<exclude-pattern>/includes/FormFilter.php</exclude-pattern>
 		<exclude-pattern>/includes/ProductFilter.php</exclude-pattern>
