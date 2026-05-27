@@ -353,8 +353,11 @@ class Walker {
 
 		switch ( $type ) {
 			case 'taxonomy':
-				$type  = FilterType\Factory::make( $field_instance, new QueryBuilder() );
-				$items = $type->get_items();
+				$element = Element\Registry::resolve( $field_instance->raw_instance() );
+
+				if ( $element instanceof Element\Filterable ) {
+					$items = $element->items();
+				}
 
 				break;
 

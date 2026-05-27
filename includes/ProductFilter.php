@@ -106,9 +106,11 @@ class ProductFilter {
 			$filter_values  = sanitize_text_field( $query[ $filter_key ] ); // Sanitize the value that comes from the URL.
 
 			if ( 'taxonomy' === $filter_type ) {
-				$type = FilterType\Factory::make( $field_instance, $this->query_builder );
+				$element = Element\Registry::resolve( $field );
 
-				$taxonomies[ $filter_key ] = $type->build_clauses( $filter_values );
+				if ( $element instanceof Element\Filterable ) {
+					$taxonomies[ $filter_key ] = $element->clauses();
+				}
 			} elseif ( 'price' === $filter_type ) {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
 			} elseif ( 'product-status' === $filter_type ) {

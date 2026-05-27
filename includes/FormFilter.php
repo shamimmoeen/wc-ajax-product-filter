@@ -406,6 +406,15 @@ class FormFilter {
 	}
 
 	/**
+	 * Retrieves the raw stored field instance.
+	 *
+	 * @return array
+	 */
+	public function raw_instance(): array {
+		return $this->instance;
+	}
+
+	/**
 	 * Retrieves a raw sub-field value from the field instance.
 	 *
 	 * Returns an empty string when the requested key is not available.
