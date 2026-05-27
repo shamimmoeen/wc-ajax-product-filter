@@ -120,7 +120,11 @@ class ProductFilter {
 					$statuses[ $filter_key ] = $element->clauses();
 				}
 			} elseif ( 'post-author' === $filter_type ) {
-				$post_author[ $filter_key ] = $this->set_filter_by_post_author_data( $filter_values, $field_instance );
+				$element = Element\Registry::resolve( $field );
+
+				if ( $element instanceof Element\Filterable ) {
+					$post_author[ $filter_key ] = $element->clauses();
+				}
 			} elseif ( 'post-meta' === $filter_type ) {
 				$post_metas[ $filter_key ] = $this->set_filter_by_post_meta_data( $filter_values, $field_instance );
 			} elseif ( 'keyword' === $filter_type ) {

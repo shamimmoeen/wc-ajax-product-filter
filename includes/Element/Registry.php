@@ -46,6 +46,10 @@ class Registry {
 			case 'product-status':
 				$element = new Filter\ProductStatus( $entry );
 				break;
+
+			case 'post-author':
+				$element = new Filter\PostAuthor( $entry );
+				break;
 		}
 
 		/**

@@ -260,4 +260,72 @@ abstract class AbstractFilter extends AbstractElement {
 
 		return $options;
 	}
+
+	/**
+	 * Syncs item counts with the filtered count values keyed by item id.
+	 *
+	 * @param array $items          The items array.
+	 * @param array $filtered_count The filtered counts keyed by item id.
+	 *
+	 * @return array
+	 */
+	protected function sync_items_count( $items, $filtered_count ) {
+		if ( empty( $items ) ) {
+			return array();
+		}
+
+		$updated_count = array();
+
+		foreach ( $items as $key => $range ) {
+			$id    = $range['id'];
+			$count = isset( $filtered_count[ $id ] ) ? $filtered_count[ $id ] : 0;
+
+			$range['count'] = $count;
+
+			$updated_count[ $key ] = $range;
+		}
+
+		return $updated_count;
+	}
+
+	/**
+	 * Combines per-value clauses into a single WHERE for the given relation.
+	 *
+	 * @param string $query_type       The within-filter relation ('or' or 'and').
+	 * @param array  $or_filter_values The values combined with an IN list (OR relation).
+	 * @param string $value_alias      The column the IN list compares against.
+	 * @param array  $clauses          The individual prepared clauses.
+	 *
+	 * @return string
+	 */
+	protected function get_where_clauses( $query_type, $or_filter_values, $value_alias, $clauses ) {
+		global $wpdb;
+
+		if ( 'or' === $query_type ) {
+			if ( $or_filter_values ) {
+				$placeholders = implode( ',', array_fill( 0, count( $or_filter_values ), '%s' ) );
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
+				$where = $wpdb->prepare( "$value_alias IN ($placeholders)", $or_filter_values );
+			} elseif ( $clauses ) {
+				if ( 1 < count( $clauses ) ) {
+					$where = '( ' . implode( ' OR ', $clauses ) . ' )';
+				} else {
+					$where = implode( ' OR ', $clauses );
+				}
+			} else {
+				$where = '1=0';
+			}
+		} elseif ( $clauses ) {
+			if ( 1 < count( $clauses ) ) {
+				$where = '( ' . implode( ' AND ', $clauses ) . ' )';
+			} else {
+				$where = implode( ' AND ', $clauses );
+			}
+		} else {
+			$where = '1=0';
+		}
+
+		return $where;
+	}
 }
