@@ -57,6 +57,17 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Prepared items for a product-status field.
+	 *
+	 * @param \WCAPF\FormFilter $field The field instance.
+	 *
+	 * @return array
+	 */
+	protected function product_status_items( \WCAPF\FormFilter $field ): array {
+		return ( new \WCAPF_Filter_Type_Product_Status( $field ) )->get_items();
+	}
+
+	/**
 	 * Creates a published product.
 	 *
 	 * @param array $args Optional post-array overrides (e.g. post_author).
