@@ -131,6 +131,30 @@ class ProductFilter {
 	}
 
 	/**
+	 * Applies the active control elements (sort-by, per-page) to the product query.
+	 *
+	 * Each ModifiesQuery element reorders or paginates the query rather than
+	 * narrowing it.
+	 *
+	 * @param \WP_Query $query The product query.
+	 *
+	 * @return void
+	 */
+	public function apply_query_modifications( \WP_Query $query ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$url = isset( $_SERVER['QUERY_STRING'] ) ? wp_unslash( $_SERVER['QUERY_STRING'] ) : '';
+		parse_str( $url, $request );
+
+		foreach ( $this->filters_data( $request ) as $field ) {
+			$element = Element\Registry::resolve( $field );
+
+			if ( $element instanceof Element\ModifiesQuery ) {
+				$element->modify( $query );
+			}
+		}
+	}
+
+	/**
 	 * Gets the active filter's data.
 	 *
 	 * @param array $query The key, values array from the $_GET variable.
