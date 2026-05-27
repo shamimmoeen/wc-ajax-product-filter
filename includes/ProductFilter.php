@@ -112,7 +112,11 @@ class ProductFilter {
 					$taxonomies[ $filter_key ] = $element->clauses();
 				}
 			} elseif ( 'price' === $filter_type ) {
-				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
+				$element = Element\Registry::resolve( $field );
+
+				if ( $element instanceof Element\Filterable ) {
+					$price[ $filter_key ] = $element->clauses();
+				}
 			} elseif ( 'product-status' === $filter_type ) {
 				$element = Element\Registry::resolve( $field );
 

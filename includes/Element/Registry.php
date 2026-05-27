@@ -54,6 +54,10 @@ class Registry {
 			case 'keyword':
 				$element = new Filter\Keyword( $entry );
 				break;
+
+			case 'price':
+				$element = new Filter\Price( $entry );
+				break;
 		}
 
 		/**

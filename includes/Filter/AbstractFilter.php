@@ -289,6 +289,44 @@ abstract class AbstractFilter extends AbstractElement {
 	}
 
 	/**
+	 * Builds the formatted "min — max" label for a range value, honouring the
+	 * field's number-formatting settings.
+	 *
+	 * @param string $value The min/max range using the range separator.
+	 *
+	 * @return string
+	 */
+	protected function get_label_for_number_range( $value ) {
+		$separator = wcapf()->data->range_values_separator();
+		$range     = explode( $separator, $value );
+
+		$range_min = isset( $range[0] ) ? $range[0] : '';
+		$range_max = isset( $range[1] ) ? $range[1] : '';
+
+		$value_prefix       = $this->field->get_sub_field_value( 'value_prefix' );
+		$value_postfix      = $this->field->get_sub_field_value( 'value_postfix' );
+		$values_separator   = $this->field->get_sub_field_value( 'values_separator' );
+		$format_numbers     = $this->field->get_sub_field_value( 'format_numbers' );
+		$decimal_places     = $this->field->get_sub_field_value( 'decimal_places' );
+		$thousand_separator = $this->field->get_sub_field_value( 'thousand_separator' );
+		$decimal_separator  = $this->field->get_sub_field_value( 'decimal_separator' );
+
+		if ( $format_numbers ) {
+			$range_min = number_format( $range_min, $decimal_places, $decimal_separator, $thousand_separator );
+			$range_max = number_format( $range_max, $decimal_places, $decimal_separator, $thousand_separator );
+		}
+
+		return sprintf(
+			'%1$s%2$s%3$s%4$s%1$s%5$s%3$s',
+			$value_prefix,
+			$range_min,
+			$value_postfix,
+			$values_separator,
+			$range_max
+		);
+	}
+
+	/**
 	 * Combines per-value clauses into a single WHERE for the given relation.
 	 *
 	 * @param string $query_type       The within-filter relation ('or' or 'and').
