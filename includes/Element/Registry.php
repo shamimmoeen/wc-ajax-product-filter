@@ -38,7 +38,9 @@ class Registry {
 
 		switch ( $field->filter_type ) {
 			case 'taxonomy':
-				$element = new Filter\Taxonomy( $entry );
+				$element = 'rating' === $field->type
+					? new Filter\Rating( $entry )
+					: new Filter\Taxonomy( $entry );
 				break;
 		}
 

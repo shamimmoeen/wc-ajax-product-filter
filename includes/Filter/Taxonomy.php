@@ -388,19 +388,40 @@ class Taxonomy extends AbstractElement implements Filterable {
 	}
 
 	/**
-	 * Prepares the term option list (with counts, optionally as a tree).
+	 * The base get_terms() arguments for the option list. Subclasses override
+	 * this to query a different set of terms (the rating filter restricts it to
+	 * the rated-N terms).
 	 *
 	 * @return array
 	 */
-	protected function prepare_items() {
-		$default = array(
+	protected function terms_query_args() {
+		return array(
 			'taxonomy'               => $this->taxonomy,
 			'hide_empty'             => false,
 			'count'                  => true,
 			'update_term_meta_cache' => false,
 		);
+	}
 
-		$args   = apply_filters( 'wcapf_get_terms_args', $default, $this->field );
+	/**
+	 * Normalizes the prepared terms before they are returned. Subclasses override
+	 * this to reshape the items (the rating filter maps rated-N to a star value).
+	 *
+	 * @param array $terms The prepared terms.
+	 *
+	 * @return array
+	 */
+	protected function normalize_terms( $terms ) {
+		return $terms;
+	}
+
+	/**
+	 * Prepares the term option list (with counts, optionally as a tree).
+	 *
+	 * @return array
+	 */
+	protected function prepare_items() {
+		$args   = apply_filters( 'wcapf_get_terms_args', $this->terms_query_args(), $this->field );
 		$_terms = get_terms( $args );
 		$terms  = array();
 
@@ -434,6 +455,7 @@ class Taxonomy extends AbstractElement implements Filterable {
 
 		$terms = $this->get_updated_terms_count( $terms );
 		$terms = $this->filter_by_hide_empty( $terms );
+		$terms = $this->normalize_terms( $terms );
 		$terms = apply_filters( 'wcapf_taxonomy_terms', $terms, $this->field );
 
 		// If taxonomy is non-hierarchical then don't need to build the tree.
