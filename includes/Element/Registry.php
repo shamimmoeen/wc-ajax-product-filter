@@ -58,6 +58,10 @@ class Registry {
 			case 'price':
 				$element = new Filter\Price( $entry );
 				break;
+
+			case 'post-meta':
+				$element = new Filter\PostMeta( $entry );
+				break;
 		}
 
 		/**

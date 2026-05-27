@@ -380,8 +380,11 @@ class Walker {
 				break;
 
 			case 'post-meta':
-				$filter = new \WCAPF_Filter_Type_Post_Meta( $field_instance );
-				$items  = $filter->get_items();
+				$element = Element\Registry::resolve( $field_instance->raw_instance() );
+
+				if ( $element instanceof Element\Filterable ) {
+					$items = $element->items();
+				}
 
 				break;
 		}
