@@ -9,6 +9,7 @@
 
 namespace WCAPF\Element;
 
+use WCAPF\Component;
 use WCAPF\Filter;
 use WCAPF\FormFilter;
 
@@ -61,6 +62,16 @@ class Registry {
 
 			case 'post-meta':
 				$element = new Filter\PostMeta( $entry );
+				break;
+
+			case 'component':
+				$component = isset( $entry['component'] ) ? $entry['component'] : '';
+
+				if ( 'active-filters' === $component ) {
+					$element = new Component\ActiveFilters( $entry );
+				} elseif ( 'reset-button' === $component ) {
+					$element = new Component\ResetButton( $entry );
+				}
 				break;
 		}
 

@@ -27,6 +27,7 @@
 		<exclude-pattern>/includes/QueryBuilder.php</exclude-pattern>
 		<exclude-pattern>/includes/UrlBuilder.php</exclude-pattern>
 		<exclude-pattern>/includes/Walker.php</exclude-pattern>
+		<exclude-pattern>/includes/Component/*</exclude-pattern>
 		<exclude-pattern>/includes/Element/*</exclude-pattern>
 		<exclude-pattern>/includes/Filter/*</exclude-pattern>
 		<exclude-pattern>/includes/Helpers/*</exclude-pattern>

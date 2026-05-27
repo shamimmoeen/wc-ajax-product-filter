@@ -169,64 +169,11 @@ class Form {
 	 * @return void
 	 */
 	protected function render_components( $field_instance ) {
-		$component = $field_instance->get_sub_field_value( 'component' );
+		$element = Element\Registry::resolve( $field_instance->raw_instance() );
 
-		if ( 'active-filters' === $component ) {
-			$this->render_active_filters( $field_instance );
-		} elseif ( 'reset-button' === $component ) {
-			$this->render_reset_button( $field_instance );
+		if ( $element ) {
+			$element->render();
 		}
-	}
-
-	/**
-	 * Renders the active filters.
-	 *
-	 * @param FormFilter $field_instance The field instance.
-	 *
-	 * @return void
-	 */
-	private function render_active_filters( $field_instance ) {
-		$title            = $field_instance->get_sub_field_value( 'title' );
-		$show_title       = $field_instance->get_sub_field_value( 'show_title' );
-		$layout           = $field_instance->get_sub_field_value( 'active_filters_layout' );
-		$empty_message    = $field_instance->get_sub_field_value( 'empty_filter_message' );
-		$show_clear_btn   = $field_instance->get_sub_field_value( 'show_clear_btn' );
-		$clear_btn_label  = wcapf()->settings->clear_all_button_label();
-		$clear_btn_layout = $field_instance->get_sub_field_value( 'clear_all_btn_layout' );
-
-		$args = wcapf()->active_filters->prepare_args(
-			array(
-				'unique_id'            => $field_instance->filter_id,
-				'title'                => $title,
-				'show_title'           => $show_title,
-				'layout'               => $layout,
-				'empty_message'        => $empty_message,
-				'show_clear_btn'       => $show_clear_btn,
-				'clear_all_btn_label'  => $clear_btn_label,
-				'clear_all_btn_layout' => $clear_btn_layout,
-			)
-		);
-
-		\WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
-	}
-
-	/**
-	 * Renders the reset button.
-	 *
-	 * @param FormFilter $field_instance The field instance.
-	 *
-	 * @return void
-	 */
-	private function render_reset_button( $field_instance ) {
-		$args = wcapf()->active_filters->prepare_reset_button_args(
-			array(
-				'unique_id'   => $field_instance->filter_id,
-				'btn_label'   => wcapf()->settings->reset_button_label(),
-				'show_always' => $field_instance->get_sub_field_value( 'show_if_empty' ),
-			)
-		);
-
-		\WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args );
 	}
 
 	/**
