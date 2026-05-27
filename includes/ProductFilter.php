@@ -114,7 +114,11 @@ class ProductFilter {
 			} elseif ( 'price' === $filter_type ) {
 				$price[ $filter_key ] = $this->set_price_filter_data( $filter_values, $field_instance );
 			} elseif ( 'product-status' === $filter_type ) {
-				$statuses[ $filter_key ] = $this->set_filter_by_product_status_data( $filter_values, $field_instance );
+				$element = Element\Registry::resolve( $field );
+
+				if ( $element instanceof Element\Filterable ) {
+					$statuses[ $filter_key ] = $element->clauses();
+				}
 			} elseif ( 'post-author' === $filter_type ) {
 				$post_author[ $filter_key ] = $this->set_filter_by_post_author_data( $filter_values, $field_instance );
 			} elseif ( 'post-meta' === $filter_type ) {

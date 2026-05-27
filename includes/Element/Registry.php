@@ -42,6 +42,10 @@ class Registry {
 					? new Filter\Rating( $entry )
 					: new Filter\Taxonomy( $entry );
 				break;
+
+			case 'product-status':
+				$element = new Filter\ProductStatus( $entry );
+				break;
 		}
 
 		/**

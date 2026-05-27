@@ -66,7 +66,9 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 	 * @return array
 	 */
 	protected function product_status_items( \WCAPF\FormFilter $field ): array {
-		return ( new \WCAPF_Filter_Type_Product_Status( $field ) )->get_items();
+		$element = \WCAPF\Element\Registry::resolve( $field->raw_instance() );
+
+		return $element instanceof \WCAPF\Element\Filterable ? $element->items() : array();
 	}
 
 	/**
