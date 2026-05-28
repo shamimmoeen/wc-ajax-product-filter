@@ -1,12 +1,13 @@
 <?php
 /**
- * WCAPF – Ajax Product Filter for WooCommerce Form shortcode.
+ * The [wcapf_form] shortcode.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes/shortcodes
+ * @subpackage wc-ajax-product-filter/includes/Shortcodes
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Shortcodes;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,54 +15,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_Filter_Form_Shortcode class.
- *
- * @since 4.0.0
+ * Renders the configured form via the base form renderer. In debug mode emits
+ * the explanatory message when the page has no assigned form or when the form
+ * has already been rendered (free can only render one form per page).
  */
-class WCAPF_Filter_Form_Shortcode {
+class Form {
 
 	/**
-	 * Constructor.
-	 */
-	private function __construct() {
-	}
-
-	/**
-	 * Gets the instance of this class.
-	 */
-	public static function get_instance() {
-		// Store the instance locally to avoid private static replication.
-		static $instance = null;
-
-		if ( null === $instance ) {
-			$instance = new WCAPF_Filter_Form_Shortcode();
-		}
-
-		return $instance;
-	}
-
-	/**
-	 * Renders the filter form shortcode output.
+	 * Renders the shortcode output.
 	 *
 	 * @return string
 	 */
-	public function register_shortcode() {
+	public function render() {
 		ob_start();
 
 		$this->render_debug_messages();
 
-		$form = new \WCAPF\Form();
-		$form->render_form();
+		( new \WCAPF\Form() )->render_form();
 
 		return ob_get_clean();
 	}
 
 	/**
-	 * Renders debug messages for unsupported shortcode usage.
+	 * Emits the debug-mode message that explains why the form did not render or
+	 * why the page can't filter products.
 	 *
 	 * @return void
 	 */
-	public function render_debug_messages() {
+	private function render_debug_messages() {
 		if ( ! wcapf()->settings->is_debug_mode_enabled() ) {
 			return;
 		}
@@ -124,5 +105,3 @@ class WCAPF_Filter_Form_Shortcode {
 		}
 	}
 }
-
-add_shortcode( 'wcapf_form', array( WCAPF_Filter_Form_Shortcode::get_instance(), 'register_shortcode' ) );

@@ -188,5 +188,10 @@ class Plugin {
 				register_widget( Widgets\LegacyFilter::class );
 			}
 		);
+
+		add_shortcode( 'wcapf_form', array( new Shortcodes\Form(), 'render' ) );
+		add_shortcode( 'wcapf_filter', array( new Shortcodes\LegacyFilter(), 'render' ) );
+		add_shortcode( 'wcapf_active_filters', array( new Shortcodes\ActiveFilters(), 'render' ) );
+		add_shortcode( 'wcapf_reset_button', array( new Shortcodes\ResetButton(), 'render' ) );
 	}
 }
