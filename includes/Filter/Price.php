@@ -83,6 +83,26 @@ class Price extends AbstractFilter implements Filterable {
 	}
 
 	/**
+	 * Renders the price filter. For number-input display types the slider/input
+	 * UI is used; other display types fall back to the standard list (used by
+	 * the pro multi-range list).
+	 *
+	 * @return void
+	 */
+	public function render(): void {
+		$number_input_types = wcapf()->data->number_input_display_types();
+
+		if ( ! in_array( $this->field->display_type, $number_input_types, true ) ) {
+			parent::render();
+			return;
+		}
+
+		$this->before_filter();
+		$this->render_number_inputs( $this->items() );
+		$this->after_filter();
+	}
+
+	/**
 	 * Prepares the price filter items (the min/max range).
 	 *
 	 * @return array
