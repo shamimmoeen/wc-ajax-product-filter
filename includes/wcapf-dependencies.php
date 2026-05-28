@@ -19,14 +19,6 @@ require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 
-// Loads the filter types.
-require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-author.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-post-meta.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-price.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-product-status.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/filter-types/class-wcapf-filter-type-taxonomy.php';
-
 // Loads the shortcodes.
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-active-filters-shortcode.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-shortcode.php';
