@@ -163,6 +163,11 @@ abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
 					'menu_order'   => $menu_order++,
 				)
 			);
+
+			// Production stores the wcapf-filter post ID inside the field data so the
+			// renderer can emit data-id; mirror that here.
+			$field['id'] = $filter_id;
+
 			$this->store_serialized_content( $filter_id, $field );
 		}
 
