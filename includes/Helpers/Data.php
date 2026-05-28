@@ -268,4 +268,70 @@ class Data {
 	public function number_input_display_types(): array {
 		return array( 'range_slider', 'range_number' );
 	}
+
+	/**
+	 * The site's user role labels keyed by role name.
+	 *
+	 * @return array<string, string>
+	 */
+	public function user_roles(): array {
+		global $wp_roles;
+
+		$roles = isset( $wp_roles ) ? $wp_roles : new \WP_Roles();
+
+		return apply_filters( 'wcapf_user_roles', $roles->get_names() );
+	}
+
+	/**
+	 * Reads a wcapf-form post (with its child wcapf-filter posts) into the array
+	 * shape the engine and renderer consume.
+	 *
+	 * @param \WP_Post $form The wcapf-form post.
+	 *
+	 * @return array
+	 */
+	public function form_filters( \WP_Post $form ): array {
+		$form_id       = $form->ID;
+		$form_settings = maybe_unserialize( $form->post_content );
+
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'publish',
+				'post_parent' => $form_id,
+				'nopaging'    => true,
+				'orderby'     => 'menu_order',
+				'order'       => 'ASC',
+			)
+		);
+
+		$form_data = array(
+			'form_id'    => $form_id,
+			'form_title' => $form->post_title,
+			'settings'   => $form_settings,
+		);
+
+		$filter_data  = apply_filters( 'wcapf_form_filter_data', array(), $form_data );
+		$form_filters = array();
+
+		foreach ( $filters as $filter ) {
+			$id    = $filter->ID;
+			$field = maybe_unserialize( $filter->post_content );
+
+			$field['form_id'] = $form_id;
+			$field            = wp_parse_args( $filter_data, $field );
+
+			$form_filters[ $id ] = array(
+				'id'    => $id,
+				'title' => $filter->post_title,
+				'key'   => $filter->post_name,
+				'type'  => $filter->post_excerpt,
+				'field' => $field,
+			);
+		}
+
+		$form_data['filters'] = $form_filters;
+
+		return $form_data;
+	}
 }

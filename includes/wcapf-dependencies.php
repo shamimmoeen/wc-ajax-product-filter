@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-api-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-helper.php';
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-product-filter-utils.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-template-loader.php';
 
 // Loads the shortcodes.

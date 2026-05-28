@@ -188,7 +188,7 @@ class ProductFilter {
 		global $wcapf, $wcapf_form;
 
 		$wcapf      = $settings;
-		$form       = \WCAPF_Product_Filter_Utils::get_form_filters( $assigned );
+		$form       = wcapf()->data->form_filters( $assigned );
 		$wcapf_form = $form;
 
 		$filters_data = array();
@@ -260,7 +260,7 @@ class ProductFilter {
 			return $chosen;
 		}
 
-		$values = \WCAPF_Product_Filter_Utils::get_chosen_filter_values( $orderby );
+		$values = $this->query_builder->get_chosen_filter_values( $orderby );
 		$prefix = wcapf()->settings->sort_by_prefix();
 
 		$active_filters = array();
@@ -290,6 +290,6 @@ class ProductFilter {
 		$wheres       = $post_clauses['wheres'];
 		$query_type   = wcapf()->settings->field_relations();
 
-		return \WCAPF_Product_Filter_Utils::combine_where_clauses( $wheres, $query_type );
+		return $this->query_builder->combine_where_clauses( $wheres, $query_type );
 	}
 }

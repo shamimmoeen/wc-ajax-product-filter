@@ -251,7 +251,7 @@ class Ajax {
 		$include_user_roles = isset( $filter['include_user_roles'] ) ? $filter['include_user_roles'] : array();
 
 		if ( $include_user_roles ) {
-			$roles  = \WCAPF_Product_Filter_Utils::get_user_roles();
+			$roles  = wcapf()->data->user_roles();
 			$parsed = array();
 
 			foreach ( $include_user_roles as $role ) {

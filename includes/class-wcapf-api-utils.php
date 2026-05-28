@@ -472,7 +472,7 @@ class WCAPF_API_Utils {
 	 * @return array User role options.
 	 */
 	public static function user_role_options() {
-		$_user_roles = WCAPF_Product_Filter_Utils::get_user_roles();
+		$_user_roles = wcapf()->data->user_roles();
 		$user_roles  = array();
 
 		foreach ( $_user_roles as $role_value => $role_label ) {
@@ -521,7 +521,7 @@ class WCAPF_API_Utils {
 
 		// Send the author roles with labels.
 		if ( ! empty( $settings['author_roles'] ) ) {
-			$array       = WCAPF_Product_Filter_Utils::get_user_roles();
+			$array       = wcapf()->data->user_roles();
 			$with_labels = array();
 
 			foreach ( $settings['author_roles'] as $role_name ) {

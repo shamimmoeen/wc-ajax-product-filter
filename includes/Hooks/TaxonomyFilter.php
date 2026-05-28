@@ -153,10 +153,45 @@ class TaxonomyFilter {
 				return $terms;
 			}
 
-			return \WCAPF_Product_Filter_Utils::adjust_parent_id_for_hierarchy_terms( $field_instance, $terms );
+			return self::adjust_parent_id_for_hierarchy_terms( $field_instance, $terms );
 		}
 
 		return $terms;
+	}
+
+	/**
+	 * Re-parents top-of-the-list terms when their actual parent is missing from the
+	 * provided set (e.g. include/exclude limits broke the chain) by walking up to
+	 * the nearest ancestor that is still present.
+	 *
+	 * @param \WCAPF\FormFilter $field_instance The field instance.
+	 * @param array             $terms          Term shape array keyed by term ID.
+	 *
+	 * @return array
+	 */
+	public static function adjust_parent_id_for_hierarchy_terms( $field_instance, $terms ): array {
+		$modified = array();
+		$taxonomy = $field_instance->taxonomy;
+
+		foreach ( $terms as $_id => $_data ) {
+			if ( ! array_key_exists( $_data['parent_id'], $terms ) ) {
+				$ancestors = get_ancestors( $_id, $taxonomy );
+				$parent_id = 0;
+
+				foreach ( $ancestors as $ancestor ) {
+					if ( array_key_exists( $ancestor, $terms ) ) {
+						$parent_id = $ancestor;
+						break;
+					}
+				}
+
+				$_data['parent_id'] = $parent_id;
+			}
+
+			$modified[ $_id ] = $_data;
+		}
+
+		return $modified;
 	}
 
 	/**
