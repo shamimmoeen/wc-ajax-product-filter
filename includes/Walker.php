@@ -341,55 +341,16 @@ class Walker {
 	}
 
 	/**
-	 * Sets the filter items.
+	 * Resolves the field's items via the element registry.
 	 *
 	 * @param \WCAPF\FormFilter $field_instance The field instance.
 	 *
 	 * @return array
 	 */
 	protected function set_items( $field_instance ) {
-		$type  = $this->filter_type;
-		$items = array();
+		$element = Element\Registry::resolve( $field_instance->raw_instance() );
 
-		switch ( $type ) {
-			case 'taxonomy':
-				$element = Element\Registry::resolve( $field_instance->raw_instance() );
-
-				if ( $element instanceof Element\Filterable ) {
-					$items = $element->items();
-				}
-
-				break;
-
-			case 'product-status':
-				$element = Element\Registry::resolve( $field_instance->raw_instance() );
-
-				if ( $element instanceof Element\Filterable ) {
-					$items = $element->items();
-				}
-
-				break;
-
-			case 'post-author':
-				$element = Element\Registry::resolve( $field_instance->raw_instance() );
-
-				if ( $element instanceof Element\Filterable ) {
-					$items = $element->items();
-				}
-
-				break;
-
-			case 'post-meta':
-				$element = Element\Registry::resolve( $field_instance->raw_instance() );
-
-				if ( $element instanceof Element\Filterable ) {
-					$items = $element->items();
-				}
-
-				break;
-		}
-
-		return $items;
+		return $element instanceof Element\Filterable ? $element->items() : array();
 	}
 
 	/**
