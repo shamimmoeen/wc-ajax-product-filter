@@ -24,8 +24,5 @@ require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-shortco
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-filter-form-shortcode.php';
 require_once WCAPF_PLUGIN_DIR . '/includes/shortcodes/class-wcapf-reset-button-shortcode.php';
 
-// Loads the widgets.
-require_once WCAPF_PLUGIN_DIR . '/includes/widgets/class-wcapf-filter-widget.php';
-
 // Loads the compatibility fixes.
 require_once WCAPF_PLUGIN_DIR . '/includes/wcapf-compatibility-fixes.php';

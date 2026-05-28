@@ -180,5 +180,13 @@ class Plugin {
 		if ( is_admin() ) {
 			$this->admin = new Admin();
 		}
+
+		add_action(
+			'widgets_init',
+			static function () {
+				register_widget( Widgets\Form::class );
+				register_widget( Widgets\LegacyFilter::class );
+			}
+		);
 	}
 }

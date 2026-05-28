@@ -33,6 +33,10 @@
 		<exclude-pattern>/includes/Helpers/*</exclude-pattern>
 		<exclude-pattern>/includes/Hooks/*</exclude-pattern>
 		<exclude-pattern>/includes/Migration/*</exclude-pattern>
+		<exclude-pattern>/includes/Widgets/*</exclude-pattern>
+		<exclude-pattern>/pro/Component/*</exclude-pattern>
+		<exclude-pattern>/pro/Control/*</exclude-pattern>
+		<exclude-pattern>/pro/Filter/*</exclude-pattern>
 	</rule>
 
 	<!-- Inline comments do not need to end with a full stop. -->
