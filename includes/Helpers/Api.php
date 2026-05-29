@@ -1,12 +1,13 @@
 <?php
 /**
- * The api utility class.
+ * Admin-API data helper.
  *
- * @since      4.0.0
  * @package    wc-ajax-product-filter
- * @subpackage wc-ajax-product-filter/includes
+ * @subpackage wc-ajax-product-filter/includes/Helpers
  * @author     Mainul Hassan
  */
+
+namespace WCAPF\Helpers;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,24 +15,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCAPF_API_Utils class.
+ * HTTP-agnostic data source for the admin UI: filter-key/type metadata, the
+ * admin's dropdown options, settings and forms data, plus the manual-option
+ * sanitizer. Methods return plain PHP arrays.
  *
- * @since 4.0.0
+ * The transport layer wraps the return values: today the admin-ajax handlers in
+ * \WCAPF\Ajax, tomorrow the REST controllers under \WCAPF\Rest. When that
+ * migration lands, only the transport classes change — this helper stays put.
  */
-class WCAPF_API_Utils {
+class Api {
 
 	/**
-	 * Retrieves the global filter key for the given filter data.
+	 * Matches a stored filter entry against the registered filter keys and
+	 * returns the matching global key, or an empty string when none matches.
 	 *
-	 * Matches the provided filter data against the registered filter keys and
-	 * returns the corresponding filter key when a match is found.
+	 * @param array $filter_data Filter data with at least a 'type' key.
 	 *
-	 * @param array $filter_data Filter data.
-	 *
-	 * @return string Global filter key if found, otherwise an empty string.
+	 * @return string
 	 */
-	public static function get_global_filter_key( $filter_data ) {
-		$filter_keys     = self::get_filter_keys();
+	public function global_filter_key( array $filter_data ): string {
+		$filter_keys     = $this->filter_keys();
 		$filter_type     = isset( $filter_data['type'] ) ? $filter_data['type'] : '';
 		$filter_taxonomy = isset( $filter_data['taxonomy'] ) ? $filter_data['taxonomy'] : '';
 		$filter_meta_key = isset( $filter_data['meta_key'] ) ? $filter_data['meta_key'] : '';
@@ -47,18 +50,15 @@ class WCAPF_API_Utils {
 				if ( 'taxonomy' === $type ) {
 					if ( $filter_taxonomy === $taxonomy ) {
 						$filter_key = $field_key;
-
 						break;
 					}
 				} elseif ( 'post-meta' === $type ) {
 					if ( $filter_meta_key === $meta_key ) {
 						$filter_key = $field_key;
-
 						break;
 					}
 				} else {
 					$filter_key = $field_key;
-
 					break;
 				}
 			}
@@ -68,16 +68,14 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves filter keys.
-	 *
-	 * Returns filter key data for all saved filters. When `$is_global` is true,
-	 * duplicate global filters are excluded and additional label data is added.
+	 * Returns filter key data for all saved filters. When $is_global is true,
+	 * duplicate global filters are excluded and label data is added.
 	 *
 	 * @param bool $is_global Whether to return only unique global filter keys.
 	 *
-	 * @return array Filter keys.
+	 * @return array
 	 */
-	public static function get_filter_keys( $is_global = false ) {
+	public function filter_keys( bool $is_global = false ): array {
 		$filters = get_posts(
 			array(
 				'post_type'   => 'wcapf-filter',
@@ -89,8 +87,8 @@ class WCAPF_API_Utils {
 
 		$filter_keys = array();
 
-		$filter_types       = self::get_filter_types();
-		$taxonomy_options   = self::get_available_taxonomies();
+		$filter_types       = $this->filter_types();
+		$taxonomy_options   = $this->available_taxonomies();
 		$global_filter_keys = array();
 
 		$taxonomy_lookup = array_column( $taxonomy_options, null, 'value' );
@@ -162,16 +160,16 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves available filter types.
+	 * The catalogue of filter types shown in the admin UI's "add filter" picker.
 	 *
-	 * @return array Filter types.
+	 * @return array
 	 */
-	public static function get_filter_types() {
+	public function filter_types(): array {
 		return array(
 			array(
 				'label'   => __( 'Taxonomy', 'wc-ajax-product-filter' ),
 				'value'   => 'taxonomy',
-				'options' => self::get_available_taxonomies(),
+				'options' => $this->available_taxonomies(),
 			),
 			array(
 				'label' => __( 'Price', 'wc-ajax-product-filter' ),
@@ -240,15 +238,13 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves available product taxonomies.
+	 * Available product taxonomies in the admin-UI shape.
 	 *
-	 * Returns taxonomy data formatted for use in the plugin UI.
+	 * @param bool $only_with_archive Whether to skip taxonomies without an archive view.
 	 *
-	 * @param bool $only_with_archive Whether to return only viewable taxonomies with archive support.
-	 *
-	 * @return array Available taxonomies.
+	 * @return array
 	 */
-	public static function get_available_taxonomies( $only_with_archive = false ) {
+	public function available_taxonomies( bool $only_with_archive = false ): array {
 		$tax_data   = get_object_taxonomies( 'product', 'objects' );
 		$taxonomies = array();
 
@@ -282,7 +278,6 @@ class WCAPF_API_Utils {
 			} elseif ( in_array( $name, $attributes, true ) ) {
 				$default_filter_key = str_replace( 'pa_', '', $name );
 			} else {
-				// Check if pro version found and pretty url is enabled then don't add the underscore.
 				$default_filter_key = '_' . $name;
 			}
 
@@ -299,11 +294,11 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves available display date formats.
+	 * Display-date-format options for the admin date picker setting.
 	 *
-	 * @return array Display date formats.
+	 * @return array
 	 */
-	public static function display_date_formats() {
+	public function display_date_formats(): array {
 		return apply_filters(
 			'wcapf_display_date_formats',
 			array(
@@ -320,11 +315,11 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves product status options.
+	 * Product-status option list for the admin UI.
 	 *
-	 * @return array Product status options.
+	 * @return array
 	 */
-	public static function product_status_options() {
+	public function product_status_options(): array {
 		return apply_filters(
 			'wcapf_product_status_options',
 			array(
@@ -341,30 +336,29 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves time period options.
+	 * Time-period option list in the admin-UI {label,value} shape.
 	 *
-	 * @return array Time period options.
+	 * @return array
 	 */
-	public static function time_period_options() {
-		$_time_period_options = wcapf()->data->time_period_options();
-		$time_period_options  = array();
+	public function time_period_options(): array {
+		$options = array();
 
-		foreach ( $_time_period_options as $time_period_key => $time_period_label ) {
-			$time_period_options[] = array(
-				'label' => $time_period_label,
-				'value' => $time_period_key,
+		foreach ( wcapf()->data->time_period_options() as $value => $label ) {
+			$options[] = array(
+				'label' => $label,
+				'value' => $value,
 			);
 		}
 
-		return $time_period_options;
+		return $options;
 	}
 
 	/**
-	 * Retrieves sort-by options.
+	 * Sort-by option list.
 	 *
-	 * @return array Sort-by options.
+	 * @return array
 	 */
-	public static function sort_by_options() {
+	public function sort_by_options(): array {
 		return apply_filters(
 			'wcapf_sort_by_options',
 			array(
@@ -429,11 +423,11 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves meta type options.
+	 * Meta-type option list (cast targets for post-meta sorts).
 	 *
-	 * @return array Meta type options.
+	 * @return array
 	 */
-	public static function meta_type_options() {
+	public function meta_type_options(): array {
 		return apply_filters(
 			'wcapf_meta_type_options',
 			array(
@@ -467,35 +461,32 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves user role options.
+	 * User-role option list in the admin-UI {label,value} shape.
 	 *
-	 * @return array User role options.
+	 * @return array
 	 */
-	public static function user_role_options() {
-		$_user_roles = wcapf()->data->user_roles();
-		$user_roles  = array();
+	public function user_role_options(): array {
+		$options = array();
 
-		foreach ( $_user_roles as $role_value => $role_label ) {
-			$user_roles[] = array(
-				'label' => $role_label,
-				'value' => $role_value,
+		foreach ( wcapf()->data->user_roles() as $value => $label ) {
+			$options[] = array(
+				'label' => $label,
+				'value' => $value,
 			);
 		}
 
-		return $user_roles;
+		return $options;
 	}
 
 	/**
-	 * Sanitizes manual option data.
+	 * Sanitises manual-option config rows. Label-related fields keep limited
+	 * HTML; everything else is sanitised as plain text.
 	 *
-	 * Allows limited HTML for label-related fields and sanitizes all other values
-	 * as plain text.
+	 * @param array $data Raw option data.
 	 *
-	 * @param array $data Manual option data.
-	 *
-	 * @return array Sanitized manual option data.
+	 * @return array
 	 */
-	public static function sanitize_manual_option_data( $data ) {
+	public function sanitize_manual_option( array $data ): array {
 		$sanitized = array();
 
 		foreach ( $data as $key => $_value ) {
@@ -512,21 +503,22 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves plugin settings for the admin UI.
+	 * Plugin settings shaped for the admin UI: the stored settings, plus the
+	 * author_roles array transformed into the {label,value} shape the React
+	 * picker expects.
 	 *
-	 * @return array Plugin settings.
+	 * @return array
 	 */
-	public static function get_settings() {
+	public function settings(): array {
 		$settings = wcapf()->settings->all();
 
-		// Send the author roles with labels.
 		if ( ! empty( $settings['author_roles'] ) ) {
-			$array       = wcapf()->data->user_roles();
+			$roles       = wcapf()->data->user_roles();
 			$with_labels = array();
 
 			foreach ( $settings['author_roles'] as $role_name ) {
 				$with_labels[] = array(
-					'label' => isset( $array[ $role_name ] ) ? $array[ $role_name ] : $role_name,
+					'label' => isset( $roles[ $role_name ] ) ? $roles[ $role_name ] : $role_name,
 					'value' => $role_name,
 				);
 			}
@@ -534,36 +526,27 @@ class WCAPF_API_Utils {
 			$settings['author_roles'] = $with_labels;
 		}
 
-		/**
-		 * Filters the parsed plugin settings.
-		 *
-		 * Allows modification of the settings array before it is returned for use
-		 * in the admin UI or other plugin logic.
-		 *
-		 * @param array $settings Parsed plugin settings.
-		 *
-		 * @return array Filtered plugin settings.
-		 */
 		return apply_filters( 'wcapf_parse_settings', $settings );
 	}
 
 	/**
-	 * Retrieves all forms for the admin forms list UI.
+	 * All forms data for the admin forms list.
 	 *
-	 * @return array Forms data.
+	 * @return array
 	 */
-	public static function get_forms() {
-		$args = array(
-			'post_type'   => 'wcapf-form',
-			'nopaging'    => true,
-			'post_status' => 'publish',
+	public function forms(): array {
+		$posts = get_posts(
+			array(
+				'post_type'   => 'wcapf-form',
+				'nopaging'    => true,
+				'post_status' => 'publish',
+			)
 		);
 
-		$posts = get_posts( $args );
 		$forms = array();
 
 		foreach ( $posts as $post ) {
-			$form_data = self::get_form_data( $post );
+			$form_data = $this->form_data( $post );
 
 			if ( ! empty( $form_data ) ) {
 				$forms[] = $form_data;
@@ -574,22 +557,16 @@ class WCAPF_API_Utils {
 	}
 
 	/**
-	 * Retrieves form data for the admin forms list UI.
+	 * Single-form data for the admin forms list.
 	 *
-	 * Accepts a post object or post ID and returns the parsed form data.
+	 * @param \WP_Post|int $post Form post or post ID.
 	 *
-	 * @param WP_Post|int $post Post object or post ID.
-	 *
-	 * @return array Form data.
+	 * @return array
 	 */
-	public static function get_form_data( $post ) {
-		if ( $post instanceof WP_Post ) {
-			$_post = $post;
-		} else {
-			$_post = get_post( $post );
-		}
+	public function form_data( $post ): array {
+		$_post = $post instanceof \WP_Post ? $post : get_post( $post );
 
-		if ( ! $_post instanceof WP_Post ) {
+		if ( ! $_post instanceof \WP_Post ) {
 			return array();
 		}
 
@@ -600,9 +577,6 @@ class WCAPF_API_Utils {
 			'title' => $_post->post_title,
 		);
 
-		/**
-		 * Register a hook to send the form locations with the data.
-		 */
 		return apply_filters( 'wcapf_admin_form_data', $data, $id );
 	}
 }

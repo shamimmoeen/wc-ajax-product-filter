@@ -174,7 +174,7 @@ class ProductFilter {
 			return array();
 		}
 
-		$global_keys = \WCAPF_API_Utils::get_filter_keys( true );
+		$global_keys = wcapf()->api->filter_keys( true );
 		$global_keys = wp_list_pluck( $global_keys, 'field_key' );
 
 		$settings['filter_keys'] = $global_keys;

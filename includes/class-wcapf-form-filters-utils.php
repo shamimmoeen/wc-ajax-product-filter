@@ -30,7 +30,7 @@ class WCAPF_Form_Filters_Utils {
 	 * @return array
 	 */
 	public function save_form_filters( $form_filters, $new_form_id, $migrate = false ) {
-		$possible_types = WCAPF_API_Utils::get_filter_types();
+		$possible_types = wcapf()->api->filter_types();
 		$valid_types    = wp_list_pluck( $possible_types, 'value' );
 		$filter_types   = array();
 		$filters        = array();
@@ -303,7 +303,7 @@ class WCAPF_Form_Filters_Utils {
 			$filter_type_data  = $possible_types[ $filter_type_index ];
 		}
 
-		$global_filter_key = WCAPF_API_Utils::get_global_filter_key( $filter_data );
+		$global_filter_key = wcapf()->api->global_filter_key( $filter_data );
 
 		// Try to grab the global filter key when possible.
 		if ( ! $post_name && $global_filter_key ) {
@@ -473,10 +473,10 @@ class WCAPF_Form_Filters_Utils {
 		}
 
 		$array    = array();
-		$defaults = wp_list_pluck( WCAPF_API_Utils::product_status_options(), 'label', 'value' );
+		$defaults = wp_list_pluck( wcapf()->api->product_status_options(), 'label', 'value' );
 
 		foreach ( $options as $option ) {
-			$option = WCAPF_API_Utils::sanitize_manual_option_data( $option );
+			$option = wcapf()->api->sanitize_manual_option( $option );
 			$value  = isset( $option['value'] ) ? $option['value'] : '';
 			$label  = isset( $option['label'] ) ? $option['label'] : '';
 

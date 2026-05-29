@@ -277,26 +277,26 @@ class Admin {
 		$params['upgrade_page_link']   = wcapf()->admin_url->upgrade_page();
 
 		$screen_id  = $this->current_screen_id();
-		$user_roles = \WCAPF_API_Utils::user_role_options();
+		$user_roles = wcapf()->api->user_role_options();
 
 		if ( 'toplevel_page_wcapf' === $screen_id ) {
 			$params['form_default_data'] = Defaults::form_default_data();
 
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to determine which admin screen to load.
 			if ( ! isset( $_GET['id'] ) ) {
-				$params['forms'] = \WCAPF_API_Utils::get_forms();
+				$params['forms'] = wcapf()->api->forms();
 			} else {
 				$settings = wcapf()->settings->all();
 
 				$params['filter_default_data'] = Defaults::filter_default_data();
 
-				$params['filter_types']    = \WCAPF_API_Utils::get_filter_types();
+				$params['filter_types']    = wcapf()->api->filter_types();
 				$params['meta_keys']       = wcapf()->data->available_meta_keys();
-				$params['date_formats']    = \WCAPF_API_Utils::display_date_formats();
-				$params['status_options']  = \WCAPF_API_Utils::product_status_options();
-				$params['time_periods']    = \WCAPF_API_Utils::time_period_options();
-				$params['sort_by_options'] = \WCAPF_API_Utils::sort_by_options();
-				$params['meta_types']      = \WCAPF_API_Utils::meta_type_options();
+				$params['date_formats']    = wcapf()->api->display_date_formats();
+				$params['status_options']  = wcapf()->api->product_status_options();
+				$params['time_periods']    = wcapf()->api->time_period_options();
+				$params['sort_by_options'] = wcapf()->api->sort_by_options();
+				$params['meta_types']      = wcapf()->api->meta_type_options();
 				$params['user_roles']      = $user_roles;
 
 				$params['author_roles']            = $settings['author_roles'] ?? array();
@@ -317,9 +317,9 @@ class Admin {
 			$params['default_settings'] = Defaults::default_settings();
 
 			$params['user_roles'] = $user_roles;
-			$params['settings']   = \WCAPF_API_Utils::get_settings();
+			$params['settings']   = wcapf()->api->settings();
 
-			$params['global_filter_keys'] = \WCAPF_API_Utils::get_filter_keys( true );
+			$params['global_filter_keys'] = wcapf()->api->filter_keys( true );
 		}
 
 		$params['widgets_page_link'] = admin_url( 'widgets.php' );

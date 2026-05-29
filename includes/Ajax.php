@@ -74,7 +74,7 @@ class Ajax {
 		$form_filters_utils = new \WCAPF_Form_Filters_Utils();
 		$form_filters_utils->save_form_filters( Defaults::get_sample_filters(), $new_form_id );
 
-		wp_send_json_success( \WCAPF_API_Utils::get_form_data( $new_form_id ) );
+		wp_send_json_success( wcapf()->api->form_data( $new_form_id ) );
 	}
 
 	/**
@@ -150,7 +150,7 @@ class Ajax {
 			array(
 				'post_id'       => $post_id,
 				'post_title'    => get_the_title( $post_id ),
-				'filter_keys'   => \WCAPF_API_Utils::get_filter_keys(),
+				'filter_keys'   => wcapf()->api->filter_keys(),
 				'form_filters'  => $form_filters,
 				'form_settings' => $form_settings,
 			)
@@ -351,7 +351,7 @@ class Ajax {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
 
-		wp_send_json_success( \WCAPF_API_Utils::get_form_data( $new_form_id ) );
+		wp_send_json_success( wcapf()->api->form_data( $new_form_id ) );
 	}
 
 	/**
@@ -429,7 +429,7 @@ class Ajax {
 		$form_settings = $this->parse_form_settings( $sanitized_form_settings );
 
 		$response = array(
-			'filter_keys'   => \WCAPF_API_Utils::get_filter_keys(),
+			'filter_keys'   => wcapf()->api->filter_keys(),
 			'form_filters'  => $filters_for_ui,
 			'form_settings' => $form_settings,
 		);
@@ -863,8 +863,8 @@ class Ajax {
 		if ( ! $update_filter_keys ) {
 			wp_send_json_success(
 				array(
-					'settings'           => \WCAPF_API_Utils::get_settings(),
-					'global_filter_keys' => \WCAPF_API_Utils::get_filter_keys( true ),
+					'settings'           => wcapf()->api->settings(),
+					'global_filter_keys' => wcapf()->api->filter_keys( true ),
 				)
 			);
 		}
@@ -872,7 +872,7 @@ class Ajax {
 		$filter_keys = json_decode( $_filter_keys, true );
 		$filter_keys = is_array( $filter_keys ) ? $filter_keys : array();
 
-		$possible_types  = \WCAPF_API_Utils::get_filter_types();
+		$possible_types  = wcapf()->api->filter_types();
 		$new_filter_keys = array();
 		$errors          = array();
 
@@ -988,8 +988,8 @@ class Ajax {
 
 		wp_send_json_success(
 			array(
-				'settings'           => \WCAPF_API_Utils::get_settings(),
-				'global_filter_keys' => \WCAPF_API_Utils::get_filter_keys( true ),
+				'settings'           => wcapf()->api->settings(),
+				'global_filter_keys' => wcapf()->api->filter_keys( true ),
 			)
 		);
 	}

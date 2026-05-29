@@ -13,6 +13,7 @@ namespace WCAPF;
 
 use WCAPF\Helpers\ActiveFilters;
 use WCAPF\Helpers\AdminUrl;
+use WCAPF\Helpers\Api;
 use WCAPF\Helpers\Compat;
 use WCAPF\Helpers\Data;
 use WCAPF\Helpers\Notices;
@@ -92,6 +93,13 @@ class Plugin {
 	 * @var Template
 	 */
 	public Template $template;
+
+	/**
+	 * Admin-API data helper.
+	 *
+	 * @var Api
+	 */
+	public Api $api;
 
 	/**
 	 * Filter and form post-type registration hooks.
@@ -182,6 +190,7 @@ class Plugin {
 		$this->data           = new Data();
 		$this->active_filters = new ActiveFilters();
 		$this->template       = new Template();
+		$this->api            = new Api();
 
 		$this->post_type            = new PostType();
 		$this->post_author_filter   = new PostAuthorFilter();
