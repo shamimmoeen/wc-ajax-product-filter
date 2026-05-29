@@ -81,8 +81,8 @@ class FrontendScripts {
 		$primary_text_color = wcapf()->settings->get( 'primary_text_color', '#ffffff' );
 		$star_icon_color    = wcapf()->settings->get( 'star_icon_color', 'rgb(240, 201, 48)' );
 
-		list( $r, $g, $b )    = \WCAPF_Helper::get_rgb_from_hex( $primary_color );
-		list( $r2, $g2, $b2 ) = \WCAPF_Helper::get_rgb_from_hex( $primary_text_color );
+		list( $r, $g, $b )    = $this->rgb_from_hex( $primary_color );
+		list( $r2, $g2, $b2 ) = $this->rgb_from_hex( $primary_text_color );
 
 		$variables = ":root {
 			--wcapf-primary-color-rgb: $r, $g, $b;
@@ -178,7 +178,7 @@ class FrontendScripts {
 			'custom_scripts',
 		);
 
-		$shop_loop_identifier = '.' . \WCAPF_Helper::shop_loop_container_identifier();
+		$shop_loop_identifier = '.' . wcapf()->data->shop_loop_container_identifier();
 		$pagination_container = wcapf()->settings->get( 'pagination_container', '.woocommerce-pagination' );
 
 		$settings = array(
@@ -232,5 +232,18 @@ class FrontendScripts {
 		$params = array_merge( $params, $settings );
 
 		return apply_filters( 'wcapf_js_params', $params );
+	}
+
+	/**
+	 * Splits a hex colour code (e.g. "#345DBB") into its RGB components.
+	 *
+	 * @param string $hex Hex colour code.
+	 *
+	 * @return array{int,int,int}
+	 */
+	private function rgb_from_hex( $hex ) {
+		list( $r, $g, $b ) = sscanf( $hex, '#%02x%02x%02x' );
+
+		return array( $r, $g, $b );
 	}
 }

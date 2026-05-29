@@ -332,7 +332,7 @@ abstract class AbstractElement implements Element {
 		$filter         = isset( $filters[ $filter_key ] ) ? $filters[ $filter_key ] : array();
 		$values         = isset( $filter['values'] ) ? $filter['values'] : array();
 
-		if ( \WCAPF_Helper::round_range_min_max_values( $field_instance ) ) {
+		if ( $this->round_range_min_max_values() ) {
 			$range_min_value = floor( $range_min_value );
 			$range_max_value = ceil( $range_max_value );
 		}
@@ -363,7 +363,7 @@ abstract class AbstractElement implements Element {
 
 		$url_builder = new \WCAPF\UrlBuilder( $filter_key );
 
-		$args = \WCAPF_Helper::prepare_range_filter_args(
+		$args = $this->prepare_range_filter_args(
 			array(
 				'filter_id'             => $filter_id,
 				'filter_key'            => $filter_key,
@@ -393,5 +393,148 @@ abstract class AbstractElement implements Element {
 		);
 
 		wcapf()->template->load( 'range', $args );
+	}
+
+	/**
+	 * Whether the auto-detected min/max range values should be rounded
+	 * (floor/ceil) before being passed to the slider/input markup.
+	 *
+	 * @return bool
+	 */
+	protected function round_range_min_max_values(): bool {
+		return apply_filters( 'wcapf_round_range_min_max_values', true, $this->field );
+	}
+
+	/**
+	 * Prepares the template args for the range slider/input template — derives
+	 * the value unit, data attributes, classes and the formatted min/max display
+	 * values from the field's raw range config.
+	 *
+	 * @param array $args Raw range filter arguments.
+	 *
+	 * @return array
+	 */
+	private function prepare_range_filter_args( $args ) {
+		$range_value_unit     = '';
+		$range_unit_position  = '';
+		$range_display_values = $args['display_values_as'];
+
+		if ( ! empty( $args['value_prefix'] ) ) {
+			$range_value_unit    = $args['value_prefix'];
+			$range_unit_position = 'left';
+		} elseif ( ! empty( $args['value_postfix'] ) ) {
+			$range_value_unit    = $args['value_postfix'];
+			$range_unit_position = 'right';
+		}
+
+		if ( 'range_number' === $args['display_type'] ) {
+			$range_display_values = 'input_field';
+		}
+
+		if ( 'input_field' === $range_display_values ) {
+			$range_value_unit = str_replace( '&nbsp;', '', $range_value_unit );
+
+			$args['text_before_min_value'] = '';
+			$args['text_before_max_value'] = '';
+		}
+
+		$range_data_attributes   = array();
+		$range_data_attributes[] = 'data-range-min-value="' . esc_attr( $args['range_min_value'] ) . '"';
+		$range_data_attributes[] = 'data-range-max-value="' . esc_attr( $args['range_max_value'] ) . '"';
+		$range_data_attributes[] = 'data-min-value="' . esc_attr( $args['min_value'] ) . '"';
+		$range_data_attributes[] = 'data-max-value="' . esc_attr( $args['max_value'] ) . '"';
+		$range_data_attributes[] = 'data-step="' . esc_attr( $args['step'] ) . '"';
+		$range_data_attributes[] = 'data-format-numbers="' . esc_attr( $args['format_numbers'] ) . '"';
+		$range_data_attributes[] = 'data-decimal-places="' . esc_attr( $args['decimal_places'] ) . '"';
+		$range_data_attributes[] = 'data-thousand-separator="' . esc_attr( $args['thousand_separator'] ) . '"';
+		$range_data_attributes[] = 'data-decimal-separator="' . esc_attr( $args['decimal_separator'] ) . '"';
+		$range_data_attributes[] = 'data-display-values-as="' . esc_attr( $range_display_values ) . '"';
+		$range_data_attributes[] = 'data-url="' . esc_url( $args['filter_url'] ) . '"';
+		$range_data_attributes[] = 'data-clear-filter-url="' . esc_url( $args['clear_filter_url'] ) . '"';
+
+		$range_data_attributes_markup = implode( ' ', $range_data_attributes );
+
+		$range_input_type         = 'text';
+		$range_show_as_spinbox    = false;
+		$range_spinbox_attributes = '';
+
+		if (
+			( ! empty( $args['input_type_number'] ) && 'range_slider' === $args['display_type'] && 'input_field' === $range_display_values )
+			|| 'range_number' === $args['display_type']
+		) {
+			$range_input_type      = 'number';
+			$range_show_as_spinbox = true;
+
+			$range_spinbox_attrs   = array();
+			$range_spinbox_attrs[] = 'step="' . esc_attr( $args['step'] ) . '"';
+			$range_spinbox_attrs[] = 'min="' . esc_attr( $args['range_min_value'] ) . '"';
+			$range_spinbox_attrs[] = 'max="' . esc_attr( $args['range_max_value'] ) . '"';
+
+			$range_spinbox_attributes = implode( ' ', $range_spinbox_attrs );
+		}
+
+		$range_formatted_min_value = $args['min_value'];
+		$range_formatted_max_value = $args['max_value'];
+
+		if ( ! empty( $args['format_numbers'] ) ) {
+			$range_formatted_min_value = number_format(
+				(float) $range_formatted_min_value,
+				(int) $args['decimal_places'],
+				$args['decimal_separator'],
+				$args['thousand_separator']
+			);
+
+			$range_formatted_max_value = number_format(
+				(float) $range_formatted_max_value,
+				(int) $args['decimal_places'],
+				$args['decimal_separator'],
+				$args['thousand_separator']
+			);
+		}
+
+		$range_outer_classes = array( 'wcapf-range-wrapper' );
+
+		if ( $range_show_as_spinbox ) {
+			$range_outer_classes[] = 'wcapf-range-spinbox';
+		}
+
+		if ( 'range_slider' === $args['display_type'] ) {
+			$range_outer_classes[] = 'wcapf-range-slider';
+			$range_outer_classes[] = ! empty( $args['slider_style'] ) ? $args['slider_style'] : 'style-1';
+		} else {
+			$range_outer_classes[] = 'wcapf-range-number';
+		}
+
+		$range_inner_classes = array(
+			'range-values',
+			'display-values-as-' . $range_display_values,
+		);
+
+		if ( $range_unit_position && ! $range_show_as_spinbox ) {
+			$range_inner_classes[] = 'unit-position-' . $range_unit_position;
+		}
+
+		if ( 'input_field' === $range_display_values || 'justified' === $args['alignment'] ) {
+			$range_inner_classes[] = 'justify-between';
+		} elseif ( 'centered' === $args['alignment'] ) {
+			$range_inner_classes[] = 'justify-center';
+		}
+
+		return array_merge(
+			$args,
+			array(
+				'display_values_as'            => $range_display_values,
+				'range_value_unit'             => $range_value_unit,
+				'range_unit_position'          => $range_unit_position,
+				'range_data_attributes_markup' => $range_data_attributes_markup,
+				'range_input_type'             => $range_input_type,
+				'range_show_as_spinbox'        => $range_show_as_spinbox,
+				'range_spinbox_attributes'     => $range_spinbox_attributes,
+				'range_formatted_min_value'    => $range_formatted_min_value,
+				'range_formatted_max_value'    => $range_formatted_max_value,
+				'range_outer_classes'          => implode( ' ', $range_outer_classes ),
+				'range_inner_classes'          => implode( ' ', $range_inner_classes ),
+			)
+		);
 	}
 }

@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div
 	class="<?php echo esc_attr( $range_outer_classes ); ?>"
-	<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are prepared and escaped in WCAPF_Helper::prepare_range_filter_args(). ?>
+	<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are prepared and escaped in WCAPF\Element\AbstractElement::prepare_range_filter_args(). ?>
 	<?php echo $range_data_attributes_markup; ?>
 >
 	<div class="<?php echo esc_attr( $range_inner_classes ); ?>">
@@ -78,7 +78,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					id="<?php echo esc_attr( $filter_key ); ?>-<?php echo esc_attr( $filter_id ); ?>-min"
 					value="<?php echo esc_attr( $range_formatted_min_value ); ?>"
 					autocomplete="off"
-					<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are prepared and escaped in WCAPF_Helper::prepare_range_filter_args(). ?>
+					<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are prepared and escaped in WCAPF\Element\AbstractElement::prepare_range_filter_args(). ?>
 					<?php echo $range_spinbox_attributes; ?>
 				>
 			<?php endif; ?>
@@ -110,7 +110,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					id="<?php echo esc_attr( $filter_key ); ?>-<?php echo esc_attr( $filter_id ); ?>-max"
 					value="<?php echo esc_attr( $range_formatted_max_value ); ?>"
 					autocomplete="off"
-					<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are prepared and escaped in WCAPF_Helper::prepare_range_filter_args(). ?>
+					<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are prepared and escaped in WCAPF\Element\AbstractElement::prepare_range_filter_args(). ?>
 					<?php echo $range_spinbox_attributes; ?>
 				>
 			<?php endif; ?>

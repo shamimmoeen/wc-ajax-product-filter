@@ -191,7 +191,7 @@ class Shop {
 			return;
 		}
 
-		echo '<div class="' . esc_attr( \WCAPF_Helper::shop_loop_container_identifier() ) . '">';
+		echo '<div class="' . esc_attr( wcapf()->data->shop_loop_container_identifier() ) . '">';
 	}
 
 	/**
@@ -220,7 +220,7 @@ class Shop {
 		}
 
 		if ( 'loop/no-products-found.php' === $template_name ) {
-			echo '<div class="' . esc_attr( \WCAPF_Helper::shop_loop_container_identifier() ) . '">';
+			echo '<div class="' . esc_attr( wcapf()->data->shop_loop_container_identifier() ) . '">';
 		}
 	}
 

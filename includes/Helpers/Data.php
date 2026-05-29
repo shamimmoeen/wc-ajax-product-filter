@@ -270,6 +270,16 @@ class Data {
 	}
 
 	/**
+	 * The CSS class wrapping the shop loop. The JS uses it as a selector so a
+	 * theme/plugin overriding the wrapper can stay coordinated by filtering this.
+	 *
+	 * @return string
+	 */
+	public function shop_loop_container_identifier(): string {
+		return apply_filters( 'wcapf_shop_loop_container_identifier', 'wcapf-before-products' );
+	}
+
+	/**
 	 * The site's user role labels keyed by role name.
 	 *
 	 * @return array<string, string>
