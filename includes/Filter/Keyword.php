@@ -86,7 +86,7 @@ class Keyword extends AbstractFilter implements Filterable {
 			$search_box_classes .= ' with-cross';
 		}
 
-		\WCAPF_Template_Loader::get_instance()->load(
+		wcapf()->template->load(
 			'search-box',
 			array(
 				'placeholder'        => $placeholder,

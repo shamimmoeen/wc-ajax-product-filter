@@ -50,6 +50,6 @@ class ActiveFilters extends AbstractElement {
 			)
 		);
 
-		\WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
+		wcapf()->template->load( 'active-filters', $args );
 	}
 }

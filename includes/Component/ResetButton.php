@@ -44,6 +44,6 @@ class ResetButton extends AbstractElement {
 			)
 		);
 
-		\WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args );
+		wcapf()->template->load( 'reset-button', $args );
 	}
 }

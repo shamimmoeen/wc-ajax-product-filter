@@ -874,7 +874,7 @@ class Walker {
 			'screen_reader_text' => $screen_reader_text,
 		);
 
-		return \WCAPF_Template_Loader::get_instance()->load( 'menu-item', $args, false );
+		return wcapf()->template->get( 'menu-item', $args );
 	}
 
 	/**
@@ -898,14 +898,13 @@ class Walker {
 			/* translators: %s: item name */
 			$aria_label = sprintf( __( 'Expand/Collapse %s', 'wc-ajax-product-filter' ), $item['name'] );
 
-			return \WCAPF_Template_Loader::get_instance()->load(
+			return wcapf()->template->get(
 				'hierarchy-accordion',
 				array(
 					'is_active'  => $is_active,
 					'aria_label' => $aria_label,
 					'unique_id'  => $unique_id,
-				),
-				false
+				)
 			);
 		}
 
@@ -1005,7 +1004,7 @@ class Walker {
 
 		$classes = 'wcapf-search-box with-icon icon-right with-cross';
 
-		return \WCAPF_Template_Loader::get_instance()->load(
+		return wcapf()->template->get(
 			'search-box',
 			array(
 				'placeholder'        => $placeholder,
@@ -1013,8 +1012,7 @@ class Walker {
 				'icon_position'      => 'right',
 				'with_cross'         => true,
 				'search_box_classes' => $classes,
-			),
-			false
+			)
 		);
 	}
 

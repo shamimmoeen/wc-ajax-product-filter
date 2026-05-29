@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php
 	if ( $show_count ) {
-		WCAPF_Template_Loader::get_instance()->load(
+		wcapf()->template->load(
 			'menu-item-count',
 			array(
 				'count'              => $item_count,

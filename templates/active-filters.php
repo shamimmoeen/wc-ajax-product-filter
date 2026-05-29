@@ -42,7 +42,7 @@ if ( ! wcapf()->compat->found_wcapf() ) {
 	<?php if ( $filter_should_render ) : ?>
 		<div class="<?php echo esc_attr( $filter_inner_classes ); ?>">
 			<?php
-			WCAPF_Template_Loader::get_instance()->load(
+			wcapf()->template->load(
 				'filter-title',
 				array(
 					'show_title'          => $show_filter_title,

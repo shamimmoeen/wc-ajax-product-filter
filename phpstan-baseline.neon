@@ -1,7 +1,2 @@
 parameters:
 	ignoreErrors:
-		-
-			message: '#^@param array \$templates does not accept actual type of parameter\: non\-falsy\-string\.$#'
-			identifier: parameter.phpDocType
-			count: 1
-			path: includes/class-wcapf-template-loader.php

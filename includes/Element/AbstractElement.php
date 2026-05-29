@@ -159,7 +159,7 @@ abstract class AbstractElement implements Element {
 			$title_classes .= ' has-accordion';
 		}
 
-		\WCAPF_Template_Loader::get_instance()->load(
+		wcapf()->template->load(
 			'filter-title',
 			array(
 				'filter_key'          => $filter_key,
@@ -392,6 +392,6 @@ abstract class AbstractElement implements Element {
 			)
 		);
 
-		\WCAPF_Template_Loader::get_instance()->load( 'range', $args );
+		wcapf()->template->load( 'range', $args );
 	}
 }

@@ -275,7 +275,7 @@ class Shop {
 			$args = wcapf()->active_filters->prepare_args( $active_filters_on_top_args );
 
 			echo '<div class="wcapf-active-filters-before-shop-loop">';
-			\WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args );
+			wcapf()->template->load( 'active-filters', $args );
 			echo '</div>';
 		}
 	}

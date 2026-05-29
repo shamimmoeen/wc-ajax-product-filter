@@ -42,6 +42,6 @@ class ResetButton {
 
 		$args = wcapf()->active_filters->prepare_reset_button_args( $a );
 
-		return \WCAPF_Template_Loader::get_instance()->load( 'reset-button', $args, false );
+		return wcapf()->template->get( 'reset-button', $args );
 	}
 }

@@ -18,6 +18,8 @@ use WCAPF\Helpers\Data;
 use WCAPF\Helpers\Notices;
 use WCAPF\Helpers\Rating;
 use WCAPF\Helpers\Settings;
+use WCAPF\Helpers\Template;
+use WCAPF\Hooks\LegacyTemplatePath;
 use WCAPF\Hooks\PostAuthorFilter;
 use WCAPF\Hooks\PostType;
 use WCAPF\Hooks\RatingFilter;
@@ -85,6 +87,13 @@ class Plugin {
 	public ActiveFilters $active_filters;
 
 	/**
+	 * Template helper.
+	 *
+	 * @var Template
+	 */
+	public Template $template;
+
+	/**
 	 * Filter and form post-type registration hooks.
 	 *
 	 * @var PostType
@@ -118,6 +127,13 @@ class Plugin {
 	 * @var Shop
 	 */
 	public Shop $shop;
+
+	/**
+	 * Pre-v3 theme template override fallback.
+	 *
+	 * @var LegacyTemplatePath
+	 */
+	public LegacyTemplatePath $legacy_template_path;
 
 	/**
 	 * V3 → v4 data migration and review-filters notice.
@@ -165,14 +181,16 @@ class Plugin {
 		$this->notices        = new Notices();
 		$this->data           = new Data();
 		$this->active_filters = new ActiveFilters();
+		$this->template       = new Template();
 
-		$this->post_type          = new PostType();
-		$this->post_author_filter = new PostAuthorFilter();
-		$this->rating_filter      = new RatingFilter();
-		$this->taxonomy_filter    = new TaxonomyFilter();
-		$this->shop               = new Shop();
-		$this->v4_migration       = new V4Migration();
-		$this->setup              = new Setup();
+		$this->post_type            = new PostType();
+		$this->post_author_filter   = new PostAuthorFilter();
+		$this->rating_filter        = new RatingFilter();
+		$this->taxonomy_filter      = new TaxonomyFilter();
+		$this->shop                 = new Shop();
+		$this->legacy_template_path = new LegacyTemplatePath();
+		$this->v4_migration         = new V4Migration();
+		$this->setup                = new Setup();
 
 		$this->frontend_scripts = new FrontendScripts();
 		$this->ajax             = new Ajax();

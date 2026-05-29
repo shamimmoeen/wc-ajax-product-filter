@@ -45,6 +45,6 @@ class ActiveFilters {
 
 		$args = wcapf()->active_filters->prepare_args( $a );
 
-		return \WCAPF_Template_Loader::get_instance()->load( 'active-filters', $args, false );
+		return wcapf()->template->get( 'active-filters', $args );
 	}
 }
