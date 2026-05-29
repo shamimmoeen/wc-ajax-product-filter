@@ -16,6 +16,7 @@ use WCAPF\Helpers\AdminUrl;
 use WCAPF\Helpers\Api;
 use WCAPF\Helpers\Compat;
 use WCAPF\Helpers\Data;
+use WCAPF\Helpers\FormFilters;
 use WCAPF\Helpers\Notices;
 use WCAPF\Helpers\Rating;
 use WCAPF\Helpers\Settings;
@@ -100,6 +101,13 @@ class Plugin {
 	 * @var Api
 	 */
 	public Api $api;
+
+	/**
+	 * Form-filters write helper.
+	 *
+	 * @var FormFilters
+	 */
+	public FormFilters $form_filters;
 
 	/**
 	 * Filter and form post-type registration hooks.
@@ -191,6 +199,7 @@ class Plugin {
 		$this->active_filters = new ActiveFilters();
 		$this->template       = new Template();
 		$this->api            = new Api();
+		$this->form_filters   = new FormFilters();
 
 		$this->post_type            = new PostType();
 		$this->post_author_filter   = new PostAuthorFilter();

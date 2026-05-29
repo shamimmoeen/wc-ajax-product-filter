@@ -71,8 +71,7 @@ class Ajax {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
 
-		$form_filters_utils = new \WCAPF_Form_Filters_Utils();
-		$form_filters_utils->save_form_filters( Defaults::get_sample_filters(), $new_form_id );
+		wcapf()->form_filters->save( Defaults::get_sample_filters(), $new_form_id );
 
 		wp_send_json_success( wcapf()->api->form_data( $new_form_id ) );
 	}
@@ -407,9 +406,7 @@ class Ajax {
 			wp_send_json_error( $new_form_id->get_error_message() );
 		}
 
-		$form_filters_utils = new \WCAPF_Form_Filters_Utils();
-
-		list( $filters, $errors ) = $form_filters_utils->save_form_filters( $form_filters, $new_form_id );
+		list( $filters, $errors ) = wcapf()->form_filters->save( $form_filters, $new_form_id );
 
 		if ( $errors ) {
 			wp_send_json_error( array( 'errors' => $errors ) );
@@ -876,15 +873,13 @@ class Ajax {
 		$new_filter_keys = array();
 		$errors          = array();
 
-		$form_filter_utils = new \WCAPF_Form_Filters_Utils();
-
 		foreach ( $filter_keys as $order => $filter ) {
 			$post_name = isset( $filter['field_key'] ) ? urldecode( sanitize_title( $filter['field_key'] ) ) : '';
 			$type      = isset( $filter['type'] ) ? $filter['type'] : '';
 			$taxonomy  = isset( $filter['taxonomy'] ) ? $filter['taxonomy'] : '';
 			$meta_key  = isset( $filter['meta_key'] ) ? $filter['meta_key'] : '';
 
-			list( $post_name, $error_data ) = $form_filter_utils->retrieve_filter_key(
+			list( $post_name, $error_data ) = wcapf()->form_filters->filter_key(
 				$type,
 				$possible_types,
 				$taxonomy,

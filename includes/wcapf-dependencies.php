@@ -13,7 +13,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once WCAPF_PLUGIN_DIR . '/includes/class-wcapf-form-filters-utils.php';
-
 // Loads the compatibility fixes.
 require_once WCAPF_PLUGIN_DIR . '/includes/wcapf-compatibility-fixes.php';

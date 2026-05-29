@@ -381,9 +381,7 @@ class V4Migration {
 
 		$new_form_id = wp_insert_post( $post_arr, true );
 
-		$form_filters_utils = new \WCAPF_Form_Filters_Utils();
-
-		$form_filters_utils->save_form_filters( $migrated_filters, $new_form_id, true );
+		wcapf()->form_filters->save( $migrated_filters, $new_form_id, true );
 
 		update_post_meta( $new_form_id, '_wcapf_v4_needs_review', '1' );
 	}
