@@ -308,8 +308,6 @@ final class WCAPF_Plugin {
 
 		$this->define_constants();
 
-		require_once WCAPF_PLUGIN_DIR . '/includes/wcapf-dependencies.php';
-
 		// Construct the plugin registry so helpers and hook classes are wired up.
 		wcapf();
 
