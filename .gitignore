@@ -13,3 +13,6 @@ public/js/
 public/css/
 build/
 tests/cache/
+.dist/
+.husky/_/
+*.log

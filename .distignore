@@ -49,8 +49,14 @@ node_modules
 *.tar.gz
 *.zip
 .dist
+.env
+.env.example
 .vscode
 .geminiignore
+docker
+docker-compose.yml
+phpstan.neon.dist
+phpstan-baseline.neon
 
 # Ignore source codes.
 public/lib/chosen/chosen.scss
