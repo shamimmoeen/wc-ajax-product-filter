@@ -30,7 +30,6 @@ class V4Migration {
 	public function __construct() {
 		add_action( 'init', array( $this, 'maybe_run' ), 20 );
 
-		add_action( 'wp_ajax_wcapf_dismiss_v4_review_filters_notice', array( $this, 'dismiss_review_filters_notice' ) );
 		add_filter( 'wcapf_admin_js_params', array( $this, 'inject_js_params' ) );
 	}
 
@@ -387,35 +386,15 @@ class V4Migration {
 	}
 
 	/**
-	 * AJAX handler that clears the "needs review" flag on the migrated form.
-	 *
-	 * @return void
-	 */
-	public function dismiss_review_filters_notice(): void {
-		check_ajax_referer( 'dismiss-v4-review-filters-notice-nonce', 'nonce' );
-
-		$form_id = ! empty( $_POST['form_id'] ) ? absint( wp_unslash( $_POST['form_id'] ) ) : 0;
-
-		if ( $form_id ) {
-			delete_post_meta( $form_id, '_wcapf_v4_needs_review' );
-		}
-
-		wp_send_json_success();
-	}
-
-	/**
-	 * Injects the dismiss nonce when the review-filters notice should show.
-	 * The nonce's presence is what tells the React component to render — no
-	 * separate visibility flag is needed.
+	 * Toggles the "review filters" notice. Read by V4ReviewFiltersNotice.js to
+	 * decide whether to render; dismissal posts to /wcapf/v1/notices/v4-review-filters/dismiss.
 	 *
 	 * @param array $params Admin script parameters.
 	 *
 	 * @return array
 	 */
 	public function inject_js_params( $params ): array {
-		if ( wcapf()->notices->is_v4_review_filters_visible() ) {
-			$params['v4_review_filters_dismiss_nonce'] = wp_create_nonce( 'dismiss-v4-review-filters-notice-nonce' );
-		}
+		$params['v4_review_filters_visible'] = wcapf()->notices->is_v4_review_filters_visible();
 
 		return $params;
 	}

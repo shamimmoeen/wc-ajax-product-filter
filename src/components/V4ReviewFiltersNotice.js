@@ -4,8 +4,9 @@ import { close } from '@wordpress/icons';
 import apiFetch from '@wordpress/api-fetch';
 
 const V4ReviewFiltersNotice = () => {
-	const dismissNonce = wcapf_admin_params.v4_review_filters_dismiss_nonce;
-	const [isVisible, setIsVisible] = useState(Boolean(dismissNonce));
+	const [isVisible, setIsVisible] = useState(
+		Boolean(wcapf_admin_params.v4_review_filters_visible)
+	);
 
 	if (!isVisible) return null;
 

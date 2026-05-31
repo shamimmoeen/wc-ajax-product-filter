@@ -36,7 +36,6 @@ class Admin {
 		// For review notices.
 		add_action( 'admin_head', array( $this, 'enqueue_review_notices_styles' ) );
 		add_action( 'admin_footer', array( $this, 'enqueue_review_notices_scripts' ) );
-		add_action( 'wp_ajax_wcapf_dismiss_review_notices', array( $this, 'dismiss_review_notices' ) );
 	}
 
 	/**
@@ -276,12 +275,10 @@ class Admin {
 	 */
 	private function admin_js_params(): array {
 		$params = array(
-			'ajaxurl'      => admin_url( 'admin-ajax.php' ),
 			'free_version' => WCAPF_CORE_VERSION,
 			'pro_version'  => defined( 'WCAPF_PRO_VERSION' ) ? WCAPF_PRO_VERSION : false,
 			'wp_version'   => get_bloginfo( 'version' ),
 			'dirty'        => false,
-			'nonce'        => wp_create_nonce( 'wcapf-nonce' ),
 		);
 
 		$params['forms_page_link']     = wcapf()->admin_url->forms_page();
@@ -465,46 +462,5 @@ class Admin {
 			}
 		</script>
 		<?php
-	}
-
-	/**
-	 * The ajax function to dismiss the review notices.
-	 *
-	 * @return void
-	 */
-	public function dismiss_review_notices(): void {
-		// Verify the AJAX request nonce.
-		check_ajax_referer( 'wcapf-dismiss-review-notices-nonce', 'nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'Unauthorized request', 'wc-ajax-product-filter' ) );
-		}
-
-		// Get the type parameter from the request.
-		$type = ! empty( $_REQUEST['type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['type'] ) ) : '';
-
-		// If the type parameter is missing, send an error response.
-		if ( ! $type ) {
-			wp_send_json_error( __( 'Invalid type for dismissing the review notices', 'wc-ajax-product-filter' ) );
-		}
-
-		// Get the current user ID.
-		$user_id = get_current_user_id();
-
-		// Process dismissal based on the type.
-		if ( 'milestone-achieved' === $type ) {
-			// Dismiss the milestone achieved notice and store the dismissal time.
-			update_user_meta( $user_id, 'wcapf_review_notice_for_milestone_achieved_dismissed', '1' );
-			update_user_meta( $user_id, 'wcapf_review_notice_for_milestone_achieved_dismissed_at', time() );
-		} elseif ( 'permanently-dismiss-time-since' === $type ) {
-			// Permanently hide the time since notice for the user.
-			update_user_meta( $user_id, 'wcapf_review_notice_time_since_hide_permanently', '1' );
-		} elseif ( 'postpone-time-since' === $type ) {
-			// Store the dismissal time.
-			update_user_meta( $user_id, 'wcapf_review_notice_time_since_dismissed_at', time() );
-		}
-
-		// Send a success response.
-		wp_send_json_success( __( 'WCAPF review notice dismissed', 'wc-ajax-product-filter' ) );
 	}
 }
