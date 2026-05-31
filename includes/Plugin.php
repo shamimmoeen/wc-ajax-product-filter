@@ -173,11 +173,11 @@ class Plugin {
 	public FrontendScripts $frontend_scripts;
 
 	/**
-	 * Wcapf/v1 REST controller backing the React admin UI.
+	 * Wcapf/v1 REST API coordinator (per-resource controllers underneath).
 	 *
-	 * @var Rest
+	 * @var RestApi
 	 */
-	public Rest $rest;
+	public RestApi $rest_api;
 
 	/**
 	 * Admin pages, assets, and review notices. Null on non-admin requests.
@@ -211,7 +211,7 @@ class Plugin {
 		$this->setup                = new Setup();
 
 		$this->frontend_scripts = new FrontendScripts();
-		$this->rest             = new Rest();
+		$this->rest_api         = new RestApi();
 
 		if ( is_admin() ) {
 			$this->admin = new Admin();
