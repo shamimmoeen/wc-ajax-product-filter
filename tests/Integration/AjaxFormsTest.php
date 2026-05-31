@@ -49,6 +49,14 @@ class AjaxFormsTest extends WP_Ajax_UnitTestCase {
 		$this->fail( "Handler $action did not call wp_send_json_*" );
 	}
 
+	private function do_rest( string $method, string $route, array $params = array() ): \WP_REST_Response {
+		$request = new \WP_REST_Request( $method, $route );
+		foreach ( $params as $key => $value ) {
+			$request->set_param( $key, $value );
+		}
+		return rest_do_request( $request );
+	}
+
 	public function test_create_sample_form_seeds_sample_filters_and_returns_form_data(): void {
 		$response = $this->call_handler( 'wcapf_create_sample_form', array(), array() );
 
@@ -382,5 +390,229 @@ class AjaxFormsTest extends WP_Ajax_UnitTestCase {
 		$this->assertTrue( $response['success'] );
 		$this->assertArrayHasKey( 'settings', $response['data'] );
 		$this->assertArrayHasKey( 'global_filter_keys', $response['data'] );
+	}
+
+	// REST mirrors — same fixtures, REST routes return the data unwrapped (no
+	// {success, data} envelope). When all admin-ajax handlers are deleted in
+	// Phase 0d, these REST assertions stay and the AJAX ones above drop.
+
+	public function test_create_sample_form_via_rest(): void {
+		$response = $this->do_rest( 'POST', '/wcapf/v1/forms', array( 'template' => 'sample' ) );
+
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertArrayHasKey( 'id', $data );
+		$this->assertSame( 'wcapf-form', get_post_type( $data['id'] ) );
+
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_parent' => $data['id'],
+				'post_status' => 'publish',
+				'nopaging'    => true,
+			)
+		);
+		$this->assertCount( count( \WCAPF\Defaults::get_sample_filters() ), $filters );
+	}
+
+	public function test_add_form_via_rest(): void {
+		$response = $this->do_rest(
+			'POST',
+			'/wcapf/v1/forms',
+			array(
+				'form_title'    => 'My new form',
+				'form_settings' => wp_json_encode( \WCAPF\Defaults::form_default_data() ),
+			)
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertSame( 'My new form', $data['title'] );
+
+		$filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_parent' => $data['id'],
+				'nopaging'    => true,
+			)
+		);
+		$this->assertSame( array(), $filters );
+	}
+
+	public function test_get_form_data_via_rest_returns_documented_shape(): void {
+		$form_id = $this->factory()->post->create(
+			array(
+				'post_type'    => 'wcapf-form',
+				'post_status'  => 'publish',
+				'post_title'   => 'REST form',
+				'post_content' => maybe_serialize( \WCAPF\Defaults::form_default_data() ),
+			)
+		);
+
+		$response = $this->do_rest( 'GET', "/wcapf/v1/forms/$form_id" );
+
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertSame(
+			array( 'post_id', 'post_title', 'filter_keys', 'form_filters', 'form_settings' ),
+			array_keys( $data )
+		);
+		$this->assertSame( $form_id, $data['post_id'] );
+		$this->assertSame( 'REST form', $data['post_title'] );
+	}
+
+	public function test_get_form_data_via_rest_parses_parent_term(): void {
+		$term    = $this->factory()->term->create(
+			array( 'taxonomy' => 'product_cat', 'name' => 'Furniture' )
+		);
+		$form_id = $this->factory()->post->create(
+			array(
+				'post_type'    => 'wcapf-form',
+				'post_status'  => 'publish',
+				'post_content' => maybe_serialize( \WCAPF\Defaults::form_default_data() ),
+			)
+		);
+		$this->factory()->post->create(
+			array(
+				'post_type'    => 'wcapf-filter',
+				'post_parent'  => $form_id,
+				'post_status'  => 'publish',
+				'post_excerpt' => 'taxonomy>product_cat',
+				'post_content' => maybe_serialize(
+					array( 'type' => 'taxonomy', 'taxonomy' => 'product_cat', 'parent_term' => $term )
+				),
+			)
+		);
+
+		$response = $this->do_rest( 'GET', "/wcapf/v1/forms/$form_id" );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame(
+			array( 'value' => $term, 'label' => 'Furniture' ),
+			$response->get_data()['form_filters'][0]['parent_term']
+		);
+	}
+
+	public function test_get_form_data_via_rest_404_on_unknown_id(): void {
+		$response = $this->do_rest( 'GET', '/wcapf/v1/forms/999999' );
+
+		$this->assertSame( 404, $response->get_status() );
+	}
+
+	public function test_save_form_via_rest_round_trips_parent_term(): void {
+		$term    = $this->factory()->term->create(
+			array( 'taxonomy' => 'product_cat', 'name' => 'Lamps' )
+		);
+		$form_id = $this->factory()->post->create(
+			array(
+				'post_type'    => 'wcapf-form',
+				'post_status'  => 'publish',
+				'post_content' => maybe_serialize( \WCAPF\Defaults::form_default_data() ),
+			)
+		);
+
+		$response = $this->do_rest(
+			'POST',
+			"/wcapf/v1/forms/$form_id",
+			array(
+				'form_title'    => 'After save',
+				'form_filters'  => wp_json_encode(
+					array(
+						array(
+							'type'        => 'taxonomy',
+							'taxonomy'    => 'product_cat',
+							'field_key'   => 'cat_filter',
+							'title'       => 'Categories',
+							'parent_term' => array( 'value' => $term, 'label' => 'Lamps' ),
+						),
+					)
+				),
+				'form_settings' => wp_json_encode( \WCAPF\Defaults::form_default_data() ),
+			)
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$saved = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_parent' => $form_id,
+				'post_status' => 'publish',
+				'nopaging'    => true,
+			)
+		);
+		$this->assertCount( 1, $saved );
+		$stored = maybe_unserialize( $saved[0]->post_content );
+		$this->assertSame( $term, (int) $stored['parent_term'] );
+	}
+
+	public function test_delete_form_via_rest_cascades(): void {
+		$form_id = $this->factory()->post->create(
+			array(
+				'post_type'    => 'wcapf-form',
+				'post_status'  => 'publish',
+				'post_content' => maybe_serialize( \WCAPF\Defaults::form_default_data() ),
+			)
+		);
+		$child   = $this->factory()->post->create(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_parent' => $form_id,
+				'post_status' => 'publish',
+			)
+		);
+
+		$response = $this->do_rest( 'DELETE', "/wcapf/v1/forms/$form_id" );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertNull( get_post( $form_id ) );
+		$this->assertNull( get_post( $child ) );
+	}
+
+	public function test_delete_filter_via_rest_isolated(): void {
+		$form_id = $this->factory()->post->create(
+			array( 'post_type' => 'wcapf-form', 'post_status' => 'publish' )
+		);
+		$victim   = $this->factory()->post->create(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_parent' => $form_id,
+				'post_status' => 'publish',
+			)
+		);
+		$survivor = $this->factory()->post->create(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_parent' => $form_id,
+				'post_status' => 'publish',
+			)
+		);
+
+		$response = $this->do_rest( 'DELETE', "/wcapf/v1/filters/$victim" );
+
+		$this->assertSame( 200, $response->get_status() );
+		$this->assertNull( get_post( $victim ) );
+		$this->assertNotNull( get_post( $survivor ) );
+		$this->assertNotNull( get_post( $form_id ) );
+	}
+
+	public function test_save_settings_via_rest_plucks_author_roles(): void {
+		$response = $this->do_rest(
+			'POST',
+			'/wcapf/v1/settings',
+			array(
+				'settings' => wp_json_encode(
+					array(
+						'author_roles' => array(
+							array( 'label' => 'Administrator', 'value' => 'administrator' ),
+							array( 'label' => 'Editor', 'value' => 'editor' ),
+						),
+					)
+				),
+			)
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$stored = get_option( wcapf()->settings->option_key() );
+		$this->assertSame( array( 'administrator', 'editor' ), $stored['author_roles'] );
 	}
 }

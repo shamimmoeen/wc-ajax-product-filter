@@ -173,11 +173,19 @@ class Plugin {
 	public FrontendScripts $frontend_scripts;
 
 	/**
-	 * Admin-ajax endpoints backing the React admin UI.
+	 * Admin-ajax endpoints backing the React admin UI. Deleted once axios is
+	 * fully removed; the REST controller below takes over.
 	 *
 	 * @var Ajax
 	 */
 	public Ajax $ajax;
+
+	/**
+	 * Wcapf/v1 REST controller backing the React admin UI.
+	 *
+	 * @var Rest
+	 */
+	public Rest $rest;
 
 	/**
 	 * Admin pages, assets, and review notices. Null on non-admin requests.
@@ -212,6 +220,7 @@ class Plugin {
 
 		$this->frontend_scripts = new FrontendScripts();
 		$this->ajax             = new Ajax();
+		$this->rest             = new Rest();
 
 		if ( is_admin() ) {
 			$this->admin = new Admin();

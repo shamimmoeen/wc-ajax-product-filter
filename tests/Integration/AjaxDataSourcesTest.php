@@ -37,6 +37,14 @@ class AjaxDataSourcesTest extends WP_Ajax_UnitTestCase {
 		$this->fail( "Handler $action did not call wp_send_json_*" );
 	}
 
+	private function do_rest( string $method, string $route, array $params = array() ): \WP_REST_Response {
+		$request = new \WP_REST_Request( $method, $route );
+		foreach ( $params as $key => $value ) {
+			$request->set_param( $key, $value );
+		}
+		return rest_do_request( $request );
+	}
+
 	public function test_get_terms_for_modal_returns_value_label_rows(): void {
 		$term_id = $this->factory()->term->create(
 			array(
@@ -238,5 +246,143 @@ class AjaxDataSourcesTest extends WP_Ajax_UnitTestCase {
 			}
 		}
 		return null;
+	}
+
+	// REST mirrors — same fixtures, same shape assertions on the rest_do_request
+	// data. /terms collapses both AJAX endpoints behind ?context=, same for
+	// /authors.
+
+	public function test_terms_modal_via_rest(): void {
+		$term_id = $this->factory()->term->create(
+			array( 'taxonomy' => 'product_cat', 'name' => 'Chairs' )
+		);
+
+		$response = $this->do_rest(
+			'GET',
+			'/wcapf/v1/terms',
+			array( 'context' => 'modal', 'taxonomy' => 'product_cat' )
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$row = $this->find_row( $response->get_data(), 'value', $term_id );
+		$this->assertNotNull( $row );
+		$this->assertSame( array( 'value', 'label' ), array_keys( $row ) );
+		$this->assertSame( 'Chairs', $row['label'] );
+	}
+
+	public function test_terms_dropdown_via_rest_paginates(): void {
+		for ( $i = 1; $i <= 22; $i++ ) {
+			$this->factory()->term->create(
+				array( 'taxonomy' => 'product_cat', 'name' => sprintf( 'Bulk %02d', $i ) )
+			);
+		}
+
+		$page_1 = $this->do_rest(
+			'GET',
+			'/wcapf/v1/terms',
+			array( 'taxonomy' => 'product_cat', 'page' => 1 )
+		);
+		$page_2 = $this->do_rest(
+			'GET',
+			'/wcapf/v1/terms',
+			array( 'taxonomy' => 'product_cat', 'page' => 2 )
+		);
+
+		$this->assertSame( 200, $page_1->get_status() );
+		$this->assertCount( 20, $page_1->get_data() );
+		$this->assertSame( array( 'label', 'value' ), array_keys( $page_1->get_data()[0] ) );
+		$this->assertNotEmpty( $page_2->get_data() );
+	}
+
+	public function test_terms_dropdown_via_rest_only_parent_filter(): void {
+		$parent = $this->factory()->term->create(
+			array( 'taxonomy' => 'product_cat', 'name' => 'Parent cat' )
+		);
+		$this->factory()->term->create(
+			array( 'taxonomy' => 'product_cat', 'name' => 'Child cat', 'parent' => $parent )
+		);
+		$leaf = $this->factory()->term->create(
+			array( 'taxonomy' => 'product_cat', 'name' => 'Leaf cat' )
+		);
+
+		$response = $this->do_rest(
+			'GET',
+			'/wcapf/v1/terms',
+			array( 'taxonomy' => 'product_cat', 'only_parent' => 'true' )
+		);
+
+		$values = wp_list_pluck( $response->get_data(), 'value' );
+		$this->assertContains( $parent, $values );
+		$this->assertNotContains( $leaf, $values );
+	}
+
+	public function test_authors_dropdown_via_rest(): void {
+		$author_id = self::factory()->user->create(
+			array( 'role' => 'author', 'display_name' => 'Jane Author' )
+		);
+
+		$response = $this->do_rest( 'GET', '/wcapf/v1/authors' );
+
+		$this->assertSame( 200, $response->get_status() );
+		$values = array_map( 'intval', wp_list_pluck( $response->get_data(), 'value' ) );
+		$this->assertContains( $author_id, $values );
+	}
+
+	public function test_authors_modal_via_rest_filters_by_roles(): void {
+		$author_id = self::factory()->user->create(
+			array( 'role' => 'author', 'display_name' => 'In-role' )
+		);
+		$editor_id = self::factory()->user->create(
+			array( 'role' => 'editor', 'display_name' => 'Out-of-role' )
+		);
+
+		$response = $this->do_rest(
+			'GET',
+			'/wcapf/v1/authors',
+			array( 'context' => 'modal', 'roles' => array( 'author' ) )
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$values = array_map( 'intval', wp_list_pluck( $response->get_data(), 'value' ) );
+		$this->assertContains( $author_id, $values );
+		$this->assertNotContains( $editor_id, $values );
+	}
+
+	public function test_pages_via_rest_keyword_search(): void {
+		$matched = $this->factory()->post->create(
+			array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Match page' )
+		);
+		$other = $this->factory()->post->create(
+			array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Unrelated' )
+		);
+
+		$response = $this->do_rest( 'GET', '/wcapf/v1/pages', array( 'keyword' => 'Match' ) );
+
+		$values = wp_list_pluck( $response->get_data(), 'value' );
+		$this->assertContains( $matched, $values );
+		$this->assertNotContains( $other, $values );
+	}
+
+	public function test_products_via_rest_keyword_search(): void {
+		$product = $this->factory()->post->create(
+			array( 'post_type' => 'product', 'post_status' => 'publish', 'post_title' => 'Visible widget' )
+		);
+
+		$response = $this->do_rest( 'GET', '/wcapf/v1/products', array( 'keyword' => 'widget' ) );
+
+		$this->assertContains( $product, wp_list_pluck( $response->get_data(), 'value' ) );
+	}
+
+	public function test_meta_values_via_rest_for_meta_key(): void {
+		$a = $this->factory()->post->create( array( 'post_type' => 'product', 'post_status' => 'publish' ) );
+		$b = $this->factory()->post->create( array( 'post_type' => 'product', 'post_status' => 'publish' ) );
+		update_post_meta( $a, 'fabric', 'cotton' );
+		update_post_meta( $b, 'fabric', 'wool' );
+
+		$response = $this->do_rest( 'GET', '/wcapf/v1/meta-values', array( 'meta_key' => 'fabric' ) );
+
+		$values = wp_list_pluck( $response->get_data(), 'value' );
+		$this->assertContains( 'cotton', $values );
+		$this->assertContains( 'wool', $values );
 	}
 }

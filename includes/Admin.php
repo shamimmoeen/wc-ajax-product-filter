@@ -217,6 +217,19 @@ class Admin {
 
 			wp_enqueue_script( 'wcapf-admin-scripts' );
 
+			// @wordpress/api-fetch auto-loads wpApiSettings.nonce ONLY for the
+			// 'wp_rest' nonce. Wire the middleware once after wp-api-fetch loads
+			// so every apiFetch call in the React admin authenticates correctly.
+			wp_enqueue_script( 'wp-api-fetch' );
+			wp_add_inline_script(
+				'wp-api-fetch',
+				sprintf(
+					'wp.apiFetch.use( wp.apiFetch.createNonceMiddleware( "%s" ) );',
+					esc_js( wp_create_nonce( 'wp_rest' ) )
+				),
+				'after'
+			);
+
 			wp_enqueue_script(
 				'wc-ajax-product-filter-admin-scripts',
 				WCAPF_PLUGIN_URL . 'admin/js/wc-ajax-product-filter-admin-scripts.js',
