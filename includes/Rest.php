@@ -66,7 +66,7 @@ class Rest {
 					'permission_callback' => $auth,
 				),
 				array(
-					'methods'             => WP_REST_Server::CREATABLE,
+					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_form' ),
 					'permission_callback' => $auth,
 				),
@@ -92,7 +92,7 @@ class Rest {
 			self::NAMESPACE,
 			'/settings',
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
+				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'save_settings' ),
 				'permission_callback' => $auth,
 			)
