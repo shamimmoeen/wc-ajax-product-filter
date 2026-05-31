@@ -1,5 +1,5 @@
 import { useState } from '@wordpress/element';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	itemDeletedErrorNotice,
 	itemDeletedSuccessNotice,
@@ -10,7 +10,6 @@ import {
 	removeItemDeletedNotices,
 	removeItemDuplicatedNotices,
 } from './notices';
-import { getNonceToken } from './utils';
 
 const useListTable = (dispatch, items, postType) => {
 	const [addNewModalOpen, setAddNewModalOpen] = useState(false);
@@ -55,30 +54,18 @@ const useListTable = (dispatch, items, postType) => {
 
 		setDeletingItemId(id);
 
-		const formData = new FormData();
-
-		formData.append('action', `wcapf_delete_${postType}`);
-		formData.append('nonce', getNonceToken());
-		formData.append('post_id', id);
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
+		apiFetch({
+			path: `/wcapf/v1/${postType}s/${id}`,
+			method: 'DELETE',
+		})
 			.then((res) => {
 				setDeletingItemId(null);
 
-				const {
-					data: { data: message, success },
-				} = res;
+				itemDeletedSuccessNotice(res.message);
 
-				if (success) {
-					itemDeletedSuccessNotice(message);
+				const _items = items.filter((item) => item.id !== id);
 
-					const _items = items.filter((item) => item.id !== id);
-
-					dispatch({ type: dispatchType, payload: _items });
-				} else {
-					itemDeletedErrorNotice(message);
-				}
+				dispatch({ type: dispatchType, payload: _items });
 			})
 			.catch((err) => {
 				setDeletingItemId(null);
@@ -106,32 +93,20 @@ const useListTable = (dispatch, items, postType) => {
 
 		setDuplicatingItemId(id);
 
-		const formData = new FormData();
-
-		formData.append('action', `wcapf_duplicate_${postType}`);
-		formData.append('nonce', getNonceToken());
-		formData.append('post_id', id);
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
+		apiFetch({
+			path: `/wcapf/v1/${postType}s/${id}/duplicate`,
+			method: 'POST',
+		})
 			.then((res) => {
 				setDuplicatingItemId(null);
 
-				const {
-					data: { data, success },
-				} = res;
+				const { message, new_post } = res;
 
-				if (success) {
-					const { message, new_post } = data;
+				itemDuplicatedSuccessNotice(message);
 
-					itemDuplicatedSuccessNotice(message);
+				const _items = [new_post, ...items];
 
-					const _items = [new_post, ...items];
-
-					dispatch({ type: dispatchType, payload: _items });
-				} else {
-					itemDuplicatedErrorNotice(data);
-				}
+				dispatch({ type: dispatchType, payload: _items });
 			})
 			.catch((err) => {
 				setDuplicatingItemId(null);

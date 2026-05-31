@@ -1,5 +1,6 @@
 import { AsyncPaginate } from 'react-select-async-paginate';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import {
 	customStyles,
 	IndicatorSeparator,
@@ -13,21 +14,18 @@ let customClasses = '__custom_react_select __single_select __archive_select';
 
 const SelectArchive = ({ value, taxonomy, onChange }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
-		const ajaxParams = {
-			action: 'wcapf_get_taxonomy_terms',
+		// Previously hit `wcapf_get_taxonomy_terms` which has no registered
+		// handler — the selector was non-functional. Routes through /terms
+		// (dropdown context) which accepts the same params.
+		const path = addQueryArgs('/wcapf/v1/terms', {
 			taxonomy,
-			only_parent: false,
+			only_parent: 'false',
 			keyword,
 			page,
-		};
+		});
 
-		// Fetch the options.
 		try {
-			const res = await axios.get(wcapf_admin_params.ajaxurl, {
-				params: ajaxParams,
-			});
-
-			const data = res.data.data;
+			const data = await apiFetch({ path });
 			const hasMore = data.length >= 1;
 
 			return {

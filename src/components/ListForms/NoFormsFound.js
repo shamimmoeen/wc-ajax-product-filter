@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
 import { ImportIcon, PlusIcon } from '../SVGIcons';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import { useListForms } from './ListFormsContext';
 import {
 	itemCreateErrorNotice,
@@ -11,7 +11,6 @@ import {
 	removeItemDeletedNotices,
 	removeItemDuplicatedNotices,
 } from '../notices';
-import { getNonceToken } from '../utils';
 
 const NoFormsFound = () => {
 	const {
@@ -28,29 +27,19 @@ const NoFormsFound = () => {
 
 		setLoading(true);
 
-		const formData = new FormData();
-
-		formData.append('action', 'wcapf_create_sample_form');
-		formData.append('nonce', getNonceToken());
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
-			.then((res) => {
+		apiFetch({
+			path: '/wcapf/v1/forms',
+			method: 'POST',
+			data: { template: 'sample' },
+		})
+			.then((data) => {
 				setLoading(false);
 
-				const {
-					data: { data, success },
-				} = res;
+				itemCreateSuccessNotice();
 
-				if (success) {
-					itemCreateSuccessNotice();
+				const _forms = [data, ...forms];
 
-					const _forms = [data, ...forms];
-
-					dispatch({ type: 'SET_FORMS', payload: _forms });
-				} else {
-					itemCreateErrorNotice(data);
-				}
+				dispatch({ type: 'SET_FORMS', payload: _forms });
 			})
 			.catch((err) => {
 				setLoading(false);

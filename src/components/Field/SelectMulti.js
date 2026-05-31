@@ -2,9 +2,10 @@ import { __ } from '@wordpress/i18n';
 import { CheckboxControl } from '@wordpress/components';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { default as ReactSelect } from 'react-select';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { FormatSelectMultiLabel } from './utilsForReactSelect';
-import { getInputId, getNonceToken } from '../utils';
+import { getInputId } from '../utils';
 
 const SelectMulti = ({
 	label,
@@ -30,45 +31,25 @@ const SelectMulti = ({
 	maxMenuHeight,
 }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
-		let ajaxParams;
+		let path;
 
 		if ('author' === type) {
-			ajaxParams = {
-				action: 'wcapf_get_authors_for_dropdown',
-				keyword,
-				page,
-			};
+			path = addQueryArgs('/wcapf/v1/authors', { keyword, page });
 		} else if ('page' === type) {
-			ajaxParams = {
-				action: 'wcapf_get_pages_for_dropdown',
-				keyword,
-				page,
-			};
+			path = addQueryArgs('/wcapf/v1/pages', { keyword, page });
 		} else if ('product' === type) {
-			ajaxParams = {
-				action: 'wcapf_get_products_for_dropdown',
-				keyword,
-				page,
-			};
+			path = addQueryArgs('/wcapf/v1/products', { keyword, page });
 		} else {
-			ajaxParams = {
-				action: 'wcapf_get_terms_for_dropdown',
+			path = addQueryArgs('/wcapf/v1/terms', {
 				taxonomy,
-				only_parent: onlyParent,
+				only_parent: onlyParent ? 'true' : 'false',
 				keyword,
 				page,
-			};
+			});
 		}
 
-		ajaxParams['nonce'] = getNonceToken();
-
-		// Fetch the options.
 		try {
-			const res = await axios.get(wcapf_admin_params.ajaxurl, {
-				params: ajaxParams,
-			});
-
-			const data = res.data.data;
+			const data = await apiFetch({ path });
 			const hasMore = data.length >= 1;
 
 			return {

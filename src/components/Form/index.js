@@ -1,6 +1,6 @@
 import { useEffect } from '@wordpress/element';
 import { useForm } from './FormContext';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import { merge } from 'lodash';
 import TopBar from '../TopBar';
 import FormTitle from './FormTitle';
@@ -14,7 +14,6 @@ import {
 	proFilterTypes,
 } from './utils';
 import ReviewNotices from './ReviewNotices';
-import { getNonceToken } from '../utils';
 import { getFormFiltersErrorNotice } from '../notices';
 
 const Form = () => {
@@ -24,32 +23,12 @@ const Form = () => {
 		const query = new URL(window.location.href);
 		const id = query.searchParams.get('id');
 
-		const data = {
-			action: 'wcapf_get_form_data',
-			nonce: getNonceToken(),
-			post_id: id,
-		};
-
-		return axios.get(wcapf_admin_params.ajaxurl, {
-			params: data,
-		});
+		return apiFetch({ path: `/wcapf/v1/forms/${id}` });
 	};
 
 	useEffect(() => {
 		getFormData()
-			.then((response) => {
-				const {
-					data: { data: formData, success },
-				} = response;
-
-				if (!success) {
-					getFormFiltersErrorNotice(formData); // Here formData is the error message.
-
-					dispatch({ type: 'SET_LOADING', payload: false });
-
-					return;
-				}
-
+			.then((formData) => {
 				const filterKeys = formData['filter_keys'];
 				const formFilters = [];
 				const _formFilters = formData['form_filters'];

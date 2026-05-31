@@ -439,8 +439,6 @@ class Admin {
 		if ( ! in_array( $this->current_screen_id(), $this->slugs_of_custom_admin_pages(), true ) ) {
 			return;
 		}
-
-		$nonce = wp_create_nonce( 'wcapf-dismiss-review-notices-nonce' );
 		?>
 		<!--suppress ES6ConvertVarToLetConst, JSValidateTypes -->
 		<script>
@@ -457,14 +455,12 @@ class Admin {
 					$notice.remove();
 				} );
 
-				var data = {
-					action: 'wcapf_dismiss_review_notices',
-					nonce: '<?php echo esc_js( $nonce ); ?>',
-					type,
-				};
-
-				jQuery.post( ajaxurl, data, function( response ) {
-					console.log( response );
+				wp.apiFetch( {
+					path: '/wcapf/v1/notices/review/dismiss',
+					method: 'POST',
+					data: { type: type },
+				} ).catch( function ( err ) {
+					console.log( err );
 				} );
 			}
 		</script>

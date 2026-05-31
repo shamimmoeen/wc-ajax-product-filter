@@ -8,11 +8,11 @@ import {
 } from '@wordpress/components';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from '@wordpress/element';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import classnames from 'classnames';
 import { useForm } from '../../FormContext';
 import useFormFilterData from '../../useFormFilterData';
-import { getNonceToken } from '../../../utils';
 
 const modalInitialClass = '__manual_options_modal';
 
@@ -41,7 +41,7 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 			return;
 		}
 
-		let ajaxParams;
+		let path;
 
 		if ('taxonomy' === type) {
 			if (!taxonomy) {
@@ -54,10 +54,10 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 				return;
 			}
 
-			ajaxParams = {
-				action: 'wcapf_get_terms_for_modal',
+			path = addQueryArgs('/wcapf/v1/terms', {
+				context: 'modal',
 				taxonomy,
-			};
+			});
 		} else if ('post-author' === type) {
 			if (isEmpty(authorRoles)) {
 				setLoading(false);
@@ -72,10 +72,10 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 				return;
 			}
 
-			ajaxParams = {
-				action: 'wcapf_get_post_authors_for_modal',
+			path = addQueryArgs('/wcapf/v1/authors', {
+				context: 'modal',
 				roles: authorRoles,
-			};
+			});
 		} else {
 			if (!meta_key) {
 				setLoading(false);
@@ -87,22 +87,12 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 				return;
 			}
 
-			ajaxParams = {
-				action: 'wcapf_get_meta_values_for_modal',
-				meta_key,
-			};
+			path = addQueryArgs('/wcapf/v1/meta-values', { meta_key });
 		}
 
-		ajaxParams['nonce'] = getNonceToken();
-
-		axios
-			.get(wcapf_admin_params.ajaxurl, {
-				params: ajaxParams,
-			})
-			.then((res) => {
+		apiFetch({ path })
+			.then((data) => {
 				setLoading(false);
-
-				const data = res.data.data;
 
 				if (!isEmpty(data)) {
 					const classes = `${modalInitialClass} ajax-done`;

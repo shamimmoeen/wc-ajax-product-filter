@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { useForm } from '../FormContext';
 import useFormData from '../useFormData';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import { find, pick, omit, isEmpty, has } from 'lodash';
 import {
 	removeCopiedToClipboardNotice,
@@ -15,7 +15,6 @@ import Title from './Title';
 import PublishModal from '../../Modals/PublishModal';
 import {
 	GENERIC_ERROR_MESSAGE,
-	getNonceToken,
 	proUpdateRequired,
 } from '../../utils';
 import {
@@ -354,137 +353,126 @@ const FormTitle = () => {
 
 		setLoading(true);
 
-		const formData = new FormData();
-
-		formData.append('action', 'wcapf_save_form');
-		formData.append('nonce', getNonceToken());
-		formData.append('form_title', title);
-		formData.append('form_id', formId);
-		formData.append('form_filters', JSON.stringify(sanitizedFilters));
-		formData.append('form_settings', JSON.stringify(sanitizedSettings));
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
-			.then((res) => {
+		apiFetch({
+			path: `/wcapf/v1/forms/${formId}`,
+			method: 'POST',
+			data: {
+				form_title: title,
+				form_filters: JSON.stringify(sanitizedFilters),
+				form_settings: JSON.stringify(sanitizedSettings),
+			},
+		})
+			.then((data) => {
 				setLoading(false);
 
-				const {
-					data: { data, success },
-				} = res;
+				dispatch({
+					type: 'SET_FILTER_KEYS',
+					payload: data.filter_keys,
+				});
 
-				if (success) {
-					dispatch({
-						type: 'SET_FILTER_KEYS',
-						payload: data.filter_keys,
-					});
+				dispatch({
+					type: 'SET_FORM_FILTERS',
+					payload: data.form_filters,
+				});
 
-					dispatch({
-						type: 'SET_FORM_FILTERS',
-						payload: data.form_filters,
-					});
+				dispatch({
+					type: 'SET_FORM_SETTINGS',
+					payload: data.form_settings,
+				});
 
-					dispatch({
-						type: 'SET_FORM_SETTINGS',
-						payload: data.form_settings,
-					});
+				dispatch({
+					type: 'SET_SHOW_REVIEW_NOTICE',
+					payload: data.show_review_notice,
+				});
 
-					dispatch({
-						type: 'SET_SHOW_REVIEW_NOTICE',
-						payload: data.show_review_notice,
-					});
+				dispatch({ type: 'SET_DIRTY', payload: false });
 
-					dispatch({ type: 'SET_DIRTY', payload: false });
+				wcapf_admin_params.dirty = false;
 
-					wcapf_admin_params.dirty = false;
-
-					itemSavedSuccessNotice(
-						__('Form saved successfully', 'wc-ajax-product-filter')
-					);
-				} else if (data.errors) {
-					dispatch({
-						type: 'SET_ERROR',
-						payload: GENERIC_ERROR_MESSAGE,
-					});
-
-					const errorsData = data['errors'];
-
-					console.log(errorsData); // TODO: Remove.
-
-					const formFiltersWithErrors = formFilters.map(
-						(formFilter, index) => {
-							const error = find(errorsData, { order: index });
-
-							if (error) {
-								const { key, message } = error;
-
-								return {
-									...formFilter,
-									[key]: message,
-									// Reset client side errors.
-									type_error: '',
-									meta_key_error: '',
-									field_key_error: '',
-								};
-							}
-
-							return formFilter;
-						}
-					);
-
-					dispatch({
-						type: 'SET_FORM_FILTERS',
-						payload: formFiltersWithErrors,
-					});
-
-					const newStates = {};
-
-					for (
-						let index = 0;
-						index < formFiltersWithErrors.length;
-						index++
-					) {
-						const error = find(errorsData, { order: index });
-						const filter = formFiltersWithErrors[index];
-
-						let filterId;
-
-						if (has(filter, 'isNew')) {
-							filterId = filter['uniqueIndex'];
-						} else {
-							filterId = filter['id'];
-						}
-
-						if (error) {
-							newStates[filterId] = {
-								accordionStatus: true,
-								currentTab: 'general',
-							};
-						} else {
-							newStates[filterId] = {
-								...filterStates[filterId],
-								accordionStatus: false,
-							};
-						}
-					}
-
-					dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
-
-					if ('filters' !== currentTab) {
-						dispatch({
-							type: 'SET_CURRENT_TAB',
-							payload: 'filters',
-						});
-					}
-				} else {
-					itemSavedErrorNotice(data);
-				}
+				itemSavedSuccessNotice(
+					__('Form saved successfully', 'wc-ajax-product-filter')
+				);
 			})
 			.catch((err) => {
-				console.log(err);
-
 				setLoading(false);
 
-				itemSavedErrorNotice(err.message);
+				const errorsData = err?.data?.errors;
+
+				if (!errorsData) {
+					itemSavedErrorNotice(err.message);
+					return;
+				}
+
+				dispatch({
+					type: 'SET_ERROR',
+					payload: GENERIC_ERROR_MESSAGE,
+				});
+
+				const formFiltersWithErrors = formFilters.map(
+					(formFilter, index) => {
+						const error = find(errorsData, { order: index });
+
+						if (error) {
+							const { key, message } = error;
+
+							return {
+								...formFilter,
+								[key]: message,
+								// Reset client side errors.
+								type_error: '',
+								meta_key_error: '',
+								field_key_error: '',
+							};
+						}
+
+						return formFilter;
+					}
+				);
+
+				dispatch({
+					type: 'SET_FORM_FILTERS',
+					payload: formFiltersWithErrors,
+				});
+
+				const newStates = {};
+
+				for (
+					let index = 0;
+					index < formFiltersWithErrors.length;
+					index++
+				) {
+					const error = find(errorsData, { order: index });
+					const filter = formFiltersWithErrors[index];
+
+					let filterId;
+
+					if (has(filter, 'isNew')) {
+						filterId = filter['uniqueIndex'];
+					} else {
+						filterId = filter['id'];
+					}
+
+					if (error) {
+						newStates[filterId] = {
+							accordionStatus: true,
+							currentTab: 'general',
+						};
+					} else {
+						newStates[filterId] = {
+							...filterStates[filterId],
+							accordionStatus: false,
+						};
+					}
+				}
+
+				dispatch({ type: 'SET_FILTER_STATES', payload: newStates });
+
+				if ('filters' !== currentTab) {
+					dispatch({
+						type: 'SET_CURRENT_TAB',
+						payload: 'filters',
+					});
+				}
 			});
 	};
 

@@ -1,5 +1,6 @@
 import { AsyncPaginate } from 'react-select-async-paginate';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import {
 	customStyles,
 	IndicatorSeparator,
@@ -8,7 +9,6 @@ import {
 	OptionForSelectArchive,
 } from '../../Field/utilsForReactSelect';
 import { __ } from '@wordpress/i18n';
-import { getNonceToken } from '../../utils';
 
 const customClasses = '__custom_react_select __single_select __select_v_r';
 
@@ -20,34 +20,25 @@ const SelectVisibilityRule = ({
 	uniqueId,
 }) => {
 	const loadOptions = async (keyword, _prevOptions, { page }) => {
-		let ajaxParams;
+		let path;
 
 		if ('page' === type) {
-			ajaxParams = {
-				action: 'wcapf_get_pages_for_dropdown',
+			path = addQueryArgs('/wcapf/v1/pages', {
 				keyword,
 				page,
-				show_all: true,
-			};
+				show_all: 'true',
+			});
 		} else {
-			ajaxParams = {
-				action: 'wcapf_get_terms_for_dropdown',
+			path = addQueryArgs('/wcapf/v1/terms', {
 				taxonomy,
-				only_parent: false,
+				only_parent: 'false',
 				keyword,
 				page,
-			};
+			});
 		}
 
-		ajaxParams['nonce'] = getNonceToken();
-
-		// Fetch the options.
 		try {
-			const res = await axios.get(wcapf_admin_params.ajaxurl, {
-				params: ajaxParams,
-			});
-
-			const data = res.data.data;
+			const data = await apiFetch({ path });
 			const hasMore = data.length >= 1;
 
 			return {

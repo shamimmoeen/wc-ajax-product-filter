@@ -7,7 +7,7 @@ import TopBar from '../TopBar';
 import Notifications from '../Notifications';
 import { useSettings } from './SettingsContext';
 import { SaveIcon, SettingsIcon } from '../SVGIcons';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	removeSettingsSavedNotices,
 	settingsSavedErrorNotice,
@@ -24,7 +24,6 @@ import Phrases from './Tabs/Phrases';
 import {
 	FILTER_KEY_IN_USE_MESSAGE,
 	GENERIC_ERROR_MESSAGE,
-	getNonceToken,
 	proUpdateRequired,
 } from '../utils';
 import { defaultSettings } from './utils';
@@ -194,101 +193,93 @@ const Settings = () => {
 
 		setSaveBtnBusy(true);
 
-		const formData = new FormData();
-
-		formData.append('action', 'wcapf_save_settings');
-		formData.append('nonce', getNonceToken());
-		formData.append('settings', JSON.stringify(sanitizedSettings()));
-		formData.append('filter_keys', JSON.stringify(validatedFilterKeys));
-		formData.append('update_filter_keys', updateFilterKeys);
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
-			.then((res) => {
+		apiFetch({
+			path: '/wcapf/v1/settings',
+			method: 'POST',
+			data: {
+				settings: JSON.stringify(sanitizedSettings()),
+				filter_keys: JSON.stringify(validatedFilterKeys),
+				update_filter_keys: updateFilterKeys,
+			},
+		})
+			.then((data) => {
 				setSaveBtnBusy(false);
 
-				const {
-					data: { data, success },
-				} = res;
+				dispatch({
+					type: 'UPDATE_SETTINGS',
+					payload: data.settings,
+				});
 
-				if (success) {
-					dispatch({
-						type: 'UPDATE_SETTINGS',
-						payload: data.settings,
-					});
+				dispatch({
+					type: 'UPDATE_GLOBAL_FILTER_KEYS',
+					payload: data.global_filter_keys,
+				});
 
-					dispatch({
-						type: 'UPDATE_GLOBAL_FILTER_KEYS',
-						payload: data.global_filter_keys,
-					});
+				dispatch({ type: 'SET_DIRTY', payload: false });
 
-					dispatch({ type: 'SET_DIRTY', payload: false });
+				wcapf_admin_params.dirty = false;
 
-					wcapf_admin_params.dirty = false;
+				dispatch({
+					type: 'SET_FILTER_KEYS_CHANGED',
+					payload: false,
+				});
 
-					dispatch({
-						type: 'SET_FILTER_KEYS_CHANGED',
-						payload: false,
-					});
-
-					settingsSavedSuccessNotice(
-						__(
-							'Settings saved successfully',
-							'wc-ajax-product-filter'
-						)
-					);
-				} else if (data.errors) {
-					dispatch({
-						type: 'SET_ERROR',
-						payload: GENERIC_ERROR_MESSAGE,
-					});
-
-					const errorsData = data['errors'];
-
-					console.log(errorsData); // TODO: Remove.
-
-					const filterKeys = globalFilterKeys.map(
-						(filterKey, index) => {
-							const error = find(errorsData, { order: index });
-
-							if (error) {
-								const { key, message } = error;
-
-								return {
-									...filterKey,
-									[key]: message,
-									// Reset client side errors.
-									field_key_error: '',
-								};
-							} else {
-								return {
-									...filterKey,
-									// Reset client side errors.
-									field_key_error: '',
-								};
-							}
-						}
-					);
-
-					dispatch({
-						type: 'UPDATE_GLOBAL_FILTER_KEYS',
-						payload: filterKeys,
-					});
-
-					if ('filter-keys' !== currentTab) {
-						dispatch({
-							type: 'SET_CURRENT_TAB',
-							payload: 'filter-keys',
-						});
-					}
-				} else {
-					settingsSavedErrorNotice(data);
-				}
+				settingsSavedSuccessNotice(
+					__(
+						'Settings saved successfully',
+						'wc-ajax-product-filter'
+					)
+				);
 			})
 			.catch((err) => {
 				setSaveBtnBusy(false);
 
-				settingsSavedErrorNotice(err.message);
+				const errorsData = err?.data?.errors;
+
+				if (!errorsData) {
+					settingsSavedErrorNotice(err.message);
+					return;
+				}
+
+				dispatch({
+					type: 'SET_ERROR',
+					payload: GENERIC_ERROR_MESSAGE,
+				});
+
+				const filterKeys = globalFilterKeys.map(
+					(filterKey, index) => {
+						const error = find(errorsData, { order: index });
+
+						if (error) {
+							const { key, message } = error;
+
+							return {
+								...filterKey,
+								[key]: message,
+								// Reset client side errors.
+								field_key_error: '',
+							};
+						} else {
+							return {
+								...filterKey,
+								// Reset client side errors.
+								field_key_error: '',
+							};
+						}
+					}
+				);
+
+				dispatch({
+					type: 'UPDATE_GLOBAL_FILTER_KEYS',
+					payload: filterKeys,
+				});
+
+				if ('filter-keys' !== currentTab) {
+					dispatch({
+						type: 'SET_CURRENT_TAB',
+						payload: 'filter-keys',
+					});
+				}
 			});
 	};
 

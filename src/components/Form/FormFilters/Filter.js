@@ -20,12 +20,12 @@ import {
 import Options from '../FilterSettings/Options';
 import Advanced from '../FilterSettings/Advanced';
 import useFormData from '../useFormData';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import {
 	filterDeletedErrorNotice,
 	removeFilterDeletedNotices,
 } from '../../notices';
-import { getNonceToken, wpVersion } from '../../utils';
+import { wpVersion } from '../../utils';
 import CustomTabPanel from '../../CustomTabPanel';
 
 const onlyWithType = componentsWithTypeOnly();
@@ -117,28 +117,14 @@ const Filter = ({ index }) => {
 
 			setDeleteBtnBusy(true);
 
-			const data = {
-				action: 'wcapf_delete_filter',
-				nonce: getNonceToken(),
-				post_id: id,
-			};
-
-			axios
-				.get(wcapf_admin_params.ajaxurl, {
-					params: data,
-				})
-				.then((res) => {
+			apiFetch({
+				path: `/wcapf/v1/filters/${id}`,
+				method: 'DELETE',
+			})
+				.then(() => {
 					setDeleteBtnBusy(false);
 
-					const {
-						data: { data, success },
-					} = res;
-
-					if (success) {
-						dispatchDeleteFilter();
-					} else {
-						filterDeletedErrorNotice(data);
-					}
+					dispatchDeleteFilter();
 				})
 				.catch((err) => {
 					setDeleteBtnBusy(false);

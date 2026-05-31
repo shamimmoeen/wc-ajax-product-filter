@@ -9,7 +9,6 @@ import {
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
-import axios from 'axios';
 
 const previewTooltip = __(
 	'This is for demonstration purposes only',
@@ -21,11 +20,8 @@ const FormPreview = () => {
 	// const [isLoading, setLoading] = useState(true);
 
 	// useEffect(() => {
-	// 	axios
-	// 		.get(wcapf_admin_params.ajaxurl, {
-	// 			params: { action: 'get_filter_form_preview' },
-	// 		})
-	// 		.then(({ data: { data } }) => {
+	// 	apiFetch({ path: '/wcapf/v1/form-preview' })
+	// 		.then((data) => {
 	// 			setPreview(data);
 	// 			setLoading(false);
 	// 		})

@@ -2,10 +2,10 @@ import { __ } from '@wordpress/i18n';
 import { Button, Flex, Icon, Modal, Spinner } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { itemCreateErrorNotice, removeItemCreateNotices } from '../notices';
-import { getEditFormLink, getNonceToken } from '../utils';
+import { getEditFormLink } from '../utils';
 import { useListForms } from './ListFormsContext';
 import { CheckIcon } from '../SVGIcons';
-import axios from 'axios';
+import apiFetch from '@wordpress/api-fetch';
 import { defaultFormSettings } from '../utilsForForm';
 import ProFeaturesNotice from '../ProFeaturesNotice';
 
@@ -83,31 +83,22 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 
 		setLoading(true);
 
-		const formData = new FormData();
-
-		formData.append('action', 'wcapf_add_form');
-		formData.append('nonce', getNonceToken());
-		formData.append('form_title', title);
-		formData.append('form_settings', JSON.stringify(defaultFormSettings()));
-
-		axios
-			.post(wcapf_admin_params.ajaxurl, formData)
-			.then((res) => {
+		apiFetch({
+			path: '/wcapf/v1/forms',
+			method: 'POST',
+			data: {
+				form_title: title,
+				form_settings: JSON.stringify(defaultFormSettings()),
+			},
+		})
+			.then((data) => {
 				setLoading(false);
 
-				const {
-					data: { data, success },
-				} = res;
+				setNewItemId(data.id);
 
-				if (success) {
-					setNewItemId(data.id);
+				const _forms = [data, ...forms];
 
-					const _forms = [data, ...forms];
-
-					dispatch({ type: 'SET_FORMS', payload: _forms });
-				} else {
-					itemCreateErrorNotice(data);
-				}
+				dispatch({ type: 'SET_FORMS', payload: _forms });
 			})
 			.catch((err) => {
 				setLoading(false);

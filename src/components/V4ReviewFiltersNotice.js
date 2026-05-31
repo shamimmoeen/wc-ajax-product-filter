@@ -1,6 +1,7 @@
 import { useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { close } from '@wordpress/icons';
+import apiFetch from '@wordpress/api-fetch';
 
 const V4ReviewFiltersNotice = () => {
 	const dismissNonce = wcapf_admin_params.v4_review_filters_dismiss_nonce;
@@ -13,14 +14,11 @@ const V4ReviewFiltersNotice = () => {
 
 		const formId = new URLSearchParams(window.location.search).get('id');
 
-		fetch(ajaxurl, {
+		apiFetch({
+			path: '/wcapf/v1/notices/v4-review-filters/dismiss',
 			method: 'POST',
-			body: new URLSearchParams({
-				action: 'wcapf_dismiss_v4_review_filters_notice',
-				nonce: dismissNonce,
-				form_id: formId,
-			}),
-		});
+			data: { form_id: formId },
+		}).catch((err) => console.log(err));
 	};
 
 	return (
