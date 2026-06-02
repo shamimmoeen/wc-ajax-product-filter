@@ -8,7 +8,7 @@
  * @package wc-ajax-product-filter
  */
 
-class RestDataSourcesTest extends WP_UnitTestCase {
+class DataSourcesControllerTest extends WP_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();

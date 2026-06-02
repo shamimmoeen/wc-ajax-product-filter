@@ -11,7 +11,7 @@
  * @package wc-ajax-product-filter
  */
 
-class TemplateHelperTest extends WP_UnitTestCase {
+class TemplateTest extends WP_UnitTestCase {
 
 	/**
 	 * Paths created during the test that tear_down() must delete.

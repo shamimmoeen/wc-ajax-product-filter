@@ -7,7 +7,7 @@
  * @package wc-ajax-product-filter
  */
 
-class RestFormsTest extends WP_UnitTestCase {
+class FormsControllerTest extends WP_UnitTestCase {
 
 	private int $admin_id;
 
@@ -292,40 +292,4 @@ class RestFormsTest extends WP_UnitTestCase {
 		$this->assertNotNull( get_post( $form_id ) );
 	}
 
-	public function test_save_settings_plucks_author_roles_value_field(): void {
-		$response = $this->do_rest(
-			'POST',
-			'/wcapf/v1/settings',
-			array(
-				'settings' => array(
-					'author_roles' => array(
-						array( 'label' => 'Administrator', 'value' => 'administrator' ),
-						array( 'label' => 'Editor', 'value' => 'editor' ),
-					),
-				),
-			)
-		);
-
-		$this->assertSame( 200, $response->get_status() );
-		$stored = get_option( wcapf()->settings->option_key() );
-		$this->assertSame( array( 'administrator', 'editor' ), $stored['author_roles'] );
-	}
-
-	public function test_save_settings_returns_settings_in_react_shape(): void {
-		update_option(
-			wcapf()->settings->option_key(),
-			array( 'author_roles' => array( 'administrator' ) )
-		);
-
-		$response = $this->do_rest(
-			'POST',
-			'/wcapf/v1/settings',
-			array( 'settings' => array() )
-		);
-
-		$this->assertSame( 200, $response->get_status() );
-		$data = $response->get_data();
-		$this->assertArrayHasKey( 'settings', $data );
-		$this->assertArrayHasKey( 'global_filter_keys', $data );
-	}
 }

@@ -10,12 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group result-set
  */
-class AuthorMetaKeywordResultSetTest extends FilterBehaviorTestCase {
+class AuthorMetaKeywordTest extends BehaviorTestCase {
 
 	public function test_post_author_filter_returns_that_authors_products() {
 		$alice = $this->factory()->user->create( array( 'role' => 'shop_manager' ) );

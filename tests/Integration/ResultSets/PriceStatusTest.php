@@ -13,12 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group result-set
  */
-class PriceStatusResultSetTest extends FilterBehaviorTestCase {
+class PriceStatusTest extends BehaviorTestCase {
 
 	/**
 	 * Price filter spec keyed "price".

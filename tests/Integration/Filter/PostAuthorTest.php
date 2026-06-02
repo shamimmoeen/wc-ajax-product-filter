@@ -15,12 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group post-author-filter
  */
-class PostAuthorFilterTest extends FilterBehaviorTestCase {
+class PostAuthorTest extends BehaviorTestCase {
 
 	/**
 	 * Author user ID (display name "Aaa Author").

@@ -15,12 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group counts
  */
-class DisjunctiveCountTest extends FilterBehaviorTestCase {
+class DisjunctiveCountTest extends BehaviorTestCase {
 
 	/** @var int */
 	private $shirts;

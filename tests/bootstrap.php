@@ -58,3 +58,7 @@ function _wcapf_install_woocommerce() {
 tests_add_filter( 'setup_theme', '_wcapf_install_woocommerce' );
 
 require "{$_tests_dir}/includes/bootstrap.php";
+
+// Preload the abstract test case so test files don't need per-file
+// require_once for it — matches wp-phpunit's own bootstrap pattern.
+require_once __DIR__ . '/Integration/Filter/BehaviorTestCase.php';

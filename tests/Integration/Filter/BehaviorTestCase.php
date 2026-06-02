@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Shared fixtures and pipeline calls for filter-behavior tests.
  */
-abstract class FilterBehaviorTestCase extends WP_UnitTestCase {
+abstract class BehaviorTestCase extends WP_UnitTestCase {
 
 	/**
 	 * Builds a configured field instance from a flat field-data array.

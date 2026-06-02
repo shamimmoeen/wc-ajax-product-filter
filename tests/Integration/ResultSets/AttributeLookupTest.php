@@ -16,12 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group result-set
  */
-class AttributeLookupResultSetTest extends FilterBehaviorTestCase {
+class AttributeLookupTest extends BehaviorTestCase {
 
 	/** @var int Red term ID. */
 	private $red;

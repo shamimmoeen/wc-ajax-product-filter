@@ -11,7 +11,7 @@
  * @package wc-ajax-product-filter
  */
 
-class WidgetRegistrationTest extends WP_UnitTestCase {
+class WidgetsRegistrationTest extends WP_UnitTestCase {
 
 	public function set_up() {
 		parent::set_up();

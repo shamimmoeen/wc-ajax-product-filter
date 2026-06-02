@@ -14,12 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group taxonomy-filter
  */
-class TaxonomyFilterTest extends FilterBehaviorTestCase {
+class TaxonomyTest extends BehaviorTestCase {
 
 	/**
 	 * Parent category ID.

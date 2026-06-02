@@ -16,12 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group rating-filter
  */
-class RatingFilterTest extends FilterBehaviorTestCase {
+class RatingTest extends BehaviorTestCase {
 
 	/**
 	 * Seeds the product_visibility taxonomy with the rated-1..5 terms AND the

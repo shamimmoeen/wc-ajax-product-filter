@@ -14,12 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group result-set
  */
-class FilterResultSetTest extends FilterBehaviorTestCase {
+class FilterResultSetTest extends BehaviorTestCase {
 
 	/** @var int Product in Shirts. */
 	private $p_shirt;

@@ -8,7 +8,7 @@
  * @package wc-ajax-product-filter
  */
 
-class RestNoticesTest extends WP_UnitTestCase {
+class NoticesControllerTest extends WP_UnitTestCase {
 
 	private int $admin_id;
 

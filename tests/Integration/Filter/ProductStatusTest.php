@@ -17,12 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group product-status-filter
  */
-class ProductStatusFilterTest extends FilterBehaviorTestCase {
+class ProductStatusTest extends BehaviorTestCase {
 
 	/**
 	 * The configured featured / on-sale options.

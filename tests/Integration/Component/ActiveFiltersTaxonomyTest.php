@@ -17,12 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/FilterBehaviorTestCase.php';
 
 /**
  * @group taxonomy-active-filter
  */
-class TaxonomyActiveFilterTest extends FilterBehaviorTestCase {
+class ActiveFiltersTaxonomyTest extends BehaviorTestCase {
 
 	public function test_taxonomy_active_filter_label_is_the_term_name() {
 		$this->factory()->term->create(

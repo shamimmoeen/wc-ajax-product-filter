@@ -10,7 +10,7 @@
  * @package wc-ajax-product-filter
  */
 
-class ShortcodeRegistrationTest extends WP_UnitTestCase {
+class ShortcodesRegistrationTest extends WP_UnitTestCase {
 
 	public function test_canonical_form_shortcode_is_registered() {
 		if ( class_exists( \WCAPF\Pro\Shortcodes\Form::class ) ) {
