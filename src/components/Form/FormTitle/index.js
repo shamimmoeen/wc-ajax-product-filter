@@ -357,9 +357,9 @@ const FormTitle = () => {
 			path: `/wcapf/v1/forms/${formId}`,
 			method: 'POST',
 			data: {
-				form_title: title,
-				form_filters: JSON.stringify(sanitizedFilters),
-				form_settings: JSON.stringify(sanitizedSettings),
+				title,
+				filters: sanitizedFilters,
+				settings: sanitizedSettings,
 			},
 		})
 			.then((data) => {
@@ -372,12 +372,12 @@ const FormTitle = () => {
 
 				dispatch({
 					type: 'SET_FORM_FILTERS',
-					payload: data.form_filters,
+					payload: data.filters,
 				});
 
 				dispatch({
 					type: 'SET_FORM_SETTINGS',
-					payload: data.form_settings,
+					payload: data.settings,
 				});
 
 				dispatch({

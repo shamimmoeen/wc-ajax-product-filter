@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_REST_Server;
 
 /**
@@ -38,6 +39,21 @@ class SettingsController extends Controller {
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'save_settings' ),
 				'permission_callback' => array( $this, 'permission_check' ),
+				'args'                => array(
+					'settings'           => array(
+						'type'              => 'object',
+						'default'           => array(),
+						'sanitize_callback' => array( $this, 'sanitize_settings' ),
+					),
+					'filter_keys'        => array(
+						'type'    => 'array',
+						'default' => array(),
+					),
+					'update_filter_keys' => array(
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
 			)
 		);
 	}
@@ -45,27 +61,36 @@ class SettingsController extends Controller {
 	/**
 	 * Saves the plugin settings; optionally renames filter slugs.
 	 *
+	 * TODO: this handler does two distinct operations — save settings AND
+	 * batch-rename filter-key slugs. They're welded together because React
+	 * sends both in one "Save" click. Two cleaner options for the future:
+	 *  - split into two endpoints (POST /settings + POST /filter-keys/rename)
+	 *    and let React do the batch on its side
+	 *  - keep this endpoint but extract the rename internals into a focused
+	 *    \WCAPF\Helpers\FilterKeyRenamer class (validate / persist / aggregate
+	 *    errors), so this handler stays single-purpose
+	 * TODO (Phase 1 wp.data): the `global_filter_keys` in the success
+	 * response is a side-channel — it's returned so React can resync without
+	 * a follow-up request. Move to GET /filter-keys once wp.data stores
+	 * handle cache invalidation.
+	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function save_settings( WP_REST_Request $request ) {
-		$settings           = $this->json_param_to_array( $request, 'settings' );
-		$filter_keys        = $this->json_param_to_array( $request, 'filter_keys' );
-		$update_filter_keys = sanitize_text_field( (string) $request->get_param( 'update_filter_keys' ) );
+		$settings           = (array) $request->get_param( 'settings' );
+		$filter_keys        = (array) $request->get_param( 'filter_keys' );
+		$update_filter_keys = (string) $request->get_param( 'update_filter_keys' );
 
-		$sanitized_settings = apply_filters(
-			'wcapf_sanitize_settings',
-			$this->sanitize_settings_data( $settings ),
-			$settings
-		);
-
-		update_option( wcapf()->settings->option_key(), $sanitized_settings );
+		update_option( wcapf()->settings->option_key(), $settings );
 
 		if ( ! $update_filter_keys ) {
-			return array(
-				'settings'           => wcapf()->api->settings(),
-				'global_filter_keys' => wcapf()->api->filter_keys( true ),
+			return rest_ensure_response(
+				array(
+					'settings'           => wcapf()->api->settings(),
+					'global_filter_keys' => wcapf()->api->filter_keys( true ),
+				)
 			);
 		}
 
@@ -181,25 +206,31 @@ class SettingsController extends Controller {
 
 		do_action( 'wcapf_after_update_filter_keys', $new_filter_keys );
 
-		return array(
-			'settings'           => wcapf()->api->settings(),
-			'global_filter_keys' => wcapf()->api->filter_keys( true ),
+		return rest_ensure_response(
+			array(
+				'settings'           => wcapf()->api->settings(),
+				'global_filter_keys' => wcapf()->api->filter_keys( true ),
+			)
 		);
 	}
 
 	/**
-	 * Sanitization branches for plugin settings (author_roles pluck,
-	 * sort_by_form to int, everything else as plain text).
+	 * Sanitize callback for the `settings` arg on the save route. Plucks
+	 * `author_roles[].value` into a flat list, casts `sort_by_form` to int,
+	 * sanitize_text_field for everything else. Pro extends via the
+	 * `wcapf_sanitize_settings` filter.
 	 *
-	 * @param array $settings The raw settings.
+	 * @param mixed $raw The raw param value from the request.
 	 *
 	 * @return array
 	 */
-	private function sanitize_settings_data( array $settings ): array {
+	public function sanitize_settings( $raw ): array {
+		$raw       = (array) $raw;
 		$sanitized = array();
-		foreach ( $settings as $key => $value ) {
+
+		foreach ( $raw as $key => $value ) {
 			if ( 'author_roles' === $key ) {
-				$value = wp_list_pluck( $settings['author_roles'], 'value' );
+				$value = wp_list_pluck( (array) $value, 'value' );
 			} elseif ( 'sort_by_form' === $key ) {
 				$value = absint( $value );
 			} else {
@@ -207,6 +238,7 @@ class SettingsController extends Controller {
 			}
 			$sanitized[ $key ] = $value;
 		}
-		return $sanitized;
+
+		return apply_filters( 'wcapf_sanitize_settings', $sanitized, $raw );
 	}
 }

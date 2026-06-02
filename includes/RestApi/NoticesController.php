@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_REST_Server;
 
 /**
@@ -31,15 +32,13 @@ class NoticesController extends Controller {
 	 * @return void
 	 */
 	public function register_routes(): void {
-		$auth = array( $this, 'permission_check' );
-
 		register_rest_route(
 			self::REST_NAMESPACE,
 			'/notices/review/dismiss',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'dismiss_review_notice' ),
-				'permission_callback' => $auth,
+				'permission_callback' => array( $this, 'permission_check' ),
 			)
 		);
 
@@ -49,7 +48,7 @@ class NoticesController extends Controller {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'dismiss_v4_review_filters_notice' ),
-				'permission_callback' => $auth,
+				'permission_callback' => array( $this, 'permission_check' ),
 			)
 		);
 	}
@@ -59,7 +58,7 @@ class NoticesController extends Controller {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function dismiss_review_notice( WP_REST_Request $request ) {
 		$type = sanitize_text_field( (string) $request->get_param( 'type' ) );
@@ -83,7 +82,7 @@ class NoticesController extends Controller {
 			update_user_meta( $user_id, 'wcapf_review_notice_time_since_dismissed_at', time() );
 		}
 
-		return array( 'message' => __( 'WCAPF review notice dismissed', 'wc-ajax-product-filter' ) );
+		return rest_ensure_response( array( 'dismissed' => true ) );
 	}
 
 	/**
@@ -91,15 +90,15 @@ class NoticesController extends Controller {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array
+	 * @return WP_REST_Response
 	 */
-	public function dismiss_v4_review_filters_notice( WP_REST_Request $request ): array {
+	public function dismiss_v4_review_filters_notice( WP_REST_Request $request ): WP_REST_Response {
 		$form_id = absint( $request->get_param( 'form_id' ) );
 
 		if ( $form_id ) {
 			delete_post_meta( $form_id, '_wcapf_v4_needs_review' );
 		}
 
-		return array();
+		return rest_ensure_response( array( 'dismissed' => true ) );
 	}
 }

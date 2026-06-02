@@ -55,8 +55,8 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 			}
 
 			path = addQueryArgs('/wcapf/v1/terms', {
-				context: 'modal',
 				taxonomy,
+				per_page: 99,
 			});
 		} else if ('post-author' === type) {
 			if (isEmpty(authorRoles)) {
@@ -73,8 +73,8 @@ const ManualOptionsModal = ({ index, open, closeModal }) => {
 			}
 
 			path = addQueryArgs('/wcapf/v1/authors', {
-				context: 'modal',
 				roles: authorRoles,
+				per_page: 99,
 			});
 		} else {
 			if (!meta_key) {

@@ -197,8 +197,8 @@ const Settings = () => {
 			path: '/wcapf/v1/settings',
 			method: 'POST',
 			data: {
-				settings: JSON.stringify(sanitizedSettings()),
-				filter_keys: JSON.stringify(validatedFilterKeys),
+				settings: sanitizedSettings(),
+				filter_keys: validatedFilterKeys,
 				update_filter_keys: updateFilterKeys,
 			},
 		})

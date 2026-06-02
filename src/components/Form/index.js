@@ -31,8 +31,8 @@ const Form = () => {
 			.then((formData) => {
 				const filterKeys = formData['filter_keys'];
 				const formFilters = [];
-				const _formFilters = formData['form_filters'];
-				const formSettings = formData['form_settings'];
+				const _formFilters = formData['filters'];
+				const formSettings = formData['settings'];
 
 				const proTypes = proFilterTypes();
 				const proComponents = proFilterComponents();

@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WCAPF\Defaults;
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_REST_Server;
 
 /**
@@ -32,15 +33,34 @@ class FormsController extends Controller {
 	 * @return void
 	 */
 	public function register_routes(): void {
-		$auth = array( $this, 'permission_check' );
-
 		register_rest_route(
 			self::REST_NAMESPACE,
 			'/forms',
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'create_form' ),
-				'permission_callback' => $auth,
+				'permission_callback' => array( $this, 'permission_check' ),
+				'args'                => array(
+					'title'    => array(
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'settings' => array(
+						'type'              => 'object',
+						'default'           => array(),
+						'sanitize_callback' => array( $this, 'sanitize_form_settings' ),
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/forms/sample',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'create_sample_form' ),
+				'permission_callback' => array( $this, 'permission_check' ),
 			)
 		);
 
@@ -51,17 +71,32 @@ class FormsController extends Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_form' ),
-					'permission_callback' => $auth,
+					'permission_callback' => array( $this, 'permission_check' ),
 				),
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_form' ),
-					'permission_callback' => $auth,
+					'permission_callback' => array( $this, 'permission_check' ),
+					'args'                => array(
+						'title'    => array(
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'settings' => array(
+							'type'              => 'object',
+							'default'           => array(),
+							'sanitize_callback' => array( $this, 'sanitize_form_settings' ),
+						),
+						'filters'  => array(
+							'type'    => 'array',
+							'default' => array(),
+						),
+					),
 				),
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_form' ),
-					'permission_callback' => $auth,
+					'permission_callback' => array( $this, 'permission_check' ),
 				),
 			)
 		);
@@ -72,52 +107,25 @@ class FormsController extends Controller {
 			array(
 				'methods'             => WP_REST_Server::DELETABLE,
 				'callback'            => array( $this, 'delete_filter' ),
-				'permission_callback' => $auth,
+				'permission_callback' => array( $this, 'permission_check' ),
 			)
 		);
 	}
 
 	/**
-	 * Creates a form. Body `{template: 'sample'}` seeds the sample filters;
-	 * otherwise an empty form is created from `{form_title, form_settings}`.
+	 * Creates an empty form from the request's `title` + `settings`.
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function create_form( WP_REST_Request $request ) {
-		$template = (string) $request->get_param( 'template' );
-
-		if ( 'sample' === $template ) {
-			$form_settings = Defaults::form_default_data();
-			$post_arr      = array(
-				'post_title'   => __( 'Sample form', 'wc-ajax-product-filter' ),
-				'post_content' => maybe_serialize( $form_settings ),
-				'menu_order'   => 0,
-				'post_type'    => 'wcapf-form',
-				'post_status'  => 'publish',
-			);
-
-			$new_form_id = wp_insert_post( $post_arr, true );
-
-			if ( is_wp_error( $new_form_id ) ) {
-				return $new_form_id;
-			}
-
-			wcapf()->form_filters->save( Defaults::get_sample_filters(), $new_form_id );
-
-			return wcapf()->api->form_data( $new_form_id );
-		}
-
-		$form_title    = sanitize_text_field( (string) $request->get_param( 'form_title' ) );
-		$form_settings = $this->json_param_to_array( $request, 'form_settings' );
-
 		$new_form_id = wp_insert_post(
 			array(
-				'post_title'   => $form_title,
+				'post_title'   => (string) $request->get_param( 'title' ),
 				'post_type'    => 'wcapf-form',
 				'post_status'  => 'publish',
-				'post_content' => maybe_serialize( $form_settings ),
+				'post_content' => maybe_serialize( (array) $request->get_param( 'settings' ) ),
 			),
 			true
 		);
@@ -126,7 +134,33 @@ class FormsController extends Controller {
 			return $new_form_id;
 		}
 
-		return wcapf()->api->form_data( $new_form_id );
+		return rest_ensure_response( wcapf()->api->form_data( $new_form_id ) );
+	}
+
+	/**
+	 * Creates a form pre-populated with the default sample filters.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function create_sample_form() {
+		$new_form_id = wp_insert_post(
+			array(
+				'post_title'   => __( 'Sample form', 'wc-ajax-product-filter' ),
+				'post_content' => maybe_serialize( Defaults::form_default_data() ),
+				'menu_order'   => 0,
+				'post_type'    => 'wcapf-form',
+				'post_status'  => 'publish',
+			),
+			true
+		);
+
+		if ( is_wp_error( $new_form_id ) ) {
+			return $new_form_id;
+		}
+
+		wcapf()->form_filters->save( Defaults::get_sample_filters(), $new_form_id );
+
+		return rest_ensure_response( wcapf()->api->form_data( $new_form_id ) );
 	}
 
 	/**
@@ -134,45 +168,16 @@ class FormsController extends Controller {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_form( WP_REST_Request $request ) {
-		$post_id = (int) $request['id'];
-		$form    = get_post( $post_id );
+		$form = get_post( (int) $request['id'] );
 
 		if ( ! $form || 'wcapf-form' !== $form->post_type ) {
 			return new WP_Error( 'wcapf_invalid_form_id', __( 'Invalid form id', 'wc-ajax-product-filter' ), array( 'status' => 404 ) );
 		}
 
-		$filter_ids = get_posts(
-			array(
-				'post_type'   => 'wcapf-filter',
-				'post_status' => 'any',
-				'nopaging'    => true,
-				'post_parent' => $post_id,
-				'order'       => 'ASC',
-				'orderby'     => 'menu_order',
-			)
-		);
-
-		$form_filters = array();
-		foreach ( $filter_ids as $filter_post ) {
-			if ( ! $filter_post || 'wcapf-filter' !== $filter_post->post_type ) {
-				continue;
-			}
-			$filter         = maybe_unserialize( $filter_post->post_content );
-			$form_filters[] = $this->parse_filter_data( $filter );
-		}
-
-		$form_settings = $this->parse_form_settings( maybe_unserialize( $form->post_content ) );
-
-		return array(
-			'post_id'       => $post_id,
-			'post_title'    => get_the_title( $post_id ),
-			'filter_keys'   => wcapf()->api->filter_keys(),
-			'form_filters'  => $form_filters,
-			'form_settings' => $form_settings,
-		);
+		return rest_ensure_response( $this->prepare_form_for_response( $form ) );
 	}
 
 	/**
@@ -180,7 +185,7 @@ class FormsController extends Controller {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function update_form( WP_REST_Request $request ) {
 		$form_id = (int) $request['id'];
@@ -189,20 +194,13 @@ class FormsController extends Controller {
 			return new WP_Error( 'wcapf_invalid_form_id', __( 'Invalid form id', 'wc-ajax-product-filter' ), array( 'status' => 404 ) );
 		}
 
-		$form_title    = sanitize_text_field( (string) $request->get_param( 'form_title' ) );
-		$form_filters  = $this->json_param_to_array( $request, 'form_filters' );
-		$form_settings = $this->json_param_to_array( $request, 'form_settings' );
-
-		$sanitized_form_settings = apply_filters(
-			'wcapf_sanitize_form_settings',
-			$this->sanitize_form_settings( $form_settings ),
-			$form_settings
-		);
+		$form_settings = (array) $request->get_param( 'settings' );
+		$form_filters  = (array) $request->get_param( 'filters' );
 
 		$post_arr = array(
 			'ID'           => $form_id,
-			'post_title'   => $form_title,
-			'post_content' => maybe_serialize( $sanitized_form_settings ),
+			'post_title'   => (string) $request->get_param( 'title' ),
+			'post_content' => maybe_serialize( $form_settings ),
 			'menu_order'   => isset( $form_settings['priority'] ) ? $form_settings['priority'] : 0,
 		);
 
@@ -227,19 +225,18 @@ class FormsController extends Controller {
 
 		do_action( 'wcapf_form_saved', $form_id );
 
-		$filters_for_ui = array();
-		foreach ( $filters as $filter ) {
-			$filters_for_ui[] = $this->parse_filter_data( $filter );
-		}
+		/*
+		 * TODO (Phase 1 wp.data): drop `show_review_notice` from this response.
+		 * It's UI-state side-channel data that doesn't belong on a form
+		 * resource — it piggybacks today because every extra request adds a
+		 * round-trip in the React admin. Once @wordpress/data stores can
+		 * invalidate after a save, React refetches it from GET /notices/
+		 * review/status and the response becomes the resource only.
+		 */
+		$response                       = $this->prepare_form_for_response( get_post( $form_id ) );
+		$response['show_review_notice'] = wcapf()->notices->is_milestone_review_visible();
 
-		$form_settings = $this->parse_form_settings( $sanitized_form_settings );
-
-		return array(
-			'filter_keys'        => wcapf()->api->filter_keys(),
-			'form_filters'       => $filters_for_ui,
-			'form_settings'      => $form_settings,
-			'show_review_notice' => wcapf()->notices->is_milestone_review_visible(),
-		);
+		return rest_ensure_response( $response );
 	}
 
 	/**
@@ -247,14 +244,19 @@ class FormsController extends Controller {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function delete_form( WP_REST_Request $request ) {
 		$post_id = (int) $request['id'];
+		$form    = get_post( $post_id );
 
-		if ( ! $post_id || 'wcapf-form' !== get_post_type( $post_id ) ) {
+		if ( ! $form || 'wcapf-form' !== $form->post_type ) {
 			return new WP_Error( 'wcapf_invalid_form_id', __( 'Invalid form id', 'wc-ajax-product-filter' ), array( 'status' => 404 ) );
 		}
+
+		// Snapshot the resource before deletion so the response can carry it
+		// back as `previous` — matches WP_REST_Posts_Controller::delete_item.
+		$previous = wcapf()->api->form_data( $form );
 
 		$filters = get_posts(
 			array(
@@ -280,7 +282,12 @@ class FormsController extends Controller {
 			wp_delete_post( $filter_id, true );
 		}
 
-		return array( 'message' => __( 'Form deleted successfully', 'wc-ajax-product-filter' ) );
+		return rest_ensure_response(
+			array(
+				'deleted'  => true,
+				'previous' => $previous,
+			)
+		);
 	}
 
 	/**
@@ -288,14 +295,19 @@ class FormsController extends Controller {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array|WP_Error
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function delete_filter( WP_REST_Request $request ) {
 		$post_id = (int) $request['id'];
+		$filter  = get_post( $post_id );
 
-		if ( ! $post_id || 'wcapf-filter' !== get_post_type( $post_id ) ) {
+		if ( ! $filter || 'wcapf-filter' !== $filter->post_type ) {
 			return new WP_Error( 'wcapf_invalid_filter_id', __( 'Invalid filter id', 'wc-ajax-product-filter' ), array( 'status' => 404 ) );
 		}
+
+		// Snapshot the resource before deletion — see delete_form for the
+		// WP_REST_Posts_Controller convention being followed here.
+		$previous = $this->prepare_filter_for_response( maybe_unserialize( $filter->post_content ) );
 
 		$deleted = wp_delete_post( $post_id, true );
 
@@ -307,18 +319,69 @@ class FormsController extends Controller {
 			);
 		}
 
-		return array( 'message' => __( 'Filter deleted successfully', 'wc-ajax-product-filter' ) );
+		return rest_ensure_response(
+			array(
+				'deleted'  => true,
+				'previous' => $previous,
+			)
+		);
 	}
 
 	/**
-	 * Parses a stored filter row into the {value,label} shape the React UI
+	 * Builds the full form-resource representation that get/update return.
+	 * Same shape from both endpoints — `WP_REST_Posts_Controller::prepare_
+	 * item_for_response` pattern.
+	 *
+	 * TODO (Phase 1 wp.data): `filter_keys` is a global catalog, not part of
+	 * the form resource. Move to GET /filter-keys once wp.data stores can
+	 * invalidate after a save.
+	 *
+	 * @param \WP_Post $form The form post.
+	 *
+	 * @return array
+	 */
+	private function prepare_form_for_response( \WP_Post $form ): array {
+		$child_filters = get_posts(
+			array(
+				'post_type'   => 'wcapf-filter',
+				'post_status' => 'any',
+				'nopaging'    => true,
+				'post_parent' => $form->ID,
+				'order'       => 'ASC',
+				'orderby'     => 'menu_order',
+			)
+		);
+
+		$filters = array();
+		foreach ( $child_filters as $filter_post ) {
+			if ( ! $filter_post || 'wcapf-filter' !== $filter_post->post_type ) {
+				continue;
+			}
+			$filters[] = $this->prepare_filter_for_response( maybe_unserialize( $filter_post->post_content ) );
+		}
+
+		return array(
+			'id'          => $form->ID,
+			'title'       => $form->post_title,
+			'filter_keys' => wcapf()->api->filter_keys(),
+			'filters'     => $filters,
+			'settings'    => apply_filters( 'wcapf_parse_form_settings', maybe_unserialize( $form->post_content ) ),
+		);
+	}
+
+	/**
+	 * Inflates a stored filter row into the {value,label} shape the React UI
 	 * expects (term/author/role lookups + manual_options name resolution).
 	 *
 	 * @param array $filter The stored filter row.
 	 *
 	 * @return array
 	 */
-	private function parse_filter_data( $filter ): array {
+	private function prepare_filter_for_response( $filter ): array {
+		// Defensive: legacy/empty post_content can unserialize to a string or
+		// scalar. The rest of this method assumes an array shape.
+		$filter = (array) $filter;
+
 		$value_may_have_spaces = array(
 			'value_prefix',
 			'value_postfix',
@@ -443,30 +506,23 @@ class FormsController extends Controller {
 	}
 
 	/**
-	 * Passes the form settings through the parse filter so pro can inject the
-	 * form_locations display shape.
+	 * Sanitize callback for the `settings` arg on create/update routes.
+	 * Runs sanitize_text_field across each scalar key (nested fields like
+	 * `form_locations` get wiped here and re-validated by pro via the
+	 * `wcapf_sanitize_form_settings` filter, which sees both the sanitized +
+	 * raw shapes).
 	 *
-	 * @param array $sanitized The sanitized form settings.
+	 * @param mixed $raw The raw param value from the request.
 	 *
 	 * @return array
 	 */
-	private function parse_form_settings( $sanitized ): array {
-		return apply_filters( 'wcapf_parse_form_settings', $sanitized );
-	}
+	public function sanitize_form_settings( $raw ): array {
+		$raw = (array) $raw;
 
-	/**
-	 * Plain-text sanitization for the form settings array. Pro tightens this
-	 * via the wcapf_sanitize_form_settings filter for nested fields.
-	 *
-	 * @param array $form The form settings.
-	 *
-	 * @return array
-	 */
-	private function sanitize_form_settings( array $form ): array {
-		$sanitized = array();
-		foreach ( $form as $key => $value ) {
-			$sanitized[ $key ] = sanitize_text_field( $value );
-		}
-		return $sanitized;
+		return apply_filters(
+			'wcapf_sanitize_form_settings',
+			array_map( 'sanitize_text_field', $raw ),
+			$raw
+		);
 	}
 }

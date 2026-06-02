@@ -31,20 +31,20 @@ const SelectMulti = ({
 	maxMenuHeight,
 }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
+		const query = { search: keyword, page };
 		let path;
 
 		if ('author' === type) {
-			path = addQueryArgs('/wcapf/v1/authors', { keyword, page });
+			path = addQueryArgs('/wcapf/v1/authors', query);
 		} else if ('page' === type) {
-			path = addQueryArgs('/wcapf/v1/pages', { keyword, page });
+			path = addQueryArgs('/wcapf/v1/pages', query);
 		} else if ('product' === type) {
-			path = addQueryArgs('/wcapf/v1/products', { keyword, page });
+			path = addQueryArgs('/wcapf/v1/products', query);
 		} else {
 			path = addQueryArgs('/wcapf/v1/terms', {
 				taxonomy,
 				only_parent: onlyParent ? 'true' : 'false',
-				keyword,
-				page,
+				...query,
 			});
 		}
 

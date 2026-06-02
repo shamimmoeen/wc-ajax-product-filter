@@ -1,9 +1,9 @@
 <?php
 /**
- * Pins the wcapf/v1 notice-dismiss routes: per-type user_meta writes for the
- * review notice (/wcapf/v1/notices/review/dismiss) and the post-meta delete
- * for the v4 review-filters notice
- * (/wcapf/v1/notices/v4-review-filters/dismiss).
+ * Pins the `wcapf/v1` notice-dismiss routes: per-type user_meta writes for
+ * the review notice (`/wcapf/v1/notices/review/dismiss`) and the post-meta
+ * delete for the v4 review-filters notice
+ * (`/wcapf/v1/notices/v4-review-filters/dismiss`).
  *
  * @package wc-ajax-product-filter
  */
@@ -37,6 +37,7 @@ class RestNoticesTest extends WP_UnitTestCase {
 		);
 
 		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( array( 'dismissed' => true ), $response->get_data() );
 		$this->assertSame(
 			'1',
 			get_user_meta( $this->admin_id, 'wcapf_review_notice_for_milestone_achieved_dismissed', true )
@@ -96,6 +97,7 @@ class RestNoticesTest extends WP_UnitTestCase {
 		);
 
 		$this->assertSame( 200, $response->get_status() );
+		$this->assertSame( array( 'dismissed' => true ), $response->get_data() );
 		$this->assertSame( '', get_post_meta( $form_id, '_wcapf_v4_needs_review', true ) );
 	}
 }

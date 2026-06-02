@@ -1,6 +1,6 @@
 <?php
 /**
- * Abstract base for every wcapf/v1 REST controller. Holds the namespace
+ * Abstract base for every `wcapf/v1` REST controller. Holds the namespace
  * constant, the shared permission callback, and the rest_api_init binding.
  *
  * @package    wc-ajax-product-filter
@@ -15,10 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WP_REST_Request;
-
 /**
- * Base class for wcapf/v1 REST controllers.
+ * Base class for `wcapf/v1` REST controllers.
  */
 abstract class Controller {
 
@@ -32,7 +30,7 @@ abstract class Controller {
 	}
 
 	/**
-	 * Permission check shared by every wcapf/v1 route.
+	 * Permission check shared by every `wcapf/v1` route.
 	 *
 	 * @return bool
 	 */
@@ -47,25 +45,4 @@ abstract class Controller {
 	 * @return void
 	 */
 	abstract public function register_routes(): void;
-
-	/**
-	 * Decodes a param that arrives either as a JSON string (form-encoded
-	 * requests) or as an already-decoded array (JSON-bodied requests).
-	 *
-	 * @param WP_REST_Request $request The request.
-	 * @param string          $name    The param name.
-	 *
-	 * @return array
-	 */
-	protected function json_param_to_array( WP_REST_Request $request, string $name ): array {
-		$value = $request->get_param( $name );
-
-		if ( is_array( $value ) ) {
-			return $value;
-		}
-
-		$decoded = json_decode( (string) $value, true );
-
-		return is_array( $decoded ) ? $decoded : array();
-	}
 }

@@ -28,9 +28,8 @@ const NoFormsFound = () => {
 		setLoading(true);
 
 		apiFetch({
-			path: '/wcapf/v1/forms',
+			path: '/wcapf/v1/forms/sample',
 			method: 'POST',
-			data: { template: 'sample' },
 		})
 			.then((data) => {
 				setLoading(false);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Pins the wcapf/v1 REST form lifecycle: create / read / update / delete +
+ * Pins the `wcapf/v1` REST form lifecycle: create / read / update / delete +
  * the React UI shapes (parse_filter_data branches, parent_term value/label
  * round-trip, delete-form cascade).
  *
@@ -31,7 +31,7 @@ class RestFormsTest extends WP_UnitTestCase {
 	}
 
 	public function test_create_sample_form_seeds_sample_filters(): void {
-		$response = $this->do_rest( 'POST', '/wcapf/v1/forms', array( 'template' => 'sample' ) );
+		$response = $this->do_rest( 'POST', '/wcapf/v1/forms/sample' );
 
 		$this->assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
@@ -54,8 +54,8 @@ class RestFormsTest extends WP_UnitTestCase {
 			'POST',
 			'/wcapf/v1/forms',
 			array(
-				'form_title'    => 'My new form',
-				'form_settings' => wp_json_encode( \WCAPF\Defaults::form_default_data() ),
+				'title'    => 'My new form',
+				'settings' => \WCAPF\Defaults::form_default_data(),
 			)
 		);
 
@@ -88,12 +88,12 @@ class RestFormsTest extends WP_UnitTestCase {
 		$this->assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
 		$this->assertSame(
-			array( 'post_id', 'post_title', 'filter_keys', 'form_filters', 'form_settings' ),
+			array( 'id', 'title', 'filter_keys', 'filters', 'settings' ),
 			array_keys( $data )
 		);
-		$this->assertSame( $form_id, $data['post_id'] );
-		$this->assertSame( 'A form', $data['post_title'] );
-		$this->assertSame( array(), $data['form_filters'] );
+		$this->assertSame( $form_id, $data['id'] );
+		$this->assertSame( 'A form', $data['title'] );
+		$this->assertSame( array(), $data['filters'] );
 	}
 
 	public function test_get_form_data_parses_parent_term_into_value_label(): void {
@@ -124,7 +124,7 @@ class RestFormsTest extends WP_UnitTestCase {
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame(
 			array( 'value' => $term, 'label' => 'Furniture' ),
-			$response->get_data()['form_filters'][0]['parent_term']
+			$response->get_data()['filters'][0]['parent_term']
 		);
 	}
 
@@ -160,7 +160,7 @@ class RestFormsTest extends WP_UnitTestCase {
 
 		$response = $this->do_rest( 'GET', "/wcapf/v1/forms/$form_id" );
 
-		$include = $response->get_data()['form_filters'][0]['include_terms'];
+		$include = $response->get_data()['filters'][0]['include_terms'];
 		$this->assertCount( 2, $include );
 		$this->assertSame( array( 'value' => $term_a, 'label' => 'Chairs' ), $include[0] );
 		$this->assertSame( array( 'value' => $term_b, 'label' => 'Tables' ), $include[1] );
@@ -192,19 +192,17 @@ class RestFormsTest extends WP_UnitTestCase {
 			'POST',
 			"/wcapf/v1/forms/$form_id",
 			array(
-				'form_title'    => 'After save',
-				'form_filters'  => wp_json_encode(
+				'title'    => 'After save',
+				'filters'  => array(
 					array(
-						array(
-							'type'        => 'taxonomy',
-							'taxonomy'    => 'product_cat',
-							'field_key'   => 'cat_filter',
-							'title'       => 'Categories',
-							'parent_term' => array( 'value' => $term, 'label' => 'Lamps' ),
-						),
-					)
+						'type'        => 'taxonomy',
+						'taxonomy'    => 'product_cat',
+						'field_key'   => 'cat_filter',
+						'title'       => 'Categories',
+						'parent_term' => array( 'value' => $term, 'label' => 'Lamps' ),
+					),
 				),
-				'form_settings' => wp_json_encode( \WCAPF\Defaults::form_default_data() ),
+				'settings' => \WCAPF\Defaults::form_default_data(),
 			)
 		);
 
@@ -255,6 +253,9 @@ class RestFormsTest extends WP_UnitTestCase {
 		$response = $this->do_rest( 'DELETE', "/wcapf/v1/forms/$form_id" );
 
 		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertTrue( $data['deleted'] );
+		$this->assertSame( $form_id, $data['previous']['id'] );
 		$this->assertNull( get_post( $form_id ) );
 		$this->assertNull( get_post( $child_a ) );
 		$this->assertNull( get_post( $child_b ) );
@@ -283,6 +284,9 @@ class RestFormsTest extends WP_UnitTestCase {
 		$response = $this->do_rest( 'DELETE', "/wcapf/v1/filters/$victim" );
 
 		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertTrue( $data['deleted'] );
+		$this->assertArrayHasKey( 'previous', $data );
 		$this->assertNull( get_post( $victim ) );
 		$this->assertNotNull( get_post( $survivor ) );
 		$this->assertNotNull( get_post( $form_id ) );
@@ -293,13 +297,11 @@ class RestFormsTest extends WP_UnitTestCase {
 			'POST',
 			'/wcapf/v1/settings',
 			array(
-				'settings' => wp_json_encode(
-					array(
-						'author_roles' => array(
-							array( 'label' => 'Administrator', 'value' => 'administrator' ),
-							array( 'label' => 'Editor', 'value' => 'editor' ),
-						),
-					)
+				'settings' => array(
+					'author_roles' => array(
+						array( 'label' => 'Administrator', 'value' => 'administrator' ),
+						array( 'label' => 'Editor', 'value' => 'editor' ),
+					),
 				),
 			)
 		);
@@ -318,7 +320,7 @@ class RestFormsTest extends WP_UnitTestCase {
 		$response = $this->do_rest(
 			'POST',
 			'/wcapf/v1/settings',
-			array( 'settings' => wp_json_encode( array() ) )
+			array( 'settings' => array() )
 		);
 
 		$this->assertSame( 200, $response->get_status() );

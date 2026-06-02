@@ -28,6 +28,10 @@ use WCAPF\Hooks\RatingFilter;
 use WCAPF\Hooks\Shop;
 use WCAPF\Hooks\TaxonomyFilter;
 use WCAPF\Migration\V4Migration;
+use WCAPF\RestApi\DataSourcesController;
+use WCAPF\RestApi\FormsController;
+use WCAPF\RestApi\NoticesController;
+use WCAPF\RestApi\SettingsController;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -173,13 +177,6 @@ class Plugin {
 	public FrontendScripts $frontend_scripts;
 
 	/**
-	 * Wcapf/v1 REST API coordinator (per-resource controllers underneath).
-	 *
-	 * @var RestApi
-	 */
-	public RestApi $rest_api;
-
-	/**
 	 * Admin pages, assets, and review notices. Null on non-admin requests.
 	 *
 	 * @var Admin|null
@@ -211,7 +208,11 @@ class Plugin {
 		$this->setup                = new Setup();
 
 		$this->frontend_scripts = new FrontendScripts();
-		$this->rest_api         = new RestApi();
+
+		new FormsController();
+		new SettingsController();
+		new DataSourcesController();
+		new NoticesController();
 
 		if ( is_admin() ) {
 			$this->admin = new Admin();

@@ -1,9 +1,9 @@
 <?php
 /**
- * Pins the read-only wcapf/v1 dropdown/modal data routes (/terms, /authors,
- * /pages, /products, /meta-values). Locks the {label,value} response shape
+ * Pins the read-only `wcapf/v1` dropdown/modal data routes (/terms, /authors,
+ * /pages, /products, /meta-values). Locks the `{label, value}` response shape
  * the React AsyncPaginate consumes, dropdown pagination, the only_parent
- * filter, and the modal vs dropdown collapse via ?context=.
+ * filter, the per_page param, and the roles-vs-capability author filtering.
  *
  * @package wc-ajax-product-filter
  */
@@ -24,7 +24,7 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		return rest_do_request( $request );
 	}
 
-	public function test_terms_modal_returns_value_label_rows(): void {
+	public function test_terms_bulk_fetch_returns_label_value_rows(): void {
 		$term_id = $this->factory()->term->create(
 			array( 'taxonomy' => 'product_cat', 'name' => 'Chairs' )
 		);
@@ -32,17 +32,17 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$response = $this->do_rest(
 			'GET',
 			'/wcapf/v1/terms',
-			array( 'context' => 'modal', 'taxonomy' => 'product_cat' )
+			array( 'taxonomy' => 'product_cat', 'per_page' => 99 )
 		);
 
 		$this->assertSame( 200, $response->get_status() );
 		$row = $this->find_row( $response->get_data(), 'value', $term_id );
 		$this->assertNotNull( $row );
-		$this->assertSame( array( 'value', 'label' ), array_keys( $row ) );
+		$this->assertSame( array( 'label', 'value' ), array_keys( $row ) );
 		$this->assertSame( 'Chairs', $row['label'] );
 	}
 
-	public function test_terms_dropdown_paginates(): void {
+	public function test_terms_paginates_at_default_per_page(): void {
 		for ( $i = 1; $i <= 22; $i++ ) {
 			$this->factory()->term->create(
 				array( 'taxonomy' => 'product_cat', 'name' => sprintf( 'Bulk %02d', $i ) )
@@ -52,7 +52,7 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$page_1 = $this->do_rest( 'GET', '/wcapf/v1/terms', array( 'taxonomy' => 'product_cat', 'page' => 1 ) );
 		$page_2 = $this->do_rest( 'GET', '/wcapf/v1/terms', array( 'taxonomy' => 'product_cat', 'page' => 2 ) );
 
-		$this->assertCount( 20, $page_1->get_data() );
+		$this->assertCount( 20, $page_1->get_data(), 'Default per_page is 20.' );
 		$this->assertSame( array( 'label', 'value' ), array_keys( $page_1->get_data()[0] ) );
 		$this->assertNotEmpty( $page_2->get_data() );
 
@@ -61,7 +61,7 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$this->assertSame( array(), array_intersect( $page_1_ids, $page_2_ids ) );
 	}
 
-	public function test_terms_dropdown_only_parent_filters_to_terms_with_children(): void {
+	public function test_terms_only_parent_filters_to_terms_with_children(): void {
 		$parent = $this->factory()->term->create(
 			array( 'taxonomy' => 'product_cat', 'name' => 'Parent cat' )
 		);
@@ -83,19 +83,43 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$this->assertNotContains( $leaf, $values );
 	}
 
-	public function test_authors_dropdown_returns_label_value_rows(): void {
-		$author_id = self::factory()->user->create(
+	public function test_terms_per_page_is_capped_by_filter(): void {
+		add_filter( 'wcapf_max_number_of_terms_for_browse_options_modal', static fn() => 3 );
+
+		for ( $i = 1; $i <= 5; $i++ ) {
+			$this->factory()->term->create(
+				array( 'taxonomy' => 'product_cat', 'name' => "Cap $i" )
+			);
+		}
+
+		$response = $this->do_rest(
+			'GET',
+			'/wcapf/v1/terms',
+			array( 'taxonomy' => 'product_cat', 'per_page' => 99 )
+		);
+
+		$this->assertCount( 3, $response->get_data(), 'Per_page must be capped by the filter.' );
+
+		remove_all_filters( 'wcapf_max_number_of_terms_for_browse_options_modal' );
+	}
+
+	public function test_authors_defaults_to_edit_posts_capability_when_no_filter(): void {
+		$author_id     = self::factory()->user->create(
 			array( 'role' => 'author', 'display_name' => 'Jane Author' )
+		);
+		$subscriber_id = self::factory()->user->create(
+			array( 'role' => 'subscriber', 'display_name' => 'No-cap Sub' )
 		);
 
 		$response = $this->do_rest( 'GET', '/wcapf/v1/authors' );
 
 		$this->assertSame( 200, $response->get_status() );
 		$values = array_map( 'intval', wp_list_pluck( $response->get_data(), 'value' ) );
-		$this->assertContains( $author_id, $values );
+		$this->assertContains( $author_id, $values, 'Authors (have edit_posts) should appear in the default list.' );
+		$this->assertNotContains( $subscriber_id, $values, 'Subscribers (no edit_posts) must be excluded by the default.' );
 	}
 
-	public function test_authors_modal_filters_by_roles(): void {
+	public function test_authors_roles_param_filters_by_role(): void {
 		$author_id = self::factory()->user->create(
 			array( 'role' => 'author', 'display_name' => 'In-role' )
 		);
@@ -106,7 +130,7 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$response = $this->do_rest(
 			'GET',
 			'/wcapf/v1/authors',
-			array( 'context' => 'modal', 'roles' => array( 'author' ) )
+			array( 'roles' => array( 'author' ) )
 		);
 
 		$values = array_map( 'intval', wp_list_pluck( $response->get_data(), 'value' ) );
@@ -115,7 +139,7 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$this->assertSame( array( 'label', 'value' ), array_keys( $response->get_data()[0] ) );
 	}
 
-	public function test_pages_searches_by_keyword(): void {
+	public function test_pages_searches_by_search_param(): void {
 		$matched = $this->factory()->post->create(
 			array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Match page' )
 		);
@@ -123,19 +147,19 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 			array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Unrelated' )
 		);
 
-		$response = $this->do_rest( 'GET', '/wcapf/v1/pages', array( 'keyword' => 'Match' ) );
+		$response = $this->do_rest( 'GET', '/wcapf/v1/pages', array( 'search' => 'Match' ) );
 
 		$values = wp_list_pluck( $response->get_data(), 'value' );
 		$this->assertContains( $matched, $values );
 		$this->assertNotContains( $other, $values );
 	}
 
-	public function test_products_returns_published_products(): void {
+	public function test_products_searches_by_search_param(): void {
 		$product = $this->factory()->post->create(
 			array( 'post_type' => 'product', 'post_status' => 'publish', 'post_title' => 'Visible widget' )
 		);
 
-		$response = $this->do_rest( 'GET', '/wcapf/v1/products', array( 'keyword' => 'widget' ) );
+		$response = $this->do_rest( 'GET', '/wcapf/v1/products', array( 'search' => 'widget' ) );
 
 		$this->assertContains( $product, wp_list_pluck( $response->get_data(), 'value' ) );
 	}
@@ -151,7 +175,7 @@ class RestDataSourcesTest extends WP_UnitTestCase {
 		$values = wp_list_pluck( $response->get_data(), 'value' );
 		$this->assertContains( 'cotton', $values );
 		$this->assertContains( 'wool', $values );
-		$this->assertSame( array( 'value', 'label' ), array_keys( $response->get_data()[0] ) );
+		$this->assertSame( array( 'label', 'value' ), array_keys( $response->get_data()[0] ) );
 	}
 
 	private function find_row( array $rows, string $key, $value ): ?array {

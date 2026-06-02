@@ -16,11 +16,11 @@ const SelectArchive = ({ value, taxonomy, onChange }) => {
 	const loadOptions = async (keyword, prevOptions, { page }) => {
 		// Previously hit `wcapf_get_taxonomy_terms` which has no registered
 		// handler — the selector was non-functional. Routes through /terms
-		// (dropdown context) which accepts the same params.
+		// which accepts the same params.
 		const path = addQueryArgs('/wcapf/v1/terms', {
 			taxonomy,
 			only_parent: 'false',
-			keyword,
+			search: keyword,
 			page,
 		});
 

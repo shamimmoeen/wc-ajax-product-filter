@@ -1,4 +1,5 @@
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import {
 	itemDeletedErrorNotice,
@@ -58,10 +59,14 @@ const useListTable = (dispatch, items, postType) => {
 			path: `/wcapf/v1/${postType}s/${id}`,
 			method: 'DELETE',
 		})
-			.then((res) => {
+			.then(() => {
 				setDeletingItemId(null);
 
-				itemDeletedSuccessNotice(res.message);
+				itemDeletedSuccessNotice(
+					'form' === postType
+						? __('Form deleted successfully', 'wc-ajax-product-filter')
+						: __('Filter deleted successfully', 'wc-ajax-product-filter')
+				);
 
 				const _items = items.filter((item) => item.id !== id);
 
@@ -100,11 +105,11 @@ const useListTable = (dispatch, items, postType) => {
 			.then((res) => {
 				setDuplicatingItemId(null);
 
-				const { message, new_post } = res;
+				itemDuplicatedSuccessNotice(
+					__('Form duplicated successfully', 'wc-ajax-product-filter')
+				);
 
-				itemDuplicatedSuccessNotice(message);
-
-				const _items = [new_post, ...items];
+				const _items = [res, ...items];
 
 				dispatch({ type: dispatchType, payload: _items });
 			})

@@ -87,8 +87,8 @@ const AddNewModal = ({ isOpen, setAddNewModalOpen }) => {
 			path: '/wcapf/v1/forms',
 			method: 'POST',
 			data: {
-				form_title: title,
-				form_settings: JSON.stringify(defaultFormSettings()),
+				title,
+				settings: defaultFormSettings(),
 			},
 		})
 			.then((data) => {

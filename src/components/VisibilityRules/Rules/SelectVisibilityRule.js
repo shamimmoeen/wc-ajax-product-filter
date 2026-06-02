@@ -24,7 +24,7 @@ const SelectVisibilityRule = ({
 
 		if ('page' === type) {
 			path = addQueryArgs('/wcapf/v1/pages', {
-				keyword,
+				search: keyword,
 				page,
 				show_all: 'true',
 			});
@@ -32,7 +32,7 @@ const SelectVisibilityRule = ({
 			path = addQueryArgs('/wcapf/v1/terms', {
 				taxonomy,
 				only_parent: 'false',
-				keyword,
+				search: keyword,
 				page,
 			});
 		}
