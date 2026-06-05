@@ -14,6 +14,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true // babel transpiles file-by-file; this catches what it can't handle
   },
-  "include": [ "src" ],
+  "include": [ "src", "e2e" ],
   "exclude": [ "node_modules", "build", "vendor" ]
 }

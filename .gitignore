@@ -16,3 +16,9 @@ tests/cache/
 .dist/
 .husky/_/
 *.log
+
+# Playwright
+e2e/.auth/
+test-results/
+playwright-report/
+/playwright/.cache/

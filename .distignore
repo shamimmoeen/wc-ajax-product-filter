@@ -57,6 +57,11 @@ docker
 docker-compose.yml
 phpstan.neon.dist
 phpstan-baseline.neon
+tsconfig.json
+playwright.config.ts
+e2e
+playwright-report
+test-results
 
 # Ignore source codes.
 public/lib/chosen/chosen.scss
