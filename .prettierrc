@@ -2,18 +2,15 @@
 	"jsxSingleQuote": true,
 	"singleQuote": true,
 	"bracketSpacing": true,
+	"parenSpacing": true,
+	"useTabs": true,
+	"tabWidth": 4,
 	"overrides": [
 		{
-			"files": "*.php",
+			"files": ["*.json", "*.yml", "*.yaml"],
 			"options": {
-				"printWidth": 120,
-				"tabWidth": 4,
-				"useTabs": true,
-				"singleQuote": true,
-				"trailingCommaPHP": "all",
-				"braceStyle": "1tbs",
-				"requirePragma": false,
-				"insertPragma": false
+				"useTabs": false,
+				"tabWidth": 2
 			}
 		}
 	]
