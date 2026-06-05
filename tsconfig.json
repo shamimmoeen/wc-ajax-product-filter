@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler", // matches webpack: extensionless imports resolve
+    "jsx": "react-jsx", // automatic runtime (what babel-preset-default 8 uses)
+    "strict": true, // do it right from the start
+    "noEmit": true, // tsc checks only; babel emits
+    "allowJs": true, // let .ts files import the existing .js siblings...
+    "checkJs": false, // ...without drowning in errors from untyped JS
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true, // don't type-check node_modules' .d.ts
+    "resolveJsonModule": true,
+    "isolatedModules": true // babel transpiles file-by-file; this catches what it can't handle
+  },
+  "include": [ "src" ],
+  "exclude": [ "node_modules", "build", "vendor" ]
+}

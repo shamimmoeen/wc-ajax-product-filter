@@ -1,3 +1,5 @@
+import { useSelect } from '@wordpress/data';
+import store from '../../store/forms';
 import { Button } from '@wordpress/components';
 import { __, sprintf, _n } from '@wordpress/i18n';
 import NoFormsFound from './NoFormsFound';
@@ -10,141 +12,149 @@ import {
 	PlusIcon,
 } from '../SVGIcons';
 import { slugify } from '../utils';
-import { useListForms } from './ListFormsContext';
 import { prepareFormData } from './utils';
 import TippyTooltip from '../TippyTooltip';
 import { Icon } from '@wordpress/icons';
 
+interface TableProps {
+	openAddNewModal: () => void;
+	openDeleteModal: ( id: number ) => void;
+	openDuplicateModal: ( id: number ) => void;
+	openPublishModal: () => void;
+	deletingItemId: number | null;
+	duplicatingItemId: number | null;
+}
+
 const filterOnTooltip = __(
 	'Determines where you want to show the form to filter the products.',
-	'wc-ajax-product-filter'
+	'wc-ajax-product-filter',
 );
 
 const headers = [
-	__('Title', 'wc-ajax-product-filter'),
-	__('Available on', 'wc-ajax-product-filter'),
-	__('Actions', 'wc-ajax-product-filter'),
+	__( 'Title', 'wc-ajax-product-filter' ),
+	__( 'Available on', 'wc-ajax-product-filter' ),
+	__( 'Actions', 'wc-ajax-product-filter' ),
 ];
 
-const Table = ({
+const Table = ( {
 	openAddNewModal,
 	openDeleteModal,
 	openDuplicateModal,
 	openPublishModal,
 	deletingItemId,
 	duplicatingItemId,
-}) => {
-	const {
-		state: { forms },
-	} = useListForms();
+}: TableProps ) => {
+	const forms = useSelect( ( select ) => select( store ).getForms(), [] );
 
 	const formsFound = forms.length;
 
 	const tableHeader = () => {
 		return (
 			<tr>
-				{headers.map((item) => {
-					const id = slugify(item);
+				{ headers.map( ( item ) => {
+					const id = slugify( item );
 
 					return (
-						<th className={id} key={`posts-table-${item}`}>
-							{item}
-							{'__Available_on' === id && (
-								<TippyTooltip content={filterOnTooltip} />
-							)}
+						<th className={ id } key={ `posts-table-${ item }` }>
+							{ item }
+							{ '__Available_on' === id && (
+								<TippyTooltip content={ filterOnTooltip } />
+							) }
 						</th>
 					);
-				})}
+				} ) }
 			</tr>
 		);
 	};
 
 	const tableBody = () =>
-		forms.map((_form) => {
-			const form = prepareFormData(_form);
+		forms.map( ( _form ) => {
+			const form = prepareFormData( _form );
 
 			const formId = form.id;
 			const formTitle = form.title
 				? form.title
-				: __('(no title)', 'wc-ajax-product-filter');
+				: __( '(no title)', 'wc-ajax-product-filter' );
 
 			const isDeleting = formId === deletingItemId;
 			const isDuplicating = formId === duplicatingItemId;
 
 			return (
-				<tr key={formId}>
+				<tr key={ formId }>
 					<td className='__Title'>
-						<a href={form.editLink} className='__post_title'>
-							{formTitle}
+						<a href={ form.editLink } className='__post_title'>
+							{ formTitle }
 						</a>
 					</td>
 					<td className='__Available_on'>
-						{WCAPF_PRO
+						{ WCAPF_PRO
 							? form.locations
 							: __(
 									'Product archive pages',
-									'wc-ajax-product-filter'
-							  )}
+									'wc-ajax-product-filter',
+							  ) }
 					</td>
 					<td className='__Actions'>
 						<Button
-							icon={DeleteIcon}
-							onClick={() => openDeleteModal(formId)}
-							isBusy={isDeleting}
-							disabled={isDeleting}
+							icon={ DeleteIcon }
+							onClick={ () => openDeleteModal( formId ) }
+							isBusy={ isDeleting }
+							disabled={ isDeleting }
 							isSmall
 						/>
-						{WCAPF_PRO && (
+						{ WCAPF_PRO && (
 							<Button
-								icon={DuplicateIcon}
-								onClick={() => openDuplicateModal(formId)}
-								isBusy={isDuplicating}
-								disabled={isDuplicating}
+								icon={ DuplicateIcon }
+								onClick={ () => openDuplicateModal( formId ) }
+								isBusy={ isDuplicating }
+								disabled={ isDuplicating }
 								isSmall
 							/>
-						)}
+						) }
 						<Button
-							icon={CodeIcon}
-							onClick={openPublishModal}
+							icon={ CodeIcon }
+							onClick={ openPublishModal }
 							isSmall
 						/>
 						<Button
-							icon={EditIcon}
-							href={form.editLink}
+							icon={ EditIcon }
+							href={ form.editLink }
 							className='__edit_btn'
 							isSmall
 						/>
 					</td>
 				</tr>
 			);
-		});
+		} );
 
 	const listTable = () => {
 		return (
 			<div className='__list_table_responsive_wrapper'>
 				<table>
-					<thead>{tableHeader()}</thead>
-					<tbody>{tableBody()}</tbody>
+					<thead>{ tableHeader() }</thead>
+					<tbody>{ tableBody() }</tbody>
 				</table>
 			</div>
 		);
 	};
 
 	const listSummary = () => {
-		if (formsFound) {
+		if ( formsFound ) {
 			const countResults = sprintf(
 				_n(
 					'Showing <b>%d</b> result',
 					'Showing <b>%d</b> results',
 					formsFound,
-					'wc-ajax-product-filter'
+					'wc-ajax-product-filter',
 				),
-				formsFound
+				formsFound,
 			);
 
 			return (
 				<div className='__list_table_summary'>
-					<span dangerouslySetInnerHTML={{ __html: countResults }} />
+					<span
+						dangerouslySetInnerHTML={ { __html: countResults } }
+					/>
 				</div>
 			);
 		}
@@ -152,7 +162,7 @@ const Table = ({
 
 	let content;
 
-	if (formsFound) {
+	if ( formsFound ) {
 		content = listTable();
 	} else {
 		content = <NoFormsFound />;
@@ -163,21 +173,21 @@ const Table = ({
 			<div className='__list_table_wrapper'>
 				<div className='__list_table_header'>
 					<h2>
-						<Icon icon={ListIcon} />
-						{__('List of Forms', 'wc-ajax-product-filter')}
+						<Icon icon={ ListIcon } />
+						{ __( 'List of Forms', 'wc-ajax-product-filter' ) }
 					</h2>
 
-					<Button variant='primary' onClick={openAddNewModal}>
-						<Icon icon={PlusIcon} size={14} />
-						{__('Add New', 'wc-ajax-product-filter')}
+					<Button variant='primary' onClick={ openAddNewModal }>
+						<Icon icon={ PlusIcon } size={ 14 } />
+						{ __( 'Add New', 'wc-ajax-product-filter' ) }
 					</Button>
 				</div>
 
 				<div className='__list_table_inner __forms_table'>
-					{content}
+					{ content }
 				</div>
 
-				{listSummary()}
+				{ listSummary() }
 			</div>
 		</div>
 	);
