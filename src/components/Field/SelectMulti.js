@@ -7,6 +7,7 @@ import { addQueryArgs } from '@wordpress/url';
 import { FormatSelectMultiLabel } from './utilsForReactSelect';
 import { getInputId } from '../utils';
 
+/** @type {import('react').FC<any>} */
 const SelectMulti = ({
 	label,
 	id,

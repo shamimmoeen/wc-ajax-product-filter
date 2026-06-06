@@ -1,6 +1,7 @@
 import { getInputId, proTag } from '../utils';
 import Text from './Text';
 
+/** @type {import('react').FC<any>} */
 const Number = ({
 	label,
 	id,

@@ -8,7 +8,7 @@ module.exports = {
 		...defaultConfig.entry,
 		'list-forms': path.resolve(process.cwd(), 'src', 'list-forms.tsx'),
 		form: path.resolve(process.cwd(), 'src', 'form.js'),
-		settings: path.resolve(process.cwd(), 'src', 'settings.js'),
+		settings: path.resolve(process.cwd(), 'src', 'settings.tsx'),
 		'seo-rules': path.resolve(process.cwd(), 'src', 'seo-rules.js'),
 	},
 	plugins: [

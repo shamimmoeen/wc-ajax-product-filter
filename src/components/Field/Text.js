@@ -73,6 +73,7 @@ const InputField = ({
 	);
 };
 
+/** @type {import('react').FC<any>} */
 const Text = ({
 	label,
 	id,

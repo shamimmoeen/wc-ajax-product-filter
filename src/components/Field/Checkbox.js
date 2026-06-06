@@ -2,6 +2,7 @@ import { CheckboxControl } from '@wordpress/components';
 import { getInputId, isProFeature, proTag } from '../utils';
 import TippyTooltip from '../TippyTooltip';
 
+/** @type {import('react').FC<any>} */
 const Checkbox = ({
 	id,
 	index = '',

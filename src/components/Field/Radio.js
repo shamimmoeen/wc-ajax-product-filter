@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { getInputId, proTag } from '../utils';
 import TippyTooltip from '../TippyTooltip';
 
+/** @type {import('react').FC<any>} */
 const Radio = ({
 	label,
 	id,

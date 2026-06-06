@@ -47,6 +47,7 @@ const DropdownColorPicker = ({ value, onChange, disableAlpha, slotName }) => {
 	);
 };
 
+/** @type {import('react').FC<any>} */
 const ColorInput = ({
 	label,
 	value,

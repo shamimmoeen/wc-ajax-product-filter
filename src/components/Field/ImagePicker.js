@@ -51,6 +51,7 @@ const ImagePickerField = ({ imageId, imageUrl, onChange, onClear }) => {
 	);
 };
 
+/** @type {import('react').FC<any>} */
 const ImagePicker = ({
 	label,
 	imageId,

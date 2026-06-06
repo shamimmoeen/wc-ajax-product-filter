@@ -61,6 +61,7 @@ const SimpleReactSelect = ({
 	);
 };
 
+/** @type {import('react').FC<any>} */
 const Select = ({
 	id,
 	index = '',

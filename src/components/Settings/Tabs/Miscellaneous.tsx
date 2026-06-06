@@ -1,0 +1,53 @@
+import { __ } from '@wordpress/i18n';
+import { useSelect } from '@wordpress/data';
+import store from '../../../store/settings';
+import Checkbox from '../../Field/Checkbox';
+import useSettingsData from '../useSettingsData';
+
+const Miscellaneous = () => {
+	const { handleCheckboxChange } = useSettingsData();
+
+	const { debug_mode, disable_wcapf, remove_data } = useSelect(
+		( select ) => select( store ).getSettings(),
+		[],
+	);
+
+	return (
+		<>
+			<Checkbox
+				id={ 'debug_mode' }
+				label={ __( 'Debug Mode', 'wc-ajax-product-filter' ) }
+				description={ __(
+					'This will help you to configure the plugin correctly.',
+					'wc-ajax-product-filter',
+				) }
+				isChecked={ debug_mode }
+				onChange={ handleCheckboxChange }
+			/>
+
+			<Checkbox
+				id={ 'disable_wcapf' }
+				label={ __( 'Disable WCAPF', 'wc-ajax-product-filter' ) }
+				description={ __(
+					'Check this to disable WCAPF – Ajax Product Filter for WooCommerce in the front end for testing purposes.',
+					'wc-ajax-product-filter',
+				) }
+				isChecked={ disable_wcapf }
+				onChange={ handleCheckboxChange }
+			/>
+
+			<Checkbox
+				id={ 'remove_data' }
+				label={ __( 'Remove Data', 'wc-ajax-product-filter' ) }
+				description={ __(
+					'Enable this option to remove all data associated with WCAPF – Ajax Product Filter for WooCommerce when you delete the plugin via the <b>Plugins</b> page.',
+					'wc-ajax-product-filter',
+				) }
+				isChecked={ remove_data }
+				onChange={ handleCheckboxChange }
+			/>
+		</>
+	);
+};
+
+export default Miscellaneous;

@@ -15,93 +15,93 @@ import { useInstanceId } from '@wordpress/compose';
  */
 import { Button, NavigableMenu } from '@wordpress/components';
 
-const TabButton = ({ tabId, onClick, children, selected, ...rest }) => (
+const TabButton = ( { tabId, onClick, children, selected, ...rest } ) => (
 	<Button
 		role='tab'
-		tabIndex={selected ? null : -1}
-		aria-selected={selected}
-		id={tabId}
-		onClick={onClick}
-		{...rest}
+		tabIndex={ selected ? null : -1 }
+		aria-selected={ selected }
+		id={ tabId }
+		onClick={ onClick }
+		{ ...rest }
 	>
-		{children}
+		{ children }
 	</Button>
 );
 
-export default function CustomTabPanel({
+export default function CustomTabPanel( {
 	className,
 	children,
 	tabs,
-	initialTabName,
+	initialTabName = '',
 	orientation = 'horizontal',
 	activeClass = 'is-active',
 	onSelect = noop,
 	currentTab,
 	onChangeTab,
-}) {
-	const instanceId = useInstanceId(CustomTabPanel, 'tab-panel');
+} ) {
+	const instanceId = useInstanceId( CustomTabPanel, 'tab-panel' );
 
-	const handleClick = (tabKey) => {
-		onChangeTab(tabKey);
-		onSelect(tabKey);
+	const handleClick = ( tabKey ) => {
+		onChangeTab( tabKey );
+		onSelect( tabKey );
 	};
 
-	const onNavigate = (childIndex, child) => {
+	const onNavigate = ( childIndex, child ) => {
 		child.click();
 	};
-	const selectedTab = find(tabs, { name: currentTab });
-	const selectedId = `${instanceId}-${selectedTab?.name ?? 'none'}`;
+	const selectedTab = find( tabs, { name: currentTab } );
+	const selectedId = `${ instanceId }-${ selectedTab?.name ?? 'none' }`;
 
-	useEffect(() => {
-		const newSelectedTab = find(tabs, { name: currentTab });
+	useEffect( () => {
+		const newSelectedTab = find( tabs, { name: currentTab } );
 
-		if (!newSelectedTab) {
+		if ( ! newSelectedTab ) {
 			const _selected =
-				initialTabName || (tabs.length > 0 ? tabs[0].name : null);
+				initialTabName || ( tabs.length > 0 ? tabs[ 0 ].name : null );
 
-			onChangeTab(_selected);
+			onChangeTab( _selected );
 		}
-	}, [tabs]);
+	}, [ tabs ] );
 
 	return (
-		<div className={className}>
+		<div className={ className }>
 			<NavigableMenu
 				role='tablist'
-				orientation={orientation}
-				onNavigate={onNavigate}
+				orientation={ orientation }
+				onNavigate={ onNavigate }
 				className='components-tab-panel__tabs'
 			>
-				{tabs.map((tab) => (
+				{ tabs.map( ( tab ) => (
 					<TabButton
-						className={classnames(
+						className={ classnames(
 							'components-tab-panel__tabs-item',
 							tab.className,
 							{
-								[activeClass]: tab.name === currentTab,
-							}
-						)}
-						tabId={`${instanceId}-${tab.name}`}
-						aria-controls={`${instanceId}-${tab.name}-view`}
-						selected={tab.name === currentTab}
-						key={tab.name}
-						onClick={partial(handleClick, tab.name)}
+								[ activeClass ]: tab.name === currentTab,
+							},
+						) }
+						tabId={ `${ instanceId }-${ tab.name }` }
+						aria-controls={ `${ instanceId }-${ tab.name }-view` }
+						selected={ tab.name === currentTab }
+						key={ tab.name }
+						onClick={ partial( handleClick, tab.name ) }
 					>
-						{tab.title}
+						{ tab.title }
 					</TabButton>
-				))}
+				) ) }
 			</NavigableMenu>
 
-			{selectedTab && (
+			{ selectedTab && (
 				<div
-					key={selectedId}
-					aria-labelledby={selectedId}
+					key={ selectedId }
+					aria-labelledby={ selectedId }
 					role='tabpanel'
-					id={`${selectedId}-view`}
+					id={ `${ selectedId }-view` }
 					className='components-tab-panel__tab-content'
 				>
-					{children(selectedTab)}
+					{ children( selectedTab ) }
 				</div>
-			)}
+			) }
 		</div>
 	);
 }
