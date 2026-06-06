@@ -28,3 +28,17 @@ export function seedForm( title = 'E2E Seed' ): void {
 		`post create --post_type=wcapf-form --post_status=publish --post_title='${ title }'`
 	);
 }
+
+/** Reverts settings to defaults by deleting the stored option. */
+export function resetSettings(): void {
+	try {
+		wpCli( 'option delete wcapf_settings' );
+	} catch {
+		// The option may not exist yet — that's the default state already.
+	}
+}
+
+/** Seeds the settings option with a known JSON payload (merged over defaults). */
+export function setSettings( json: string ): void {
+	wpCli( `option update wcapf_settings --format=json '${ json }'` );
+}
