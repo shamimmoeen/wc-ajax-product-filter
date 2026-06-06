@@ -14,7 +14,7 @@ function wpCli( args: string ): string {
 /** Deletes every form so a test starts from a known empty state. */
 export function deleteAllForms(): void {
 	const ids = wpCli(
-		'post list --post_type=wcapf-form --post_status=any --field=ID --format=ids'
+		'post list --post_type=wcapf-form --post_status=any --field=ID --format=ids',
 	);
 
 	if ( ids ) {
@@ -25,17 +25,16 @@ export function deleteAllForms(): void {
 /** Creates one form so tests that need an existing row are deterministic. */
 export function seedForm( title = 'E2E Seed' ): void {
 	wpCli(
-		`post create --post_type=wcapf-form --post_status=publish --post_title='${ title }'`
+		`post create --post_type=wcapf-form --post_status=publish --post_title='${ title }'`,
 	);
 }
 
-/** Reverts settings to defaults by deleting the stored option. */
+/** Reverts settings to defaults by removing the stored option. */
 export function resetSettings(): void {
-	try {
-		wpCli( 'option delete wcapf_settings' );
-	} catch {
-		// The option may not exist yet — that's the default state already.
-	}
+	// delete_option is silent and idempotent (returns false on a missing
+	// option, prints nothing). The `wp option delete` command instead warns
+	// when the option is absent — the very state a reset wants — so use eval.
+	wpCli( `eval 'delete_option("wcapf_settings");'` );
 }
 
 /** Seeds the settings option with a known JSON payload (merged over defaults). */

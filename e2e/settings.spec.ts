@@ -7,6 +7,20 @@ const SETTINGS_PAGE = '/wp-admin/admin.php?page=wcapf-settings';
 const saveButton = ( page: Page ) =>
 	page.getByRole( 'button', { name: 'Save' } );
 
+// Clicking Save only marks the button busy; the option isn't written until the
+// POST resolves. Wait for that response before asserting or reloading — otherwise
+// the button reads as disabled (busy) while the save is still in flight, and a
+// reload aborts it.
+async function save( page: Page ): Promise< void > {
+	const saved = page.waitForResponse(
+		( r ) =>
+			r.url().includes( '/wcapf/v1/settings' ) &&
+			r.request().method() === 'POST'
+	);
+	await saveButton( page ).click();
+	await saved;
+}
+
 test.describe( 'settings', () => {
 	test.beforeEach( () => resetSettings() );
 
@@ -30,7 +44,7 @@ test.describe( 'settings', () => {
 		await ajax.setChecked( ! ( await ajax.isChecked() ) );
 		await expect( saveButton( page ) ).toBeEnabled();
 
-		await saveButton( page ).click();
+		await save( page );
 		await expect( saveButton( page ) ).toBeDisabled(); // save done, dirty cleared
 	} );
 
@@ -42,8 +56,7 @@ test.describe( 'settings', () => {
 		const next = ! ( await ajax.isChecked() );
 		await ajax.setChecked( next );
 
-		await saveButton( page ).click();
-		await expect( saveButton( page ) ).toBeDisabled(); // wait for save
+		await save( page );
 
 		await page.goto( SETTINGS_PAGE );
 		await expect( page.getByLabel( 'Disable Ajax' ) ).toBeChecked( {
@@ -63,14 +76,18 @@ test.describe( 'settings', () => {
 		const ajaxNext = ! ( await ajax.isChecked() );
 		await ajax.setChecked( ajaxNext );
 
+		// Wait for the change to commit to state (Save enables) before switching
+		// tabs — setChecked returns on the native toggle, which can race the React
+		// commit and let the next tab mount from a stale settings snapshot.
+		await expect( saveButton( page ) ).toBeEnabled();
+
 		// Miscellaneous tab.
 		await page.getByRole( 'tab', { name: 'Miscellaneous' } ).click();
 		const debug = page.getByLabel( 'Debug Mode' );
 		const debugNext = ! ( await debug.isChecked() );
 		await debug.setChecked( debugNext );
 
-		await saveButton( page ).click();
-		await expect( saveButton( page ) ).toBeDisabled();
+		await save( page );
 
 		// Reload: both persisted.
 		await page.goto( SETTINGS_PAGE );
