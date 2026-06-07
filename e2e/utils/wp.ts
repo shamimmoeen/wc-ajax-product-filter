@@ -22,11 +22,13 @@ export function deleteAllForms(): void {
 	}
 }
 
-/** Creates one form so tests that need an existing row are deterministic. */
-export function seedForm( title = 'E2E Seed' ): void {
-	wpCli(
-		`post create --post_type=wcapf-form --post_status=publish --post_title='${ title }'`,
+/** Creates one form and returns its post ID (for opening the editor directly). */
+export function seedForm( title = 'E2E Seed' ): number {
+	const id = wpCli(
+		`post create --post_type=wcapf-form --post_status=publish --post_title='${ title }' --porcelain`,
 	);
+
+	return parseInt( id, 10 );
 }
 
 /** Reverts settings to defaults by removing the stored option. */
