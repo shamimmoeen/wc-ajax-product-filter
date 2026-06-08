@@ -11,14 +11,27 @@ function wpCli( args: string ): string {
 	} ).trim();
 }
 
-/** Deletes every form so a test starts from a known empty state. */
+/**
+ * Deletes every form (and its filters) so a test starts from a known empty
+ * state. Deleting the form post directly doesn't cascade to its child
+ * wcapf-filter posts (the REST route does), so remove those too — otherwise
+ * orphaned filters linger and pollute the global filter-keys list.
+ */
 export function deleteAllForms(): void {
-	const ids = wpCli(
+	const formIds = wpCli(
 		'post list --post_type=wcapf-form --post_status=any --field=ID --format=ids',
 	);
 
-	if ( ids ) {
-		wpCli( `post delete ${ ids } --force` );
+	if ( formIds ) {
+		wpCli( `post delete ${ formIds } --force` );
+	}
+
+	const filterIds = wpCli(
+		'post list --post_type=wcapf-filter --post_status=any --field=ID --format=ids',
+	);
+
+	if ( filterIds ) {
+		wpCli( `post delete ${ filterIds } --force` );
 	}
 }
 
