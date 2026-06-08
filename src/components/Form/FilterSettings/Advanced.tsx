@@ -1,0 +1,462 @@
+import { __ } from '@wordpress/i18n';
+import Checkbox from '../../Field/Checkbox';
+import Number from '../../Field/Number';
+import Radio from '../../Field/Radio';
+import Select from '../../Field/Select';
+import Text from '../../Field/Text';
+import Textarea from '../../Field/Textarea';
+import useFormFilterData from '../useFormFilterData';
+import {
+	accordionOverrideOptions,
+	accordionStates,
+	hierarchicalDisplayTypes,
+} from '../utils';
+import VisibilityRules from '../../VisibilityRules';
+import { useSelect } from '@wordpress/data';
+import store from '../../../store/form';
+
+const Advanced = ( { index }: { index: number } ) => {
+	const {
+		handleRadioChange,
+		handleCheckboxChange,
+		handleSelectChange,
+		handleTextFieldChange,
+	} = useFormFilterData();
+
+	const filter = useSelect(
+		( select ) => select( store ).getFilter( index ),
+		[ index ],
+	);
+
+	const {
+		type,
+		component,
+		taxHierarchical,
+		display_type,
+		native_display_type_layout,
+		number_display_type,
+		date_display_type,
+		hierarchical,
+		value_type,
+		show_title,
+		enable_accordion,
+		accordion_default_state,
+		help_text,
+		enable_search_field,
+		search_field_placeholder,
+		enable_reduce_height,
+		soft_limit,
+		max_height,
+		show_in_active_filters,
+		enable_visibility_rules: _enableVisibilityRules,
+	} = filter;
+
+	const enableVisibilityRules = WCAPF_PRO ? _enableVisibilityRules : false;
+	const disableVisibilityRulesCheckbox = ! WCAPF_PRO;
+
+	const activeFilters = 'active-filters' === component;
+
+	const showTitleField = () => {
+		return (
+			<Checkbox
+				id={ 'show_title' }
+				index={ index }
+				label={ __( 'Show title', 'wc-ajax-product-filter' ) }
+				description={ __(
+					'Whether to show the filter title before the filter options.',
+					'wc-ajax-product-filter',
+				) }
+				isChecked={ show_title }
+				onChange={ handleCheckboxChange }
+			/>
+		);
+	};
+
+	const enableAccordionField = () => {
+		if ( '1' === show_title ) {
+			if ( WCAPF_PRO ) {
+				const options = accordionOverrideOptions();
+				const selected =
+					options.find( ( o ) => o.value === enable_accordion ) ||
+					options[ 0 ];
+
+				return (
+					<Select
+						id={ 'enable_accordion' }
+						index={ index }
+						label={ __( 'Accordion', 'wc-ajax-product-filter' ) }
+						description={ __(
+							'Collapse the filter options. Overrides the form-level accordion setting for this filter.',
+							'wc-ajax-product-filter',
+						) }
+						options={ options }
+						value={ selected }
+						onChange={ handleSelectChange }
+						renderAsFormField
+					/>
+				);
+			}
+
+			return (
+				<Checkbox
+					id={ 'enable_accordion' }
+					index={ index }
+					label={ __( 'Enable accordion', 'wc-ajax-product-filter' ) }
+					description={ __(
+						'Place more filters by collapsing the filter options.',
+						'wc-ajax-product-filter',
+					) }
+					isChecked={ enable_accordion }
+					onChange={ handleCheckboxChange }
+				/>
+			);
+		}
+	};
+
+	const accordionDefaultSateField = () => {
+		if ( '1' === show_title && '1' === enable_accordion ) {
+			return (
+				<Radio
+					id={ 'accordion_default_state' }
+					index={ index }
+					label={ __( 'Accordion state', 'wc-ajax-product-filter' ) }
+					description={ __(
+						'Determines how the accordion should appear initially.',
+						'wc-ajax-product-filter',
+					) }
+					options={ accordionStates() }
+					value={ accordion_default_state }
+					onChange={ handleRadioChange }
+				/>
+			);
+		}
+	};
+
+	const helpTextField = () => {
+		if ( '1' === show_title ) {
+			return (
+				<Textarea
+					id={ 'help_text' }
+					index={ index }
+					label={ __( 'Help Text', 'wc-ajax-product-filter' ) }
+					description={ __(
+						'Show additional information in a tooltip. Supports basic markup.',
+						'wc-ajax-product-filter	',
+					) }
+					value={ help_text }
+					onChange={ handleTextFieldChange }
+					rows={ 2 }
+				/>
+			);
+		}
+	};
+
+	const getDisplayType = () => {
+		let _display_type;
+
+		if ( 'taxonomy' === type ) {
+			_display_type = display_type;
+		} else if ( 'price' === type ) {
+			_display_type = number_display_type;
+		} else if ( 'post-author' === type ) {
+			_display_type = display_type;
+		} else if ( 'post-meta' === type ) {
+			if ( 'text' === value_type ) {
+				_display_type = display_type;
+			} else if ( 'number' === value_type ) {
+				_display_type = number_display_type;
+			} else if ( 'date' === value_type ) {
+				_display_type = date_display_type;
+			}
+		} else {
+			_display_type = display_type;
+		}
+
+		return _display_type;
+	};
+
+	const isApplicable = ( field = 'reduce-height' ) => {
+		if ( activeFilters || 'keyword' === type ) {
+			return false;
+		}
+
+		if (
+			'taxonomy' === type &&
+			taxHierarchical &&
+			hierarchicalDisplayTypes().includes( display_type ) &&
+			'1' === hierarchical &&
+			'list' === native_display_type_layout &&
+			'search' === field
+		) {
+			return false;
+		}
+
+		if (
+			'taxonomy' === type &&
+			taxHierarchical &&
+			'hierarchy-select' === display_type
+		) {
+			return false;
+		}
+
+		let show;
+		const _display_type = getDisplayType();
+
+		let notAllowedDisplayTypes;
+
+		if ( 'reduce-height' === field ) {
+			notAllowedDisplayTypes = [
+				'select',
+				'multi-select',
+				'range_slider',
+				'range_number',
+				'range_select',
+				'range_multiselect',
+				'input_date',
+				'input_date_range',
+				'time_period_select',
+				'time_period_multiselect',
+			];
+		} else {
+			notAllowedDisplayTypes = [
+				'multi-select',
+				'range_multiselect',
+				'time_period_multiselect',
+				'range_slider',
+				'range_number',
+				'input_date',
+				'input_date_range',
+			];
+		}
+
+		if ( notAllowedDisplayTypes.includes( _display_type ) ) {
+			show = false;
+		} else {
+			show = true;
+		}
+
+		return show;
+	};
+
+	const enableSearchField = () => {
+		if ( isApplicable( 'search' ) ) {
+			return (
+				<Checkbox
+					id={ 'enable_search_field' }
+					index={ index }
+					label={ __( 'Search Field', 'wc-ajax-product-filter' ) }
+					description={ __(
+						'Adds a search field to narrow down the filter options.',
+						'wc-ajax-product-filter',
+					) }
+					isChecked={ enable_search_field }
+					onChange={ handleCheckboxChange }
+				/>
+			);
+		}
+	};
+
+	const placeholderField = () => {
+		const notApplicable = [
+			'select',
+			'range_select',
+			'time_period_select',
+		];
+
+		if (
+			isApplicable( 'search' ) &&
+			'1' === enable_search_field &&
+			! notApplicable.includes( getDisplayType() )
+		) {
+			return (
+				<Text
+					id={ 'search_field_placeholder' }
+					index={ index }
+					label={ __( 'Placeholder', 'wc-ajax-product-filter' ) }
+					description={ __(
+						'Change the default placeholder for the search input field.',
+						'wc-ajax-product-filter',
+					) }
+					value={ search_field_placeholder }
+					onChange={ handleTextFieldChange }
+					isPro
+				/>
+			);
+		}
+	};
+
+	const reduceHeightField = () => {
+		if ( isApplicable() ) {
+			let reduceHeightOptions;
+
+			// Soft limit not possible when hierarchy show is enabled.
+			if (
+				'taxonomy' === type &&
+				taxHierarchical &&
+				hierarchicalDisplayTypes().includes( display_type ) &&
+				'1' === hierarchical &&
+				'list' === native_display_type_layout
+			) {
+				reduceHeightOptions = [
+					{
+						label: __( 'No', 'wc-ajax-product-filter' ),
+						value: 'no',
+					},
+					{
+						label: __( 'Set max height', 'wc-ajax-product-filter' ),
+						value: 'max_height',
+					},
+				];
+			} else {
+				reduceHeightOptions = [
+					{
+						label: __( 'No', 'wc-ajax-product-filter' ),
+						value: 'no',
+					},
+					{
+						label: __( 'Set max height', 'wc-ajax-product-filter' ),
+						value: 'max_height',
+					},
+					{
+						label: __( 'Soft Limit', 'wc-ajax-product-filter' ),
+						value: 'soft_limit',
+					},
+				];
+			}
+
+			return (
+				<Radio
+					id={ 'enable_reduce_height' }
+					index={ index }
+					label={ __( 'Reduce height', 'wc-ajax-product-filter' ) }
+					description={ __(
+						'Enable this if you want to reduce the filter height.',
+						'wc-ajax-product-filter',
+					) }
+					options={ reduceHeightOptions }
+					onChange={ handleRadioChange }
+					value={ enable_reduce_height }
+				/>
+			);
+		}
+	};
+
+	const filterMaxHeightField = () => {
+		if ( 'max_height' === enable_reduce_height && isApplicable() ) {
+			return (
+				<Number
+					id={ 'max_height' }
+					index={ index }
+					label={ __(
+						'Filter max-height',
+						'wc-ajax-product-filter	',
+					) }
+					description={ __(
+						'Set the filter container max height in px.',
+						'wc-ajax-product-filter	',
+					) }
+					value={ max_height }
+					onChange={ handleTextFieldChange }
+					min={ 1 }
+				/>
+			);
+		}
+	};
+
+	const visibleOptionsField = () => {
+		if ( 'soft_limit' === enable_reduce_height && isApplicable() ) {
+			return (
+				<Number
+					id={ 'soft_limit' }
+					index={ index }
+					label={ __(
+						'Number of visible options',
+						'wc-ajax-product-filter	',
+					) }
+					description={ __(
+						'Show a <b>Show More/Show Less</b> toggle after this many options.',
+						'wc-ajax-product-filter	',
+					) }
+					value={ soft_limit }
+					onChange={ handleTextFieldChange }
+					min={ 1 }
+				/>
+			);
+		}
+	};
+
+	const showInActiveFiltersField = () => {
+		if ( ! activeFilters ) {
+			return (
+				<Checkbox
+					id={ 'show_in_active_filters' }
+					index={ index }
+					label={ __(
+						'Show in Active Filters',
+						'wc-ajax-product-filter',
+					) }
+					description={ __(
+						'Determines if we show the selected options in active filters.',
+						'wc-ajax-product-filter',
+					) }
+					isChecked={ show_in_active_filters }
+					onChange={ handleCheckboxChange }
+				/>
+			);
+		}
+	};
+
+	const enableVisibilityRulesField = () => {
+		return (
+			<Checkbox
+				id={ 'enable_visibility_rules' }
+				index={ index }
+				label={ __( 'Visibility Rules', 'wc-ajax-product-filter' ) }
+				description={ __(
+					'Enable this to control filter display based on page, archive and user role.',
+					'wc-ajax-product-filter',
+				) }
+				isChecked={ enableVisibilityRules }
+				onChange={ handleCheckboxChange }
+				isDisabled={ disableVisibilityRulesCheckbox }
+				isPro
+			/>
+		);
+	};
+
+	const visibilityRulesField = () => {
+		if ( WCAPF_PRO && '1' === enableVisibilityRules ) {
+			return <VisibilityRules index={ index } />;
+		}
+	};
+
+	return (
+		<>
+			{ showTitleField() }
+
+			{ enableAccordionField() }
+
+			{ accordionDefaultSateField() }
+
+			{ helpTextField() }
+
+			{ enableSearchField() }
+
+			{ placeholderField() }
+
+			{ reduceHeightField() }
+
+			{ filterMaxHeightField() }
+
+			{ visibleOptionsField() }
+
+			{ showInActiveFiltersField() }
+
+			{ enableVisibilityRulesField() }
+
+			{ visibilityRulesField() }
+		</>
+	);
+};
+
+export default Advanced;

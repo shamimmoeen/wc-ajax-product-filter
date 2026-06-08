@@ -7,7 +7,7 @@ module.exports = {
 	entry: {
 		...defaultConfig.entry,
 		'list-forms': path.resolve(process.cwd(), 'src', 'list-forms.tsx'),
-		form: path.resolve(process.cwd(), 'src', 'form.js'),
+		form: path.resolve(process.cwd(), 'src', 'form.tsx'),
 		settings: path.resolve(process.cwd(), 'src', 'settings.tsx'),
 		'seo-rules': path.resolve(process.cwd(), 'src', 'seo-rules.js'),
 	},

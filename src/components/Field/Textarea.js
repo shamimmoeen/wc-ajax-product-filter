@@ -1,6 +1,7 @@
 import { getInputId } from '../utils';
 
-const Textarea = ({
+/** @type {import('react').FC<any>} */
+const Textarea = ( {
 	label,
 	id,
 	index = '',
@@ -8,36 +9,36 @@ const Textarea = ({
 	onChange,
 	description,
 	...rest
-}) => {
-	const inputId = getInputId(id, index);
+} ) => {
+	const inputId = getInputId( id, index );
 
 	return (
 		<div className='__form_control'>
 			<div className='__inner'>
 				<div className='__label'>
-					<label htmlFor={inputId}>{label}</label>
+					<label htmlFor={ inputId }>{ label }</label>
 				</div>
 				<div className='__wrapper'>
 					<div className='__input_wrapper'>
 						<textarea
 							className='components-textarea-control__input'
-							id={inputId}
-							value={value}
-							onChange={(e) =>
-								onChange(e.target.value, id, index)
+							id={ inputId }
+							value={ value }
+							onChange={ ( e ) =>
+								onChange( e.target.value, id, index )
 							}
-							{...rest}
+							{ ...rest }
 						/>
 					</div>
 				</div>
 			</div>
 
-			{description && (
+			{ description && (
 				<p
 					className='description'
-					dangerouslySetInnerHTML={{ __html: description }}
+					dangerouslySetInnerHTML={ { __html: description } }
 				/>
-			)}
+			) }
 		</div>
 	);
 };
