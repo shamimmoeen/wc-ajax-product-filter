@@ -156,7 +156,12 @@ class WCAPF_Product_Filter {
 		$settings['filter_keys'] = $global_keys;
 
 		if ( is_shop() ) {
-			$settings['base_url'] = get_permalink( wc_get_page_id( 'shop' ) );
+			// Under plain permalinks, get_permalink() returns ?page_id=X. WC's wc_template_redirect()
+			// redirects that to ?post_type=product, stripping any filter params we append here.
+			// Use the archive URL so the round-trip survives.
+			$settings['base_url'] = '' === get_option( 'permalink_structure' )
+				? get_post_type_archive_link( 'product' )
+				: get_permalink( wc_get_page_id( 'shop' ) );
 		} else {
 			$settings['base_url'] = get_term_link( get_queried_object_id() );
 		}
