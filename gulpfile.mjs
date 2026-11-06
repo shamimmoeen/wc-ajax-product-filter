@@ -6,7 +6,7 @@ import touch from 'gulp-touch-cmd';
 import autoPrefix from 'gulp-autoprefixer';
 import babel from 'gulp-babel';
 import concat from 'gulp-concat';
-import minCss from 'gulp-minify-css';
+import cleanCSS from 'gulp-clean-css';
 import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
 import browserSync from 'browser-sync';
@@ -23,13 +23,16 @@ function frontendCss() {
 
 	return src( './public/src/scss/wc-ajax-product-filter-styles.scss' )
 		.pipe( sourcemaps.init() )
-		.pipe( sass.sync( { outputStyle: 'expanded' } ).on( 'error', sass.logError ) )
+		.pipe( sass.sync( {
+			outputStyle: 'expanded',
+			silenceDeprecations: [ 'legacy-js-api', 'import' ]
+		} ).on( 'error', sass.logError ) )
 		.pipe( autoPrefix() )
 		.pipe( sourcemaps.write() )
 		.pipe( dest( DEST ) ) // Output non-minified css file
 		.pipe( bs.stream() )
 
-		.pipe( minCss() )
+		.pipe( cleanCSS() )
 		.pipe( rename( { extname: '.min.css' } ) )
 		.pipe( dest( DEST ) ) // Output minified css file
 
@@ -41,13 +44,16 @@ function chosenCss() {
 
 	return src( './public/lib/chosen/chosen.scss' )
 		.pipe( sourcemaps.init() )
-		.pipe( sass.sync( { outputStyle: 'expanded' } ).on( 'error', sass.logError ) )
+		.pipe( sass.sync( {
+			outputStyle: 'expanded',
+			silenceDeprecations: [ 'legacy-js-api', 'import' ]
+		} ).on( 'error', sass.logError ) )
 		.pipe( autoPrefix() )
 		.pipe( sourcemaps.write() )
 		.pipe( dest( DEST ) ) // Output non-minified css file
 		.pipe( bs.stream() )
 
-		.pipe( minCss() )
+		.pipe( cleanCSS() )
 		.pipe( rename( { extname: '.min.css' } ) )
 		.pipe( dest( DEST ) ) // Output minified css file
 
